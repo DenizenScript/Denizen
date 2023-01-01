@@ -4,7 +4,6 @@ import com.denizenscript.denizen.events.ScriptEventRegistry;
 import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
 import com.denizenscript.denizen.events.server.ServerPrestartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStartScriptEvent;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -42,7 +41,6 @@ import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import com.denizenscript.denizen.npc.TraitRegistry;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
-import com.denizenscript.denizen.utilities.world.VoidGenerator;
 import com.denizenscript.denizen.utilities.world.VoidGenerator1_17;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
@@ -608,10 +606,7 @@ public class Denizen extends JavaPlugin {
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         if (CoreUtilities.toLowerCase(id).equals("void")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-                return new VoidGenerator1_17();
-            }
-            return new VoidGenerator();
+            return new VoidGenerator1_17();
         }
         return null;
     }

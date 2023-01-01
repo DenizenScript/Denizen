@@ -2,8 +2,6 @@ package com.denizenscript.denizen.utilities.packets;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.player.*;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.packets.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -76,9 +74,7 @@ public class DenizenPacketHandler {
         raisableItems.add(Material.CROSSBOW);
         raisableItems.add(Material.BOW);
         raisableItems.add(Material.TRIDENT);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-            raisableItems.add(Material.valueOf("SPYGLASS"));
-        }
+        raisableItems.add(Material.SPYGLASS);
     }
 
     public static boolean isHoldingRaisable(Player player) {

@@ -12,8 +12,6 @@ import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.events.server.*;
 import com.denizenscript.denizen.events.vehicle.*;
 import com.denizenscript.denizen.events.world.*;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.events.ScriptEventCouldMatcher;
@@ -78,9 +76,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BrewsScriptEvent.class);
         ScriptEvent.registerScriptEvent(CauldronLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceBurnsItemScriptEvent.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-            ScriptEvent.registerScriptEvent(FurnaceStartsSmeltingScriptEvent.class);
-        }
+        ScriptEvent.registerScriptEvent(FurnaceStartsSmeltingScriptEvent.class);
         ScriptEvent.registerScriptEvent(LeafDecaysScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidSpreadScriptEvent.class);
@@ -262,17 +258,11 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(VehicleMoveScriptEvent.class);
 
         // World events
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-            ScriptEvent.registerScriptEvent(ChunkLoadEntitiesScriptEvent.class);
-        }
+        ScriptEvent.registerScriptEvent(ChunkLoadEntitiesScriptEvent.class);
         ScriptEvent.registerScriptEvent(ChunkLoadScriptEvent.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-            ScriptEvent.registerScriptEvent(ChunkUnloadEntitiesScriptEvent.class);
-        }
+        ScriptEvent.registerScriptEvent(ChunkUnloadEntitiesScriptEvent.class);
         ScriptEvent.registerScriptEvent(ChunkUnloadScriptEvent.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-            ScriptEvent.registerScriptEvent(GenericGameEventScriptEvent.class);
-        }
+        ScriptEvent.registerScriptEvent(GenericGameEventScriptEvent.class);
         ScriptEvent.registerScriptEvent(LightningStrikesScriptEvent.class);
         ScriptEvent.registerScriptEvent(LingeringPotionSplashScriptEvent.class);
         ScriptEvent.registerScriptEvent(LootGenerateScriptEvent.class);

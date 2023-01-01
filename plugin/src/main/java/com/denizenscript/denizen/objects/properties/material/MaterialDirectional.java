@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -33,7 +31,7 @@ public class MaterialDirectional implements Property {
                 || data instanceof Rotatable
                 || data instanceof Rail
                 || data instanceof Jigsaw
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof PointedDripstone);
+                || data instanceof PointedDripstone;
     }
 
     public static MaterialDirectional getFrom(ObjectTag _material) {
@@ -95,7 +93,7 @@ public class MaterialDirectional implements Property {
                 }
             }
             else if (material.isDripstone()) {
-                for (BlockFace face : ((PointedDripstone) material.material.getModernData()).getVerticalDirections()) { // TODO: 1.17
+                for (BlockFace face : material.getDripstone().getVerticalDirections()) {
                     toReturn.add(face.name());
                 }
             }
@@ -168,7 +166,7 @@ public class MaterialDirectional implements Property {
             return getDirectional().getFacing().getDirection();
         }
         else if (isDripstone()) {
-            return ((PointedDripstone) material.getModernData()).getVerticalDirection().getDirection(); // TODO: 1.17
+            return getDripstone().getVerticalDirection().getDirection();
         }
         else if (isJigsaw()) {
             switch (getJigsaw().getOrientation()) {
@@ -211,7 +209,7 @@ public class MaterialDirectional implements Property {
             return getDirectional().getFacing().name();
         }
         else if (isDripstone()) {
-            return ((PointedDripstone) material.getModernData()).getVerticalDirection().name(); // TODO: 1.17
+            return getDripstone().getVerticalDirection().name();
         }
         else if (isJigsaw()) {
             return getJigsaw().getOrientation().name();
@@ -232,7 +230,7 @@ public class MaterialDirectional implements Property {
     }
 
     public boolean isDripstone() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof PointedDripstone;
+        return material.getModernData() instanceof PointedDripstone;
     }
 
     public boolean isRail() {
@@ -259,9 +257,9 @@ public class MaterialDirectional implements Property {
         return (Jigsaw) material.getModernData();
     }
 
-    /*public PointedDripstone getDripstone() { // TODO: 1.17
+    public PointedDripstone getDripstone() {
         return (PointedDripstone) material.getModernData();
-    }*/
+    }
 
     public Rail getRail() {
         return (Rail) material.getModernData();
@@ -309,7 +307,7 @@ public class MaterialDirectional implements Property {
             getDirectional().setFacing(face);
         }
         else if (isDripstone()) {
-            ((PointedDripstone) material.getModernData()).setVerticalDirection(face); // TODO: 1.17
+            getDripstone().setVerticalDirection(face);
         }
     }
 

@@ -3,7 +3,6 @@ package com.denizenscript.denizen.nms;
 public enum NMSVersion {
 
     NOT_SUPPORTED,
-    v1_16,
     v1_17,
     v1_18,
     v1_19;

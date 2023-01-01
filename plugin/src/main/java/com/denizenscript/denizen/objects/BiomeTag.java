@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -98,14 +97,12 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     /////////////
 
     public BiomeTag(Biome biome) {
-        String key = biome.name();
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-            if (biome.getKey().getNamespace().equals("minecraft")) {
-                key = biome.getKey().getKey();
-            }
-            else {
-                key = biome.getKey().toString();
-            }
+        String key;
+        if (biome.getKey().getNamespace().equals("minecraft")) {
+            key = biome.getKey().getKey();
+        }
+        else {
+            key = biome.getKey().toString();
         }
         this.biome = NMSHandler.instance.getBiomeNMS(Bukkit.getWorlds().get(0), key);
     }

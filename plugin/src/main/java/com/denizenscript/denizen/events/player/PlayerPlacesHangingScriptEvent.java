@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -9,7 +7,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -89,7 +86,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
         EntityTag.rememberEntity(hangingEntity);
         hanging = new EntityTag(hangingEntity);
         location = new LocationTag(event.getBlock().getLocation());
-        item = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) ? new ItemTag(event.getItemStack()) : new ItemTag(Material.AIR);
+        item = new ItemTag(event.getItemStack());
         this.event = event;
         fire(event);
         EntityTag.forgetEntity(hangingEntity);

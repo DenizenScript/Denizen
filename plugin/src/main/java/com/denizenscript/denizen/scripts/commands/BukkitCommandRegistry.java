@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.scripts.commands;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.scripts.commands.core.*;
 import com.denizenscript.denizen.scripts.commands.entity.*;
 import com.denizenscript.denizen.scripts.commands.item.*;
@@ -125,9 +123,7 @@ public class BukkitCommandRegistry {
         registerCommand(BlockCrackCommand.class);
         registerCommand(ClickableCommand.class);
         registerCommand(CompassCommand.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-            registerCommand(DebugBlockCommand.class);
-        }
+        registerCommand(DebugBlockCommand.class);
         registerCommand(DisguiseCommand.class);
         registerCommand(ExperienceCommand.class);
         registerCommand(FakeSpawnCommand.class);

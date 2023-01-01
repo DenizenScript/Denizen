@@ -3,7 +3,6 @@ package com.denizenscript.denizen.objects.properties.material;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.MultiVersionHelper1_17;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -30,8 +29,8 @@ public class MaterialMode implements Property {
                 || data instanceof StructureBlock
                 || data instanceof DaylightDetector
                 || data instanceof CommandBlock
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && (data instanceof SculkSensor
-                                                                        || data instanceof BigDripleaf))
+                || data instanceof SculkSensor
+                || data instanceof BigDripleaf
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && (data instanceof SculkCatalyst
                                                                         || data instanceof  SculkShrieker));
     }
@@ -105,11 +104,11 @@ public class MaterialMode implements Property {
     }
 
     public boolean isBigDripleaf() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof BigDripleaf;
+        return material.getModernData() instanceof BigDripleaf;
     }
 
     public boolean isSculkSensor() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof SculkSensor;
+        return material.getModernData() instanceof SculkSensor;
     }
 
     public boolean isSculkCatalyst() {
@@ -144,13 +143,13 @@ public class MaterialMode implements Property {
         return (CommandBlock) material.getModernData();
     }
 
-    /*public SculkSensor getSculkSensor() { // TODO: 1.17
+    public SculkSensor getSculkSensor() {
         return (SculkSensor) material.getModernData();
     }
 
     public BigDripleaf getBigDripleaf() {
         return (BigDripleaf) material.getModernData();
-    }*/
+    }
 
     /*public SculkCatalyst getSculkCatalyst() { // TODO: 1.19
         return (SculkCatalyst) material.getModernData();
@@ -181,10 +180,10 @@ public class MaterialMode implements Property {
             return getCommandBlock().isConditional() ? "CONDITIONAL" : "NORMAL";
         }
         else if (isSculkSensor()) {
-            return ((SculkSensor) material.getModernData()).getPhase().name(); // TODO: 1.17
+            return getSculkSensor().getPhase().name();
         }
         else if (isBigDripleaf()) {
-            return ((BigDripleaf) material.getModernData()).getTilt().name(); // TODO: 1.17
+            return getBigDripleaf().getTilt().name();
         }
         else if (isSculkCatalyst()) {
             return ((SculkCatalyst) material.getModernData()).isBloom() ? "BLOOM" : "NORMAL"; // TODO: 1.19
@@ -241,8 +240,11 @@ public class MaterialMode implements Property {
             else if (isCommandBlock()) {
                 getCommandBlock().setConditional(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "conditional"));
             }
-            else if (isSculkSensor() || isBigDripleaf()) {
-                MultiVersionHelper1_17.materialModeRunMech(mechanism, this);
+            else if (isSculkSensor() && mechanism.requireEnum(SculkSensor.Phase.class)) {
+                ((SculkSensor) material.getModernData()).setPhase(SculkSensor.Phase.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (isBigDripleaf() && mechanism.requireEnum(BigDripleaf.Tilt.class)) {
+                ((BigDripleaf) material.getModernData()).setTilt(BigDripleaf.Tilt.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (isSculkCatalyst()) {
                 ((SculkCatalyst) material.getModernData()).setBloom(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "bloom")); // TODO: 1.19

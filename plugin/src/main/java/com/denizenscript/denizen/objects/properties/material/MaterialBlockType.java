@@ -1,9 +1,6 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.MultiVersionHelper1_17;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -28,8 +25,8 @@ public class MaterialBlockType implements Property {
                 || data instanceof TechnicalPiston
                 || data instanceof Campfire
                 || data instanceof Scaffolding
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && (data instanceof PointedDripstone
-                                                                        || data instanceof CaveVinesPlant));
+                || data instanceof PointedDripstone
+                || data instanceof CaveVinesPlant;
     }
 
     public static MaterialBlockType getFrom(ObjectTag _material) {
@@ -85,11 +82,11 @@ public class MaterialBlockType implements Property {
     }
 
     public boolean isDripstone() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof PointedDripstone;
+        return material.getModernData() instanceof PointedDripstone;
     }
 
     public boolean isCaveVines() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof CaveVinesPlant;
+        return material.getModernData() instanceof CaveVinesPlant;
     }
 
     public boolean isScaffolding() {
@@ -112,13 +109,13 @@ public class MaterialBlockType implements Property {
         return (Scaffolding) material.getModernData();
     }
 
-    /*public PointedDripstone getDripstone() { // TODO: 1.17
+    public PointedDripstone getDripstone() {
         return (PointedDripstone) material.getModernData();
     }
 
     public CaveVinesPlant getCaveVines() {
         return (CaveVinesPlant) material.getModernData();
-    }*/
+    }
 
     @Override
     public String getPropertyString() {
@@ -135,10 +132,10 @@ public class MaterialBlockType implements Property {
             return getScaffolding().isBottom() ? "BOTTOM" : "NORMAL";
         }
         else if (isDripstone()) {
-            return ((PointedDripstone) material.getModernData()).getThickness().name(); // TODO: 1.17
+            return getDripstone().getThickness().name();
         }
         else if (isCaveVines()) {
-            return ((CaveVinesPlant) material.getModernData()).isBerries() ? "BERRIES" : "NORMAL"; // TODO: 1.17
+            return getCaveVines().isBerries() ? "BERRIES" : "NORMAL";
         }
         return null; // Unreachable.
     }
@@ -179,11 +176,11 @@ public class MaterialBlockType implements Property {
             else if (isScaffolding()) {
                 getScaffolding().setBottom(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "bottom"));
             }
-            else if (isDripstone()) {
-                MultiVersionHelper1_17.materialBlockTypeRunMech(mechanism, this);
+            else if (isDripstone() && mechanism.requireEnum(PointedDripstone.Thickness.class)) {
+                ((PointedDripstone) material.getModernData()).setThickness(PointedDripstone.Thickness.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (isCaveVines()) {
-                ((CaveVinesPlant) material.getModernData()).setBerries(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "berries")); // TODO: 1.17
+                getCaveVines().setBerries(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "berries"));
             }
         }
     }

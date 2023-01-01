@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
@@ -476,12 +475,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             return;
         }
         if (natural != null && material.getMaterial() == Material.AIR) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-                int xp = NMSHandler.blockHelper.getExpDrop(location.getBlock(), natural.getItemStack());
-                if (xp > 0) {
-                    ExperienceOrb orb = (ExperienceOrb) location.getWorld().spawnEntity(location, EntityType.EXPERIENCE_ORB);
-                    orb.setExperience(xp);
-                }
+            int xp = NMSHandler.blockHelper.getExpDrop(location.getBlock(), natural.getItemStack());
+            if (xp > 0) {
+                ExperienceOrb orb = (ExperienceOrb) location.getWorld().spawnEntity(location, EntityType.EXPERIENCE_ORB);
+                orb.setExperience(xp);
             }
             location.getBlock().breakNaturally(natural.getItemStack());
         }

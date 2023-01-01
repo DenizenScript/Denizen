@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
@@ -953,14 +952,13 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // By default, automatically checks the playersSleepingPercentage gamerule,
         // but this can optionally be overridden by specifying a percentage integer.
         // Any integer above 100 will always yield 'false'. Requires at least one player to be sleeping to return 'true'.
-        // NOTE: In 1.16, input is ignored and assumed to be 100%.
         // -->
         registerTag(ElementTag.class, "enough_sleeping", (attribute, world) -> {
-            int percentage = 100;
+            int percentage;
             if (attribute.hasParam()) {
                 percentage = attribute.getIntParam();
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            else {
                 percentage = world.getGameRuleOrDefault(GameRule.PLAYERS_SLEEPING_PERCENTAGE);
             }
             return new ElementTag(NMSHandler.worldHelper.areEnoughSleeping(world.getWorld(), percentage));
@@ -975,14 +973,13 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // By default, automatically checks the playersSleepingPercentage gamerule,
         // but this can optionally be overridden by specifying a percentage integer.
         // Any integer above 100 will always yield 'false'. Requires at least one player to be sleeping to return 'true'.
-        // NOTE: In 1.16, input is ignored and assumed to be 100%.
         // -->
         registerTag(ElementTag.class, "enough_deep_sleeping", (attribute, world) -> {
-            int percentage = 100;
+            int percentage;
             if (attribute.hasParam()) {
                 percentage = attribute.getIntParam();
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            else {
                 percentage = world.getGameRuleOrDefault(GameRule.PLAYERS_SLEEPING_PERCENTAGE);
             }
             return new ElementTag(NMSHandler.worldHelper.areEnoughDeepSleeping(world.getWorld(), percentage));
