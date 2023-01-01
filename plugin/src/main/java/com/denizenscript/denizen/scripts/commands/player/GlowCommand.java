@@ -102,7 +102,7 @@ public class GlowCommand extends AbstractCommand {
         final UUID puuid = Utilities.getEntryPlayer(scriptEntry).getUUID();
         for (EntityTag ent : entities) {
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(ent.getLivingEntity())) {
-                CitizensAPI.getNPCRegistry().getNPC(ent.getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, shouldGlow);
+                CitizensAPI.getNPCRegistry().getNPC(ent.getLivingEntity()).data().setPersistent(NPC.Metadata.GLOWING, shouldGlow);
             }
             if (shouldGlow) {
                 HashSet<UUID> players = glowViewers.computeIfAbsent(ent.getLivingEntity().getEntityId(), k -> new HashSet<>());

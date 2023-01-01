@@ -163,7 +163,7 @@ public class EntityItem implements Property {
         if (mechanism.matches("item") && mechanism.requireObject(ItemTag.class)) {
             ItemStack itemStack = mechanism.valueAsType(ItemTag.class).getItemStack();
             if (item.isCitizensNPC()) {
-                item.getDenizenNPC().getCitizen().data().setPersistent(NPC.ITEM_ID_METADATA, itemStack.getType().name());
+                item.getDenizenNPC().getCitizen().data().setPersistent(NPC.Metadata.ITEM_ID, itemStack.getType().name());
             }
             if (isDroppedItem()) {
                 getDroppedItem().setItemStack(itemStack);
