@@ -7,8 +7,8 @@ import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException
 import com.denizenscript.denizencore.scripts.commands.generator.ArgDefaultNull;
 import com.denizenscript.denizencore.scripts.commands.generator.ArgName;
 import com.denizenscript.denizencore.scripts.commands.generator.ArgPrefixed;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgSubType;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -65,17 +65,13 @@ public class ResourcePackCommand extends AbstractCommand {
                                    @ArgName("url") @ArgPrefixed String url,
                                    @ArgName("hash") @ArgPrefixed String hash,
                                    @ArgName("prompt") @ArgPrefixed @ArgDefaultNull String prompt,
-                                   @ArgName("targets") @ArgPrefixed @ArgDefaultNull ListTag targetsList,
+                                   @ArgName("targets") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> targets,
                                    @ArgName("forced") boolean forced) {
-        List<PlayerTag> targets;
-        if (targetsList != null) {
-            targets = targetsList.filter(PlayerTag.class, scriptEntry);
-        }
-        else if (Utilities.entryHasPlayer(scriptEntry)) {
+        if (targets == null) {
+            if (!Utilities.entryHasPlayer(scriptEntry)) {
+                throw new InvalidArgumentsRuntimeException("Must specify an online player!");
+            }
             targets = Collections.singletonList(Utilities.getEntryPlayer(scriptEntry));
-        }
-        else {
-            throw new InvalidArgumentsRuntimeException("Must specify an online player!");
         }
         if (hash.length() != 40) {
             Debug.echoError("Invalid resource_pack hash. Should be 40 characters of hexadecimal data.");

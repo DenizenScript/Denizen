@@ -10,10 +10,12 @@ import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.npc.speech.DenizenSpeechContext;
 import com.denizenscript.denizen.npc.speech.DenizenSpeechController;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.entity.Entity;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ChatCommand extends AbstractCommand {
 
@@ -74,12 +76,11 @@ public class ChatCommand extends AbstractCommand {
 
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("message") @ArgLinear String message,
-                                   @ArgName("talkers") @ArgPrefixed @ArgDefaultNull ListTag talkers,
-                                   @ArgName("targets") @ArgPrefixed @ArgDefaultNull ListTag targets,
+                                   @ArgName("talkers") @ArgPrefixed @ArgDefaultNull @ArgSubType(EntityTag.class) List<EntityTag> talkers,
+                                   @ArgName("targets") @ArgPrefixed @ArgDefaultNull @ArgSubType(EntityTag.class) List<EntityTag> targets,
                                    @ArgName("no_target") boolean noTarget,
                                    @ArgName("range") @ArgPrefixed @ArgDefaultText("-1") double chatRange) {
         if (targets == null) {
-            targets = new ListTag();
             if (!noTarget) {
                 PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
                 if (player == null) {
@@ -89,27 +90,30 @@ public class ChatCommand extends AbstractCommand {
                     Debug.echoDebug(scriptEntry, "Player is not online, skipping.");
                     return;
                 }
-                targets.addObject(player);
+                targets = Collections.singletonList(player.getDenizenEntity());
             }
         }
         if (talkers == null) {
-            talkers = new ListTag();
             NPCTag talker = Utilities.getEntryNPC(scriptEntry);
             if (talker == null) {
                 throw new InvalidArgumentsRuntimeException("Missing talker!");
             }
-            talkers.addObject(talker);
+            if (!talker.isSpawned()) {
+                Debug.echoDebug(scriptEntry, "Chat Talker is not spawned! Cannot talk.");
+                return;
+            }
+            talkers = Collections.singletonList(talker.getDenizenEntity());
         }
         if (chatRange == -1) {
             chatRange = Settings.chatBystandersRange();
         }
         DenizenSpeechContext context = new DenizenSpeechContext(message, scriptEntry, chatRange);
         if (!targets.isEmpty()) {
-            for (EntityTag ent : targets.filter(EntityTag.class, scriptEntry)) {
+            for (EntityTag ent : targets) {
                 context.addRecipient(ent.getBukkitEntity());
             }
         }
-        for (EntityTag talker : talkers.filter(EntityTag.class, scriptEntry)) {
+        for (EntityTag talker : talkers) {
             Entity entity = talker.getBukkitEntity();
             if (entity != null) {
                 context.setTalker(entity);

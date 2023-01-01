@@ -94,7 +94,7 @@ public class GiveCommand extends AbstractCommand {
                                    @ArgName("allowed_slots") @ArgPrefixed @ArgDefaultNull String allowed_slots,
                                    @ArgName("to") @ArgPrefixed @ArgDefaultNull InventoryTag inventory,
                                    @ArgName("slot") @ArgPrefixed @ArgDefaultText("1") String slot,
-                                   @ArgName("items") @ArgLinear ListTag itemsList) {
+                                   @ArgName("items") @ArgLinear @ArgSubType(ItemTag.class) List<ItemTag> items) {
         if (type != Type.__ITEM && !Utilities.entryHasPlayer(scriptEntry)) {
             throw new InvalidArgumentsRuntimeException("Must link a player to give money or XP!");
         }
@@ -107,7 +107,6 @@ public class GiveCommand extends AbstractCommand {
         if (type == Type.MONEY) {
             BukkitImplDeprecations.giveTakeMoney.warn(scriptEntry);
         }
-        List<ItemTag> items = itemsList.filter(ItemTag.class, scriptEntry);
         ListTag leftoverSave = new ListTag();
         switch (type) {
             case MONEY:
