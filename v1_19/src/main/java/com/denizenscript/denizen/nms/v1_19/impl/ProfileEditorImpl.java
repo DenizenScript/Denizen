@@ -108,9 +108,7 @@ public class ProfileEditorImpl extends ProfileEditor {
         buf.writeCollection(entries, (inBuf, entry) -> {
             try {
                 inBuf.writeUUID(entry.profileId());
-                Iterator var3 = actions.iterator();
-                while (var3.hasNext()) {
-                    ClientboundPlayerInfoUpdatePacket.Action action = (ClientboundPlayerInfoUpdatePacket.Action) var3.next();
+                for (ClientboundPlayerInfoUpdatePacket.Action action : actions) {
                     ClientboundPlayerInfoUpdatePacket.Action.Writer writer = (ClientboundPlayerInfoUpdatePacket.Action.Writer) ClientboundPlayerInfoUpdatePacket_Action_writer.get(action);
                     writer.write(inBuf, entry);
                 }
