@@ -687,9 +687,9 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // If the item is a scripted item, returns a list of all recipe IDs created by the item script.
         // Others, returns a list of all recipe IDs that the server lists as capable of crafting the item.
         // Returns a list in the Namespace:Key format, for example "minecraft:gold_nugget".
-        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, STONECUTTING, BREWING (only on Paper))
+        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, STONECUTTING, BREWING)
         // to limit to just recipes of that type.
-        // For Brewing recipes, only custom ones are available.
+        // Brewing recipes are only supported on Paper, and only custom ones are available.
         // -->
         tagProcessor.registerTag(ListTag.class, "recipe_ids", (attribute, object) -> {
             String type = attribute.hasParam() ? CoreUtilities.toLowerCase(attribute.getParam()) : null;
