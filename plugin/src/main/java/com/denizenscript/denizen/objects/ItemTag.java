@@ -687,14 +687,15 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // If the item is a scripted item, returns a list of all recipe IDs created by the item script.
         // Others, returns a list of all recipe IDs that the server lists as capable of crafting the item.
         // Returns a list in the Namespace:Key format, for example "minecraft:gold_nugget".
-        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, STONECUTTING, BREWING)
+        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, STONECUTTING, BREWING (only on Paper))
         // to limit to just recipes of that type.
+        // For Brewing recipes, only custom ones are available.
         // -->
         tagProcessor.registerTag(ListTag.class, "recipe_ids", (attribute, object) -> {
             String type = attribute.hasParam() ? CoreUtilities.toLowerCase(attribute.getParam()) : null;
             ItemScriptContainer container = ItemScriptHelper.getItemScriptContainer(object.getItemStack());
             ListTag list = new ListTag();
-            Consumer<NamespacedKey> addRecipe = recipe -> {
+            Consumer<NamespacedKey> addRecipe = (recipe) -> {
                 if (CoreUtilities.equalsIgnoreCase(recipe.getNamespace(), "denizen")) {
                     if (container != ItemScriptHelper.recipeIdToItemScript.get(recipe.toString())) {
                         return;
@@ -707,8 +708,8 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
             };
             if (type == null || !type.equals("brewing")) {
                 for (Recipe recipe : Bukkit.getRecipesFor(object.getItemStack())) {
-                    if (recipe instanceof Keyed && Utilities.isRecipeOfType(recipe, type)) {
-                        addRecipe.accept(((Keyed) recipe).getKey());
+                    if (recipe instanceof Keyed keyed && Utilities.isRecipeOfType(recipe, type)) {
+                        addRecipe.accept(keyed.getKey());
                     }
                 }
             }
