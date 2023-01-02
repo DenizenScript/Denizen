@@ -1,31 +1,34 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.nms.util.jnbt.StringTag;
 import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
+import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.inventory.BrewingRecipe;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.MapTagFlagTracker;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.utilities.CoreConfiguration;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.util.jnbt.StringTag;
-import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -34,7 +37,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -43,6 +47,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
@@ -682,28 +687,38 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // If the item is a scripted item, returns a list of all recipe IDs created by the item script.
         // Others, returns a list of all recipe IDs that the server lists as capable of crafting the item.
         // Returns a list in the Namespace:Key format, for example "minecraft:gold_nugget".
-        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, STONECUTTING)
+        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, STONECUTTING, BREWING)
         // to limit to just recipes of that type.
+        // Brewing recipes are only supported on Paper, and only custom ones are available.
         // -->
         tagProcessor.registerTag(ListTag.class, "recipe_ids", (attribute, object) -> {
             String type = attribute.hasParam() ? CoreUtilities.toLowerCase(attribute.getParam()) : null;
             ItemScriptContainer container = ItemScriptHelper.getItemScriptContainer(object.getItemStack());
             ListTag list = new ListTag();
-            for (Recipe recipe : Bukkit.getRecipesFor(object.getItemStack())) {
-                if (!Utilities.isRecipeOfType(recipe, type)) {
-                    continue;
+            Consumer<NamespacedKey> addRecipe = (recipe) -> {
+                if (CoreUtilities.equalsIgnoreCase(recipe.getNamespace(), "denizen")) {
+                    if (container != ItemScriptHelper.recipeIdToItemScript.get(recipe.toString())) {
+                        return;
+                    }
                 }
-                if (recipe instanceof Keyed) {
-                    NamespacedKey key = ((Keyed) recipe).getKey();
-                    if (key.getNamespace().equalsIgnoreCase("denizen")) {
-                        if (container != ItemScriptHelper.recipeIdToItemScript.get(key.toString())) {
-                            continue;
-                        }
+                else if (container != null) {
+                    return;
+                }
+                list.add(recipe.toString());
+            };
+            if (type == null || !type.equals("brewing")) {
+                for (Recipe recipe : Bukkit.getRecipesFor(object.getItemStack())) {
+                    if (recipe instanceof Keyed keyedRecipe && Utilities.isRecipeOfType(recipe, type)) {
+                        addRecipe.accept(keyedRecipe.getKey());
                     }
-                    else if (container != null) {
-                        continue;
+                }
+            }
+            if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && (type == null || type.equals("brewing"))) {
+                for (Map.Entry<NamespacedKey, BrewingRecipe> entry : NMSHandler.itemHelper.getCustomBrewingRecipes().entrySet()) {
+                    ItemStack result = entry.getValue().result;
+                    if (object.getBukkitMaterial() == result.getType() && (object.getItemStack().getDurability() == -1 || object.getItemStack().getDurability() == result.getDurability())) {
+                        addRecipe.accept(entry.getKey());
                     }
-                    list.add(key.toString());
                 }
             }
             return list;
