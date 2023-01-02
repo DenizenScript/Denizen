@@ -521,7 +521,7 @@ public class ItemHelperImpl extends ItemHelper {
     public boolean isValidMix(ItemStack input, ItemStack ingredient) {
         net.minecraft.world.item.ItemStack nmsInput = CraftItemStack.asNMSCopy(input);
         net.minecraft.world.item.ItemStack nmsIngredient = CraftItemStack.asNMSCopy(ingredient);
-        return net.minecraft.world.item.alchemy.PotionBrewing.hasMix(nmsInput, nmsIngredient);
+        return PotionBrewing.hasMix(nmsInput, nmsIngredient);
     }
 
     public static Class<?> PaperPotionMix_CLASS = null;

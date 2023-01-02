@@ -226,8 +226,8 @@ public class ServerTagBase {
                 }
             }
             if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && (type == null || type.equals("brewing"))) {
-                for (NamespacedKey recipe : NMSHandler.itemHelper.getCustomBrewingRecipeIDs()) {
-                    list.add(recipe.toString());
+                for (NamespacedKey brewingRecipe : NMSHandler.itemHelper.getCustomBrewingRecipeIDs()) {
+                    list.add(brewingRecipe.toString());
                 }
             }
             event.setReplacedObject(list.getObjectAttribute(attribute.fulfill(1)));

@@ -4,6 +4,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 
 public class BrewingRecipe {
+
     public RecipeChoice input;
     public RecipeChoice ingredient;
     public ItemStack result;
