@@ -708,8 +708,8 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
             };
             if (type == null || !type.equals("brewing")) {
                 for (Recipe recipe : Bukkit.getRecipesFor(object.getItemStack())) {
-                    if (recipe instanceof Keyed keyed && Utilities.isRecipeOfType(recipe, type)) {
-                        addRecipe.accept(keyed.getKey());
+                    if (recipe instanceof Keyed keyedRecipe && Utilities.isRecipeOfType(recipe, type)) {
+                        addRecipe.accept(keyedRecipe.getKey());
                     }
                 }
             }

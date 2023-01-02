@@ -220,8 +220,8 @@ public class ServerTagBase {
                 Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
                 while (recipeIterator.hasNext()) {
                     Recipe recipe = recipeIterator.next();
-                    if (Utilities.isRecipeOfType(recipe, type) && recipe instanceof Keyed keyed) {
-                        list.add(keyed.getKey().toString());
+                    if (Utilities.isRecipeOfType(recipe, type) && recipe instanceof Keyed keyedRecipe) {
+                        list.add(keyedRecipe.getKey().toString());
                     }
                 }
             }
