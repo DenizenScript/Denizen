@@ -644,23 +644,23 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         try {
             int entityID = -1;
-            if (packet instanceof ClientboundSetEntityDataPacket) {
-                entityID = ((ClientboundSetEntityDataPacket) packet).id();
+            if (packet instanceof ClientboundSetEntityDataPacket entityDataPacket) {
+                entityID = entityDataPacket.id();
             }
-            if (packet instanceof ClientboundUpdateAttributesPacket) {
-                entityID = ((ClientboundUpdateAttributesPacket) packet).getEntityId();
+            if (packet instanceof ClientboundUpdateAttributesPacket updateAttributesPacket) {
+                entityID = updateAttributesPacket.getEntityId();
             }
-            if (packet instanceof ClientboundAddPlayerPacket) {
-                entityID = ((ClientboundAddPlayerPacket) packet).getEntityId();
+            if (packet instanceof ClientboundAddPlayerPacket addPlayerPacket) {
+                entityID = addPlayerPacket.getEntityId();
             }
-            else if (packet instanceof ClientboundAddEntityPacket) {
-                entityID = ((ClientboundAddEntityPacket) packet).getId();
+            else if (packet instanceof ClientboundAddEntityPacket addEntityPacket) {
+                entityID = addEntityPacket.getId();
             }
-            else if (packet instanceof ClientboundTeleportEntityPacket) {
-                entityID = ((ClientboundTeleportEntityPacket) packet).getId();
+            else if (packet instanceof ClientboundTeleportEntityPacket teleportEntityPacket) {
+                entityID = teleportEntityPacket.getId();
             }
-            else if (packet instanceof ClientboundMoveEntityPacket) {
-                Entity e = ((ClientboundMoveEntityPacket) packet).getEntity(player.level);
+            else if (packet instanceof ClientboundMoveEntityPacket moveEntityPacket) {
+                Entity e = moveEntityPacket.getEntity(player.level);
                 if (e != null) {
                     entityID = e.getId();
                 }
@@ -760,7 +760,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 }
             }
             antiDuplicate = true;
-            disguise.sendTo(Collections.singletonList(new PlayerTag(player.getBukkitEntity())));
+            disguise.sendTo(List.of(new PlayerTag(player.getUUID())));
             antiDuplicate = false;
             return true;
         }
