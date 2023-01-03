@@ -119,7 +119,11 @@ public class LookCommand extends AbstractCommand {
                 else {
                     if (entity.isPlayer()) {
                         Location playerTeleDest = entity.getLocation().clone();
-                        float relYaw = yawRaw - playerTeleDest.getYaw();
+                        float relYaw = (yawRaw - playerTeleDest.getYaw()) % 360;
+                        if (relYaw > 180) {
+                            relYaw -= 360;
+                        }
+                        final float actualRelYaw = relYaw;
                         float relPitch = pitchRaw - playerTeleDest.getPitch();
                         playerTeleDest.setYaw(yawRaw);
                         playerTeleDest.setPitch(pitchRaw);
@@ -133,7 +137,7 @@ public class LookCommand extends AbstractCommand {
                                 try {
                                     for (int i = 0; i < times; i++) {
                                         Thread.sleep(ms);
-                                        NMSHandler.packetHelper.sendRelativeLookPacket(player, relYaw, relPitch);
+                                        NMSHandler.packetHelper.sendRelativeLookPacket(player, actualRelYaw, relPitch);
                                     }
                                 }
                                 catch (Throwable ex) {
