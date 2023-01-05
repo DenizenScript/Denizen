@@ -692,6 +692,7 @@ public class EntityHelperImpl extends EntityHelper {
         }
         finally {
             CraftEventFactory.entityDamage = null;
+            CraftEventFactory.blockDamage = null;
         }
     }
 
