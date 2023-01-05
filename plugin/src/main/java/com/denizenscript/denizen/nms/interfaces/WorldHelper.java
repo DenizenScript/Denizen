@@ -33,4 +33,8 @@ public interface WorldHelper {
 
     /** for clearing weather without ignoring possible raised event results */
     void clearWeather(World world);
+
+    default void setGameTime(World world, long time) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -81,6 +81,11 @@ public class WorldHelperImpl implements WorldHelper {
         ((CraftWorld) world).getHandle().setDayTime(time);
     }
 
+    @Override
+    public void setGameTime(World world, long time) {
+        ((PrimaryLevelData) ((CraftWorld) world).getHandle().levelData).setGameTime(time);
+    }
+
     // net.minecraft.server.level.ServerLevel#wakeUpAllPlayers()
     @Override
     public void wakeUpAllPlayers(World world) {

@@ -604,6 +604,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
 
         // <--[tag]
         // @attribute <WorldTag.duration_since_created>
+        // @mechanism WorldTag.duration_since_created
         // @returns DurationTag
         // @description
         // Returns the total duration of time since this world was first created.
@@ -1363,6 +1364,19 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         if (mechanism.matches("advance_ticks") && mechanism.requireInteger()) {
             World world = getWorld();
             NMSHandler.worldHelper.setDayTime(world, world.getFullTime() + mechanism.getValue().asInt());
+        }
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name duration_since_created
+        // @input DurationTag
+        // @description
+        // Changes the world's internal time-since-created value.
+        // @tags
+        // <WorldTag.duration_since_created>
+        // -->
+        if (mechanism.matches("duration_since_created") && mechanism.requireObject(DurationTag.class)) {
+            NMSHandler.worldHelper.setGameTime(getWorld(), mechanism.valueAsType(DurationTag.class).getTicks());
         }
 
         // <--[mechanism]
