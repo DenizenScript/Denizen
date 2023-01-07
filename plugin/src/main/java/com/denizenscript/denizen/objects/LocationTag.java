@@ -906,8 +906,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     public String identifyRaw() {
         if (getYaw() != 0.0 || getPitch() != 0.0) {
             return "l@" + CoreUtilities.doubleToString(getX()) + "," + CoreUtilities.doubleToString(getY())
-                    + "," + CoreUtilities.doubleToString(getZ()) + "," + CoreUtilities.doubleToString(getPitch())
-                    + "," + CoreUtilities.doubleToString(getYaw())
+                    + "," + CoreUtilities.doubleToString(getZ()) + "," + CoreUtilities.floatToCleanString(getPitch())
+                    + "," + CoreUtilities.floatToCleanString(getYaw())
                     + (getWorldName() != null ? "," + getWorldName() : "");
         }
         else {
