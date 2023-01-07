@@ -24,6 +24,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.potion.PotionBrewer;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
 import java.util.*;
@@ -267,5 +268,15 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         else {
             return super.spawnEntity(location, type, configure, reason);
         }
+    }
+
+    @Override
+    public void setTeamPrefix(Team team, String prefix) {
+        team.prefix(PaperModule.parseFormattedText(prefix, ChatColor.WHITE));
+    }
+
+    @Override
+    public void setTeamSuffix(Team team, String suffix) {
+        team.suffix(PaperModule.parseFormattedText(suffix, ChatColor.WHITE));
     }
 }

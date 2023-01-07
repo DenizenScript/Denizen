@@ -17,6 +17,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
 public class PaperAPITools {
@@ -138,5 +139,13 @@ public class PaperAPITools {
 
     public <T extends Entity> T spawnEntity(Location location, Class<T> type, Consumer<T> configure, CreatureSpawnEvent.SpawnReason reason) {
         return location.getWorld().spawn(location, type, configure);
+    }
+
+    public void setTeamPrefix(Team team, String prefix) {
+        team.setPrefix(prefix);
+    }
+
+    public void setTeamSuffix(Team team, String suffix) {
+        team.setSuffix(suffix);
     }
 }
