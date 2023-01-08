@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.events.server;
 
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -11,6 +12,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.event.server.TabCompleteEvent;
 
 public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listener {
@@ -43,14 +45,21 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
 
     public TabCompleteScriptEvent() {
         registerCouldMatcher("tab complete");
+        registerSwitches("command");
     }
 
     public TabCompleteEvent event;
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!path.tryObjectSwitch("command", new ElementTag(getCommand()))) { //getCommand being a helper function already in the event
+        /*if (!path.tryObjectSwitch("command", new ElementTag(getCommand()))) { //getCommand being a helper function already in the event
             return false;
+        }*/
+        String command = path.switches.get("command");
+        if (command != null) {
+            if (!new ElementTag(getCommand()).tryAdvancedMatcher(command)) {
+                return false;
+            }
         }
         return super.matches(path);
     }
