@@ -45,6 +45,14 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
 
     public TabCompleteEvent event;
 
+    @Override
+    public boolean matches(ScriptPath path) {
+        if (!path.tryObjectSwitch("command", new ElementTag(getCommand()))) { //getCommand being a helper function already in the event
+            return false;
+        }
+        return super.matches(path);
+    }
+
     public String getCommand() {
         String[] args = event.getBuffer().trim().split(" ");
         String cmd = args.length > 0 ? args[0] : "";
