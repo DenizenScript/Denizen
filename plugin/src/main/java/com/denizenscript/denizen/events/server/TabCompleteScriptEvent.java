@@ -50,7 +50,7 @@ public class TabCompleteScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!path.tryObjectSwitch("command", new ElementTag(getCommand()))) {
+        if (!runGenericSwitchCheck(path, "command", getCommand())) {
             return false;
         }
         return super.matches(path);
