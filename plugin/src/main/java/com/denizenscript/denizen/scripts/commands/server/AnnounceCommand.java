@@ -19,14 +19,14 @@ public class AnnounceCommand extends AbstractCommand {
 
     public AnnounceCommand() {
         setName("announce");
-        setSyntax("announce [<text>] (to_ops/to_console/to_flagged:<flag_name>/to_permission:<node>) (format:<name>)");
+        setSyntax("announce [<text>] (to_ops/to_console/to_flagged:<flag_name>/to_permission:<node>) (format:<script>)");
         setRequiredArguments(1, 3);
         isProcedural = true;
     }
 
     // <--[command]
     // @Name Announce
-    // @Syntax announce [<text>] (to_ops/to_console/to_flagged:<flag_name>/to_permission:<node>) (format:<name>)
+    // @Syntax announce [<text>] (to_ops/to_console/to_flagged:<flag_name>/to_permission:<node>) (format:<script>)
     // @Required 1
     // @Maximum 3
     // @Short Announces a message for everyone online to read.

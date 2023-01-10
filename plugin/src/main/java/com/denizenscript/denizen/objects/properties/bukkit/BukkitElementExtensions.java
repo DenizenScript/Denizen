@@ -267,7 +267,7 @@ public class BukkitElementExtensions {
         }, "asworld");
 
         // <--[tag]
-        // @attribute <ElementTag.format[<script>]>
+        // @attribute <ElementTag.format[<format_script>]>
         // @returns ElementTag
         // @group text manipulation
         // @description
