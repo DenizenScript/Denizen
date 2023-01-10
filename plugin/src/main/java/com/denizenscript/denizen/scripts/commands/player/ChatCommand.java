@@ -2,7 +2,6 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
@@ -108,7 +107,7 @@ public class ChatCommand extends AbstractCommand {
         if (chatRange == -1) {
             chatRange = Settings.chatBystandersRange();
         }
-        DenizenSpeechContext context = new DenizenSpeechContext(PaperAPITools.instance.convertTextToMiniMessage(message), scriptEntry, chatRange);
+        DenizenSpeechContext context = new DenizenSpeechContext(message, scriptEntry, chatRange);
         if (!targets.isEmpty()) {
             for (EntityTag ent : targets) {
                 context.addRecipient(ent.getBukkitEntity());
