@@ -67,6 +67,13 @@ Scripts:
         # If false, it will only initialize once at least one command script is loaded.
         # This defaults to false to avoid any possible interference on servers that don't use command scripts.
         Auto init: false
+    Economy:
+        # If enabled, async calls to economy scripts or PlaceholderAPI tags will be sent through to the main thread.
+        # This will remove the illegal-async-access warning, at the cost of risking thread lockup or other issues.
+        # IF YOU HAVE ASYNC WARNINGS FROM DENIZEN, THIS IS NOT HOW TO FIX IT.
+        # YOU SHOULD YELL AT THE DEVELOPER OF WHATEVER PLUGIN IS TRYING TO MAKE SYNC-ONLY CALLS ASYNC.
+        # ASYNC USAGES OF THE BUKKIT API ARE NEVER ALLOWED EXCEPT WHERE EXPLICITLY DOCUMENTED OTHERWISE.
+        Pass async to main thread: false
 
 # Settings related to queues.
 Queues:
