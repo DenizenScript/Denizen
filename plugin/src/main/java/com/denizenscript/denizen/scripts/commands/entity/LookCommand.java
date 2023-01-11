@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.DenizenCore;
@@ -128,7 +129,13 @@ public class LookCommand extends AbstractCommand {
                         playerTeleDest.setYaw(yawRaw);
                         playerTeleDest.setPitch(pitchRaw);
                         Player player = entity.getPlayer();
-                        PaperAPITools.instance.teleportPlayerRelative(player, playerTeleDest);
+                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                            NetworkInterceptHelper.enable();
+                            NMSHandler.packetHelper.sendRelativeLookPacket(player, actualRelYaw, relPitch);
+                        }
+                        else {
+                            PaperAPITools.instance.teleportPlayerRelative(player, playerTeleDest);
+                        }
                         if (offthreadRepeats != null) {
                             NetworkInterceptHelper.enable();
                             int times = offthreadRepeats.asInt();
