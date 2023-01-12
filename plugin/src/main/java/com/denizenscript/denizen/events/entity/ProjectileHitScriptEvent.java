@@ -8,7 +8,6 @@ import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -17,8 +16,13 @@ public class ProjectileHitScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // projectile hits (<block>)
-    // projectile hits (<entity>)
+    // <projectile> hits
+    //
+    // @Synonyms entity shoots
+    //
+    // @Switch entity:<entity> to only process the event if an entity got hit, and it matches the specified EntityTag matcher.
+    // @Switch block:<block> to only process the event if a block got hit, and it matches the specified LocationTag matcher.
+    // @Switch shooter:<entity> to only process the event if the projectile was shot by an entity, and it matches the specified EntityTag matcher.
     //
     // @Group Entity
     //
@@ -26,10 +30,18 @@ public class ProjectileHitScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when talec makes a new event, right now!
+    // @Triggers When a projectile hits a block or an entity.
     //
     // @Context
-    // <context.day> returns Tuesday.
+    // <context.projectile> returns an EntityTag of the projectile.
+    // <context.hit_entity> returns an EntityTag of the entity that was hit, if any.
+    // <context.hit_block> returns a LocationTag of the block that was hit, if any.
+    // <context.hit_face> returns a LocationTag vector of the hit normal (like '0,1,0' if the projectile hit the top of a block).
+    // <context.shooter> returns an EntityTag of the entity that shot the projectile, if any.
+    //
+    // @Player when the entity that was hit is a player, or when the shooter is a player if no entity was hit.
+    //
+    // @NPC when the entity that was hit is a npc, or when the shooter is a npc if no entity was hit.
     //
     // -->
 
@@ -111,12 +123,12 @@ public class ProjectileHitScriptEvent extends BukkitScriptEvent implements Liste
             case "projectile" -> projectile.getDenizenObject();
             case "hit_entity" -> hitEntity != null ? hitEntity.getDenizenObject() : null;
             case "hit_block" -> hitBlock;
+            case "hit_face" -> event.getHitBlockFace() != null ? new LocationTag(event.getHitBlockFace().getDirection()) : null;
+            case "shooter" -> shooter != null ? shooter.getDenizenObject() : null;
             case "location" -> {
                 BukkitImplDeprecations.projectileHitsBlockLocationContext.warn();
                 yield hitBlock;
             }
-            case "shooter" -> shooter != null ? shooter.getDenizenObject() : null;
-            case "hit_face" -> event.getHitBlockFace() != null ? new LocationTag(event.getHitBlockFace().getDirection()) : null;
             default -> super.getContext(name);
         };
     }
