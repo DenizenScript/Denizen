@@ -63,16 +63,17 @@ public class ProjectileHitScriptEvent extends BukkitScriptEvent implements Liste
         if (!super.couldMatch(path)) {
             return false;
         }
-        String arg1 = path.eventArgLowerAt(1);
-        if (arg1.equals("shoots")) {
+        if (path.eventArgLowerAt(1).equals("shoots")) {
             BukkitImplDeprecations.entityShootsMaterialEvent.warn(path.container);
         }
-        else if (path.switches.containsKey("with")) {
-            addPossibleCouldMatchFailReason("unrecognized switch name", "with");
-            return false;
-        }
-        if (arg1.equals("hits") && path.eventArgs.length > 2) {
-            BukkitImplDeprecations.projectileHitsEventMatchers.warn(path.container);
+        else {
+            if (path.switches.containsKey("with")) {
+                addPossibleCouldMatchFailReason("unrecognized switch name", "with");
+                return false;
+            }
+            if (path.eventArgs.length > 2) {
+                BukkitImplDeprecations.projectileHitsEventMatchers.warn(path.container);
+            }
         }
         return true;
     }
@@ -141,9 +142,16 @@ public class ProjectileHitScriptEvent extends BukkitScriptEvent implements Liste
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
         this.event = event;
+        projectile = new EntityTag(event.getEntity());
+        // Additional checks for some weird edge-cases
+        if (projectile.getLocation() == null) {
+            return;
+        }
+        if (Double.isNaN(projectile.getLocation().getDirection().normalize().getX())) {
+            return;
+        }
         hitBlock = event.getHitBlock() != null ? new LocationTag(event.getHitBlock().getLocation()) : null;
         hitEntity = event.getHitEntity() != null ? new EntityTag(event.getHitEntity()) : null;
-        projectile = new EntityTag(event.getEntity());
         shooter = projectile.getShooter();
         fire(event);
     }
