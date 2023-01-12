@@ -53,10 +53,10 @@ public class ProjectileHitScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     public ProjectileHitEvent event;
-    public LocationTag hitBlock = null;
-    public EntityTag hitEntity = null;
-    public EntityTag projectile = null;
-    public EntityTag shooter = null;
+    public LocationTag hitBlock;
+    public EntityTag hitEntity;
+    public EntityTag projectile;
+    public EntityTag shooter;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
