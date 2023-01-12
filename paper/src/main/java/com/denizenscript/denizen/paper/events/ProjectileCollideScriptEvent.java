@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -43,11 +45,13 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        if (super.couldMatch(path)) {
-            BukkitImplDeprecations.projectileCollideEvent.warn(path.container);
-            return true;
+        if (!super.couldMatch(path)) {
+            return false;
         }
-        return false;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            BukkitImplDeprecations.projectileCollideEvent.warn(path.container);
+        }
+        return true;
     }
 
     public ProjectileCollideEvent event;
