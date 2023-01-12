@@ -35,7 +35,7 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
     // @Player When the entity collided with is a player.
     // @NPC When the entity collided with is a NPC.
     //
-    // @deprecated Use <@link event projectile hits> with the 'entity' switch.
+    // @deprecated Use <@link event projectile hits> with the 'entity' switch on versions above 1.19.
     //
     // -->
 
