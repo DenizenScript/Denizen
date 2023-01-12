@@ -2,6 +2,7 @@ package com.denizenscript.denizen.npc.speech;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -66,7 +67,7 @@ public class DenizenChat implements VocalChord {
             // Send chat to target
             String text = TagManager.tag(Settings.chatToTargetFormat(), new BukkitTagContext(entry));
             for (Talkable entity : context) {
-                entity.talkTo(context, text, this);
+                entity.talkTo(context, PaperAPITools.instance.convertTextToMiniMessage(text), this);
             }
             // Check if bystanders hear targeted chat
             if (context.isBystandersEnabled()) {
@@ -88,7 +89,7 @@ public class DenizenChat implements VocalChord {
             // Send chat to targets
             String text = TagManager.tag(Settings.chatToTargetFormat(), new BukkitTagContext(entry));
             for (Talkable entity : context) {
-                entity.talkTo(context, text, this);
+                entity.talkTo(context, PaperAPITools.instance.convertTextToMiniMessage(text), this);
             }
             if (context.isBystandersEnabled()) {
                 String[] format = Settings.chatMultipleTargetsFormat().split("%target%");
@@ -154,7 +155,7 @@ public class DenizenChat implements VocalChord {
             // Found a nearby LivingEntity, make it Talkable and
             // talkNear it if 'should_talk'
             if (shouldTalk) {
-                new TalkableEntity(bystander).talkNear(context, text, this);
+                new TalkableEntity(bystander).talkNear(context, PaperAPITools.instance.convertTextToMiniMessage(text), this);
             }
         }
     }

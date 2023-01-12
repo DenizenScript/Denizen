@@ -3,6 +3,7 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.PolygonTag;
 import com.denizenscript.denizen.scripts.commands.entity.RemoveCommand;
+import com.denizenscript.denizen.scripts.containers.core.EconomyScriptContainer;
 import com.denizenscript.denizen.tags.core.CustomColorTagBase;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
@@ -76,6 +77,7 @@ public class Settings {
         }
         // Spigot
         PolygonTag.preferInclusive = config.getBoolean("Tags.Polygon default inclusive", false);
+        allowAsyncPassThrough = config.getBoolean("Scripts.Economy.Pass async to main thread", false);
         skipChunkFlagCleaning = config.getBoolean("Saves.Skip chunk flag cleaning", false);
         nullifySkullSkinIds = config.getBoolean("Tags.Nullify skull skin ids", false);
         cache_overrideHelp = config.getBoolean("Debug.Override help", true);
@@ -139,6 +141,8 @@ public class Settings {
     public static boolean skipChunkFlagCleaning = false;
 
     public static boolean nullifySkullSkinIds = false;
+
+    public static boolean allowAsyncPassThrough = false;
 
     public static boolean cache_overrideHelp,
             cache_showExHelp, cache_showExDebug, cache_canRecordStats,

@@ -3,11 +3,9 @@ package com.denizenscript.denizen.paper.properties;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.paper.PaperModule;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.md_5.bungee.api.ChatColor;
 
 public class PaperElementExtensions {
 
@@ -36,8 +34,7 @@ public class PaperElementExtensions {
             // This may be useful for sending data to external plugins, but should not be used in normal scripts.
             // -->
             ElementTag.tagProcessor.registerTag(ElementTag.class, "to_minimessage", (attribute, object) -> {
-                Component parsed = PaperModule.jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(object.asString(), ChatColor.WHITE, false)));
-                return new ElementTag(MiniMessage.miniMessage().serialize(parsed));
+                return new ElementTag(PaperAPITools.instance.convertTextToMiniMessage(object.asString()));
             });
         }
     }

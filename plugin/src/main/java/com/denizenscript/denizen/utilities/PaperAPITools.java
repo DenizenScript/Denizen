@@ -148,4 +148,8 @@ public class PaperAPITools {
     public void setTeamSuffix(Team team, String suffix) {
         team.setSuffix(suffix);
     }
+
+    public String convertTextToMiniMessage(String text) {
+        return text;
+    }
 }
