@@ -141,6 +141,11 @@ public class BukkitImplDeprecations {
     public static Warning skeletonSwingArm = new SlowWarning("skeletonSwingArm", "The 'SKELETON_START/STOP_SWING_ARM' animations are deprecated in favor of the 'EntityTag.aggressive' property.");
     public static Warning entityArmsRaised = new SlowWarning("entityArmsRaised", "The 'EntityTag.arms_raised' property is deprecated in favor of 'EntityTag.aggressive'.");
 
+    // Added 2023/1/12
+    public static Warning entityShootsMaterialEvent = new SlowWarning("entityShootsMaterialEvent", "The '<entity> shoots <material>' event is deprecated in favor of 'projectile hits' with the 'block' and 'shooter' switches.");
+    public static Warning projectileHitsBlockLocationContext = new SlowWarning("projectileHitsBlockLocationContext", "'context.location' in the 'projectile hits' event is deprecated in favor of 'context.hit_block'");
+    public static Warning projectileHitsEventMatchers = new SlowWarning("projectileHitsEventMatchers", "Using matchers in 'projectile hits <block>/<entity>' is deprecated in favor of the 'block' and 'entity' switches.");
+
     // Added 2022/12/16
     public static Warning entitySkeletonArmsRaised = new SlowWarning("entitySkeletonArmsRaised", "The 'EntityTag.skeleton_arms_raised' mechanism is deprecated in favor of 'EntityTag.aggressive'.");
 

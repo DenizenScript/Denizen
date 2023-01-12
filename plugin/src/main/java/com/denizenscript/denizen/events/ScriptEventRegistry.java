@@ -132,8 +132,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(HorseJumpsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PiglinBarterScriptEvent.class);
         ScriptEvent.registerScriptEvent(PigZappedScriptEvent.class);
-        ScriptEvent.registerScriptEvent(ProjectileHitsBlockScriptEvent.class);
-        ScriptEvent.registerScriptEvent(ProjectileHitsEntityScriptEvent.class);
+//        ScriptEvent.registerScriptEvent(ProjectileHitsBlockScriptEvent.class);
+//        ScriptEvent.registerScriptEvent(ProjectileHitsEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(ProjectileHitScriptEvent.class);
         ScriptEvent.registerScriptEvent(ProjectileLaunchedScriptEvent.class);
         ScriptEvent.registerScriptEvent(SheepDyedScriptEvent.class);
         ScriptEvent.registerScriptEvent(SheepRegrowsScriptEvent.class);
