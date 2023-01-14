@@ -67,7 +67,7 @@ public class ProjectileHitScriptEvent extends BukkitScriptEvent implements Liste
             BukkitImplDeprecations.entityShootsMaterialEvent.warn(path.container);
         }
         else {
-            if (path.switches.containsKey("with")) {
+            if (path.switches.containsKey("with")) { // 'with' is only valid for the deprecated 'entity shoots material' event
                 addPossibleCouldMatchFailReason("unrecognized switch name", "with");
                 return false;
             }
@@ -98,7 +98,6 @@ public class ProjectileHitScriptEvent extends BukkitScriptEvent implements Liste
             }
         }
         else {
-            // Matching specific to deprecated 'entity shoots material' event
             if (event.getHitBlock() == null || !path.tryArgObject(2, new MaterialTag(event.getHitBlock()))) {
                 return false;
             }
@@ -143,7 +142,7 @@ public class ProjectileHitScriptEvent extends BukkitScriptEvent implements Liste
     public void onProjectileHit(ProjectileHitEvent event) {
         this.event = event;
         projectile = new EntityTag(event.getEntity());
-        // Additional checks for some weird edge-cases
+        // Additional checks for some rare edge-cases
         if (projectile.getLocation() == null) {
             return;
         }
