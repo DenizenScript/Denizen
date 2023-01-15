@@ -144,12 +144,6 @@ public class BukkitImplDeprecations {
     // Added 2022/12/16
     public static Warning entitySkeletonArmsRaised = new SlowWarning("entitySkeletonArmsRaised", "The 'EntityTag.skeleton_arms_raised' mechanism is deprecated in favor of 'EntityTag.aggressive'.");
 
-    // Added 2023/1/14
-    public static Warning entityShootsMaterialEvent = new SlowWarning("entityShootsMaterialEvent", "The '<entity> shoots <material>' event is deprecated in favor of '<projectile> hits' with the 'block' and 'shooter' switches.");
-    public static Warning projectileHitsBlockLocationContext = new SlowWarning("projectileHitsBlockLocationContext", "'context.location' in the '<projectile> hits' event is deprecated in favor of 'context.hit_block'.");
-    public static Warning projectileHitsEventMatchers = new SlowWarning("projectileHitsEventMatchers", "The block/entity matchers in '<projectile> hits <block>/<entity>' are deprecated in favor of the 'block' and 'entity' switches.");
-    public static Warning projectileCollideEvent = new SlowWarning("projectileCollideEvent", "The '<projectile> collides with <entity>' event is deprecated in favor of '<projectile> hits' with the 'entity' switch.");
-
     // Added 2020/04/19, Relevant for many years now, made slow 2022/12/31.
     // 2022-year-end commonality: #35
     public static Warning interactScriptPriority = new SlowWarning("interactScriptPriority", "Assignment script 'interact scripts' section should not have numbered priority values, these were removed years ago. Check https://guide.denizenscript.com/guides/troubleshooting/updates-since-videos.html#assignment-script-updates for more info.");
@@ -270,6 +264,12 @@ public class BukkitImplDeprecations {
     // Added 2021/06/17, deprecate officially by 2024.
     // 2022-year-end commonality: #18
     public static Warning debugBlockAlpha = new FutureWarning("debugBlockAlpha", "The 'alpha' argument for the 'debugblock' command is deprecated: put the alpha in the color input instead.");
+
+    // Added 2023/01/15, deprecate officially by 2026
+    public static Warning projectileCollideEvent = new FutureWarning("projectileCollideEvent", "The '<projectile> collides with <entity>' event is deprecated in favor of '<projectile> hits' with the 'entity' switch.");
+    public static Warning entityShootsMaterialEvent = new FutureWarning("entityShootsMaterialEvent", "The '<entity> shoots <material>' event is deprecated in favor of '<projectile> hits' with the 'block' and 'shooter' switches.");
+    public static Warning projectileHitsBlockLocationContext = new FutureWarning("projectileHitsBlockLocationContext", "'context.location' in the '<projectile> hits' event is deprecated in favor of 'context.hit_block'.");
+    public static Warning projectileHitsEventMatchers = new FutureWarning("projectileHitsEventMatchers", "The block/entity matchers in '<projectile> hits <block>/<entity>' are deprecated in favor of the 'block' and 'entity' switches.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
