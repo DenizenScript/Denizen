@@ -266,10 +266,11 @@ public class BukkitImplDeprecations {
     public static Warning debugBlockAlpha = new FutureWarning("debugBlockAlpha", "The 'alpha' argument for the 'debugblock' command is deprecated: put the alpha in the color input instead.");
 
     // Added 2023/01/15, deprecate officially by 2026
-    public static Warning projectileCollideEvent = new FutureWarning("projectileCollideEvent", "The '<projectile> collides with <entity>' event is deprecated in favor of '<projectile> hits' with the 'entity' switch.");
     public static Warning entityShootsMaterialEvent = new FutureWarning("entityShootsMaterialEvent", "The '<entity> shoots <material>' event is deprecated in favor of '<projectile> hits' with the 'block' and 'shooter' switches.");
     public static Warning projectileHitsBlockLocationContext = new FutureWarning("projectileHitsBlockLocationContext", "'context.location' in the '<projectile> hits' event is deprecated in favor of 'context.hit_block'.");
     public static Warning projectileHitsEventMatchers = new FutureWarning("projectileHitsEventMatchers", "The block/entity matchers in '<projectile> hits <block>/<entity>' are deprecated in favor of the 'block' and 'entity' switches.");
+    // Bump once 1.19 is the minimum supported version, as the change happened on that version.
+    public static Warning projectileCollideEvent = new FutureWarning("projectileCollideEvent", "The '<projectile> collides with <entity>' event is deprecated in favor of '<projectile> hits' with the 'entity' switch.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
