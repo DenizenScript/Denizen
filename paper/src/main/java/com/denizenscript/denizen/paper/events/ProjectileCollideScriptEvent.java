@@ -1,7 +1,10 @@
 package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -32,10 +35,23 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
     // @Player When the entity collided with is a player.
     // @NPC When the entity collided with is a NPC.
     //
+    // @deprecated Use <@link event projectile hits> with the 'entity' switch on versions above 1.19.
+    //
     // -->
 
     public ProjectileCollideScriptEvent() {
         registerCouldMatcher("<projectile> collides with <entity>");
+    }
+
+    @Override
+    public boolean couldMatch(ScriptPath path) {
+        if (!super.couldMatch(path)) {
+            return false;
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            BukkitImplDeprecations.projectileCollideEvent.warn(path.container);
+        }
+        return true;
     }
 
     public ProjectileCollideEvent event;
@@ -63,13 +79,11 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return collidedWith.getDenizenObject();
-        }
-        else if (name.equals("projectile")) {
-            return projectile;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> collidedWith.getDenizenObject();
+            case "projectile" -> projectile;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
