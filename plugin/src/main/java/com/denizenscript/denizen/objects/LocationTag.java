@@ -111,16 +111,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     public World getWorld() {
         World w = super.getWorld();
         if (w != null) {
-            if (trackedWorldChange != WorldListChangeTracker.changes) {
-                trackedWorldChange = WorldListChangeTracker.changes;
-                super.setWorld(Bukkit.getWorld(getWorldName()));
-                return super.getWorld();
+            if (trackedWorldChange == WorldListChangeTracker.changes) {
+                return w;
             }
-            return w;
+            if (backupWorld == null) {
+                backupWorld = w.getName();
+            }
         }
         if (backupWorld == null) {
             return null;
         }
+        trackedWorldChange = WorldListChangeTracker.changes;
         super.setWorld(Bukkit.getWorld(backupWorld));
         return super.getWorld();
     }
@@ -153,14 +154,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         return valueOf(string, null);
     }
 
-    /**
-     * Gets a Location Object from a string form of id,x,y,z,world
-     * or a dScript argument (location:)x,y,z,world. If including an Id,
-     * this location will persist and can be recalled at any time.
-     *
-     * @param string the string or dScript argument String
-     * @return a Location, or null if incorrectly formatted
-     */
     @Fetchable("l")
     public static LocationTag valueOf(String string, TagContext context) {
         if (string == null) {
@@ -176,136 +169,45 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
         }
         List<String> split = CoreUtilities.split(string, ',');
-        if (split.size() == 2)
-        // If 4 values, world-less 2D location format
-        // x,y
-        {
-            try {
-                return new LocationTag(null,
-                        Double.parseDouble(split.get(0)),
-                        Double.parseDouble(split.get(1)));
-            }
-            catch (Exception e) {
-                if (context == null || context.showErrors()) {
-                    Debug.log("Minor: valueOf LocationTag returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+        try {
+            int size = split.size();
+            if (size < 2 || size > 6) {
+                if ((context == null || context.showErrors()) && !TagManager.isStaticParsing) {
+                    Debug.log("Minor: valueOf LocationTag returning null, not formatted as a LocationTag: " + string);
                 }
                 return null;
             }
+            // If 2 values, worldless 2D location format: x,y
+            // If 3 values, worldless location format: x,y,z
+            // If 4 values, standard dScript location format: x,y,z,world
+            // If 5 values, worldless location with pitch/yaw: x,y,z,pitch,yaw
+            // If 6 values, location with pitch/yaw: x,y,z,pitch,yaw,world
+            double x = Double.parseDouble(split.get(0));
+            double y = Double.parseDouble(split.get(1));
+            double z = 0;
+            float yaw = 0, pitch = 0;
+            String world = null;
+            if (size > 2) {
+                z = Double.parseDouble(split.get(2));
+            }
+            if (size == 5 || size == 6) {
+                pitch = Float.parseFloat(split.get(3));
+                yaw = Float.parseFloat(split.get(4));
+            }
+            if (size == 4 || size == 6) {
+                world = split.get(size - 1);
+                if (world.startsWith("w@")) {
+                    world = world.substring("w@".length());
+                }
+            }
+            return new LocationTag(world, x, y, z, yaw, pitch);
         }
-        else if (split.size() == 3)
-        // If 3 values, either worldless location format
-        // x,y,z or 2D location format x,y,world
-        {
-            try {
-                String worldName = split.get(2);
-                if (worldName.startsWith("w@")) {
-                    worldName = worldName.substring("w@".length());
-                }
-                World world = TagManager.isStaticParsing ? null : Bukkit.getWorld(worldName);
-                if (world != null) {
-                    return new LocationTag(world,
-                            Double.parseDouble(split.get(0)),
-                            Double.parseDouble(split.get(1)));
-                }
-                if (ArgumentHelper.matchesDouble(split.get(2))) {
-                    return new LocationTag(null,
-                            Double.parseDouble(split.get(0)),
-                            Double.parseDouble(split.get(1)),
-                            Double.parseDouble(split.get(2)));
-                }
-                LocationTag output = new LocationTag(null,
-                        Double.parseDouble(split.get(0)),
-                        Double.parseDouble(split.get(1)));
-                output.backupWorld = worldName;
-                return output;
+        catch (Exception e) {
+            if (context == null || context.showErrors()) {
+                Debug.log("Minor: valueOf LocationTag returning null: " + string + "(internal exception:" + e.getMessage() + ")");
             }
-            catch (Exception e) {
-                if (context == null || context.showErrors()) {
-                    Debug.log("Minor: valueOf LocationTag returning null: " + string + "(internal exception:" + e.getMessage() + ")");
-                }
-                return null;
-            }
+            return null;
         }
-        else if (split.size() == 4)
-        // If 4 values, standard dScript location format
-        // x,y,z,world
-        {
-            try {
-                String worldName = split.get(3);
-                if (worldName.startsWith("w@")) {
-                    worldName = worldName.substring("w@".length());
-                }
-                World world = TagManager.isStaticParsing ? null : Bukkit.getWorld(worldName);
-                if (world != null) {
-                    return new LocationTag(world,
-                            Double.parseDouble(split.get(0)),
-                            Double.parseDouble(split.get(1)),
-                            Double.parseDouble(split.get(2)));
-                }
-                LocationTag output = new LocationTag(null,
-                        Double.parseDouble(split.get(0)),
-                        Double.parseDouble(split.get(1)),
-                        Double.parseDouble(split.get(2)));
-                output.backupWorld = worldName;
-                return output;
-            }
-            catch (Exception e) {
-                if (context == null || context.showErrors()) {
-                    Debug.log("Minor: valueOf LocationTag returning null: " + string + "(internal exception:" + e.getMessage() + ")");
-                }
-                return null;
-            }
-        }
-        else if (split.size() == 5)
-
-        // If 5 values, location with pitch/yaw (no world)
-        // x,y,z,pitch,yaw
-        {
-            try {
-                float pitch = Float.parseFloat(split.get(3));
-                float yaw = Float.parseFloat(split.get(4));
-                return new LocationTag((World) null,
-                        Double.parseDouble(split.get(0)),
-                        Double.parseDouble(split.get(1)),
-                        Double.parseDouble(split.get(2)),
-                        yaw, pitch);
-            }
-            catch (Exception e) {
-                if (context == null || context.showErrors()) {
-                    Debug.log("Minor: valueOf LocationTag returning null: " + string + "(internal exception:" + e.getMessage() + ")");
-                }
-                return null;
-            }
-        }
-        else if (split.size() == 6)
-
-        // If 6 values, location with pitch/yaw
-        // x,y,z,pitch,yaw,world
-        {
-            try {
-                String worldName = split.get(5);
-                if (worldName.startsWith("w@")) {
-                    worldName = worldName.substring("w@".length());
-                }
-                float pitch = Float.parseFloat(split.get(3));
-                float yaw = Float.parseFloat(split.get(4));
-                return new LocationTag(worldName,
-                        Double.parseDouble(split.get(0)),
-                        Double.parseDouble(split.get(1)),
-                        Double.parseDouble(split.get(2)),
-                        yaw, pitch);
-            }
-            catch (Exception e) {
-                if (context == null || context.showErrors()) {
-                    Debug.log("Minor: valueOf LocationTag returning null: " + string + "(internal exception:" + e.getMessage() + ")");
-                }
-                return null;
-            }
-        }
-        if ((context == null || context.showErrors()) && !TagManager.isStaticParsing) {
-            Debug.log("Minor: valueOf LocationTag returning null: " + string);
-        }
-        return null;
     }
 
     public static boolean matches(String string) {

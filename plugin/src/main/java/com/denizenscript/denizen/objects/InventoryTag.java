@@ -64,7 +64,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     // @ExampleForReturns
     // - inventory set o:%VALUE% d:stick slot:5
     // @format
-    // The identity format for inventories is a the classification type of inventory to use. All other data is specified through properties.
+    // The identity format for inventories is the classification type of inventory to use. All other data is specified through properties.
     //
     // @description
     // An InventoryTag represents an inventory, generically or attached to some in-the-world object.
