@@ -80,6 +80,8 @@ public class Settings {
         allowAsyncPassThrough = config.getBoolean("Scripts.Economy.Pass async to main thread", false);
         skipChunkFlagCleaning = config.getBoolean("Saves.Skip chunk flag cleaning", false);
         nullifySkullSkinIds = config.getBoolean("Tags.Nullify skull skin ids", false);
+        worldPlayerDataSaveDelay = (float) DurationTag.valueOf(config.getString("Save world player file delay", "10s"), CoreUtilities.basicContext).getSeconds();
+        worldPlayerDataMaxCacheTicks = DurationTag.valueOf(config.getString("World player data max cache", "1h"), CoreUtilities.basicContext).getTicks();
         cache_overrideHelp = config.getBoolean("Debug.Override help", true);
         cache_useDefaultScriptPath = config.getBoolean("Scripts location.Use default script folder", true);
         cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
@@ -143,6 +145,10 @@ public class Settings {
     public static boolean nullifySkullSkinIds = false;
 
     public static boolean allowAsyncPassThrough = false;
+
+    public static float worldPlayerDataSaveDelay = 10;
+
+    public static long worldPlayerDataMaxCacheTicks = 20 * 60 * 60;
 
     public static boolean cache_overrideHelp,
             cache_showExHelp, cache_showExDebug, cache_canRecordStats,

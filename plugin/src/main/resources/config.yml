@@ -309,6 +309,13 @@ Saves:
     # Player flags will still save as normal during shutdown, or when world saving is enabled.
     # This checks based on your default world (server.worlds.first).
     Only save if world save is on: false
+    # Delay (DurationTag) after modifying a PlayerTag's offline world-data (gamemode, inventory, etc) before it is saved to file.
+    # Larger delays are better for performance when this is used often. Shorter delays are better for interop.
+    # Set to '0' for instant save on modification. Set to '999h' to only save at shutdown.
+    Save world player file delay: 10s
+    # Duration to retain offline player data being purging.
+    # Higher values are better for perf but worse for RAM. Lower values are better for interop. Set to '0' to never cache.
+    World player data max cache: 1h
 
 Packets:
     # Whether to allow Denizen to intercept packets from and to player clients.

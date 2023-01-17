@@ -22,6 +22,7 @@ import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
 import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
@@ -254,7 +255,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public ImprovedOfflinePlayer getNBTEditor() {
-        return NMSHandler.playerHelper.getOfflineData(getOfflinePlayer());
+        ImprovedOfflinePlayer result = ImprovedOfflinePlayer.offlinePlayers.get(uuid);
+        if (result == null || (!result.modified && result.timeLastLoaded + Settings.worldPlayerDataMaxCacheTicks < DenizenCore.currentTimeMonotonicMillis)) {
+            result = NMSHandler.playerHelper.getOfflineData(uuid);
+            if (result != null) {
+                ImprovedOfflinePlayer.offlinePlayers.put(uuid, result);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -823,10 +831,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         registerOfflineTag(LocationTag.class, "bed_spawn", (attribute, object) -> {
             try {
                 NMSHandler.chunkHelper.changeChunkServerThread(object.getWorld());
-                if (object.getOfflinePlayer().getBedSpawnLocation() == null) {
+                Location loc;
+                if (object.isOnline()) {
+                    loc = object.getPlayerEntity().getBedSpawnLocation();
+                }
+                else {
+                    loc = object.getNBTEditor().getBedSpawnLocation();
+                }
+                if (loc == null) {
                     return null;
                 }
-                return new LocationTag(object.getOfflinePlayer().getBedSpawnLocation());
+                return new LocationTag(loc);
             }
             finally {
                 NMSHandler.chunkHelper.restoreServerThread(object.getWorld());
@@ -3940,6 +3955,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.is_op>
         // -->
         if (mechanism.matches("is_op") && mechanism.requireBoolean()) {
+            ImprovedOfflinePlayer.invalidateNow(getUUID());
             getOfflinePlayer().setOp(mechanism.getValue().asBoolean());
         }
 

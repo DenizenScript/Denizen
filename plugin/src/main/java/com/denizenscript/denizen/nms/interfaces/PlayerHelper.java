@@ -49,8 +49,6 @@ public abstract class PlayerHelper {
 
     public abstract ImprovedOfflinePlayer getOfflineData(UUID uuid);
 
-    public abstract ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer);
-
     public abstract void resendDiscoveredRecipes(Player player);
 
     public abstract void quietlyAddRecipe(Player player, NamespacedKey key);

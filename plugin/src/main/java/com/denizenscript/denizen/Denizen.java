@@ -479,7 +479,7 @@ public class Denizen extends JavaPlugin {
         hasDisabled = true;
         DenizenCore.shutdown();
         ScoreboardHelper._saveScoreboards();
-        InventoryScriptHelper._savePlayerInventories();
+        InventoryScriptHelper.savePlayerInventories();
         triggerRegistry.disableCoreMembers();
         getLogger().log(Level.INFO, " v" + getDescription().getVersion() + " disabled.");
         Bukkit.getServer().getScheduler().cancelTasks(this);
@@ -541,6 +541,7 @@ public class Denizen extends JavaPlugin {
         ScoreboardHelper._saveScoreboards();
         // Save maps to maps.yml
         DenizenMapManager.saveMaps();
+        InventoryScriptHelper.savePlayerInventories();
         // Save server flags
         try {
             scoreboardsConfig.save(scoreboardsConfigFile);

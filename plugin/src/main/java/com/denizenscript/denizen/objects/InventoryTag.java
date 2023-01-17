@@ -116,18 +116,14 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             return result;
         }
         // Iterate through offline player inventories
-        for (Map.Entry<UUID, PlayerInventory> inv : ImprovedOfflinePlayer.offlineInventories.entrySet()) {
-            if (inv.getValue().equals(inventory)) {
-                return new InventoryTag(NMSHandler.playerHelper.getOfflineData(inv.getKey()));
+        for (ImprovedOfflinePlayer player : ImprovedOfflinePlayer.offlinePlayers.values()) {
+            if (player.inventory != null && player.inventory.equals(inventory)) {
+                return new InventoryTag(player);
+            }
+            if (player.enderchest != null && player.enderchest.equals(inventory)) {
+                return new InventoryTag(player, true);
             }
         }
-        // Iterate through offline player enderchests
-        for (Map.Entry<UUID, Inventory> inv : ImprovedOfflinePlayer.offlineEnderChests.entrySet()) {
-            if (inv.getValue().equals(inventory)) {
-                return new InventoryTag(NMSHandler.playerHelper.getOfflineData(inv.getKey()), true);
-            }
-        }
-
         return new InventoryTag(inventory);
     }
 
@@ -691,10 +687,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             if (idHolder instanceof PlayerTag) {
                 return;
             }
-            // Iterate through offline player inventories
-            for (Map.Entry<UUID, PlayerInventory> inv : ImprovedOfflinePlayer.offlineInventories.entrySet()) { // TODO: Less weird lookup?
-                if (inv.getValue().equals(inventory)) {
-                    idHolder = new PlayerTag(inv.getKey());
+            for (ImprovedOfflinePlayer player : ImprovedOfflinePlayer.offlinePlayers.values()) { // TODO: Less weird lookup?
+                if (player.inventory != null && player.inventory.equals(inventory)) {
+                    idHolder = new PlayerTag(player.player);
                     return;
                 }
             }
@@ -704,9 +699,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
                 return;
             }
             // Iterate through offline player enderchests
-            for (Map.Entry<UUID, Inventory> inv : ImprovedOfflinePlayer.offlineEnderChests.entrySet()) { // TODO: Less weird lookup?
-                if (inv.getValue().equals(inventory)) {
-                    idHolder = new PlayerTag(inv.getKey());
+            for (ImprovedOfflinePlayer player : ImprovedOfflinePlayer.offlinePlayers.values()) { // TODO: Less weird lookup?
+                if (player.enderchest != null && player.enderchest.equals(inventory)) {
+                    idHolder = new PlayerTag(player.player);
                     return;
                 }
             }
