@@ -45,6 +45,15 @@ public class ProjectileHitScriptEvent extends BukkitScriptEvent implements Liste
     //
     // -->
 
+    // <--[event]
+    // @Events
+    // <projectile> hits <'block/entity'>
+    // <entity> shoots <material> (with <projectile>)
+    // @Group Entity
+    // @Triggers N/A - deprecated in favor of <@link event projectile hits>
+    // @Deprecated use new 'projectile hits' unified event
+    // -->
+
     public ProjectileHitScriptEvent() {
         registerCouldMatcher("<projectile> hits (<material>)");
         registerCouldMatcher("<projectile> hits <entity>");
