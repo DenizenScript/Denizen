@@ -325,6 +325,20 @@ public class TextTagBase {
         });
 
         // <--[tag]
+        // @attribute <&optimize>
+        // @returns ElementTag
+        // @description
+        // Returns a chat code that tells the formatted text parser to try to produce mininalist JSON text.
+        // This is useful in particular for very long text or where text is being sent rapidly/repeatedly.
+        // It is not needed in most normal messages.
+        // It will produce incompatibility issues if used in items or other locations where raw JSON matching is required.
+        // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // -->
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&optimize", (attribute) -> {
+            return new ElementTag(ChatColor.COLOR_CHAR + "[optimize=true]", true);
+        });
+
+        // <--[tag]
         // @attribute <&0>
         // @returns ElementTag
         // @description

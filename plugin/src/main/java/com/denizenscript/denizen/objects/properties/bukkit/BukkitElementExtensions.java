@@ -446,6 +446,25 @@ public class BukkitElementExtensions {
         });
 
         // <--[tag]
+        // @attribute <ElementTag.optimize_json>
+        // @returns ElementTag
+        // @group conversion
+        // @description
+        // Tells the formatted text parser to try to produce mininalist JSON text.
+        // This is useful in particular for very long text or where text is being sent rapidly/repeatedly.
+        // It is not needed in most normal messages.
+        // It will produce incompatibility issues if used in items or other locations where raw JSON matching is required.
+        // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // -->
+        ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "optimize_json", (attribute, object) -> {
+            String opti = ChatColor.COLOR_CHAR + "[optimize=true]";
+            if (object.asString().contains(opti)) {
+                return object;
+            }
+            return new ElementTag(opti + object.asString(), true);
+        });
+
+        // <--[tag]
         // @attribute <ElementTag.hover_item[<item>]>
         // @returns ElementTag
         // @group text manipulation

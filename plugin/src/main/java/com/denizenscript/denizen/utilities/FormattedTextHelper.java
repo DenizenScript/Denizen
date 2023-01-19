@@ -208,13 +208,23 @@ public class FormattedTextHelper {
 
     public static final String RESET = ChatColor.RESET.toString(), POSSIBLE_RESET_PREFIX = RESET + ChatColor.COLOR_CHAR;
 
-    public static TextComponent copyFormatToNewText(TextComponent last) {
+    private static Boolean procBool(Boolean input, boolean optimize) {
+        if (input == null) {
+            return null;
+        }
+        if (optimize) {
+            return input ? true : null;
+        }
+        return input;
+    }
+
+    public static TextComponent copyFormatToNewText(TextComponent last, boolean optimize) {
         TextComponent toRet = new TextComponent();
-        toRet.setObfuscated(last.isObfuscatedRaw());
-        toRet.setBold(last.isBoldRaw());
-        toRet.setStrikethrough(last.isStrikethroughRaw());
-        toRet.setUnderlined(last.isUnderlinedRaw());
-        toRet.setItalic(last.isItalicRaw());
+        toRet.setObfuscated(procBool(last.isObfuscatedRaw(), optimize));
+        toRet.setBold(procBool(last.isBoldRaw(), optimize));
+        toRet.setStrikethrough(procBool(last.isStrikethroughRaw(), optimize));
+        toRet.setUnderlined(procBool(last.isUnderlinedRaw(), optimize));
+        toRet.setItalic(procBool(last.isItalicRaw(), optimize));
         toRet.setColor(last.getColorRaw());
         return toRet;
     }
@@ -382,7 +392,7 @@ public class FormattedTextHelper {
                     if (!nextText.getText().isEmpty()) {
                         root.addExtra(nextText);
                     }
-                    nextText = copyFormatToNewText(nextText);
+                    nextText = copyFormatToNewText(nextText, false);
                     if (c == 'k' || c == 'K') {
                         nextText.setObfuscated(true);
                     }
@@ -455,9 +465,10 @@ public class FormattedTextHelper {
                 return new BaseComponent[] { component };
             }
         }
+        boolean optimize = str.contains(ChatColor.COLOR_CHAR + "[optimize=true]");
         TextComponent root = new TextComponent();
         TextComponent base = new TextComponent();
-        if (cleanBase) {
+        if (cleanBase && !optimize) {
             base.setBold(false);
             base.setItalic(false);
             base.setStrikethrough(false);
@@ -497,7 +508,7 @@ public class FormattedTextHelper {
                         nextText.setText(nextText.getText() + str.substring(started, i));
                         base.addExtra(nextText);
                         lastText = nextText;
-                        nextText = copyFormatToNewText(lastText);
+                        nextText = copyFormatToNewText(lastText, optimize);
                         nextText.setText("");
                         if (innardType.equals("score") && innardParts.size() == 2) {
                             ScoreComponent component = new ScoreComponent(unescape(innardBase.get(1)), unescape(innardParts.get(0)), unescape(innardParts.get(1)));
@@ -660,6 +671,9 @@ public class FormattedTextHelper {
                                 endBracket = endIndex + "&[reset=font".length();
                             }
                         }
+                        else if (innardType.equals("optimize")) {
+                            // Ignore
+                        }
                         else {
                             if (CoreConfiguration.debugVerbose) {
                                 Debug.echoError("Text parse issue: cannot interpret type '" + innardType + "' with " + innardParts.size() + " parts.");
@@ -722,7 +736,7 @@ public class FormattedTextHelper {
                     if (!nextText.getText().isEmpty()) {
                         base.addExtra(nextText);
                     }
-                    nextText = copyFormatToNewText(nextText);
+                    nextText = copyFormatToNewText(nextText, optimize);
                     if (code == 'k' || code == 'K') {
                         nextText.setObfuscated(true);
                     }
@@ -768,7 +782,7 @@ public class FormattedTextHelper {
         if (!nextText.getText().isEmpty()) {
             base.addExtra(nextText);
         }
-        return new BaseComponent[] { cleanBase ? root : base };
+        return new BaseComponent[] { cleanBase && !optimize ? root : base };
     }
 
     public static int indexOfLastColorBlockStart(String text) {
