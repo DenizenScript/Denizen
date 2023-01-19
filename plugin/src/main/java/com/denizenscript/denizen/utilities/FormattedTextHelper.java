@@ -425,7 +425,7 @@ public class FormattedTextHelper {
             return null;
         }
         try {
-            return parseInternal(str, baseColor, cleanBase);
+            return parseInternal(str, baseColor, cleanBase, false);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -433,7 +433,7 @@ public class FormattedTextHelper {
         return new BaseComponent[]{new TextComponent(str)};
     }
 
-    public static BaseComponent[] parseInternal(String str, ChatColor baseColor, boolean cleanBase) {
+    public static BaseComponent[] parseInternal(String str, ChatColor baseColor, boolean cleanBase, boolean optimize) {
         str = CoreUtilities.clearNBSPs(str);
         int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
         if (firstChar == -1) {
@@ -458,14 +458,16 @@ public class FormattedTextHelper {
                 List<String> innardParts = CoreUtilities.split(translatable, ';');
                 component.setTranslate(unescape(innardParts.get(0)));
                 for (int i = 1; i < innardParts.size(); i++) {
-                    for (BaseComponent subComponent : parseInternal(unescape(innardParts.get(i)), baseColor, false)) {
+                    for (BaseComponent subComponent : parseInternal(unescape(innardParts.get(i)), baseColor, false, optimize)) {
                         component.addWith(subComponent);
                     }
                 }
                 return new BaseComponent[] { component };
             }
         }
-        boolean optimize = str.contains(ChatColor.COLOR_CHAR + "[optimize=true]");
+        if (!optimize) {
+            optimize = str.contains(ChatColor.COLOR_CHAR + "[optimize=true]");
+        }
         TextComponent root = new TextComponent();
         TextComponent base = new TextComponent();
         if (cleanBase && !optimize) {
@@ -527,7 +529,7 @@ public class FormattedTextHelper {
                             TranslatableComponent component = new TranslatableComponent();
                             component.setTranslate(unescape(innardBase.get(1)));
                             for (String extra : innardParts) {
-                                for (BaseComponent subComponent : parseInternal(unescape(extra), baseColor, false)) {
+                                for (BaseComponent subComponent : parseInternal(unescape(extra), baseColor, false, optimize)) {
                                     component.addWith(subComponent);
                                 }
                             }
@@ -541,7 +543,7 @@ public class FormattedTextHelper {
                             TextComponent clickableText = new TextComponent();
                             ClickEvent.Action action = ElementTag.asEnum(ClickEvent.Action.class, innardBase.get(1));
                             clickableText.setClickEvent(new ClickEvent(action == null ? ClickEvent.Action.SUGGEST_COMMAND : action, unescape(innardParts.get(0))));
-                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false, optimize)) {
                                 clickableText.addExtra(subComponent);
                             }
                             lastText.addExtra(clickableText);
@@ -557,7 +559,7 @@ public class FormattedTextHelper {
                             if (HoverFormatHelper.processHoverInput(action == null ? HoverEvent.Action.SHOW_TEXT : action, hoverableText, innardParts.get(0))) {
                                 continue;
                             }
-                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false, optimize)) {
                                 hoverableText.addExtra(subComponent);
                             }
                             lastText.addExtra(hoverableText);
@@ -574,7 +576,7 @@ public class FormattedTextHelper {
                             }
                             TextComponent insertableText = new TextComponent();
                             insertableText.setInsertion(unescape(innardBase.get(1)));
-                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false, optimize)) {
                                 insertableText.addExtra(subComponent);
                             }
                             lastText.addExtra(insertableText);
@@ -626,7 +628,7 @@ public class FormattedTextHelper {
                                 else {
                                     TextComponent colorText = new TextComponent();
                                     colorText.setColor(color);
-                                    for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), color, false)) {
+                                    for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), color, false, optimize)) {
                                         colorText.addExtra(subComponent);
                                     }
                                     lastText.addExtra(colorText);
@@ -650,7 +652,7 @@ public class FormattedTextHelper {
                                     endIndex = str.length();
                                 }
                                 String gradientText = BukkitElementExtensions.doGradient(str.substring(endBracket + 1, endIndex), fromColor, toColor, styleEnum);
-                                for (BaseComponent subComponent : parseInternal(gradientText, baseColor, false)) {
+                                for (BaseComponent subComponent : parseInternal(gradientText, baseColor, false, optimize)) {
                                     lastText.addExtra(subComponent);
                                 }
                                 endBracket = endIndex - 1;
@@ -664,7 +666,7 @@ public class FormattedTextHelper {
                             else {
                                 TextComponent fontText = new TextComponent();
                                 fontText.setFont(innardBase.get(1));
-                                for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                                for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false, optimize)) {
                                     fontText.addExtra(subComponent);
                                 }
                                 lastText.addExtra(fontText);
