@@ -38,9 +38,13 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     //
     // @Warning For 'lowers', the item may be tracked incorrectly. Prefer 'player lowers item' (the generic item form) for a 'lowers' event (similar for 'toggles').
     // Also be aware this event may misfire in some cases.
+    // This event and it's data are more accurate on Paper servers.
     //
     // @Context
-    // <context.state> returns an ElementTag(Boolean) with a value of "true" if the player is now holding up a raisable item and "false" otherwise.
+    // <context.state> returns an ElementTag(Boolean) of whether the player raised or lowered the item.
+    // <context.held_for> returns a DurationTag of how long the player held the item up for (only on Paper).
+    // <context.hand> returns an ElementTag of the hand that the player is raising or lowering (only on Paper).
+    // <context.item> returns an ItemTag of the item that the player is raising or lowering (only on Paper)
     //
     // @Player Always.
     //
