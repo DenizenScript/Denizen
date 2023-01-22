@@ -67,39 +67,29 @@ public class DenizenPacketHandler {
         return false;
     }
 
-    public static HashSet<Material> raisableItems = new HashSet<>();
-
-    static {
-        raisableItems.add(Material.SHIELD);
-        raisableItems.add(Material.CROSSBOW);
-        raisableItems.add(Material.BOW);
-        raisableItems.add(Material.TRIDENT);
-        raisableItems.add(Material.SPYGLASS);
-    }
-
     public static boolean isHoldingRaisable(Player player) {
-        return raisableItems.contains(player.getEquipment().getItemInMainHand().getType())
-            || raisableItems.contains(player.getEquipment().getItemInOffHand().getType());
+        return PlayerRaiseLowerItemScriptEvent.raisableItems.contains(player.getEquipment().getItemInMainHand().getType())
+            || PlayerRaiseLowerItemScriptEvent.raisableItems.contains(player.getEquipment().getItemInOffHand().getType());
     }
 
     public void receivePlacePacket(final Player player) {
-        if (!PlayerHoldsItemEvent.instance.enabled) {
+        if (!PlayerRaiseLowerItemScriptEvent.instance.enabled) {
             return;
         }
         if (isHoldingRaisable(player)) {
             Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
-                PlayerHoldsItemEvent.signalDidRaise(player);
+                PlayerRaiseLowerItemScriptEvent.signalDidRaise(player);
             });
         }
     }
 
     public void receiveDigPacket(final Player player) {
-        if (!PlayerHoldsItemEvent.instance.enabled) {
+        if (Denizen.supportsPaper || !PlayerRaiseLowerItemScriptEvent.instance.enabled) {
             return;
         }
         if (isHoldingRaisable(player)) {
             Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
-                PlayerHoldsItemEvent.signalDidLower(player);
+                PlayerRaiseLowerItemScriptEvent.signalDidLower(player);
             });
         }
     }
