@@ -50,7 +50,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     //
     // -->
 
-    public static EnumSet<Material> raisableItems = EnumSet.of(Material.SHIELD, Material.CROSSBOW, Material.BOW, Material.TRIDENT, Material.SPYGLASS);
+    public static final EnumSet<Material> raisableItems = EnumSet.of(Material.SHIELD, Material.CROSSBOW, Material.BOW, Material.TRIDENT, Material.SPYGLASS);
 
     public PlayerRaiseLowerItemScriptEvent() {
         registerCouldMatcher("player raises|lowers|toggles <item>");
@@ -113,8 +113,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     public void run(Player pl) {
         cancelled = false;
         player = new PlayerTag(pl);
-        if (raisableItems.contains(player.getHeldItem().getBukkitMaterial())
-                || !raisableItems.contains(player.getOffhandItem().getBukkitMaterial())) {
+        if (raisableItems.contains(player.getHeldItem().getBukkitMaterial()) || !raisableItems.contains(player.getOffhandItem().getBukkitMaterial())) {
             item = player.getHeldItem();
         }
         else {
@@ -155,6 +154,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     }
 
     public static class PlayerRaiseLowerItemScriptEventSpigotImpl extends PlayerRaiseLowerItemScriptEvent {
+
         @EventHandler
         public void onPlayerDropItem(PlayerDropItemEvent event) {
             signalDidLower(event.getPlayer());

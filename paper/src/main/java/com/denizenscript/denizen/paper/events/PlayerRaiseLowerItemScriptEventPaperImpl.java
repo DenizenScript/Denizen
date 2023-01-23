@@ -6,7 +6,6 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.papermc.paper.event.player.PlayerStopUsingItemEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,7 +51,6 @@ public class PlayerRaiseLowerItemScriptEventPaperImpl extends PlayerRaiseLowerIt
             state = false;
             Player pl = event.getPlayer();
             player = new PlayerTag(pl);
-            Debug.log("activeItem: " + pl.getActiveItem().getType());
             // Work around Player#getActiveItem being air in the drop item event
             ItemStack loweredItem = event.getItemDrop().getItemStack();
             item = new ItemTag(loweredItem);
