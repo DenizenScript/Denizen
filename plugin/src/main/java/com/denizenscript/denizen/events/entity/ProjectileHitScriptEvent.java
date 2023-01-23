@@ -55,9 +55,9 @@ public class ProjectileHitScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public ProjectileHitScriptEvent() {
-        registerCouldMatcher("<projectile> hits (<material>)");
+        registerCouldMatcher("<projectile> hits (<block>)");
         registerCouldMatcher("<projectile> hits <entity>");
-        registerCouldMatcher("<entity> shoots <material> (with <projectile>)");
+        registerCouldMatcher("<entity> shoots <block> (with <projectile>)");
         registerSwitches("entity", "block", "shooter", "with");
     }
 
