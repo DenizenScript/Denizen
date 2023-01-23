@@ -10,6 +10,7 @@ import io.papermc.paper.event.player.PlayerStopUsingItemEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
@@ -57,6 +58,13 @@ public class PlayerRaiseLowerItemScriptEventPaperImpl extends PlayerRaiseLowerIt
             heldFor = new DurationTag((long) loweredItem.getMaxItemUseDuration() - pl.getItemUseRemainingTime());
             hand = new ElementTag(pl.getHandRaised());
             fire();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerChangeHeldItem(PlayerItemHeldEvent event) {
+        if (event.getPlayer().isHandRaised() && event.getPlayer().getHandRaised() == EquipmentSlot.HAND) {
+            signalDidLower(event.getPlayer());
         }
     }
 }

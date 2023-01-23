@@ -16,6 +16,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -149,7 +150,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     }
 
     @EventHandler
-    public void onPlayerChangeItem(PlayerItemHeldEvent event) {
+    public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
         signalDidLower(event.getPlayer());
     }
 
@@ -157,6 +158,11 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
 
         @EventHandler
         public void onPlayerDropItem(PlayerDropItemEvent event) {
+            signalDidLower(event.getPlayer());
+        }
+
+        @EventHandler
+        public void onPlayerChangeHeldItem(PlayerItemHeldEvent event) {
             signalDidLower(event.getPlayer());
         }
     }
