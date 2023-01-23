@@ -51,7 +51,9 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerItemTakesDamageScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerPreparesGrindstoneCraftScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerRaiseLowerItemScriptEventPaperImpl.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            ScriptEvent.registerScriptEvent(PlayerRaiseLowerItemScriptEventPaperImpl.class);
+        }
         ScriptEvent.registerScriptEvent(PlayerSelectsStonecutterRecipeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSpectatesEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStopsSpectatingScriptEvent.class);

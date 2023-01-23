@@ -12,6 +12,8 @@ import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.events.server.*;
 import com.denizenscript.denizen.events.vehicle.*;
 import com.denizenscript.denizen.events.world.*;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.events.ScriptEventCouldMatcher;
@@ -209,7 +211,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerPreparesAnvilCraftScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerPreparesEnchantScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerQuitsScriptEvent.class);
-        if (!Denizen.supportsPaper) {
+        if (!Denizen.supportsPaper || NMSHandler.getVersion().isAtMost(NMSVersion.v1_17)) {
             ScriptEvent.registerScriptEvent(PlayerRaiseLowerItemScriptEvent.PlayerRaiseLowerItemScriptEventSpigotImpl.class);
         }
         ScriptEvent.registerScriptEvent(PlayerReceivesActionbarScriptEvent.class);
