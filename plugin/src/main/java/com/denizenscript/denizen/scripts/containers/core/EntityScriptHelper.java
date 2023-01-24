@@ -35,7 +35,6 @@ public class EntityScriptHelper implements Listener {
         EntityTag.rememberEntity(entity);
         EntityDespawnScriptEvent.instance.entity = new EntityTag(entity);
         EntityDespawnScriptEvent.instance.cause = new ElementTag("DEATH");
-        EntityDespawnScriptEvent.instance.cancelled = false;
         EntityDespawnScriptEvent.instance.fire();
         EntityTag.forgetEntity(entity);
     }
@@ -53,7 +52,6 @@ public class EntityScriptHelper implements Listener {
                 EntityTag.rememberEntity(ent);
                 EntityDespawnScriptEvent.instance.entity = new EntityTag(ent);
                 EntityDespawnScriptEvent.instance.cause = new ElementTag("CHUNK_UNLOAD");
-                EntityDespawnScriptEvent.instance.cancelled = false;
                 EntityDespawnScriptEvent.instance.fire();
                 EntityTag.forgetEntity(ent);
             }

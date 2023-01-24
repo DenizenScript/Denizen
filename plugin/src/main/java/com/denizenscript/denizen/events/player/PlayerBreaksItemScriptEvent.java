@@ -108,7 +108,6 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
         }
         item = new ItemTag(event.getBrokenItem());
         this.event = event;
-        cancelled = false;
         fire(event);
     }
 }

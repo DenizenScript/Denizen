@@ -156,7 +156,6 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
             result = new ItemTag(event.getRecipe().getResult());
         }
         this.player = EntityTag.getPlayerFrom(humanEntity);
-        this.cancelled = false;
         fire(event);
     }
 }

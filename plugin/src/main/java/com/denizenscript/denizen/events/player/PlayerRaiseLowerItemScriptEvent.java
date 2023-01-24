@@ -39,7 +39,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     //
     // @Warning For 'lowers', the item may be tracked incorrectly. Prefer 'player lowers item' (the generic item form) for a 'lowers' event (similar for 'toggles').
     // Also be aware this event may misfire in some cases.
-    // This event and it's data are more accurate on Paper servers.
+    // This event and its data are more accurate on Paper servers.
     //
     // @Context
     // <context.state> returns an ElementTag(Boolean) of whether the player raised or lowered the item.
@@ -112,7 +112,6 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     }
 
     public void run(Player pl) {
-        cancelled = false;
         player = new PlayerTag(pl);
         if (raisableItems.contains(player.getHeldItem().getBukkitMaterial()) || !raisableItems.contains(player.getOffhandItem().getBukkitMaterial())) {
             item = player.getHeldItem();

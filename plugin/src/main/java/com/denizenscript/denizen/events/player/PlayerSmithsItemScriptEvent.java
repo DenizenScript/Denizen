@@ -101,7 +101,6 @@ public class PlayerSmithsItemScriptEvent extends BukkitScriptEvent implements Li
         this.event = event;
         result = new ItemTag(event.getInventory().getResult());
         this.player = EntityTag.getPlayerFrom(humanEntity);
-        this.cancelled = false;
         fire(event);
     }
 }
