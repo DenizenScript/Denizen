@@ -8,6 +8,7 @@ import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_19.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
@@ -426,10 +427,14 @@ public class EntityHelperImpl extends EntityHelper {
         // If this entity is a real player instead of a player type NPC,
         // it will appear to be online
         if (entity instanceof Player && ((Player) entity).isOnline()) {
-            Location location = entity.getLocation();
-            location.setYaw(yaw);
-            location.setPitch(pitch);
-            teleport(entity, location);
+            NetworkInterceptHelper.enable();
+            float relYaw = (yaw - entity.getLocation().getYaw()) % 360;
+            if (relYaw > 180) {
+                relYaw -= 360;
+            }
+            final float actualRelYaw = relYaw;
+            float relPitch = pitch - entity.getLocation().getPitch();
+            NMSHandler.packetHelper.sendRelativeLookPacket((Player) entity, actualRelYaw, relPitch);
         }
         else if (entity instanceof LivingEntity) {
             if (entity instanceof EnderDragon) {
