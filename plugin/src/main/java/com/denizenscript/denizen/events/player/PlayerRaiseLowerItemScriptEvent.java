@@ -34,6 +34,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     // @Group Player
     //
     // @Location true
+    // @Switch reason:<reason> to only process the event if the reason matches the input.
     //
     // @Triggers when a player starts or stops holding up an item, such as a shield, spyglass, or crossbow.
     //
@@ -45,7 +46,8 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     // <context.state> returns an ElementTag(Boolean) of whether the player raised or lowered the item.
     // <context.held_for> returns a DurationTag of how long the player held the item up for (only on Paper).
     // <context.hand> returns an ElementTag of the hand that the player is raising or lowering (only on Paper).
-    // <context.item> returns an ItemTag of the item that the player is raising or lowering (only on Paper)
+    // <context.item> returns an ItemTag of the item that the player is raising or lowering (only on Paper).
+    // <context.reason> returns the reason for a state change. Can be: raise, lower, swap, hold, drop, quit, death.
     //
     // @Player Always.
     //
@@ -55,6 +57,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
 
     public PlayerRaiseLowerItemScriptEvent() {
         registerCouldMatcher("player raises|lowers|toggles <item>");
+        registerSwitches("reason");
         instance = this;
     }
 
@@ -62,6 +65,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     public PlayerTag player;
     public boolean state;
     public ItemTag item;
+    public ElementTag reason;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -73,6 +77,9 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
             return false;
         }
         if (!runInCheck(path, player.getLocation())) {
+            return false;
+        }
+        if (!path.tryObjectSwitch("reason", reason)) {
             return false;
         }
         if (!path.tryArgObject(2, item)) {
@@ -92,6 +99,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "state" -> new ElementTag(state);
+            case "reason" -> reason;
             default -> super.getContext(name);
         };
     }
@@ -111,8 +119,9 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
         super.destroy();
     }
 
-    public void run(Player pl) {
+    public void run(Player pl, String reason) {
         player = new PlayerTag(pl);
+        this.reason = new ElementTag(reason);
         if (raisableItems.contains(player.getHeldItem().getBukkitMaterial()) || !raisableItems.contains(player.getOffhandItem().getBukkitMaterial())) {
             item = player.getHeldItem();
         }
@@ -127,42 +136,42 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
             return;
         }
         instance.state = true;
-        instance.run(player);
+        instance.run(player, "raise");
     }
 
-    public static void signalDidLower(Player player) {
+    public static void signalDidLower(Player player, String reason) {
         if (!raisedItems.remove(player.getUniqueId())) {
             return;
         }
         instance.state = false;
-        instance.run(player);
+        instance.run(player, reason);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        signalDidLower(event.getPlayer());
+        signalDidLower(event.getPlayer(), "quit");
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        signalDidLower(event.getEntity());
+        signalDidLower(event.getEntity(), "death");
     }
 
     @EventHandler
     public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
-        signalDidLower(event.getPlayer());
+        signalDidLower(event.getPlayer(), "swap");
     }
 
     public static class PlayerRaiseLowerItemScriptEventSpigotImpl extends PlayerRaiseLowerItemScriptEvent {
 
         @EventHandler
         public void onPlayerDropItem(PlayerDropItemEvent event) {
-            signalDidLower(event.getPlayer());
+            signalDidLower(event.getPlayer(), "drop");
         }
 
         @EventHandler
         public void onPlayerChangeHeldItem(PlayerItemHeldEvent event) {
-            signalDidLower(event.getPlayer());
+            signalDidLower(event.getPlayer(), "hold");
         }
     }
 }

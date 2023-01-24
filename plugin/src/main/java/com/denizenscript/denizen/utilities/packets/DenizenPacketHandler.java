@@ -91,7 +91,7 @@ public class DenizenPacketHandler {
         }
         if (isHoldingRaisable(player)) {
             Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
-                PlayerRaiseLowerItemScriptEvent.signalDidLower(player);
+                PlayerRaiseLowerItemScriptEvent.signalDidLower(player, "lower");
             });
         }
     }

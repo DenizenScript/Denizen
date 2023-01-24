@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import io.papermc.paper.event.player.PlayerStopUsingItemEvent;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -30,24 +31,42 @@ public class PlayerRaiseLowerItemScriptEventPaperImpl extends PlayerRaiseLowerIt
     }
 
     @Override
-    public void run(Player pl) {
-        cancelled = false;
+    public void run(Player pl, String reason) {
+        this.reason = new ElementTag(reason);
         player = new PlayerTag(pl);
         item = new ItemTag(pl.getActiveItem());
-        heldFor = state ? null : new DurationTag((long) pl.getHandRaisedTime());
         hand = new ElementTag(pl.getHandRaised());
+        if (item.getBukkitMaterial() == Material.AIR) {
+            item = new ItemTag(pl.getEquipment().getItemInMainHand());
+            hand = new ElementTag("HAND");
+        }
+        if (item.getBukkitMaterial() == Material.AIR) {
+            item = new ItemTag(pl.getEquipment().getItemInOffHand());
+            hand = new ElementTag("OFF_HAND");
+        }
+        if (item.getBukkitMaterial() == Material.AIR) {
+            return;
+        }
+        heldFor = state ? null : new DurationTag((long) pl.getHandRaisedTime());
         fire();
     }
 
     @EventHandler
     public void onStopUsingItem(PlayerStopUsingItemEvent event) {
-        signalDidLower(event.getPlayer());
+        signalDidLower(event.getPlayer(), "lower");
+    }
+
+    public boolean isHandRaised(Player player, EquipmentSlot slot) {
+        if (player.isHandRaised()) {
+            return slot == player.getHandRaised();
+        }
+        return raisedItems.contains(player.getUniqueId());
     }
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         // You can only drop items from your main hand, so if the player's main hand isn't raised, ignore
-        if (event.getPlayer().isHandRaised() && event.getPlayer().getHandRaised() == EquipmentSlot.HAND && raisedItems.remove(event.getPlayer().getUniqueId())) {
+        if (isHandRaised(event.getPlayer(), EquipmentSlot.HAND) && raisedItems.remove(event.getPlayer().getUniqueId())) {
             cancelled = false;
             state = false;
             Player pl = event.getPlayer();
@@ -57,14 +76,15 @@ public class PlayerRaiseLowerItemScriptEventPaperImpl extends PlayerRaiseLowerIt
             item = new ItemTag(loweredItem);
             heldFor = new DurationTag((long) loweredItem.getMaxItemUseDuration() - pl.getItemUseRemainingTime());
             hand = new ElementTag(pl.getHandRaised());
+            reason = new ElementTag("drop");
             fire();
         }
     }
 
     @EventHandler
     public void onPlayerChangeHeldItem(PlayerItemHeldEvent event) {
-        if (event.getPlayer().isHandRaised() && event.getPlayer().getHandRaised() == EquipmentSlot.HAND) {
-            signalDidLower(event.getPlayer());
+        if (isHandRaised(event.getPlayer(), EquipmentSlot.HAND)) {
+            signalDidLower(event.getPlayer(), "hold");
         }
     }
 }
