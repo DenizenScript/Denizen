@@ -24,7 +24,7 @@ public class PiglinBarterScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Cancellable true
     //
-    // @Triggers when a piglin picks up an item for bartering.
+    // @Triggers when a piglin completes a barter.
     //
     // @Context
     // <context.entity> returns the EntityTag of the piglin.
@@ -54,18 +54,18 @@ public class PiglinBarterScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "entity": return entity;
-            case "input": return new ItemTag(event.getInput());
-            case "outcome": {
-                ListTag result = new ListTag();
+        return switch (name) {
+            case "entity" -> entity;
+            case "input" -> new ItemTag(event.getInput());
+            case "outcome" -> {
+                ListTag result = new ListTag(event.getOutcome().size());
                 for (ItemStack item : event.getOutcome()) {
                     result.addObject(new ItemTag(item));
                 }
-                return result;
+                yield result;
             }
-        }
-        return super.getContext(name);
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
