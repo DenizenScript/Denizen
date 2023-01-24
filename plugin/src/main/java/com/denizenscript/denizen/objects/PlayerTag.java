@@ -49,6 +49,8 @@ import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 import org.bukkit.map.MapView;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.RayTraceResult;
 
 import java.util.*;
@@ -2490,6 +2492,22 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
             return new ElementTag(id);
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.scoreboard_team_name[(<board>)]>
+        // @returns ElementTag
+        // @description
+        // Returns the name of the team the player is in for a given scoreboard, if any.
+        // If no scoreboard is specified, uses the default (main) board.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "scoreboard_team_name", (attribute, object) -> {
+            Scoreboard board = attribute.hasParam() ? ScoreboardHelper.getScoreboard(attribute.getParam()) : ScoreboardHelper.getMain();
+            Team team = board.getEntryTeam(object.getName());
+            if (team == null) {
+                return null;
+            }
+            return new ElementTag(team.getName());
         });
 
         // <--[tag]

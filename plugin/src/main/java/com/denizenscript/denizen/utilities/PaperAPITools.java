@@ -149,6 +149,14 @@ public class PaperAPITools {
         team.setSuffix(suffix);
     }
 
+    public String getTeamPrefix(Team team) {
+        return team.getPrefix();
+    }
+
+    public String getTeamSuffix(Team team) {
+        return team.getSuffix();
+    }
+
     public String convertTextToMiniMessage(String text) {
         return text;
     }

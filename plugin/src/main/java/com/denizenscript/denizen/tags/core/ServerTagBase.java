@@ -510,6 +510,28 @@ public class ServerTagBase {
                 if (attribute.startsWith("members")) {
                     event.setReplacedObject(new ListTag(team.getEntries()).getObjectAttribute(attribute.fulfill(1)));
                 }
+
+                // <--[tag]
+                // @attribute <server.scoreboard[(<board>)].team[<team>].prefix>
+                // @returns ElementTag
+                // @description
+                // Returns the team's prefix.
+                // Optionally, specify which scoreboard to use.
+                // -->
+                if (attribute.startsWith("prefix")) {
+                    event.setReplacedObject(new ElementTag(PaperAPITools.instance.getTeamPrefix(team)).getObjectAttribute(attribute.fulfill(1)));
+                }
+
+                // <--[tag]
+                // @attribute <server.scoreboard[(<board>)].team[<team>].suffix>
+                // @returns ElementTag
+                // @description
+                // Returns the team's suffix.
+                // Optionally, specify which scoreboard to use.
+                // -->
+                if (attribute.startsWith("suffix")) {
+                    event.setReplacedObject(new ElementTag(PaperAPITools.instance.getTeamSuffix(team)).getObjectAttribute(attribute.fulfill(1)));
+                }
                 return;
             }
         }

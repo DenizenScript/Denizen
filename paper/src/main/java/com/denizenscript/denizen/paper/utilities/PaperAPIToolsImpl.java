@@ -284,6 +284,16 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
+    public String getTeamPrefix(Team team) {
+        return PaperModule.stringifyComponent(team.prefix());
+    }
+
+    @Override
+    public String getTeamSuffix(Team team) {
+        return PaperModule.stringifyComponent(team.suffix());
+    }
+
+    @Override
     public String convertTextToMiniMessage(String text) {
         Component parsed = PaperModule.jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(text, ChatColor.WHITE, false)));
         return MiniMessage.miniMessage().serialize(parsed);
