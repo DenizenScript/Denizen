@@ -2,16 +2,18 @@ package com.denizenscript.denizen.utilities.packets;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.player.*;
-import com.denizenscript.denizen.nms.interfaces.packets.*;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizen.nms.interfaces.packets.PacketInResourcePackStatus;
+import com.denizenscript.denizen.nms.interfaces.packets.PacketInSteerVehicle;
+import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
+import com.denizenscript.denizen.nms.interfaces.packets.PacketOutEntityMetadata;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
 import com.denizenscript.denizen.scripts.commands.server.ExecuteCommand;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
