@@ -437,7 +437,6 @@ public class PlayerHelperImpl extends PlayerHelper {
                 nmsWorld.isFlat(),
                 ClientboundRespawnPacket.KEEP_ALL_DATA,
                 nmsPlayer.getLastDeathLocation()));
-        nmsPlayer.onUpdateAbilities();
         try {
             Location loc = player.getLocation();
             SERVER_GAME_PACKET_LISTENER_IMPL_INTERNAL_TELEPORT.invoke(nmsPlayer.connection, loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), Set.of(), false);
@@ -462,6 +461,7 @@ public class PlayerHelperImpl extends PlayerHelper {
                 nmsPlayer.connection.send(new ClientboundCooldownPacket(entry.getKey(), entry.getValue().endTime - tickCount));
             }
         }
+        nmsPlayer.onUpdateAbilities();
         nmsPlayer.server.getPlayerList().sendAllPlayerInfo(nmsPlayer);
         nmsPlayer.server.getPlayerList().sendPlayerPermissionLevel(nmsPlayer);
     }
