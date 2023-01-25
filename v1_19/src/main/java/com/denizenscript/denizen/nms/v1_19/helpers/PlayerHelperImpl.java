@@ -427,8 +427,6 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void refreshPlayer(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         ServerLevel nmsWorld = (ServerLevel) nmsPlayer.level;
-        nmsPlayer.connection.send(new ClientboundPlayerInfoRemovePacket(List.of(nmsPlayer.getUUID())));
-        nmsPlayer.connection.send(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(nmsPlayer)));
         nmsPlayer.connection.send(new ClientboundRespawnPacket(
                 nmsWorld.dimensionTypeId(),
                 nmsWorld.dimension(),
