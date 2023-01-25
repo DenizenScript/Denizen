@@ -2583,6 +2583,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @description
             // Sets the player's last death location, note that this only updates clientside when the player respawns.
             // Works with offline players.
+            // See also <@link mechanism PlayerTag.refresh_player>.
             // @tags
             // <PlayerTag.last_death_location>
             // -->
@@ -2595,6 +2596,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             });
         }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name refresh_player
+        // @description
+        // Refreshes the player's client, resending some internal data.
+        // -->
+        registerOnlineOnlyMechanism("refresh_player", (object, mechanism) -> {
+            NMSHandler.playerHelper.refreshPlayer(object.getPlayerEntity());
+        });
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();

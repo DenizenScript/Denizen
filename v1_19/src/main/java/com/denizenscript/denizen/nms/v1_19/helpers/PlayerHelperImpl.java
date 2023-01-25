@@ -46,9 +46,14 @@ import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagNetworkSerialization;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.phys.AABB;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_19_R2.CraftServer;
@@ -73,6 +78,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     public static final Field FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundTickCount, int.class);
     public static final Field VEHICLE_FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundVehicleTickCount, int.class);
     public static final MethodHandle PLAYER_RESPAWNFORCED_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnForced, boolean.class);
+    public static final MethodHandle SERVER_GAME_PACKET_LISTENER_IMPL_INTERNAL_TELEPORT = ReflectionHelper.getMethodHandle(ServerGamePacketListenerImpl.class, "internalTeleport", double.class, double.class, double.class, float.class, float.class, Set.class, boolean.class);
 
     public static final EntityDataAccessor<Byte> ENTITY_HUMAN_SKINLAYERS_DATAWATCHER;
 
@@ -118,7 +124,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         net.minecraft.world.entity.Entity nmsEntity;
         if (entityType.isCustom()) {
             if (entityType.customEntityType == CustomEntityType.ITEM_PROJECTILE) {
-                org.bukkit.inventory.ItemStack itemStack = new ItemStack(Material.STONE);
+                ItemStack itemStack = new ItemStack(Material.STONE);
                 for (Mechanism mechanism : mechanisms) {
                     if (mechanism.matches("item") && mechanism.requireObject(ItemTag.class)) {
                         itemStack = mechanism.valueAsType(ItemTag.class).getItemStack();
@@ -415,5 +421,50 @@ public class PlayerHelperImpl extends PlayerHelper {
             intList.add(BuiltInRegistries.BLOCK.getId(CraftMagicNumbers.getBlock(material)));
         }
         PacketHelperImpl.send(player, new ClientboundUpdateTagsPacket(packetInput));
+    }
+
+    @Override
+    public void refreshPlayer(Player player) {
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        ServerLevel nmsWorld = (ServerLevel) nmsPlayer.level;
+        nmsPlayer.connection.send(new ClientboundPlayerInfoRemovePacket(List.of(nmsPlayer.getUUID())));
+        nmsPlayer.connection.send(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(nmsPlayer)));
+        nmsPlayer.connection.send(new ClientboundRespawnPacket(
+                nmsWorld.dimensionTypeId(),
+                nmsWorld.dimension(),
+                BiomeManager.obfuscateSeed(nmsWorld.getSeed()),
+                nmsPlayer.gameMode.getGameModeForPlayer(),
+                nmsPlayer.gameMode.getPreviousGameModeForPlayer(),
+                nmsWorld.isDebug(),
+                nmsWorld.isFlat(),
+                ClientboundRespawnPacket.KEEP_ALL_DATA,
+                nmsPlayer.getLastDeathLocation()));
+        nmsPlayer.onUpdateAbilities();
+        try {
+            Location loc = player.getLocation();
+            SERVER_GAME_PACKET_LISTENER_IMPL_INTERNAL_TELEPORT.invoke(nmsPlayer.connection, loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), Set.of(), false);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+            return;
+        }
+        if (nmsPlayer.isPassenger()) {
+           nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer.getVehicle()));
+        }
+        if (nmsPlayer.isVehicle()) {
+            nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer));
+        }
+        AABB boundingBox = new AABB(nmsPlayer.position(), nmsPlayer.position()).inflate(10);
+        for (Mob nmsMob : nmsWorld.getEntitiesOfClass(Mob.class, boundingBox, nmsMob -> nmsPlayer.equals(nmsMob.getLeashHolder()))) {
+            nmsPlayer.connection.send(new ClientboundSetEntityLinkPacket(nmsMob, nmsPlayer));
+        }
+        if (!nmsPlayer.getCooldowns().cooldowns.isEmpty()) {
+            int tickCount = nmsPlayer.getCooldowns().tickCount;
+            for (Map.Entry<Item, ItemCooldowns.CooldownInstance> entry : nmsPlayer.getCooldowns().cooldowns.entrySet()) {
+                nmsPlayer.connection.send(new ClientboundCooldownPacket(entry.getKey(), entry.getValue().endTime - tickCount));
+            }
+        }
+        nmsPlayer.server.getPlayerList().sendAllPlayerInfo(nmsPlayer);
+        nmsPlayer.server.getPlayerList().sendPlayerPermissionLevel(nmsPlayer);
     }
 }
