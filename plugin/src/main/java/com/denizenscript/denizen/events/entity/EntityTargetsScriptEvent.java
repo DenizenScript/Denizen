@@ -24,7 +24,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when an entity targets a new entity.
+    // @Triggers when an entity targets a new entity - usually a hostile mob preparing to attack something.
     //
     // @Context
     // <context.entity> returns the targeting entity.
@@ -84,16 +84,12 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity.getDenizenObject();
-        }
-        else if (name.equals("reason")) {
-            return reason;
-        }
-        else if (name.equals("target") && target != null) {
-            return target.getDenizenObject();
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity.getDenizenObject();
+            case "reason" -> reason;
+            case "target" -> target == null ? null : target.getDenizenObject();
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
