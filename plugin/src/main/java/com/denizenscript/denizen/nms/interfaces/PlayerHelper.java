@@ -109,4 +109,8 @@ public abstract class PlayerHelper {
     public void sendClimbableMaterials(Player player, List<Material> materials) {
         throw new UnsupportedOperationException();
     }
+
+    public void refreshPlayer(Player player) {
+        throw new UnsupportedOperationException();
+    }
 }
