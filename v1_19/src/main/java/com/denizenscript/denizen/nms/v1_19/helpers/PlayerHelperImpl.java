@@ -78,7 +78,6 @@ public class PlayerHelperImpl extends PlayerHelper {
     public static final Field FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundTickCount, int.class);
     public static final Field VEHICLE_FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundVehicleTickCount, int.class);
     public static final MethodHandle PLAYER_RESPAWNFORCED_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnForced, boolean.class);
-    public static final MethodHandle SERVER_GAME_PACKET_LISTENER_IMPL_INTERNAL_TELEPORT = ReflectionHelper.getMethodHandle(ServerGamePacketListenerImpl.class, "internalTeleport", double.class, double.class, double.class, float.class, float.class, Set.class, boolean.class);
 
     public static final EntityDataAccessor<Byte> ENTITY_HUMAN_SKINLAYERS_DATAWATCHER;
 
@@ -437,14 +436,7 @@ public class PlayerHelperImpl extends PlayerHelper {
                 nmsWorld.isFlat(),
                 ClientboundRespawnPacket.KEEP_ALL_DATA,
                 nmsPlayer.getLastDeathLocation()));
-        try {
-            Location loc = player.getLocation();
-            SERVER_GAME_PACKET_LISTENER_IMPL_INTERNAL_TELEPORT.invoke(nmsPlayer.connection, loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch(), Set.of(), false);
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-            return;
-        }
+        nmsPlayer.connection.teleport(player.getLocation());
         if (nmsPlayer.isPassenger()) {
            nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer.getVehicle()));
         }
