@@ -25,7 +25,11 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
     //
     // @Location true
     //
-    // @Triggers when a warden changes its anger level
+    // @Triggers when a warden changes its anger level.
+    //
+    // @Player when the Entity who triggered the change is a player.
+    //
+    // @NPC when the Entity who triggered the change is a npc.
     //
     // @Context
     // <context.entity> returns the EntityTag of the warden, which changed the anger level.
@@ -34,7 +38,12 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
     // <context.target> returns the EntityTag who triggered the change (if any).
     //
     // @Determine
-    // "ANGER:" + ElementTag(Number) to set the value of the anger level.
+    // "ANGER:" + ElementTag(Number) to set the value of the anger level. Refer to <@link url https://jd.papermc.io/paper/1.19/org/bukkit/entity/Warden.AngerLevel.html>.
+    //
+    // @Example
+    // on warden changes anger level:
+    // - if <context.new_anger> >= 40 && <context.new_anger> < 80:
+    //     - announce "Careful, the warden is agitated!"
     //
     // -->
 
@@ -58,7 +67,7 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
             case "entity": return new EntityTag(event.getEntity());
             case "new_anger": return new ElementTag(event.getNewAnger());
             case "old_anger": return new ElementTag(event.getOldAnger());
-            case "target": return new EntityTag(event.getTarget());
+            case "target": return event.getTarget() != null ? new EntityTag(event.getTarget()) : null;
         }
         return super.getContext(name);
     }
