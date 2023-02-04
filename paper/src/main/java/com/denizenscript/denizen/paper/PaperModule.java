@@ -66,6 +66,9 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(ServerResourcesReloadedScriptEvent.class);
         ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         ScriptEvent.registerScriptEvent(UnknownCommandScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            ScriptEvent.registerScriptEvent(WardenChangesAngerLevelScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(WorldGameRuleChangeScriptEvent.class);
 
         // Properties
