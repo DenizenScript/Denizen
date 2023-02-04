@@ -38,7 +38,7 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
     // <context.target> returns the EntityTag who triggered the change (if any).
     //
     // @Determine
-    // "ANGER:" + ElementTag(Number) to set the value of the anger level. Value must not exceed 150.
+    // "ANGER:" + ElementTag(Number) to set the value of the anger level. Value must be between 0 and 150.
     //
     // @Example
     // on warden changes anger level:
