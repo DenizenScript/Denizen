@@ -161,22 +161,22 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
     }
 
     private static final int[] instruments_1_12 = {
-            0, 0, 0, 0, 0, 0, 0, 5, // 8
-            9, 9, 9, 9, 9, 6, 0, 9, // 16
-            9, 0, 0, 0, 0, 0, 0, 5, // 24
-            5, 5, 5, 5, 5, 5, 5, 1, // 32
-            1, 1, 1, 1, 1, 1, 1, 5, // 40
-            1, 5, 5, 5, 5, 5, 5, 5, // 48
-            5, 5, 5, 8, 8, 8, 8, 8, // 56
-            8, 8, 8, 8, 8, 8, 8, 8, // 64
-            8, 8, 8, 8, 8, 8, 8, 8, // 72
-            8, 8, 8, 8, 8, 8, 8, 8, // 80
-            0, 0, 0, 0, 0, 0, 0, 0, // 88
-            0, 0, 0, 0, 0, 0, 0, 0, // 96
-            0, 0, 0, 0, 0, 0, 0, 5, // 104
-            5, 5, 5, 9, 8, 5, 8, 6, // 112
-            6, 3, 3, 2, 2, 2, 6, 5, // 120
-            1, 1, 1, 6, 1, 2, 4, 7, // 128
+            0, 0, 0, 0, 0, 0, 0, 5,         // 8
+            9, 9, 9, 9, 9, 6, 0, 9,         // 16
+            9, 0, 0, 0, 0, 0, 0, 5,         // 24
+            5, 5, 5, 5, 5, 5, 5, 1,         // 32
+            1, 1, 1, 1, 1, 1, 1, 5,         // 40
+            1, 5, 5, 5, 5, 5, 5, 5,         // 48
+            5, 5, 5, 8, 8, 8, 8, 8,         // 56
+            8, 8, 8, 8, 8, 8, 8, 8,         // 64
+            8, 8, 8, 8, 8, 8, 8, 8,         // 72
+            8, 8, 8, 8, 8, 8, 8, 8,         // 80
+            0, 1, 2, 3, 4, 5, 6, 7,         // 88
+            8, 9, 10, 11, 12, 13, 14, 15,   // 96
+            0, 0, 0, 0, 0, 0, 0, 5,         // 104
+            5, 5, 5, 9, 8, 5, 8, 6,         // 112
+            6, 3, 3, 2, 2, 2, 6, 5,         // 120
+            1, 1, 1, 6, 1, 2, 4, 7,         // 128
     };
 
     public static Sound getMidiInstrumentFromPatch(int patch) {
@@ -192,6 +192,11 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
             case 8: return Sound.BLOCK_NOTE_BLOCK_FLUTE;
             case 9: return Sound.BLOCK_NOTE_BLOCK_XYLOPHONE;
             case 10: return Sound.BLOCK_NOTE_BLOCK_PLING;
+            case 11: return Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO;
+            case 12: return Sound.BLOCK_NOTE_BLOCK_COW_BELL;
+            case 13: return Sound.BLOCK_NOTE_BLOCK_BANJO;
+            case 14: return Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE;
+            case 15: return Sound.BLOCK_NOTE_BLOCK_BIT;
             default: return defaultMidiInstrument;
         }
     }
