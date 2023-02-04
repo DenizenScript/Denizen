@@ -27,18 +27,18 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
     //
     // @Triggers when a warden changes its anger level.
     //
-    // @Player when the Entity who triggered the change is a player.
+    // @Player when the entity who triggered the change is a player.
     //
-    // @NPC when the Entity who triggered the change is a npc.
+    // @NPC when the entity who triggered the change is an npc.
     //
     // @Context
-    // <context.entity> returns the EntityTag of the warden, which changed the anger level.
+    // <context.entity> returns the EntityTag of the warden which changed its anger level.
     // <context.new_anger> returns an ElementTag of the new anger level.
     // <context.old_anger> returns an ElementTag of the old anger level.
     // <context.target> returns the EntityTag who triggered the change (if any).
     //
     // @Determine
-    // "ANGER:" + ElementTag(Number) to set the value of the anger level. Refer to <@link url https://jd.papermc.io/paper/1.19/org/bukkit/entity/Warden.AngerLevel.html>.
+    // "ANGER:" + ElementTag(Number) to set the value of the anger level. Value must not exceed 150.
     //
     // @Example
     // on warden changes anger level:
