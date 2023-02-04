@@ -446,7 +446,7 @@ public class PacketHelperImpl implements PacketHelper {
         ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).oldManager.channel.writeAndFlush(packet);
     }
 
-    public static void send(Player player, Packet packet) {
+    public static void send(Player player, Packet<?> packet) {
         ((CraftPlayer) player).getHandle().connection.send(packet);
     }
 }
