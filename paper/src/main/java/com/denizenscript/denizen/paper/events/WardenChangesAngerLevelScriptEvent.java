@@ -29,12 +29,12 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
     //
     // @Player when the entity who triggered the change is a player.
     //
-    // @NPC when the entity who triggered the change is an npc.
+    // @NPC when the entity who triggered the change is an NPC.
     //
     // @Context
     // <context.entity> returns the EntityTag of the warden which changed its anger level.
-    // <context.new_anger> returns an ElementTag of the new anger level.
-    // <context.old_anger> returns an ElementTag of the old anger level.
+    // <context.new_anger> returns an ElementTag(Number) of the new anger level.
+    // <context.old_anger> returns an ElementTag(Number) of the old anger level.
     // <context.target> returns the EntityTag who triggered the change (if any).
     //
     // @Determine
@@ -63,13 +63,13 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "entity": return new EntityTag(event.getEntity());
-            case "new_anger": return new ElementTag(event.getNewAnger());
-            case "old_anger": return new ElementTag(event.getOldAnger());
-            case "target": return event.getTarget() != null ? new EntityTag(event.getTarget()) : null;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> new EntityTag(event.getEntity());
+            case "new_anger" -> new ElementTag(event.getNewAnger());
+            case "old_anger" -> new ElementTag(event.getOldAnger());
+            case "target" -> event.getTarget() != null ? new EntityTag(event.getTarget()) : null;
+            default -> super.getContext(name);
+        };
     }
 
     @Override
@@ -89,7 +89,7 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(event.getTarget() != null ? new EntityTag(event.getTarget()) : null);
+        return new BukkitScriptEntryData(event.getTarget());
     }
 
     @EventHandler
