@@ -37,6 +37,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(EntityLoadCrossbowScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityPathfindScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityRemoveFromWorldScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntityStepsOnScriptEvent.class);
         ScriptEvent.registerScriptEvent(ExperienceOrbMergeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerAbsorbsExperienceScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBeaconEffectScriptEvent.class);
