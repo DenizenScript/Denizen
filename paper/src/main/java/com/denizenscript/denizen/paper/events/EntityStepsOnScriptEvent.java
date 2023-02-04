@@ -7,7 +7,6 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import io.papermc.paper.event.entity.EntityMoveEvent;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -39,17 +38,17 @@ public class EntityStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     // @Example
     // # Announce the name of the entity stepping on the block and the material of block.
     // on entity steps on block:
-    //     - announce "<context.entity.name> stepped on a <context.location.material.name>!"
+    // - announce "<context.entity.name> stepped on a <context.location.material.name>!"
     //
     // @Example
     // # Announce the material of the block a sheep has stepped on.
     // on sheep steps on block:
-    //     - announce "A sheep has stepped on a <context.location.material.name>!"
+    // - announce "A sheep has stepped on a <context.location.material.name>!"
     //
     // @Example
     // # Announce that a sheep has stepped on a diamond block.
     // on sheep steps on diamond_block:
-    //     - announce "A sheep has stepped on a diamond block! Must be a wealthy sheep!"
+    // - announce "A sheep has stepped on a diamond block! Must be a wealthy sheep!"
     // -->
 
     public EntityStepsOnScriptEvent() {
@@ -60,18 +59,22 @@ public class EntityStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     public LocationTag location;
     public LocationTag previousLocation;
     public LocationTag newLocation;
-    public EntityMoveEvent event;
+
+    @Override
+    public boolean couldMatch(ScriptPath path) {
+        return !path.eventLower.startsWith("player");
+    }
 
     @Override
     public boolean matches(ScriptPath path) {
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(0))) {
+        if (!path.tryArgObject(0, entity)) {
             return false;
         }
         MaterialTag material = new MaterialTag(location.getBlock());
-        if (!material.tryAdvancedMatcher(path.eventArgLowerAt(3))) {
+        if (!path.tryArgObject(3, material)) {
             return false;
         }
         return super.matches(path);
@@ -90,19 +93,16 @@ public class EntityStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     @EventHandler
     public void entityStepsOnBlockEvent(EntityMoveEvent event) {
-        Location from = event.getFrom().clone().subtract(0, 0.05, 0);
-        Location to = event.getTo().clone().subtract(0, 0.05, 0);
-        if (LocationTag.isSameBlock(from, to)) {
+        if (!event.hasChangedBlock()) {
             return;
         }
-        location = new LocationTag(to);
+        location = new LocationTag(event.getTo().clone().subtract(0.0, 0.05, 0.0));
         if (!Utilities.isLocationYSafe(location)) {
             return;
         }
         entity = new EntityTag(event.getEntity());
         previousLocation = new LocationTag(event.getFrom());
         newLocation = new LocationTag(event.getTo());
-        this.event = event;
         fire(event);
     }
 }
