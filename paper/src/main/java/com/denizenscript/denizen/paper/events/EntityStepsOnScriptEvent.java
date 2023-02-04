@@ -27,7 +27,7 @@ public class EntityStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when an entity steps onto a specific block material. For players, use <@link event player steps on block>.
+    // @Triggers when a non-player entity steps onto a specific block material. For players, use <@link event player steps on block>.
     //
     // @Context
     // <context.entity> returns an EntityTag of the entity stepping onto the block.
@@ -62,7 +62,13 @@ public class EntityStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean couldMatch(ScriptPath path) {
-        return !path.eventLower.startsWith("player");
+        if (!super.couldMatch(path)) {
+            return false;
+        }
+        if (path.eventLower.startsWith("player")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

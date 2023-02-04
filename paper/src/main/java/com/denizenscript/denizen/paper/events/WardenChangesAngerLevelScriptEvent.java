@@ -25,7 +25,7 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
     //
     // @Location true
     //
-    // @Triggers when a warden changes its anger level.
+    // @Triggers when a warden changes its anger level. (In practice, only fires when increasing).
     //
     // @Player when the entity who triggered the change is a player.
     //
@@ -35,7 +35,7 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
     // <context.entity> returns the EntityTag of the warden which changed its anger level.
     // <context.new_anger> returns an ElementTag(Number) of the new anger level.
     // <context.old_anger> returns an ElementTag(Number) of the old anger level.
-    // <context.target> returns the EntityTag who triggered the change (if any).
+    // <context.target> returns the EntityTag who triggered the change (if any). (In practice, always present).
     //
     // @Determine
     // "ANGER:" + ElementTag(Number) to set the value of the anger level. Value must be between 0 and 150.
