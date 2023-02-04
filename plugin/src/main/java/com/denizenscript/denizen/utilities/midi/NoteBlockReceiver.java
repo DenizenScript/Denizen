@@ -160,7 +160,7 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
         }, 1);
     }
 
-    private static final int[] instruments_1_12 = {
+    private static final int[] instruments = { // Last revised 2023/02/24 for MC 1.19.3 instrument list (previously revised for MC 1.12)
             0, 0, 0, 0, 0, 0, 0, 5,         // 8
             9, 9, 9, 9, 9, 6, 0, 9,         // 16
             9, 0, 0, 0, 0, 0, 0, 5,         // 24
@@ -180,7 +180,7 @@ public class NoteBlockReceiver implements Receiver, MetaEventListener {
     };
 
     public static Sound getMidiInstrumentFromPatch(int patch) {
-        switch (instruments_1_12[patch]) {
+        switch (instruments[patch]) {
             case 0: return Sound.BLOCK_NOTE_BLOCK_HARP;
             case 1: return Sound.BLOCK_NOTE_BLOCK_BASS;
             case 2: return Sound.BLOCK_NOTE_BLOCK_SNARE;

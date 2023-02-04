@@ -27,7 +27,7 @@ public class EntityStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when an entity steps onto a material.
+    // @Triggers when an entity steps onto a specific block material. For players, use <@link event player steps on block>.
     //
     // @Context
     // <context.entity> returns an EntityTag of the entity stepping onto the block.
@@ -52,13 +52,13 @@ public class EntityStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public EntityStepsOnScriptEvent() {
-        registerCouldMatcher("<entity> steps on <material>");
+        registerCouldMatcher("<entity> steps on <block>");
     }
 
+    public EntityMoveEvent event;
     public EntityTag entity;
     public LocationTag location;
-    public LocationTag previousLocation;
-    public LocationTag newLocation;
+    public MaterialTag material;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -73,7 +73,6 @@ public class EntityStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         if (!path.tryArgObject(0, entity)) {
             return false;
         }
-        MaterialTag material = new MaterialTag(location.getBlock());
         if (!path.tryArgObject(3, material)) {
             return false;
         }
@@ -85,8 +84,8 @@ public class EntityStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         return switch (name) {
             case "entity" -> entity;
             case "location" -> location;
-            case "previous_location" -> previousLocation;
-            case "new_location" -> newLocation;
+            case "previous_location" -> new LocationTag(event.getFrom());
+            case "new_location" -> new LocationTag(event.getTo());
             default -> super.getContext(name);
         };
     }
@@ -100,9 +99,9 @@ public class EntityStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         if (!Utilities.isLocationYSafe(location)) {
             return;
         }
+        material = new MaterialTag(location.getBlock());
         entity = new EntityTag(event.getEntity());
-        previousLocation = new LocationTag(event.getFrom());
-        newLocation = new LocationTag(event.getTo());
+        this.event = event;
         fire(event);
     }
 }

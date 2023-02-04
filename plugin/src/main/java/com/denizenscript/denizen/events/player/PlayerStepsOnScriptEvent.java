@@ -19,8 +19,6 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     // player steps on block
     // player steps on <material>
     //
-    // @Regex ^on player steps on [^\s]+$
-    //
     // @Group Player
     //
     // @Location true
@@ -29,7 +27,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when a player steps onto a material.
+    // @Triggers when a player steps onto a specific block material.
     //
     // @Context
     // <context.location> returns a LocationTag of the block the player is stepping on.
@@ -41,29 +39,16 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     // -->
 
     public PlayerStepsOnScriptEvent() {
+        registerCouldMatcher("player steps on <block>");
     }
 
     public LocationTag location;
-    public LocationTag previous_location;
-    public LocationTag new_location;
     public PlayerMoveEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.startsWith("player steps on")) {
-            return false;
-        }
-        if (!couldMatchBlock(path.eventArgLowerAt(3))) {
-            return false;
-        }
-        return true;
-    }
+    public MaterialTag material;
 
     @Override
     public boolean matches(ScriptPath path) {
-        String mat = path.eventArgLowerAt(3);
-        MaterialTag material = new MaterialTag(location.getBlock());
-        if (!material.tryAdvancedMatcher(mat)) {
+        if (!path.tryArgObject(3, material)) {
             return false;
         }
         if (!runInCheck(path, location)) {
@@ -79,15 +64,12 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location":
-                return location;
-            case "previous_location":
-                return previous_location;
-            case "new_location":
-                return new_location;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "previous_location" -> new LocationTag(event.getFrom());
+            case "new_location" -> new LocationTag(event.getTo());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
@@ -106,8 +88,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         if (!Utilities.isLocationYSafe(location)) {
             return;
         }
-        previous_location = new LocationTag(event.getFrom());
-        new_location = new LocationTag(event.getTo());
+        material = new MaterialTag(location.getBlock());
         this.event = event;
         fire(event);
     }

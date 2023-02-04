@@ -2600,6 +2600,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[mechanism]
         // @object PlayerTag
         // @name refresh_player
+        // @input None
         // @description
         // Refreshes the player's client, resending some internal data.
         // -->
