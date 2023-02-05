@@ -24,6 +24,7 @@ import org.bukkit.craftbukkit.v1_19_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
@@ -99,9 +100,16 @@ public class ProfileEditorImpl extends ProfileEditor {
         }
     }
 
+    public static final Field ClientboundPlayerInfoUpdatePacket_entries = ReflectionHelper.getFields(ClientboundPlayerInfoUpdatePacket.class).getFirstOfType(List.class);
+
     public static ClientboundPlayerInfoUpdatePacket createInfoPacket(EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions, List<ClientboundPlayerInfoUpdatePacket.Entry> entries) {
         ClientboundPlayerInfoUpdatePacket playerInfoUpdatePacket = new ClientboundPlayerInfoUpdatePacket(actions, List.of());
-        ReflectionHelper.setFieldValue(ClientboundPlayerInfoUpdatePacket.class, ReflectionMappingsInfo.ClientboundPlayerInfoUpdatePacket_entries, playerInfoUpdatePacket, entries);
+        try {
+            ClientboundPlayerInfoUpdatePacket_entries.set(playerInfoUpdatePacket, entries);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
         return playerInfoUpdatePacket;
     }
 
