@@ -49,7 +49,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerPlayer;
@@ -1142,9 +1141,8 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public boolean processMirrorForPacket(Packet<?> packet) {
-        if (packet instanceof ClientboundPlayerInfoUpdatePacket) {
-            ClientboundPlayerInfoUpdatePacket playerInfo = (ClientboundPlayerInfoUpdatePacket) packet;
-            if (!ProfileEditorImpl.handleAlteredProfiles(playerInfo, this)) {
+        if (packet instanceof ClientboundPlayerInfoUpdatePacket playerInfoUpdatePacket) {
+            if (!ProfileEditorImpl.handleAlteredProfiles(playerInfoUpdatePacket, this)) {
                 return true;
             }
         }
