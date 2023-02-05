@@ -34,7 +34,7 @@ public class PaperElementExtensions {
             // This may be useful for sending data to external plugins, but should not be used in normal scripts.
             // -->
             ElementTag.tagProcessor.registerTag(ElementTag.class, "to_minimessage", (attribute, object) -> {
-                return new ElementTag(PaperAPITools.instance.convertTextToMiniMessage(object.asString()));
+                return new ElementTag(PaperAPITools.instance.convertTextToMiniMessage(object.asString(), false));
             });
         }
     }

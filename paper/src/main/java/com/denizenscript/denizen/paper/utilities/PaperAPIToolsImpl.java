@@ -7,7 +7,6 @@ import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -31,6 +30,7 @@ import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PaperAPIToolsImpl extends PaperAPITools {
 
@@ -294,7 +294,11 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
-    public String convertTextToMiniMessage(String text) {
+    public String convertTextToMiniMessage(String text, boolean splitNewlines) {
+        if (splitNewlines) {
+            List<String> lines = CoreUtilities.split(text, '\n');
+            return lines.stream().map(l -> convertTextToMiniMessage(l, false)).collect(Collectors.joining("\n"));
+        }
         Component parsed = PaperModule.jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(text, ChatColor.WHITE, false)));
         return MiniMessage.miniMessage().serialize(parsed);
     }

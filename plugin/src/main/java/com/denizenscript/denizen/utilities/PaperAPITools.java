@@ -157,7 +157,7 @@ public class PaperAPITools {
         return team.getSuffix();
     }
 
-    public String convertTextToMiniMessage(String text) {
+    public String convertTextToMiniMessage(String text, boolean splitNewlines) {
         return text;
     }
 }
