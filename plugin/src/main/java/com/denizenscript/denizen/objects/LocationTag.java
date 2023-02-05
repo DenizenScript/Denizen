@@ -54,6 +54,7 @@ import org.bukkit.util.*;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class LocationTag extends org.bukkit.Location implements ObjectTag, Notable, Adjustable, FlaggableObject {
@@ -3070,6 +3071,33 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.format[<format>]>
+        // @returns ElementTag
+        // @group identity
+        // @description
+        // Formats a LocationTag according to a specified format input.
+        // You can request x, y, z, yaw, or pitch as full "f", short "s", or block "b" format.
+        // eg "fx" for "full X coordinate" (like 1.051234), "syaw" for "short yaw" (like 1.03), or "bz" for "block Z coordinate" (like 1).
+        // "world" is also available to get the world name.
+        // If "$" is in the format, only codes prefixed with "$" will be replaced, eg "$bx but not bx" will become "5 but not bx" (allowing the safe use of unpredictable text inside the format block).
+        // @example
+        // # This example does a simple format, like "1, 2, 3".
+        // - narrate "You are at <player.location.format[bx, by, bz]>"
+        // @example
+        // # This example adds colors, uses the "$" prefix to be safe from bugs, and formats like "You are at y = 32 in Space".
+        // - narrate "<&[base]>You are at <player.location.format[y = <&[emphasis]>$by <&[base]>in <&[emphasis]>$world]>"
+        // -->
+        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "format", (attribute, object, formatElem) -> {
+            String format = formatElem.asString();
+            String prefix = format.contains("$") ? "$" : "";
+            format = format.replace(prefix + "world", object.getWorldName() == null ? "" : object.getWorldName());
+            format = object.formatHelper(format, prefix + "b", (d) -> String.valueOf((long) Math.floor(d)));
+            format = object.formatHelper(format, prefix + "f", CoreUtilities::doubleToString);
+            format = object.formatHelper(format, prefix + "s", (d) -> CoreUtilities.doubleToString(Math.round(d * 100) / 100.0));
+            return new ElementTag(format, true);
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.formatted>
         // @returns ElementTag
         // @group identity
@@ -5404,6 +5432,17 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         }
 
         tagProcessor.processMechanism(this, mechanism);
+    }
+
+    public String formatHelper(String format, String prefix, Function<Double, String> formatNum) {
+        if (!format.contains(prefix)) {
+            return format;
+        }
+        return format.replace(prefix + "yaw", formatNum.apply((double) getYaw()))
+                .replace(prefix + "pitch", formatNum.apply((double) getPitch()))
+                .replace(prefix + "x", formatNum.apply(getX()))
+                .replace(prefix + "y", formatNum.apply(getY()))
+                .replace(prefix + "z", formatNum.apply(getZ()));
     }
 
     @Override
