@@ -45,6 +45,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerClicksFakeEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksInRecipeBookScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerCompletesAdvancementScriptEventPaperImpl.class);
+        ScriptEvent.registerScriptEvent(PlayerDeepSleepScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerElytraBoostScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerEquipsArmorScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
