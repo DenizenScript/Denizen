@@ -130,7 +130,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
         if (!Bukkit.isPrimaryThread()) {
             BukkitScriptEvent altEvent = (BukkitScriptEvent) clone();
             Future future = Bukkit.getScheduler().callSyncMethod(Denizen.getInstance(), () -> {
-                altEvent.fire();
+                altEvent.fire(event);
                 return null;
             });
             try {
