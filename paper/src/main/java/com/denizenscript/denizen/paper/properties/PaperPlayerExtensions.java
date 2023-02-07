@@ -127,6 +127,9 @@ public class PaperPlayerExtensions {
             // @Plugin Paper
             // @description
             // Sets whether the player will take fall damage while <@link mechanism PlayerTag.can_fly> is true.
+            // @tags
+            // <PlayerTag.flying_fall_damage>
+            // <PlayerTag.can_fly>
             // -->
             PlayerTag.registerOnlineOnlyMechanism("flying_fall_damage", ElementTag.class, (object, mechanism, input) -> {
                 if (mechanism.requireBoolean()) {
