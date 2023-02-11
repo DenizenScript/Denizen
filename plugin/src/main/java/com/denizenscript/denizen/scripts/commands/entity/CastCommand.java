@@ -20,16 +20,16 @@ public class CastCommand extends AbstractCommand {
 
     public CastCommand() {
         setName("cast");
-        setSyntax("cast [<effect>] (remove) (duration:<value>) (amplifier:<#>) (<entity>|...) (no_ambient) (hide_particles) (no_icon)");
-        setRequiredArguments(1, 8);
+        setSyntax("cast [<effect>] (remove) (duration:<value>) (amplifier:<#>) (<entity>|...) (no_ambient) (hide_particles) (no_icon) (no_clear)");
+        setRequiredArguments(1, 9);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Cast
-    // @Syntax cast [<effect>] (remove) (duration:<value>) (amplifier:<#>) (<entity>|...) (no_ambient) (hide_particles) (no_icon)
+    // @Syntax cast [<effect>] (remove) (duration:<value>) (amplifier:<#>) (<entity>|...) (no_ambient) (hide_particles) (no_icon) (no_clear)
     // @Required 1
-    // @Maximum 8
+    // @Maximum 9
     // @Short Casts a potion effect to a list of entities.
     // @Synonyms Potion,Magic
     // @Group entity
@@ -56,6 +56,8 @@ public class CastCommand extends AbstractCommand {
     // Optionally, specify "hide_particles" to remove the particle effects entirely.
     //
     // Optionally, specify "no_icon" to hide the effect icon in the corner of your screen.
+    //
+    // Optionally use "no_clear" to prevent clearing any previous effect instance before adding the new one.
     //
     // @Tags
     // <EntityTag.has_effect[<effect>]>
@@ -93,6 +95,10 @@ public class CastCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("ambient")
                     && arg.matches("no_ambient")) {
                 scriptEntry.addObject("ambient", new ElementTag(false));
+            }
+            else if (!scriptEntry.hasObject("no_clear")
+                    && arg.matches("no_clear")) {
+                scriptEntry.addObject("no_clear", new ElementTag(true));
             }
             else if (!scriptEntry.hasObject("show_particles")
                     && arg.matches("hide_particles")) {
@@ -151,14 +157,15 @@ public class CastCommand extends AbstractCommand {
         ElementTag showParticles = scriptEntry.getElement("show_particles");
         ElementTag ambient = scriptEntry.getElement("ambient");
         ElementTag showIcon = scriptEntry.getElement("show_icon");
+        ElementTag noClear = scriptEntry.getElement("no_clear");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("targets", entities), db("effect", effect.getName()), db("amplifier", amplifier), duration, ambient, showParticles, showIcon);
+            Debug.report(scriptEntry, getName(), db("targets", entities), db("effect", effect.getName()), db("amplifier", amplifier), duration, ambient, showParticles, showIcon, noClear);
         }
         boolean amb = ambient.asBoolean();
         boolean showP = showParticles.asBoolean();
         boolean icon = showIcon.asBoolean();
         for (EntityTag entity : entities) {
-            if (entity.getLivingEntity().hasPotionEffect(effect)) {
+            if ((remove || noClear == null || !noClear.asBoolean()) && entity.getLivingEntity().hasPotionEffect(effect)) {
                 entity.getLivingEntity().removePotionEffect(effect);
             }
             if (remove) {
