@@ -89,9 +89,9 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            if (((ElementTag) determinationObj).isInt()) {
-                cost = ((ElementTag) determinationObj).asInt();
+        if (determinationObj instanceof ElementTag element) {
+            if (element.isInt()) {
+                cost = element.asInt();
                 event.setExpLevelCost(cost);
                 return true;
             }

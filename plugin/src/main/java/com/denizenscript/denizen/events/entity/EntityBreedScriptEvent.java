@@ -63,8 +63,8 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            experience = ((ElementTag) determinationObj).asInt();
+        if (determinationObj instanceof ElementTag element && element.isInt()) {
+            experience = element.asInt();
             event.setExperience(experience);
             return true;
         }

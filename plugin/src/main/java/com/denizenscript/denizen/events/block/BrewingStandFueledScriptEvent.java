@@ -57,8 +57,8 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String val = ((ElementTag) determinationObj).asString();
+        if (determinationObj instanceof ElementTag element) {
+            String val = element.asString();
             if (val.startsWith("fuel_power:")) {
                 event.setFuelPower(Integer.parseInt(val.substring("fuel_power:".length())));
                 return true;
