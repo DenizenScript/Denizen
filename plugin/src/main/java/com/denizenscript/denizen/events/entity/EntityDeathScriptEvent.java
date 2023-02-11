@@ -47,6 +47,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // <context.cause> returns an ElementTag of the cause of the death. See <@link language damage cause> for a list of possible damage causes.
     // <context.drops> returns a ListTag of all pending item drops.
     // <context.xp> returns an ElementTag of the amount of experience to be dropped.
+    // <context.keep_inventory> returns true if the player dying is set to keep their inventory, false if not, or null if the dying entity is not a player.
     //
     // @Determine
     // ElementTag to change the death message.
@@ -162,6 +163,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             case "message": return event instanceof PlayerDeathEvent ? new ElementTag(PaperAPITools.instance.getDeathMessage((PlayerDeathEvent) event)) : null;
             case "cause": return cause;
             case "xp": return new ElementTag(event.getDroppedExp());
+            case "keep_inventory": return event instanceof PlayerDeathEvent ? new ElementTag(((PlayerDeathEvent) event).getKeepInventory()) : null;
             case "drops":
                 ListTag list = new ListTag();
                 for (ItemStack stack : event.getDrops()) {
