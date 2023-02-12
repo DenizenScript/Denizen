@@ -71,8 +71,8 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            event.setNewLevel(((ElementTag) determinationObj).asInt());
+        if (determinationObj instanceof ElementTag element && element.isInt()) {
+            event.setNewLevel(element.asInt());
         }
         return super.applyDetermination(path, determinationObj);
     }

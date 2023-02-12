@@ -95,8 +95,8 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isDouble()) {
-            event.setDamage(((ElementTag) determinationObj).asDouble());
+        if (determinationObj instanceof ElementTag element && element.isDouble()) {
+            event.setDamage(element.asDouble());
             return true;
         }
         return super.applyDetermination(path, determinationObj);

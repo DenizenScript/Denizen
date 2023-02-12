@@ -54,8 +54,8 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            event.setBurnTime(((ElementTag) determinationObj).asInt());
+        if (determinationObj instanceof ElementTag element && element.isInt()) {
+            event.setBurnTime(element.asInt());
             return true;
         }
         else if (determinationObj.canBeType(DurationTag.class)) {

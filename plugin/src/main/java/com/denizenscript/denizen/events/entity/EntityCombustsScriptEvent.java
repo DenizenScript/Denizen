@@ -64,8 +64,8 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            event.setDuration(((ElementTag) determinationObj).asInt());
+        if (determinationObj instanceof ElementTag element && element.isInt()) {
+            event.setDuration(element.asInt());
             return true;
         }
         else if (DurationTag.matches(determinationObj.toString())) {

@@ -55,8 +55,8 @@ public class VillagerReplenishesTradeScriptEvent extends BukkitScriptEvent imple
             event.setRecipe(determinationObj.asType(TradeTag.class, getTagContext(path)).getRecipe());
             return true;
         }
-        else if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            event.setBonus(((ElementTag) determinationObj).asInt());
+        else if (determinationObj instanceof ElementTag element && element.isInt()) {
+            event.setBonus(element.asInt());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
