@@ -61,7 +61,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
         int index = path.eventArgLowerAt(3).equals("because") ? 3 : (path.eventArgAt(2).equals("because") ? 2 : -1);
-        if (index > 0 && !path.eventArgLowerAt(index + 1).equals(CoreUtilities.toLowerCase(reason.toString()))) {
+        if (index > 0 && !path.tryArgObject(index + 1, reason)) {
             return false;
         }
         return super.matches(path);
