@@ -67,8 +67,8 @@ public class TablistCommand extends AbstractCommand {
     // - tablist add name:<empty> display:<empty> gamemode:spectator
     //
     // @Usage
-    // Use to add a custom tab completion in the in-game chat, by adding an empty entry to the bottom of the tab list.
-    // - tablist add name:my_tab_complete display:<empty> gamemode:spectator
+    // Use to update an existing entry
+    // - tablist update uuid:<[uuid]> display:<red>Red gamemode:spectator
     //
     // -->
 
