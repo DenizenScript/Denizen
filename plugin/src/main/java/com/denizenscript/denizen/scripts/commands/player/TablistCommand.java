@@ -89,6 +89,10 @@ public class TablistCommand extends AbstractCommand {
                                    @ArgDefaultNull @ArgPrefixed @ArgName("latency") ElementTag latency,
                                    @ArgDefaultNull @ArgPrefixed @ArgName("gamemode") GameMode gamemode,
                                    @ArgDefaultNull @ArgPrefixed @ArgName("listed") ElementTag listed) {
+        if (!Utilities.entryHasPlayer(scriptEntry)) {
+            Debug.echoError("Must have a linked player!");
+            return;
+        }
         Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
         if (listed != null && !listed.isBoolean()) {
             Debug.echoError("Invalid input '" + listed + "' to 'listed': must be a boolean");
