@@ -23,7 +23,7 @@ public class TablistCommand extends AbstractCommand {
 
     public TablistCommand() {
         setName("tablist");
-        setSyntax("tablist [add/remove/update] (name:<name>) (display:<display>) (uuid:<uuid>) (skin_blob:<blob>) (latency:<#>) (gamemode:creative/survival/adventure/spectator) (unlisted)");
+        setSyntax("tablist [add/remove/update] (name:<name>) (display:<display>) (uuid:<uuid>) (skin_blob:<blob>) (latency:<#>) (gamemode:creative/survival/adventure/spectator) (listed:true/false)");
         setRequiredArguments(2, 8);
         isProcedural = false;
         autoCompile();
@@ -31,29 +31,30 @@ public class TablistCommand extends AbstractCommand {
 
     // <--[command]
     // @Name TabList
-    // @Syntax tablist [add/remove/update] (name:<name>) (display:<display>) (uuid:<uuid>) (skin_blob:<blob>) (latency:<#>) (gamemode:creative/survival/adventure/spectator)
+    // @Syntax tablist [add/remove/update] (name:<name>) (display:<display>) (uuid:<uuid>) (skin_blob:<blob>) (latency:<#>) (gamemode:creative/survival/adventure/spectator) (listed:true/false)
     // @Required 2
-    // @Maximum 7
+    // @Maximum 8
     // @Short Modifies values in the player's tablist.
     // @Group player
     //
     // @Description
     // Adds, removes, or updates a player profile entry in the player's tab-list view.
     //
-    // Using 'add' will add a new entry to the tab list.
+    // Using 'add' will add a new entry to the client's player list.
     // 'name' must be specified.
     // 'display' if unspecified will be the same as the name.
     // 'uuid' if unspecified will be randomly generated.
-    // 'skin_blob' if unspecified will be default (steve). Skin blob should be in format "texture;signature" (separated by semicolon).
+    // 'skin_blob' if unspecified will be a default Minecraft skin. Skin blob should be in format "texture;signature" (separated by semicolon).
     // 'latency' is a number representing the players ping, if unspecified will be 0. 0 renders as full ping, -1 renders an "X", 500 renders orange (3 bars), 1000 renders red (1 bar).
     // 'gamemode' if unspecified will be creative. 'spectator' renders as faded and is pushed below all non-spectator entries.
+    // 'listed' determines whether the entry will show up in the tab list, defaults to 'true'.
     //
     // Using 'remove' will remove an entry from the tab list.
     // 'uuid' must be specified.
     //
     // Using 'update' will update an existing entry in the tab list.
     // 'uuid' must be specified.
-    // Only values that can be updated are 'display' or 'latency'
+    // Only 'display', 'latency', 'gamemode', and 'listed' can be updated.
     //
     // Usage of display names that are not empty requires enabling Denizen/config.yml option "Allow restricted actions".
     // Using this tool to add entries that look like real players (but aren't) is forbidden.
@@ -70,6 +71,12 @@ public class TablistCommand extends AbstractCommand {
     // - tablist add name:my_tab_complete display:<empty> gamemode:spectator
     //
     // -->
+
+
+    @Override
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        tab.addWithPrefix("gamemode:", GameMode.values());
+    }
 
     public enum Mode { ADD, REMOVE, UPDATE }
 
