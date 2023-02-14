@@ -21,7 +21,6 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
@@ -396,8 +395,8 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void sendPlayerInfoAddPacket(Player player, EnumSet<ProfileEditMode> editModes, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode, boolean listed) {
         EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions = EnumSet.noneOf(ClientboundPlayerInfoUpdatePacket.Action.class);
-        for (ProfileEditMode mode : editModes) {
-            actions.add(switch (mode) {
+        for (ProfileEditMode editMode : editModes) {
+            actions.add(switch (editMode) {
                 case ADD -> ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER;
                 case UPDATE_DISPLAY -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME;
                 case UPDATE_LATENCY -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY;
