@@ -215,15 +215,7 @@ public class RenameCommand extends AbstractCommand {
             }
             if (entity instanceof NPCTag) {
                 NPC npc = ((NPCTag) entity).getCitizen();
-                if (npc.isSpawned()) {
-                    Location prev = npc.getStoredLocation().clone();
-                    npc.despawn(DespawnReason.PENDING_RESPAWN);
-                    npc.setName(nameString);
-                    npc.spawn(prev);
-                }
-                else {
-                    npc.setName(nameString);
-                }
+                npc.setName(nameString);
             }
             else if (entity instanceof PlayerTag) {
                 if (listNameOnly != null && listNameOnly.asBoolean()) {
