@@ -135,14 +135,11 @@ public class TablistCommand extends AbstractCommand {
                     Debug.echoError("Cannot use 'tablist add' to add a non-empty display-named entry: 'Allow restricted actions' is disabled in Denizen config.yml.");
                     return;
                 }
-                if (gamemode == null) {
-                    gamemode = GameMode.CREATIVE;
-                }
                 if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
-                    NMSHandler.playerHelper.sendPlayerInfoAddPacket(player, EnumSet.of(PlayerHelper.ProfileEditMode.ADD), name, display, id, texture, signature, latencyNum, gamemode, false);
+                    NMSHandler.playerHelper.sendPlayerInfoAddPacket(player, EnumSet.of(PlayerHelper.ProfileEditMode.ADD), name, display, id, texture, signature, latencyNum, gamemode == null ? GameMode.CREATIVE : gamemode, false);
                     return;
                 }
-                EnumSet<PlayerHelper.ProfileEditMode> editModes = EnumSet.of(PlayerHelper.ProfileEditMode.ADD, PlayerHelper.ProfileEditMode.UPDATE_GAME_MODE);
+                EnumSet<PlayerHelper.ProfileEditMode> editModes = EnumSet.of(PlayerHelper.ProfileEditMode.ADD);
                 boolean listedBool = listed == null || listed.asBoolean();
                 if (listedBool) {
                     editModes.add(PlayerHelper.ProfileEditMode.UPDATE_LISTED);
@@ -152,6 +149,9 @@ public class TablistCommand extends AbstractCommand {
                 }
                 if (latency != null) {
                     editModes.add(PlayerHelper.ProfileEditMode.UPDATE_LATENCY);
+                }
+                if (gamemode != null) {
+                    editModes.add(PlayerHelper.ProfileEditMode.UPDATE_GAME_MODE);
                 }
                 NMSHandler.playerHelper.sendPlayerInfoAddPacket(player, editModes, name, display, id, texture, signature, latencyNum, gamemode, listedBool);
             }
