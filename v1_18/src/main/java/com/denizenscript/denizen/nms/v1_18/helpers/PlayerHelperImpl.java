@@ -397,7 +397,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         if (texture != null) {
             profile.getProperties().put("textures", new Property("textures", texture, signature));
         }
-        packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, latency, gameMode == null ? GameType.DEFAULT_MODE : GameType.byId(gameMode.getValue()), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE))));
+        packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, latency, gameMode == null ? null : GameType.byId(gameMode.getValue()), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE))));
         PacketHelperImpl.send(player, packet);
     }
 
