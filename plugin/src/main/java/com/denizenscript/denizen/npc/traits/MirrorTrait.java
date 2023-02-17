@@ -21,17 +21,6 @@ public class MirrorTrait extends Trait {
         super("mirror");
     }
 
-    public static UUID getUUID(NPC npc) {
-        UUID uuid = npc.getUniqueId();
-        if (uuid.version() == 4) { // clear version
-            long msb = uuid.getMostSignificantBits();
-            msb &= ~0x0000000000004000L;
-            msb |= 0x0000000000002000L;
-            uuid = new UUID(msb, uuid.getLeastSignificantBits());
-        }
-        return uuid;
-    }
-
     public void respawn() {
         Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(), () -> {
             if (npc.isSpawned()) {
@@ -46,7 +35,7 @@ public class MirrorTrait extends Trait {
 
     public void mirrorOn() {
         NetworkInterceptHelper.enable();
-        UUID uuid = getUUID(npc);
+        UUID uuid = npc.getUniqueId();
         if (!ProfileEditor.mirrorUUIDs.contains(uuid)) {
             ProfileEditor.mirrorUUIDs.add(uuid);
             respawn();
@@ -54,7 +43,7 @@ public class MirrorTrait extends Trait {
     }
 
     public void mirrorOff() {
-        UUID uuid = getUUID(npc);
+        UUID uuid = npc.getUniqueId();
         if (ProfileEditor.mirrorUUIDs.contains(uuid)) {
             ProfileEditor.mirrorUUIDs.remove(uuid);
             respawn();

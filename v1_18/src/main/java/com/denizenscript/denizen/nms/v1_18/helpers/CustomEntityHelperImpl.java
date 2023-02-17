@@ -110,12 +110,6 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
             playerProfile.setTextureSignature(skinProfile.getTextureSignature());
         }
         UUID uuid = UUID.randomUUID();
-        if (uuid.version() == 4) {
-            long msb = uuid.getMostSignificantBits();
-            msb &= ~0x0000000000004000L;
-            msb |= 0x0000000000002000L;
-            uuid = new UUID(msb, uuid.getLeastSignificantBits());
-        }
         playerProfile.setUniqueId(uuid);
 
         GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
