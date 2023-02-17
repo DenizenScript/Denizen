@@ -68,7 +68,7 @@ public class TablistCommand extends AbstractCommand {
     //
     // @Usage
     // Use to update an existing entry
-    // - tablist update uuid:<[uuid]> display:<red>Red gamemode:spectator
+    // - tablist update uuid:<[uuid]> gamemode:spectator latency:200
     //
     // -->
 

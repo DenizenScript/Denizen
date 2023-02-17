@@ -389,9 +389,9 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public void sendPlayerInfoAddPacket(Player player, EnumSet<ProfileEditMode> editModes, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode, boolean listed) {
-        ProfileEditMode mode = editModes.stream().findFirst().get();
-        ClientboundPlayerInfoPacket.Action action = mode == ProfileEditMode.ADD ? ClientboundPlayerInfoPacket.Action.ADD_PLAYER :
-                (mode == ProfileEditMode.UPDATE_DISPLAY ? ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME : ClientboundPlayerInfoPacket.Action.UPDATE_LATENCY);
+        ProfileEditMode editMode = editModes.stream().findFirst().get();
+        ClientboundPlayerInfoPacket.Action action = editMode == ProfileEditMode.ADD ? ClientboundPlayerInfoPacket.Action.ADD_PLAYER :
+                (editMode == ProfileEditMode.UPDATE_DISPLAY ? ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME : ClientboundPlayerInfoPacket.Action.UPDATE_LATENCY);
         ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(action);
         GameProfile profile = new GameProfile(id, name);
         if (texture != null) {
