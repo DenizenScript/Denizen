@@ -20,7 +20,6 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
@@ -389,20 +388,21 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public void sendPlayerInfoAddPacket(Player player, ProfileEditMode mode, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode) {
-        ClientboundPlayerInfoPacket.Action action = mode == ProfileEditMode.ADD ? ClientboundPlayerInfoPacket.Action.ADD_PLAYER :
-                (mode == ProfileEditMode.UPDATE_DISPLAY ? ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME : ClientboundPlayerInfoPacket.Action.UPDATE_LATENCY);
+    public void sendPlayerInfoAddPacket(Player player, EnumSet<ProfileEditMode> editModes, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode, boolean listed) {
+        ProfileEditMode editMode = editModes.stream().findFirst().get();
+        ClientboundPlayerInfoPacket.Action action = editMode == ProfileEditMode.ADD ? ClientboundPlayerInfoPacket.Action.ADD_PLAYER :
+                (editMode == ProfileEditMode.UPDATE_DISPLAY ? ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME : ClientboundPlayerInfoPacket.Action.UPDATE_LATENCY);
         ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(action);
         GameProfile profile = new GameProfile(id, name);
         if (texture != null) {
             profile.getProperties().put("textures", new Property("textures", texture, signature));
         }
-        packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, latency, GameType.byName(CoreUtilities.toLowerCase(gameMode.name())), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE))));
+        packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, latency, gameMode == null ? null : GameType.byId(gameMode.getValue()), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE))));
         PacketHelperImpl.send(player, packet);
     }
 
     @Override
-    public void sendPlayerRemovePacket(Player player, UUID id) {
+    public void sendPlayerInfoRemovePacket(Player player, UUID id) {
         ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER);
         GameProfile profile = new GameProfile(id, "name");
         packet.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(profile, 0, null, null));

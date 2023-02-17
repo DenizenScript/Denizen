@@ -21,7 +21,6 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
@@ -394,20 +393,28 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public void sendPlayerInfoAddPacket(Player player, ProfileEditMode mode, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode) {
-        boolean listed = true; // TODO: 1.19.3: Add 'listed' input
-        ClientboundPlayerInfoUpdatePacket.Action action = mode == ProfileEditMode.ADD ? ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER : (mode == ProfileEditMode.UPDATE_DISPLAY ? ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME : ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY);
+    public void sendPlayerInfoAddPacket(Player player, EnumSet<ProfileEditMode> editModes, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode, boolean listed) {
+        EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions = EnumSet.noneOf(ClientboundPlayerInfoUpdatePacket.Action.class);
+        for (ProfileEditMode editMode : editModes) {
+            actions.add(switch (editMode) {
+                case ADD -> ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER;
+                case UPDATE_DISPLAY -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME;
+                case UPDATE_LATENCY -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY;
+                case UPDATE_GAME_MODE -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE;
+                case UPDATE_LISTED -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED;
+            });
+        }
         GameProfile profile = new GameProfile(id, name);
         if (texture != null) {
             profile.getProperties().put("textures", new Property("textures", texture, signature));
         }
-        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(id, profile, listed, latency, GameType.byName(CoreUtilities.toLowerCase(gameMode.name())), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE)), null);
-        PacketHelperImpl.send(player, ProfileEditorImpl.createInfoPacket(EnumSet.of(action), Collections.singletonList(entry)));
+        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(id, profile, listed, latency, gameMode == null ? null : GameType.byId(gameMode.getValue()), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE)), null);
+        PacketHelperImpl.send(player, ProfileEditorImpl.createInfoPacket(actions, List.of(entry)));
     }
 
     @Override
-    public void sendPlayerRemovePacket(Player player, UUID id) {
-        PacketHelperImpl.send(player, new ClientboundPlayerInfoRemovePacket(Collections.singletonList(id)));
+    public void sendPlayerInfoRemovePacket(Player player, UUID id) {
+        PacketHelperImpl.send(player, new ClientboundPlayerInfoRemovePacket(List.of(id)));
     }
 
     @Override

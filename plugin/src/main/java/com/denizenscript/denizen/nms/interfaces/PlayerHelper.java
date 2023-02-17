@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,13 +97,13 @@ public abstract class PlayerHelper {
         throw new UnsupportedOperationException();
     }
 
-    public enum ProfileEditMode { ADD, UPDATE_DISPLAY, UPDATE_LATENCY }
+    public enum ProfileEditMode { ADD, UPDATE_DISPLAY, UPDATE_LATENCY, UPDATE_GAME_MODE, UPDATE_LISTED }
 
-    public void sendPlayerInfoAddPacket(Player player, ProfileEditMode mode, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode) {
+    public void sendPlayerInfoAddPacket(Player player, EnumSet<ProfileEditMode> editModes, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode, boolean listed) { // TODO: once minimum version is 1.19 or higher, rename to 'sendPlayerInfoUpdatePacket'
         throw new UnsupportedOperationException();
     }
 
-    public void sendPlayerRemovePacket(Player player, UUID id) {
+    public void sendPlayerInfoRemovePacket(Player player, UUID id) {
         throw new UnsupportedOperationException();
     }
 
