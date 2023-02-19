@@ -232,6 +232,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerStatisticIncrementsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSteersEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStepsOnScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            ScriptEvent.registerScriptEvent(PlayerStopsDamagingBlockScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(PlayerSwapsItemsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerTakesFromFurnaceScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerTakesFromLecternScriptEvent.class);
