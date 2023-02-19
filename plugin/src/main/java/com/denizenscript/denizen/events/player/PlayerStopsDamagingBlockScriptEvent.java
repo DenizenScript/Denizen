@@ -36,7 +36,7 @@ public class PlayerStopsDamagingBlockScriptEvent extends BukkitScriptEvent imple
     //
     // @Usage
     // on player stops damaging infested*:
-    // - narrate "NO! IT'S SILVERFISH TIME!"
+    // - narrate "It's Silverfish time!"
     // - spawn silverfish|silverfish|silverfish|silverfish|silverfish <context.location> persistent
     // -->
 
