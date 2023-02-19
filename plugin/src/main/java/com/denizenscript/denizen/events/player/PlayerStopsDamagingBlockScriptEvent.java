@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -24,17 +25,19 @@ public class PlayerStopsDamagingBlockScriptEvent extends BukkitScriptEvent imple
     //
     // @Triggers when a block stops being damaged by a player.
     //
+    // @Switch with:<item> to only process the event when the player stops hitting the block with a specified item.
+    //
     // @Context
     // <context.location> returns the LocationTag the block no longer being damaged.
     // <context.material> returns the MaterialTag of the block no longer being damaged.
     //
     // @Player Always.
     //
-    // @Usage
+    // @Example
     // on player stops damaging block:
     // - narrate "You were so close to breaking that block! You got this!"
     //
-    // @Usage
+    // @Example
     // on player stops damaging infested*:
     // - narrate "It's Silverfish time!"
     // - spawn silverfish|silverfish|silverfish|silverfish|silverfish <context.location> persistent
@@ -46,6 +49,7 @@ public class PlayerStopsDamagingBlockScriptEvent extends BukkitScriptEvent imple
 
     public PlayerStopsDamagingBlockScriptEvent() {
         registerCouldMatcher("player stops damaging <block>");
+        registerSwitches("with");
     }
 
     @Override
@@ -54,6 +58,9 @@ public class PlayerStopsDamagingBlockScriptEvent extends BukkitScriptEvent imple
             return false;
         }
         if (!path.tryArgObject(3, material)) {
+            return false;
+        }
+        if (!runWithCheck(path, new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()))) {
             return false;
         }
         return super.matches(path);
