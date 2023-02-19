@@ -60,7 +60,7 @@ public class PlayerStopsDamagingBlockScriptEvent extends BukkitScriptEvent imple
         if (!path.tryArgObject(3, material)) {
             return false;
         }
-        if (!runWithCheck(path, new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()))) {
+        if (!runWithCheck(path, new ItemTag(event.getItemInHand()))) {
             return false;
         }
         return super.matches(path);
