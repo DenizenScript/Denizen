@@ -16,8 +16,7 @@ public class PlayerStopsDamagingBlockScriptEvent extends BukkitScriptEvent imple
 
     // <--[event]
     // @Events
-    // player stops damaging block
-    // player stops damaging <material>
+    // player stops damaging <block>
     //
     // @Group Player
     //
@@ -43,9 +42,9 @@ public class PlayerStopsDamagingBlockScriptEvent extends BukkitScriptEvent imple
     // - spawn silverfish|silverfish|silverfish|silverfish|silverfish <context.location> persistent
     // -->
 
-    LocationTag location;
-    MaterialTag material;
-    BlockDamageAbortEvent event;
+    public LocationTag location;
+    public MaterialTag material;
+    public BlockDamageAbortEvent event;
 
     public PlayerStopsDamagingBlockScriptEvent() {
         registerCouldMatcher("player stops damaging <block>");
