@@ -3,7 +3,6 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.PolygonTag;
 import com.denizenscript.denizen.scripts.commands.entity.RemoveCommand;
-import com.denizenscript.denizen.scripts.containers.core.EconomyScriptContainer;
 import com.denizenscript.denizen.tags.core.CustomColorTagBase;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
