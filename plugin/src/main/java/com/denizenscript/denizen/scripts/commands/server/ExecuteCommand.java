@@ -208,7 +208,7 @@ public class ExecuteCommand extends AbstractCommand {
                 ServerCommandEvent sce = new ServerCommandEvent(dcs, command);
                 Bukkit.getPluginManager().callEvent(sce);
                 Denizen.getInstance().getServer().dispatchCommand(dcs, sce.getCommand());
-                scriptEntry.addObject("output", new ListTag(dcs.getOutput()));
+                scriptEntry.saveObject("output", new ListTag(dcs.getOutput()));
                 break;
         }
     }

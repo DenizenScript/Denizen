@@ -283,7 +283,7 @@ public class ClickableCommand extends BracedCommand {
             }
         }
         clickables.put(id, newClickable);
-        scriptEntry.addObject("command", new ElementTag("/denizenclickable " + id));
-        scriptEntry.addObject("id", new ElementTag(id.toString()));
+        scriptEntry.saveObject("command", new ElementTag("/denizenclickable " + id));
+        scriptEntry.saveObject("id", new ElementTag(id.toString()));
     }
 }

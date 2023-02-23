@@ -205,7 +205,7 @@ public class BossBarCommand extends AbstractCommand {
         if (bossBar != null) {
             UUID actualUuid = NMSHandler.instance.getBossbarUUID(bossBar);
             if (actualUuid != null) {
-                scriptEntry.addObject("bar_uuid", new ElementTag(actualUuid.toString()));
+                scriptEntry.saveObject("bar_uuid", new ElementTag(actualUuid.toString()));
             }
         }
     }

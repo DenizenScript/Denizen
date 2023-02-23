@@ -194,9 +194,9 @@ public class DropCommand extends AbstractCommand {
                 }
                 break;
         }
-        scriptEntry.addObject("dropped_entities", entityList);
+        scriptEntry.saveObject("dropped_entities", entityList);
         if (entityList.size() == 1) {
-            scriptEntry.addObject("dropped_entity", entityList.getObject(0));
+            scriptEntry.saveObject("dropped_entity", entityList.getObject(0));
         }
     }
 }

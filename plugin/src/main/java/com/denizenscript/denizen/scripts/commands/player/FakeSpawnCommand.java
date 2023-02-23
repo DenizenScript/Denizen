@@ -126,7 +126,7 @@ public class FakeSpawnCommand extends AbstractCommand {
         }
         else {
             FakeEntity created = FakeEntity.showFakeEntityTo(players, entity, location, duration);
-            scriptEntry.addObject("faked_entity", created.entity);
+            scriptEntry.saveObject("faked_entity", created.entity);
         }
     }
 }
