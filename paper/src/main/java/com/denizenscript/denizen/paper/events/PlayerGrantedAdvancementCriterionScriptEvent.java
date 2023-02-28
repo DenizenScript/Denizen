@@ -40,7 +40,7 @@ public class PlayerGrantedAdvancementCriterionScriptEvent extends BukkitScriptEv
     // - narrate "Good job! You completed some criteria for the advancement: <context.advancement>!"
     //
     // @Example
-    // # This will only narrate when the player is granted the criteria for taming a Calico cat
+    // # This will only narrate when the player is granted the criterion for taming a Calico cat
     // # for the "A Complete Catalogue" advancement.
     // on player granted advancement criterion advancement:minecraft:husbandry/complete_catalogue criterion:minecraft:calico:
     // - narrate "That is a pretty cute Calico cat you have there!"
