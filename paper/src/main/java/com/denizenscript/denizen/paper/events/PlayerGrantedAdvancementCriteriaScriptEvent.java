@@ -40,18 +40,17 @@ public class PlayerGrantedAdvancementCriteriaScriptEvent extends BukkitScriptEve
     // - narrate "Good job! You completed some criteria for the advancement: <context.advancement>!"
     //
     // @Example
-    // # This will only narrate when the player completed some criteria for the "Fishy Business" advancement.
-    // on player granted advancement criteria advancement:minecraft:husbandry/fishy_business:
-    // - narrate "Yay! You caught a fish!"
-    //
-    // @Example
     // # This will only narrate when the player is granted the criteria for taming a Calico cat
     // # for the "A Complete Catalogue" advancement.
     // on player granted advancement criteria advancement:minecraft:husbandry/complete_catalogue criteria:minecraft:calico:
     // - narrate "That is a pretty cute Calico cat you have there!"
+    //
+    // @Example
+    // # This will fire for a custom Denizen advancement called "my_advancement".
+    // on player granted advancement criteria advancement:denizen:my_advancement:
+    // - narrate "You got the advancement!"
     // -->
 
-    // TODO: Test custom advancements
     public PlayerGrantedAdvancementCriteriaScriptEvent() {
         registerCouldMatcher("player granted advancement criteria");
         registerSwitches("advancement", "criteria");
