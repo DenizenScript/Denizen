@@ -176,11 +176,6 @@ public class Handler extends NMSHandler {
     }
 
     @Override
-    public int getPort() {
-        return ((CraftServer) Bukkit.getServer()).getServer().getPort();
-    }
-
-    @Override
     public String getTitle(Inventory inventory) {
         Container nms = ((CraftInventory) inventory).getInventory();
         if (nms instanceof Nameable) {

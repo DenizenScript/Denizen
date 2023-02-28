@@ -82,14 +82,6 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void removeRecipe(NamespacedKey key) {
-        ResourceLocation nmsKey = CraftNamespacedKey.toMinecraft(key);
-        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().recipes.values()) {
-            recipeMap.remove(nmsKey);
-        }
-    }
-
-    @Override
     public void clearDenizenRecipes() {
         for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().recipes.values()) {
             for (ResourceLocation key : new ArrayList<>(recipeMap.keySet())) {

@@ -169,11 +169,6 @@ public class Handler extends NMSHandler {
         return null;
     }
 
-    @Override
-    public int getPort() {
-        return ((CraftServer) Bukkit.getServer()).getServer().getPort();
-    }
-
     public static MethodHandle PAPER_INVENTORY_TITLE_GETTER;
 
     @Override
