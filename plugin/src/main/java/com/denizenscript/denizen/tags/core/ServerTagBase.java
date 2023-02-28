@@ -2471,9 +2471,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
     }
 
     public static void listDeprecateWarn(Attribute attribute) {
-        if (CoreConfiguration.futureWarningsEnabled && attribute.getAttribute(1).startsWith("list_")) {
+        if (attribute.getAttributeWithoutParam(1).startsWith("list_")) {
             BukkitImplDeprecations.listStyleTags.warn(attribute.context);
-            Debug.echoError("Tag '" + attribute.getAttribute(1) + "' is deprecated: remove the 'list_' prefix.");
         }
     }
 
