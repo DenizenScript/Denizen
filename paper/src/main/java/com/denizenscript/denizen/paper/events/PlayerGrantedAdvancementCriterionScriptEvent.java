@@ -9,11 +9,11 @@ import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class PlayerGrantedAdvancementCriteriaScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerGrantedAdvancementCriterionScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player granted advancement criteria
+    // player granted advancement criterion
     //
     // @Group Paper
     //
@@ -21,42 +21,42 @@ public class PlayerGrantedAdvancementCriteriaScriptEvent extends BukkitScriptEve
     //
     // @Cancellable true
     //
-    // @Switch advancement:<name> to only fire if the advancement for the criteria has the specified name.
-    // @Switch criteria:<name> to only fire if the criteria being granted has the specified name.
+    // @Switch advancement:<name> to only fire if the advancement for the criterion has the specified name.
+    // @Switch criterion:<name> to only fire if the criterion being granted has the specified name.
     //
-    // @Triggers when a player is granted any criteria for an advancement.
+    // @Triggers when a player is granted advancement criterion for an advancement.
     // To fire when ALL the criteria for an advancement is met, use <@link event player completes advancement>
     //
     // @Context
     // <context.advancement> returns the advancement's minecraft ID key.
-    // <context.criteria> returns the criteria minecraft ID key.
+    // <context.criterion> returns the criterion minecraft ID key.
     //
     // @Player Always.
     //
     // @Example
     // # This can narrate something like:
     // # "Good job! You completed some criteria for the advancement: minecraft:story/root!"
-    // on player granted advancement criteria:
+    // on player granted advancement criterion:
     // - narrate "Good job! You completed some criteria for the advancement: <context.advancement>!"
     //
     // @Example
     // # This will only narrate when the player is granted the criteria for taming a Calico cat
     // # for the "A Complete Catalogue" advancement.
-    // on player granted advancement criteria advancement:minecraft:husbandry/complete_catalogue criteria:minecraft:calico:
+    // on player granted advancement criterion advancement:minecraft:husbandry/complete_catalogue criterion:minecraft:calico:
     // - narrate "That is a pretty cute Calico cat you have there!"
     //
     // @Example
     // # This will fire for a custom Denizen advancement called "my_advancement".
-    // on player granted advancement criteria advancement:denizen:my_advancement:
+    // on player granted advancement criterion advancement:denizen:my_advancement:
     // - narrate "You got the advancement!"
     // -->
 
-    public PlayerGrantedAdvancementCriteriaScriptEvent() {
-        registerCouldMatcher("player granted advancement criteria");
-        registerSwitches("advancement", "criteria");
+    public PlayerGrantedAdvancementCriterionScriptEvent() {
+        registerCouldMatcher("player granted advancement criterion");
+        registerSwitches("advancement", "criterion");
     }
 
-    public ElementTag criteria;
+    public ElementTag criterion;
     public ElementTag advancement;
     public PlayerAdvancementCriterionGrantEvent event;
 
@@ -65,7 +65,7 @@ public class PlayerGrantedAdvancementCriteriaScriptEvent extends BukkitScriptEve
         if (!path.tryObjectSwitch("advancement", advancement)) {
             return false;
         }
-        if (!path.tryObjectSwitch("criteria", criteria)) {
+        if (!path.tryObjectSwitch("criterion", criterion)) {
             return false;
         }
         return super.matches(path);
@@ -79,7 +79,7 @@ public class PlayerGrantedAdvancementCriteriaScriptEvent extends BukkitScriptEve
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "criteria" -> criteria;
+            case "criterion" -> criterion;
             case "advancement" -> advancement;
             default -> super.getContext(name);
         };
@@ -88,7 +88,7 @@ public class PlayerGrantedAdvancementCriteriaScriptEvent extends BukkitScriptEve
     @EventHandler
     public void playerGrantedAdvancementCriterionEvent(PlayerAdvancementCriterionGrantEvent event) {
         this.event = event;
-        criteria = new ElementTag(event.getCriterion());
+        criterion = new ElementTag(event.getCriterion());
         advancement = new ElementTag(event.getAdvancement().getKey().toString());
         fire(event);
     }
