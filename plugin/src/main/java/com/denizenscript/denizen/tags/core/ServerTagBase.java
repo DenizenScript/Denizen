@@ -16,7 +16,6 @@ import com.denizenscript.denizen.utilities.inventory.BrewingRecipe;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.*;
@@ -26,7 +25,9 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
 import com.denizenscript.denizencore.scripts.commands.core.SQLCommand;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.tags.*;
+import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.PseudoObjectTagBase;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.core.UtilTagBase;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -35,7 +36,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
@@ -73,7 +73,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
 
@@ -207,6 +206,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Note: this will produce an error if all recipes of any one type have been removed from the server, due to an error in Spigot.
         // -->
         tagProcessor.registerTag(ListTag.class, "recipe_ids", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             String type = attribute.hasParam() ? CoreUtilities.toLowerCase(attribute.getParam()) : null;
             ListTag result = new ListTag();
             if (type == null || !type.equals("brewing")) {
@@ -321,7 +321,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Brewing recipes are only supported on Paper, and only custom ones are available.
         // -->
         tagProcessor.registerTag(ItemTag.class, ElementTag.class, "recipe_result", (attribute, object, input) -> {
-            NamespacedKey recipeKey = Utilities.parseNamespacedKey(attribute.getParam());
+            NamespacedKey recipeKey = Utilities.parseNamespacedKey(input.asString());
             Recipe recipe = Bukkit.getRecipe(recipeKey);
             if (recipe != null) {
                 return new ItemTag(recipe.getResult());
@@ -350,8 +350,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         });
 
         tagProcessor.registerTag(ObjectTag.class, "scoreboard", (attribute, object) -> {
-            Scoreboard board;
             String name = "main";
+            Scoreboard board;
             if (attribute.hasParam()) {
                 name = attribute.getParam();
                 board = ScoreboardHelper.getScoreboard(name);
@@ -547,9 +547,9 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns whether the server's whitelist is active.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "has_whitelist", ((attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "has_whitelist", (attribute, object) -> {
             return new ElementTag(Bukkit.hasWhitelist());
-        }));
+        });
 
         // <--[tag]
         // @attribute <server.whitelisted_players>
@@ -557,13 +557,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns a list of all players whitelisted on this server.
         // -->
-        tagProcessor.registerTag(ListTag.class, "whitelisted_players", ((attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "whitelisted_players", (attribute, object) -> {
             ListTag result = new ListTag();
             for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
                 result.addObject(new PlayerTag(player));
             }
             return result;
-        }));
+        });
 
         // <--[tag]
         // @attribute <server.has_flag[<flag_name>]>
@@ -620,7 +620,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns a list of all available gamerules on the server.
         // -->
-        tagProcessor.registerTag(ListTag.class, "gamerules", (attribute, object) -> {
+        tagProcessor.registerStaticTag(ListTag.class, "gamerules", (attribute, object) -> {
             ListTag result = new ListTag();
             for (GameRule<?> rule : GameRule.values()) {
                 result.add(rule.getName());
@@ -636,6 +636,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all available NPC traits on the server.
         // -->
         tagProcessor.registerTag(ListTag.class, "traits", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag result = new ListTag();
             for (TraitInfo trait : CitizensAPI.getTraitFactory().getRegisteredTraits()) {
                 result.add(trait.getTraitName());
@@ -650,6 +651,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all registered command names in Bukkit.
         // -->
         tagProcessor.registerTag(ListTag.class, "commands", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             CommandScriptHelper.init();
             return new ListTag(CommandScriptHelper.knownCommands.keySet());
         }, "list_commands");
@@ -676,7 +678,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // This is only their Bukkit names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Color.html>.
         // This also includes "transparent" as defined by ColorTag.
         // -->
-        tagProcessor.registerTag(ListTag.class, "color_names", (attribute, object) -> {
+        tagProcessor.registerStaticTag(ListTag.class, "color_names", (attribute, object) -> {
             ListTag result = new ListTag(ColorTag.colorsByName.size());
             result.addAll(ColorTag.colorsByName.keySet());
             return result;
@@ -690,13 +692,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Generally used with <@link tag EntityTag.painting> and <@link mechanism EntityTag.painting>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Art.html>.
         // -->
-        tagProcessor.registerTag(ListTag.class, "art_types", (attribute, object) -> {
-            ListTag result = new ListTag();
-            for (Art art : Art.values()) {
-                result.add(art.name());
-            }
-            return result;
-        });
+        registerEnumListTag("art_types", Art.class);
 
         // <--[tag]
         // @attribute <server.advancement_types>
@@ -707,6 +703,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // See also <@link url https://minecraft.fandom.com/wiki/Advancement>.
         // -->
         tagProcessor.registerTag(ListTag.class, "advancement_types", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag result = new ListTag();
             Bukkit.advancementIterator().forEachRemaining(adv -> result.add(adv.getKey().toString()));
             return result;
@@ -720,13 +717,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Generally used with <@link tag EntityTag.has_attribute>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>.
         // -->
-        tagProcessor.registerTag(ListTag.class, "nbt_attribute_types", (attribute, object) -> {
-            ListTag result = new ListTag();
-            for (org.bukkit.attribute.Attribute attribType : org.bukkit.attribute.Attribute.values()) {
-                result.add(attribType.name());
-            }
-            return result;
-        }, "list_nbt_attribute_types");
+        registerEnumListTag("nbt_attribute_types", org.bukkit.attribute.Attribute.class, "list_nbt_attribute_types");
 
         // <--[tag]
         // @attribute <server.damage_causes>
@@ -736,13 +727,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Generally used with <@link event entity damaged>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html>.
         // -->
-        tagProcessor.registerTag(ListTag.class, "damage_causes", (attribute, object) -> {
-            ListTag result = new ListTag();
-            for (EntityDamageEvent.DamageCause damageCause : EntityDamageEvent.DamageCause.values()) {
-                result.add(damageCause.name());
-            }
-            return result;
-        }, "list_damage_causes");
+        registerEnumListTag("damage_causes", EntityDamageEvent.DamageCause.class, "list_damage_causes");
 
         // <--[tag]
         // @attribute <server.teleport_causes>
@@ -752,13 +737,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Generally used with <@link event entity teleports>.
         // See <@link language teleport cause> for the current list of causes.
         // -->
-        tagProcessor.registerTag(ListTag.class, "teleport_causes", (attribute, object) -> {
-            ListTag result = new ListTag();
-            for (PlayerTeleportEvent.TeleportCause teleportCause : PlayerTeleportEvent.TeleportCause.values()) {
-                result.add(teleportCause.name());
-            }
-            return result;
-        });
+        registerEnumListTag("teleport_causes", PlayerTeleportEvent.TeleportCause.class);
 
         // <--[tag]
         // @attribute <server.biome_types>
@@ -768,7 +747,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Generally used with <@link objecttype BiomeTag>.
         // This is based on Bukkit Biome enum, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>.
         // -->
-        tagProcessor.registerTag(ListTag.class, "biome_types", (attribute, object) -> {
+        tagProcessor.registerStaticTag(ListTag.class, "biome_types", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag result = new ListTag();
             for (Biome biome : Biome.values()) {
                 if (biome != Biome.CUSTOM) {
@@ -980,7 +960,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Optionally, specify a type to limit to statistics of a given type. Can be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Statistic.Type.html>.
         // Refer also to <@link tag server.statistic_type>.
         // -->
-        tagProcessor.registerTag(ListTag.class, "statistic_types", (attribute, object) -> {
+        tagProcessor.registerStaticTag(ListTag.class, "statistic_types", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             Statistic.Type type = attribute.hasParam() ? attribute.getParamElement().asEnum(Statistic.Type.class) : null;
             ListTag statisticTypes = new ListTag();
             for (Statistic statistic : Statistic.values()) {
@@ -1003,6 +984,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // It is unclear why the "StructureType" class in Bukkit is not simply an enum as most similar listings are.
         // -->
         tagProcessor.registerTag(ListTag.class, "structure_types", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             return new ListTag(StructureType.getStructureTypes().keySet());
         }, "list_structure_types");
 
@@ -1014,7 +996,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Generally relevant to usage with <@link tag PlayerTag.statistic.qualifier>.
         // Refer also to <@link tag server.statistic_types>.
         // -->
-        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "statistic_type", (attribute, object, input) -> {
+        tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "statistic_type", (attribute, object, input) -> {
             Statistic statistic = input.asEnum(Statistic.class);
             if (statistic == null) {
                 attribute.echoError("Statistic '" + input + "' does not exist.");
@@ -1107,6 +1089,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of NPCs with a certain name.
         // -->
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "npcs_named", (attribute, object, input) -> {
+            listDeprecateWarn(attribute);
             ListTag npcs = new ListTag();
             String name = input.asLowerString();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
@@ -1124,7 +1107,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns whether the server has a known permission plugin loaded.
         // Note: should not be considered incredibly reliable.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "has_permissions", (attribute, object) -> {
+        tagProcessor.registerStaticTag(ElementTag.class, "has_permissions", (attribute, object) -> {
             return new ElementTag(Depends.permissions != null && Depends.permissions.isEnabled());
         });
 
@@ -1145,7 +1128,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns the version of Denizen currently being used.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "denizen_version", (attribute, object) -> {
+        tagProcessor.registerStaticTag(ElementTag.class, "denizen_version", (attribute, object) -> {
             return new ElementTag(Denizen.versionTag);
         });
 
@@ -1155,7 +1138,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns the version of Bukkit currently being used.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "bukkit_version", (attribute, object) -> {
+        tagProcessor.registerStaticTag(ElementTag.class, "bukkit_version", (attribute, object) -> {
             return new ElementTag(Bukkit.getBukkitVersion());
         });
 
@@ -1165,8 +1148,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns the version of the server.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "version", (attribute, object) -> {
-            return new ElementTag(Bukkit.getServer().getVersion());
+        tagProcessor.registerStaticTag(ElementTag.class, "version", (attribute, object) -> {
+            return new ElementTag(Bukkit.getVersion());
         });
 
         // <--[tag]
@@ -1176,7 +1159,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns the maximum number of players allowed on the server.
         // -->
         tagProcessor.registerTag(ElementTag.class, "max_players", (attribute, object) -> {
-            return new ElementTag(Bukkit.getServer().getMaxPlayers());
+            return new ElementTag(Bukkit.getMaxPlayers());
         });
 
         // <--[tag]
@@ -1254,6 +1237,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all permission groups on the server.
         // -->
         tagProcessor.registerTag(ListTag.class, "permission_groups", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             if (Depends.permissions == null) {
                 attribute.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 return null;
@@ -1334,11 +1318,12 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all NPCs assigned to a specified script.
         // -->
         tagProcessor.registerTag(ListTag.class, ScriptTag.class, "npcs_assigned", (attribute, object, script) -> {
+            listDeprecateWarn(attribute);
             if (Depends.citizens == null) {
                 return null;
             }
             if (!(script.getContainer() instanceof AssignmentScriptContainer assignmentScriptContainer)) {
-                attribute.echoError("Invalid script specified.");
+                attribute.echoError("Invalid script '" + script + "' specified: must be an assignment script.");
                 return null;
             }
             ListTag npcs = new ListTag();
@@ -1358,6 +1343,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Can use "!<flag_name>" style to only return players *without* the flag.
         // -->
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "online_players_flagged", (attribute, object, input) -> {
+            listDeprecateWarn(attribute);
             String flag = input.asString();
             ListTag players = new ListTag();
             boolean want = true;
@@ -1383,6 +1369,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Can use "!<flag_name>" style to only return players *without* the flag.
         // -->
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "players_flagged", (attribute, object, input) -> {
+            listDeprecateWarn(attribute);
             String flag = input.asString();
             ListTag players = new ListTag();
             boolean want = true;
@@ -1407,6 +1394,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Can use "!<flag_name>" style to only return NPCs *without* the flag.
         // -->
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "spawned_npcs_flagged", (attribute, object, input) -> {
+            listDeprecateWarn(attribute);
             if (Depends.citizens == null) {
                 return null;
             }
@@ -1434,6 +1422,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Can use "!<flag_name>" style to only return NPCs *without* the flag.
         // -->
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "npcs_flagged", (attribute, object, input) -> {
+            listDeprecateWarn(attribute);
             if (Depends.citizens == null) {
                 return null;
             }
@@ -1477,10 +1466,10 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all NPCs.
         // -->
         tagProcessor.registerTag(ListTag.class, "npcs", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             if (Depends.citizens == null) {
                 return null;
             }
-            ListTag npcs = new ListTag();
             NPCRegistry registry = CitizensAPI.getNPCRegistry();
             if (attribute.hasParam()) {
                 registry = NPCTag.getRegistryByName(attribute.getParam());
@@ -1489,6 +1478,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                     return null;
                 }
             }
+            ListTag npcs = new ListTag();
             for (NPC npc : registry) {
                 npcs.addObject(new NPCTag(npc));
             }
@@ -1502,6 +1492,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all worlds.
         // -->
         tagProcessor.registerTag(ListTag.class, "worlds", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag worlds = new ListTag();
             for (World world : Bukkit.getWorlds()) {
                 worlds.addObject(WorldTag.mirrorBukkitWorld(world));
@@ -1516,6 +1507,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Gets a list of currently enabled PluginTags from the server.
         // -->
         tagProcessor.registerTag(ListTag.class, "plugins", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag plugins = new ListTag();
             for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
                 plugins.addObject(new PluginTag(plugin));
@@ -1530,6 +1522,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all players that have ever played on the server, online or not.
         // -->
         tagProcessor.registerTag(ListTag.class, "players", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             OfflinePlayer[] offlinePlayers = Bukkit.getOfflinePlayers();
             ListTag players = new ListTag(offlinePlayers.length);
             for (OfflinePlayer player : offlinePlayers) {
@@ -1545,6 +1538,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all online players.
         // -->
         tagProcessor.registerTag(ListTag.class, "online_players", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag players = new ListTag();
             for (Player player : Bukkit.getOnlinePlayers()) {
                 players.addObject(PlayerTag.mirrorBukkitPlayer(player));
@@ -1560,6 +1554,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // This specifically excludes currently online players.
         // -->
         tagProcessor.registerTag(ListTag.class, "offline_players", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag players = new ListTag();
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (!player.isOnline()) {
@@ -1576,6 +1571,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all banned players.
         // -->
         tagProcessor.registerTag(ListTag.class, "banned_players", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag banned = new ListTag();
             for (OfflinePlayer player : Bukkit.getBannedPlayers()) {
                 banned.addObject(PlayerTag.mirrorBukkitPlayer(player));
@@ -1590,6 +1586,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all banned ip addresses.
         // -->
         tagProcessor.registerTag(ListTag.class, "banned_addresses", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag list = new ListTag();
             list.addAll(Bukkit.getIPBans());
             return list;
@@ -1624,14 +1621,14 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             // Returns the expiration of the ip address's ban, if it is banned.
             // Potentially can be null.
             // -->
-            if (attribute.startsWith("expiration_time", 2) && expiration != null) {
+            if (attribute.startsWith("expiration_time", 2)) {
                 attribute.fulfill(1);
-                return new TimeTag(expiration.getTime());
+                return expiration != null ? new TimeTag(expiration.getTime()) : null;
             }
-            if (attribute.startsWith("expiration", 2) && expiration != null) {
+            if (attribute.startsWith("expiration", 2)) {
                 attribute.fulfill(1);
                 Deprecations.timeTagRewrite.warn(attribute.context);
-                return new DurationTag(expiration.getTime() / 50);
+                return expiration != null ? new DurationTag(expiration.getTime() / 50) : null;
             }
 
             // <--[tag]
@@ -1682,6 +1679,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all ops, online or not.
         // -->
         tagProcessor.registerTag(ListTag.class, "ops", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag players = new ListTag();
             for (OfflinePlayer player : Bukkit.getOperators()) {
                 players.addObject(PlayerTag.mirrorBukkitPlayer(player));
@@ -1696,6 +1694,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all online ops.
         // -->
         tagProcessor.registerTag(ListTag.class, "online_ops", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag players = new ListTag();
             for (OfflinePlayer player : Bukkit.getOperators()) {
                 if (player.isOnline()) {
@@ -1712,6 +1711,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all offline ops.
         // -->
         tagProcessor.registerTag(ListTag.class, "offline_ops", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag players = new ListTag();
             for (OfflinePlayer player : Bukkit.getOperators()) {
                 if (!player.isOnline()) {
@@ -1834,16 +1834,16 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @attribute <server.vanilla_tagged_entities[<tag>]>
         // @returns ListTag(EntityTag)
         // @description
-        // Returns a list of materials referred to by the specified vanilla tag. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // Returns a list of entity types referred to by the specified vanilla tag. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
         // -->
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "vanilla_tagged_entities", (attribute, object, tag) -> {
-            Set<EntityType> types = VanillaTagHelper.entityTagsByKey.get(tag.asLowerString());
-            if (types == null) {
+            Set<EntityType> entityTypes = VanillaTagHelper.entityTagsByKey.get(tag.asLowerString());
+            if (entityTypes == null) {
                 return null;
             }
-            ListTag taggedEntities = new ListTag(types.size());
-            for (EntityType type : types) {
-                taggedEntities.addObject(new EntityTag(type));
+            ListTag taggedEntities = new ListTag(entityTypes.size());
+            for (EntityType entityType : entityTypes) {
+                taggedEntities.addObject(new EntityTag(entityType));
             }
             return taggedEntities;
         });
@@ -1885,10 +1885,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // This is a primarily a dev tool and is not necessarily useful to most players or scripts.
         // -->
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "plugins_handling_event", (attribute, object, input) -> {
+            listDeprecateWarn(attribute);
             String eventName = input.asString();
             if (CoreUtilities.contains(eventName, '.')) {
                 try {
-                    Class clazz = Class.forName(eventName, false, ServerTagBase.class.getClassLoader());
+                    Class<?> clazz = Class.forName(eventName, false, ServerTagBase.class.getClassLoader());
                     ListTag result = getHandlerPluginList(clazz);
                     if (result != null) {
                         return result;
@@ -2262,15 +2263,16 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         });
     }
 
-    public void registerEnumListTag(String name, Class<? extends Enum<?>> enumType, String deprecatedVariant) {
+    public void registerEnumListTag(String name, Class<? extends Enum<?>> enumType, String... deprecatedVariants) {
         tagProcessor.registerStaticTag(ListTag.class, name, (attribute, object) -> {
+            listDeprecateWarn(attribute);
             Enum<?>[] enumConstants = enumType.getEnumConstants();
             ListTag result = new ListTag(enumConstants.length);
             for (Enum<?> constant : enumConstants) {
                 result.addObject(new ElementTag(constant));
             }
             return result;
-        }, deprecatedVariant);
+        }, deprecatedVariants);
     }
 
     @Override
