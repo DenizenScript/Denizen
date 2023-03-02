@@ -911,6 +911,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Refer also to <@link tag server.potion_types>.
         // -->
         tagProcessor.registerTag(ListTag.class, "potion_effect_types", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag potionEffectTypes = new ListTag();
             for (PotionEffectType potionEffectType : PotionEffectType.values()) {
                 if (potionEffectType != null) {
@@ -1026,6 +1027,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
 
         // Historical variants of "notes" tag
         tagProcessor.registerTag(ListTag.class, "notables", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             BukkitImplDeprecations.serverUtilTags.warn(attribute.context);
             ListTag allNotables = new ListTag();
             if (attribute.hasParam()) {
@@ -1048,6 +1050,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         }, "list_notables");
         // Historical variant of "sql_connections" tag
         tagProcessor.registerTag(ListTag.class, "list_sql_connections", (attribute, object) -> {
+            BukkitImplDeprecations.listStyleTags.warn(attribute.context);
+            BukkitImplDeprecations.serverUtilTags.warn(attribute.context);
             ListTag list = new ListTag();
             for (Map.Entry<String, Connection> entry : SQLCommand.connections.entrySet()) {
                 try {
@@ -1066,6 +1070,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         });
         // Historical variant of "scripts" tag
         tagProcessor.registerTag(ListTag.class, "list_scripts", (attribute, object) -> {
+            BukkitImplDeprecations.listStyleTags.warn(attribute.context);
+            BukkitImplDeprecations.serverUtilTags.warn(attribute.context);
             ListTag scripts = new ListTag();
             for (ScriptContainer script : ScriptRegistry.scriptContainers.values()) {
                 scripts.addObject(new ScriptTag(script));
