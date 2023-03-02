@@ -867,13 +867,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Generally used with <@link command playsound>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html>.
         // -->
-        tagProcessor.registerTag(ListTag.class, "sound_types", (attribute, object) -> {
-            ListTag sounds = new ListTag();
-            for (Sound sound : Sound.values()) {
-                sounds.add(sound.name());
-            }
-            return sounds;
-        }, "list_sounds");
+        registerEnumListTag("sound_types", Sound.class, "list_sounds");
 
         // <--[tag]
         // @attribute <server.particle_types>
@@ -884,13 +878,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html>.
         // Refer also to <@link tag server.effect_types>.
         // -->
-        tagProcessor.registerTag(ListTag.class, "particle_types", (attribute, object) -> {
-            ListTag particleTypes = new ListTag();
-            for (Particle particle : Particle.values()) {
-                particleTypes.add(particle.name());
-            }
-            return particleTypes;
-        }, "list_particles");
+        registerEnumListTag("particle_types", Particle.class, "list_particles");
 
         // <--[tag]
         // @attribute <server.effect_types>
@@ -901,13 +889,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Effect.html>.
         // Refer also to <@link tag server.particle_types>.
         // -->
-        tagProcessor.registerTag(ListTag.class, "effect_types", (attribute, object) -> {
-            ListTag effectTypes = new ListTag();
-            for (Effect effect : Effect.values()) {
-                effectTypes.add(effect.name());
-            }
-            return effectTypes;
-        }, "list_effects");
+        registerEnumListTag("effect_types", Effect.class, "list_effects");
 
         // <--[tag]
         // @attribute <server.pattern_types>
@@ -918,13 +900,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/banner/PatternType.html>.
         // -->
         registerEnumListTag("pattern_types", PatternType.class, "list_patterns");
-//        tagProcessor.registerTag(ListTag.class, "pattern_types", (attribute, object) -> {
-//            ListTag patternTypes = new ListTag();
-//            for (PatternType patternType : PatternType.values()) {
-//                patternTypes.add(patternType.name());
-//            }
-//            return patternTypes;
-//        }, "list_patterns");
 
         // <--[tag]
         // @attribute <server.potion_effect_types>
