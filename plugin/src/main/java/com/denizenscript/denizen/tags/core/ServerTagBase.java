@@ -426,7 +426,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 return result;
             }
 
-            if (attribute.startsWith("objective") && attribute.hasContext(2)) {
+            if (attribute.startsWith("objective", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 Objective objective = board.getObjective(attribute.getParam());
                 if (objective == null) {
