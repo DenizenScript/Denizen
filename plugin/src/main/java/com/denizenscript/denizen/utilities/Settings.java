@@ -48,6 +48,7 @@ public class Settings {
         CoreConfiguration.webserverRoot = config.getString("Commands.WebServer.Webroot", "webroot/");
         CoreConfiguration.allowFileRead = config.getBoolean("Commands.File.Allow read", false);
         CoreConfiguration.allowFileWrite = config.getBoolean("Commands.File.Allow write", false);
+        CoreConfiguration.allowFileDeletion = config.getBoolean("Commands.Delete.Allow file deletion", true);
         CoreConfiguration.filePathLimit = config.getString("Commands.File.Restrict path", "data/");
         CoreConfiguration.verifyThreadMatches = config.getBoolean("Debug.Verify thread", false);
         CoreConfiguration.queueIdPrefix = config.getBoolean("Queues.Id parts.Prefix", true);
@@ -99,7 +100,6 @@ public class Settings {
         cache_engageTimeoutInSeconds = config.getString("Commands.Engage.Timeout", "150s");
         cache_createWorldSymbols = config.getBoolean("Commands.CreateWorld.Allow symbols in names", false);
         cache_createWorldWeirdPaths = config.getBoolean("Commands.CreateWorld.Allow weird paths", false);
-        cache_allowDelete = config.getBoolean("Commands.Delete.Allow file deletion", true);
         cache_allowServerStop = config.getBoolean("Commands.Restart.Allow server stop", false);
         cache_allowServerRestart = config.getBoolean("Commands.Restart.Allow server restart", true);
         cache_limitPath = config.getString("Commands.Yaml.Limit path", "none");
@@ -153,8 +153,7 @@ public class Settings {
     public static boolean cache_overrideHelp,
             cache_showExHelp, cache_showExDebug, cache_canRecordStats,
             cache_defaultDebugMode, cache_healthTraitEnabledByDefault, cache_healthTraitAnimatedDeathEnabled,
-            cache_healthTraitRespawnEnabled, cache_allowDelete,
-            cache_allowServerStop, cache_allowServerRestart,
+            cache_healthTraitRespawnEnabled, cache_allowServerStop, cache_allowServerRestart,
             cache_healthTraitBlockDrops, cache_chatAsynchronous, cache_chatMustSeeNPC, cache_chatMustLookAtNPC,
             cache_chatGloballyIfFailedChatTriggers, cache_chatGloballyIfNoChatTriggers,
             cache_chatGloballyIfUninteractable, cache_worldScriptChatEventAsynchronous,
@@ -292,10 +291,6 @@ public class Settings {
     public static boolean allowStupidx() {
         return Denizen.getInstance().getConfig()
                 .getBoolean("Commands.General.Don't change this unrestricted file access option though", false);
-    }
-
-    public static boolean allowDelete() {
-        return cache_allowDelete;
     }
 
     public static boolean allowServerStop() {

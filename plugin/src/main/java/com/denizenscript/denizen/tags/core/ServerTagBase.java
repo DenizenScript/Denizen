@@ -98,7 +98,42 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             BukkitImplDeprecations.globalTagName.warn(attribute.context);
             return null;
         });
-        AdjustCommand.specialAdjustables.put("server", mechanism -> tagProcessor.processMechanism(instance, mechanism));
+
+        // <--[mechanism]
+        // @object server
+        // @name delete_file
+        // @input ElementTag
+        // @deprecated use system.delete_file
+        // @description
+        // Deprecated in favor of <@link mechanism system.delete_file>
+        // -->
+
+        // <--[mechanism]
+        // @object server
+        // @name reset_event_stats
+        // @input None
+        // @deprecated use system.reset_event_stats
+        // @description
+        // Deprecated in favor of <@link mechanism system.reset_event_stats>
+        // -->
+
+        // <--[mechanism]
+        // @object server
+        // @name cleanmem
+        // @input None
+        // @deprecated use system.cleanmem
+        // @description
+        // Deprecated in favor of <@link mechanism system.cleanmem>
+        // -->
+        AdjustCommand.specialAdjustables.put("server", mechanism -> {
+            switch (mechanism.getName()) {
+                case "delete_file", "reset_event_stats", "cleanmem" -> {
+                    BukkitImplDeprecations.serverSystemMechanisms.warn(mechanism.context);
+                    UtilTagBase.adjustSystem(mechanism);
+                }
+                default -> tagProcessor.processMechanism(instance, mechanism);
+            }
+        });
     }
 
     @Override
@@ -2024,57 +2059,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
 
         // <--[mechanism]
         // @object server
-        // @name delete_file
-        // @input ElementTag
-        // @description
-        // Deletes the given file from the server.
-        // File path starts in the Denizen folder.
-        // Require config file setting "Commands.Delete.Allow file deletion".
-        // @example
-        // - adjust server delete_file:schematics/house.schem
-        // @tags
-        // <server.has_file[<file>]>
-        // -->
-        tagProcessor.registerMechanism("delete_file", false, ElementTag.class, (object, mechanism, input) -> {
-            if (!Settings.allowDelete()) {
-                Debug.echoError("File deletion disabled by administrator (refer to mechanism documentation).");
-                return;
-            }
-            File file = new File(Denizen.getInstance().getDataFolder(), input.asString());
-            if (!Utilities.canWriteToFile(file)) {
-                Debug.echoError("Cannot write to that file path due to security settings in Denizen/config.yml.");
-                return;
-            }
-            try {
-                if (!file.delete()) {
-                    Debug.echoError("Failed to delete file: returned false");
-                }
-            }
-            catch (Exception e) {
-                Debug.echoError("Failed to delete file: " + e.getMessage());
-            }
-        });
-
-        // <--[mechanism]
-        // @object server
-        // @name reset_event_stats
-        // @input None
-        // @description
-        // Resets the statistics on events used for <@link tag util.event_stats>
-        // @tags
-        // <util.event_stats>
-        // <util.event_stats_data>
-        // -->
-        tagProcessor.registerMechanism("reset_event_stats", false, (object, mechanism) -> {
-            for (ScriptEvent se : ScriptEvent.events) {
-                se.eventData.stats_fires = 0;
-                se.eventData.stats_scriptFires = 0;
-                se.eventData.stats_nanoTimes = 0;
-            }
-        });
-
-        // <--[mechanism]
-        // @object server
         // @name reset_recipes
         // @input None
         // @description
@@ -2117,21 +2101,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerMechanism("idle_timeout", false, DurationTag.class, (object, mechanism, timeout) -> {
             Bukkit.setIdleTimeout((int) Math.round(timeout.getSeconds() / 60));
-        });
-
-        // <--[mechanism]
-        // @object server
-        // @name cleanmem
-        // @input None
-        // @description
-        // Suggests to the internal systems that it's a good time to clean the memory.
-        // Does NOT force a memory cleaning.
-        // This should generally not be used unless you have a very good specific reason to use it.
-        // @tags
-        // <server.ram_free>
-        // -->
-        tagProcessor.registerMechanism("cleanmem", false, (object, mechanism) -> {
-            System.gc();
         });
 
         // <--[mechanism]
