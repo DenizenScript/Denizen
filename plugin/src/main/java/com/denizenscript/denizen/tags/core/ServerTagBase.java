@@ -1085,38 +1085,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         });
 
         // <--[tag]
-        // @attribute <server.selected_npc>
-        // @returns NPCTag
-        // @description
-        // Returns the server's currently selected NPC.
-        // -->
-        tagProcessor.registerTag(NPCTag.class, "selected_npc", (attribute, object) -> {
-            if (Depends.citizens == null) {
-                return null;
-            }
-            NPC npc = Depends.citizens.getNPCSelector().getSelected(Bukkit.getConsoleSender());
-            return npc != null ? new NPCTag(npc) : null;
-        });
-
-        // <--[tag]
-        // @attribute <server.npcs_named[<name>]>
-        // @returns ListTag(NPCTag)
-        // @description
-        // Returns a list of NPCs with a certain name.
-        // -->
-        tagProcessor.registerTag(ListTag.class, ElementTag.class, "npcs_named", (attribute, object, input) -> {
-            listDeprecateWarn(attribute);
-            ListTag npcs = new ListTag();
-            String name = input.asLowerString();
-            for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                if (name.equals(CoreUtilities.toLowerCase(npc.getName()))) {
-                    npcs.addObject(new NPCTag(npc));
-                }
-            }
-            return npcs;
-        }, "list_npcs_named");
-
-        // <--[tag]
         // @attribute <server.has_permissions>
         // @returns ElementTag(Boolean)
         // @description
@@ -1328,30 +1296,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         });
 
         // <--[tag]
-        // @attribute <server.npcs_assigned[<assignment_script>]>
-        // @returns ListTag(NPCTag)
-        // @description
-        // Returns a list of all NPCs assigned to a specified script.
-        // -->
-        tagProcessor.registerTag(ListTag.class, ScriptTag.class, "npcs_assigned", (attribute, object, script) -> {
-            listDeprecateWarn(attribute);
-            if (Depends.citizens == null) {
-                return null;
-            }
-            if (!(script.getContainer() instanceof AssignmentScriptContainer assignmentScriptContainer)) {
-                attribute.echoError("Invalid script '" + script + "' specified: must be an assignment script.");
-                return null;
-            }
-            ListTag npcs = new ListTag();
-            for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                if (npc.hasTrait(AssignmentTrait.class) && npc.getTraitNullable(AssignmentTrait.class).isAssigned(assignmentScriptContainer)) {
-                    npcs.addObject(new NPCTag(npc));
-                }
-            }
-            return npcs;
-        }, "list_npcs_assigned");
-
-        // <--[tag]
         // @attribute <server.online_players_flagged[<flag_name>]>
         // @returns ListTag(PlayerTag)
         // @description
@@ -1401,105 +1345,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             }
             return players;
         }, "list_players_flagged");
-
-        // <--[tag]
-        // @attribute <server.spawned_npcs_flagged[<flag_name>]>
-        // @returns ListTag(NPCTag)
-        // @description
-        // Returns a list of all spawned NPCs with a specified flag set.
-        // Can use "!<flag_name>" style to only return NPCs *without* the flag.
-        // -->
-        tagProcessor.registerTag(ListTag.class, ElementTag.class, "spawned_npcs_flagged", (attribute, object, input) -> {
-            listDeprecateWarn(attribute);
-            if (Depends.citizens == null) {
-                return null;
-            }
-            String flag = input.asString();
-            ListTag npcs = new ListTag();
-            boolean want = true;
-            if (flag.startsWith("!")) {
-                want = false;
-                flag = flag.substring(1);
-            }
-            for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                NPCTag npcTag = new NPCTag(npc);
-                if (npcTag.isSpawned() && npcTag.hasFlag(flag) == want) {
-                    npcs.addObject(npcTag);
-                }
-            }
-            return npcs;
-        }, "list_spawned_npcs_flagged");
-
-        // <--[tag]
-        // @attribute <server.npcs_flagged[<flag_name>]>
-        // @returns ListTag(NPCTag)
-        // @description
-        // Returns a list of all NPCs with a specified flag set.
-        // Can use "!<flag_name>" style to only return NPCs *without* the flag.
-        // -->
-        tagProcessor.registerTag(ListTag.class, ElementTag.class, "npcs_flagged", (attribute, object, input) -> {
-            listDeprecateWarn(attribute);
-            if (Depends.citizens == null) {
-                return null;
-            }
-            String flag = input.asString();
-            ListTag npcs = new ListTag();
-            boolean want = true;
-            if (flag.startsWith("!")) {
-                want = false;
-                flag = flag.substring(1);
-            }
-            for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                NPCTag npcTag = new NPCTag(npc);
-                if (npcTag.hasFlag(flag) == want) {
-                    npcs.addObject(npcTag);
-                }
-            }
-            return npcs;
-        }, "list_npcs_flagged");
-
-        // <--[tag]
-        // @attribute <server.npc_registries>
-        // @returns ListTag
-        // @description
-        // Returns a list of all NPC registries.
-        // -->
-        tagProcessor.registerTag(ListTag.class, "npc_registries", (attribute, object) -> {
-            if (Depends.citizens == null) {
-                return null;
-            }
-            ListTag result = new ListTag();
-            for (NPCRegistry registry : CitizensAPI.getNPCRegistries()) {
-                result.add(registry.getName());
-            }
-            return result;
-        });
-
-        // <--[tag]
-        // @attribute <server.npcs[(<registry>)]>
-        // @returns ListTag(NPCTag)
-        // @description
-        // Returns a list of all NPCs.
-        // -->
-        tagProcessor.registerTag(ListTag.class, "npcs", (attribute, object) -> {
-            listDeprecateWarn(attribute);
-            if (Depends.citizens == null) {
-                return null;
-            }
-            NPCRegistry registry = CitizensAPI.getNPCRegistry();
-            if (attribute.hasParam()) {
-                registry = NPCTag.getRegistryByName(attribute.getParam());
-                if (registry == null) {
-                    attribute.echoError("NPC Registry '" + attribute.getParam() + "' does not exist.");
-                    return null;
-                }
-            }
-            ListTag npcs = new ListTag();
-            for (NPC npc : registry) {
-                npcs.addObject(new NPCTag(npc));
-            }
-            return npcs;
-        }, "list_npcs");
 
         // <--[tag]
         // @attribute <server.worlds>
@@ -2114,20 +1959,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             Denizen.getInstance().saveSaves(false);
         });
 
-        if (Depends.citizens != null) {
-
-            // <--[mechanism]
-            // @object server
-            // @name save_citizens
-            // @input None
-            // @description
-            // Immediately saves the Citizens saves files.
-            // -->
-            tagProcessor.registerMechanism("save_citizens", false, (object, mechanism) -> {
-                Depends.citizens.storeNPCs();
-            });
-        }
-
         // <--[mechanism]
         // @object server
         // @name shutdown
@@ -2210,6 +2041,161 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                     CustomColorTagBase.customColors.put(name, pair.getValue().toString().replace("<", "<&lt>"));
                 }
             }
+        });
+
+        if (Depends.citizens != null) {
+            registerCitizensFeatures();
+        }
+    }
+
+    public void registerCitizensFeatures() {
+
+        // <--[tag]
+        // @attribute <server.selected_npc>
+        // @returns NPCTag
+        // @description
+        // Returns the server's currently selected NPC.
+        // -->
+        tagProcessor.registerTag(NPCTag.class, "selected_npc", (attribute, object) -> {
+            NPC npc = Depends.citizens.getNPCSelector().getSelected(Bukkit.getConsoleSender());
+            return npc != null ? new NPCTag(npc) : null;
+        });
+
+        // <--[tag]
+        // @attribute <server.npcs_named[<name>]>
+        // @returns ListTag(NPCTag)
+        // @description
+        // Returns a list of NPCs with a certain name.
+        // -->
+        tagProcessor.registerTag(ListTag.class, ElementTag.class, "npcs_named", (attribute, object, input) -> {
+            listDeprecateWarn(attribute);
+            ListTag npcs = new ListTag();
+            String name = input.asLowerString();
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                if (name.equals(CoreUtilities.toLowerCase(npc.getName()))) {
+                    npcs.addObject(new NPCTag(npc));
+                }
+            }
+            return npcs;
+        }, "list_npcs_named");
+
+        // <--[tag]
+        // @attribute <server.npcs_assigned[<assignment_script>]>
+        // @returns ListTag(NPCTag)
+        // @description
+        // Returns a list of all NPCs assigned to a specified script.
+        // -->
+        tagProcessor.registerTag(ListTag.class, ScriptTag.class, "npcs_assigned", (attribute, object, script) -> {
+            listDeprecateWarn(attribute);
+            if (!(script.getContainer() instanceof AssignmentScriptContainer assignmentScriptContainer)) {
+                attribute.echoError("Invalid script '" + script + "' specified: must be an assignment script.");
+                return null;
+            }
+            ListTag npcs = new ListTag();
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                if (npc.hasTrait(AssignmentTrait.class) && npc.getTraitNullable(AssignmentTrait.class).isAssigned(assignmentScriptContainer)) {
+                    npcs.addObject(new NPCTag(npc));
+                }
+            }
+            return npcs;
+        }, "list_npcs_assigned");
+
+        // <--[tag]
+        // @attribute <server.spawned_npcs_flagged[<flag_name>]>
+        // @returns ListTag(NPCTag)
+        // @description
+        // Returns a list of all spawned NPCs with a specified flag set.
+        // Can use "!<flag_name>" style to only return NPCs *without* the flag.
+        // -->
+        tagProcessor.registerTag(ListTag.class, ElementTag.class, "spawned_npcs_flagged", (attribute, object, input) -> {
+            listDeprecateWarn(attribute);
+            String flag = input.asString();
+            ListTag npcs = new ListTag();
+            boolean want = true;
+            if (flag.startsWith("!")) {
+                want = false;
+                flag = flag.substring(1);
+            }
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                NPCTag npcTag = new NPCTag(npc);
+                if (npcTag.isSpawned() && npcTag.hasFlag(flag) == want) {
+                    npcs.addObject(npcTag);
+                }
+            }
+            return npcs;
+        }, "list_spawned_npcs_flagged");
+
+        // <--[tag]
+        // @attribute <server.npcs_flagged[<flag_name>]>
+        // @returns ListTag(NPCTag)
+        // @description
+        // Returns a list of all NPCs with a specified flag set.
+        // Can use "!<flag_name>" style to only return NPCs *without* the flag.
+        // -->
+        tagProcessor.registerTag(ListTag.class, ElementTag.class, "npcs_flagged", (attribute, object, input) -> {
+            listDeprecateWarn(attribute);
+            String flag = input.asString();
+            ListTag npcs = new ListTag();
+            boolean want = true;
+            if (flag.startsWith("!")) {
+                want = false;
+                flag = flag.substring(1);
+            }
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                NPCTag npcTag = new NPCTag(npc);
+                if (npcTag.hasFlag(flag) == want) {
+                    npcs.addObject(npcTag);
+                }
+            }
+            return npcs;
+        }, "list_npcs_flagged");
+
+        // <--[tag]
+        // @attribute <server.npc_registries>
+        // @returns ListTag
+        // @description
+        // Returns a list of all NPC registries.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "npc_registries", (attribute, object) -> {
+            ListTag result = new ListTag();
+            for (NPCRegistry registry : CitizensAPI.getNPCRegistries()) {
+                result.add(registry.getName());
+            }
+            return result;
+        });
+
+        // <--[tag]
+        // @attribute <server.npcs[(<registry>)]>
+        // @returns ListTag(NPCTag)
+        // @description
+        // Returns a list of all NPCs.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "npcs", (attribute, object) -> {
+            listDeprecateWarn(attribute);
+            NPCRegistry registry = CitizensAPI.getNPCRegistry();
+            if (attribute.hasParam()) {
+                registry = NPCTag.getRegistryByName(attribute.getParam());
+                if (registry == null) {
+                    attribute.echoError("NPC Registry '" + attribute.getParam() + "' does not exist.");
+                    return null;
+                }
+            }
+            ListTag npcs = new ListTag();
+            for (NPC npc : registry) {
+                npcs.addObject(new NPCTag(npc));
+            }
+            return npcs;
+        }, "list_npcs");
+
+        // <--[mechanism]
+        // @object server
+        // @name save_citizens
+        // @input None
+        // @description
+        // Immediately saves the Citizens saves files.
+        // -->
+        tagProcessor.registerMechanism("save_citizens", false, (object, mechanism) -> {
+            Depends.citizens.storeNPCs();
         });
     }
 
