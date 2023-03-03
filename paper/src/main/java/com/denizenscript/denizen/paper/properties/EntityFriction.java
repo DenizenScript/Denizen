@@ -10,9 +10,8 @@ import net.kyori.adventure.util.TriState;
 
 public class EntityFriction implements Property {
 
-    public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag
-                && ((EntityTag) entity).getBukkitEntity() instanceof Frictional;
+    public static boolean describes(ObjectTag object) {
+        return object instanceof EntityTag entityTag && entityTag.getBukkitEntity() instanceof Frictional;
     }
 
     public static EntityFriction getFrom(ObjectTag entity) {
@@ -28,9 +27,13 @@ public class EntityFriction implements Property {
 
     EntityTag entity;
 
+    public Boolean getFrictional() {
+        return ((Frictional) entity.getBukkitEntity()).getFrictionState().toBoolean();
+    }
+
     @Override
     public String getPropertyString() {
-        Boolean frictionState = ((Frictional) entity.getBukkitEntity()).getFrictionState().toBoolean();
+        Boolean frictionState = getFrictional();
         if (frictionState == null) {
             return null;
         }
@@ -54,7 +57,7 @@ public class EntityFriction implements Property {
         // Returns an entity's friction state if one has been set.
         // -->
         PropertyParser.registerTag(EntityFriction.class, ElementTag.class, "has_friction", (attribute, object) -> {
-            Boolean frictionState = ((Frictional) object.entity.getBukkitEntity()).getFrictionState().toBoolean();
+            Boolean frictionState = object.getFrictional();
             if (frictionState == null) {
                 return null;
             }
@@ -78,7 +81,7 @@ public class EntityFriction implements Property {
                 ((Frictional) object.entity.getBukkitEntity()).setFrictionState(TriState.NOT_SET);
             }
             else if (mechanism.requireBoolean()) {
-                ((Frictional) object.entity.getBukkitEntity()).setFrictionState(TriState.byBoolean(mechanism.getValue().asBoolean()));
+                ((Frictional) object.entity.getBukkitEntity()).setFrictionState(TriState.byBoolean(input.asBoolean()));
             }
         });
     }
