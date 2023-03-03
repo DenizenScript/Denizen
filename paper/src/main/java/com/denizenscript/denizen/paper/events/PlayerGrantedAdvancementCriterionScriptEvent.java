@@ -1,11 +1,13 @@
 package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -24,7 +26,7 @@ public class PlayerGrantedAdvancementCriterionScriptEvent extends BukkitScriptEv
     // @Switch advancement:<name> to only fire if the advancement for the criterion has the specified name.
     // @Switch criterion:<name> to only fire if the criterion being granted has the specified name.
     //
-    // @Triggers when a player is granted advancement criterion for an advancement.
+    // @Triggers when a player is granted a single criterion for an advancement.
     // To fire when ALL the criteria for an advancement is met, use <@link event player completes advancement>
     //
     // @Context
@@ -34,15 +36,14 @@ public class PlayerGrantedAdvancementCriterionScriptEvent extends BukkitScriptEv
     // @Player Always.
     //
     // @Example
-    // # This can narrate something like:
-    // # "Good job! You completed some criteria for the advancement: minecraft:story/root!"
+    // # Prevent a player from being granted an advancement criterion.
     // on player granted advancement criterion:
-    // - narrate "Good job! You completed some criteria for the advancement: <context.advancement>!"
+    // - determine cancelled
     //
     // @Example
     // # This will only narrate when the player is granted the criterion for taming a Calico cat
     // # for the "A Complete Catalogue" advancement.
-    // on player granted advancement criterion advancement:minecraft:husbandry/complete_catalogue criterion:minecraft:calico:
+    // on player granted advancement criterion advancement:husbandry/complete_catalogue criterion:calico:
     // - narrate "That is a pretty cute Calico cat you have there!"
     //
     // @Example
@@ -62,10 +63,12 @@ public class PlayerGrantedAdvancementCriterionScriptEvent extends BukkitScriptEv
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!path.tryObjectSwitch("advancement", advancement)) {
+        NamespacedKey advancementKey = Utilities.parseNamespacedKey(path.switches.get("advancement"));
+        if (!advancementKey.toString().equals(advancement.toString())) {
             return false;
         }
-        if (!path.tryObjectSwitch("criterion", criterion)) {
+        NamespacedKey criterionKey = Utilities.parseNamespacedKey(path.switches.get("criterion"));
+        if (!criterionKey.toString().equals(criterion.toString())) {
             return false;
         }
         return super.matches(path);
