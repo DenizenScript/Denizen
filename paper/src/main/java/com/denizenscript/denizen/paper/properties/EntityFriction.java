@@ -69,7 +69,7 @@ public class EntityFriction implements Property {
         // @description
         // Forces an entity into a friction state, so it either always or never experiences friction.
         // An entity with no friction will move in a direction forever until its velocity is changed or it impacts a block.
-        // Does not work with players. Provide empty input to reset an entity back to its vanilla friction state.
+        // Does not work with players. Provide empty input to reset an entity back to its vanilla friction behavior.
         // @tags
         // <EntityTag.has_friction>
         // -->
