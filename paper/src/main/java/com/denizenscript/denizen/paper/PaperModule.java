@@ -38,6 +38,9 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(EntityPathfindScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityRemoveFromWorldScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityStepsOnScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            ScriptEvent.registerScriptEvent(EntityTeleportedByPortalScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(ExperienceOrbMergeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerAbsorbsExperienceScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBeaconEffectScriptEvent.class);
