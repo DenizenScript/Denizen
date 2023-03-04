@@ -791,6 +791,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
 
         tagProcessor.registerTag(ListTag.class, "enchantment_types", (attribute, object) -> {
             BukkitImplDeprecations.echantmentTagUpdate.warn(attribute.context);
+            listDeprecateWarn(attribute);
             ListTag enchants = new ListTag();
             for (Enchantment e : Enchantment.values()) {
                 enchants.add(e.getName());
@@ -800,6 +801,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
 
         tagProcessor.registerTag(ListTag.class, "enchantment_keys", (attribute, object) -> {
             BukkitImplDeprecations.echantmentTagUpdate.warn(attribute.context);
+            listDeprecateWarn(attribute);
             ListTag enchants = new ListTag();
             for (Enchantment e : Enchantment.values()) {
                 enchants.add(e.getKey().getKey());
