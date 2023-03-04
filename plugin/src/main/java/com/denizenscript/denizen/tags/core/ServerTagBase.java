@@ -241,20 +241,20 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         tagProcessor.registerTag(ListTag.class, "recipe_ids", (attribute, object) -> {
             listDeprecateWarn(attribute);
             String type = attribute.hasParam() ? CoreUtilities.toLowerCase(attribute.getParam()) : null;
-            ListTag result = new ListTag();
+            ListTag recipeIds = new ListTag();
             if (type == null || !type.equals("brewing")) {
                 Bukkit.recipeIterator().forEachRemaining(recipe -> {
                     if (recipe instanceof Keyed keyedRecipe && Utilities.isRecipeOfType(recipe, type)) {
-                        result.add(keyedRecipe.getKey().toString());
+                        recipeIds.add(keyedRecipe.getKey().toString());
                     }
                 });
             }
             if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && (type == null || type.equals("brewing"))) {
                 for (NamespacedKey brewingRecipe : NMSHandler.itemHelper.getCustomBrewingRecipeIDs()) {
-                    result.add(brewingRecipe.toString());
+                    recipeIds.add(brewingRecipe.toString());
                 }
             }
-            return result;
+            return recipeIds;
         }, "list_recipe_ids");
 
         // <--[tag]
@@ -275,17 +275,17 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             if (recipe == null && brewingRecipe == null) {
                 return null;
             }
-            ListTag result = new ListTag();
+            ListTag recipeItems = new ListTag();
             Consumer<RecipeChoice> addChoice = (choice) -> {
                 if (choice == null) {
-                    result.addObject(new ItemTag(Material.AIR));
+                    recipeItems.addObject(new ItemTag(Material.AIR));
                 }
                 else {
                     if (choice instanceof RecipeChoice.ExactChoice) {
-                        result.addObject(new ItemTag(choice.getItemStack()));
+                        recipeItems.addObject(new ItemTag(choice.getItemStack()));
                     }
                     else {
-                        result.add("material:" + choice.getItemStack().getType().name());
+                        recipeItems.add("material:" + choice.getItemStack().getType().name());
                     }
                 }
             };
@@ -309,7 +309,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 addChoice.accept(brewingRecipe.ingredient);
                 addChoice.accept(brewingRecipe.input);
             }
-            return result;
+            return recipeItems;
         });
 
         // <--[tag]
@@ -375,11 +375,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of scoreboard IDs currently registered on the server.
         // -->
         tagProcessor.registerTag(ListTag.class, "scoreboards", (attribute, object) -> {
-            ListTag result = new ListTag(ScoreboardHelper.scoreboardMap.size());
+            ListTag scoreboards = new ListTag(ScoreboardHelper.scoreboardMap.size());
             for (String board : ScoreboardHelper.scoreboardMap.keySet()) {
-                result.addObject(new ElementTag(board, true));
+                scoreboards.addObject(new ElementTag(board, true));
             }
-            return result;
+            return scoreboards;
         });
 
         tagProcessor.registerTag(ObjectTag.class, "scoreboard", (attribute, object) -> {
@@ -417,11 +417,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             // -->
             if (attribute.startsWith("objectives", 2)) {
                 attribute.fulfill(1);
-                ListTag result = new ListTag();
+                ListTag objectives = new ListTag();
                 for (Objective objective : board.getObjectives()) {
-                    result.add(objective.getName());
+                    objectives.add(objective.getName());
                 }
-                return result;
+                return objectives;
             }
 
             if (attribute.startsWith("objective", 2) && attribute.hasContext(2)) {
@@ -505,11 +505,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             // -->
             if (attribute.startsWith("team_names", 2)) {
                 attribute.fulfill(1);
-                ListTag result = new ListTag();
+                ListTag teams = new ListTag();
                 for (Team team : board.getTeams()) {
-                    result.add(team.getName());
+                    teams.add(team.getName());
                 }
-                return result;
+                return teams;
             }
 
             if (attribute.startsWith("team", 2) && attribute.hasContext(2)) {
@@ -591,11 +591,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all players whitelisted on this server.
         // -->
         tagProcessor.registerTag(ListTag.class, "whitelisted_players", (attribute, object) -> {
-            ListTag result = new ListTag();
+            ListTag whitelisted = new ListTag();
             for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
-                result.addObject(new PlayerTag(player));
+                whitelisted.addObject(new PlayerTag(player));
             }
-            return result;
+            return whitelisted;
         });
 
         // <--[tag]
@@ -654,11 +654,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all available gamerules on the server.
         // -->
         tagProcessor.registerStaticTag(ListTag.class, "gamerules", (attribute, object) -> {
-            ListTag result = new ListTag();
+            ListTag gamerules = new ListTag();
             for (GameRule<?> rule : GameRule.values()) {
-                result.add(rule.getName());
+                gamerules.add(rule.getName());
             }
-            return result;
+            return gamerules;
         });
 
         // <--[tag]
@@ -670,11 +670,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerTag(ListTag.class, "traits", (attribute, object) -> {
             listDeprecateWarn(attribute);
-            ListTag result = new ListTag();
+            ListTag traits = new ListTag();
             for (TraitInfo trait : CitizensAPI.getTraitFactory().getRegisteredTraits()) {
-                result.add(trait.getTraitName());
+                traits.add(trait.getTraitName());
             }
-            return result;
+            return traits;
         }, "list_traits");
 
         // <--[tag]
@@ -737,9 +737,9 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerTag(ListTag.class, "advancement_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
-            ListTag result = new ListTag();
-            Bukkit.advancementIterator().forEachRemaining(adv -> result.add(adv.getKey().toString()));
-            return result;
+            ListTag advancements = new ListTag();
+            Bukkit.advancementIterator().forEachRemaining(adv -> advancements.add(adv.getKey().toString()));
+            return advancements;
         }, "list_advancements");
 
         // <--[tag]
@@ -782,13 +782,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerStaticTag(ListTag.class, "biome_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
-            ListTag result = new ListTag();
+            ListTag biomes = new ListTag();
             for (Biome biome : Biome.values()) {
                 if (biome != Biome.CUSTOM) {
-                    result.addObject(new BiomeTag(biome));
+                    biomes.addObject(new BiomeTag(biome));
                 }
             }
-            return result;
+            return biomes;
         }, "list_biome_types");
 
         // <--[tag]
@@ -798,11 +798,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all enchantments known to the server.
         // -->
         tagProcessor.registerTag(ListTag.class, "enchantments", (attribute, object) -> {
-            ListTag result = new ListTag();
+            ListTag enchantments = new ListTag();
             for (Enchantment enchantment : Enchantment.values()) {
-                result.addObject(new EnchantmentTag(enchantment));
+                enchantments.addObject(new EnchantmentTag(enchantment));
             }
-            return result;
+            return enchantments;
         });
 
         tagProcessor.registerTag(ListTag.class, "enchantment_types", (attribute, object) -> {
@@ -910,13 +910,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerTag(ListTag.class, "potion_effect_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
-            ListTag potionEffectTypes = new ListTag();
+            ListTag potionEffects = new ListTag();
             for (PotionEffectType potionEffectType : PotionEffectType.values()) {
                 if (potionEffectType != null) {
-                    potionEffectTypes.add(potionEffectType.getName());
+                    potionEffects.add(potionEffectType.getName());
                 }
             }
-            return potionEffectTypes;
+            return potionEffects;
         }, "list_potion_effects");
 
         // <--[tag]
@@ -972,13 +972,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         tagProcessor.registerStaticTag(ListTag.class, "statistic_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
             Statistic.Type type = attribute.hasParam() ? attribute.getParamElement().asEnum(Statistic.Type.class) : null;
-            ListTag statisticTypes = new ListTag();
+            ListTag statistics = new ListTag();
             for (Statistic statistic : Statistic.values()) {
                 if (type == null || type == statistic.getType()) {
-                    statisticTypes.add(statistic.name());
+                    statistics.add(statistic.name());
                 }
             }
-            return statisticTypes;
+            return statistics;
         }, "list_statistics");
 
         // <--[tag]
@@ -1303,7 +1303,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "online_players_flagged", (attribute, object, input) -> {
             listDeprecateWarn(attribute);
             String flag = input.asString();
-            ListTag players = new ListTag();
+            ListTag flaggedPlayers = new ListTag();
             boolean want = true;
             if (flag.startsWith("!")) {
                 want = false;
@@ -1312,10 +1312,10 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 PlayerTag playerTag = new PlayerTag(player);
                 if (playerTag.getFlagTracker().hasFlag(flag) == want) {
-                    players.addObject(playerTag);
+                    flaggedPlayers.addObject(playerTag);
                 }
             }
-            return players;
+            return flaggedPlayers;
         }, "list_online_players_flagged");
 
         // <--[tag]
@@ -1329,7 +1329,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "players_flagged", (attribute, object, input) -> {
             listDeprecateWarn(attribute);
             String flag = input.asString();
-            ListTag players = new ListTag();
+            ListTag flaggedPlayers = new ListTag();
             boolean want = true;
             if (flag.startsWith("!")) {
                 want = false;
@@ -1338,10 +1338,10 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             for (UUID playerID : PlayerTag.getAllPlayers().values()) {
                 PlayerTag playerTag = new PlayerTag(playerID);
                 if (playerTag.getFlagTracker().hasFlag(flag) == want) {
-                    players.addObject(playerTag);
+                    flaggedPlayers.addObject(playerTag);
                 }
             }
-            return players;
+            return flaggedPlayers;
         }, "list_players_flagged");
 
         // <--[tag]
@@ -1446,9 +1446,9 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerTag(ListTag.class, "banned_addresses", (attribute, object) -> {
             listDeprecateWarn(attribute);
-            ListTag list = new ListTag();
-            list.addAll(Bukkit.getIPBans());
-            return list;
+            ListTag bannedIPs = new ListTag();
+            bannedIPs.addAll(Bukkit.getIPBans());
+            return bannedIPs;
         }, "list_banned_addresses");
 
         // <--[tag]
@@ -1539,11 +1539,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerTag(ListTag.class, "ops", (attribute, object) -> {
             listDeprecateWarn(attribute);
-            ListTag players = new ListTag();
+            ListTag ops = new ListTag();
             for (OfflinePlayer player : Bukkit.getOperators()) {
-                players.addObject(PlayerTag.mirrorBukkitPlayer(player));
+                ops.addObject(PlayerTag.mirrorBukkitPlayer(player));
             }
-            return players;
+            return ops;
         }, "list_ops");
 
         // <--[tag]
@@ -1554,13 +1554,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerTag(ListTag.class, "online_ops", (attribute, object) -> {
             listDeprecateWarn(attribute);
-            ListTag players = new ListTag();
+            ListTag onlineOps = new ListTag();
             for (OfflinePlayer player : Bukkit.getOperators()) {
                 if (player.isOnline()) {
-                    players.addObject(PlayerTag.mirrorBukkitPlayer(player));
+                    onlineOps.addObject(PlayerTag.mirrorBukkitPlayer(player));
                 }
             }
-            return players;
+            return onlineOps;
         }, "list_online_ops");
 
         // <--[tag]
@@ -1571,13 +1571,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerTag(ListTag.class, "offline_ops", (attribute, object) -> {
             listDeprecateWarn(attribute);
-            ListTag players = new ListTag();
+            ListTag offlineOps = new ListTag();
             for (OfflinePlayer player : Bukkit.getOperators()) {
                 if (!player.isOnline()) {
-                    players.addObject(PlayerTag.mirrorBukkitPlayer(player));
+                    offlineOps.addObject(PlayerTag.mirrorBukkitPlayer(player));
                 }
             }
-            return players;
+            return offlineOps;
         }, "list_offline_ops");
 
         // <--[tag]
@@ -1839,11 +1839,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 }
                 return null;
             }
-            ListTag result = new ListTag(items.size());
+            ListTag lootItems = new ListTag(items.size());
             for (ItemStack item : items) {
-                result.addObject(new ItemTag(item));
+                lootItems.addObject(new ItemTag(item));
             }
-            return result;
+            return lootItems;
         });
 
         // <--[tag]
@@ -2155,11 +2155,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all NPC registries.
         // -->
         tagProcessor.registerTag(ListTag.class, "npc_registries", (attribute, object) -> {
-            ListTag result = new ListTag();
+            ListTag registries = new ListTag();
             for (NPCRegistry registry : CitizensAPI.getNPCRegistries()) {
-                result.add(registry.getName());
+                registries.add(registry.getName());
             }
-            return result;
+            return registries;
         });
 
         // <--[tag]
