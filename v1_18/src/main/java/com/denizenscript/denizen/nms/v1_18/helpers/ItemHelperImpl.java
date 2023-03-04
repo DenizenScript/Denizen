@@ -521,17 +521,21 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     public static Class<?> PaperPotionMix_CLASS = null;
+    public static Map<NamespacedKey, BrewingRecipe> customBrewingRecipes = null;
 
     @Override
     public Map<NamespacedKey, BrewingRecipe> getCustomBrewingRecipes() {
-        return Maps.transformValues(ReflectionHelper.getFieldValue(PotionBrewing.class, "CUSTOM_MIXES", null), paperMix -> {
-            if (PaperPotionMix_CLASS == null) {
-                PaperPotionMix_CLASS = paperMix.getClass();
-            }
-            RecipeChoice ingredient = CraftRecipe.toBukkit(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "ingredient", paperMix));
-            RecipeChoice input = CraftRecipe.toBukkit(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "input", paperMix));
-            ItemStack result = CraftItemStack.asBukkitCopy(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "result", paperMix));
-            return new BrewingRecipe(ingredient, input, result);
-        });
+        if (customBrewingRecipes == null) {
+            customBrewingRecipes = Maps.transformValues((Map<NamespacedKey, ?>) ReflectionHelper.getFieldValue(PotionBrewing.class, "CUSTOM_MIXES", null), paperMix -> {
+                if (PaperPotionMix_CLASS == null) {
+                    PaperPotionMix_CLASS = paperMix.getClass();
+                }
+                RecipeChoice ingredient = CraftRecipe.toBukkit(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "ingredient", paperMix));
+                RecipeChoice input = CraftRecipe.toBukkit(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "input", paperMix));
+                ItemStack result = CraftItemStack.asBukkitCopy(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "result", paperMix));
+                return new BrewingRecipe(ingredient, input, result);
+            });
+        }
+        return customBrewingRecipes;
     }
 }
