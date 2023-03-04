@@ -899,9 +899,9 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         tagProcessor.registerTag(ListTag.class, "potion_effect_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
             ListTag potionEffects = new ListTag();
-            for (PotionEffectType potionEffectType : PotionEffectType.values()) {
-                if (potionEffectType != null) {
-                    potionEffects.add(potionEffectType.getName());
+            for (PotionEffectType potionEffect : PotionEffectType.values()) {
+                if (potionEffect != null) {
+                    potionEffects.add(potionEffect.getName());
                 }
             }
             return potionEffects;
@@ -1323,10 +1323,10 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 want = false;
                 flag = flag.substring(1);
             }
-            for (UUID playerID : PlayerTag.getAllPlayers().values()) {
-                PlayerTag playerTag = new PlayerTag(playerID);
-                if (playerTag.getFlagTracker().hasFlag(flag) == want) {
-                    flaggedPlayers.addObject(playerTag);
+            for (UUID playerId : PlayerTag.getAllPlayers().values()) {
+                PlayerTag player = new PlayerTag(playerId);
+                if (player.getFlagTracker().hasFlag(flag) == want) {
+                    flaggedPlayers.addObject(player);
                 }
             }
             return flaggedPlayers;
@@ -1370,9 +1370,9 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerTag(ListTag.class, "players", (attribute, object) -> {
             listDeprecateWarn(attribute);
-            OfflinePlayer[] offlinePlayers = Bukkit.getOfflinePlayers();
-            ListTag players = new ListTag(offlinePlayers.length);
-            for (OfflinePlayer player : offlinePlayers) {
+            OfflinePlayer[] allPlayers = Bukkit.getOfflinePlayers();
+            ListTag players = new ListTag(allPlayers.length);
+            for (OfflinePlayer player : allPlayers) {
                 players.addObject(PlayerTag.mirrorBukkitPlayer(player));
             }
             return players;
