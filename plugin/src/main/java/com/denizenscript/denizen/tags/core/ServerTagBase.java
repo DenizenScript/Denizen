@@ -168,8 +168,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 return new ElementTag(attribute.getDoubleParam() == 1 ? Depends.economy.currencyNameSingular() : Depends.economy.currencyNamePlural());
             }
 
-
-
             // <--[tag]
             // @attribute <server.economy.currency_plural>
             // @returns ElementTag
