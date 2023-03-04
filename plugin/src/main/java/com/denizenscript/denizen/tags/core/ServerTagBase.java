@@ -662,22 +662,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         });
 
         // <--[tag]
-        // @attribute <server.traits>
-        // @Plugin Citizens
-        // @returns ListTag
-        // @description
-        // Returns a list of all available NPC traits on the server.
-        // -->
-        tagProcessor.registerTag(ListTag.class, "traits", (attribute, object) -> {
-            listDeprecateWarn(attribute);
-            ListTag traits = new ListTag();
-            for (TraitInfo trait : CitizensAPI.getTraitFactory().getRegisteredTraits()) {
-                traits.add(trait.getTraitName());
-            }
-            return traits;
-        }, "list_traits");
-
-        // <--[tag]
         // @attribute <server.commands>
         // @returns ListTag
         // @description
@@ -2184,6 +2168,22 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             }
             return npcs;
         }, "list_npcs");
+
+        // <--[tag]
+        // @attribute <server.traits>
+        // @Plugin Citizens
+        // @returns ListTag
+        // @description
+        // Returns a list of all available NPC traits on the server.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "traits", (attribute, object) -> {
+            listDeprecateWarn(attribute);
+            ListTag traits = new ListTag();
+            for (TraitInfo trait : CitizensAPI.getTraitFactory().getRegisteredTraits()) {
+                traits.add(trait.getTraitName());
+            }
+            return traits;
+        }, "list_traits");
 
         // <--[mechanism]
         // @object server
