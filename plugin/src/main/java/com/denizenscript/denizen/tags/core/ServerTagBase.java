@@ -817,7 +817,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Generally used with <@link objecttype EntityTag>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html>.
         // -->
-        tagProcessor.registerTag(ListTag.class, "entity_types", (attribute, object) -> {
+        tagProcessor.registerStaticTag(ListTag.class, "entity_types", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag entityTypes = new ListTag();
             for (EntityType entityType : EntityType.values()) {
                 if (entityType != EntityType.UNKNOWN) {
