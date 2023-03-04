@@ -836,7 +836,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Generally used with <@link objecttype MaterialTag>.
         // This is only types listed in the Bukkit Material enum, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>.
         // -->
-        tagProcessor.registerTag(ListTag.class, "material_types", (attribute, object) -> {
+        tagProcessor.registerStaticTag(ListTag.class, "material_types", (attribute, object) -> {
+            listDeprecateWarn(attribute);
             ListTag materials = new ListTag();
             for (Material material : Material.values()) {
                 materials.addObject(new MaterialTag(material));
