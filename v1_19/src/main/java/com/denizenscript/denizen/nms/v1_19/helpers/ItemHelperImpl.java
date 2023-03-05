@@ -9,14 +9,10 @@ import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_19.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.inventory.BrewingRecipe;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.LinkedHashMultiset;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.Multisets;
+import com.google.common.collect.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
@@ -529,41 +525,21 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     public static Class<?> PaperPotionMix_CLASS = null;
+    public static Map<NamespacedKey, BrewingRecipe> customBrewingRecipes = null;
 
     @Override
     public Map<NamespacedKey, BrewingRecipe> getCustomBrewingRecipes() {
-        Map<NamespacedKey, ?> nmsCustomRecipes = getNMSCustomBrewingRecipes();
-        Map<NamespacedKey, BrewingRecipe> brewingRecipes = new HashMap<>(nmsCustomRecipes.size());
-        for (Map.Entry<NamespacedKey, ?> entry : nmsCustomRecipes.entrySet()) {
-            brewingRecipes.put(entry.getKey(), paperMixToRecipe(entry.getValue()));
+        if (customBrewingRecipes == null) {
+            customBrewingRecipes = Maps.transformValues((Map<NamespacedKey, ?>) ReflectionHelper.getFieldValue(PotionBrewing.class, "CUSTOM_MIXES", null), paperMix -> {
+                if (PaperPotionMix_CLASS == null) {
+                    PaperPotionMix_CLASS = paperMix.getClass();
+                }
+                RecipeChoice ingredient = CraftRecipe.toBukkit(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "ingredient", paperMix));
+                RecipeChoice input = CraftRecipe.toBukkit(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "input", paperMix));
+                ItemStack result = CraftItemStack.asBukkitCopy(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "result", paperMix));
+                return new BrewingRecipe(ingredient, input, result);
+            });
         }
-        return brewingRecipes;
-    }
-
-    @Override
-    public Set<NamespacedKey> getCustomBrewingRecipeIDs() {
-        return getNMSCustomBrewingRecipes().keySet();
-    }
-
-    @Override
-    public BrewingRecipe getCustomBrewingRecipe(NamespacedKey recipeKey) {
-        return paperMixToRecipe(getNMSCustomBrewingRecipes().get(recipeKey));
-    }
-
-    public static Map<NamespacedKey, ?> getNMSCustomBrewingRecipes() {
-        return ReflectionHelper.getFieldValue(PotionBrewing.class, "CUSTOM_MIXES", null);
-    }
-
-    public static BrewingRecipe paperMixToRecipe(Object paperMix) {
-        if (paperMix == null) {
-            return null;
-        }
-        if (PaperPotionMix_CLASS == null) {
-            PaperPotionMix_CLASS = paperMix.getClass();
-        }
-        RecipeChoice ingredient = CraftRecipe.toBukkit(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "ingredient", paperMix));
-        RecipeChoice input = CraftRecipe.toBukkit(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "input", paperMix));
-        ItemStack result = CraftItemStack.asBukkitCopy(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "result", paperMix));
-        return new BrewingRecipe(ingredient, input, result);
+        return customBrewingRecipes;
     }
 }

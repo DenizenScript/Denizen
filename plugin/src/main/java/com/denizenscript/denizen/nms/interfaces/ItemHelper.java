@@ -5,17 +5,16 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.utilities.inventory.BrewingRecipe;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 public abstract class ItemHelper {
@@ -76,15 +75,10 @@ public abstract class ItemHelper {
 
     public abstract boolean isValidMix(ItemStack input, ItemStack ingredient);
 
+    public record BrewingRecipe(RecipeChoice input, RecipeChoice ingredient, ItemStack result) {}
+
     public Map<NamespacedKey, BrewingRecipe> getCustomBrewingRecipes() {
         throw new UnsupportedOperationException();
     }
 
-    public Set<NamespacedKey> getCustomBrewingRecipeIDs() {
-        throw new UnsupportedOperationException();
-    }
-
-    public BrewingRecipe getCustomBrewingRecipe(NamespacedKey recipeKey) {
-        throw new UnsupportedOperationException();
-    }
 }
