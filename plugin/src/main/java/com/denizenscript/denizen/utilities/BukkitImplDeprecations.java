@@ -272,7 +272,7 @@ public class BukkitImplDeprecations {
     // Bump once 1.19 is the minimum supported version, as the change happened on that version.
     public static Warning projectileCollideEvent = new FutureWarning("projectileCollideEvent", "The '<projectile> collides with <entity>' event is deprecated in favor of '<projectile> hits' with the 'entity' switch.");
 
-    // Added 2023/3/1, deprecate officially by 2026
+    // Added 2023/3/5, deprecate officially by 2026
     public static Warning serverSystemMechanisms = new FutureWarning("serverSystemMechanisms", "Some 'server' mechanisms for core features are deprecated in favor of 'system' equivalents.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================

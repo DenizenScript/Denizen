@@ -68,7 +68,6 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.*;
 import org.bukkit.util.permissions.DefaultPermissions;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
