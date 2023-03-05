@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
-import io.papermc.paper.entity.RelativeTeleportFlag;
+import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.potion.PotionMix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -138,7 +138,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     @Override
     public void teleportPlayerRelative(Player player, Location loc) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN, true, false, RelativeTeleportFlag.values());
+            player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN, TeleportFlag.Relative.values());
         }
         else {
             super.teleportPlayerRelative(player, loc);
