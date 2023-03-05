@@ -214,19 +214,6 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void resetEquipment(Player player, LivingEntity entity) {
-        EntityEquipment equipment = entity.getEquipment();
-        List<Pair<EquipmentSlot, net.minecraft.world.item.ItemStack>> pairList = new ArrayList<>();
-        pairList.add(new Pair<>(EquipmentSlot.MAINHAND, CraftItemStack.asNMSCopy(equipment.getItemInMainHand())));
-        pairList.add(new Pair<>(EquipmentSlot.OFFHAND, CraftItemStack.asNMSCopy(equipment.getItemInOffHand())));
-        pairList.add(new Pair<>(EquipmentSlot.HEAD, CraftItemStack.asNMSCopy(equipment.getHelmet())));
-        pairList.add(new Pair<>(EquipmentSlot.CHEST, CraftItemStack.asNMSCopy(equipment.getChestplate())));
-        pairList.add(new Pair<>(EquipmentSlot.LEGS, CraftItemStack.asNMSCopy(equipment.getLeggings())));
-        pairList.add(new Pair<>(EquipmentSlot.FEET, CraftItemStack.asNMSCopy(equipment.getBoots())));
-        send(player, new ClientboundSetEquipmentPacket(entity.getEntityId(), pairList));
-    }
-
-    @Override
     public void showHealth(Player player, float health, int food, float saturation) {
         send(player, new ClientboundSetHealthPacket(health, food, saturation));
     }
