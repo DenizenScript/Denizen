@@ -63,12 +63,10 @@ public class PlayerGrantedAdvancementCriterionScriptEvent extends BukkitScriptEv
 
     @Override
     public boolean matches(ScriptPath path) {
-        NamespacedKey advancementKey = Utilities.parseNamespacedKey(path.switches.get("advancement"));
-        if (!advancementKey.toString().equals(advancement.toString())) {
+        if (!path.tryObjectSwitch("advancement", advancement)) {
             return false;
         }
-        NamespacedKey criterionKey = Utilities.parseNamespacedKey(path.switches.get("criterion"));
-        if (!criterionKey.toString().equals(criterion.toString())) {
+        if (!path.tryObjectSwitch("criterion", criterion)) {
             return false;
         }
         return super.matches(path);
@@ -91,8 +89,8 @@ public class PlayerGrantedAdvancementCriterionScriptEvent extends BukkitScriptEv
     @EventHandler
     public void playerGrantedAdvancementCriterionEvent(PlayerAdvancementCriterionGrantEvent event) {
         this.event = event;
-        criterion = new ElementTag(event.getCriterion());
-        advancement = new ElementTag(event.getAdvancement().getKey().toString());
+        criterion = new ElementTag(Utilities.namespacedKeyToString(Utilities.parseNamespacedKey(event.getCriterion())));
+        advancement = new ElementTag(Utilities.namespacedKeyToString(event.getAdvancement().getKey()));
         fire(event);
     }
 }
