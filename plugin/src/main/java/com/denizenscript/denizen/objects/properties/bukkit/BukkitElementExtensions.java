@@ -686,7 +686,7 @@ public class BukkitElementExtensions {
         });
 
         // <--[tag]
-        // @attribute <ElementTag.custom_color[<name>]>
+        // @attribute <ElementTag.custom_color[<custom_color_name>]>
         // @returns ElementTag
         // @group text manipulation
         // @description

@@ -20,7 +20,6 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.ServicePriority;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

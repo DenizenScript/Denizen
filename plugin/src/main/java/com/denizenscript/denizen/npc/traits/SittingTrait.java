@@ -138,7 +138,7 @@ public class SittingTrait extends Trait implements Listener {
             return;
         }
         new NPCTag(npc).action("sit", null);
-        npc.getEntity().teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
         forceEntitySit(npc.getEntity(), location.clone(), 0);
     }
 
