@@ -323,7 +323,6 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(e);
         }
         try {
-            AdjustCommand.specialAdjustables.put("server", ServerTagBase::adjustServer);
             ScriptEventRegistry.registerMainEvents();
             CommonRegistries.registerMainObjects();
             CommonRegistries.registerMainTagHandlers();

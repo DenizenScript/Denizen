@@ -23,8 +23,6 @@ public abstract class ItemHelper {
 
     public abstract Integer burnTime(Material material);
 
-    public abstract void removeRecipe(NamespacedKey key);
-
     public abstract void clearDenizenRecipes();
 
     public abstract void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact);
