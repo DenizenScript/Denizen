@@ -83,6 +83,9 @@ public class PaperModule {
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCarryingEgg.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDrinkingPotion.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityFriction.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityReputation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
