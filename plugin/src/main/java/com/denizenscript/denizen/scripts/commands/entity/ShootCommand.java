@@ -266,9 +266,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 }
             }
         }
-        scriptEntry.addObject("shot_entities", entityList);
+        scriptEntry.saveObject("shot_entities", entityList);
         if (entityList.size() == 1) {
-            scriptEntry.addObject("shot_entity", entityList.getObject(0));
+            scriptEntry.saveObject("shot_entity", entityList.getObject(0));
         }
         if (spread == null) {
             Position.mount(Conversion.convertEntities(entities));
@@ -364,8 +364,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     if (lastLocation == null) {
                         lastLocation = start;
                     }
-                    scriptEntry.addObject("location", new LocationTag(lastLocation));
-                    scriptEntry.addObject("hit_entities", hitEntities);
+                    scriptEntry.saveObject("location", new LocationTag(lastLocation));
+                    scriptEntry.saveObject("hit_entities", hitEntities);
                     if (script != null) {
                         Consumer<ScriptQueue> configure = (queue) -> {
                             queue.addDefinition("location", new LocationTag(lastLocation));

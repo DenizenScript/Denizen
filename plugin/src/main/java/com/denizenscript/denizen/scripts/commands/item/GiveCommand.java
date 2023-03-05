@@ -155,6 +155,6 @@ public class GiveCommand extends AbstractCommand {
                 }
                 break;
         }
-        scriptEntry.addObject("leftover_items", leftoverSave);
+        scriptEntry.saveObject("leftover_items", leftoverSave);
     }
 }

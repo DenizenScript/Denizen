@@ -205,14 +205,13 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         }
         if (scriptEntry.shouldWaitFor()) {
             held.add(scriptEntry);
-            if (!npcs.isEmpty()) {
+            if (!npcs.isEmpty()) { // TODO: de-jank this
                 scriptEntry.addObject("tally", npcs);
             }
             if (!waitForEntities.isEmpty()) {
                 scriptEntry.addObject("entities", waitForEntities);
             }
         }
-
     }
 
     // Held script entries

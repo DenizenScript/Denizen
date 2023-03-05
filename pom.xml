@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <craftbukkit.version>1.19.3-R0.1-SNAPSHOT</craftbukkit.version>
         <citizens.version>2.0.30-SNAPSHOT</citizens.version>
-        <dcore.version>1.90.2-SNAPSHOT</dcore.version>
+        <dcore.version>1.91.0-SNAPSHOT</dcore.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
         <BUILD_CLASS>CUSTOM</BUILD_CLASS>
         <DENIZEN_VERSION>1.2.6</DENIZEN_VERSION>

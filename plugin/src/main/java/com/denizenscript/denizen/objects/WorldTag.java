@@ -3,12 +3,13 @@ package com.denizenscript.denizen.objects;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
-import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.utilities.Settings;
+import com.denizenscript.denizencore.objects.Adjustable;
+import com.denizenscript.denizencore.objects.Fetchable;
+import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -17,7 +18,9 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -34,21 +37,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
-
-    /////////////////////
-    //   STATIC METHODS
-    /////////////////
-
-    public static WorldTag mirrorBukkitWorld(World world) {
-        if (world == null) {
-            return null;
-        }
-        return new WorldTag(world);
-    }
-
-    /////////////////////
-    //   OBJECT FETCHER
-    /////////////////
 
     // <--[ObjectType]
     // @name WorldTag
@@ -1146,7 +1134,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             if (getWorld() != null) {
                 return;
             }
-            if (!Settings.allowDelete()) {
+            if (!CoreConfiguration.allowFileDeletion) {
                 mechanism.echoError("Unable to destroy world due to config setting, refer to 'WorldTag.destroy' meta documentation.");
                 return;
             }

@@ -12,12 +12,15 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface PacketHelper {
@@ -71,13 +74,18 @@ public interface PacketHelper {
         player.sendEquipmentChange(entity, equipmentSlot, itemStack);
     }
 
-    void resetEquipment(Player player, LivingEntity entity);
+    default void resetEquipment(Player player, LivingEntity entity) { // TODO: once minimum version is 1.19 or higher, remove from NMS
+        EntityEquipment equipment = entity.getEquipment();
+        Map<EquipmentSlot, ItemStack> equipmentMap = new EnumMap<>(EquipmentSlot.class);
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            equipmentMap.put(slot, equipment.getItem(slot));
+        }
+        player.sendEquipmentChange(entity, equipmentMap);
+    }
 
     void showHealth(Player player, float health, int food, float saturation);
 
-    default void showMobHealth(Player player, LivingEntity mob, double health, double maxHealth) {
-        throw new UnsupportedOperationException();
-    }
+    void showMobHealth(Player player, LivingEntity mob, double health, double maxHealth);
 
     void resetHealth(Player player);
 
@@ -91,28 +99,17 @@ public interface PacketHelper {
         // Pre-1.18 do nothing
     }
 
-    default void sendRename(Player player, Entity entity, String name, boolean listMode) {
-        throw new UnsupportedOperationException();
-    }
+    void sendRename(Player player, Entity entity, String name, boolean listMode);
 
-    default void generateNoCollideTeam(Player player, UUID noCollide) {
-        throw new UnsupportedOperationException();
-    }
+    void generateNoCollideTeam(Player player, UUID noCollide);
 
-    default void removeNoCollideTeam(Player player, UUID noCollide) {
-        throw new UnsupportedOperationException();
-    }
+    void removeNoCollideTeam(Player player, UUID noCollide);
 
-    default void sendEntityMetadataFlagsUpdate(Player player, Entity entity) {
-    }
+    void sendEntityMetadataFlagsUpdate(Player player, Entity entity);
 
-    default void sendEntityEffect(Player player, Entity entity, byte effectId) {
-        throw new UnsupportedOperationException();
-    }
+    void sendEntityEffect(Player player, Entity entity, byte effectId);
 
-    default int getPacketStats(Player player, boolean sent) {
-        throw new UnsupportedOperationException();
-    }
+    int getPacketStats(Player player, boolean sent);
 
     default void setMapData(MapCanvas canvas, byte[] bytes, int x, int y, MapImage image) {
         int width = image.width, height = image.height;
@@ -126,17 +123,11 @@ public interface PacketHelper {
         }
     }
 
-    default void showDebugTestMarker(Player player, Location location, ColorTag color, String name, int time) {
-        throw new UnsupportedOperationException();
-    }
+    void showDebugTestMarker(Player player, Location location, ColorTag color, String name, int time);
 
-    default void clearDebugTestMarker(Player player) {
-        throw new UnsupportedOperationException();
-    }
+    void clearDebugTestMarker(Player player);
 
-    default void sendBrand(Player player, String brand) {
-        throw new UnsupportedOperationException();
-    }
+    void sendBrand(Player player, String brand);
 
     default void sendCollectItemEntity(Player player, Entity taker, Entity item, int amount) {
         throw new UnsupportedOperationException();

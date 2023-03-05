@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.jnbt.StringTag;
 import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
@@ -11,7 +12,6 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.inventory.BrewingRecipe;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -85,7 +85,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     // "potion": plaintext: matches if the item is any form of potion item.
     // "script": plaintext: matches if the item is any form of script item.
     // "item_flagged:<flag>": A Flag Matcher for item flags.
-    // "item_enchanted:<enchantment>": matches if the item is enchanted with the given enchantment name. Allows advanced matchers.
+    // "item_enchanted:<enchantment>": matches if the item is enchanted with the given enchantment name (excluding enchantment books). Allows advanced matchers.
     // "raw_exact:<item>": matches based on exact raw item data comparison (almost always a bad idea to use).
     // Item property format: will validate that the item material matches and all directly specified properties also match. Any properties not specified won't be checked.
     //                       for example "stick[display=Hi]" will match any 'stick' with a displayname of 'hi', regardless of whether that stick has lore or not, or has enchantments or not, or etc.
@@ -714,8 +714,8 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
                 }
             }
             if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && (type == null || type.equals("brewing"))) {
-                for (Map.Entry<NamespacedKey, BrewingRecipe> entry : NMSHandler.itemHelper.getCustomBrewingRecipes().entrySet()) {
-                    ItemStack result = entry.getValue().result;
+                for (Map.Entry<NamespacedKey, ItemHelper.BrewingRecipe> entry : NMSHandler.itemHelper.getCustomBrewingRecipes().entrySet()) {
+                    ItemStack result = entry.getValue().result();
                     if (object.getBukkitMaterial() == result.getType() && (object.getItemStack().getDurability() == -1 || object.getItemStack().getDurability() == result.getDurability())) {
                         addRecipe.accept(entry.getKey());
                     }

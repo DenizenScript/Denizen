@@ -128,7 +128,7 @@ public class CreateCommand extends AbstractCommand {
             created = new NPCTag(actualRegistry.createNPC(type.getBukkitEntityType(), name.asString()));
         }
         // Add the created NPC into the script entry so it can be utilized if need be.
-        scriptEntry.addObject("created_npc", created);
+        scriptEntry.saveObject("created_npc", created);
         if (created.isSpawned()) {
             if (loc != null) {
                 created.getCitizen().teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);

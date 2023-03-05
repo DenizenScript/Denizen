@@ -162,7 +162,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
         }
         final UUID itemUUID = dropped.getUniqueId();
         protectedEntities.add(itemUUID);
-        scriptEntry.addObject("dropped", new EntityTag(dropped));
+        scriptEntry.saveObject("dropped", new EntityTag(dropped));
         if (ticks > 0) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
                     () -> {

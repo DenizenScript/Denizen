@@ -121,9 +121,9 @@ public class SpawnCommand extends AbstractCommand {
             }
         }
         // Add entities to context so that the specific entities created/spawned can be fetched.
-        scriptEntry.addObject("spawned_entities", entityList);
+        scriptEntry.saveObject("spawned_entities", entityList);
         if (entities.size() != 0) {
-            scriptEntry.addObject("spawned_entity", entityList.getObject(0));
+            scriptEntry.saveObject("spawned_entity", entityList.getObject(0));
         }
     }
 }

@@ -38,6 +38,9 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(EntityPathfindScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityRemoveFromWorldScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityStepsOnScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            ScriptEvent.registerScriptEvent(EntityTeleportedByPortalScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(ExperienceOrbMergeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerAbsorbsExperienceScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBeaconEffectScriptEvent.class);
@@ -81,6 +84,9 @@ public class PaperModule {
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCarryingEgg.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDrinkingPotion.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityFriction.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityReputation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);

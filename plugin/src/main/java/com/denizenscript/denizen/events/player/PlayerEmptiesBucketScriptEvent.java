@@ -28,7 +28,7 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     // @Cancellable true
     //
     // @Context
-    // <context.item> returns the ItemTag of the bucket being emptied.
+    // <context.item> returns the ItemTag of the bucket being emptied (just material, other properties are lost - use 'player.item_in_hand' if you need full data).
     // <context.location> returns the LocationTag of the block clicked with the bucket.
     // <context.relative> returns the LocationTag of the block in front of the clicked block.
     //
