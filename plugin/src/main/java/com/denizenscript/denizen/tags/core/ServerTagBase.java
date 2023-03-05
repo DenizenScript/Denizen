@@ -16,6 +16,7 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.*;
@@ -25,9 +26,7 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
 import com.denizenscript.denizencore.scripts.commands.core.SQLCommand;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.PseudoObjectTagBase;
-import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.tags.*;
 import com.denizenscript.denizencore.tags.core.UtilTagBase;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -97,42 +96,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             BukkitImplDeprecations.globalTagName.warn(attribute.context);
             return null;
         });
-
-        // <--[mechanism]
-        // @object server
-        // @name delete_file
-        // @input ElementTag
-        // @deprecated use system.delete_file
-        // @description
-        // Deprecated in favor of <@link mechanism system.delete_file>
-        // -->
-
-        // <--[mechanism]
-        // @object server
-        // @name reset_event_stats
-        // @input None
-        // @deprecated use system.reset_event_stats
-        // @description
-        // Deprecated in favor of <@link mechanism system.reset_event_stats>
-        // -->
-
-        // <--[mechanism]
-        // @object server
-        // @name cleanmem
-        // @input None
-        // @deprecated use system.cleanmem
-        // @description
-        // Deprecated in favor of <@link mechanism system.cleanmem>
-        // -->
-        AdjustCommand.specialAdjustables.put("server", mechanism -> {
-            switch (mechanism.getName()) {
-                case "delete_file", "reset_event_stats", "cleanmem" -> {
-                    BukkitImplDeprecations.serverSystemMechanisms.warn(mechanism.context);
-                    UtilTagBase.adjustSystem(mechanism);
-                }
-                default -> tagProcessor.processMechanism(instance, mechanism);
-            }
-        });
+        AdjustCommand.specialAdjustables.put("server", mechanism -> tagProcessor.processMechanism(instance, mechanism));
     }
 
     @Override
@@ -2028,6 +1992,226 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             }
         });
 
+        // <--[tag]
+        // @attribute <server.notes[<type>]>
+        // @returns ListTag
+        // @deprecated use util.notes
+        // @description
+        // Deprecated in favor of <@link tag util.notes>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.started_time>
+        // @returns TimeTag
+        // @deprecated use util.started_time
+        // @description
+        // Deprecated in favor of <@link tag util.started_time>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.disk_free>
+        // @returns ElementTag(Number)
+        // @deprecated use util.disk_free
+        // @description
+        // Deprecated in favor of <@link tag util.disk_free>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.disk_total>
+        // @returns ElementTag(Number)
+        // @deprecated use util.disk_total
+        // @description
+        // Deprecated in favor of <@link tag util.disk_total>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.disk_usage>
+        // @returns ElementTag(Number)
+        // @deprecated use util.disk_usage
+        // @description
+        // Deprecated in favor of <@link tag util.disk_usage>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.ram_allocated>
+        // @returns ElementTag(Number)
+        // @deprecated use util.ram_allocated
+        // @description
+        // Deprecated in favor of <@link tag util.ram_allocated>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.ram_max>
+        // @returns ElementTag(Number)
+        // @deprecated use util.ram_max
+        // @description
+        // Deprecated in favor of <@link tag util.ram_max>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.ram_free>
+        // @returns ElementTag(Number)
+        // @deprecated use util.ram_free
+        // @description
+        // Deprecated in favor of <@link tag util.ram_free>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.ram_usage>
+        // @returns ElementTag(Number)
+        // @deprecated use util.ram_usage
+        // @description
+        // Deprecated in favor of <@link tag util.ram_usage>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.available_processors>
+        // @returns ElementTag(Number)
+        // @deprecated use util.available_processors
+        // @description
+        // Deprecated in favor of <@link tag util.available_processors>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.current_tick>
+        // @returns ElementTag(Number)
+        // @deprecated use util.current_tick
+        // @description
+        // Deprecated in favor of <@link tag util.current_tick>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.delta_time_since_start>
+        // @returns DurationTag
+        // @deprecated use util.delta_time_since_start
+        // @description
+        // Deprecated in favor of <@link tag util.delta_time_since_start>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.real_time_since_start>
+        // @returns DurationTag
+        // @deprecated use util.real_time_since_start
+        // @description
+        // Deprecated in favor of <@link tag util.real_time_since_start>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.current_time_millis>
+        // @returns ElementTag(Number)
+        // @deprecated use util.current_time_millis
+        // @description
+        // Deprecated in favor of <@link tag util.current_time_millis>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.has_file[<name>]>
+        // @returns ElementTag(Boolean)
+        // @deprecated use util.has_file
+        // @description
+        // Deprecated in favor of <@link tag util.has_file>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.list_files[<path>]>
+        // @returns ListTag
+        // @deprecated use util.list_files
+        // @description
+        // Deprecated in favor of <@link tag util.list_files>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.java_version>
+        // @returns ElementTag
+        // @deprecated use util.java_version
+        // @description
+        // Deprecated in favor of <@link tag util.java_version>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.sql_connections>
+        // @returns ListTag
+        // @deprecated use util.sql_connections
+        // @description
+        // Deprecated in favor of <@link tag util.sql_connections>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.scripts>
+        // @returns ListTag(ScriptTag)
+        // @deprecated use util.scripts
+        // @description
+        // Deprecated in favor of <@link tag util.scripts>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.last_reload>
+        // @returns TimeTag
+        // @deprecated use util.last_reload
+        // @description
+        // Deprecated in favor of <@link tag util.last_reload>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.stack_trace>
+        // @returns ElementTag
+        // @deprecated use util.stack_trace
+        // @description
+        // Deprecated in favor of <@link tag util.stack_trace>
+        // -->
+
+        // <--[tag]
+        // @attribute <server.debug_enabled>
+        // @returns ElementTag(Boolean)
+        // @deprecated use util.debug_enabled
+        // @description
+        // Deprecated in favor of <@link tag util.debug_enabled>
+        // -->
+        for (String tagName : new String[] { "current_time_millis", "real_time_since_start",
+                "delta_time_since_start", "current_tick", "available_processors", "ram_usage", "ram_free", "ram_max", "ram_allocated", "disk_usage", "debug_enabled",
+                "disk_total", "disk_free", "started_time", "has_file", "list_files", "notes", "last_reload", "scripts", "sql_connections", "java_version", "stack_trace" }) {
+            TagRunnable.ObjectInterface<UtilTagBase, ?> runner = UtilTagBase.instance.tagProcessor.registeredObjectTags.get(tagName).runner;
+            tagProcessor.registerTag(ObjectTag.class, tagName, (attribute, object) -> {
+                BukkitImplDeprecations.serverUtilTags.warn(attribute.context);
+                return runner.run(attribute, UtilTagBase.instance);
+            });
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name delete_file
+        // @input ElementTag
+        // @deprecated use system.delete_file
+        // @description
+        // Deprecated in favor of <@link mechanism system.delete_file>
+        // -->
+
+        // <--[mechanism]
+        // @object server
+        // @name reset_event_stats
+        // @input None
+        // @deprecated use system.reset_event_stats
+        // @description
+        // Deprecated in favor of <@link mechanism system.reset_event_stats>
+        // -->
+
+        // <--[mechanism]
+        // @object server
+        // @name cleanmem
+        // @input None
+        // @deprecated use system.cleanmem
+        // @description
+        // Deprecated in favor of <@link mechanism system.cleanmem>
+        // -->
+
+        for (String mechName : new String[] { "delete_file", "reset_event_stats", "cleanmem" }) {
+            Mechanism.GenericMechRunnerInterface<UtilTagBase> runner = UtilTagBase.instance.tagProcessor.registeredMechanisms.get(mechName).runner;
+            tagProcessor.registerMechanism(mechName, false, (object, mechanism) -> {
+                BukkitImplDeprecations.serverSystemMechanisms.warn(mechanism.context);
+                runner.run(UtilTagBase.instance, mechanism);
+            });
+        }
+
         if (Depends.citizens != null) {
             registerCitizensFeatures();
         }
@@ -2211,195 +2395,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             return result;
         }, deprecatedVariants);
     }
-
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        // <--[tag]
-        // @attribute <server.notes[<type>]>
-        // @returns ListTag
-        // @deprecated use util.notes
-        // @description
-        // Deprecated in favor of <@link tag util.notes>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.started_time>
-        // @returns TimeTag
-        // @deprecated use util.started_time
-        // @description
-        // Deprecated in favor of <@link tag util.started_time>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.disk_free>
-        // @returns ElementTag(Number)
-        // @deprecated use util.disk_free
-        // @description
-        // Deprecated in favor of <@link tag util.disk_free>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.disk_total>
-        // @returns ElementTag(Number)
-        // @deprecated use util.disk_total
-        // @description
-        // Deprecated in favor of <@link tag util.disk_total>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.disk_usage>
-        // @returns ElementTag(Number)
-        // @deprecated use util.disk_usage
-        // @description
-        // Deprecated in favor of <@link tag util.disk_usage>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.ram_allocated>
-        // @returns ElementTag(Number)
-        // @deprecated use util.ram_allocated
-        // @description
-        // Deprecated in favor of <@link tag util.ram_allocated>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.ram_max>
-        // @returns ElementTag(Number)
-        // @deprecated use util.ram_max
-        // @description
-        // Deprecated in favor of <@link tag util.ram_max>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.ram_free>
-        // @returns ElementTag(Number)
-        // @deprecated use util.ram_free
-        // @description
-        // Deprecated in favor of <@link tag util.ram_free>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.ram_usage>
-        // @returns ElementTag(Number)
-        // @deprecated use util.ram_usage
-        // @description
-        // Deprecated in favor of <@link tag util.ram_usage>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.available_processors>
-        // @returns ElementTag(Number)
-        // @deprecated use util.available_processors
-        // @description
-        // Deprecated in favor of <@link tag util.available_processors>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.current_tick>
-        // @returns ElementTag(Number)
-        // @deprecated use util.current_tick
-        // @description
-        // Deprecated in favor of <@link tag util.current_tick>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.delta_time_since_start>
-        // @returns DurationTag
-        // @deprecated use util.delta_time_since_start
-        // @description
-        // Deprecated in favor of <@link tag util.delta_time_since_start>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.real_time_since_start>
-        // @returns DurationTag
-        // @deprecated use util.real_time_since_start
-        // @description
-        // Deprecated in favor of <@link tag util.real_time_since_start>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.current_time_millis>
-        // @returns ElementTag(Number)
-        // @deprecated use util.current_time_millis
-        // @description
-        // Deprecated in favor of <@link tag util.current_time_millis>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.has_file[<name>]>
-        // @returns ElementTag(Boolean)
-        // @deprecated use util.has_file
-        // @description
-        // Deprecated in favor of <@link tag util.has_file>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.list_files[<path>]>
-        // @returns ListTag
-        // @deprecated use util.list_files
-        // @description
-        // Deprecated in favor of <@link tag util.list_files>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.java_version>
-        // @returns ElementTag
-        // @deprecated use util.java_version
-        // @description
-        // Deprecated in favor of <@link tag util.java_version>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.sql_connections>
-        // @returns ListTag
-        // @deprecated use util.sql_connections
-        // @description
-        // Deprecated in favor of <@link tag util.sql_connections>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.scripts>
-        // @returns ListTag(ScriptTag)
-        // @deprecated use util.scripts
-        // @description
-        // Deprecated in favor of <@link tag util.scripts>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.last_reload>
-        // @returns TimeTag
-        // @deprecated use util.last_reload
-        // @description
-        // Deprecated in favor of <@link tag util.last_reload>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.stack_trace>
-        // @returns ElementTag
-        // @deprecated use util.stack_trace
-        // @description
-        // Deprecated in favor of <@link tag util.stack_trace>
-        // -->
-
-        // <--[tag]
-        // @attribute <server.debug_enabled>
-        // @returns ElementTag(Boolean)
-        // @deprecated use util.debug_enabled
-        // @description
-        // Deprecated in favor of <@link tag util.debug_enabled>
-        // -->
-        if (deprecatedServerUtilTags.contains(attribute.getAttributeWithoutParam(1))) {
-            BukkitImplDeprecations.serverUtilTags.warn(attribute.context);
-            return UtilTagBase.instance.getObjectAttribute(attribute);
-        }
-        return super.getObjectAttribute(attribute);
-    }
-
-    public static final Set<String> deprecatedServerUtilTags = Set.of("current_time_millis", "real_time_since_start",
-            "delta_time_since_start", "current_tick", "available_processors", "ram_usage", "ram_free", "ram_max", "ram_allocated", "disk_usage", "debug_enabled",
-            "disk_total", "disk_free", "started_time", "has_file", "list_files", "notes", "last_reload", "scripts", "sql_connections", "java_version", "stack_trace");
 
     private static MapTag areaNotesDebugStreamHack(Int2ObjectOpenHashMap<NotedAreaTracker.AreaSet> set) {
         MapTag out = new MapTag();
