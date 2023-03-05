@@ -49,7 +49,7 @@ public class EntityTeleportedByPortalScriptEvent extends BukkitScriptEvent imple
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!path.tryObjectSwitch("to", new WorldTag(event.getTargetWorld()))) {
+        if (!path.tryObjectSwitch("to", WorldTag.mirrorBukkitWorld(event.getTargetWorld()))) {
             return false;
         }
         if (!runGenericSwitchCheck(path, "portal_type", event.getPortalType().name())) {
