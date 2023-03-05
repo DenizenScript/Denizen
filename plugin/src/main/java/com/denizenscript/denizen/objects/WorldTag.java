@@ -35,21 +35,6 @@ import java.util.List;
 
 public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
 
-    /////////////////////
-    //   STATIC METHODS
-    /////////////////
-
-    public static WorldTag mirrorBukkitWorld(World world) {
-        if (world == null) {
-            return null;
-        }
-        return new WorldTag(world);
-    }
-
-    /////////////////////
-    //   OBJECT FETCHER
-    /////////////////
-
     // <--[ObjectType]
     // @name WorldTag
     // @prefix w

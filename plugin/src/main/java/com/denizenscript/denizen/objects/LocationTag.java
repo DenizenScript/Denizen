@@ -3156,7 +3156,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the world that the location is in.
         // -->
         tagProcessor.registerTag(WorldTag.class, "world", (attribute, object) -> {
-            return WorldTag.mirrorBukkitWorld(object.getWorld());
+            return object.getWorldName() == null ? null : new WorldTag(object.getWorldName());
         });
 
         // <--[tag]

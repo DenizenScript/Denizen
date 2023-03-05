@@ -1859,7 +1859,7 @@ public class ServerTagBase {
             listDeprecateWarn(attribute);
             ListTag worlds = new ListTag();
             for (World world : Bukkit.getWorlds()) {
-                worlds.addObject(WorldTag.mirrorBukkitWorld(world));
+                worlds.addObject(new WorldTag(world));
             }
             event.setReplacedObject(worlds.getObjectAttribute(attribute.fulfill(1)));
             return;
