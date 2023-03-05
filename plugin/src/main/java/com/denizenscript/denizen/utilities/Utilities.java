@@ -50,6 +50,10 @@ public class Utilities {
         }
     }
 
+    public static String namespacedKeyToString(NamespacedKey key) {
+        return key.getNamespace().equals(NamespacedKey.MINECRAFT) ? key.getKey() : key.toString();
+    }
+
     public static boolean matchesNamespacedKey(String input) {
         int colonIndex = input.indexOf(':');
         if (colonIndex == -1) {
