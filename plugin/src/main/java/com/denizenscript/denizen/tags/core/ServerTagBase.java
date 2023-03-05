@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.npc.traits.AssignmentTrait;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.commands.server.BossBarCommand;
@@ -12,7 +13,6 @@ import com.denizenscript.denizen.scripts.containers.core.CommandScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.utilities.inventory.BrewingRecipe;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -249,7 +249,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 });
             }
             if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && (type == null || type.equals("brewing"))) {
-                for (NamespacedKey brewingRecipe : NMSHandler.itemHelper.getCustomBrewingRecipeIDs()) {
+                for (NamespacedKey brewingRecipe : NMSHandler.itemHelper.getCustomBrewingRecipes().keySet()) {
                     recipeIds.add(brewingRecipe.toString());
                 }
             }
@@ -270,7 +270,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "recipe_items", (attribute, object, input) -> {
             NamespacedKey recipeKey = Utilities.parseNamespacedKey(input.asString());
             Recipe recipe = Bukkit.getRecipe(recipeKey);
-            BrewingRecipe brewingRecipe = Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) ? NMSHandler.itemHelper.getCustomBrewingRecipe(recipeKey) : null;
+            ItemHelper.BrewingRecipe brewingRecipe = Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) ? NMSHandler.itemHelper.getCustomBrewingRecipes().get(recipeKey) : null;
             if (recipe == null && brewingRecipe == null) {
                 return null;
             }
@@ -305,8 +305,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 addChoice.accept(cookingRecipe.getInputChoice());
             }
             else if (brewingRecipe != null) {
-                addChoice.accept(brewingRecipe.ingredient);
-                addChoice.accept(brewingRecipe.input);
+                addChoice.accept(brewingRecipe.ingredient());
+                addChoice.accept(brewingRecipe.input());
             }
             return recipeItems;
         });
@@ -339,7 +339,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             if (recipe != null) {
                 return new ElementTag(Utilities.getRecipeType(recipe));
             }
-            if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && NMSHandler.itemHelper.getCustomBrewingRecipeIDs().contains(recipeKey)) {
+            if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && NMSHandler.itemHelper.getCustomBrewingRecipes().containsKey(recipeKey)) {
                 return new ElementTag("brewing");
             }
             return null;
@@ -359,9 +359,9 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 return new ItemTag(recipe.getResult());
             }
             if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                BrewingRecipe brewingRecipe = NMSHandler.itemHelper.getCustomBrewingRecipe(recipeKey);
+                ItemHelper.BrewingRecipe brewingRecipe = NMSHandler.itemHelper.getCustomBrewingRecipes().get(recipeKey);
                 if (brewingRecipe != null) {
-                    return new ItemTag(brewingRecipe.result);
+                    return new ItemTag(brewingRecipe.result());
                 }
             }
             return null;
@@ -1341,7 +1341,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             listDeprecateWarn(attribute);
             ListTag worlds = new ListTag();
             for (World world : Bukkit.getWorlds()) {
-                worlds.addObject(WorldTag.mirrorBukkitWorld(world));
+                worlds.addObject(new WorldTag(world));
             }
             return worlds;
         }, "list_worlds");
