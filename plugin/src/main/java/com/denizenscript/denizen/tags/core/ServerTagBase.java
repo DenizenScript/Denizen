@@ -1799,21 +1799,21 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             ElementTag bonus = map.getElement("loot_bonus");
             EntityTag entity = map.getObjectAs("entity", EntityTag.class, attribute.context);
             if (entity != null) {
-                context.lootedEntity(entity.getBukkitEntity());
+                context = context.lootedEntity(entity.getBukkitEntity());
             }
             if (killer != null) {
                 if (killer.getLivingEntity() instanceof HumanEntity humanEntity) {
-                    context.killer(humanEntity);
+                     context = context.killer(humanEntity);
                 }
                 else {
                     attribute.echoError("Invalid killer '" + killer + "' specified: must be an online player or a player-type NPC.");
                 }
             }
             if (luck != null) {
-                context.luck(luck.asFloat());
+                context = context.luck(luck.asFloat());
             }
             if (bonus != null) {
-                context.lootingModifier(bonus.asInt());
+                context = context.lootingModifier(bonus.asInt());
             }
             Collection<ItemStack> items;
             try {
