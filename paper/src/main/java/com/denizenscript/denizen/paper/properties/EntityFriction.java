@@ -27,13 +27,13 @@ public class EntityFriction implements Property {
 
     EntityTag entity;
 
-    public Boolean getFrictional() {
-        return ((Frictional) entity.getBukkitEntity()).getFrictionState().toBoolean();
+    public Frictional getFrictional() {
+        return (Frictional) entity.getBukkitEntity();
     }
 
     @Override
     public String getPropertyString() {
-        Boolean frictionState = getFrictional();
+        Boolean frictionState = getFrictional().getFrictionState().toBoolean();
         if (frictionState == null) {
             return null;
         }
@@ -57,7 +57,7 @@ public class EntityFriction implements Property {
         // Returns an entity's friction state if one has been set.
         // -->
         PropertyParser.registerTag(EntityFriction.class, ElementTag.class, "has_friction", (attribute, object) -> {
-            Boolean frictionState = object.getFrictional();
+            Boolean frictionState = object.getFrictional().getFrictionState().toBoolean();
             if (frictionState == null) {
                 return null;
             }
@@ -78,10 +78,10 @@ public class EntityFriction implements Property {
         // -->
         PropertyParser.registerMechanism(EntityFriction.class, ElementTag.class, "has_friction", (object, mechanism, input) -> {
             if (!mechanism.hasValue()) {
-                ((Frictional) object.entity.getBukkitEntity()).setFrictionState(TriState.NOT_SET);
+                object.getFrictional().setFrictionState(TriState.NOT_SET);
             }
             else if (mechanism.requireBoolean()) {
-                ((Frictional) object.entity.getBukkitEntity()).setFrictionState(TriState.byBoolean(input.asBoolean()));
+                object.getFrictional().setFrictionState(TriState.byBoolean(input.asBoolean()));
             }
         });
     }
