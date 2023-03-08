@@ -26,7 +26,6 @@ An implementation of the Denizen Scripting Language for Spigot servers, with str
 - **Citizens2 (NPC support)**: https://github.com/CitizensDev/Citizens2/
 - **Depenizen (Other plugin support)**: https://github.com/DenizenScript/Depenizen
 - **dDiscordBot (Adds a Discord bot to Denizen)**: https://github.com/DenizenScript/dDiscordBot
-- **Webizen (Adds a webserver to Denizen)**: https://github.com/DenizenScript/Webizen
 - **DenizenCore (Our core, needed for building)**: https://github.com/DenizenScript/Denizen-Core
 - **DenizenVSCode (extension for writing Denizen scripts in VS Code)**: https://github.com/DenizenScript/DenizenVSCode
 
@@ -73,7 +72,7 @@ Copyright (C) 2013-2019 The Denizen Script Team, All Rights Reserved.
 
 The MIT License (MIT)
 
-Copyright (c) 2019-2022 The Denizen Script Team
+Copyright (c) 2019-2023 The Denizen Script Team
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
