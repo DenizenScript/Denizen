@@ -1,27 +1,25 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizen.npc.traits.*;
 import com.denizenscript.denizen.scripts.commands.npc.EngageCommand;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.InteractScriptHelper;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
+import com.denizenscript.denizen.tags.core.NPCTagBase;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
-import com.denizenscript.denizencore.tags.ObjectTagProcessor;
-import com.denizenscript.denizencore.utilities.CoreConfiguration;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.npc.DenizenNPCHelper;
-import com.denizenscript.denizen.tags.core.NPCTagBase;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
@@ -1274,6 +1272,37 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             }
             return result;
         });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name hologram_lines
+        // @input ListTag
+        // @description
+        // Sets the NPC's hologram lines.
+        // Each item in the list can be either:
+        // - An ElementTag for a permanent hologram line
+        // - A map with "text" (ElementTag) and "duration" (DurationTag) keys for a temporary hologram line that will disappear after the specified duration
+        // @tags
+        // <NPCTag.hologram_lines>
+        // -->
+        tagProcessor.registerMechanism("hologram_lines", false, ObjectTag.class, (object, mechanism, input) -> {
+            HologramTrait hologram = object.getCitizen().getOrAddTrait(HologramTrait.class);
+            hologram.clear();
+            for (ObjectTag value : CoreUtilities.objectToList(input, mechanism.context)) {
+                if (!value.canBeType(MapTag.class)) {
+                    hologram.addLine(value.toString());
+                    continue;
+                }
+                MapTag map = value.asType(MapTag.class, mechanism.context);
+                ElementTag text = map.getElement("text");
+                DurationTag duration = map.getObjectAs("duration", DurationTag.class, mechanism.context);
+                if (text == null || duration == null) {
+                    mechanism.echoError("Invalid temporary hologram line map '" + map + "': 'text' and/or 'duration' keys missing or have invalid values.");
+                    continue;
+                }
+                hologram.addTemporaryLine(text.asString(), duration.getTicksAsInt());
+            }
+        });
     }
 
     public static ObjectTagProcessor<NPCTag> tagProcessor = new ObjectTagProcessor<>();
@@ -1365,23 +1394,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             if (npc.hasTrait(AssignmentTrait.class)) {
                 getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
                 npc.removeTrait(AssignmentTrait.class);
-            }
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name hologram_lines
-        // @input ListTag
-        // @description
-        // Sets the NPC's hologram line list.
-        // @tags
-        // <NPCTag.hologram_lines>
-        // -->
-        if (mechanism.matches("hologram_lines") && mechanism.requireObject(ListTag.class)) {
-            HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
-            hologram.clear();
-            for (String line : mechanism.valueAsType(ListTag.class)) {
-                hologram.addLine(line);
             }
         }
 
