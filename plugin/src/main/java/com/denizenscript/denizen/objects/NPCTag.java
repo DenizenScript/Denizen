@@ -1297,7 +1297,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 ElementTag text = map.getElement("text");
                 DurationTag duration = map.getObjectAs("duration", DurationTag.class, mechanism.context);
                 if (text == null || duration == null) {
-                    mechanism.echoError("Invalid temporary hologram line map '" + map + "': 'text' and 'duration' keys missing or have invalid values.");
+                    mechanism.echoError("Invalid temporary hologram line map '" + map + "': 'text' and/or 'duration' keys missing or have invalid values.");
                     continue;
                 }
                 hologram.addTemporaryLine(text.asString(), duration.getTicksAsInt());
