@@ -1280,8 +1280,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Sets the NPC's hologram lines.
         // Each item in the list can be either:
-        // - A map with "text" (ElementTag) and "duration" (DurationTag) keys for a temporary hologram line that will last for the provided duration
         // - An ElementTag for a permanent hologram line
+        // - A map with "text" (ElementTag) and "duration" (DurationTag) keys for a temporary hologram line that will disappear after the specified duration
         // @tags
         // <NPCTag.hologram_lines>
         // -->
