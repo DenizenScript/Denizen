@@ -665,6 +665,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return getUUID().equals(((PlayerTag) other).getUUID());
     }
 
+    @Override
+    public boolean isTruthy() {
+        return isOnline();
+    }
+
     public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);

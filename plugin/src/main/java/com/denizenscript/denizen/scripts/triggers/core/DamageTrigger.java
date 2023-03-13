@@ -57,7 +57,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     // @Actions
     // damage
     //
-    // @Triggers when the NPC is damaged by a player.
+    // @Triggers when the NPC is damaged by a player and the Damage trigger fires. Action does not run if you do not enable the Damage trigger.
     //
     // @Context
     // <context.damage> returns how much damage was done.

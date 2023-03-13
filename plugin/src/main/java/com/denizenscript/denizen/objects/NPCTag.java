@@ -421,6 +421,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return getId();
     }
 
+    @Override
+    public boolean isTruthy() {
+        return isSpawned();
+    }
+
     public static void register() {
 
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
