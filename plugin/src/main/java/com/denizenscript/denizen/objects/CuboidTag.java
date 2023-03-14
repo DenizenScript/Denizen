@@ -86,11 +86,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return cuboid;
     }
 
-    @Deprecated
-    public static CuboidTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("cu")
     public static CuboidTag valueOf(String string, TagContext context) {
         if (string == null) {

@@ -68,11 +68,6 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     //    OBJECT FETCHER
     ////////////////
 
-    @Deprecated
-    public static ChunkTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("ch")
     public static ChunkTag valueOf(String string, TagContext context) {
         if (string == null) {

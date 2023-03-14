@@ -53,11 +53,6 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     //    OBJECT FETCHER
     ////////////////
 
-    @Deprecated
-    public static BiomeTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("b")
     public static BiomeTag valueOf(String string, TagContext context) {
         if (string.startsWith("b@")) {

@@ -122,11 +122,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     //   OBJECT FETCHER
     /////////////////
 
-    @Deprecated
-    public static PlayerTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("p")
     public static PlayerTag valueOf(String string, TagContext context) {
         return valueOfInternal(string, context, true);

@@ -90,11 +90,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         return new NPCTag(((NPCHolder) entity).getNPC());
     }
 
-    @Deprecated
-    public static NPCTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("n")
     public static NPCTag valueOf(String string, TagContext context) {
         if (string == null) {

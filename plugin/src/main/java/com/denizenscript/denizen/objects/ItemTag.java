@@ -99,11 +99,6 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     //    OBJECT FETCHER
     ////////////////
 
-    @Deprecated
-    public static ItemTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     public static ItemTag valueOf(String string, PlayerTag player, NPCTag npc) {
         return valueOf(string, new BukkitTagContext(player, npc, null));
     }

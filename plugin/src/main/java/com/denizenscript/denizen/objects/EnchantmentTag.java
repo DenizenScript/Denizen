@@ -51,11 +51,6 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
     //    Object Fetcher
     ////////////////
 
-    @Deprecated
-    public static EnchantmentTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("enchantment")
     public static EnchantmentTag valueOf(String string, TagContext context) {
         if (string == null) {

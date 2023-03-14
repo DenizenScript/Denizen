@@ -202,11 +202,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     //    OBJECT FETCHER
     ////////////////
 
-    @Deprecated
-    public static EntityTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     public static boolean allowDespawnedNpcs = false;
 
     @Fetchable("e")

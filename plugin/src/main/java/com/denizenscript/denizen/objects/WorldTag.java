@@ -68,11 +68,6 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     //
     // -->
 
-    @Deprecated
-    public static WorldTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("w")
     public static WorldTag valueOf(String string, TagContext context) {
         return valueOf(string, context == null || context.showErrors());

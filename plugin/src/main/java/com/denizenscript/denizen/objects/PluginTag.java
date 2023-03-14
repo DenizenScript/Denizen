@@ -44,27 +44,12 @@ public class PluginTag implements ObjectTag, FlaggableObject {
     //    Object Fetcher
     ////////////////
 
-    @Deprecated
-    public static PluginTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
-    /**
-     * Gets a PluginTag from a string format.
-     *
-     * @param string The plugin in string form. (pl@PluginName)
-     * @return The PluginTag value. If the string is incorrectly formatted or
-     * the specified plugin is invalid, this is null.
-     */
     @Fetchable("pl")
     public static PluginTag valueOf(String string, TagContext context) {
-
         if (string == null) {
             return null;
         }
-
         string = CoreUtilities.toLowerCase(string).replace("pl@", "");
-
         try {
             // Attempt to match from plugin list, as PluginManager#getPlugin is case sensitive
             for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
@@ -76,9 +61,7 @@ public class PluginTag implements ObjectTag, FlaggableObject {
         catch (Exception e) {
             Debug.echoError("Invalid plugin name specified, or plugin is not enabled: " + string);
         }
-
         return null;
-
     }
 
     public static boolean matches(String arg) {

@@ -55,12 +55,6 @@ public class ColorTag implements ObjectTag {
     //    OBJECT FETCHER
     ////////////////
 
-    @Deprecated
-    public static ColorTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
-
     public static HashMap<ColorTag, String> nameByColor = new HashMap<>();
     public static HashMap<String, ColorTag> colorsByName = new HashMap<>();
 

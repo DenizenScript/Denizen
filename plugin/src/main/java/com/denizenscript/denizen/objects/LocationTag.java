@@ -150,11 +150,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         NoteManager.remove(this);
     }
 
-    @Deprecated
-    public static LocationTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("l")
     public static LocationTag valueOf(String string, TagContext context) {
         if (string == null) {
