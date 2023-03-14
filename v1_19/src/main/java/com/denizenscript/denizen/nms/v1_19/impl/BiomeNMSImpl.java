@@ -39,7 +39,9 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     @Override
-    public DownfallType getDownfallType() {
+    public DownfallType getDownfallType() { // TODO: 1.19.4: This is no longer valid, downfall is based on height now
+        throw new UnsupportedOperationException();
+        /*
         Biome.Precipitation nmsType = biomeHolder.value().getPrecipitation();
         switch (nmsType) {
             case RAIN:
@@ -50,12 +52,12 @@ public class BiomeNMSImpl extends BiomeNMS {
                 return DownfallType.NONE;
             default:
                 throw new UnsupportedOperationException();
-        }
+        }*/
     }
 
     @Override
     public float getHumidity() {
-        return biomeHolder.value().getDownfall();
+        return biomeHolder.value().climateSettings.downfall();
     }
 
     @Override
@@ -87,9 +89,9 @@ public class BiomeNMSImpl extends BiomeNMS {
         return ReflectionHelper.getFieldValue(Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeHolder.value());
     }
 
-    public void setClimate(Biome.Precipitation precipitation, float temperature, Biome.TemperatureModifier temperatureModifier, float downfall) {
+    public void setClimate(boolean hasPrecipitation, float temperature, Biome.TemperatureModifier temperatureModifier, float downfall) {
         try {
-            Object newClimate = BIOME_CLIMATESETTINGS_CONSTRUCTOR.invoke(precipitation, temperature, temperatureModifier, downfall);
+            Object newClimate = BIOME_CLIMATESETTINGS_CONSTRUCTOR.invoke(hasPrecipitation, temperature, temperatureModifier, downfall);
             ReflectionHelper.setFieldValue(Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeHolder.value(), newClimate);
         }
         catch (Throwable ex) {
@@ -99,16 +101,18 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public void setHumidity(float humidity) {
-        setClimate(biomeHolder.value().getPrecipitation(), getTemperature(), getTemperatureModifier(), humidity);
+        setClimate(biomeHolder.value().climateSettings.hasPrecipitation(), getTemperature(), getTemperatureModifier(), humidity);
     }
 
     @Override
     public void setTemperature(float temperature) {
-        setClimate(biomeHolder.value().getPrecipitation(), temperature, getTemperatureModifier(), getHumidity());
+        setClimate(biomeHolder.value().hasPrecipitation(), temperature, getTemperatureModifier(), getHumidity());
     }
 
     @Override
-    public void setPrecipitation(DownfallType type) {
+    public void setPrecipitation(DownfallType type) { // TODO: 1.19.4: This is no longer valid, downfall is based on height now
+        throw new UnsupportedOperationException();
+        /*
         Biome.Precipitation nmsType;
         switch (type) {
             case NONE:
@@ -123,7 +127,7 @@ public class BiomeNMSImpl extends BiomeNMS {
             default:
                 throw new UnsupportedOperationException();
         }
-        setClimate(nmsType, getTemperature(), getTemperatureModifier(), getHumidity());
+        setClimate(nmsType, getTemperature(), getTemperatureModifier(), getHumidity());*/
     }
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {

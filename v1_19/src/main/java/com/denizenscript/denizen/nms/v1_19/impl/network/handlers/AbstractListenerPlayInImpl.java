@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.network.Connection;
 import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
@@ -15,12 +14,14 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.lang.reflect.Field;
+import java.net.SocketAddress;
 import java.util.Set;
 
 public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
@@ -35,11 +36,6 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public Connection getConnection() {
-        return this.connection;
-    }
-
-    @Override
     public void disconnect(Component ichatbasecomponent) {
         oldListener.disconnect(ichatbasecomponent);
     }
@@ -47,16 +43,6 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public void disconnect(String s) {
         oldListener.disconnect(s);
-    }
-
-    @Override
-    public void dismount(double d0, double d1, double d2, float f, float f1) {
-        oldListener.dismount(d0, d1, d2, f, f1);
-    }
-
-    @Override
-    public void dismount(double d0, double d1, double d2, float f, float f1, PlayerTeleportEvent.TeleportCause cause) {
-        oldListener.dismount(d0, d1, d2, f, f1, cause);
     }
 
     @Override
@@ -70,18 +56,13 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void teleport(double d0, double d1, double d2, float f, float f1, Set<ClientboundPlayerPositionPacket.RelativeArgument> set) {
+    public void teleport(double d0, double d1, double d2, float f, float f1, Set<RelativeMovement> set) {
         oldListener.teleport(d0, d1, d2, f, f1, set);
     }
 
     @Override
-    public void teleport(double d0, double d1, double d2, float f, float f1, Set<ClientboundPlayerPositionPacket.RelativeArgument> set, PlayerTeleportEvent.TeleportCause cause) {
-        oldListener.teleport(d0, d1, d2, f, f1, set, cause);
-    }
-
-    @Override
-    public boolean teleport(double d0, double d1, double d2, float f, float f1, Set<ClientboundPlayerPositionPacket.RelativeArgument> set, boolean flag, PlayerTeleportEvent.TeleportCause cause) {
-        return oldListener.teleport(d0, d1, d2, f, f1, set, flag, cause);
+    public boolean teleport(double d0, double d1, double d2, float f, float f1, Set<RelativeMovement> set, PlayerTeleportEvent.TeleportCause cause) {
+        return oldListener.teleport(d0, d1, d2, f, f1, set, cause);
     }
 
     @Override
@@ -102,6 +83,11 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public void resetPosition() {
         oldListener.resetPosition();
+    }
+
+    @Override
+    public boolean isAcceptingMessages() {
+        return oldListener.isAcceptingMessages();
     }
 
     @Override
@@ -382,6 +368,16 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public void sendDisguisedChatMessage(Component ichatbasecomponent, ChatType.Bound chatmessagetype_a) {
         oldListener.sendDisguisedChatMessage(ichatbasecomponent, chatmessagetype_a);
+    }
+
+    @Override
+    public SocketAddress getRemoteAddress() {
+        return oldListener.getRemoteAddress();
+    }
+
+    @Override
+    public SocketAddress getRawAddress() {
+        return oldListener.getRawAddress();
     }
 
     @Override

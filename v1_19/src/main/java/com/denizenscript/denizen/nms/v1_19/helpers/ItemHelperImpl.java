@@ -172,7 +172,7 @@ public class ItemHelperImpl extends ItemHelper {
         ResourceLocation key = new ResourceLocation("denizen", keyName);
         Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
         Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
-        UpgradeRecipe recipe = new UpgradeRecipe(key, baseItemRecipe, upgradeItemRecipe, CraftItemStack.asNMSCopy(result));
+        LegacyUpgradeRecipe recipe = new LegacyUpgradeRecipe(key, baseItemRecipe, upgradeItemRecipe, CraftItemStack.asNMSCopy(result)); // TODO: 1.19.4: smithing system was changed
         ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
     }
 

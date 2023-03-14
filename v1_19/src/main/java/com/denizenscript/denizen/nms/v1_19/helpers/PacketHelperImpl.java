@@ -20,7 +20,6 @@ import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
@@ -34,7 +33,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.CaveSpider;
@@ -63,7 +62,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -153,20 +151,20 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showBlockAction(Player player, Location location, int action, int state) {
-        BlockPos position = new BlockPos(location.getX(), location.getY(), location.getZ());
+        BlockPos position = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         Block block = ((CraftWorld) location.getWorld()).getHandle().getBlockState(position).getBlock();
         send(player, new ClientboundBlockEventPacket(position, block, action, state));
     }
 
     @Override
     public void showBlockCrack(Player player, int id, Location location, int progress) {
-        BlockPos position = new BlockPos(location.getX(), location.getY(), location.getZ());
+        BlockPos position = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         send(player, new ClientboundBlockDestructionPacket(id, position, progress));
     }
 
     @Override
     public void showTileEntityData(Player player, Location location, int action, CompoundTag compoundTag) {
-        BlockPos position = new BlockPos(location.getX(), location.getY(), location.getZ());
+        BlockPos position = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         try {
             ClientboundBlockEntityDataPacket packet = (ClientboundBlockEntityDataPacket) BLOCK_ENTITY_DATA_PACKET_CONSTRUCTOR.invoke(position, action, ((CompoundTagImpl) compoundTag).toNMSTag());
             send(player, packet);
@@ -242,8 +240,8 @@ public class PacketHelperImpl implements PacketHelper {
         LocationTag fakeSign = new LocationTag(player.getLocation());
         fakeSign.setY(0);
         FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(Material.OAK_WALL_SIGN), new DurationTag(1), true);
-        BlockPos pos = new BlockPos(fakeSign.getX(), 0, fakeSign.getZ());
-        ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.fakeSignExpected = pos;
+        BlockPos pos = new BlockPos(fakeSign.getBlockX(), 0, fakeSign.getBlockZ());
+        DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.fakeSignExpected = pos;
         send(player, new ClientboundOpenSignEditorPacket(pos));
     }
 
@@ -340,7 +338,7 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public int getPacketStats(Player player, boolean sent) {
-        DenizenNetworkManagerImpl netMan = (DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection;
+        DenizenNetworkManagerImpl netMan = DenizenNetworkManagerImpl.getNetworkManager(player);
         return sent ? netMan.packetsSent : netMan.packetsReceived;
     }
 
@@ -429,8 +427,8 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void sendRelativeLookPacket(Player player, float yaw, float pitch) {
-        ClientboundPlayerPositionPacket packet = new ClientboundPlayerPositionPacket(0, 0, 0, yaw, pitch, ClientboundPlayerPositionPacket.RelativeArgument.ALL, 0, false);
-        ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).oldManager.channel.writeAndFlush(packet);
+        ClientboundPlayerPositionPacket packet = new ClientboundPlayerPositionPacket(0, 0, 0, yaw, pitch, RelativeMovement.ALL, 0);
+        DenizenNetworkManagerImpl.getNetworkManager(player).oldManager.channel.writeAndFlush(packet);
     }
 
     public static void send(Player player, Packet<?> packet) {

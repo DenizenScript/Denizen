@@ -62,7 +62,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
                 @Override
                 public int getDamageProtection(int level, DamageSource src) {
-                    return script.script.getDamageProtection(level, src.msgId, src.getEntity() == null ? null : src.getEntity().getBukkitEntity());
+                    return script.script.getDamageProtection(level, src.getMsgId(), src.getEntity() == null ? null : src.getEntity().getBukkitEntity());
                 }
                 @Override
                 public float getDamageBonus(int level, MobType type) {
@@ -210,7 +210,8 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
 
     @Override
     public int getDamageProtection(Enchantment enchantment, int level, EntityDamageEvent.DamageCause type, org.bukkit.entity.Entity attacker) {
-        DamageSource src = EntityHelperImpl.getSourceFor(attacker == null ? null : ((CraftEntity) attacker).getHandle(), type);
+        Entity nmsAtacker = attacker == null ? null : ((CraftEntity) attacker).getHandle();
+        DamageSource src = EntityHelperImpl.getSourceFor(nmsAtacker, type, nmsAtacker);
         if (src instanceof EntityHelperImpl.FakeDamageSrc) {
             src = ((EntityHelperImpl.FakeDamageSrc) src).real;
         }

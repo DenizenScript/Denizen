@@ -108,10 +108,28 @@ public class DenizenNetworkManagerImpl extends Connection {
         this.player = this.packetListener.player;
     }
 
+    public static Connection getConnection(ServerPlayer player) {
+        try {
+            return (Connection) ServerGamePacketListener_ConnectionField.get(player.connection);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+            throw new RuntimeException("Failed to get connection from player due to reflection error", ex);
+        }
+    }
+
+    public static DenizenNetworkManagerImpl getNetworkManager(ServerPlayer player) {
+        return (DenizenNetworkManagerImpl) getConnection(player);
+    }
+
+    public static DenizenNetworkManagerImpl getNetworkManager(Player player) {
+        return getNetworkManager(((CraftPlayer) player).getHandle());
+    }
+
     public static void setNetworkManager(Player player) {
         ServerPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         ServerGamePacketListenerImpl playerConnection = entityPlayer.connection;
-        setNetworkManager(playerConnection, new DenizenNetworkManagerImpl(entityPlayer, playerConnection.connection));
+        setNetworkManager(playerConnection, new DenizenNetworkManagerImpl(entityPlayer, getConnection(entityPlayer)));
     }
 
     public static void enableNetworkManager() {
@@ -1365,17 +1383,13 @@ public class DenizenNetworkManagerImpl extends Connection {
         return oldManager.getAverageSentPackets();
     }
 
-    @Override
-    public SocketAddress getRawAddress() {
-        return oldManager.getRawAddress();
-    }
-
     //////////////////////////////////
     //// Reflection Methods/Fields
     ///////////
 
     private static final Field protocolDirectionField = ReflectionHelper.getFields(Connection.class).get(ReflectionMappingsInfo.Connection_receiving, PacketFlow.class);
-    private static final MethodHandle networkManagerField = ReflectionHelper.getFinalSetter(ServerGamePacketListenerImpl.class, ReflectionMappingsInfo.ServerGamePacketListenerImpl_connection);
+    private static final Field ServerGamePacketListener_ConnectionField = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_connection);
+    private static final MethodHandle ServerGamePacketListener_ConnectionSetter = ReflectionHelper.getFinalSetter(ServerGamePacketListenerImpl.class, ReflectionMappingsInfo.ServerGamePacketListenerImpl_connection);
 
     private static PacketFlow getProtocolDirection(Connection networkManager) {
         PacketFlow direction = null;
@@ -1390,7 +1404,7 @@ public class DenizenNetworkManagerImpl extends Connection {
 
     private static void setNetworkManager(ServerGamePacketListenerImpl playerConnection, Connection networkManager) {
         try {
-            networkManagerField.invoke(playerConnection, networkManager);
+            ServerGamePacketListener_ConnectionSetter.invoke(playerConnection, networkManager);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
