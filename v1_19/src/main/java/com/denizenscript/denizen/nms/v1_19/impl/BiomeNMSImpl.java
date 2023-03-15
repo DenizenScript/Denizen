@@ -27,7 +27,7 @@ import java.util.Locale;
 
 public class BiomeNMSImpl extends BiomeNMS {
 
-    public static final MethodHandle BIOME_CLIMATESETTINGS_CONSTRUCTOR = ReflectionHelper.getConstructor(Biome.class.getDeclaredClasses()[0], Biome.Precipitation.class, float.class, Biome.TemperatureModifier.class, float.class);
+    public static final MethodHandle BIOME_CLIMATESETTINGS_CONSTRUCTOR = ReflectionHelper.getConstructor(Biome.class.getDeclaredClasses()[0], boolean.class, float.class, Biome.TemperatureModifier.class, float.class);
 
     public Holder<Biome> biomeHolder;
     public ServerLevel world;
