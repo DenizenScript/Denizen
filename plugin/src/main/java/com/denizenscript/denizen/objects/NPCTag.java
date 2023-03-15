@@ -710,12 +710,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
-            Collection<ArmorStand> stands = hologram.getHologramEntities();
+            Collection<Entity> stands = hologram.getHologramEntities();
             if (stands == null || stands.isEmpty()) {
                 return null;
             }
             ListTag output = new ListTag();
-            for (ArmorStand stand : stands) {
+            for (Entity stand : stands) {
                 output.addObject(new EntityTag(stand).getDenizenObject());
             }
             return output;
