@@ -3,11 +3,12 @@ package com.denizenscript.denizen.objects.properties.material;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.block.data.Attachable;
 import org.bukkit.block.data.Hangable;
 import org.bukkit.block.data.type.Gate;
 import org.bukkit.block.data.type.Lantern;
@@ -19,6 +20,7 @@ public class MaterialAttached implements Property {
                 && ((MaterialTag) material).hasModernData()
                 && (((MaterialTag) material).getModernData() instanceof Gate
                 || ((MaterialTag) material).getModernData() instanceof Lantern
+                || ((MaterialTag) material).getModernData() instanceof Attachable
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && ((MaterialTag) material).getModernData() instanceof Hangable));
     }
 
@@ -53,6 +55,8 @@ public class MaterialAttached implements Property {
         // For a lantern, this returns whether it is hanging from the ceiling.
         // For a gate, this returns whether it is lowered to attach to a wall block.
         // For a mangrove_propagule, this returns whether it is hanging from the block above it.
+        // For a tripwire, this returns whether a tripwire hook or string forms a complete tripwire circuit and is ready to trigger.
+        // For a hanging sign, this returns whether it is hanging from the block above it.
         // -->
         PropertyParser.registerStaticTag(MaterialAttached.class, ElementTag.class, "attached", (attribute, material) -> {
             if (material.isGate()) {
@@ -60,6 +64,9 @@ public class MaterialAttached implements Property {
             }
             else if (material.isLantern()) {
                 return new ElementTag(material.getLantern().isHanging());
+            }
+            else if (material.isAttachable()) {
+                return new ElementTag(material.getAttachable().isAttached());
             }
             else if (material.isHangable()) {
                 return new ElementTag(((Hangable) material.material.getModernData()).isHanging());
@@ -90,6 +97,14 @@ public class MaterialAttached implements Property {
         return (Lantern) material.getModernData();
     }
 
+    public Attachable getAttachable() {
+        return (Attachable) material.getModernData();
+    }
+
+    public boolean isAttachable() {
+        return material.getModernData() instanceof Attachable;
+    }
+
     /*public Hangable getHangable() { // TODO: 1.19
         return (Hangable) material.getModernData();
     }*/
@@ -100,6 +115,9 @@ public class MaterialAttached implements Property {
         }
         else if (isLantern()) {
             return getLantern().isHanging();
+        }
+        else if (isAttachable()) {
+            return getAttachable().isAttached();
         }
         else if (isHangable()) {
             return ((Hangable) material.getModernData()).isHanging(); // TODO: 1.19
@@ -129,6 +147,10 @@ public class MaterialAttached implements Property {
         // For a lantern, this sets whether it is hanging from the ceiling.
         // For a gate, this sets whether it is lowered to attach to a wall block.
         // For a mangrove_propagule, this sets whether it is hanging from the block above it.
+        // For a tripwire, this sets whether a tripwire hook or string forms a complete tripwire circuit and is ready to trigger.
+        // Updating the property on a tripwire hook will change the texture to indicate a connected string, but will not have any effect when used on the tripwire string itself.
+        // It may however still be used to check whether the string forms a circuit.
+        // For hanging signs, this affects signs hanging below a block and changes whether the chains are vertical (false) or diagonal (true).
         // @tags
         // <MaterialTag.attached>
         // -->
@@ -138,6 +160,9 @@ public class MaterialAttached implements Property {
             }
             else if (isLantern()) {
                 getLantern().setHanging(mechanism.getValue().asBoolean());
+            }
+            else if (isAttachable()) {
+                getAttachable().setAttached(mechanism.getValue().asBoolean());
             }
             else if (isHangable()) {
                 ((Hangable) material.getModernData()).setHanging(mechanism.getValue().asBoolean()); // TODO: 1.19
