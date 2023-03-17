@@ -3,18 +3,15 @@ package com.denizenscript.denizen.objects.properties.material;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import net.citizensnpcs.util.NMS;
 import org.bukkit.block.data.Attachable;
 import org.bukkit.block.data.Hangable;
 import org.bukkit.block.data.type.Gate;
 import org.bukkit.block.data.type.Lantern;
-import org.bukkit.block.data.type.Tripwire;
-import org.bukkit.block.data.type.TripwireHook;
 
 public class MaterialAttached implements Property {
 
