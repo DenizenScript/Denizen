@@ -56,6 +56,7 @@ public class MaterialAttached implements Property {
         // For a gate, this returns whether it is lowered to attach to a wall block.
         // For a mangrove_propagule, this returns whether it is hanging from the block above it.
         // For a tripwire, this returns whether a tripwire hook or string forms a complete tripwire circuit and is ready to trigger.
+        // For a hanging sign, this returns whether it is hanging from the block above it.
         // -->
         PropertyParser.registerStaticTag(MaterialAttached.class, ElementTag.class, "attached", (attribute, material) -> {
             if (material.isGate()) {
@@ -149,6 +150,7 @@ public class MaterialAttached implements Property {
         // For a tripwire, this sets whether a tripwire hook or string forms a complete tripwire circuit and is ready to trigger.
         // Updating the property on a tripwire hook will change the texture to indicate a connected string, but will not have
         // any effect when used on the tripwire string itself. It may however still be used to check whether the string forms a circuit.
+        // For hanging signs, this affects signs hanging below a block and changes whether the chains are vertical (false) or diagonal (true).
         // @tags
         // <MaterialTag.attached>
         // -->
