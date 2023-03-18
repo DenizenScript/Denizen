@@ -64,6 +64,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerSelectsStonecutterRecipeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSpectatesEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStopsSpectatingScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerTracksEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerTradesWithMerchantScriptEvent.class);
         ScriptEvent.registerScriptEvent(PreEntitySpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(ProjectileCollideScriptEvent.class);
