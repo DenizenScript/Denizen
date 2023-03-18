@@ -26,7 +26,7 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
     //
     // @Warning This event may fire very rapidly.
     //
-    // @Triggers when a player starts or stop tracking an entity.
+    // @Triggers when a player starts or stop tracking an entity. An entity is tracked when it is visible to the client. An entity will be untracked when it is no longer visible, e.g. it despawns, dies, or is unloaded.
     //
     // @Context
     // <context.entity> returns an EntityTag of the entity being tracked.
