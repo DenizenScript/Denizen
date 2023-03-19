@@ -78,7 +78,7 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
     }
 
     @EventHandler
-    public void playerTracksEntityEvent(PlayerTrackEntityEvent event) {
+    public void onPlayerTracksEntityEvent(PlayerTrackEntityEvent event) {
         entity = new EntityTag(event.getEntity());
         player = event.getPlayer();
         type = "tracks";
@@ -86,7 +86,7 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
     }
 
     @EventHandler
-    public void playerUntracksEntityEvent(PlayerUntrackEntityEvent event) {
+    public void onPlayerUntracksEntityEvent(PlayerUntrackEntityEvent event) {
         entity = new EntityTag(event.getEntity());
         player = event.getPlayer();
         type = "untracks";
