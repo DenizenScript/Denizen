@@ -2,7 +2,6 @@ package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -26,7 +25,7 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
     //
     // @Warning This event may fire very rapidly.
     //
-    // @Triggers when a player starts or stop tracking an entity. An entity is tracked when it is visible to the client. An entity will be untracked when it is no longer visible, e.g. it despawns, dies, or is unloaded.
+    // @Triggers when a player starts or stops tracking an entity. An entity is tracked/untracked by a player's client when the player moves in/out of its <@link mechanism EntityTag.tracking_range>.
     //
     // @Context
     // <context.entity> returns an EntityTag of the entity being tracked.
@@ -51,11 +50,10 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
     public String type;
     public Player player;
     public EntityTag entity;
-    public LocationTag location;
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runInCheck(path, location)) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
         if (!path.eventArgLowerAt(1).equals(type)) {
@@ -76,7 +74,7 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "entity" -> entity;
-            case "location" -> location;
+            case "location" -> entity.getLocation();
             default -> super.getContext(name);
         };
     }
@@ -84,7 +82,6 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
     @EventHandler
     public void playerTracksEntityEvent(PlayerTrackEntityEvent event) {
         entity = new EntityTag(event.getEntity());
-        location = new LocationTag(event.getEntity().getLocation());
         player = event.getPlayer();
         type = "tracks";
         fire(event);
@@ -93,9 +90,10 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
     @EventHandler
     public void playerUntracksEntityEvent(PlayerUntrackEntityEvent event) {
         entity = new EntityTag(event.getEntity());
-        location = new LocationTag(event.getEntity().getLocation());
         player = event.getPlayer();
         type = "untracks";
+        EntityTag.rememberEntity(event.getEntity());
         fire(event);
+        EntityTag.forgetEntity(event.getEntity());
     }
 }
