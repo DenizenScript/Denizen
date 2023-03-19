@@ -28,15 +28,14 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
     // @Triggers when a player starts or stops tracking an entity. An entity is tracked/untracked by a player's client when the player moves in/out of its <@link mechanism EntityTag.tracking_range>.
     //
     // @Context
-    // <context.entity> returns an EntityTag of the entity being tracked.
-    // <context.location> returns a LocationTag of the entity.
+    // <context.entity> returns an EntityTag of the entity being tracked or untracked.
     //
     // @Player Always.
     //
     // @Example
     // # Narrate when the player tracks all entities except for item frames.
     // on player tracks !item_frame:
-    // - narrate "You are now tracking <context.entity.name> at <context.location.simple>"
+    // - narrate "You are now tracking <context.entity.name> at <context.entity.location.simple>"
     //
     // @Example
     // on player untracks chicken:
@@ -53,13 +52,13 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runInCheck(path, entity.getLocation())) {
-            return false;
-        }
         if (!path.eventArgLowerAt(1).equals(type)) {
             return false;
         }
         if (!path.tryArgObject(2, entity)) {
+            return false;
+        }
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
         return super.matches(path);
@@ -74,7 +73,6 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "entity" -> entity;
-            case "location" -> entity.getLocation();
             default -> super.getContext(name);
         };
     }
