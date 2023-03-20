@@ -26,7 +26,7 @@ public class MapCommand extends AbstractCommand {
         setSyntax("map [<#>/new:<world>] (reset:<location>) (scale:<value>) (tracking) (image:<file>) (resize) (script:<script>) (dot:<color>) (radius:<#>) (x:<#>) (y:<#>) (text:<text>)");
         setRequiredArguments(2, 10);
         isProcedural = false;
-        setPrefixesHandled("dot", "radius", "image", "script", "x", "y", "reset", "new", "text");
+        setPrefixesHandled("dot", "radius", "image", "script", "x", "y", "reset", "new", "text", "scale");
         setBooleansHandled("resize", "tracking");
     }
 
