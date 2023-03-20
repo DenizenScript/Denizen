@@ -52,7 +52,7 @@ public class MaterialDisarmed implements Property {
         // <--[mechanism]
         // @object MaterialTag
         // @name disarmed
-        // @input ElementTag
+        // @input ElementTag(Boolean)
         // @description
         // Sets the current disarmed state of the tripwire.
         // For tripwires, input is true (corresponding to "disarmed") or false (corresponding to "armed").
