@@ -1,28 +1,22 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import org.bukkit.Bukkit;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Tripwire;
 
 public class MaterialDisarmed implements Property {
 
     public static boolean describes(ObjectTag material) {
-        if (!(material instanceof MaterialTag)) {
+        if (!(material instanceof MaterialTag mat)) {
             return false;
         }
-        MaterialTag mat = (MaterialTag) material;
         if (!mat.hasModernData()) {
             return false;
         }
-        BlockData data = mat.getModernData();
-        return data instanceof MaterialTag
-                || ((MaterialTag) material).getModernData() instanceof Tripwire;
+        return (mat.getModernData() instanceof Tripwire);
     }
 
     public static MaterialDisarmed getFrom(ObjectTag _material) {
@@ -33,10 +27,6 @@ public class MaterialDisarmed implements Property {
             return new MaterialDisarmed((MaterialTag) _material);
         }
     }
-
-    public static final String[] handledMechs = new String[] {
-            "disarmed"
-    };
 
     private MaterialDisarmed(MaterialTag _material) {
         material = _material;
@@ -53,36 +43,12 @@ public class MaterialDisarmed implements Property {
         // @group properties
         // @description
         // Returns the current disarmed state of the tripwire.
-        // For tripwires, is TRUE (corresponding to "disarmed") or FALSE (corresponding to "armed").
+        // For tripwires, is true (corresponding to "disarmed") or false (corresponding to "armed").
         // -->
-        PropertyParser.registerStaticTag(MaterialDisarmed.class, ElementTag.class, "disarmed",
-                (attribute, material) -> new ElementTag(material.getDisarmable().isDisarmed()),"is_disarmed");
-    }
 
-    public boolean isDisarmed() {
-        return material.getModernData() instanceof Tripwire;
-    }
-
-    public Tripwire getDisarmable() {
-        return (Tripwire) material.getModernData();
-    }
-
-    @Override
-    public String getPropertyString() {
-        if (isDisarmed()) {
-            Bukkit.getLogger().info(getDisarmable().getAsString());
-            return getDisarmable().getAsString();
-        }
-        return null; // Unreachable.
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "disarmed";
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
+        PropertyParser.registerStaticTag(MaterialDisarmed.class, ElementTag.class, "disarmed", (attribute, material) -> {
+            return new ElementTag(material.getTripwire().isDisarmed());
+        });
 
         // <--[mechanism]
         // @object MaterialTag
@@ -90,14 +56,29 @@ public class MaterialDisarmed implements Property {
         // @input ElementTag
         // @description
         // Sets the current disarmed state of the tripwire.
-        // For tripwires, input is TRUE (corresponding to "disarmed") or FALSE (corresponding to "armed").
+        // For tripwires, input is true (corresponding to "disarmed") or false (corresponding to "armed").
         // @tags
         // <MaterialTag.disarmed>
         // -->
-        if (mechanism.matches("disarmed")) {
-            if (isDisarmed()) {
-                getDisarmable().setDisarmed(mechanism.getValue().asBoolean());
-            }
-        }
+
+        PropertyParser.registerMechanism(MaterialDisarmed.class, ElementTag.class, "disarmed", (prop, mechanism, param) -> {
+            prop.getTripwire().setDisarmed(param.asBoolean());
+        });
     }
+
+
+    public Tripwire getTripwire() {
+        return (Tripwire) material.getModernData();
+    }
+
+    @Override
+    public String getPropertyString() {
+        return String.valueOf(getTripwire().isDisarmed());
+    }
+
+    @Override
+    public String getPropertyId() {
+        return "disarmed";
+    }
+
 }
