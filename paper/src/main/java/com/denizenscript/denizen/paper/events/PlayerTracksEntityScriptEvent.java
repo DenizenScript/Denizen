@@ -33,7 +33,7 @@ public class PlayerTracksEntityScriptEvent extends BukkitScriptEvent implements 
     // @Player Always.
     //
     // @Example
-    // # Narrate when the player tracks all entities except for item frames.
+    // # Narrate when the player tracks any entities except for item frames.
     // on player tracks !item_frame:
     // - narrate "You are now tracking <context.entity.name> at <context.entity.location.simple>"
     //

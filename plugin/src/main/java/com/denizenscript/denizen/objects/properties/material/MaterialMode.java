@@ -31,6 +31,7 @@ public class MaterialMode implements Property {
                 || data instanceof CommandBlock
                 || data instanceof SculkSensor
                 || data instanceof BigDripleaf
+                || data instanceof Tripwire
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && (data instanceof SculkCatalyst
                                                                         || data instanceof  SculkShrieker));
     }
@@ -73,6 +74,7 @@ public class MaterialMode implements Property {
         // For big_dripleafs, output is FULL, NONE, PARTIAL, or UNSTABLE.
         // For sculk_catalysts, output is BLOOM or NORMAL.
         // For sculk_shriekers, output is SHRIEKING or NORMAL.
+        // For tripwires, output is ARMED or DISARMED.
         // -->
         PropertyParser.registerStaticTag(MaterialMode.class, ElementTag.class, "mode", (attribute, material) -> {
             return new ElementTag(material.getPropertyString());
@@ -103,12 +105,16 @@ public class MaterialMode implements Property {
         return material.getModernData() instanceof CommandBlock;
     }
 
+    public boolean isSculkSensor() {
+        return material.getModernData() instanceof SculkSensor;
+    }
+
     public boolean isBigDripleaf() {
         return material.getModernData() instanceof BigDripleaf;
     }
 
-    public boolean isSculkSensor() {
-        return material.getModernData() instanceof SculkSensor;
+    public boolean isTripwire() {
+        return material.getModernData() instanceof Tripwire;
     }
 
     public boolean isSculkCatalyst() {
@@ -151,6 +157,10 @@ public class MaterialMode implements Property {
         return (BigDripleaf) material.getModernData();
     }
 
+    public Tripwire getTripwire() {
+        return (Tripwire) material.getModernData();
+    }
+
     /*public SculkCatalyst getSculkCatalyst() { // TODO: 1.19
         return (SculkCatalyst) material.getModernData();
     }
@@ -185,6 +195,9 @@ public class MaterialMode implements Property {
         else if (isBigDripleaf()) {
             return getBigDripleaf().getTilt().name();
         }
+        else if (isTripwire()) {
+            return getTripwire().isDisarmed() ? "DISARMED" : "ARMED";
+        }
         else if (isSculkCatalyst()) {
             return ((SculkCatalyst) material.getModernData()).isBloom() ? "BLOOM" : "NORMAL"; // TODO: 1.19
         }
@@ -218,6 +231,7 @@ public class MaterialMode implements Property {
         // For big_dripleafs, input is FULL, NONE, PARTIAL, or UNSTABLE.
         // For sculk_catalysts, input is BLOOM or NORMAL.
         // For sculk_shriekers, input is SHRIEKING or NORMAL.
+        // For tripwires, input is ARMED or DISARMED.
         // @tags
         // <MaterialTag.mode>
         // -->
@@ -241,10 +255,13 @@ public class MaterialMode implements Property {
                 getCommandBlock().setConditional(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "conditional"));
             }
             else if (isSculkSensor() && mechanism.requireEnum(SculkSensor.Phase.class)) {
-                ((SculkSensor) material.getModernData()).setPhase(SculkSensor.Phase.valueOf(mechanism.getValue().asString().toUpperCase()));
+                getSculkSensor().setPhase(SculkSensor.Phase.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (isBigDripleaf() && mechanism.requireEnum(BigDripleaf.Tilt.class)) {
-                ((BigDripleaf) material.getModernData()).setTilt(BigDripleaf.Tilt.valueOf(mechanism.getValue().asString().toUpperCase()));
+                getBigDripleaf().setTilt(BigDripleaf.Tilt.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (isTripwire()) {
+                getTripwire().setDisarmed(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "disarmed"));
             }
             else if (isSculkCatalyst()) {
                 ((SculkCatalyst) material.getModernData()).setBloom(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "bloom")); // TODO: 1.19
