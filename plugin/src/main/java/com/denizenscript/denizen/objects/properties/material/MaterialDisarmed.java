@@ -38,7 +38,7 @@ public class MaterialDisarmed implements Property {
 
         // <--[tag]
         // @attribute <MaterialTag.disarmed>
-        // @returns ElementTag
+        // @returns ElementTag(Boolean)
         // @mechanism MaterialTag.disarmed
         // @group properties
         // @description
