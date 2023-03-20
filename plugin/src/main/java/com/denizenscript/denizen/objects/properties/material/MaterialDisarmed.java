@@ -45,7 +45,6 @@ public class MaterialDisarmed implements Property {
         // Returns the current disarmed state of the tripwire.
         // For tripwires, is true (corresponding to "disarmed") or false (corresponding to "armed").
         // -->
-
         PropertyParser.registerStaticTag(MaterialDisarmed.class, ElementTag.class, "disarmed", (attribute, material) -> {
             return new ElementTag(material.getTripwire().isDisarmed());
         });
@@ -60,12 +59,10 @@ public class MaterialDisarmed implements Property {
         // @tags
         // <MaterialTag.disarmed>
         // -->
-
         PropertyParser.registerMechanism(MaterialDisarmed.class, ElementTag.class, "disarmed", (prop, mechanism, param) -> {
             prop.getTripwire().setDisarmed(param.asBoolean());
         });
     }
-
 
     public Tripwire getTripwire() {
         return (Tripwire) material.getModernData();
@@ -80,5 +77,4 @@ public class MaterialDisarmed implements Property {
     public String getPropertyId() {
         return "disarmed";
     }
-
 }
