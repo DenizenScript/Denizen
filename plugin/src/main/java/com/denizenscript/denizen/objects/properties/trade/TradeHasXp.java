@@ -2,41 +2,20 @@ package com.denizenscript.denizen.objects.properties.trade;
 
 import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
-public class TradeHasXp implements Property {
+public class TradeHasXp extends TradeProperty {
 
-    public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof TradeTag;
+    public static boolean describes(TradeTag recipe) {
+        return true;
     }
 
-    public static TradeHasXp getFrom(ObjectTag recipe) {
-        if (!describes(recipe)) {
-            return null;
-        }
-        return new TradeHasXp((TradeTag) recipe);
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getRecipe().hasExperienceReward());
     }
 
-    public static final String[] handledMechs = new String[] {
-            "has_xp"
-    };
-
-    public TradeTag recipe;
-
-    public TradeHasXp(TradeTag recipe) {
-        this.recipe = recipe;
-    }
-
-    public String getPropertyString() {
-        if (recipe.getRecipe() == null) {
-            return null;
-        }
-        return String.valueOf(recipe.getRecipe().hasExperienceReward());
-    }
-
+    @Override
     public String getPropertyId() {
         return "has_xp";
     }
@@ -50,12 +29,9 @@ public class TradeHasXp implements Property {
         // @description
         // Returns whether the trade has an experience reward.
         // -->
-        PropertyParser.registerTag(TradeHasXp.class, ElementTag.class, "has_xp", (attribute, recipe) -> {
-            return new ElementTag(recipe.recipe.getRecipe().hasExperienceReward());
+        PropertyParser.registerTag(TradeHasXp.class, ElementTag.class, "has_xp", (attribute, prop) -> {
+            return new ElementTag(prop.getRecipe().hasExperienceReward());
         });
-    }
-
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object TradeTag
@@ -66,8 +42,10 @@ public class TradeHasXp implements Property {
         // @tags
         // <TradeTag.has_xp>
         // -->
-        if (mechanism.matches("has_xp") && mechanism.requireBoolean()) {
-            recipe.getRecipe().setExperienceReward(mechanism.getValue().asBoolean());
-        }
+        PropertyParser.registerMechanism(TradeHasXp.class, ElementTag.class, "has_xp", (prop, mechanism, param) -> {
+            if (mechanism.requireBoolean()) {
+                prop.getRecipe().setExperienceReward(mechanism.getValue().asBoolean());
+            }
+        });
     }
 }

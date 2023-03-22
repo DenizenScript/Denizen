@@ -3,50 +3,34 @@ package com.denizenscript.denizen.objects.properties.trade;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TradeInputs implements Property {
+public class TradeInputs extends TradeProperty {
 
-    public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof TradeTag;
+    public static boolean describes(TradeTag recipe) {
+        return true;
     }
 
-    public static TradeInputs getFrom(ObjectTag recipe) {
-        if (!describes(recipe)) {
-            return null;
-        }
-        return new TradeInputs((TradeTag) recipe);
+    @Override
+    public ListTag getPropertyValue() {
+        return getIngredientsList();
     }
 
-    public TradeTag recipe;
-
-    public TradeInputs(TradeTag recipe) {
-        this.recipe = recipe;
-    }
-
-    public String getPropertyString() {
-        if (recipe.getRecipe() == null) {
-            return null;
-        }
-        return getIngredientsList().identify();
+    @Override
+    public String getPropertyId() {
+        return "inputs";
     }
 
     public ListTag getIngredientsList() {
         ListTag result = new ListTag();
-        for (ItemStack item : recipe.getRecipe().getIngredients()) {
+        for (ItemStack item : getRecipe().getIngredients()) {
             result.addObject(new ItemTag(item));
         }
         return result;
-    }
-
-    public String getPropertyId() {
-        return "inputs";
     }
 
     public static void register() {
@@ -58,8 +42,8 @@ public class TradeInputs implements Property {
         // @description
         // Returns the list of items required to make the trade.
         // -->
-        PropertyParser.registerTag(TradeInputs.class, ListTag.class, "inputs", (attribute, recipe) -> {
-            return recipe.getIngredientsList();
+        PropertyParser.registerTag(TradeInputs.class, ListTag.class, "inputs", (attribute, prop) -> {
+            return prop.getIngredientsList();
         });
 
         // <--[mechanism]
@@ -76,7 +60,7 @@ public class TradeInputs implements Property {
             List<ItemStack> ingredients = new ArrayList<>();
             List<ItemTag> list = inList.filter(ItemTag.class, mechanism.context);
             if (!mechanism.hasValue() || list.isEmpty()) {
-                prop.recipe.getRecipe().setIngredients(ingredients);
+                prop.getRecipe().setIngredients(ingredients);
                 return;
             }
             for (ItemTag item : list) {
@@ -86,7 +70,7 @@ public class TradeInputs implements Property {
                 mechanism.echoError("Trade recipe input was given " + list.size() + " items. Only using the first two items!");
                 ingredients = ingredients.subList(0, 2);
             }
-            prop.recipe.getRecipe().setIngredients(ingredients);
+            prop.getRecipe().setIngredients(ingredients);
         });
     }
 }

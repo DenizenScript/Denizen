@@ -1,42 +1,21 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
 import com.denizenscript.denizen.objects.TradeTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
-public class TradeSpecialPrice implements Property {
+public class TradeSpecialPrice extends TradeProperty {
 
-    public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof TradeTag;
+    public static boolean describes(TradeTag recipe) {
+        return true;
     }
 
-    public static TradeSpecialPrice getFrom(ObjectTag recipe) {
-        if (!describes(recipe)) {
-            return null;
-        }
-        return new TradeSpecialPrice((TradeTag) recipe);
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getRecipe().getSpecialPrice());
     }
 
-    public static final String[] handledMechs = new String[] {
-            "special_price"
-    };
-
-    public TradeTag recipe;
-
-    public TradeSpecialPrice(TradeTag recipe) {
-        this.recipe = recipe;
-    }
-
-    public String getPropertyString() {
-        if (recipe.getRecipe() == null) {
-            return null;
-        }
-        return String.valueOf(recipe.getRecipe().getSpecialPrice());
-    }
-
+    @Override
     public String getPropertyId() {
         return "special_price";
     }
@@ -50,12 +29,9 @@ public class TradeSpecialPrice implements Property {
         // @description
         // Returns the special price for this trade.
         // -->
-        PropertyParser.registerTag(TradeSpecialPrice.class, ElementTag.class, "special_price", (attribute, recipe) -> {
-            return new ElementTag(recipe.recipe.getRecipe().getSpecialPrice());
+        PropertyParser.registerTag(TradeSpecialPrice.class, ElementTag.class, "special_price", (attribute, prop) -> {
+            return new ElementTag(prop.getRecipe().getSpecialPrice());
         });
-    }
-
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object TradeTag
@@ -66,8 +42,10 @@ public class TradeSpecialPrice implements Property {
         // @tags
         // <TradeTag.special_price>
         // -->
-        if (mechanism.matches("special_price") && mechanism.requireInteger()) {
-            recipe.getRecipe().setSpecialPrice(mechanism.getValue().asInt());
-        }
+        PropertyParser.registerMechanism(TradeSpecialPrice.class, ElementTag.class, "special_price", (prop, mechanism, param) -> {
+            if (mechanism.requireInteger()) {
+                prop.getRecipe().setSpecialPrice(mechanism.getValue().asInt());
+            }
+        });
     }
 }

@@ -2,41 +2,20 @@ package com.denizenscript.denizen.objects.properties.trade;
 
 import com.denizenscript.denizen.objects.TradeTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
-public class TradeMaxUses implements Property {
+public class TradeMaxUses extends TradeProperty {
 
-    public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof TradeTag;
+    public static boolean describes(TradeTag recipe) {
+        return true;
     }
 
-    public static TradeMaxUses getFrom(ObjectTag recipe) {
-        if (!describes(recipe)) {
-            return null;
-        }
-        return new TradeMaxUses((TradeTag) recipe);
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getRecipe().getMaxUses());
     }
 
-    public static final String[] handledMechs = new String[] {
-            "max_uses"
-    };
-
-    public TradeTag recipe;
-
-    public TradeMaxUses(TradeTag recipe) {
-        this.recipe = recipe;
-    }
-
-    public String getPropertyString() {
-        if (recipe.getRecipe() == null) {
-            return null;
-        }
-        return String.valueOf(recipe.getRecipe().getMaxUses());
-    }
-
+    @Override
     public String getPropertyId() {
         return "max_uses";
     }
@@ -50,12 +29,9 @@ public class TradeMaxUses implements Property {
         // @description
         // Returns the maximum amount of times that the trade can be used.
         // -->
-        PropertyParser.registerTag(TradeMaxUses.class, ElementTag.class, "max_uses", (attribute, recipe) -> {
-            return new ElementTag(recipe.recipe.getRecipe().getMaxUses());
+        PropertyParser.registerTag(TradeMaxUses.class, ElementTag.class, "max_uses", (attribute, prop) -> {
+            return new ElementTag(prop.getRecipe().getMaxUses());
         });
-    }
-
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object TradeTag
@@ -66,8 +42,10 @@ public class TradeMaxUses implements Property {
         // @tags
         // <TradeTag.max_uses>
         // -->
-        if (mechanism.matches("max_uses") && mechanism.requireInteger()) {
-            recipe.getRecipe().setMaxUses(mechanism.getValue().asInt());
-        }
+        PropertyParser.registerMechanism(TradeMaxUses.class, ElementTag.class, "max_uses", (prop, mechanism, param) -> {
+            if (mechanism.requireInteger()) {
+                prop.getRecipe().setMaxUses(mechanism.getValue().asInt());
+            }
+        });
     }
 }

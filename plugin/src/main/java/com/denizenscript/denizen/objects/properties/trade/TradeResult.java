@@ -2,36 +2,20 @@ package com.denizenscript.denizen.objects.properties.trade;
 
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.TradeTag;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
-public class TradeResult implements Property {
+public class TradeResult extends TradeProperty {
 
-    public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof TradeTag;
+    public static boolean describes(TradeTag recipe) {
+        return true;
     }
 
-    public static TradeResult getFrom(ObjectTag recipe) {
-        if (!describes(recipe)) {
-            return null;
-        }
-        return new TradeResult((TradeTag) recipe);
+    @Override
+    public ItemTag getPropertyValue() {
+        return new ItemTag(getRecipe().getResult());
     }
 
-    public TradeTag recipe;
-
-    public TradeResult(TradeTag recipe) {
-        this.recipe = recipe;
-    }
-
-    public String getPropertyString() {
-        if (recipe.getRecipe() == null) {
-            return null;
-        }
-        return (new ItemTag(recipe.getRecipe().getResult())).identify();
-    }
-
+    @Override
     public String getPropertyId() {
         return "result";
     }
@@ -45,8 +29,8 @@ public class TradeResult implements Property {
         // @description
         // Returns what the trade will give the player.
         // -->
-        PropertyParser.registerTag(TradeResult.class, ItemTag.class, "result", (attribute, recipe) -> {
-            return new ItemTag(recipe.recipe.getRecipe().getResult());
+        PropertyParser.registerTag(TradeResult.class, ItemTag.class, "result", (attribute, prop) -> {
+            return new ItemTag(prop.getRecipe().getResult());
         });
 
         // <--[mechanism]
@@ -59,7 +43,7 @@ public class TradeResult implements Property {
         // <TradeTag.result>
         // -->
         PropertyParser.registerMechanism(TradeResult.class, ItemTag.class, "result", (prop, mechanism, item) -> {
-            prop.recipe.setRecipe(TradeTag.duplicateRecipe(item.getItemStack(), prop.recipe.getRecipe()));
+            prop.object.setRecipe(TradeTag.duplicateRecipe(item.getItemStack(), prop.getRecipe()));
         });
     }
 }

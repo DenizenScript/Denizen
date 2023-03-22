@@ -60,9 +60,7 @@ public class TradeTag implements ObjectTag, Adjustable {
         }
         string = CoreUtilities.toLowerCase(string).replace("trade@", "");
         if (string.toLowerCase().matches("trade")) {
-            MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Material.AIR), 0);
-            recipe.setIngredients(Collections.singletonList(new ItemStack(Material.AIR)));
-            return new TradeTag(recipe);
+            return new TradeTag(null);
         }
         return null;
     }
@@ -72,6 +70,10 @@ public class TradeTag implements ObjectTag, Adjustable {
     }
 
     public TradeTag(MerchantRecipe recipe) {
+        if (recipe == null) {
+            recipe = new MerchantRecipe(new ItemStack(Material.AIR), 0);
+            recipe.setIngredients(Collections.singletonList(new ItemStack(Material.AIR)));
+        }
         this.recipe = recipe;
     }
 

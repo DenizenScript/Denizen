@@ -1,42 +1,21 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
 import com.denizenscript.denizen.objects.TradeTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
-public class TradeVillagerXP implements Property {
+public class TradeVillagerXP extends TradeProperty {
 
-    public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof TradeTag;
+    public static boolean describes(TradeTag recipe) {
+        return true;
     }
 
-    public static TradeVillagerXP getFrom(ObjectTag recipe) {
-        if (!describes(recipe)) {
-            return null;
-        }
-        return new TradeVillagerXP((TradeTag) recipe);
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getRecipe().getVillagerExperience());
     }
 
-    public static final String[] handledMechs = new String[] {
-            "villager_xp"
-    };
-
-    public TradeTag recipe;
-
-    public TradeVillagerXP(TradeTag recipe) {
-        this.recipe = recipe;
-    }
-
-    public String getPropertyString() {
-        if (recipe.getRecipe() == null) {
-            return null;
-        }
-        return String.valueOf(recipe.getRecipe().getVillagerExperience());
-    }
-
+    @Override
     public String getPropertyId() {
         return "villager_xp";
     }
@@ -50,12 +29,9 @@ public class TradeVillagerXP implements Property {
         // @description
         // Returns the amount of experience a villager gains from this trade.
         // -->
-        PropertyParser.registerTag(TradeVillagerXP.class, ElementTag.class, "villager_xp", (attribute, recipe) -> {
-            return new ElementTag(recipe.recipe.getRecipe().getVillagerExperience());
+        PropertyParser.registerTag(TradeVillagerXP.class, ElementTag.class, "villager_xp", (attribute, prop) -> {
+            return new ElementTag(prop.getRecipe().getVillagerExperience());
         });
-    }
-
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object TradeTag
@@ -66,8 +42,10 @@ public class TradeVillagerXP implements Property {
         // @tags
         // <TradeTag.villager_xp>
         // -->
-        if (mechanism.matches("villager_xp") && mechanism.requireInteger()) {
-            recipe.getRecipe().setVillagerExperience(mechanism.getValue().asInt());
-        }
+        PropertyParser.registerMechanism(TradeVillagerXP.class, ElementTag.class, "villager_xp", (prop, mechanism, param) -> {
+            if (mechanism.requireInteger()) {
+                prop.getRecipe().setVillagerExperience(mechanism.getValue().asInt());
+            }
+        });
     }
 }
