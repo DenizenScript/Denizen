@@ -8,14 +8,11 @@ import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.TextWidthHelper;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.MapTag;
-import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -732,7 +729,7 @@ public class BukkitElementExtensions {
                 if (color == null && TagManager.isStaticParsing) {
                     return null;
                 }
-                StringBuilder hex = new StringBuilder(Integer.toHexString(color.getColor().asRGB()));
+                StringBuilder hex = new StringBuilder(Integer.toHexString(color.asRGB()));
                 while (hex.length() < 6) {
                     hex.insert(0, "0");
                 }
@@ -747,7 +744,7 @@ public class BukkitElementExtensions {
                 catch (IllegalArgumentException ex) {
                     ColorTag color = ColorTag.valueOf(colorName, attribute.context);
                     if (color != null) {
-                        StringBuilder hex = new StringBuilder(Integer.toHexString(color.getColor().asRGB()));
+                        StringBuilder hex = new StringBuilder(Integer.toHexString(color.asRGB()));
                         while (hex.length() < 6) {
                             hex.insert(0, "0");
                         }
@@ -815,7 +812,7 @@ public class BukkitElementExtensions {
                     colors[i] = str.charAt(3 + (i * 2));
                 }
                 int rgb = Integer.parseInt(new String(colors), 16);
-                HSB = new ColorTag(Color.fromRGB(rgb)).toHSB();
+                HSB = ColorTag.fromRGB(rgb).toHSB();
                 str = str.substring(14);
             }
             float hue = HSB[0] / 255f;
@@ -842,7 +839,7 @@ public class BukkitElementExtensions {
                     i++;
                     continue;
                 }
-                String hex = Integer.toHexString(ColorTag.fromHSB(HSB).getColor().asRGB());
+                String hex = Integer.toHexString(ColorTag.fromHSB(HSB).asRGB());
                 output.append(FormattedTextHelper.stringifyRGBSpigot(hex)).append(addedFormat).append(c);
                 hue += increment;
                 HSB[0] = Math.round(hue * 255f);
@@ -923,13 +920,13 @@ public class BukkitElementExtensions {
         float r, g, b, x = 0, rMove, gMove, bMove, xMove = 0, toR, toG, toB;
         int[] hsbHelper = null;
         if (style == GradientStyle.RGB) {
-            r = ColorTag.fromSRGB(fromColor.getColor().getRed());
-            g = ColorTag.fromSRGB(fromColor.getColor().getGreen());
-            b = ColorTag.fromSRGB(fromColor.getColor().getBlue());
+            r = ColorTag.fromSRGB(fromColor.red);
+            g = ColorTag.fromSRGB(fromColor.green);
+            b = ColorTag.fromSRGB(fromColor.blue);
             x = (float) Math.pow(r + g + b, 0.43);
-            toR = ColorTag.fromSRGB(toColor.getColor().getRed());
-            toG = ColorTag.fromSRGB(toColor.getColor().getGreen());
-            toB = ColorTag.fromSRGB(toColor.getColor().getBlue());
+            toR = ColorTag.fromSRGB(toColor.red);
+            toG = ColorTag.fromSRGB(toColor.green);
+            toB = ColorTag.fromSRGB(toColor.blue);
             float toBrightness = (float) Math.pow(toR + toG + toB, 0.43);
             xMove = (toBrightness - x) / length;
         }
@@ -990,7 +987,7 @@ public class BukkitElementExtensions {
                 hsbHelper[1] = (int)g;
                 hsbHelper[2] = (int)b;
                 ColorTag currentColor = ColorTag.fromHSB(hsbHelper);
-                hex = Integer.toHexString(currentColor.getColor().asRGB());
+                hex = Integer.toHexString(currentColor.asRGB());
             }
             output.append(FormattedTextHelper.stringifyRGBSpigot(hex)).append(addedFormat).append(str.charAt(i));
             r += rMove;

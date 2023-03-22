@@ -1,9 +1,10 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Color;
@@ -74,11 +75,11 @@ public class ItemColor implements Property {
                     || mat == Material.SPLASH_POTION) {
                 PotionMeta pm = (PotionMeta) item.getItemMeta();
                 if (!pm.hasColor()) {
-                    return new ColorTag(Color.WHITE).getObjectAttribute(attribute.fulfill((1)));
+                    return BukkitColorExtensions.fromColor(Color.WHITE).getObjectAttribute(attribute.fulfill((1)));
                 }
-                return new ColorTag(pm.getColor()).getObjectAttribute(attribute.fulfill((1)));
+                return BukkitColorExtensions.fromColor(pm.getColor()).getObjectAttribute(attribute.fulfill((1)));
             }
-            return new ColorTag(((LeatherArmorMeta) item.getItemMeta()).getColor()).getObjectAttribute(attribute.fulfill(1));
+            return BukkitColorExtensions.fromColor(((LeatherArmorMeta) item.getItemMeta()).getColor()).getObjectAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -94,9 +95,9 @@ public class ItemColor implements Property {
             if (!pm.hasColor()) {
                 return null;
             }
-            return new ColorTag(pm.getColor()).identify();
+            return BukkitColorExtensions.fromColor(pm.getColor()).identify();
         }
-        return new ColorTag(((LeatherArmorMeta) item.getItemMeta()).getColor()).identify();
+        return BukkitColorExtensions.fromColor(((LeatherArmorMeta) item.getItemMeta()).getColor()).identify();
     }
 
     @Override
@@ -122,12 +123,12 @@ public class ItemColor implements Property {
             Material mat = item.getBukkitMaterial();
             if (mat == Material.POTION || mat == Material.LINGERING_POTION || mat == Material.SPLASH_POTION) {
                 PotionMeta meta = (PotionMeta) item.getItemMeta();
-                meta.setColor(color.getColor());
+                meta.setColor(BukkitColorExtensions.getColor(color));
                 item.setItemMeta(meta);
                 return;
             }
             LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
-            meta.setColor(color.getColor());
+            meta.setColor(BukkitColorExtensions.getColor(color));
             item.setItemMeta(meta);
         }
 

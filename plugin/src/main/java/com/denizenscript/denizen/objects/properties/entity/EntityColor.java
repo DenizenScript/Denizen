@@ -2,9 +2,10 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizen.utilities.MultiVersionHelper1_19;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -109,7 +110,7 @@ public class EntityColor implements Property {
                 return ((ZombieVillager) colored.getBukkitEntity()).getVillagerType().name();
             case ARROW:
                 try {
-                    return new ColorTag(((Arrow) colored.getBukkitEntity()).getColor()).identify();
+                    return BukkitColorExtensions.fromColor(((Arrow) colored.getBukkitEntity()).getColor()).identify();
                 }
                 catch (Exception e) {
                     return null;
@@ -396,7 +397,7 @@ public class EntityColor implements Property {
                 ((ZombieVillager) colored.getBukkitEntity()).setVillagerType(Villager.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.ARROW && mechanism.requireObject(ColorTag.class)) {
-                ((Arrow) colored.getBukkitEntity()).setColor(mechanism.valueAsType(ColorTag.class).getColor());
+                ((Arrow) colored.getBukkitEntity()).setColor(BukkitColorExtensions.getColor(mechanism.valueAsType(ColorTag.class)));
             }
             else if (type == EntityType.GOAT) {
                 ((Goat) colored.getBukkitEntity()).setScreaming(CoreUtilities.toLowerCase(mechanism.getValue().asString()).equals("screaming"));

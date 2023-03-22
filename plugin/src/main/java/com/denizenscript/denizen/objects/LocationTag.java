@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.*;
@@ -10,6 +11,7 @@ import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizen.utilities.world.PathFinder;
 import com.denizenscript.denizen.utilities.world.WorldListChangeTracker;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
@@ -19,10 +21,6 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
@@ -4299,7 +4297,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (block == null) {
                 return null;
             }
-            return new ColorTag(NMSHandler.blockHelper.getMapColor(block));
+            return BukkitColorExtensions.fromColor(NMSHandler.blockHelper.getMapColor(block));
         });
 
         // <--[tag]

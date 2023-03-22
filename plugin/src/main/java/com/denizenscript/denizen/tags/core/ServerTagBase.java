@@ -651,20 +651,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         });
 
         // <--[tag]
-        // @attribute <server.color_names>
-        // @returns ListTag
-        // @description
-        // Returns a list of almost all available color names that would be accepted by <@link objecttype ColorTag>.
-        // This is only their Bukkit names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Color.html>.
-        // This also includes "transparent" as defined by ColorTag.
-        // -->
-        tagProcessor.registerStaticTag(ListTag.class, "color_names", (attribute, object) -> {
-            ListTag result = new ListTag(ColorTag.colorsByName.size());
-            result.addAll(ColorTag.colorsByName.keySet());
-            return result;
-        });
-
-        // <--[tag]
         // @attribute <server.art_types>
         // @returns ListTag
         // @description
@@ -2167,7 +2153,15 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Deprecated in favor of <@link tag util.debug_enabled>
         // -->
-        for (String tagName : new String[] { "current_time_millis", "real_time_since_start",
+
+        // <--[tag]
+        // @attribute <server.color_names>
+        // @returns ListTag
+        // @deprecated use util.color_names
+        // @description
+        // Deprecated in favor of <@link tag util.color_names>
+        // -->
+        for (String tagName : new String[] { "current_time_millis", "real_time_since_start", "color_names",
                 "delta_time_since_start", "current_tick", "available_processors", "ram_usage", "ram_free", "ram_max", "ram_allocated", "disk_usage", "debug_enabled",
                 "disk_total", "disk_free", "started_time", "has_file", "list_files", "notes", "last_reload", "scripts", "sql_connections", "java_version", "stack_trace" }) {
             TagRunnable.ObjectInterface<UtilTagBase, ?> runner = UtilTagBase.instance.tagProcessor.registeredObjectTags.get(tagName).runner;

@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;

@@ -1,7 +1,8 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -90,10 +91,10 @@ public class ItemFirework implements Property {
                 if (effect == null) {
                     continue;
                 }
-                ListTag colors = new ListTag(effect.getColors().stream().map(c -> new ColorTag(c)).collect(Collectors.toList()));
-                ListTag fadeColors = new ListTag(effect.getFadeColors().stream().map(c -> new ColorTag(c)).collect(Collectors.toList()));
+                ListTag colors = new ListTag(effect.getColors().stream().map(BukkitColorExtensions::fromColor).collect(Collectors.toList()));
+                ListTag fadeColors = new ListTag(effect.getFadeColors().stream().map(BukkitColorExtensions::fromColor).collect(Collectors.toList()));
                 if (colors.isEmpty()) {
-                    colors.addObject(new ColorTag(Color.BLUE));
+                    colors.addObject(BukkitColorExtensions.fromColor(Color.BLUE));
                 }
                 if (fadeColors.isEmpty()) {
                     fadeColors.addObject(colors.getObject(0));
@@ -242,11 +243,11 @@ public class ItemFirework implements Property {
                         }
                         List<Color> colors = Collections.singletonList(Color.BLACK);
                         if (color != null) {
-                            colors = color.asType(ListTag.class, mechanism.context).filter(ColorTag.class, mechanism.context).stream().map(ColorTag::getColor).collect(Collectors.toList());
+                            colors = color.asType(ListTag.class, mechanism.context).filter(ColorTag.class, mechanism.context).stream().map(BukkitColorExtensions::getColor).collect(Collectors.toList());
                         }
                         builder.withColor(colors);
                         if (fadeColor != null) {
-                            List<Color> fadeColors = fadeColor.asType(ListTag.class, mechanism.context).filter(ColorTag.class, mechanism.context).stream().map(ColorTag::getColor).collect(Collectors.toList());
+                            List<Color> fadeColors = fadeColor.asType(ListTag.class, mechanism.context).filter(ColorTag.class, mechanism.context).stream().map(BukkitColorExtensions::getColor).collect(Collectors.toList());
                             builder.withFade(fadeColors);
                         }
                         FireworkEffect built = builder.build();

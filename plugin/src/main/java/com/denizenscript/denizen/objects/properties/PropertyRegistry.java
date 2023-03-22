@@ -15,9 +15,10 @@ public class PropertyRegistry {
 
     public static void registerExtensions() {
         BukkitBinaryTagExtensions.register();
+        BukkitColorExtensions.register();
         BukkitElementExtensions.register();
         BukkitListExtensions.register();
-        BukkitMapTagExtensions.register();
+        BukkitMapExtensions.register();
         BukkitQueueExtensions.register();
         BukkitScriptExtensions.register();
     }

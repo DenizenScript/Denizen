@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
@@ -268,7 +268,7 @@ public class TextTagBase {
                 if (color == null && TagManager.isStaticParsing) {
                     return null;
                 }
-                String hex = Integer.toHexString(color.getColor().asRGB());
+                String hex = Integer.toHexString(color.asRGB());
                 colorOut = FormattedTextHelper.stringifyRGBSpigot(hex);
             }
             if (colorOut == null) {

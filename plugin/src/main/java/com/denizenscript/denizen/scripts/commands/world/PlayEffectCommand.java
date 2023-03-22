@@ -2,7 +2,9 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -282,7 +284,7 @@ public class PlayEffectCommand extends AbstractCommand {
                         else {
                             float size = Float.parseFloat(dataList.get(0));
                             ColorTag color = ColorTag.valueOf(dataList.get(1), scriptEntry.context);
-                            dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
+                            dataObject = new org.bukkit.Particle.DustOptions(BukkitColorExtensions.getColor(color), size);
                         }
                     }
                     else if (clazz == BlockData.class) {
@@ -303,7 +305,7 @@ public class PlayEffectCommand extends AbstractCommand {
                             float size = Float.parseFloat(dataList.get(0));
                             ColorTag fromColor = ColorTag.valueOf(dataList.get(1), scriptEntry.context);
                             ColorTag toColor = ColorTag.valueOf(dataList.get(2), scriptEntry.context);
-                            dataObject = new org.bukkit.Particle.DustTransition(fromColor.getColor(), toColor.getColor(), size);
+                            dataObject = new org.bukkit.Particle.DustTransition(BukkitColorExtensions.getColor(fromColor), BukkitColorExtensions.getColor(toColor), size);
                         }
                     }
                     else if (clazz == Vibration.class) {

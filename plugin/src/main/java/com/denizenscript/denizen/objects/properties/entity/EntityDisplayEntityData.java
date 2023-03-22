@@ -1,14 +1,11 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.BlockDisplay;
@@ -74,7 +71,7 @@ public class EntityDisplayEntityData implements Property {
         map.putObject("width", new ElementTag(display.getDisplayWidth()));
         map.putObject("height", new ElementTag(display.getDisplayHeight()));
         if (display.getGlowColorOverride() != null) {
-            map.putObject("glow_color", new ColorTag(display.getGlowColorOverride()));
+            map.putObject("glow_color", BukkitColorExtensions.fromColor(display.getGlowColorOverride()));
         }
         map.putObject("interpolation_delay", new DurationTag((long) display.getInterpolationDelay()));
         map.putObject("interpolation_duration", new DurationTag((long) display.getInterpolationDuration()));
@@ -160,7 +157,7 @@ public class EntityDisplayEntityData implements Property {
             display.setDisplayWidth(map.getElement("width", String.valueOf(display.getWidth())).asFloat());
             display.setDisplayHeight(map.getElement("height", String.valueOf(display.getHeight())).asFloat());
             if (map.getObject("glow_color") != null) {
-                display.setGlowColorOverride(map.getObjectAs("glow_color", ColorTag.class, mechanism.context).getColor());
+                display.setGlowColorOverride(BukkitColorExtensions.getColor(map.getObjectAs("glow_color", ColorTag.class, mechanism.context)));
             }
             else {
                 display.setGlowColorOverride(null);

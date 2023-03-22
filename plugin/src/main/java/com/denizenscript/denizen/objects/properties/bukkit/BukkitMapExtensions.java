@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.core.BinaryTag;
 
 import java.io.ByteArrayOutputStream;
 
-public class BukkitMapTagExtensions {
+public class BukkitMapExtensions {
 
     public static void register() {
 

@@ -1,9 +1,10 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizen.utilities.entity.AreaEffectCloudHelper;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -139,7 +140,7 @@ public class EntityAreaEffectCloud implements Property {
             // Returns the Area Effect Cloud's particle color.
             // -->
             if (attribute.startsWith("color")) {
-                return new ColorTag(getHelper().getColor())
+                return BukkitColorExtensions.fromColor(getHelper().getColor())
                         .getObjectAttribute(attribute.fulfill(1));
             }
             return new ElementTag(getHelper().getParticle())
@@ -463,7 +464,7 @@ public class EntityAreaEffectCloud implements Property {
         // <EntityTag.particle.color>
         // -->
         if (mechanism.matches("particle_color") && mechanism.requireObject(ColorTag.class)) {
-            getHelper().setColor(mechanism.valueAsType(ColorTag.class).getColor());
+            getHelper().setColor(BukkitColorExtensions.getColor(mechanism.valueAsType(ColorTag.class)));
         }
 
         // <--[mechanism]

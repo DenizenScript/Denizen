@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;

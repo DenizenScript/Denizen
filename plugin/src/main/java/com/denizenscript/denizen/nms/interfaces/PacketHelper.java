@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.utilities.maps.MapImage;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
