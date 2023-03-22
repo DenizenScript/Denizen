@@ -3,6 +3,7 @@ package com.denizenscript.denizen.paper;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.WorldTag;
@@ -108,6 +109,7 @@ public class PaperModule {
         // Other helpers
         Bukkit.getPluginManager().registerEvents(new PaperEventHelpers(), Denizen.getInstance());
         PaperAPITools.instance = new PaperAPIToolsImpl();
+        PacketOutChat.convertComponentToJsonString = (o) -> componentToJson((Component) o);
     }
 
     public static Component parseFormattedText(String text, ChatColor baseColor) {

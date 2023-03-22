@@ -1171,15 +1171,15 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (DenizenPacketHandler.instance.shouldInterceptChatPacket()) {
             PacketOutChatImpl packetHelper = null;
             boolean isActionbar = false;
-            if (packet instanceof ClientboundSystemChatPacket) {
-                isActionbar = ((ClientboundSystemChatPacket) packet).overlay();
-                if (((ClientboundSystemChatPacket) packet).content() == null) { // Makes no sense but this can be null in weird edge cases
+            if (packet instanceof ClientboundSystemChatPacket chatPacket) {
+                isActionbar = chatPacket.overlay();
+                packetHelper = new PacketOutChatImpl(chatPacket);
+                if (packetHelper.rawJson == null) { // Makes no sense but this can be null in weird edge cases
                     return false;
                 }
-                packetHelper = new PacketOutChatImpl((ClientboundSystemChatPacket) packet);
             }
-            else if (packet instanceof ClientboundPlayerChatPacket) {
-                packetHelper = new PacketOutChatImpl((ClientboundPlayerChatPacket) packet);
+            else if (packet instanceof ClientboundPlayerChatPacket playerChatPacket) {
+                packetHelper = new PacketOutChatImpl(playerChatPacket);
             }
             if (packetHelper != null) {
                 PlayerReceivesMessageScriptEvent result = DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), packetHelper);
@@ -1194,8 +1194,8 @@ public class DenizenNetworkManagerImpl extends Connection {
                 }
             }
         }
-        if (packet instanceof ClientboundSetEntityDataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
-            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((ClientboundSetEntityDataPacket) packet));
+        if (packet instanceof ClientboundSetEntityDataPacket dataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
+            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl(dataPacket));
         }
         return false;
     }

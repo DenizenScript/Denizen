@@ -1,12 +1,16 @@
 package com.denizenscript.denizen.nms.interfaces.packets;
 
-public interface PacketOutChat {
+import java.util.function.Function;
 
-    boolean isSystem();
+public abstract class PacketOutChat {
 
-    boolean isActionbar();
+    public abstract boolean isSystem();
 
-    String getMessage();
+    public abstract boolean isActionbar();
 
-    String getRawJson();
+    public abstract String getMessage();
+
+    public abstract String getRawJson();
+
+    public static Function<Object, String> convertComponentToJsonString;
 }
