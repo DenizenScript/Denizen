@@ -2,14 +2,16 @@ package com.denizenscript.denizen.utilities.command;
 
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Settings;
+import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
-import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.utilities.ExCommandHelper;
 import org.bukkit.ChatColor;
@@ -108,28 +110,37 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         return false;
     }
 
+    static {
+        FlagCommand.flagTabCompleters.add(ExCommandHandler::onFlagTabComplete);
+    }
+
+    public static void onFlagTabComplete(AbstractCommand.TabCompletionsBuilder builder) {
+        BukkitTagContext context = (BukkitTagContext) builder.context;
+        if (context.player != null) {
+            for (String flagName : context.player.getFlagTracker().listAllFlags()) {
+                if (!flagName.startsWith("__")) {
+                    builder.add(flagName);
+                }
+            }
+        }
+        if (context.npc != null) {
+            for (String flagName : context.npc.getFlagTracker().listAllFlags()) {
+                if (!flagName.startsWith("__")) {
+                    builder.add(flagName);
+                }
+            }
+        }
+    }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String cmdName, String[] rawArgs) {
         if ((!cmdName.equalsIgnoreCase("ex") && !cmdName.equalsIgnoreCase("exs")) || !sender.hasPermission("denizen.ex")) {
             return null;
         }
-        return ExCommandHelper.buildTabCompletions(rawArgs, (dcmd, completionsBuilder) -> {
-            if (dcmd instanceof FlagCommand) {
-                if (sender instanceof Player) {
-                    for (String flagName : new PlayerTag((Player) sender).getFlagTracker().listAllFlags()) {
-                        if (!flagName.startsWith("__")) {
-                            completionsBuilder.add(flagName);
-                        }
-                    }
-                }
-                if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
-                    for (String flagName : new NPCTag(Depends.citizens.getNPCSelector().getSelected(sender)).getFlagTracker().listAllFlags()) {
-                        if (!flagName.startsWith("__")) {
-                            completionsBuilder.add(flagName);
-                        }
-                    }
-                }
-            }
-        });
+        BukkitTagContext context = new BukkitTagContext(sender instanceof Player player ? new PlayerTag(player) : null, null, null);
+        if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
+            context.npc = new NPCTag(Depends.citizens.getNPCSelector().getSelected(sender));
+        }
+        return ExCommandHelper.buildTabCompletions(rawArgs, context);
     }
 }
