@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
@@ -52,7 +51,7 @@ public class EntityTrapped implements Property {
         // A trapped skeleton horse will trigger the skeleton horse trap when the player is within 10 blocks of it.
         // -->
         PropertyParser.registerTag(EntityTrapped.class, ElementTag.class, "trapped", (attribute, object) -> {
-            return new ElementTag(object.isTrapped());
+            return new ElementTag(object.getSkeletonHorse().isTrapped());
         });
 
         // <--[mechanism]
@@ -69,24 +68,11 @@ public class EntityTrapped implements Property {
             if (!mechanism.requireBoolean()) {
                 return;
             }
-            if (object.isSkeletonHorse()) {
-                object.getSkeletonHorse().setTrapped(input.asBoolean());
-            }
+            object.getSkeletonHorse().setTrapped(input.asBoolean());
         });
-    }
-
-    public boolean isSkeletonHorse() {
-        return entity.getBukkitEntity() instanceof SkeletonHorse;
     }
 
     public SkeletonHorse getSkeletonHorse() {
         return (SkeletonHorse) entity.getBukkitEntity();
-    }
-
-    public boolean isTrapped() {
-        if (isSkeletonHorse()) {
-            return getSkeletonHorse().isTrapped();
-        }
-        return false;
     }
 }

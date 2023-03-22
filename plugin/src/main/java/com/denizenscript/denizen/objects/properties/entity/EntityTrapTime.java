@@ -31,7 +31,7 @@ public class EntityTrapTime implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(((SkeletonHorse) entity.getBukkitEntity()).getTrapTime());
+        return new DurationTag((long) getSkeletonHorse().getTrapTime()).identify();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class EntityTrapTime implements Property {
 
         // <--[tag]
         // @attribute <EntityTag.trap_time>
-        // @returns ElementTag(Boolean)
+        // @returns DurationTag
         // @mechanism EntityTag.trap_time
         // @group properties
         // @description
@@ -52,7 +52,7 @@ public class EntityTrapTime implements Property {
         // A trapped horse will despawn after it reaches 18000 ticks (15 minutes).
         // -->
         PropertyParser.registerTag(EntityTrapTime.class, DurationTag.class, "trap_time", (attribute, object) -> {
-            return new DurationTag(object.getSkeletonHorse().getTrapTime());
+            return new DurationTag((long) object.getSkeletonHorse().getTrapTime());
         });
 
         // <--[mechanism]
@@ -67,14 +67,8 @@ public class EntityTrapTime implements Property {
         // <EntityTag.trapped>
         // -->
         PropertyParser.registerMechanism(EntityTrapTime.class, DurationTag.class, "trap_time", (object, mechanism, duration) -> {
-            if (object.isSkeletonHorse()) {
-                object.getSkeletonHorse().setTrapTime(duration.getTicksAsInt());
-            }
+            object.getSkeletonHorse().setTrapTime(duration.getTicksAsInt());
         });
-    }
-
-    public boolean isSkeletonHorse() {
-        return entity.getBukkitEntity() instanceof SkeletonHorse;
     }
 
     public SkeletonHorse getSkeletonHorse() {
