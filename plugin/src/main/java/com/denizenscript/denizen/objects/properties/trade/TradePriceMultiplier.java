@@ -24,7 +24,7 @@ public class TradePriceMultiplier implements Property {
             "price_multiplier"
     };
 
-    private TradeTag recipe;
+    public TradeTag recipe;
 
     public TradePriceMultiplier(TradeTag recipe) {
         this.recipe = recipe;

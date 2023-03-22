@@ -27,7 +27,7 @@ public class EntityStrength implements Property {
             "strength"
     };
 
-    private EntityStrength(EntityTag entity) {
+    public EntityStrength(EntityTag entity) {
         this.entity = entity;
     }
 

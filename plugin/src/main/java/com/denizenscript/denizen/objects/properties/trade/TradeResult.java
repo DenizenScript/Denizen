@@ -19,7 +19,7 @@ public class TradeResult implements Property {
         return new TradeResult((TradeTag) recipe);
     }
 
-    private TradeTag recipe;
+    public TradeTag recipe;
 
     public TradeResult(TradeTag recipe) {
         this.recipe = recipe;

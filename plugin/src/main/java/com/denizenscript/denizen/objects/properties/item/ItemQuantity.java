@@ -32,7 +32,7 @@ public class ItemQuantity implements Property {
             "quantity"
     };
 
-    private ItemQuantity(ItemTag _item) {
+    public ItemQuantity(ItemTag _item) {
         item = _item;
     }
 

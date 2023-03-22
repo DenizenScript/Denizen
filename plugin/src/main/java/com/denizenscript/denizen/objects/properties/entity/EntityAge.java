@@ -32,7 +32,7 @@ public class EntityAge implements Property {
             "age_lock", "age"
     };
 
-    private EntityAge(EntityTag entity) {
+    public EntityAge(EntityTag entity) {
         ageable = entity;
     }
 

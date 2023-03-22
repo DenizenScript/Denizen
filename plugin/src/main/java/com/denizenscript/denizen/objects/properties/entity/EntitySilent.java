@@ -30,7 +30,7 @@ public class EntitySilent implements Property {
             "silent"
     };
 
-    private EntitySilent(EntityTag ent) {
+    public EntitySilent(EntityTag ent) {
         entity = ent;
     }
 

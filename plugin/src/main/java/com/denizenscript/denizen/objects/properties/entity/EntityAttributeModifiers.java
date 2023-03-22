@@ -44,7 +44,7 @@ public class EntityAttributeModifiers implements Property {
             "attributes", "attribute_modifiers", "add_attribute_modifiers", "remove_attribute_modifiers"
     };
 
-    private EntityAttributeModifiers(EntityTag entity) {
+    public EntityAttributeModifiers(EntityTag entity) {
         this.entity = entity;
     }
 

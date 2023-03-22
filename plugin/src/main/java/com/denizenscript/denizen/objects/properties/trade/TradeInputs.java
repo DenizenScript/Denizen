@@ -24,7 +24,7 @@ public class TradeInputs implements Property {
         return new TradeInputs((TradeTag) recipe);
     }
 
-    private TradeTag recipe;
+    public TradeTag recipe;
 
     public TradeInputs(TradeTag recipe) {
         this.recipe = recipe;

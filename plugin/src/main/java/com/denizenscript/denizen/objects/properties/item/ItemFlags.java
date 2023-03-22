@@ -37,7 +37,7 @@ public class ItemFlags implements Property {
             "flag", "flag_map"
     };
 
-    private ItemFlags(ItemTag item) {
+    public ItemFlags(ItemTag item) {
         this.item = item;
     }
 

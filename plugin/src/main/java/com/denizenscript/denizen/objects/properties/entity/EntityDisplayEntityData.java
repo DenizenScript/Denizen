@@ -34,7 +34,7 @@ public class EntityDisplayEntityData implements Property {
         }
     }
 
-    private EntityDisplayEntityData(EntityTag ent) {
+    public EntityDisplayEntityData(EntityTag ent) {
         entity = ent;
     }
 

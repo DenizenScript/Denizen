@@ -24,7 +24,7 @@ public class TradeSpecialPrice implements Property {
             "special_price"
     };
 
-    private TradeTag recipe;
+    public TradeTag recipe;
 
     public TradeSpecialPrice(TradeTag recipe) {
         this.recipe = recipe;

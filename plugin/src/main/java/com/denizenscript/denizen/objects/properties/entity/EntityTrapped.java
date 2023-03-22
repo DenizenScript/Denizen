@@ -23,7 +23,7 @@ public class EntityTrapped implements Property {
         }
     }
 
-    private EntityTrapped(EntityTag ent) {
+    public EntityTrapped(EntityTag ent) {
         entity = ent;
     }
 

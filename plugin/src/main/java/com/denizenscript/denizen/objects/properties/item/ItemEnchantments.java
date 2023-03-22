@@ -43,7 +43,7 @@ public class ItemEnchantments implements Property {
             "remove_enchantments", "enchantments"
     };
 
-    private ItemEnchantments(ItemTag _item) {
+    public ItemEnchantments(ItemTag _item) {
         item = _item;
     }
 

@@ -35,7 +35,7 @@ public class ItemMap implements Property {
             "map", "full_render", "map_locked", "map_center"
     };
 
-    private ItemMap(ItemTag _item) {
+    public ItemMap(ItemTag _item) {
         item = _item;
     }
 

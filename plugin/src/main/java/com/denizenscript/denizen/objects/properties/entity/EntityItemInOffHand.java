@@ -37,7 +37,7 @@ public class EntityItemInOffHand implements Property {
             "item_in_offhand"
     };
 
-    private EntityItemInOffHand(EntityTag entity) {
+    public EntityItemInOffHand(EntityTag entity) {
         this.entity = entity;
     }
 

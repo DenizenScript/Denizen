@@ -35,7 +35,7 @@ public class ItemHidden implements Property {
             "flags", "hides"
     };
 
-    private ItemHidden(ItemTag _item) {
+    public ItemHidden(ItemTag _item) {
         item = _item;
     }
 

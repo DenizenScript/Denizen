@@ -32,17 +32,17 @@ public class EntityPowered implements Property {
             "powered"
     };
 
-    private EntityPowered(EntityTag entity) {
+    public EntityPowered(EntityTag entity) {
         powered = entity;
     }
 
     EntityTag powered;
 
-    private boolean getPowered() {
+    public boolean getPowered() {
         return ((Creeper) (powered.getBukkitEntity())).isPowered();
     }
 
-    private void setPowered(boolean power) {
+    public void setPowered(boolean power) {
         if (powered == null) {
             return;
         }

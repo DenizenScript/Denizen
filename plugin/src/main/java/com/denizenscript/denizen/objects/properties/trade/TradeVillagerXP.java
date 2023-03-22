@@ -24,7 +24,7 @@ public class TradeVillagerXP implements Property {
             "villager_xp"
     };
 
-    private TradeTag recipe;
+    public TradeTag recipe;
 
     public TradeVillagerXP(TradeTag recipe) {
         this.recipe = recipe;

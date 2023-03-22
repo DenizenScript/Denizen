@@ -32,7 +32,7 @@ public class EntitySmall implements Property {
             "is_small"
     };
 
-    private EntitySmall(EntityTag entity) {
+    public EntitySmall(EntityTag entity) {
         this.entity = entity;
     }
 
@@ -91,4 +91,3 @@ public class EntitySmall implements Property {
         }
     }
 }
-

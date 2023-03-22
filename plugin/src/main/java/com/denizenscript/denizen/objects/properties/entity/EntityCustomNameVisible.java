@@ -26,7 +26,7 @@ public class EntityCustomNameVisible implements Property {
             "custom_name_visibility", "custom_name_visible"
     };
 
-    private EntityCustomNameVisible(EntityTag ent) {
+    public EntityCustomNameVisible(EntityTag ent) {
         entity = ent;
     }
 

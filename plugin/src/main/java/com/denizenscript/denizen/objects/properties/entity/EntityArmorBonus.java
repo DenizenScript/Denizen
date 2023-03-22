@@ -29,7 +29,7 @@ public class EntityArmorBonus implements Property {
             "armor_bonus"
     };
 
-    private EntityArmorBonus(EntityTag ent) {
+    public EntityArmorBonus(EntityTag ent) {
         entity = ent;
     }
 

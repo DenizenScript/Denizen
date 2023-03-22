@@ -39,7 +39,7 @@ public class ItemAttributeNBT implements Property {
             "nbt_attributes"
     };
 
-    private ItemAttributeNBT(ItemTag item) {
+    public ItemAttributeNBT(ItemTag item) {
         this.item = item;
     }
 

@@ -31,7 +31,7 @@ public class MaterialDrags implements Property {
             "drags"
     };
 
-    private MaterialDrags(MaterialTag _material) {
+    public MaterialDrags(MaterialTag _material) {
         material = _material;
     }
 

@@ -37,13 +37,13 @@ public class ItemCanDestroy implements Property {
             "can_destroy"
     };
 
-    private ItemCanDestroy(ItemTag item) {
+    public ItemCanDestroy(ItemTag item) {
         this.item = item;
     }
 
     ItemTag item;
 
-    private ListTag getMaterials() {
+    public ListTag getMaterials() {
         ItemStack itemStack = item.getItemStack();
         List<Material> materials = CustomNBT.getNBTMaterials(itemStack, CustomNBT.KEY_CAN_DESTROY);
         if (materials != null && !materials.isEmpty()) {

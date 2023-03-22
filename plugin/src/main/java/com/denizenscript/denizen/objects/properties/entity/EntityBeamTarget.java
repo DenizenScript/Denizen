@@ -29,7 +29,7 @@ public class EntityBeamTarget implements Property {
             "beam_target"
     };
 
-    private EntityBeamTarget(EntityTag entity) {
+    public EntityBeamTarget(EntityTag entity) {
         dentity = entity;
     }
 

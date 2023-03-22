@@ -23,7 +23,7 @@ public class EntityCustomName implements Property {
         }
     }
 
-    private EntityCustomName(EntityTag ent) {
+    public EntityCustomName(EntityTag ent) {
         entity = ent;
     }
 

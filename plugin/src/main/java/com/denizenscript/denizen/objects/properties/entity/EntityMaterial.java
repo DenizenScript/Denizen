@@ -40,7 +40,7 @@ public class EntityMaterial implements Property {
             "material"
     };
 
-    private EntityMaterial(EntityTag _entity) {
+    public EntityMaterial(EntityTag _entity) {
         entity = _entity;
     }
 

@@ -24,7 +24,7 @@ public class TradeDemand implements Property {
             "demand"
     };
 
-    private TradeTag recipe;
+    public TradeTag recipe;
 
     public TradeDemand(TradeTag recipe) {
         this.recipe = recipe;

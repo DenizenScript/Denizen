@@ -47,7 +47,7 @@ public class ItemColor implements Property {
             "color", "dye_color", "dye"
     };
 
-    private ItemColor(ItemTag _item) {
+    public ItemColor(ItemTag _item) {
         item = _item;
     }
 

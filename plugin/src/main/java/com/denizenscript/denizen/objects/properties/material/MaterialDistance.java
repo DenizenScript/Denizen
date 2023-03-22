@@ -31,7 +31,7 @@ public class MaterialDistance implements Property {
             "distance"
     };
 
-    private MaterialDistance(MaterialTag _material) {
+    public MaterialDistance(MaterialTag _material) {
         material = _material;
     }
 

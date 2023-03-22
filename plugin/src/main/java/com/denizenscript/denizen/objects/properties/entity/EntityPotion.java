@@ -41,7 +41,7 @@ public class EntityPotion implements Property {
 
     EntityTag entity;
 
-    private EntityPotion(EntityTag entity) {
+    public EntityPotion(EntityTag entity) {
         this.entity = entity;
     }
 

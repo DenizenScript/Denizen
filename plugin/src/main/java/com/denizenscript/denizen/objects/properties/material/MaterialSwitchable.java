@@ -49,7 +49,7 @@ public class MaterialSwitchable implements Property {
             "switched"
     };
 
-    private MaterialSwitchable(MaterialTag _material) {
+    public MaterialSwitchable(MaterialTag _material) {
         material = _material;
     }
 

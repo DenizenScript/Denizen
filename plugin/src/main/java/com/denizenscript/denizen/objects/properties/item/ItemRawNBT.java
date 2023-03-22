@@ -41,7 +41,7 @@ public class ItemRawNBT implements Property {
             "raw_nbt"
     };
 
-    private ItemRawNBT(ItemTag _item) {
+    public ItemRawNBT(ItemTag _item) {
         item = _item;
     }
 

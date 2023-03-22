@@ -43,7 +43,7 @@ public class ItemFirework implements Property {
             "firework", "firework_power"
     };
 
-    private ItemFirework(ItemTag _item) {
+    public ItemFirework(ItemTag _item) {
         item = _item;
     }
 

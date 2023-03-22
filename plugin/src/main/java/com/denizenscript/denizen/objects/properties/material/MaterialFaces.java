@@ -30,7 +30,7 @@ public class MaterialFaces implements Property {
             "faces"
     };
 
-    private MaterialFaces(MaterialTag _material) {
+    public MaterialFaces(MaterialTag _material) {
         material = _material;
     }
 

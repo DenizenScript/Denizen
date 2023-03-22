@@ -32,7 +32,7 @@ public class EntitySitting implements Property {
             "sitting"
     };
 
-    private EntitySitting(EntityTag entity) {
+    public EntitySitting(EntityTag entity) {
         this.entity = entity;
     }
 

@@ -24,7 +24,7 @@ public class TradeHasXp implements Property {
             "has_xp"
     };
 
-    private TradeTag recipe;
+    public TradeTag recipe;
 
     public TradeHasXp(TradeTag recipe) {
         this.recipe = recipe;

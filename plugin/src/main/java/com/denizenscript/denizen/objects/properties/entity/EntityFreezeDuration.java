@@ -24,7 +24,7 @@ public class EntityFreezeDuration implements Property {
             "freeze_duration"
     };
 
-    private EntityFreezeDuration(EntityTag entity) {
+    public EntityFreezeDuration(EntityTag entity) {
         this.entity = entity;
     }
 

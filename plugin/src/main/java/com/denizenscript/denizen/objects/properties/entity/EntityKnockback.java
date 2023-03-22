@@ -22,7 +22,7 @@ public class EntityKnockback implements Property {
         }
     }
 
-    private EntityKnockback(EntityTag entity) {
+    public EntityKnockback(EntityTag entity) {
         arrow = entity;
     }
 

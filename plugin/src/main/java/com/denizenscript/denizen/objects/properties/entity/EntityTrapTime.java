@@ -23,7 +23,7 @@ public class EntityTrapTime implements Property {
         }
     }
 
-    private EntityTrapTime(EntityTag ent) {
+    public EntityTrapTime(EntityTag ent) {
         entity = ent;
     }
 

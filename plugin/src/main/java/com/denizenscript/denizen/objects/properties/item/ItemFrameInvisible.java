@@ -38,7 +38,7 @@ public class ItemFrameInvisible implements Property {
             "invisible"
     };
 
-    private ItemFrameInvisible(ItemTag item) {
+    public ItemFrameInvisible(ItemTag item) {
         this.item = item;
     }
 

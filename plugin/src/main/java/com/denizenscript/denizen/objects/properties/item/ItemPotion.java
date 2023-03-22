@@ -46,7 +46,7 @@ public class ItemPotion implements Property {
             "potion_effects"
     };
 
-    private ItemPotion(ItemTag item) {
+    public ItemPotion(ItemTag item) {
         this.item = item;
     }
 

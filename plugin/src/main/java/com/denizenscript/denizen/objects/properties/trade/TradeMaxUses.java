@@ -24,7 +24,7 @@ public class TradeMaxUses implements Property {
             "max_uses"
     };
 
-    private TradeTag recipe;
+    public TradeTag recipe;
 
     public TradeMaxUses(TradeTag recipe) {
         this.recipe = recipe;

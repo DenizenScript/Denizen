@@ -33,7 +33,7 @@ public class EntityConversionPlayer implements Property {
             "conversion_player"
     };
 
-    private EntityConversionPlayer(EntityTag ent) {
+    public EntityConversionPlayer(EntityTag ent) {
         entity = ent;
     }
 

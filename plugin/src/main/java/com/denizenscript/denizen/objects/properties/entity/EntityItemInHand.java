@@ -37,7 +37,7 @@ public class EntityItemInHand implements Property {
             "item_in_hand"
     };
 
-    private EntityItemInHand(EntityTag entity) {
+    public EntityItemInHand(EntityTag entity) {
         this.entity = entity;
     }
 

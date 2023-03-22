@@ -32,7 +32,7 @@ public class EntityIsShowingBottom implements Property {
             "is_showing_bottom"
     };
 
-    private EntityIsShowingBottom(EntityTag entity) {
+    public EntityIsShowingBottom(EntityTag entity) {
         dentity = entity;
     }
 

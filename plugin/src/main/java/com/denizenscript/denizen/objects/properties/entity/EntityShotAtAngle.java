@@ -27,7 +27,7 @@ public class EntityShotAtAngle implements Property {
             "shot_at_angle"
     };
 
-    private EntityShotAtAngle(EntityTag entity) {
+    public EntityShotAtAngle(EntityTag entity) {
         this.entity = entity;
     }
 

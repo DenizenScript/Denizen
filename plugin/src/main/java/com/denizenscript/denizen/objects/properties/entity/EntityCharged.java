@@ -31,7 +31,7 @@ public class EntityCharged implements Property {
         }
     }
 
-    private EntityCharged(EntityTag entity) {
+    public EntityCharged(EntityTag entity) {
         this.entity = entity;
     }
 

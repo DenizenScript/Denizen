@@ -34,7 +34,7 @@ public class ItemSpawnerMaxNearbyEntities implements Property {
             "spawner_max_nearby_entities"
     };
 
-    private ItemSpawnerMaxNearbyEntities(ItemTag _item) {
+    public ItemSpawnerMaxNearbyEntities(ItemTag _item) {
         item = _item;
     }
 

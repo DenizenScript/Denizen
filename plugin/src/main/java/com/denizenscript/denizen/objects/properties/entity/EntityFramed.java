@@ -37,7 +37,7 @@ public class EntityFramed implements Property {
             "framed"
     };
 
-    private EntityFramed(EntityTag item) {
+    public EntityFramed(EntityTag item) {
         item_frame = item;
     }
 

@@ -29,7 +29,7 @@ public class MaterialDelay implements Property {
             "delay"
     };
 
-    private MaterialDelay(MaterialTag _material) {
+    public MaterialDelay(MaterialTag _material) {
         material = _material;
     }
 

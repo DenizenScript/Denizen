@@ -44,7 +44,7 @@ public class EntityItem implements Property {
             "item"
     };
 
-    private EntityItem(EntityTag entity) {
+    public EntityItem(EntityTag entity) {
         item = entity;
     }
 

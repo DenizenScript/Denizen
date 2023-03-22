@@ -32,7 +32,7 @@ public class EntityMarker implements Property {
             "marker"
     };
 
-    private EntityMarker(EntityTag entity) {
+    public EntityMarker(EntityTag entity) {
         dentity = entity;
     }
 

@@ -40,7 +40,7 @@ public class ItemSkullskin implements Property {
             "skull_skin"
     };
 
-    private ItemSkullskin(ItemTag _item) {
+    public ItemSkullskin(ItemTag _item) {
         item = _item;
     }
 

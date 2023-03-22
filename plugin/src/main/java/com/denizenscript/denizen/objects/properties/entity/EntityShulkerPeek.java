@@ -32,7 +32,7 @@ public class EntityShulkerPeek implements Property {
             "shulker_peek"
     };
 
-    private EntityShulkerPeek(EntityTag ent) {
+    public EntityShulkerPeek(EntityTag ent) {
         entity = ent;
     }
 

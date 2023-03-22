@@ -27,17 +27,17 @@ public class EntityBodyArrows implements Property {
             "body_arrows", "clear_body_arrows"
     };
 
-    private EntityBodyArrows(EntityTag entity) {
+    public EntityBodyArrows(EntityTag entity) {
         this.entity = entity;
     }
 
     EntityTag entity;
 
-    private int getBodyArrows() {
+    public int getBodyArrows() {
         return entity.getLivingEntity().getArrowsInBody();
     }
 
-    private void setBodyArrows(int numArrows) {
+    public void setBodyArrows(int numArrows) {
         entity.getLivingEntity().setArrowsInBody(numArrows);
     }
 

@@ -29,7 +29,7 @@ public class EntityPickupStatus implements Property {
             "pickup_status"
     };
 
-    private EntityPickupStatus(EntityTag entity) {
+    public EntityPickupStatus(EntityTag entity) {
         dentity = entity;
     }
 

@@ -34,19 +34,19 @@ public class EntityBoundingBox implements Property {
             "bounding_box"
     };
 
-    private static Set<UUID> modifiedBoxes = new HashSet<>();
+    public static Set<UUID> modifiedBoxes = new HashSet<>();
 
     public static void remove(UUID uuid) {
         modifiedBoxes.remove(uuid);
     }
 
-    private EntityBoundingBox(EntityTag entity) {
+    public EntityBoundingBox(EntityTag entity) {
         this.entity = entity;
     }
 
     EntityTag entity;
 
-    private ListTag getBoundingBox() {
+    public ListTag getBoundingBox() {
         BoundingBox boundingBox = entity.getBukkitEntity().getBoundingBox();
         ListTag list = new ListTag();
         list.addObject(new LocationTag(entity.getWorld(), boundingBox.getMin()));

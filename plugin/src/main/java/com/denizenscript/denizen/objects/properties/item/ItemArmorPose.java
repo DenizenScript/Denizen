@@ -36,7 +36,7 @@ public class ItemArmorPose implements Property {
             "armor_pose"
     };
 
-    private ItemArmorPose(ItemTag item) {
+    public ItemArmorPose(ItemTag item) {
         this.item = item;
     }
 

@@ -35,7 +35,7 @@ public class ItemChargedProjectile implements Property {
             "charged_projectiles", "add_charged_projectile", "remove_charged_projectiles"
     };
 
-    private ItemChargedProjectile(ItemTag _item) {
+    public ItemChargedProjectile(ItemTag _item) {
         item = _item;
     }
 

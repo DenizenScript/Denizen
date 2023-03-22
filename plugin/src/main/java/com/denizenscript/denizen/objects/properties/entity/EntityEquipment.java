@@ -34,7 +34,7 @@ public class EntityEquipment implements Property {
             "equipment"
     };
 
-    private EntityEquipment(EntityTag ent) {
+    public EntityEquipment(EntityTag ent) {
         entity = ent;
     }
 

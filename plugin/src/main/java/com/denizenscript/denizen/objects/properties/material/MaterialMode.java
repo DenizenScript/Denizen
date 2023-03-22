@@ -49,7 +49,7 @@ public class MaterialMode implements Property {
             "mode"
     };
 
-    private MaterialMode(MaterialTag _material) {
+    public MaterialMode(MaterialTag _material) {
         material = _material;
     }
 

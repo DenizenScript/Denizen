@@ -36,7 +36,7 @@ public class EntityFlower implements Property {
             "flower"
     };
 
-    private EntityFlower(EntityTag entity) {
+    public EntityFlower(EntityTag entity) {
         this.entity = entity;
     }
 

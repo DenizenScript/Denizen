@@ -29,7 +29,7 @@ public class MaterialPower implements Property {
             "power"
     };
 
-    private MaterialPower(MaterialTag _material) {
+    public MaterialPower(MaterialTag _material) {
         material = _material;
     }
 

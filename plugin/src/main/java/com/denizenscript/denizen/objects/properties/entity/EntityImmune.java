@@ -34,7 +34,7 @@ public class EntityImmune implements Property {
             "immune"
     };
 
-    private EntityImmune(EntityTag entity) {
+    public EntityImmune(EntityTag entity) {
         dentity = entity;
     }
 

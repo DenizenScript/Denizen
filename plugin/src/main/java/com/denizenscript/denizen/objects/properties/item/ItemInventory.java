@@ -60,7 +60,7 @@ public class ItemInventory implements Property {
             "inventory", "inventory_contents"
     };
 
-    private InventoryTag getItemInventory() {
+    public InventoryTag getItemInventory() {
         InventoryHolder holder = ((InventoryHolder) ((BlockStateMeta) item.getItemMeta()).getBlockState());
         Inventory inv = getInventoryFor(holder);
         return InventoryTag.mirrorBukkitInventory(inv);
@@ -75,7 +75,7 @@ public class ItemInventory implements Property {
         }
     }
 
-    private ItemInventory(ItemTag _item) {
+    public ItemInventory(ItemTag _item) {
         item = _item;
     }
 

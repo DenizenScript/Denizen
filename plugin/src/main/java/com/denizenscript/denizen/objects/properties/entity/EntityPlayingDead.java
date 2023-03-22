@@ -29,7 +29,7 @@ public class EntityPlayingDead implements Property {
         "playing_dead"
     };
 
-    private EntityPlayingDead(EntityTag _entity) {
+    public EntityPlayingDead(EntityTag _entity) {
         entity = _entity;
     }
 

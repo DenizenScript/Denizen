@@ -39,7 +39,7 @@ public class EntitySpeed implements Property {
             "speed"
     };
 
-    private EntitySpeed(EntityTag ent) {
+    public EntitySpeed(EntityTag ent) {
         entity = ent;
     }
 

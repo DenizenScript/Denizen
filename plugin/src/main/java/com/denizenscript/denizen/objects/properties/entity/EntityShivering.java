@@ -28,7 +28,7 @@ public class EntityShivering implements Property {
             "shivering"
     };
 
-    private EntityShivering(EntityTag _entity) {
+    public EntityShivering(EntityTag _entity) {
         entity = _entity;
     }
 

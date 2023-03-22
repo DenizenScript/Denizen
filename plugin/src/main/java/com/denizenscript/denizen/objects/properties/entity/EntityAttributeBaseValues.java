@@ -34,7 +34,7 @@ public class EntityAttributeBaseValues implements Property {
             "attribute_base_values"
     };
 
-    private EntityAttributeBaseValues(EntityTag entity) {
+    public EntityAttributeBaseValues(EntityTag entity) {
         this.entity = entity;
     }
 

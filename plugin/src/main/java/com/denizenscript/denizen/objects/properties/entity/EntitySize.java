@@ -27,7 +27,7 @@ public class EntitySize implements Property {
         }
     }
 
-    private EntitySize(EntityTag ent) {
+    public EntitySize(EntityTag ent) {
         entity = ent;
     }
 

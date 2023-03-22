@@ -30,7 +30,7 @@ public class MaterialBrewingStand implements Property {
             "bottles"
     };
 
-    private MaterialBrewingStand(MaterialTag _material) {
+    public MaterialBrewingStand(MaterialTag _material) {
         material = _material;
     }
 

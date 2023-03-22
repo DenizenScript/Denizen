@@ -28,7 +28,7 @@ public class EntityArms implements Property {
             "arms"
     };
 
-    private EntityArms(EntityTag entity) {
+    public EntityArms(EntityTag entity) {
         dentity = entity;
     }
 

@@ -36,7 +36,7 @@ public class ItemBook implements Property {
         }
     }
 
-    private ItemBook(ItemTag _item) {
+    public ItemBook(ItemTag _item) {
         item = _item;
     }
 

@@ -30,7 +30,7 @@ public class MaterialInstrument implements Property {
             "instrument"
     };
 
-    private MaterialInstrument(MaterialTag _material) {
+    public MaterialInstrument(MaterialTag _material) {
         material = _material;
     }
 

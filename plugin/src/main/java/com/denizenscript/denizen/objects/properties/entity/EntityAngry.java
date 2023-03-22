@@ -38,7 +38,7 @@ public class EntityAngry implements Property {
             "angry"
     };
 
-    private EntityAngry(EntityTag entity) {
+    public EntityAngry(EntityTag entity) {
         this.entity = entity;
     }
 

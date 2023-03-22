@@ -44,7 +44,7 @@ public class MaterialLevel implements Property {
             "level"
     };
 
-    private MaterialLevel(MaterialTag _material) {
+    public MaterialLevel(MaterialTag _material) {
         material = _material;
     }
 

@@ -28,7 +28,7 @@ public class EntityCritical implements Property {
             "critical"
     };
 
-    private EntityCritical(EntityTag entity) {
+    public EntityCritical(EntityTag entity) {
         critical = entity;
     }
 

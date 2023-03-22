@@ -35,7 +35,7 @@ public class ItemSpawnerDelay implements Property {
             "spawner_delay_data"
     };
 
-    private ItemSpawnerDelay(ItemTag _item) {
+    public ItemSpawnerDelay(ItemTag _item) {
         item = _item;
     }
 

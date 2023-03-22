@@ -30,7 +30,7 @@ public class EntityInvulnerable implements Property {
             "invulnerable"
     };
 
-    private EntityInvulnerable(EntityTag entity) {
+    public EntityInvulnerable(EntityTag entity) {
         dentity = entity;
     }
 

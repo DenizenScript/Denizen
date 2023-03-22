@@ -28,7 +28,7 @@ public class EntityDarkDuration implements Property {
             "dark_duration"
     };
 
-    private EntityDarkDuration(EntityTag ent) {
+    public EntityDarkDuration(EntityTag ent) {
         entity = ent;
     }
 

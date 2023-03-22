@@ -34,7 +34,7 @@ public class EntityFlags implements Property {
             "flag_map"
     };
 
-    private EntityFlags(EntityTag ent) {
+    public EntityFlags(EntityTag ent) {
         entity = ent;
     }
 

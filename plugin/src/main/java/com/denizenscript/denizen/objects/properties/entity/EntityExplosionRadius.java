@@ -36,7 +36,7 @@ public class EntityExplosionRadius implements Property {
         return ((Explosive) entity.getBukkitEntity()).getYield();
     }
 
-    private EntityExplosionRadius(EntityTag ent) {
+    public EntityExplosionRadius(EntityTag ent) {
         entity = ent;
     }
 

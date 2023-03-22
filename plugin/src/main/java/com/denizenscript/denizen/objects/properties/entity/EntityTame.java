@@ -35,7 +35,7 @@ public class EntityTame implements Property {
             "tame", "owner"
     };
 
-    private EntityTame(EntityTag tame) {
+    public EntityTame(EntityTag tame) {
         entity = tame;
     }
 
@@ -161,4 +161,3 @@ public class EntityTame implements Property {
 
     }
 }
-

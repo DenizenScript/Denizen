@@ -24,7 +24,7 @@ public class TradeUses implements Property {
             "uses"
     };
 
-    private TradeTag recipe;
+    public TradeTag recipe;
 
     public TradeUses(TradeTag recipe) {
         this.recipe = recipe;

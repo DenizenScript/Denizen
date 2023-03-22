@@ -47,7 +47,7 @@ public class EntityAreaEffectCloud implements Property {
             "radius_per_tick", "reapplication_delay", "source", "wait_time"
     };
 
-    private EntityAreaEffectCloud(EntityTag ent) {
+    public EntityAreaEffectCloud(EntityTag ent) {
         entity = ent;
     }
 

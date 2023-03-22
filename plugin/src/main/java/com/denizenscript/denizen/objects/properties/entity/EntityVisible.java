@@ -27,7 +27,7 @@ public class EntityVisible implements Property {
         }
     }
 
-    private EntityVisible(EntityTag ent) {
+    public EntityVisible(EntityTag ent) {
         entity = ent;
     }
 

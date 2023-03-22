@@ -28,7 +28,7 @@ public class EntityFireworkLifetime implements Property {
             "firework_lifetime"
     };
 
-    private EntityFireworkLifetime(EntityTag entity) {
+    public EntityFireworkLifetime(EntityTag entity) {
         this.entity = entity;
     }
 

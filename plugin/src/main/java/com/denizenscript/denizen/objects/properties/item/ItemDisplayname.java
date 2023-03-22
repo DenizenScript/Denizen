@@ -37,7 +37,7 @@ public class ItemDisplayname implements Property {
             "display", "display_name"
     };
 
-    private ItemDisplayname(ItemTag _item) {
+    public ItemDisplayname(ItemTag _item) {
         item = _item;
     }
 

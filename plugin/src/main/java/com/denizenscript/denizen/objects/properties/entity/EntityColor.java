@@ -60,7 +60,7 @@ public class EntityColor implements Property {
             "color"
     };
 
-    private EntityColor(EntityTag entity) {
+    public EntityColor(EntityTag entity) {
         colored = entity;
     }
 

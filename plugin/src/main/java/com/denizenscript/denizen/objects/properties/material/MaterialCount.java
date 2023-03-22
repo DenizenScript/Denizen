@@ -42,7 +42,7 @@ public class MaterialCount implements Property {
             "count", "pickle_count"
     };
 
-    private MaterialCount(MaterialTag _material) {
+    public MaterialCount(MaterialTag _material) {
         material = _material;
     }
 

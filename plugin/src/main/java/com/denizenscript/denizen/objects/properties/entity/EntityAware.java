@@ -28,7 +28,7 @@ public class EntityAware implements Property {
             "is_aware"
     };
 
-    private EntityAware(EntityTag entity) {
+    public EntityAware(EntityTag entity) {
         this.entity = entity;
     }
 

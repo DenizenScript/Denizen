@@ -37,7 +37,7 @@ public class EntityArmorPose implements Property {
             "armor_pose"
     };
 
-    private EntityArmorPose(EntityTag ent) {
+    public EntityArmorPose(EntityTag ent) {
         entity = ent;
     }
 
@@ -53,7 +53,7 @@ public class EntityArmorPose implements Property {
         return "armor_pose";
     }
 
-    private ListTag getPoseList() {
+    public ListTag getPoseList() {
         ArmorStand armorStand = (ArmorStand) entity.getBukkitEntity();
         ListTag list = new ListTag();
         for (PosePart posePart : PosePart.values()) {
@@ -176,15 +176,15 @@ public class EntityArmorPose implements Property {
         }
     }
 
-    private static LocationTag fromEulerAngle(EulerAngle eulerAngle) {
+    public static LocationTag fromEulerAngle(EulerAngle eulerAngle) {
         return new LocationTag(null, eulerAngle.getX(), eulerAngle.getY(), eulerAngle.getZ());
     }
 
-    private static EulerAngle toEulerAngle(LocationTag location) {
+    public static EulerAngle toEulerAngle(LocationTag location) {
         return new EulerAngle(location.getX(), location.getY(), location.getZ());
     }
 
-    private enum PosePart {
+    public enum PosePart {
         HEAD {
             @Override
             EulerAngle getAngle(ArmorStand armorStand) {

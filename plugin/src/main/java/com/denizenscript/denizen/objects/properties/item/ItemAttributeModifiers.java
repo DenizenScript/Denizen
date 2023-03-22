@@ -43,7 +43,7 @@ public class ItemAttributeModifiers implements Property {
             "attribute_modifiers", "add_attribute_modifiers", "remove_attribute_modifiers"
     };
 
-    private ItemAttributeModifiers(ItemTag item) {
+    public ItemAttributeModifiers(ItemTag item) {
         this.item = item;
     }
 

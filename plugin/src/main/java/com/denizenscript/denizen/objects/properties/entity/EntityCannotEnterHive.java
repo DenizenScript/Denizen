@@ -36,7 +36,7 @@ public class EntityCannotEnterHive implements Property {
             "cannot_enter_hive"
     };
 
-    private EntityCannotEnterHive(EntityTag entity) {
+    public EntityCannotEnterHive(EntityTag entity) {
         this.entity = entity;
     }
 

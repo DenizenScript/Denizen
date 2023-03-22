@@ -27,7 +27,7 @@ public class EntityAI implements Property {
             "has_ai", "toggle_ai"
     };
 
-    private EntityAI(EntityTag ent) {
+    public EntityAI(EntityTag ent) {
         entity = ent;
     }
 

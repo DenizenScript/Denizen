@@ -41,13 +41,13 @@ public class ItemBaseColor implements Property {
             "base_color"
     };
 
-    private ItemBaseColor(ItemTag item) {
+    public ItemBaseColor(ItemTag item) {
         this.item = item;
     }
 
     ItemTag item;
 
-    private DyeColor getBaseColor() {
+    public DyeColor getBaseColor() {
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta instanceof BlockStateMeta) {
             DyeColor color = ((Banner) ((BlockStateMeta) itemMeta).getBlockState()).getBaseColor();
@@ -63,7 +63,7 @@ public class ItemBaseColor implements Property {
         }
     }
 
-    private void setBaseColor(DyeColor color, TagContext context) {
+    public void setBaseColor(DyeColor color, TagContext context) {
         if (color == null && item.getBukkitMaterial() == Material.SHIELD) {
             ItemRawNBT property = ItemRawNBT.getFrom(item);
             MapTag nbt = property.getFullNBTMap();
