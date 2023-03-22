@@ -135,10 +135,19 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         return player.openAnvil(loc, true);
     }
 
+    public static Object teleportRelative;
+
+    static {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) { // TODO: 1.19: replace with TeleportFlag.Relative.values()
+            // (That breaks loading pre-1.19 due to Java silliness)
+            teleportRelative = TeleportFlag.Relative.class.getEnumConstants();
+        }
+    }
+
     @Override
     public void teleportPlayerRelative(Player player, Location loc) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN, TeleportFlag.Relative.values());
+            player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN, (TeleportFlag[]) teleportRelative);
         }
         else {
             super.teleportPlayerRelative(player, loc);
