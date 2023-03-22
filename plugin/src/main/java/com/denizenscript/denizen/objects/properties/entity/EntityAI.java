@@ -2,40 +2,17 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
-public class EntityAI implements Property {
+public class EntityAI extends EntityProperty {
 
-    public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag
-                && ((EntityTag) entity).isLivingEntity();
+    public static boolean describes(EntityTag entity) {
+        return entity.isLivingEntityType();
     }
-
-    public static EntityAI getFrom(ObjectTag entity) {
-        if (!describes(entity)) {
-            return null;
-        }
-        else {
-            return new EntityAI((EntityTag) entity);
-        }
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "has_ai", "toggle_ai"
-    };
-
-    public EntityAI(EntityTag ent) {
-        entity = ent;
-    }
-
-    EntityTag entity;
 
     @Override
-    public String getPropertyString() {
-        return String.valueOf(entity.getLivingEntity().hasAI());
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getLivingEntity().hasAI());
     }
 
     @Override
@@ -56,13 +33,9 @@ public class EntityAI implements Property {
         // This generally shouldn't be used with NPCs. NPCs do not have vanilla AI, regardless of what this tag returns.
         // Other programmatic methods of blocking AI might also not be accounted for by this tag.
         // -->
-        PropertyParser.registerTag(EntityAI.class, ElementTag.class, "has_ai", (attribute, object) -> {
-            return new ElementTag(object.entity.getLivingEntity().hasAI());
+        PropertyParser.registerTag(EntityAI.class, ElementTag.class, "has_ai", (attribute, prop) -> {
+            return new ElementTag(prop.getLivingEntity().hasAI());
         });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object EntityTag
@@ -74,8 +47,10 @@ public class EntityAI implements Property {
         // @tags
         // <EntityTag.has_ai>
         // -->
-        if ((mechanism.matches("has_ai") || mechanism.matches("toggle_ai")) && mechanism.requireBoolean()) {
-            entity.getLivingEntity().setAI(mechanism.getValue().asBoolean());
-        }
+        PropertyParser.registerMechanism(EntityAI.class, ElementTag.class, "has_ai", (prop, mechanism, param) -> {
+            if (mechanism.requireBoolean()) {
+                prop.getLivingEntity().setAI(param.asBoolean());
+            }
+        }, "toggle_ai");
     }
 }

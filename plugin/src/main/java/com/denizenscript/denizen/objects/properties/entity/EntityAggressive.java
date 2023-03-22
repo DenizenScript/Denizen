@@ -2,42 +2,24 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.Mob;
 
-public class EntityAggressive implements Property {
+public class EntityAggressive extends EntityProperty {
 
-    public static boolean describes(ObjectTag object) {
-        return object instanceof EntityTag
-                && ((EntityTag) object).getBukkitEntity() instanceof Mob;
+    public static boolean describes(EntityTag entity) {
+        return entity.getBukkitEntity() instanceof Mob;
     }
-
-    public static EntityAggressive getFrom(ObjectTag entity) {
-        if (!describes(entity)) {
-            return null;
-        }
-        else {
-            return new EntityAggressive((EntityTag) entity);
-        }
-    }
-
-    EntityTag entity;
 
     @Override
-    public String getPropertyString() {
-        return String.valueOf(NMSHandler.entityHelper.isAggressive(getMob()));
+    public ElementTag getPropertyValue() {
+        return new ElementTag(NMSHandler.entityHelper.isAggressive(getMob()));
     }
 
     @Override
     public String getPropertyId() {
         return "aggressive";
-    }
-
-    public EntityAggressive(EntityTag entity) {
-        this.entity = entity;
     }
 
     public static void register() {
@@ -50,8 +32,8 @@ public class EntityAggressive implements Property {
         // @description
         // Returns whether the entity is currently aggressive.
         // -->
-        PropertyParser.registerTag(EntityAggressive.class, ElementTag.class, "aggressive", (attribute, object) -> {
-            return new ElementTag(NMSHandler.entityHelper.isAggressive(object.getMob()));
+        PropertyParser.registerTag(EntityAggressive.class, ElementTag.class, "aggressive", (attribute, prop) -> {
+            return new ElementTag(NMSHandler.entityHelper.isAggressive(prop.getMob()));
         });
 
         // <--[mechanism]
@@ -63,14 +45,14 @@ public class EntityAggressive implements Property {
         // @tags
         // <EntityTag.aggressive>
         // -->
-        PropertyParser.registerMechanism(EntityAggressive.class, ElementTag.class, "aggressive", (object, mechanism, input) -> {
+        PropertyParser.registerMechanism(EntityAggressive.class, ElementTag.class, "aggressive", (prop, mechanism, input) -> {
             if (mechanism.requireBoolean()) {
-                NMSHandler.entityHelper.setAggressive(object.getMob(), input.asBoolean());
+                NMSHandler.entityHelper.setAggressive(prop.getMob(), input.asBoolean());
             }
         });
     }
 
     public Mob getMob() {
-        return (Mob) entity.getBukkitEntity();
+        return (Mob) getEntity();
     }
 }

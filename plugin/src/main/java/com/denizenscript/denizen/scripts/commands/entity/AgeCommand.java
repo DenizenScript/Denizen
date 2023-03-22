@@ -100,7 +100,7 @@ public class AgeCommand extends AbstractCommand {
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
                 if (EntityAge.describes(entity)) {
-                    EntityAge property = EntityAge.getFrom(entity);
+                    EntityAge property = new EntityAge(entity);
                     if (ageType != null) {
                         if (ageType.equals(AgeType.BABY)) {
                             property.setAge(-24000);
