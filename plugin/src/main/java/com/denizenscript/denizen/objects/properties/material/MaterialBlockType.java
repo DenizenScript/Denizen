@@ -1,52 +1,30 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.exceptions.Unreachable;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.*;
 
-public class MaterialBlockType implements Property {
+public class MaterialBlockType extends MaterialProperty {
 
-    public static boolean describes(ObjectTag material) {
-        if (!(material instanceof MaterialTag)) {
-            return false;
-        }
-        MaterialTag mat = (MaterialTag) material;
-        if (!mat.hasModernData()) {
-            return false;
-        }
-        BlockData data = mat.getModernData();
-        return data instanceof Slab
-                || data instanceof TechnicalPiston
-                || data instanceof Campfire
-                || data instanceof Scaffolding
-                || data instanceof PointedDripstone
-                || data instanceof CaveVinesPlant;
+    public static boolean describes(MaterialTag material) {
+        BlockData data = material.getModernData();
+        return data instanceof Slab || data instanceof TechnicalPiston || data instanceof Campfire
+                || data instanceof Scaffolding || data instanceof PointedDripstone || data instanceof CaveVinesPlant;
     }
 
-    public static MaterialBlockType getFrom(ObjectTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialBlockType((MaterialTag) _material);
-        }
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getType());
     }
 
-    public static final String[] handledMechs = new String[] {
-            "type", "slab_type"
-    };
-
-    private MaterialBlockType(MaterialTag _material) {
-        material = _material;
+    @Override
+    public String getPropertyId() {
+        return "type";
     }
-
-    public MaterialTag material;
 
     public static void register() {
 
@@ -64,89 +42,9 @@ public class MaterialBlockType implements Property {
         // For cave vines, output is NORMAL or BERRIES.
         // For scaffolding, output is NORMAL or BOTTOM.
         // -->
-        PropertyParser.registerStaticTag(MaterialBlockType.class, ElementTag.class, "type", (attribute, material) -> {
-            return new ElementTag(material.getPropertyString());
+        PropertyParser.registerStaticTag(MaterialBlockType.class, ElementTag.class, "type", (attribute, prop) -> {
+            return new ElementTag(prop.getPropertyString());
         }, "slab_type");
-    }
-
-    public boolean isSlab() {
-        return material.getModernData() instanceof Slab;
-    }
-
-    public boolean isPistonHead() {
-        return material.getModernData() instanceof TechnicalPiston;
-    }
-
-    public boolean isCampfire() {
-        return material.getModernData() instanceof Campfire;
-    }
-
-    public boolean isDripstone() {
-        return material.getModernData() instanceof PointedDripstone;
-    }
-
-    public boolean isCaveVines() {
-        return material.getModernData() instanceof CaveVinesPlant;
-    }
-
-    public boolean isScaffolding() {
-        return material.getModernData() instanceof Scaffolding;
-    }
-
-    public Slab getSlab() {
-        return (Slab) material.getModernData();
-    }
-
-    public TechnicalPiston getPistonHead() {
-        return (TechnicalPiston) material.getModernData();
-    }
-
-    public Campfire getCampfire() {
-        return (Campfire) material.getModernData();
-    }
-
-    public Scaffolding getScaffolding() {
-        return (Scaffolding) material.getModernData();
-    }
-
-    public PointedDripstone getDripstone() {
-        return (PointedDripstone) material.getModernData();
-    }
-
-    public CaveVinesPlant getCaveVines() {
-        return (CaveVinesPlant) material.getModernData();
-    }
-
-    @Override
-    public String getPropertyString() {
-        if (isSlab()) {
-            return getSlab().getType().name();
-        }
-        else if (isCampfire()) {
-            return getCampfire().isSignalFire() ? "SIGNAL" : "NORMAL";
-        }
-        else if (isPistonHead()) {
-            return getPistonHead().getType().name();
-        }
-        else if (isScaffolding()) {
-            return getScaffolding().isBottom() ? "BOTTOM" : "NORMAL";
-        }
-        else if (isDripstone()) {
-            return getDripstone().getThickness().name();
-        }
-        else if (isCaveVines()) {
-            return getCaveVines().isBerries() ? "BERRIES" : "NORMAL";
-        }
-        return null; // Unreachable.
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "type";
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object MaterialTag
@@ -163,25 +61,49 @@ public class MaterialBlockType implements Property {
         // @tags
         // <MaterialTag.type>
         // -->
-        if (mechanism.matches("type") || (mechanism.matches("slab_type"))) {
-            if (isSlab() && mechanism.requireEnum(Slab.Type.class)) {
-                getSlab().setType(Slab.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
+        PropertyParser.registerMechanism(MaterialBlockType.class, ElementTag.class, "type", (prop, mechanism, param) -> {
+            BlockData data = prop.getBlockData();
+            if (data instanceof Slab slab && mechanism.requireEnum(Slab.Type.class)) {
+                slab.setType(mechanism.value.asElement().asEnum(Slab.Type.class));
             }
-            else if (isCampfire()) {
-                getCampfire().setSignalFire(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "signal"));
+            else if (data instanceof TechnicalPiston piston && mechanism.requireEnum(TechnicalPiston.Type.class)) {
+                piston.setType(mechanism.value.asElement().asEnum(TechnicalPiston.Type.class));
             }
-            else if (isPistonHead() && mechanism.requireEnum(TechnicalPiston.Type.class)) {
-                getPistonHead().setType(TechnicalPiston.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
+            else if (data instanceof Campfire campfire) {
+                campfire.setSignalFire(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "signal"));
             }
-            else if (isScaffolding()) {
-                getScaffolding().setBottom(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "bottom"));
+            else if (data instanceof PointedDripstone dripstone && mechanism.requireEnum(PointedDripstone.Thickness.class)) {
+                dripstone.setThickness(mechanism.value.asElement().asEnum(PointedDripstone.Thickness.class));
             }
-            else if (isDripstone() && mechanism.requireEnum(PointedDripstone.Thickness.class)) {
-                ((PointedDripstone) material.getModernData()).setThickness(PointedDripstone.Thickness.valueOf(mechanism.getValue().asString().toUpperCase()));
+            else if (data instanceof CaveVinesPlant vines) {
+                vines.setBerries(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "berries"));
             }
-            else if (isCaveVines()) {
-                getCaveVines().setBerries(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "berries"));
+            else if (data instanceof Scaffolding scaffolding) {
+                scaffolding.setBottom(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "bottom"));
             }
+        });
+    }
+
+    public String getType() {
+        BlockData data = getBlockData();
+        if (data instanceof Slab slab) {
+            return slab.getType().name();
         }
+        else if (data instanceof TechnicalPiston piston) {
+            return piston.getType().name();
+        }
+        else if (data instanceof Campfire campfire) {
+            return campfire.isSignalFire()  ? "SIGNAL" : "NORMAL";
+        }
+        else if (data instanceof PointedDripstone dripstone) {
+            return dripstone.getThickness().name();
+        }
+        else if (data instanceof CaveVinesPlant vines) {
+            return vines.isBerries() ? "BERRIES" : "NORMAL";
+        }
+        else if (data instanceof Scaffolding scaffolding) {
+            return scaffolding.isBottom() ? "BOTTOM" : "NORMAL";
+        }
+        throw new Unreachable();
     }
 }

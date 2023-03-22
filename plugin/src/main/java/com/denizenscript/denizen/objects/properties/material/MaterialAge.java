@@ -1,43 +1,34 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizencore.exceptions.Unreachable;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Sapling;
 import org.bukkit.block.data.type.TurtleEgg;
 
-public class MaterialAge implements Property {
+public class MaterialAge extends MaterialProperty {
 
-    public static boolean describes(ObjectTag material) {
-        return material instanceof MaterialTag
-                && ((MaterialTag) material).hasModernData()
-                && (((MaterialTag) material).getModernData() instanceof Ageable
-                || ((MaterialTag) material).getModernData() instanceof TurtleEgg
-                || ((MaterialTag) material).getModernData() instanceof Sapling);
+    public static boolean describes(MaterialTag material) {
+        BlockData data = material.getModernData();
+        return data instanceof Ageable || data instanceof TurtleEgg || data instanceof Sapling;
     }
 
-    public static MaterialAge getFrom(ObjectTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialAge((MaterialTag) _material);
-        }
+    public MaterialAge(MaterialTag material) { // NOTE: BlockGrowsScriptEvent needs this available
+        super(material);
     }
 
-    public static final String[] handledMechs = new String[] {
-            "age", "plant_growth"
-    };
-
-    private MaterialAge(MaterialTag _material) {
-        material = _material;
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getCurrent());
     }
 
-    MaterialTag material;
+    @Override
+    public String getPropertyId() {
+        return "age";
+    }
 
     public static void register() {
 
@@ -48,8 +39,8 @@ public class MaterialAge implements Property {
         // @description
         // Returns the maximum age for an ageable material. This includes plant growth.
         // -->
-        PropertyParser.registerStaticTag(MaterialAge.class, ElementTag.class, "maximum_age", (attribute, material) -> {
-            return new ElementTag(material.getMax());
+        PropertyParser.registerStaticTag(MaterialAge.class, ElementTag.class, "maximum_age", (attribute, prop) -> {
+            return new ElementTag(prop.getMax());
         }, "maximum_plant_growth");
 
         // <--[tag]
@@ -60,67 +51,9 @@ public class MaterialAge implements Property {
         // @description
         // Returns the current age for an ageable material. This includes plant growth.
         // -->
-        PropertyParser.registerStaticTag(MaterialAge.class, ElementTag.class, "age", (attribute, material) -> {
-            return new ElementTag(material.getCurrent());
+        PropertyParser.registerStaticTag(MaterialAge.class, ElementTag.class, "age", (attribute, prop) -> {
+            return new ElementTag(prop.getCurrent());
         }, "plant_growth");
-    }
-
-    public TurtleEgg getTurtleEgg() {
-        return (TurtleEgg) material.getModernData();
-    }
-
-    public boolean isTurtleEgg() {
-        return material.getModernData() instanceof TurtleEgg;
-    }
-
-    public Sapling getSapling() {
-        return (Sapling) material.getModernData();
-    }
-
-    public boolean isSapling() {
-        return material.getModernData() instanceof Sapling;
-    }
-
-    public Ageable getAgeable() {
-        return (Ageable) material.getModernData();
-    }
-
-    public int getCurrent() {
-        if (isTurtleEgg()) {
-            return getTurtleEgg().getHatch();
-        }
-        else if (isSapling()) {
-            return getSapling().getStage();
-        }
-        else {
-            return getAgeable().getAge();
-        }
-    }
-
-    public int getMax() {
-        if (isTurtleEgg()) {
-            return getTurtleEgg().getMaximumHatch();
-        }
-        else if (isSapling()) {
-            return getSapling().getMaximumStage();
-        }
-        else {
-            return getAgeable().getMaximumAge();
-        }
-    }
-
-    @Override
-    public String getPropertyString() {
-        return String.valueOf(getCurrent());
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "age";
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object MaterialTag
@@ -132,21 +65,53 @@ public class MaterialAge implements Property {
         // <MaterialTag.age>
         // <MaterialTag.maximum_age>
         // -->
-        if ((mechanism.matches("age") || mechanism.matches("plant_growth")) && mechanism.requireInteger()) {
-            int age = mechanism.getValue().asInt();
-            if (age < 0 || age > getMax()) {
-                mechanism.echoError("Age value '" + age + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.name() + "'.");
+        PropertyParser.registerMechanism(MaterialAge.class, ElementTag.class, "age", (prop, mechanism, param) -> {
+            if (!mechanism.requireInteger()) {
                 return;
             }
-            if (isTurtleEgg()) {
-                getTurtleEgg().setHatch(age);
+            int age = param.asInt();
+            if (age < 0 || age > prop.getMax()) {
+                mechanism.echoError("Age value '" + age + "' is not valid. Must be between 0 and " + prop.getMax() + " for material '" + prop.object.name() + "'.");
+                return;
             }
-            else if (isSapling()) {
-                getSapling().setStage(age);
+            BlockData data = prop.getBlockData();
+            if (data instanceof TurtleEgg turtle) {
+                turtle.setHatch(age);
             }
-            else {
-                getAgeable().setAge(age);
+            else if (data instanceof Sapling sapling) {
+                sapling.setStage(age);
             }
+            else if (data instanceof Ageable ageable) {
+                ageable.setAge(age);
+            }
+        }, "plant_growth");
+    }
+
+    public int getCurrent() {
+        BlockData data = getBlockData();
+        if (data instanceof TurtleEgg turtle) {
+            return turtle.getHatch();
         }
+        else if (data instanceof Sapling sapling) {
+            return sapling.getStage();
+        }
+        else if (data instanceof Ageable age) {
+            return age.getAge();
+        }
+        throw new Unreachable();
+    }
+
+    public int getMax() {
+        BlockData data = getBlockData();
+        if (data instanceof TurtleEgg turtle) {
+            return turtle.getMaximumHatch();
+        }
+        else if (data instanceof Sapling sapling) {
+            return sapling.getMaximumStage();
+        }
+        else if (data instanceof Ageable age) {
+            return age.getMaximumAge();
+        }
+        throw new Unreachable();
     }
 }
