@@ -118,6 +118,10 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityTame.class, EntityTag.class);
         PropertyParser.registerProperty(EntityEyeTargetLocation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityTrades.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            PropertyParser.registerProperty(EntityTrapped.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityTrapTime.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityVillagerExperience.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVillagerLevel.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVisible.class, EntityTag.class);
