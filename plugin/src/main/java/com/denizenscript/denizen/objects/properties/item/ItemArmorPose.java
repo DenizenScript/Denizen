@@ -7,7 +7,6 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
@@ -16,28 +15,24 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemArmorPose implements Property {
+public class ItemArmorPose extends ItemProperty {
 
-    public static boolean describes(ObjectTag item) {
-        return item instanceof ItemTag
-                && ((ItemTag) item).getBukkitMaterial() == Material.ARMOR_STAND;
+    public static boolean describes(ItemTag item) {
+        return item.getBukkitMaterial() == Material.ARMOR_STAND;
     }
 
-    public static ItemArmorPose getFrom(ObjectTag item) {
-        if (!describes(item)) {
+    @Override
+    public String getPropertyString() {
+        MapTag result = getPoseMap();
+        if (result == null) {
             return null;
         }
-        else {
-            return new ItemArmorPose((ItemTag) item);
-        }
+        return  result.toString();
     }
 
-    public static final String[] handledMechs = new String[] {
-            "armor_pose"
-    };
-
-    public ItemArmorPose(ItemTag item) {
-        this.item = item;
+    @Override
+    public String getPropertyId() {
+        return "armor_pose";
     }
 
     public static void procPart(CompoundTag pose, String nmsName, String denizenName, MapTag result) {
@@ -54,7 +49,7 @@ public class ItemArmorPose implements Property {
     }
 
     public MapTag getPoseMap() {
-        CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(item.getItemStack());
+        CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(getItemStack());
         if (compoundTag == null) {
             return null;
         }
@@ -77,8 +72,6 @@ public class ItemArmorPose implements Property {
         return result;
     }
 
-    ItemTag item;
-
     public static void register() {
 
         // <--[tag]
@@ -90,45 +83,9 @@ public class ItemArmorPose implements Property {
         // Returns the pose of this armor stand item, if any.
         // Map has keys: head, body, left_arm, right_arm, left_leg, right_leg
         // -->
-        PropertyParser.registerTag(ItemArmorPose.class, MapTag.class, "armor_pose", (attribute, item) -> {
-            return item.getPoseMap();
+        PropertyParser.registerTag(ItemArmorPose.class, MapTag.class, "armor_pose", (attribute, prop) -> {
+            return prop.getPoseMap();
         });
-    }
-
-    @Override
-    public String getPropertyString() {
-        MapTag result = getPoseMap();
-        if (result == null) {
-            return null;
-        }
-        return  result.toString();
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "armor_pose";
-    }
-
-    public static void procMechKey(Mechanism mech, CompoundTagBuilder pose, String nmsName, String denizenName, MapTag input) {
-        ObjectTag value = input.getObject(denizenName);
-        if (value == null) {
-            return;
-        }
-        List<String> raw = CoreUtilities.split(value.toString(), ',');
-        if (raw.size() != 3) {
-            mech.echoError("Invalid pose piece '" + value + "'");
-            return;
-        }
-        List<FloatTag> rawList = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            rawList.add(new FloatTag(Float.parseFloat(raw.get(i))));
-        }
-        JNBTListTag list = new JNBTListTag(FloatTag.class, rawList);
-        pose.put(nmsName, list);
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object ItemTag
@@ -140,10 +97,10 @@ public class ItemArmorPose implements Property {
         // @tags
         // <ItemTag.armor_pose>
         // -->
-        if (mechanism.matches("armor_pose")) {
-            CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(item.getItemStack());
+        PropertyParser.registerMechanism(ItemArmorPose.class, MapTag.class, "armor_pose", (prop, mechanism, param) -> {
+            CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(prop.getItemStack());
             Tag entPart, posePart;
-            if (mechanism.hasValue() && mechanism.requireObject(MapTag.class)) {
+            if (mechanism.hasValue()) {
                 if (compoundTag == null) {
                     compoundTag = new CompoundTagBuilder().build();
                 }
@@ -152,13 +109,12 @@ public class ItemArmorPose implements Property {
                     entPart = new CompoundTagBuilder().build();
                 }
                 CompoundTagBuilder poseBuilder = new CompoundTagBuilder();
-                MapTag input = mechanism.valueAsType(MapTag.class);
-                procMechKey(mechanism, poseBuilder, "Head", "head", input);
-                procMechKey(mechanism, poseBuilder, "Body", "body", input);
-                procMechKey(mechanism, poseBuilder, "LeftArm", "left_arm", input);
-                procMechKey(mechanism, poseBuilder, "RightArm", "right_arm", input);
-                procMechKey(mechanism, poseBuilder, "LeftLeg", "left_leg", input);
-                procMechKey(mechanism, poseBuilder, "RightLeg", "right_leg", input);
+                procMechKey(mechanism, poseBuilder, "Head", "head", param);
+                procMechKey(mechanism, poseBuilder, "Body", "body", param);
+                procMechKey(mechanism, poseBuilder, "LeftArm", "left_arm", param);
+                procMechKey(mechanism, poseBuilder, "RightArm", "right_arm", param);
+                procMechKey(mechanism, poseBuilder, "LeftLeg", "left_leg", param);
+                procMechKey(mechanism, poseBuilder, "RightLeg", "right_leg", param);
                 CompoundTag pose = poseBuilder.build();
                 if (pose.getValue().isEmpty()) {
                     entPart = ((CompoundTag) entPart).createBuilder().remove("Pose").build();
@@ -187,8 +143,26 @@ public class ItemArmorPose implements Property {
             else {
                 compoundTag = compoundTag.createBuilder().put("EntityTag", entPart).build();
             }
-            ItemStack result = NMSHandler.itemHelper.setNbtData(item.getItemStack(), compoundTag);
-            item.setItemStack(result);
+            ItemStack result = NMSHandler.itemHelper.setNbtData(prop.getItemStack(), compoundTag);
+            prop.setItemStack(result);
+        });
+    }
+
+    public static void procMechKey(Mechanism mech, CompoundTagBuilder pose, String nmsName, String denizenName, MapTag input) {
+        ObjectTag value = input.getObject(denizenName);
+        if (value == null) {
+            return;
         }
+        List<String> raw = CoreUtilities.split(value.toString(), ',');
+        if (raw.size() != 3) {
+            mech.echoError("Invalid pose piece '" + value + "'");
+            return;
+        }
+        List<FloatTag> rawList = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            rawList.add(new FloatTag(Float.parseFloat(raw.get(i))));
+        }
+        JNBTListTag list = new JNBTListTag(FloatTag.class, rawList);
+        pose.put(nmsName, list);
     }
 }
