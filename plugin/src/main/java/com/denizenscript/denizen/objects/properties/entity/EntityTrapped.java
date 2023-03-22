@@ -11,8 +11,8 @@ import org.bukkit.entity.SkeletonHorse;
 public class EntityTrapped implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag &&
-                (((EntityTag) entity).getBukkitEntity() instanceof SkeletonHorse);
+        return entity instanceof EntityTag ent &&
+                (ent.getBukkitEntity() instanceof SkeletonHorse);
     }
 
     public static EntityTrapped getFrom(ObjectTag entity) {
