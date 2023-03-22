@@ -42,8 +42,8 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     // <context.xp> returns the amount of experience that will drop.
     //
     // @Determine
-    // "CAUGHT:" + ItemTag to change the item that was caught (only if an item was already being caught).
-    // "XP:" + ElementTag(Number) to change how much experience will drop.
+    // "CAUGHT:<ItemTag>" to change the item that was caught (only if an item was already being caught).
+    // "XP:<ElementTag(Number)>" to change how much experience will drop.
     //
     // @Player If the fisher or the caught entity is a player (in most cases, the fisher can be assumed to be a real player).
     // @NPC If the fisher or the caught entity is an NPC.

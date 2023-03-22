@@ -40,7 +40,7 @@ public class LootGenerateScriptEvent extends BukkitScriptEvent implements Listen
     // <context.loot_table_id> returns an element indicating the minecraft key for the loot-table that was generated.
     //
     // @Determine
-    // "LOOT:" + ListTag(ItemTag) to change the list of items that will generate as loot.
+    // "LOOT:<ListTag(ItemTag)>" to change the list of items that will generate as loot.
     //
     // @Player when the linked entity is a player.
     //

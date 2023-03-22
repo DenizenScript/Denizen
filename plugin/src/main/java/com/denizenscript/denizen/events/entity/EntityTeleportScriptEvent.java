@@ -52,8 +52,8 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // <context.cause> returns an ElementTag of the teleport cause - see <@link language teleport cause> for causes.
     //
     // @Determine
-    // "ORIGIN:" + LocationTag to change the location the entity teleported from.
-    // "DESTINATION:" + LocationTag to change the location the entity teleports to.
+    // "ORIGIN:<LocationTag>" to change the location the entity teleported from.
+    // "DESTINATION:<LocationTag>" to change the location the entity teleports to.
     //
     // @Player when the entity being teleported is a player.
     //

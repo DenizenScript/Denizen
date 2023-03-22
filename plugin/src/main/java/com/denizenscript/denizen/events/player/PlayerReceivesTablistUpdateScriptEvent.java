@@ -39,12 +39,12 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
     // <context.listed> returns true if the entry should be listed in the tab list, or false if not.
     //
     // @Determine
-    // "LATENCY:" + ElementTag(Number) to change the latency.
-    // "NAME:" + ElementTag to change the name.
-    // "DISPLAY:" + ElementTag to change the display name. 'name', 'display' and 'cancelled' determinations require 'Allow restricted actions' in Denizen/config.yml
-    // "GAMEMODE:" + ElementTag to change the gamemode.
-    // "SKIN_BLOB:" + ElementTag to change the skin blob.
-    // "LISTED:" + ElementTag(Boolean) to change whether the entry is listed.
+    // "LATENCY:<ElementTag(Number)>" to change the latency.
+    // "NAME:<ElementTag>" to change the name.
+    // "DISPLAY:<ElementTag>" to change the display name. 'name', 'display' and 'cancelled' determinations require 'Allow restricted actions' in Denizen/config.yml
+    // "GAMEMODE:<ElementTag>" to change the gamemode.
+    // "SKIN_BLOB:<ElementTag>" to change the skin blob.
+    // "LISTED:<ElementTag(Boolean)>" to change whether the entry is listed.
     //
     // @Player Always.
     //

@@ -30,7 +30,7 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
     // <context.consuming> returns a boolean indicating whether the fuel item will be consumed.
     //
     // @Determine
-    // "FUEL_POWER:" + ElementTag(Number) to set the fuel power level to be added.
+    // "FUEL_POWER:<ElementTag(Number)>" to set the fuel power level to be added.
     // "CONSUMING" to indicate that the fuel item should be consumed.
     // "NOT_CONSUMING" to indicate that the fuel item should not be consumed.
     //

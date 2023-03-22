@@ -40,7 +40,7 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
     // @Player Always.
     //
     // @Determine
-    // "KEEP:" + ElementTag(Boolean) to set whether the firework item should be kept.
+    // "KEEP:<ElementTag(Boolean)>" to set whether the firework item should be kept.
     //
     // -->
 

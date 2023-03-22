@@ -36,7 +36,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     // <context.pickup> returns whether the vehicle can pick up the entity.
     //
     // @Determine
-    // "PICKUP:" + ElementTag(Boolean) to set whether the vehicle is allowed to pick up the entity or not.
+    // "PICKUP:<ElementTag(Boolean)>" to set whether the vehicle is allowed to pick up the entity or not.
     //
     // @Player when a vehicle collides with a player.
     //

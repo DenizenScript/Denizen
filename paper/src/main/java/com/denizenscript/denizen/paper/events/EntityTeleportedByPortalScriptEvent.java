@@ -35,7 +35,7 @@ public class EntityTeleportedByPortalScriptEvent extends BukkitScriptEvent imple
     // <context.portal_type> returns an ElementTag of the portal's type. Will be one of <@link url https://jd.papermc.io/paper/1.19/org/bukkit/PortalType.html>.
     //
     // @Determine
-    // "TARGET_WORLD:" + WorldTag to set the world the entity will be teleported to.
+    // "TARGET_WORLD:<WorldTag>" to set the world the entity will be teleported to.
     // "REMOVE_TARGET_WORLD" to remove the target world. Should usually cancel the event instead of using this.
     //
     // -->

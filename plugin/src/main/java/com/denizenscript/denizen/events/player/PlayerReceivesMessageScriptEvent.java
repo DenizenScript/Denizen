@@ -35,8 +35,8 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     // <context.system_message> returns true if the message is a system message (not player chat).
     //
     // @Determine
-    // "MESSAGE:" + ElementTag to change the message.
-    // "RAW_JSON:" + ElementTag to change the JSON used for the message.
+    // "MESSAGE:<ElementTag>" to change the message.
+    // "RAW_JSON:<ElementTag>" to change the JSON used for the message.
     //
     // @Player Always.
     //

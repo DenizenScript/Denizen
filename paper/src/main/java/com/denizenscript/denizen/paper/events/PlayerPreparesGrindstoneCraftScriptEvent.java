@@ -32,7 +32,7 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
     // <context.result> returns the ItemTag to be crafted.
     //
     // @Determine
-    // "RESULT:" + ItemTag to change the item that is crafted.
+    // "RESULT:<ItemTag>" to change the item that is crafted.
     //
     // @Player Always.
     //

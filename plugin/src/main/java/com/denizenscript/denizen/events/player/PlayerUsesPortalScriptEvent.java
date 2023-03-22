@@ -38,9 +38,9 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Determine
     // LocationTag to change the destination.
-    // "CAN_CREATE:" + ElementTag(Boolean) to set whether the server will attempt to create a destination portal.
-    // "CREATION_RADIUS:" + ElementTag(Number) to set the radius that will be checked for a free space to create the portal in.
-    // "SEARCH_RADIUS:" + ElementTag(Number) to set the radius that will be checked for an existing portal to teleport to.
+    // "CAN_CREATE:<ElementTag(Boolean)>" to set whether the server will attempt to create a destination portal.
+    // "CREATION_RADIUS:<ElementTag(Number)>" to set the radius that will be checked for a free space to create the portal in.
+    // "SEARCH_RADIUS:<ElementTag(Number)>" to set the radius that will be checked for an existing portal to teleport to.
     //
     // @Player Always.
     //

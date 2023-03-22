@@ -44,8 +44,8 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Determine
     // ElementTag(Number) to set the experience level cost of the enchantment.
-    // "RESULT:" + ItemTag to change the item result (only affects metadata (like enchantments), not material/quantity/etc!).
-    // "ENCHANTS:" + MapTag to change the resultant enchantments.
+    // "RESULT:<ItemTag>" to change the item result (only affects metadata (like enchantments), not material/quantity/etc!).
+    // "ENCHANTS:<MapTag>" to change the resultant enchantments.
     //
     // @Player when the enchanter is a player.
     //
