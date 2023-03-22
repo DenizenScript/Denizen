@@ -2,58 +2,40 @@ package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.TradeTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.properties.Property;
+import com.denizenscript.denizencore.objects.properties.ObjectProperty;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.MerchantRecipe;
 
 import java.util.ArrayList;
 
-public class InventoryTrades implements Property {
+public class InventoryTrades extends ObjectProperty<InventoryTag> {
 
-    public static boolean describes(ObjectTag inventory) {
-        return inventory instanceof InventoryTag && ((InventoryTag) inventory).getInventory() instanceof MerchantInventory;
-    }
-
-    public static InventoryTrades getFrom(ObjectTag inventory) {
-        if (!describes(inventory)) {
-            return null;
-        }
-        return new InventoryTrades((InventoryTag) inventory);
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "trades"
-    };
-
-    InventoryTag inventory;
-
-    public InventoryTrades(InventoryTag inventory) {
-        this.inventory = inventory;
-    }
-    public ListTag getTradeRecipes() {
-        ArrayList<TradeTag> recipes = new ArrayList<>();
-        for (MerchantRecipe recipe : ((MerchantInventory) inventory.getInventory()).getMerchant().getRecipes()) {
-            recipes.add(new TradeTag(recipe).duplicate());
-        }
-        return new ListTag(recipes);
+    public static boolean describes(InventoryTag inventory) {
+        return inventory.getInventory() instanceof MerchantInventory;
     }
 
     @Override
-    public String getPropertyString() {
+    public ListTag getPropertyValue() {
         ListTag recipes = getTradeRecipes();
         if (recipes.isEmpty()) {
             return null;
         }
-        return recipes.identify();
+        return recipes;
     }
 
     @Override
     public String getPropertyId() {
         return "trades";
+    }
+
+    public ListTag getTradeRecipes() {
+        ArrayList<TradeTag> recipes = new ArrayList<>();
+        for (MerchantRecipe recipe : ((MerchantInventory) object.getInventory()).getMerchant().getRecipes()) {
+            recipes.add(new TradeTag(recipe).duplicate());
+        }
+        return new ListTag(recipes);
     }
 
     public static void register() {
@@ -69,10 +51,6 @@ public class InventoryTrades implements Property {
         PropertyParser.registerTag(InventoryTrades.class, ListTag.class, "trades", (attribute, inventory) -> {
             return inventory.getTradeRecipes();
         });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object InventoryTag
@@ -83,12 +61,12 @@ public class InventoryTrades implements Property {
         // @tags
         // <InventoryTag.trades>
         // -->
-        if (mechanism.matches("trades") && mechanism.requireInteger()) {
+        PropertyParser.registerMechanism(InventoryTrades.class, ListTag.class, "trades", (prop, mechanism, param) -> {
             ArrayList<MerchantRecipe> recipes = new ArrayList<>();
-            for (TradeTag recipe : mechanism.valueAsType(ListTag.class).filter(TradeTag.class, mechanism.context)) {
+            for (TradeTag recipe : param.filter(TradeTag.class, mechanism.context)) {
                 recipes.add(recipe.getRecipe());
             }
-            ((MerchantInventory) inventory.getInventory()).getMerchant().setRecipes(recipes);
-        }
+            ((MerchantInventory) prop.object.getInventory()).getMerchant().setRecipes(recipes);
+        });
     }
 }

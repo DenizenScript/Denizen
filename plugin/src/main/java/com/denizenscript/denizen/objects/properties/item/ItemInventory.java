@@ -113,7 +113,7 @@ public class ItemInventory implements Property {
             if (inventory == null) {
                 return null;
             }
-            return InventoryContents.getFrom(inventory).getContents(false);
+            return new InventoryContents(inventory).getContents(false);
         }
         ListTag result = new ListTag();
         for (ItemStack item : ((BundleMeta) item.getItemMeta()).getItems()) {
@@ -179,7 +179,7 @@ public class ItemInventory implements Property {
             if (inventoryPair == null || inventoryPair.getValue().getInventory() == null) {
                 return;
             }
-            ListTag items = InventoryContents.getFrom(inventoryPair.getValue()).getContents(false);
+            ListTag items = new InventoryContents(inventoryPair.getValue()).getContents(false);
             ItemStack[] itemArray = new ItemStack[items.size()];
             for (int i = 0; i < itemArray.length; i++) {
                 itemArray[i] = ((ItemTag) items.objectForms.get(i)).getItemStack().clone();

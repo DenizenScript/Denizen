@@ -4,40 +4,34 @@ import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
+import com.denizenscript.denizencore.objects.properties.ObjectProperty;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
-public class InventoryTitle implements Property {
+public class InventoryTitle extends ObjectProperty<InventoryTag> {
 
-    public static boolean describes(ObjectTag inventory) {
-        // All inventories could possibly have a title
-        return inventory instanceof InventoryTag;
+    public static boolean describes(InventoryTag inventory) {
+        return true;
     }
 
-    public static InventoryTitle getFrom(ObjectTag inventory) {
-        if (!describes(inventory)) {
-            return null;
+    @Override
+    public ElementTag getPropertyValue() {
+        // Only show a property string for titles that can actually change
+        if (object.isGeneric() || object.isSaving) {
+            return new ElementTag(getTitle());
         }
-        return new InventoryTitle((InventoryTag) inventory);
+        return null;
     }
 
-    public static final String[] handledMechs = new String[] {
-            "title"
-    };
-
-    InventoryTag inventory;
-
-    public InventoryTitle(InventoryTag inventory) {
-        this.inventory = inventory;
+    @Override
+    public String getPropertyId() {
+        return "title";
     }
 
     public String getTitle() {
-        if (inventory.getInventory() != null) {
-            String title = PaperAPITools.instance.getTitle(inventory.getInventory());
+        if (object.getInventory() != null) {
+            String title = PaperAPITools.instance.getTitle(object.getInventory());
             if (title != null) {
                 if (!title.startsWith("container.")) {
                     return title;
@@ -45,22 +39,6 @@ public class InventoryTitle implements Property {
             }
         }
         return null;
-    }
-
-    @Override
-    public String getPropertyString() {
-        // Only show a property string for titles that can actually change
-        if (inventory.isGeneric() || inventory.isSaving) {
-            return getTitle();
-        }
-        else {
-            return null;
-        }
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "title";
     }
 
     public static void register() {
@@ -76,11 +54,6 @@ public class InventoryTitle implements Property {
         PropertyParser.registerTag(InventoryTitle.class, ElementTag.class, "title", (attribute, inventory) -> {
             return new ElementTag(inventory.getTitle(), true);
         });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
         // <--[mechanism]
         // @object InventoryTag
         // @name title
@@ -90,12 +63,13 @@ public class InventoryTitle implements Property {
         // @tags
         // <InventoryTag.title>
         // -->
-        if (mechanism.matches("title")) {
+        PropertyParser.registerMechanism(InventoryTitle.class, ElementTag.class, "title", (prop, mechanism, param) -> {
+            InventoryTag inventory = prop.object;
             if (!inventory.isGeneric() && !inventory.isUnique()) {
                 mechanism.echoError("Cannot set a title on a non-generic inventory.");
                 return;
             }
-            String title = mechanism.getValue().asString();
+            String title = param.asString();
             if (InventoryScriptHelper.isPersonalSpecialInv(inventory.getInventory())) {
                 inventory.customTitle = title;
                 return;
@@ -118,7 +92,6 @@ public class InventoryTitle implements Property {
             }
             inventory.setContents(contents);
             InventoryTag.trackTemporaryInventory(inventory);
-        }
-
+        });
     }
 }
