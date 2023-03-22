@@ -25,7 +25,7 @@ public class EntityArmsRaised implements Property {
         }
     }
 
-    private EntityArmsRaised(EntityTag _entity) {
+    public EntityArmsRaised(EntityTag _entity) {
         entity = _entity;
     }
 

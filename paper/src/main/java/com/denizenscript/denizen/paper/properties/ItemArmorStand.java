@@ -28,7 +28,7 @@ public class ItemArmorStand implements Property {
             "armor_stand_data"
     };
 
-    private ItemArmorStand(ItemTag item) {
+    public ItemArmorStand(ItemTag item) {
         this.item = item;
     }
 

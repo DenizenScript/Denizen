@@ -21,7 +21,7 @@ public class EntityFriction implements Property {
         return new EntityFriction((EntityTag) entity);
     }
 
-    private EntityFriction(EntityTag ent) {
+    public EntityFriction(EntityTag ent) {
         entity = ent;
     }
 

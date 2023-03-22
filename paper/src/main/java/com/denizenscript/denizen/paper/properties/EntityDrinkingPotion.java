@@ -30,7 +30,7 @@ public class EntityDrinkingPotion implements Property {
             "drinking_potion", "potion_drink_duration"
     };
 
-    private EntityDrinkingPotion(EntityTag _entity) {
+    public EntityDrinkingPotion(EntityTag _entity) {
         entity = _entity;
     }
 

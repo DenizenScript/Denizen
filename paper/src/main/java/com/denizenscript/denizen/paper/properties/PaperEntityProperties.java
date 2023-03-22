@@ -32,7 +32,7 @@ public class PaperEntityProperties implements Property {
         return new PaperEntityProperties((EntityTag) entity);
     }
 
-    private PaperEntityProperties(EntityTag entity) {
+    public PaperEntityProperties(EntityTag entity) {
         this.entity = entity;
     }
 

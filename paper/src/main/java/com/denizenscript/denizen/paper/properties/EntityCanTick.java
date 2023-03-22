@@ -26,7 +26,7 @@ public class EntityCanTick implements Property {
             "can_tick"
     };
 
-    private EntityCanTick(EntityTag entity) {
+    public EntityCanTick(EntityTag entity) {
         this.entity = entity;
     }
 

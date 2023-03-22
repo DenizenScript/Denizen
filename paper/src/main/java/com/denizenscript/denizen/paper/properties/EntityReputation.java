@@ -30,7 +30,7 @@ public class EntityReputation implements Property {
         }
     }
 
-    private EntityReputation(EntityTag _entity) {
+    public EntityReputation(EntityTag _entity) {
         entity = _entity;
     }
 

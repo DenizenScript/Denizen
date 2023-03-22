@@ -28,7 +28,7 @@ public class EntityCarryingEgg implements Property {
             "carrying_egg"
     };
 
-    private EntityCarryingEgg(EntityTag _entity) {
+    public EntityCarryingEgg(EntityTag _entity) {
         entity = _entity;
     }
 

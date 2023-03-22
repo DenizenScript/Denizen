@@ -26,7 +26,7 @@ public class PaperWorldProperties implements Property {
             "view_distance", "simulation_distance", "no_tick_view_distance"
     };
 
-    private PaperWorldProperties(WorldTag world) {
+    public PaperWorldProperties(WorldTag world) {
         this.world = world;
     }
 
