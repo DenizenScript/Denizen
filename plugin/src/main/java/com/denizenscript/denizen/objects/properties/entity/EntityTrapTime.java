@@ -3,28 +3,27 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.SkeletonHorse;
 
-public class EntityTrapped implements Property {
+public class EntityTrapTime implements Property {
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag ent &&
                 (ent.getBukkitEntity() instanceof SkeletonHorse);
     }
 
-    public static EntityTrapped getFrom(ObjectTag entity) {
+    public static EntityTrapTime getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
         else {
-            return new EntityTrapped((EntityTag) entity);
+            return new EntityTrapTime((EntityTag) entity);
         }
     }
 
-    private EntityTrapped(EntityTag ent) {
+    private EntityTrapTime(EntityTag ent) {
         entity = ent;
     }
 
@@ -32,45 +31,44 @@ public class EntityTrapped implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(((SkeletonHorse) entity.getBukkitEntity()).isTrapped());
+        return String.valueOf(((SkeletonHorse) entity.getBukkitEntity()).getTrapTime());
     }
 
     @Override
     public String getPropertyId() {
-        return "trapped";
+        return "trap_time";
     }
 
     public static void register() {
 
         // <--[tag]
-        // @attribute <EntityTag.trapped>
+        // @attribute <EntityTag.trap_time>
         // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.trapped
+        // @mechanism EntityTag.trap_time
         // @group properties
         // @description
-        // Returns whether the skeleton horse is trapped.
-        // A trapped skeleton horse will trigger the skeleton horse trap when the player is within 10 blocks of it.
+        // Returns the skeleton horse's trap time in ticks.
+        // Trap time will go up every tick for as long as the horse is trapped (see <@link tag EntityTag.trapped>).
+        // A trapped horse will despawn after it reaches 18000 ticks (15 minutes).
         // -->
-        PropertyParser.registerTag(EntityTrapped.class, ElementTag.class, "trapped", (attribute, object) -> {
-            return new ElementTag(object.isTrapped());
+        PropertyParser.registerTag(EntityTrapTime.class, DurationTag.class, "trap_time", (attribute, object) -> {
+            return new DurationTag(object.getSkeletonHorse().getTrapTime());
         });
 
         // <--[mechanism]
         // @object EntityTag
-        // @name trapped
-        // @input ElementTag(Boolean)
+        // @name trap_time
+        // @input DurationTag
         // @description
-        // Sets whether the skeleton horse is trapped.
-        // A trapped skeleton horse will trigger the skeleton horse trap when the player is within 10 blocks of it.
+        // Sets the skeleton horse's trap time.
+        // Trap time will go up every tick for as long as the horse is trapped (see <@link tag EntityTag.trapped>).
+        // A trap time greater than 18000 ticks (15 minutes) will despawn the horse on the next tick.
         // @tags
         // <EntityTag.trapped>
         // -->
-        PropertyParser.registerMechanism(EntityTrapped.class, ElementTag.class, "trapped", (object, mechanism, input) -> {
-            if (!mechanism.requireBoolean()) {
-                return;
-            }
+        PropertyParser.registerMechanism(EntityTrapTime.class, DurationTag.class, "trap_time", (object, mechanism, duration) -> {
             if (object.isSkeletonHorse()) {
-                object.getSkeletonHorse().setTrapped(input.asBoolean());
+                object.getSkeletonHorse().setTrapTime(duration.getTicksAsInt());
             }
         });
     }
@@ -81,12 +79,5 @@ public class EntityTrapped implements Property {
 
     public SkeletonHorse getSkeletonHorse() {
         return (SkeletonHorse) entity.getBukkitEntity();
-    }
-
-    public boolean isTrapped() {
-        if (isSkeletonHorse()) {
-            return getSkeletonHorse().isTrapped();
-        }
-        return false;
     }
 }
