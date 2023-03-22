@@ -84,7 +84,8 @@ public class EntityDisplayEntityData implements Property {
         map.putObject("transformation_translation", convertVector(trans.getTranslation()));
         map.putObject("view_range", new ElementTag(display.getViewRange()));
         if (display instanceof BlockDisplay block) {
-            map.putObject("block_display", new MaterialTag(block.getBlock()));
+            // handled by EntityTag.material
+            //map.putObject("block_display", new MaterialTag(block.getBlock()));
         }
         else if (display instanceof ItemDisplay item) {
             // "itemStack" handled by EntityTag.item
@@ -129,7 +130,7 @@ public class EntityDisplayEntityData implements Property {
         // Keys: billboard, brightness_block, brightness_sky, width, height, glow_color, interpolation_delay, interpolation_duration, shadow_radius, shadow_strength, view_range,
         // transformation_left_rotation, transformation_right_rotation, transformation_scale, transformation_translation
         // (Note: rotations use a temporary ListTag format, subject to replacement).
-        // For block displays: block_display
+        // For block displays: (N/A)
         // For item displays: item_transform
         // For text displays: text_alignment, text_background_color, text_line_width, text, text_opacity, text_is_default_background, text_is_see_through, text_is_shadowed
         // -->
@@ -177,7 +178,7 @@ public class EntityDisplayEntityData implements Property {
             }
             display.setViewRange(map.getElement("view_range", String.valueOf(display.getViewRange())).asFloat());
             if (display instanceof BlockDisplay block) {
-                block.setBlock(map.getObjectAs("block_display", MaterialTag.class, mechanism.context).getModernData());
+                //block.setBlock(map.getObjectAs("block_display", MaterialTag.class, mechanism.context).getModernData());
             }
             else if (display instanceof ItemDisplay item) {
                 item.setItemDisplayTransform(map.getElement("item_transform").asEnum(ItemDisplay.ItemDisplayTransform.class));
