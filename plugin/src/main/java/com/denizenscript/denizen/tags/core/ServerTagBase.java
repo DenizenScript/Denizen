@@ -717,8 +717,9 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             listDeprecateWarn(attribute);
             ListTag biomes = new ListTag();
             for (Biome biome : Biome.values()) {
-                if (biome != Biome.CUSTOM) {
-                    biomes.addObject(new BiomeTag(biome));
+                BiomeTag biomeTag = new BiomeTag(biome);
+                if (biomeTag.getBiome() != null) {
+                    biomes.addObject(biomeTag);
                 }
             }
             return biomes;
