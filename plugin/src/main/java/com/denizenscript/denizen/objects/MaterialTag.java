@@ -358,6 +358,18 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         // <--[tag]
+        // @attribute <MaterialTag.is_interactable>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether the material can be interacted with.
+        // Some blocks such as piston heads and stairs are considered interactable.
+        // Note that this will return true if at least one state of a material has interaction handling.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "is_interactable", (attribute, object) -> {
+            return new ElementTag(object.material.isInteractable());
+        });
+
+        // <--[tag]
         // @attribute <MaterialTag.is_burnable>
         // @returns ElementTag(Boolean)
         // @description
