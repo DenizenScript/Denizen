@@ -69,7 +69,7 @@ public class ItemHornInstrument extends ItemProperty {
         // Sets the instrument of a goat horn.
         // For a list of possible instruments, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/MusicInstrument.html>.
         // @tags
-        // <EntityTag.horn_instrument>
+        // <ItemTag.horn_instrument>
         // @example
         // - inventory adjust slot:hand horn_instrument:seek_goat_horn
         // -->
