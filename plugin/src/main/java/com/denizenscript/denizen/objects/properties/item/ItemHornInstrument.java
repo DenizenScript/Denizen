@@ -62,7 +62,7 @@ public class ItemHornInstrument extends ItemProperty {
         });
 
         // <--[mechanism]
-        // @object EntityTag
+        // @object ItemTag
         // @name horn_instrument
         // @input ElementTag
         // @description
@@ -71,7 +71,7 @@ public class ItemHornInstrument extends ItemProperty {
         // @tags
         // <EntityTag.horn_instrument>
         // @example
-        // - adjust <player.item_in_hand> horn_instrument:seek_goat_horn
+        // - inventory adjust slot:hand horn_instrument:seek_goat_horn
         // -->
         PropertyParser.registerMechanism(ItemHornInstrument.class, ElementTag.class, "horn_instrument", (prop, mechanism, param) -> {
             prop.setMusicInstrument(MusicInstrument.getByKey(Utilities.parseNamespacedKey(param.asString())));
