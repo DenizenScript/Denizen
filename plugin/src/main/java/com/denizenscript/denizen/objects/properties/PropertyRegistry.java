@@ -154,7 +154,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemFlags.class, ItemTag.class);
         PropertyParser.registerProperty(ItemFrameInvisible.class, ItemTag.class);
         PropertyParser.registerProperty(ItemHidden.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemHornInstrument.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(ItemHornInstrument.class, ItemTag.class);
+        }
         PropertyParser.registerProperty(ItemInventory.class, ItemTag.class);
         PropertyParser.registerProperty(ItemKnowledgeBookRecipes.class, ItemTag.class);
         PropertyParser.registerProperty(ItemLock.class, ItemTag.class);
