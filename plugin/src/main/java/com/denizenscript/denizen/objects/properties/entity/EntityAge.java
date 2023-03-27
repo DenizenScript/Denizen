@@ -110,33 +110,5 @@ public class EntityAge extends EntityProperty {
                 }
             }
         });
-
-        // <--[tag]
-        // @attribute <EntityTag.is_age_locked>
-        // @returns ElementTag(Boolean)
-        // @group properties
-        // @deprecated use 'age_locked'.
-        // @description
-        // Deprecated in favor of <@link tag EntityTag.age_locked>.
-        // -->
-        PropertyParser.registerTag(EntityAge.class, ElementTag.class, "is_age_locked", (attribute, prop) -> {
-            BukkitImplDeprecations.oldAgeLockedControls.warn(attribute.context);
-            return new ElementTag(!(prop.getEntity() instanceof Breedable breedable) || breedable.getAgeLock());
-        });
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name age_lock
-        // @input ElementTag(Boolean)
-        // @deprecated use 'age_locked'.
-        // @description
-        // Deprecated in favor of <@link mechanism EntityTag.age_locked>.
-        // -->
-        PropertyParser.registerMechanism(EntityAge.class, ElementTag.class, "age_lock", (prop, mechanism, input) -> {
-            BukkitImplDeprecations.oldAgeLockedControls.warn(mechanism.context);
-            if (mechanism.requireBoolean() && prop.getEntity() instanceof Breedable breedable) {
-                breedable.setAgeLock(input.asBoolean());
-            }
-        });
     }
 }

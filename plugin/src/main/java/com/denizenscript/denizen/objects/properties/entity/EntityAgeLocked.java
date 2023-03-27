@@ -25,6 +25,15 @@ public class EntityAgeLocked extends EntityProperty {
     public static void register() {
 
         // <--[tag]
+        // @attribute <EntityTag.is_age_locked>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @deprecated use 'age_locked'.
+        // @description
+        // Deprecated in favor of <@link tag EntityTag.age_locked>.
+        // -->
+
+        // <--[tag]
         // @attribute <EntityTag.age_locked>
         // @returns ElementTag(Boolean)
         // @mechanism EntityTag.age_locked
@@ -34,7 +43,16 @@ public class EntityAgeLocked extends EntityProperty {
         // -->
         PropertyParser.registerTag(EntityAgeLocked.class, ElementTag.class, "age_locked", (attribute, prop) -> {
             return new ElementTag(prop.as(Breedable.class).getAgeLock());
-        });
+        }, "is_age_locked");
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name age_lock
+        // @input ElementTag(Boolean)
+        // @deprecated use 'age_locked'.
+        // @description
+        // Deprecated in favor of <@link mechanism EntityTag.age_locked>.
+        // -->
 
         // <--[mechanism]
         // @object EntityTag
@@ -54,6 +72,6 @@ public class EntityAgeLocked extends EntityProperty {
                     prop.as(Breedable.class).setAgeLock(input.asBoolean());
                 }
             }
-        });
+        }, "age_lock");
     }
 }
