@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.properties.bukkit.*;
 import com.denizenscript.denizen.objects.properties.entity.*;
@@ -7,8 +9,6 @@ import com.denizenscript.denizen.objects.properties.inventory.*;
 import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.objects.properties.trade.*;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class PropertyRegistry {
@@ -28,6 +28,7 @@ public class PropertyRegistry {
 
         // register core EntityTag properties
         PropertyParser.registerProperty(EntityAge.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityAgeLocked.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAggressive.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAI.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAnger.class, EntityTag.class);
