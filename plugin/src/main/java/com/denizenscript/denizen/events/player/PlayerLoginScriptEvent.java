@@ -83,7 +83,6 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
             case "server_hostname" -> new ElementTag(event.getHostname());
             default -> super.getContext(name);
         };
-
     }
 
     @EventHandler
