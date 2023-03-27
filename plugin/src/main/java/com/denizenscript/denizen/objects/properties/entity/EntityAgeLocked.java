@@ -39,7 +39,7 @@ public class EntityAgeLocked extends EntityProperty {
         // @mechanism EntityTag.age_locked
         // @group properties
         // @description
-        // Returns whether the entity is locked into it's current age.
+        // Returns whether the entity is locked into its current age.
         // -->
         PropertyParser.registerTag(EntityAgeLocked.class, ElementTag.class, "age_locked", (attribute, prop) -> {
             return new ElementTag(prop.as(Breedable.class).getAgeLock());
