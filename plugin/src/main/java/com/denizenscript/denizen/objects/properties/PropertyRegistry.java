@@ -28,6 +28,7 @@ public class PropertyRegistry {
 
         // register core EntityTag properties
         PropertyParser.registerProperty(EntityAge.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityAgeLocked.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAggressive.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAI.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAnger.class, EntityTag.class);

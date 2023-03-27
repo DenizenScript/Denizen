@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.entity.Breedable;
 
 import java.util.List;
 
@@ -112,7 +113,9 @@ public class AgeCommand extends AbstractCommand {
                     else {
                         property.setAge(age);
                     }
-                    property.setLock(lock);
+                    if (entity instanceof Breedable breedable) {
+                        breedable.setAgeLock(lock);
+                    }
                 }
                 else {
                     Debug.echoError(scriptEntry, entity.identify() + " is not ageable!");

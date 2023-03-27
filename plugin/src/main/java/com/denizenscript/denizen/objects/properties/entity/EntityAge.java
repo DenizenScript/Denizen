@@ -1,10 +1,12 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.trait.Age;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Breedable;
@@ -15,9 +17,13 @@ public class EntityAge extends EntityProperty {
         return entity.getBukkitEntity() instanceof Ageable;
     }
 
+    public EntityAge(EntityTag entity) {
+        super(entity);
+    }
+
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(getAgeable().getAge() + (getLock() ? "|locked" : ""));
+        return new ElementTag(as(Ageable.class).getAge());
     }
 
     @Override
@@ -25,62 +31,16 @@ public class EntityAge extends EntityProperty {
         return "age";
     }
 
-    public EntityAge(EntityTag entity) {
-        super(entity);
-    }
-
-    public void setAge(int val) {
+    public void setAge(int age) {
         if (object.isCitizensNPC()) {
-            object.getDenizenNPC().getCitizen().getOrAddTrait(Age.class).setAge(val);
+            object.getDenizenNPC().getCitizen().getOrAddTrait(Age.class).setAge(age);
         }
         else {
-            getAgeable().setAge(val);
+            as(Ageable.class).setAge(age);
         }
-    }
-
-    public void setLock(boolean bool) {
-        if (getEntity() instanceof Breedable breedable) {
-            breedable.setAgeLock(bool);
-        }
-    }
-
-    public boolean getLock() {
-        return !(getEntity() instanceof Breedable breedable) || breedable.getAgeLock();
-    }
-
-    public Ageable getAgeable() {
-        return (Ageable) getEntity();
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.age>
-        // @returns ElementTag(Number)
-        // @mechanism EntityTag.age
-        // @group properties
-        // @description
-        // If the entity is ageable, returns the entity's age number.
-        // Age moves 1 towards zero each tick.
-        // A newly spawned baby is -24000.
-        // A standard adult is 0.
-        // An adult that just bred is 6000.
-        // -->
-        PropertyParser.registerTag(EntityAge.class, ElementTag.class, "age", (attribute, prop) -> {
-            return new ElementTag(prop.getAgeable().getAge());
-        });
-
-        // <--[tag]
-        // @attribute <EntityTag.is_age_locked>
-        // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.age_lock
-        // @group properties
-        // @description
-        // If the entity is ageable, returns whether the entity is age locked.
-        // -->
-        PropertyParser.registerTag(EntityAge.class, ElementTag.class, "is_age_locked", (attribute, prop) -> {
-            return new ElementTag(prop.getLock());
-        });
 
         // <--[tag]
         // @attribute <EntityTag.is_baby>
@@ -91,26 +51,21 @@ public class EntityAge extends EntityProperty {
         // If the entity is ageable, returns whether the entity is a baby.
         // -->
         PropertyParser.registerTag(EntityAge.class, ElementTag.class, "is_baby", (attribute, prop) -> {
-            return new ElementTag(!prop.getAgeable().isAdult());
+            return new ElementTag(!prop.as(Ageable.class).isAdult());
         });
 
-        // <--[mechanism]
-        // @object EntityTag
-        // @name age_lock
-        // @input ElementTag(Boolean)
+        // <--[tag]
+        // @attribute <EntityTag.age>
+        // @returns ElementTag(Number)
+        // @mechanism EntityTag.age
+        // @group properties
         // @description
-        // Sets whether the entity is locked into its current age.
-        // Also available: <@link mechanism EntityTag.age>
-        // @tags
-        // <EntityTag.age>
-        // <EntityTag.is_baby>
-        // <EntityTag.is_age_locked>
-        // <EntityTag.ageable>
+        // If the entity is ageable, returns the entity's age.
+        // Age moves 1 towards zero each tick.
+        // A newly spawned baby is -24000, a standard adult is 0, an adult that just bred is 6000.
         // -->
-        PropertyParser.registerMechanism(EntityAge.class, ElementTag.class, "age_lock", (prop, mechanism, param) -> {
-            if (mechanism.requireBoolean()) {
-                prop.setLock(param.asBoolean());
-            }
+        PropertyParser.registerTag(EntityAge.class, ElementTag.class, "age", (attribute, prop) -> {
+            return new ElementTag(prop.as(Ageable.class).getAge());
         });
 
         // <--[mechanism]
@@ -119,45 +74,68 @@ public class EntityAge extends EntityProperty {
         // @input ElementTag
         // @description
         // Sets the entity's age.
-        // Inputs can be 'baby', 'adult', or a valid age number. A default baby is -24000, a default adult is 0, an adult that just bred is 6000.
-        // Optionally, add '|locked' or 'unlocked' to lock/unlock the entity into/from the current age.
-        // (EG, age:baby|locked or age:-24000|unlocked)
-        // Also available: <@link mechanism EntityTag.age_lock>
+        // Inputs can be 'baby', 'adult', or a valid age number.
+        // A newly spawned baby is -24000, a standard adult is 0, an adult that just bred is 6000.
+        // Also available: <@link mechanism EntityTag.age_locked>.
         // @tags
         // <EntityTag.age>
         // <EntityTag.is_baby>
-        // <EntityTag.is_age_locked>
-        // <EntityTag.ageable>
         // -->
         PropertyParser.registerMechanism(EntityAge.class, ListTag.class, "age", (prop, mechanism, param) -> {
             if (param.isEmpty()) {
                 mechanism.echoError("Missing value for 'age' mechanism!");
                 return;
             }
-            String input = param.get(0);
-            if (input.equalsIgnoreCase("baby")) {
-                prop.setAge(-24000);
-            }
-            else if (input.equalsIgnoreCase("adult")) {
-                prop.setAge(0);
-            }
-            else if (ArgumentHelper.matchesInteger(input)) {
-                prop.setAge(new ElementTag(input).asInt());
-            }
-            else {
-                mechanism.echoError("Invalid age '" + input + "': must be 'baby', 'adult', or a valid age number.");
+            String input = CoreUtilities.toLowerCase(param.get(0));
+            switch (input) {
+                case "baby" -> prop.setAge(-24000);
+                case "adult" -> prop.setAge(0);
+                default -> {
+                    if (!ArgumentHelper.matchesInteger(input)) {
+                        mechanism.echoError("Invalid age '" + input + "': must be 'baby', 'adult', or a valid age number.");
+                        return;
+                    }
+                    prop.setAge(new ElementTag(input).asInt());
+                }
             }
             if (param.size() > 1) {
-                input = param.get(1);
-                if (input.equalsIgnoreCase("locked")) {
-                    prop.setLock(true);
+                BukkitImplDeprecations.oldAgeLockedControls.warn(mechanism.context);
+                if (!(prop.getEntity() instanceof Breedable breedable)) {
+                    return;
                 }
-                else if (input.equalsIgnoreCase("unlocked")) {
-                    prop.setLock(false);
+                switch (CoreUtilities.toLowerCase(param.get(1))) {
+                    case "locked" -> breedable.setAgeLock(true);
+                    case "unlocked" -> breedable.setAgeLock(false);
+                    default -> mechanism.echoError("Invalid lock state '" + param.get(1) + "': must be 'locked' or 'unlocked'.");
                 }
-                else {
-                    mechanism.echoError("Invalid lock state '" + input + "': must be 'locked' or 'unlocked'.");
-                }
+            }
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.is_age_locked>
+        // @returns ElementTag(Boolean)
+        // @group properties
+        // @deprecated use 'age_locked'.
+        // @description
+        // Deprecated in favor of <@link tag EntityTag.age_locked>.
+        // -->
+        PropertyParser.registerTag(EntityAge.class, ElementTag.class, "is_age_locked", (attribute, prop) -> {
+            BukkitImplDeprecations.oldAgeLockedControls.warn(attribute.context);
+            return new ElementTag(!(prop.getEntity() instanceof Breedable breedable) || breedable.getAgeLock());
+        });
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name age_lock
+        // @input ElementTag(Boolean)
+        // @deprecated use 'age_locked'.
+        // @description
+        // Deprecated in favor of <@link mechanism EntityTag.age_locked>.
+        // -->
+        PropertyParser.registerMechanism(EntityAge.class, ElementTag.class, "age_lock", (prop, mechanism, input) -> {
+            BukkitImplDeprecations.oldAgeLockedControls.warn(mechanism.context);
+            if (mechanism.requireBoolean() && prop.getEntity() instanceof Breedable breedable) {
+                breedable.setAgeLock(input.asBoolean());
             }
         });
     }
