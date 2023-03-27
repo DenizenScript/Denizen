@@ -276,7 +276,6 @@ public class BukkitImplDeprecations {
     public static Warning serverSystemMechanisms = new FutureWarning("serverSystemMechanisms", "Some 'server' mechanisms for core features are deprecated in favor of 'system' equivalents.");
 
     // Added 2023/03/27, deprecate officially by 2026
-
     public static Warning oldAgeLockedControls = new FutureWarning("oldAgeLockedControls", "Several old ways of controlling whether an entity's age is locked are deprecated in favor of the 'EntityTag.age_locked' tag/mech pair.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
