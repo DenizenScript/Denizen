@@ -29,8 +29,7 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Context
     // <context.hostname> returns an ElementTag of the player's IP address.
-    // <context.server_hostname> returns an ElementTag of the server address that the player used to connect to the
-    // server.
+    // <context.server_hostname> returns an ElementTag of the server address that the player used to connect to the server.
     //
     // @Determine
     // "KICKED" to kick the player from the server.
