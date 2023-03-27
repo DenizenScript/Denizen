@@ -13,10 +13,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
@@ -159,5 +156,9 @@ public class PaperAPITools {
 
     public String convertTextToMiniMessage(String text, boolean splitNewlines) {
         return text;
+    }
+
+    public Merchant createMerchant(String title) {
+        return Bukkit.createMerchant(title);
     }
 }

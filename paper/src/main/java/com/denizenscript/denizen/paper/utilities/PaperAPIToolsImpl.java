@@ -311,4 +311,9 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         Component parsed = PaperModule.jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(text, ChatColor.WHITE, false)));
         return MiniMessage.miniMessage().serialize(parsed);
     }
+
+    @Override
+    public Merchant createMerchant(String title) {
+        return Bukkit.createMerchant(PaperModule.parseFormattedText(title, ChatColor.BLACK));
+    }
 }
