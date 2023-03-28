@@ -601,12 +601,12 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         });
 
         // <--[tag]
-        // @attribute <server.flag_map>
+        // @attribute <server.flag_map[<name>|...]>
         // @returns MapTag
         // @description
         // See <@link tag FlaggableObject.flag_map>
         // -->
-        tagProcessor.registerTag(MapTag.class, ElementTag.class, "flag_map", (attribute, object, input) -> {
+        tagProcessor.registerTag(MapTag.class, "flag_map", (attribute, object) -> {
             return DenizenCore.serverFlagMap.doFlagMapTag(attribute);
         });
 
