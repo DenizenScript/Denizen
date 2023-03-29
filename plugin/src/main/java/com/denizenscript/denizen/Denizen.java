@@ -177,7 +177,7 @@ public class Denizen extends JavaPlugin {
                     getLogger().warning("Citizens is present but doesn't seem to be activated! You may have an error earlier in your logs, or you may have a broken plugin load order.");
                 }
                 else {
-                    getLogger().warning("Citizens does not seem to be available! Denizen will have greatly reduced functionality!");
+                    getLogger().warning("Citizens does not seem to be available! Denizen will have reduced functionality!");
                 }
             }
             startedSuccessful = true;
