@@ -196,7 +196,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns a list of all recipe IDs on the server.
         // Returns a list in the Namespace:Key format, for example "minecraft:gold_nugget".
-        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING, BREWING)
+        // Optionally, specify a recipe type (CRAFTING, FURNACE, COOKING, BLASTING, SHAPED, SHAPELESS, SMOKING, CAMPFIRE, STONECUTTING, SMITHING, BREWING)
         // to limit to just recipes of that type.
         // Brewing recipes are only supported on Paper, and only custom ones are available.
         // Note: this will produce an error if all recipes of any one type have been removed from the server, due to an error in Spigot.
@@ -228,8 +228,9 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // This is formatted equivalently to the item script recipe input, with "material:" for non-exact matches, and a full ItemTag for exact matches.
         // Note that this won't represent all recipes perfectly (primarily those with multiple input choices per slot).
         // Brewing recipes are only supported on Paper, and only custom ones are available.
-        // For furnace-style recipes, this will return a list with only 1 item.
+        // For furnace-style and stonecutting recipes, this will return a list with only 1 item.
         // For shaped recipes, this will include 'air' for slots that are part of the shape but don't require an item.
+        // For smithing recipes, this will return a list with the 'base' item and the 'addition'.
         // -->
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "recipe_items", (attribute, object, input) -> {
             NamespacedKey recipeKey = Utilities.parseNamespacedKey(input.asString());
@@ -267,6 +268,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             }
             else if (recipe instanceof CookingRecipe<?> cookingRecipe) {
                 addChoice.accept(cookingRecipe.getInputChoice());
+            }
+            else if (recipe instanceof StonecuttingRecipe stonecuttingRecipe) {
+                addChoice.accept(stonecuttingRecipe.getInputChoice());
+            }
+            else if (recipe instanceof SmithingRecipe smithingRecipe) {
+                addChoice.accept(smithingRecipe.getBase());
+                addChoice.accept(smithingRecipe.getAddition());
             }
             else if (brewingRecipe != null) {
                 addChoice.accept(brewingRecipe.ingredient());
