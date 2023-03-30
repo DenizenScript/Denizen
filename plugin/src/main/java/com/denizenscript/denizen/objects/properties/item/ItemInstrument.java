@@ -8,24 +8,24 @@ import org.bukkit.Material;
 import org.bukkit.MusicInstrument;
 import org.bukkit.inventory.meta.MusicInstrumentMeta;
 
-public class ItemHornInstrument extends ItemProperty {
+public class ItemInstrument extends ItemProperty {
 
     public static boolean describes(ItemTag item) {
         return item.getBukkitMaterial() == Material.GOAT_HORN;
     }
 
     @Override
-    public String getPropertyString() {
+    public ElementTag getPropertyValue() {
         MusicInstrument instrument = getMusicInstrument();
         if (instrument != null) {
-            return Utilities.namespacedKeyToString(instrument.getKey());
+            return new ElementTag(Utilities.namespacedKeyToString(instrument.getKey()));
         }
         return null;
     }
 
     @Override
     public String getPropertyId() {
-        return "horn_instrument";
+        return "instrument";
     }
 
     public MusicInstrument getMusicInstrument() {
@@ -42,18 +42,18 @@ public class ItemHornInstrument extends ItemProperty {
     public static void register() {
 
         // <--[tag]
-        // @attribute <ItemTag.horn_instrument>
+        // @attribute <ItemTag.instrument>
         // @returns ElementTag
         // @group properties
-        // @mechanism ItemTag.horn_instrument
+        // @mechanism ItemTag.instrument
         // @description
         // Returns the instrument of a goat horn.
         // For a list of possible instruments, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/MusicInstrument.html>.
         // @example
         // # This can narrate: "This horn has the ponder_goat_horn instrument!"
-        // - narrate "This horn has the <player.item_in_hand.horn_instrument> instrument!"
+        // - narrate "This horn has the <player.item_in_hand.instrument> instrument!"
         // -->
-        PropertyParser.registerTag(ItemHornInstrument.class, ElementTag.class, "horn_instrument", (attribute, prop) -> {
+        PropertyParser.registerTag(ItemInstrument.class, ElementTag.class, "instrument", (attribute, prop) -> {
             MusicInstrument musicInstrument = prop.getMusicInstrument();
             if (musicInstrument == null) {
                 return null;
@@ -63,17 +63,22 @@ public class ItemHornInstrument extends ItemProperty {
 
         // <--[mechanism]
         // @object ItemTag
-        // @name horn_instrument
+        // @name instrument
         // @input ElementTag
         // @description
         // Sets the instrument of a goat horn.
         // For a list of possible instruments, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/MusicInstrument.html>.
         // @tags
-        // <ItemTag.horn_instrument>
+        // <ItemTag.instrument>
         // @example
-        // - inventory adjust slot:hand horn_instrument:seek_goat_horn
+        // - inventory adjust slot:hand instrument:seek_goat_horn
         // -->
-        PropertyParser.registerMechanism(ItemHornInstrument.class, ElementTag.class, "horn_instrument", (prop, mechanism, param) -> {
+        PropertyParser.registerMechanism(ItemInstrument.class, ElementTag.class, "instrument", (prop, mechanism, param) -> {
+            MusicInstrument instrument = MusicInstrument.getByKey(Utilities.parseNamespacedKey(param.asString()));
+            if (instrument == null) {
+                mechanism.echoError("Invalid horn instrument: '" + param.asString() + "'! Instrument names should be like this: 'seek_goat_horn'.");
+                return;
+            }
             prop.setMusicInstrument(MusicInstrument.getByKey(Utilities.parseNamespacedKey(param.asString())));
         });
     }
