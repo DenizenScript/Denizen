@@ -83,7 +83,9 @@ public class ItemRawNBT implements Property {
                 //"LodestoneDimension", "LodestonePos", // Temporarily sent through due to "Dimension" inconsistency, and compatibility with unloaded worlds
                 "LodestoneTracked",
                 // Bundle specific
-                "Items"
+                "Items",
+                // Goat Horn specific
+                "instrument",
         };
         defaultNbtKeys = new StringHolder[defaultNbtKeysRaw.length];
         for (int i = 0; i < defaultNbtKeysRaw.length; i++) {

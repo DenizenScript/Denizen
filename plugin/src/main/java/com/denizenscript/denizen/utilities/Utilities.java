@@ -112,7 +112,8 @@ public class Utilities {
                         (type.equals("shaped") && recipe instanceof ShapedRecipe) ||
                         (type.equals("shapeless") && recipe instanceof ShapelessRecipe) ||
                         (type.equals("smoking") && recipe instanceof SmokingRecipe) ||
-                        (type.equals("stonecutting") && recipe instanceof StonecuttingRecipe));
+                        (type.equals("stonecutting") && recipe instanceof StonecuttingRecipe) ||
+                        (type.equals("smithing") && recipe instanceof SmithingRecipe));
     }
 
     public static boolean canReadFile(File f) {
