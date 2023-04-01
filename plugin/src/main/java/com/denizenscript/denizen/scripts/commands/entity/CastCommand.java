@@ -1,16 +1,19 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
-import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
-import com.denizenscript.denizencore.objects.*;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -22,7 +25,10 @@ public class CastCommand extends AbstractCommand {
         setName("cast");
         setSyntax("cast [<effect>] (remove) (duration:<value>) (amplifier:<#>) (<entity>|...) (no_ambient) (hide_particles) (no_icon) (no_clear)");
         setRequiredArguments(1, 9);
+        addRemappedPrefixes("duration", "d");
+        addRemappedPrefixes("amplifier", "power", "p", "a");
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -40,8 +46,7 @@ public class CastCommand extends AbstractCommand {
     // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
     //
     // If you don't specify a duration, it defaults to 60 seconds.
-    // To cast an effect with a duration which displays as '**:**' or 'infinite' use a duration of '1639s' (1639 seconds) or greater.
-    // While it may display as infinite, it will still wear off.
+    // An infinite duration will create an infinite duration potion effect, refer to <@link objecttype DurationTag> for more details.
     //
     // The amplifier is how many levels to *add* over the normal level 1.
     // If you don't specify an amplifier level, it defaults to 1, meaning an effect of level 2 (this is for historical compatibility reasons).
@@ -62,20 +67,19 @@ public class CastCommand extends AbstractCommand {
     // @Tags
     // <EntityTag.has_effect[<effect>]>
     // <server.potion_effect_types>
-    // <EntityTag.list_effects>
+    // <EntityTag.effects_data>
     //
     // @Usage
-    // Use to cast a level 1 effect onto the player.
+    // Use to cast a level 1 effect onto the linked player.
     // - cast speed amplifier:0
     //
     // @Usage
-    // Use to cast an effect onto the player for 120 seconds with an amplifier of 3 (effect level 4).
-    // - cast jump d:120 amplifier:3
+    // Use to cast an effect onto the linked player for 120 seconds with an amplifier of 3 (effect level 4).
+    // - cast jump duration:120 amplifier:3
     //
     // @Usage
-    // Use to remove an effect from the player.
-    // - if <player.has_effect[jump]>:
-    //   - cast jump remove <player>
+    // Use to remove an effect from a specific entity.
+    // - cast jump remove <[entity]>
     // -->
 
     @Override
@@ -85,95 +89,54 @@ public class CastCommand extends AbstractCommand {
         }
     }
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("remove")
-                    && arg.matches("remove", "cancel")) {
-                scriptEntry.addObject("remove", new ElementTag(true));
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("effect") @ArgLinear ObjectTag effectObject,
+                                   @ArgName("remove") boolean remove,
+                                   @ArgName("cancel") boolean cancel, // "remove" variant
+                                   @ArgName("duration") @ArgPrefixed @ArgDefaultText("60s") DurationTag duration,
+                                   @ArgName("amplifier") @ArgPrefixed @ArgDefaultText("1") ElementTag amplifier,
+                                   @ArgName("entities") @ArgLinear @ArgDefaultNull ObjectTag entitiesObject,
+                                   @ArgName("no_ambient") boolean noAmbient,
+                                   @ArgName("hide_particles") boolean hideParticles,
+                                   @ArgName("no_icon") boolean noIcon,
+                                   @ArgName("no_clear") boolean noClear) {
+        PotionEffectType effectType = PotionEffectType.getByName(effectObject.toString());
+        if (effectType == null) {
+            if (entitiesObject != null && (effectType = PotionEffectType.getByName(entitiesObject.toString())) != null) {
+                Deprecations.outOfOrderArgs.warn(scriptEntry);
+                ObjectTag swapEntities = entitiesObject;
+                entitiesObject = effectObject;
+                effectObject = swapEntities;
             }
-            else if (!scriptEntry.hasObject("ambient")
-                    && arg.matches("no_ambient")) {
-                scriptEntry.addObject("ambient", new ElementTag(false));
-            }
-            else if (!scriptEntry.hasObject("no_clear")
-                    && arg.matches("no_clear")) {
-                scriptEntry.addObject("no_clear", new ElementTag(true));
-            }
-            else if (!scriptEntry.hasObject("show_particles")
-                    && arg.matches("hide_particles")) {
-                scriptEntry.addObject("show_particles", new ElementTag(false));
-            }
-            else if (!scriptEntry.hasObject("show_icon")
-                    && arg.matches("no_icon")) {
-                scriptEntry.addObject("show_icon", new ElementTag(false));
-            }
-            else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesPrefix("duration", "d")
-                    && arg.matchesArgumentType(DurationTag.class)) {
-                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
-            }
-            else if (!scriptEntry.hasObject("amplifier")
-                    && arg.matchesPrefix("power", "p", "amplifier", "a")
-                    && arg.matchesFloat()) {
-                scriptEntry.addObject("amplifier", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("effect")
-                    && PotionEffectType.getByName(arg.asElement().asString()) != null) {
-                scriptEntry.addObject("effect", PotionEffectType.getByName(arg.asElement().asString()));
-            }
-            else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(EntityTag.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
-            }
-            else {
-                arg.reportUnhandled();
+            if (effectType == null) {
+                throw new InvalidArgumentsRuntimeException("Invalid potion effect '" + effectObject + "' specified.");
             }
         }
-        if (!scriptEntry.hasObject("entities")) {
-            scriptEntry.defaultObject("entities", Utilities.entryDefaultEntityList(scriptEntry, true));
+        if (!amplifier.isInt()) {
+            throw new InvalidArgumentsRuntimeException("Invalid amplifier '" + amplifier + "' specified: must be a valid number.");
         }
-        if (!scriptEntry.hasObject("effect")) {
-            throw new InvalidArgumentsException("Must specify a valid PotionType!");
-        }
-        scriptEntry.defaultObject("duration", new DurationTag(60));
-        scriptEntry.defaultObject("amplifier", new ElementTag(1));
-        scriptEntry.defaultObject("remove", new ElementTag(false));
-        scriptEntry.defaultObject("show_particles", new ElementTag(true));
-        scriptEntry.defaultObject("ambient", new ElementTag(true));
-        scriptEntry.defaultObject("show_icon", new ElementTag(true));
-    }
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
+        List<EntityTag> entities = entitiesObject == null ? null : entitiesObject.asType(ListTag.class, scriptEntry.context).filter(EntityTag.class, scriptEntry.context);
         if (entities == null) {
-            throw new InvalidArgumentsRuntimeException("Missing entity target input");
+            entities = Utilities.entryDefaultEntityList(scriptEntry, true);
+            if (entities == null) {
+                throw new InvalidArgumentsRuntimeException("Must specify entities to apply the effect to.");
+            }
         }
-        PotionEffectType effect = (PotionEffectType) scriptEntry.getObject("effect");
-        int amplifier = scriptEntry.getElement("amplifier").asInt();
-        DurationTag duration = scriptEntry.getObjectTag("duration");
-        boolean remove = scriptEntry.getElement("remove").asBoolean();
-        ElementTag showParticles = scriptEntry.getElement("show_particles");
-        ElementTag ambient = scriptEntry.getElement("ambient");
-        ElementTag showIcon = scriptEntry.getElement("show_icon");
-        ElementTag noClear = scriptEntry.getElement("no_clear");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("targets", entities), db("effect", effect.getName()), db("amplifier", amplifier), duration, ambient, showParticles, showIcon, noClear);
+        remove = remove || cancel;
+        PotionEffect potion = null;
+        if (!remove) {
+            // 32,780+ ticks shows up as infinite before 1.19
+            int ticks = duration.getSeconds() != 0d ? duration.getTicksAsInt() : NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) ? PotionEffect.INFINITE_DURATION : Integer.MAX_VALUE;
+            potion = new PotionEffect(effectType, ticks, amplifier.asInt(), !noAmbient, !hideParticles, !noIcon);
         }
-        boolean amb = ambient.asBoolean();
-        boolean showP = showParticles.asBoolean();
-        boolean icon = showIcon.asBoolean();
         for (EntityTag entity : entities) {
-            if ((remove || noClear == null || !noClear.asBoolean()) && entity.getLivingEntity().hasPotionEffect(effect)) {
-                entity.getLivingEntity().removePotionEffect(effect);
+            if ((remove || !noClear) && entity.getLivingEntity().hasPotionEffect(effectType)) {
+                entity.getLivingEntity().removePotionEffect(effectType);
             }
-            if (remove) {
-                continue;
-            }
-            PotionEffect potion = new PotionEffect(effect, duration.getTicksAsInt(), amplifier, amb, showP, icon);
-            if (!potion.apply(entity.getLivingEntity())) {
-                Debug.echoError(scriptEntry, "Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity + "'.");
+            if (!remove) {
+                if (!entity.getLivingEntity().addPotionEffect(potion)) {
+                    Debug.echoError("Bukkit was unable to apply '" + effectType.getName() + "' to '" + entity + "'.");
+                }
             }
         }
     }
