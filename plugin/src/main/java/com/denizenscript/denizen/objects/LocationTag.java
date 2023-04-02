@@ -1881,7 +1881,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range <= 0) {
                 range = 200;
             }
-            RayTraceResult traced = Objects.requireNonNull(object.getWorld()).rayTraceBlocks(object, object.getDirection(), range);
+            RayTraceResult traced = object.getWorld().rayTraceBlocks(object, object.getDirection(), range);
             if (traced != null && traced.getHitBlockFace() != null) {
                 return new LocationTag(traced.getHitBlockFace().getDirection());
             }
