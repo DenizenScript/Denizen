@@ -1713,8 +1713,9 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @synonyms LocationTag.raycast, LocationTag.raytrace, LocationTag.ray_cast
         // @group world
         // @description
-        // Traces a line from this location, in the direction its facing, towards whatever block it hits first, and returns the location of where it hit.
+        // Traces a line from this location towards the direction it's facing, returning the location of the first hit block or (optionally) entity.
         // This tag has also been referred to as 'cursor_on' or 'precise_cursor_on' in the past.
+        // For ray tracing entities, see <@link tag LocationTag.ray_trace_target>.
         // Using 'return=normal' instead replaces the old 'precise_impact_normal' tag.
         // Optionally specify:
         // range: (defaults to 200) a maximum distance (in blocks) to trace before giving up.
@@ -1743,8 +1744,8 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // - playeffect effect:heart offset:0 at:<player.eye_location.ray_trace[range=5;entities=*;ignore=<player>;fluids=true;nonsolids=true;default=air]>
         //
         // @example
-        // # Spawns a line of fire starting at the player's target location and spewing out in the direction of the blockface hit, demonstrating the concept of a normal vector.
-        // - define hit at:<player.eye_location.ray_trace[entities=*;ignore=<player>;fluids=true;nonsolids=true]||null>
+        // # Spawns a line of fire starting at the player's target location and spewing out in the direction of the blockface or entity hit, demonstrating the concept of a normal vector.
+        // - define hit <player.eye_location.ray_trace[entities=*;ignore=<player>;fluids=true;nonsolids=true]||null>
         // - if <[hit]> != null:
         //     - playeffect effect:flame offset:0 at:<[hit].points_between[<[hit].forward[2]>].distance[0.2]>
         //
@@ -1803,6 +1804,70 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
+        // @attribute <LocationTag.ray_trace_target[(range=<#.#>/{200});(blocks=<{true}/false>);(fluids=<true/{false}>);(nonsolids=<true/{false}>);(entities=<matcher>/{*});(ignore=<entity>|...);(raysize=<#.#>/{0})]>
+        // @returns EntityTag
+        // @synonyms LocationTag.raycast_target, LocationTag.raytrace_target, LocationTag.ray_cast_target
+        // @group world
+        // @description
+        // Traces a line from this location towards the direction it's facing, returning the first hit entity (if any).
+        // This is similar to <@link tag LocationTag.precise_target> and <@link tag PlayerTag.target>, except offering more options for how the ray trace is performed.
+        // For ray tracing locations, see <@link tag LocationTag.ray_trace>.
+        // Optionally specify:
+        // range: (defaults to 200) a maximum distance (in blocks) to trace before giving up.
+        // blocks: (defaults to true) specify "false" to ignore all blocks, solid or nonsolid or fluid, between this location and the target entity.
+        // fluids: (defaults to false) specify "true" to count fluids like water as solid, or "false" to ignore them.
+        // nonsolids: (defaults to false) specify "true" to count passable blocks (like tall_grass) as solid, or "false" to ignore them.
+        // entities: (defaults to "*") specify an entity matcher for entities to ray trace for. Any non-matching entities along the way are ignored.
+        // ignore: (defaults to none) optional list of EntityTags to ignore even if they match the matcher.
+        // raysize: (defaults to 0) sets the radius of the ray being used to trace entities.
+        //
+        // @example
+        // # Removes the entity a player is looking at.
+        // - define target <player.eye_location.ray_trace_target[ignore=<player>]||null>
+        // - if <[target]> != null:
+        //     - remove <[target]>
+        //
+        // @example
+        // # Returns any player within the view of an NPC.
+        // - define target <npc.eye_location.ray_trace_target[entities=player;raysize=2]||null>
+        //
+        // @example
+        // # Highlights an entity through any number or types of blocks.
+        // - define target <player.eye_location.ray_trace_target[ignore=<player>;blocks=false]||null>
+        // - if <[target]> != null:
+        //     - adjust <[target]> glowing:true
+        //
+        // -->
+        tagProcessor.registerTag(EntityTag.class, "ray_trace_target", (attribute, object) -> {
+            if (object.getWorld() == null) {
+                return null;
+            }
+            MapTag input = attribute.inputParameterMap();
+            double range = input.getElement("range", "200").asDouble();
+            boolean blocks = input.getElement("blocks", "true").asBoolean();
+            boolean fluids = input.getElement("fluids", "false").asBoolean();
+            boolean nonsolids = input.getElement("nonsolids", "false").asBoolean();
+            String entitiesMatcher = input.getElement("entities", "").asString();
+            double raySize = input.getElement("raysize", "0").asDouble();
+            List<EntityTag> ignore = input.getObjectAs("ignore", ListTag.class, attribute.context, ListTag::new).filter(EntityTag.class, attribute.context);
+            HashSet<UUID> ignoreIds = ignore.stream().map(EntityTag::getUUID).collect(Collectors.toCollection(HashSet::new));
+            Vector direction = object.getDirection();
+            RayTraceResult traced;
+            if (!blocks) {
+                traced = object.getWorld().rayTraceEntities(object, direction, range, raySize,
+                        (e) -> !ignoreIds.contains(e.getUniqueId()) && (entitiesMatcher.isEmpty() || new EntityTag(e).tryAdvancedMatcher(entitiesMatcher)));
+            }
+            else {
+                traced = object.getWorld().rayTrace(object, direction, range, fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER, !nonsolids, raySize,
+                        (e) -> !ignoreIds.contains(e.getUniqueId()) && (entitiesMatcher.isEmpty() || new EntityTag(e).tryAdvancedMatcher(entitiesMatcher)));
+            }
+            if (traced != null && traced.getHitEntity() != null) {
+                return new EntityTag(traced.getHitEntity());
+            }
+            return null;
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.precise_impact_normal[(<range>)]>
         // @returns LocationTag
         // @group world
@@ -1816,7 +1881,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             if (range <= 0) {
                 range = 200;
             }
-            RayTraceResult traced = object.getWorld().rayTraceBlocks(object, object.getDirection(), range);
+            RayTraceResult traced = Objects.requireNonNull(object.getWorld()).rayTraceBlocks(object, object.getDirection(), range);
             if (traced != null && traced.getHitBlockFace() != null) {
                 return new LocationTag(traced.getHitBlockFace().getDirection());
             }
