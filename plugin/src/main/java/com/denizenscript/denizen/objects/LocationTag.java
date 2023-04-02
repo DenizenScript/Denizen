@@ -1804,7 +1804,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.ray_trace_target[(range=<#.#>/{200});(blocks=<{true}/false>);(fluids=<true/{false}>);(nonsolids=<true/{false}>);(entities=<matcher>/{*});(ignore=<entity>|...);(raysize=<#.#>/{0})]>
+        // @attribute <LocationTag.ray_trace_target[(range=<#.#>/{200});(blocks=<{true}/false>);(fluids=<true/{false}>);(nonsolids=<true/{false}>);(entities=<matcher>);(ignore=<entity>|...);(raysize=<#.#>/{0})]>
         // @returns EntityTag
         // @synonyms LocationTag.raycast_target, LocationTag.raytrace_target, LocationTag.ray_cast_target
         // @group world
@@ -1817,7 +1817,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // blocks: (defaults to true) specify "false" to ignore all blocks, solid or nonsolid or fluid, between this location and the target entity.
         // fluids: (defaults to false) specify "true" to count fluids like water as solid, or "false" to ignore them.
         // nonsolids: (defaults to false) specify "true" to count passable blocks (like tall_grass) as solid, or "false" to ignore them.
-        // entities: (defaults to "*") specify an entity matcher for entities to ray trace for. Any non-matching entities along the way are ignored.
+        // entities: (defaults to none) specify an entity matcher for entities to ray trace for. Any non-matching entities along the way are ignored. Leave blank to match any entity.
         // ignore: (defaults to none) optional list of EntityTags to ignore even if they match the matcher.
         // raysize: (defaults to 0) sets the radius of the ray being used to trace entities.
         //
