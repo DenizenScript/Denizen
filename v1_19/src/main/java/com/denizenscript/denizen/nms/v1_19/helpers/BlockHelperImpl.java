@@ -34,7 +34,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.material.PushReaction;
 import org.bukkit.*;
 import org.bukkit.block.*;
@@ -235,7 +236,7 @@ public class BlockHelperImpl implements BlockHelper {
     @Override
     public void doRandomTick(Location location) {
         BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        LevelChunk nmsChunk = ((CraftChunk) location.getChunk()).getHandle();
+        ChunkAccess nmsChunk = ((CraftChunk) location.getChunk()).getHandle(ChunkStatus.FULL);
         net.minecraft.world.level.block.state.BlockState nmsBlock = nmsChunk.getBlockState(pos);
         ServerLevel nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
         if (nmsBlock.isRandomlyTicking()) {

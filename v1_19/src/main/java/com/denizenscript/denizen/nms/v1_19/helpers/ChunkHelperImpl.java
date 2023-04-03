@@ -13,9 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.chunk.PalettedContainer;
+import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.bukkit.World;
 import org.bukkit.Chunk;
@@ -83,7 +81,7 @@ public class ChunkHelperImpl implements ChunkHelper {
 
     @Override
     public int[] getHeightMap(Chunk chunk) {
-        Heightmap map = ((CraftChunk) chunk).getHandle().heightmaps.get(Heightmap.Types.MOTION_BLOCKING);
+        Heightmap map = ((CraftChunk) chunk).getHandle(ChunkStatus.HEIGHTMAPS).heightmaps.get(Heightmap.Types.MOTION_BLOCKING);
         int[] outputMap = new int[256];
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
@@ -96,7 +94,7 @@ public class ChunkHelperImpl implements ChunkHelper {
     @Override
     public void setAllBiomes(Chunk chunk, BiomeNMS biome) {
         Holder<Biome> nmsBiome = ((BiomeNMSImpl) biome).biomeHolder;
-        LevelChunk nmsChunk = ((CraftChunk) chunk).getHandle();
+        ChunkAccess nmsChunk = ((CraftChunk) chunk).getHandle(ChunkStatus.BIOMES);
         ChunkPos chunkcoordintpair = nmsChunk.getPos();
         int i = QuartPos.fromBlock(chunkcoordintpair.getMinBlockX());
         int j = QuartPos.fromBlock(chunkcoordintpair.getMinBlockZ());
