@@ -445,4 +445,12 @@ public abstract class EntityHelper {
     public void setUUID(Entity entity, UUID id) {
         throw new UnsupportedOperationException();
     }
+
+    public float getStepHeight(Entity entity) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setStepHeight(Entity entity, float stepHeight) {
+        throw new UnsupportedOperationException();
+    }
 }

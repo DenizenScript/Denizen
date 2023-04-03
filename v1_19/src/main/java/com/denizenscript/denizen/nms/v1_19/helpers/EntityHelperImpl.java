@@ -833,4 +833,14 @@ public class EntityHelperImpl extends EntityHelper {
             Debug.echoError(ex);
         }
     }
+
+    @Override
+    public float getStepHeight(Entity entity) {
+        return ((CraftEntity) entity).getHandle().maxUpStep();
+    }
+
+    @Override
+    public void setStepHeight(Entity entity, float stepHeight) {
+        ((CraftEntity) entity).getHandle().setMaxUpStep(stepHeight);
+    }
 }
