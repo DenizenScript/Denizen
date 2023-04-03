@@ -1,10 +1,11 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.ObjectProperty;
 import org.bukkit.block.data.BlockData;
 
-public abstract class MaterialProperty extends ObjectProperty<MaterialTag> {
+public abstract class MaterialProperty<TData extends ObjectTag> extends ObjectProperty<MaterialTag, TData> {
 
     public MaterialProperty() {
     }

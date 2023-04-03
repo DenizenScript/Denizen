@@ -1,13 +1,14 @@
 package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.objects.properties.ObjectProperty;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.event.inventory.InventoryType;
 
-public class InventoryHolder extends ObjectProperty<InventoryTag> {
+public class InventoryHolder extends ObjectProperty<InventoryTag, ObjectTag> {
 
     public static boolean describes(InventoryTag inventory) {
         return true;
@@ -22,6 +23,11 @@ public class InventoryHolder extends ObjectProperty<InventoryTag> {
         else {
             return holder;
         }
+    }
+
+    @Override
+    public void setPropertyValue(ObjectTag param, Mechanism mechanism) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

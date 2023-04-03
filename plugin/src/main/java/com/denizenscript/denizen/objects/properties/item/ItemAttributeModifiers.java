@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityAttributeModifiers;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -22,33 +23,55 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-public class ItemAttributeModifiers extends ItemProperty {
+public class ItemAttributeModifiers extends ItemProperty<MapTag> {
+
+    // <--[property]
+    // @object ItemTag
+    // @name attribute_modifiers
+    // @input MapTag
+    // @description
+    // Controls the attribute modifiers of an item, with key as the attribute name and value as a list of modifiers,
+    // where each modifier is a MapTag containing keys 'name', 'amount', 'slot', 'operation', and 'id'.
+    // For use as a mechanism, this is a SET operation, meaning pre-existing modifiers are removed.
+    // For format details, refer to <@link language attribute modifiers>.
+    // -->
 
     public static boolean describes(ItemTag item) {
         return true;
     }
 
     @Override
-    public String getPropertyString() {
-        MapTag map = getAttributeModifiers();
-        if (map.map.isEmpty()) {
-            return null;
-        }
-        return map.savable();
+    public boolean isDefaultValue(MapTag map) {
+        return map.map.isEmpty();
     }
 
     @Override
-    public String getPropertyId() {
-        return "attribute_modifiers";
-    }
-
-    public MapTag getAttributeModifiers() {
+    public MapTag getPropertyValue() {
         ItemMeta meta = getItemMeta();
         if (meta == null) {
             return null;
         }
         Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = meta.getAttributeModifiers();
         return getAttributeModifiersFor(metaMap);
+    }
+
+    @Override
+    public void setPropertyValue(MapTag param, Mechanism mechanism) {
+        Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = LinkedHashMultimap.create();
+        for (Map.Entry<StringHolder, ObjectTag> mapEntry : param.map.entrySet()) {
+            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(mapEntry.getKey().str.toUpperCase());
+            for (ObjectTag listValue : CoreUtilities.objectToList(mapEntry.getValue(), mechanism.context)) {
+                metaMap.put(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue));
+            }
+        }
+        ItemMeta meta = getItemMeta();
+        meta.setAttributeModifiers(metaMap);
+        setItemMeta(meta);
+    }
+
+    @Override
+    public String getPropertyId() {
+        return "attribute_modifiers";
     }
 
     public static MapTag getAttributeModifiersFor(Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap) {
@@ -71,21 +94,7 @@ public class ItemAttributeModifiers extends ItemProperty {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <ItemTag.attribute_modifiers>
-        // @returns MapTag
-        // @group properties
-        // @mechanism ItemTag.attribute_modifiers
-        // @description
-        // Returns a map of all attribute modifiers on the item, with key as the attribute name and value as a list of modifiers,
-        // where each modifier is a MapTag containing keys 'name', 'amount', 'slot', 'operation', and 'id'.
-        // This is formatted in a way that can be sent back into the 'attribute_modifiers' mechanism.
-        // See also <@link language attribute modifiers>.
-        // -->
-        PropertyParser.registerTag(ItemAttributeModifiers.class, MapTag.class, "attribute_modifiers", (attribute, prop) -> {
-            return prop.getAttributeModifiers();
-        });
+        autoRegister("attribute_modifiers", ItemAttributeModifiers.class, MapTag.class, false);
 
         // <--[tag]
         // @attribute <ItemTag.default_attribute_modifiers[<slot>]>
@@ -106,30 +115,6 @@ public class ItemAttributeModifiers extends ItemProperty {
                 return null;
             }
             return getAttributeModifiersFor(prop.getMaterial().getDefaultAttributeModifiers(slot));
-        });
-
-        // <--[mechanism]
-        // @object ItemTag
-        // @name attribute_modifiers
-        // @input MapTag
-        // @description
-        // Sets the attribute modifiers of an item.
-        // This is a SET operation, meaning pre-existing modifiers are removed.
-        // For input format details, refer to <@link language attribute modifiers>.
-        // @tags
-        // <ItemTag.attribute_modifiers>
-        // -->
-        PropertyParser.registerMechanism(ItemAttributeModifiers.class, MapTag.class, "attribute_modifiers", (prop, mechanism, param) -> {
-            Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = LinkedHashMultimap.create();
-            for (Map.Entry<StringHolder, ObjectTag> mapEntry : param.map.entrySet()) {
-                org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(mapEntry.getKey().str.toUpperCase());
-                for (ObjectTag listValue : CoreUtilities.objectToList(mapEntry.getValue(), mechanism.context)) {
-                    metaMap.put(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue));
-                }
-            }
-            ItemMeta meta = prop.getItemMeta();
-            meta.setAttributeModifiers(metaMap);
-            prop.setItemMeta(meta);
         });
 
         // <--[mechanism]

@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.TagContext;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -12,19 +12,35 @@ import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class ItemBaseColor extends ItemProperty {
+public class ItemBaseColor extends ItemProperty<ElementTag> {
+
+    // <--[property]
+    // @object ItemTag
+    // @name base_color
+    // @input ElementTag
+    // @description
+    // Controls the base color of a shield.
+    // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
+    // Give no input with a shield to remove the base color (and any patterns).
+    // Tag returns null if there is no base color or patterns.
+    // -->
 
     public static boolean describes(ItemTag item) {
         return item.getBukkitMaterial() == Material.SHIELD;
     }
 
     @Override
-    public String getPropertyString() {
+    public ElementTag getPropertyValue() {
         DyeColor baseColor = getBaseColor();
         if (baseColor != null) {
-            return baseColor.name();
+            return new ElementTag(baseColor.name());
         }
         return null;
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag val, Mechanism mechanism) {
+        setBaseColor(mechanism.hasValue() ? val.asEnum(DyeColor.class) : null, mechanism.context);
     }
 
     @Override
@@ -70,37 +86,6 @@ public class ItemBaseColor extends ItemProperty {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <ItemTag.base_color>
-        // @returns ElementTag
-        // @group properties
-        // @mechanism ItemTag.base_color
-        // @description
-        // Gets the name of the base color of a shield.
-        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
-        // -->
-        PropertyParser.registerTag(ItemBaseColor.class, ElementTag.class, "base_color", (attribute, prop) -> {
-            DyeColor baseColor = prop.getBaseColor();
-            if (baseColor == null) {
-                return null;
-            }
-            return new ElementTag(baseColor);
-        });
-
-        // <--[mechanism]
-        // @object ItemTag
-        // @name base_color
-        // @input ElementTag
-        // @description
-        // Changes the base color of a shield.
-        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
-        // Give no input with a shield to remove the base color (and any patterns).
-        // @tags
-        // <ItemTag.base_color>
-        // -->
-        PropertyParser.registerMechanism(ItemBaseColor.class, ElementTag.class, "base_color", (prop, mechanism, param) -> {
-            prop.setBaseColor(mechanism.hasValue() ? DyeColor.valueOf(param.asString().toUpperCase()) : null, mechanism.context);
-        });
+        autoRegister("base_color", ItemBaseColor.class, ElementTag.class, false);
     }
 }

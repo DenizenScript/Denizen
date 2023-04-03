@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.ObjectProperty;
@@ -10,7 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class InventoryContents extends ObjectProperty<InventoryTag> {
+public class InventoryContents extends ObjectProperty<InventoryTag, ListTag> {
 
     public static boolean describes(InventoryTag inventory) {
         return true;
@@ -26,6 +27,13 @@ public class InventoryContents extends ObjectProperty<InventoryTag> {
             return null;
         }
         return contents;
+    }
+
+    @Override
+    public void setPropertyValue(ListTag list, Mechanism mechanism) {
+        if (object.isGeneric() || !mechanism.isProperty) {
+            object.setContents(list, mechanism.context);
+        }
     }
 
     @Override
@@ -187,9 +195,7 @@ public class InventoryContents extends ObjectProperty<InventoryTag> {
         // <InventoryTag.list_contents.with_lore[<lore>].simple>
         // -->
         PropertyParser.registerMechanism(InventoryContents.class, ListTag.class, "contents", (prop, mechanism, param) -> {
-            if (prop.object.isGeneric() || !mechanism.isProperty) {
-                prop.object.setContents(param, mechanism.context);
-            }
+            prop.setPropertyValue(param, mechanism);
         });
     }
 }
