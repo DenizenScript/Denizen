@@ -52,11 +52,11 @@ public class CastCommand extends AbstractCommand {
     // If you don't specify an amplifier level, it defaults to 1, meaning an effect of level 2 (this is for historical compatibility reasons).
     // Specify "amplifier:0" to have no amplifier applied (ie effect level 1).
     //
-    // If no player is specified, the command will target the player.
-    // If no player is present, the command will target the NPC. If an NPC is not present, there will be an error!
+    // If no entity is specified, the command will target the linked player.
+    // If there isn't one, the command will target the linked NPC. If there isn't one either, the command will error.
     //
     // Optionally, specify "no_ambient" to hide some translucent additional particles, while still rendering the main particles.
-    // "Ambient" effects in vanilla came from a beacon, while non-ambient came from a potion.
+    // "Ambient" effects in vanilla come from a beacon, while non-ambient come from a potion.
     //
     // Optionally, specify "hide_particles" to remove the particle effects entirely.
     //
