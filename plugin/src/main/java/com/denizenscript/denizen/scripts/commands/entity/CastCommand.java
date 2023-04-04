@@ -46,7 +46,7 @@ public class CastCommand extends AbstractCommand {
     // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
     //
     // If you don't specify a duration, it defaults to 60 seconds.
-    // An infinite duration will create an infinite duration potion effect, refer to <@link objecttype DurationTag> for more details.
+    // An infinite duration will apply an infinite duration potion effect, refer to <@link objecttype DurationTag> for more details.
     //
     // The amplifier is how many levels to *add* over the normal level 1.
     // If you don't specify an amplifier level, it defaults to 1, meaning an effect of level 2 (this is for historical compatibility reasons).
