@@ -289,18 +289,17 @@ public class EntityHelperImpl extends EntityHelper {
         if (entity == null || location == null) {
             return;
         }
-        net.minecraft.world.entity.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntityEntity instanceof Mob)) {
+        net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+        if (!(nmsEntity instanceof final Mob nmsMob)) {
             return;
         }
-        final Mob nmsEntity = (Mob) nmsEntityEntity;
-        final PathNavigation entityNavigation = nmsEntity.getNavigation();
+        final PathNavigation entityNavigation = nmsMob.getNavigation();
         final Path path;
         final boolean aiDisabled = !entity.hasAI();
         if (aiDisabled) {
             entity.setAI(true);
             try {
-                ENTITY_ONGROUND_SETTER.invoke(nmsEntity, true);
+                ENTITY_ONGROUND_SETTER.invoke(nmsMob, true);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
@@ -308,12 +307,11 @@ public class EntityHelperImpl extends EntityHelper {
         }
         path = entityNavigation.createPath(location.getX(), location.getY(), location.getZ(), 1);
         if (path != null) {
-            nmsEntity.goalSelector.enableControlFlag(Goal.Flag.MOVE);
+            nmsMob.goalSelector.enableControlFlag(Goal.Flag.MOVE);
             entityNavigation.moveTo(path, 1D);
-            entityNavigation.setSpeedModifier(2D);
-            final double oldSpeed = nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue();
+            final double oldSpeed = nmsMob.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue();
             if (speed != null) {
-                nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(speed);
+                nmsMob.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(speed);
             }
             new BukkitRunnable() {
                 @Override
@@ -325,15 +323,15 @@ public class EntityHelperImpl extends EntityHelper {
                         cancel();
                         return;
                     }
-                    if (aiDisabled && entity instanceof Wolf) {
-                        ((Wolf) entity).setAngry(false);
+                    if (aiDisabled && entity instanceof Wolf wolf) {
+                        wolf.setAngry(false);
                     }
                     if (entityNavigation.isDone() || path.isDone()) {
                         if (callback != null) {
                             callback.run();
                         }
                         if (speed != null) {
-                            nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(oldSpeed);
+                            nmsMob.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(oldSpeed);
                         }
                         if (aiDisabled) {
                             entity.setAI(false);
@@ -832,5 +830,15 @@ public class EntityHelperImpl extends EntityHelper {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
+    }
+
+    @Override
+    public float getStepHeight(Entity entity) {
+        return ((CraftEntity) entity).getHandle().maxUpStep();
+    }
+
+    @Override
+    public void setStepHeight(Entity entity, float stepHeight) {
+        ((CraftEntity) entity).getHandle().setMaxUpStep(stepHeight);
     }
 }

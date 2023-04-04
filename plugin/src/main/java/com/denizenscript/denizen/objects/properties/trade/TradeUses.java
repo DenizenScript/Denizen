@@ -1,10 +1,18 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
 import com.denizenscript.denizen.objects.TradeTag;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
-public class TradeUses extends TradeProperty {
+public class TradeUses extends TradeProperty<ElementTag> {
+
+    // <--[property]
+    // @object TradeTag
+    // @name uses
+    // @input ElementTag(Number)
+    // @description
+    // Controls the amount of times the trade has been used.
+    // -->
 
     public static boolean describes(TradeTag recipe) {
         return true;
@@ -16,36 +24,18 @@ public class TradeUses extends TradeProperty {
     }
 
     @Override
+    public void setPropertyValue(ElementTag val, Mechanism mechanism) {
+        if (mechanism.requireInteger()) {
+            getRecipe().setUses(mechanism.getValue().asInt());
+        }
+    }
+
+    @Override
     public String getPropertyId() {
         return "uses";
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <TradeTag.uses>
-        // @returns ElementTag(Number)
-        // @mechanism TradeTag.uses
-        // @description
-        // Returns how many times the trade has been used.
-        // -->
-        PropertyParser.registerTag(TradeUses.class, ElementTag.class, "uses", (attribute, prop) -> {
-            return new ElementTag(prop.getRecipe().getUses());
-        });
-
-        // <--[mechanism]
-        // @object TradeTag
-        // @name uses
-        // @input ElementTag(Number)
-        // @description
-        // Sets the amount of times the trade has been used.
-        // @tags
-        // <TradeTag.uses>
-        // -->
-        PropertyParser.registerMechanism(TradeUses.class, ElementTag.class, "uses", (prop, mechanism, param) -> {
-            if (mechanism.requireInteger()) {
-                prop.getRecipe().setUses(mechanism.getValue().asInt());
-            }
-        });
+        autoRegister("uses", TradeUses.class, ElementTag.class, false);
     }
 }

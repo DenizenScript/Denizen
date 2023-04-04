@@ -110,7 +110,7 @@ public class BlockLightImpl extends BlockLight {
                 for (Vector vec : RELATIVE_CHUNKS) {
                     ChunkAccess other = world.getChunk(chunkX + vec.getBlockX(), chunkZ + vec.getBlockZ(), ChunkStatus.FULL, false);
                     if (other instanceof LevelChunk) {
-                        List<BlockLight> lights = lightsByChunk.get(new ChunkCoordinate(((LevelChunk) other).bukkitChunk));
+                        List<BlockLight> lights = lightsByChunk.get(new ChunkCoordinate(new CraftChunk((LevelChunk) other)));
                         if (lights != null) {
                             any = true;
                             for (BlockLight light : lights) {
@@ -143,7 +143,7 @@ public class BlockLightImpl extends BlockLight {
                 if (!(chk instanceof LevelChunk)) {
                     return;
                 }
-                List<BlockLight> lights = lightsByChunk.get(new ChunkCoordinate(((LevelChunk) chk).bukkitChunk));
+                List<BlockLight> lights = lightsByChunk.get(new ChunkCoordinate(new CraftChunk((LevelChunk) chk)));
                 if (lights == null) {
                     return;
                 }
@@ -210,7 +210,7 @@ public class BlockLightImpl extends BlockLight {
 
     @Override
     public void reset(boolean updateChunk) {
-        runResetFor(((CraftChunk) getChunk()).getHandle(), ((CraftBlock) block).getPosition());
+        runResetFor((LevelChunk) ((CraftChunk) getChunk()).getHandle(ChunkStatus.FULL), ((CraftBlock) block).getPosition());
         if (updateChunk) {
             // This runnable cast is necessary despite what your IDE may claim
             updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), (Runnable) this::sendNearbyChunkUpdates, 1);
@@ -219,10 +219,10 @@ public class BlockLightImpl extends BlockLight {
 
     @Override
     public void update(int lightLevel, boolean updateChunk) {
-        runResetFor(((CraftChunk) getChunk()).getHandle(), ((CraftBlock) block).getPosition());
+        runResetFor((LevelChunk) ((CraftChunk) getChunk()).getHandle(ChunkStatus.FULL), ((CraftBlock) block).getPosition());
         updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), () -> {
             updateTask = null;
-            runSetFor(((CraftChunk) chunk).getHandle(), ((CraftBlock) block).getPosition(), lightLevel);
+            runSetFor((LevelChunk) ((CraftChunk) chunk).getHandle(ChunkStatus.FULL), ((CraftBlock) block).getPosition(), lightLevel);
             if (updateChunk) {
                 // This runnable cast is necessary despite what your IDE may claim
                 updateTask = Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), (Runnable) this::sendNearbyChunkUpdates, 1);
@@ -237,7 +237,7 @@ public class BlockLightImpl extends BlockLight {
     };
 
     public void sendNearbyChunkUpdates() {
-        sendNearbyChunkUpdates(((CraftChunk) getChunk()).getHandle());
+        sendNearbyChunkUpdates((LevelChunk) ((CraftChunk) getChunk()).getHandle(ChunkStatus.FULL));
     }
 
     public static void sendNearbyChunkUpdates(LevelChunk chunk) {
