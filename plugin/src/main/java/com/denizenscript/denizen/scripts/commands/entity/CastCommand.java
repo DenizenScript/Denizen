@@ -70,11 +70,11 @@ public class CastCommand extends AbstractCommand {
     // <EntityTag.effects_data>
     //
     // @Usage
-    // Use to cast a level 1 effect onto the linked player for 50 seconds.
+    // Use to cast a level 1 effect onto the linked player or NPC for 50 seconds.
     // - cast speed amplifier:0 duration:50s
     //
     // @Usage
-    // Use to cast an effect onto the linked player for an infinite duration with an amplifier of 3 (effect level 4).
+    // Use to cast an effect onto the linked player or NPC for an infinite duration with an amplifier of 3 (effect level 4).
     // - cast jump duration:infinite amplifier:3
     //
     // @Usage
