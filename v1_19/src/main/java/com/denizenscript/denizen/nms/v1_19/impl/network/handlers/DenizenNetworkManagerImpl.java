@@ -312,6 +312,27 @@ public class DenizenNetworkManagerImpl extends Connection {
             debugOutputPacket(packet);
         }
         packetsSent++;
+        if (packet instanceof ClientboundBundlePacket bundlePacket) {
+            Iterator<Packet<ClientGamePacketListener>> iter = bundlePacket.subPackets().iterator();
+            int count = 0;
+            while (iter.hasNext()) {
+                count++;
+                if (processPacket(iter.next(), genericfuturelistener)) {
+                    iter.remove();
+                    count--;
+                }
+            }
+            if (count == 0) {
+                return;
+            }
+        }
+        else if (processPacket(packet, genericfuturelistener)) {
+            return;
+        }
+        oldManager.send(packet, genericfuturelistener);
+    }
+
+    public boolean processPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
         if (processAttachToForPacket(packet)
             || processHiddenEntitiesForPacket(packet)
             || processMirrorForPacket(packet)
@@ -327,19 +348,19 @@ public class DenizenNetworkManagerImpl extends Connection {
             if (NMSHandler.debugPackets) {
                 doPacketOutput("DENIED PACKET " + packet.getClass().getCanonicalName() + " DENIED FROM SEND TO " + player.getScoreboardName());
             }
-            return;
+            return true;
         }
         if (PlayerReceivesPacketScriptEvent.enabled) {
             if (PlayerReceivesPacketScriptEvent.fireFor(player.getBukkitEntity(), packet)) {
                 if (NMSHandler.debugPackets) {
                     doPacketOutput("DENIED PACKET " + packet.getClass().getCanonicalName() + " DENIED FROM SEND TO " + player.getScoreboardName() + " due to event");
                 }
-                return;
+                return true;
             }
         }
         processBlockLightForPacket(packet);
         processFakePlayerSpawnForPacket(packet);
-        oldManager.send(packet, genericfuturelistener);
+        return false;
     }
 
     public static boolean tablistBreakOnlyOnce = false;
