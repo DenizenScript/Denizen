@@ -128,7 +128,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     public void setFoliageColor(int color) {
         try {
             BiomeSpecialEffects.Builder builder = (BiomeSpecialEffects.Builder) BIOMESPECIALEFFECTS_BUILDER_CONSTRUCTOR.invoke();
-            // fogColor, waterColor, waterFogColor, and skyColor are needed for the Builder to build.
+            // fogColor, waterColor, waterFogColor, and skyColor are needed for the Builder class.
             builder.fogColor(biomeBase.getFogColor())
                     .waterColor(biomeBase.getWaterColor())
                     .waterFogColor(biomeBase.getWaterFogColor())
