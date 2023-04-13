@@ -46,6 +46,8 @@ public abstract class BiomeNMS {
 
     public abstract List<EntityType> getWaterEntities();
 
+    public abstract int getFoliageColor();
+
     public abstract void setHumidity(float humidity);
 
     public abstract void setTemperature(float temperature);
@@ -57,6 +59,8 @@ public abstract class BiomeNMS {
     public enum DownfallType {
         RAIN, SNOW, NONE
     }
+
+    public abstract void setFoliageColor(int color);
 
     public abstract void setTo(Block block);
 }

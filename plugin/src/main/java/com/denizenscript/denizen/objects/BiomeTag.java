@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.flags.RedirectionFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -281,6 +282,41 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
                 list.add(entityType.name());
             }
             return list;
+        });
+
+        // <--[tag]
+        // @attribute <BiomeTag.foliage_color>
+        // @returns ColorTag
+        // @mechanism BiomeTag.foliage_color
+        // @description
+        // Returns the foliage color of this biome. Foliage includes leaves and vines.
+        // If the biome's foliage does not change color by default, this returns the color black.
+        // -->
+        tagProcessor.registerTag(ColorTag.class, "foliage_color", (attribute, object) -> {
+            return new ColorTag(ColorTag.fromRGB(object.biome.getFoliageColor()));
+        });
+
+        // <--[mechanism]
+        // @object BiomeTag
+        // @name foliage_color
+        // @input ColorTag
+        // @description
+        // Sets the foliage color of this biome. Foliage includes leaves and vines.
+        // Can be changed once until next server restart. Colors reset on server restart.
+        // For the change to take effect on the players' clients, they must quit and rejoin the server.
+        // @tags
+        // <BiomeTag.foliage_color>
+        // @example
+        // # Adjusts the foliage color of the plains biome permanently, using a server start event to keep it applied.
+        // # Now the leaves and vines will be a nice salmon-pink!
+        // on server start:
+        // - adjust <biome[plains]> foliage_color:<&color[#F48D8D]>
+        // -->
+        tagProcessor.registerMechanism("foliage_color", false, (object, mechanism) -> {
+            if (!mechanism.requireObject(ColorTag.class)) {
+                return;
+            }
+            object.biome.setFoliageColor(mechanism.valueAsType(ColorTag.class).asRGB());
         });
     }
 

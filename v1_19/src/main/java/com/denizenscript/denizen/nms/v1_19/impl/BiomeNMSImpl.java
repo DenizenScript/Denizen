@@ -13,8 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
@@ -28,6 +27,7 @@ import java.util.Locale;
 public class BiomeNMSImpl extends BiomeNMS {
 
     public static final MethodHandle BIOME_CLIMATESETTINGS_CONSTRUCTOR = ReflectionHelper.getConstructor(Biome.class.getDeclaredClasses()[0], boolean.class, float.class, Biome.TemperatureModifier.class, float.class);
+    public static final MethodHandle BIOMESPECIALEFFECTS_BUILDER_CONSTRUCTOR = ReflectionHelper.getConstructor(BiomeSpecialEffects.Builder.class);
 
     public Holder<Biome> biomeHolder;
     public ServerLevel world;
@@ -85,6 +85,11 @@ public class BiomeNMSImpl extends BiomeNMS {
         return getSpawnableEntities(MobCategory.WATER_CREATURE);
     }
 
+    @Override
+    public int getFoliageColor() {
+        return biomeHolder.value().getFoliageColor();
+    }
+
     public Object getClimate() {
         return ReflectionHelper.getFieldValue(Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeHolder.value());
     }
@@ -128,6 +133,24 @@ public class BiomeNMSImpl extends BiomeNMS {
                 throw new UnsupportedOperationException();
         }
         setClimate(nmsType, getTemperature(), getTemperatureModifier(), getHumidity());*/
+    }
+
+    @Override
+    public void setFoliageColor(int color) {
+        try {
+            BiomeSpecialEffects.Builder builder = (BiomeSpecialEffects.Builder) BIOMESPECIALEFFECTS_BUILDER_CONSTRUCTOR.invoke();
+            // fogColor, waterColor, waterFogColor, and skyColor are needed for the Builder to build.
+            builder.fogColor(biomeHolder.value().getFogColor())
+                    .waterColor(biomeHolder.value().getWaterColor())
+                    .waterFogColor(biomeHolder.value().getWaterFogColor())
+                    .skyColor(biomeHolder.value().getSkyColor())
+                    .foliageColorOverride(color);
+            BiomeSpecialEffects effects = builder.build();
+            ReflectionHelper.setFieldValue(Biome.class, ReflectionMappingsInfo.Biome_specialEffects, biomeHolder.value(), effects);
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {
