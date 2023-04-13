@@ -184,7 +184,7 @@ public class EntityDisplayEntityData implements Property {
                 item.setItemDisplayTransform(map.getElement("item_transform").asEnum(ItemDisplay.ItemDisplayTransform.class));
             }
             else if (display instanceof TextDisplay text) {
-                text.setAlignment(map.getElement("text_alignment", text.getAlignment().name()).asEnum(TextDisplay.TextAligment.class));
+                text.setAlignment(map.getElement("text_alignment", text.getAlignment().name()).asEnum(TextDisplay.TextAlignment.class));
                 if (map.getObject("text_background_color") != null) {
                     //text.setBackgroundColor(map.getObjectAs("text_background_color", ColorTag.class, mechanism.context).getColor());
                 }

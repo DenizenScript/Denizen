@@ -62,6 +62,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -146,7 +147,7 @@ public class PacketHelperImpl implements PacketHelper {
         send(player, new ClientboundAddEntityPacket(entity));
         send(player, new ClientboundSetCameraPacket(entity));
         ((CraftServer) Bukkit.getServer()).getHandle().respawn(((CraftPlayer) player).getHandle(),
-                ((CraftWorld) player.getWorld()).getHandle(), true, player.getLocation(), false);
+                ((CraftWorld) player.getWorld()).getHandle(), true, player.getLocation(), false, PlayerRespawnEvent.RespawnReason.PLUGIN);
     }
 
     @Override

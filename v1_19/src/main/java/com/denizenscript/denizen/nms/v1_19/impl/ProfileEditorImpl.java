@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.lang.reflect.Field;
 import java.util.EnumSet;
@@ -46,7 +47,7 @@ public class ProfileEditorImpl extends ProfileEditor {
             }
         }
         if (isSkinChanging) {
-            ((CraftServer) Bukkit.getServer()).getHandle().respawn(nmsPlayer, (ServerLevel) nmsPlayer.level, true, player.getLocation(), false);
+            ((CraftServer) Bukkit.getServer()).getHandle().respawn(nmsPlayer, (ServerLevel) nmsPlayer.level, true, player.getLocation(), false, PlayerRespawnEvent.RespawnReason.PLUGIN);
         }
         player.updateInventory();
     }
