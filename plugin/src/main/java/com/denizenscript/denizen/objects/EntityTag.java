@@ -2899,6 +2899,22 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("Cannot parse UUID input '" + new_id + "': " + ex.getMessage());
             }
         });
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name visual_pose
+        // @input ElementTag
+        // @description
+        // Sets the entity's visual pose, must be one of <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/Pose.html>.
+        // Note that not all entities support all poses, some are only supported by specific entity types.
+        // @tags
+        // <EntityTag.visual_pose>
+        // -->
+        registerSpawnedOnlyMechanism("visual_pose", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireEnum(Pose.class)) {
+                NMSHandler.entityHelper.setPose(object.getBukkitEntity(), input.asEnum(Pose.class));
+            }
+        });
     }
 
     public EntityTag describe(TagContext context) {
