@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiConsumer<EntityTag, Boolean> setter, Map<UUID, Map<UUID, Boolean>> perPlayerMap) {
+public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiConsumer<EntityTag, Boolean> setter, Map<UUID, Map<UUID, Boolean>> packetOverrides) {
 
     public EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiConsumer<EntityTag, Boolean> setter) {
         this(getter, setter, new HashMap<>());
@@ -26,8 +26,8 @@ public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiCo
             return;
         }
         NetworkInterceptHelper.enable();
-        boolean wasEntityAdded = !perPlayerMap.containsKey(target.getUUID());
-        Map<UUID, Boolean> playerMap = perPlayerMap.computeIfAbsent(target.getUUID(), k -> new HashMap<>());
+        boolean wasEntityAdded = !packetOverrides.containsKey(target.getUUID());
+        Map<UUID, Boolean> playerMap = packetOverrides.computeIfAbsent(target.getUUID(), k -> new HashMap<>());
         for (PlayerTag player : players) {
             boolean state = stateSupplier.apply(player);
             boolean wasModified = wasEntityAdded || !playerMap.containsKey(player.getUUID()) || playerMap.get(player.getUUID()) != state;
@@ -43,7 +43,7 @@ public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiCo
             return null;
         }
         if (player != null) {
-            Map<UUID, Boolean> playerMap = perPlayerMap.get(entity.getUniqueId());
+            Map<UUID, Boolean> playerMap = packetOverrides.get(entity.getUniqueId());
             if (playerMap != null && playerMap.containsKey(player)) {
                 return playerMap.get(player);
             }
@@ -59,7 +59,7 @@ public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiCo
     }
 
     public boolean noOverrides() {
-        return perPlayerMap.isEmpty();
+        return packetOverrides.isEmpty();
     }
 
     public enum Action {TRUE, FALSE, TOGGLE, RESET}
@@ -99,14 +99,14 @@ public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiCo
             }
             case RESET -> {
                 for (EntityTag target : targets) {
-                    Map<UUID, Boolean> playerMap = perPlayerMap.get(target.getUUID());
+                    Map<UUID, Boolean> playerMap = packetOverrides.get(target.getUUID());
                     if (playerMap == null) {
                         return;
                     }
                     Set<UUID> playersToUpdate = new HashSet<>();
                     if (forPlayers == null) {
                         playersToUpdate.addAll(playerMap.keySet());
-                        perPlayerMap.remove(target.getUUID());
+                        packetOverrides.remove(target.getUUID());
                     }
                     else {
                         for (PlayerTag player : forPlayers) {
@@ -114,7 +114,7 @@ public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiCo
                             playersToUpdate.add(player.getUUID());
                         }
                         if (playerMap.isEmpty()) {
-                            perPlayerMap.remove(target.getUUID());
+                            packetOverrides.remove(target.getUUID());
                         }
                     }
                     if (!playersToUpdate.isEmpty()) {
