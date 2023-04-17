@@ -1134,10 +1134,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return getDenizenPlayer().identify();
             }
             if (entityScript != null) {
-                return "e@" + getUUID() + "/" + entityScript + mechsHandler.get();
+                return "e@" + getUUID() + "/" + entityScript;
             }
             if (entity_type != null) {
-                return "e@" + getUUID() + "/" + entity_type.getLowercaseName() + mechsHandler.get();
+                return "e@" + getUUID() + "/" + entity_type.getLowercaseName();
             }
         }
         if (entityScript != null) {
