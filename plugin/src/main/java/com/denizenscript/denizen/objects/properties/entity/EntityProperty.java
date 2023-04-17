@@ -32,4 +32,14 @@ public abstract class EntityProperty<TData extends ObjectTag> extends ObjectProp
     public <T extends Entity> T as(Class<T> entityClass) {
         return (T) getEntity();
     }
+
+    public static String getReasonNotDescribed(EntityTag entity) {
+        if (entity.getUUID() == null) {
+            return "generic entity-types cannot match any properties, you must spawn an entity to interact with its properties directly.";
+        }
+        else if (!entity.isSpawnedOrValidForTag()) {
+            return "that entity is not spawned.";
+        }
+        return "unspecified reason - are you sure this property applies to that EntityType?";
+    }
 }

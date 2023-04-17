@@ -2980,13 +2980,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public void adjust(Mechanism mechanism) {
-
         if (isGeneric()) {
             mechanisms.add(mechanism);
             mechanism.fulfill();
             return;
         }
-
         if (getBukkitEntity() == null) {
             if (isCitizensNPC()) {
                 mechanism.echoError("Cannot adjust not-spawned NPC " + getDenizenNPC());
