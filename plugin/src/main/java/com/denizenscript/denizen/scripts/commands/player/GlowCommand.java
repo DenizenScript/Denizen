@@ -1,44 +1,34 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
-import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.scripts.commands.entity.EntityMetadataCommandHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.debugging.SlowWarning;
-import com.denizenscript.denizencore.utilities.debugging.Warning;
-import net.citizensnpcs.api.CitizensAPI;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.Entity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.List;
 
 public class GlowCommand extends AbstractCommand {
 
+    public static final EntityMetadataCommandHelper helper = new EntityMetadataCommandHelper(GlowCommand::isGlowing, GlowCommand::setGlowing);
+
     public GlowCommand() {
         setName("glow");
-        setSyntax("glow [<entity>|...] (<should glow>)");
-        setRequiredArguments(1, 2);
+        setSyntax("glow (<entity>|...) (state:true/false/toggle/reset) (for:<player>|...)");
+        setRequiredArguments(0, 3);
         isProcedural = false;
+        autoCompile();
     }
-
-    // TODO: REWRITE: 'glow [<entity>|...] (glow:{true}/false/reset) (per_player) (players:<player>|...)'
-    // Default apply globally, unless 'per_player' set, in which case use a purely network solution and do not override the global state at all.
-    // Also note that 'reset' is to reset per_player to view global state.
 
     // <--[command]
     // @Name Glow
-    // @Syntax glow [<entity>|...] (<should glow>)
-    // @Required 1
-    // @Maximum 2
+    // @Syntax glow (<entity>|...) (state:true/false/toggle/reset) (for:<player>|...)
+    // @Required 0
+    // @Maximum 3
     // @Short Makes the linked player see the chosen entities as glowing.
     // @Group player
     //
@@ -61,64 +51,32 @@ public class GlowCommand extends AbstractCommand {
     // - glow <player.target> false
     // -->
 
-    public static HashMap<Integer, HashSet<UUID>> glowViewers = new HashMap<>();
 
     @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(EntityTag.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
-            }
-            else if (!scriptEntry.hasObject("glowing")
-                    && arg.matchesBoolean()) {
-                scriptEntry.addObject("glowing", arg.asElement());
-            }
-            else {
-                arg.reportUnhandled();
-            }
+    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
+        helper.tabComplete(tab);
+    }
+
+    public static boolean isGlowing(Entity entity) {
+        if (EntityTag.isCitizensNPC(entity)) {
+            return NPCTag.fromEntity(entity).getCitizen().data().get(NPC.Metadata.GLOWING);
         }
-        scriptEntry.defaultObject("glowing", new ElementTag("true"));
-        if (!Utilities.entryHasPlayer(scriptEntry)) {
-            throw new InvalidArgumentsException("Must have a valid player link!");
+        return entity.isGlowing();
+    }
+
+    public static void setGlowing(EntityTag entity, boolean glowing) {
+        if (entity.isCitizensNPC()) {
+            entity.getDenizenNPC().getCitizen().data().setPersistent(NPC.Metadata.GLOWING, glowing);
         }
-        if (!scriptEntry.hasObject("entities")) {
-            throw new InvalidArgumentsException("Must specify entities to make glow!");
+        else {
+            entity.getBukkitEntity().setGlowing(glowing);
         }
     }
 
-    public static Warning GLOW_UNSTABLE_WARN = new SlowWarning("glowCommand", "The 'glow' command is unstable, glitchy, and experimental. It is subject to a rewrite in the near future. It is recommended that you avoid it for the time being.");
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        GLOW_UNSTABLE_WARN.warn(scriptEntry);
-        NetworkInterceptHelper.enable();
-        final ArrayList<EntityTag> entities = (ArrayList<EntityTag>) scriptEntry.getObject("entities");
-        ElementTag glowing = scriptEntry.getElement("glowing");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("entities", entities), glowing);
-        }
-        boolean shouldGlow = glowing.asBoolean();
-        final UUID puuid = Utilities.getEntryPlayer(scriptEntry).getUUID();
-        for (EntityTag ent : entities) {
-            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(ent.getLivingEntity())) {
-                CitizensAPI.getNPCRegistry().getNPC(ent.getLivingEntity()).data().setPersistent(NPC.Metadata.GLOWING, shouldGlow);
-            }
-            if (shouldGlow) {
-                HashSet<UUID> players = glowViewers.computeIfAbsent(ent.getLivingEntity().getEntityId(), k -> new HashSet<>());
-                players.add(puuid);
-            }
-            else {
-                HashSet<UUID> players = glowViewers.get(ent.getLivingEntity().getEntityId());
-                if (players != null) {
-                    players.remove(puuid);
-                    shouldGlow = !players.isEmpty();
-                    if (!shouldGlow) {
-                        glowViewers.remove(ent.getLivingEntity().getEntityId());
-                    }
-                }
-            }
-            ent.getLivingEntity().setGlowing(shouldGlow);
-        }
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("target") @ArgLinear @ArgDefaultNull @ArgSubType(EntityTag.class) List<EntityTag> targets,
+                                   @ArgName("state") @ArgDefaultText("TRUE") EntityMetadataCommandHelper.Action action,
+                                   @ArgName("for") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> forPlayers) {
+        helper.execute(scriptEntry, targets, action, forPlayers);
     }
 }

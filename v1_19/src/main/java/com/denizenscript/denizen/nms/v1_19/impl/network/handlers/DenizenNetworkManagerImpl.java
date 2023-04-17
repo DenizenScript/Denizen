@@ -10,14 +10,11 @@ import com.denizenscript.denizen.nms.v1_19.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.network.packets.PacketOutChatImpl;
-import com.denizenscript.denizen.nms.v1_19.impl.network.packets.PacketOutEntityMetadataImpl;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
-import com.denizenscript.denizen.scripts.commands.entity.InvisibleCommand;
-import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
-import com.denizenscript.denizen.scripts.commands.entity.SneakCommand;
+import com.denizenscript.denizen.scripts.commands.entity.*;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
+import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
@@ -810,7 +807,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public ClientboundSetEntityDataPacket getModifiedMetadataFor(ClientboundSetEntityDataPacket metadataPacket) {
-        if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty() && InvisibleCommand.invisibleEntities.isEmpty()) {
+        if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty() && InvisibleCommand.helper.noOverrides() && GlowCommand.helper.noOverrides()) {
             return null;
         }
         try {
@@ -820,8 +817,9 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             String nameToApply = RenameCommand.getCustomNameFor(entity.getUUID(), player.getBukkitEntity(), false);
             Boolean forceSneak = SneakCommand.shouldSneak(entity.getUUID(), player.getUUID());
-            Boolean isInvisible = InvisibleCommand.isInvisible(entity.getBukkitEntity(), player.getUUID(), true);
-            boolean shouldModifyFlags = isInvisible != null || forceSneak != null;
+            Boolean isInvisible = InvisibleCommand.helper.getState(entity.getBukkitEntity(), player.getUUID(), true);
+            Boolean isGlowing = GlowCommand.helper.getState(entity.getBukkitEntity(), player.getUUID(), true);
+            boolean shouldModifyFlags = isInvisible != null || forceSneak != null || isGlowing != null;
             if (nameToApply == null && !shouldModifyFlags) {
                 return null;
             }
@@ -837,22 +835,9 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             if (shouldModifyFlags) {
                 byte flags = currentFlags == null ? entity.getEntityData().get(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS) : currentFlags;
-                if (forceSneak != null) {
-                    if (forceSneak) {
-                        flags |= 0x02;
-                    }
-                    else {
-                        flags &= ~0x02;
-                    }
-                }
-                if (isInvisible != null) {
-                    if (isInvisible) {
-                        flags |= 0x20;
-                    }
-                    else {
-                        flags &= ~0x20;
-                    }
-                }
+                flags = applyByteFlag(flags, forceSneak, 0x02);
+                flags = applyByteFlag(flags, isInvisible, 0x20);
+                flags = applyByteFlag(flags, isGlowing, 0x40);
                 data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS, flags));
             }
             if (nameToApply != null) {
@@ -867,11 +852,18 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
     }
 
+    public byte applyByteFlag(byte currentFlags, Boolean value, int flag) {
+        if (value == null) {
+            return currentFlags;
+        }
+        return (byte) (value ? currentFlags | flag : currentFlags & ~flag);
+    }
+
     public boolean processMetadataChangesForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
-        if (!(packet instanceof ClientboundSetEntityDataPacket)) {
+        if (!(packet instanceof ClientboundSetEntityDataPacket entityDataPacket)) {
             return false;
         }
-        ClientboundSetEntityDataPacket altPacket = getModifiedMetadataFor((ClientboundSetEntityDataPacket) packet);
+        ClientboundSetEntityDataPacket altPacket = getModifiedMetadataFor(entityDataPacket);
         if (altPacket == null) {
             return false;
         }
@@ -1214,9 +1206,6 @@ public class DenizenNetworkManagerImpl extends Connection {
                     }
                 }
             }
-        }
-        if (packet instanceof ClientboundSetEntityDataPacket dataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
-            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl(dataPacket));
         }
         return false;
     }
