@@ -18,7 +18,7 @@ public class GlowCommand extends AbstractCommand {
 
     public GlowCommand() {
         setName("glow");
-        setSyntax("glow (<entity>|...) (state:true/false/toggle/reset) (for:<player>|...)");
+        setSyntax("glow (<entity>|...) ({true}/false/toggle/reset) (for:<player>|...)");
         setRequiredArguments(0, 3);
         isProcedural = false;
         autoCompile();
@@ -26,7 +26,7 @@ public class GlowCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Glow
-    // @Syntax glow (<entity>|...) (state:true/false/toggle/reset) (for:<player>|...)
+    // @Syntax glow (<entity>|...) ({true}/false/toggle/reset) (for:<player>|...)
     // @Required 0
     // @Maximum 3
     // @Short Makes the linked player see the chosen entities as glowing.
