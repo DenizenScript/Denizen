@@ -7,7 +7,6 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
-import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 

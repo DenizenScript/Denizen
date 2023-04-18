@@ -5,13 +5,16 @@ import com.denizenscript.denizen.npc.traits.InvisibleTrait;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.entity.*;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.*;
+import java.util.List;
 
 public class InvisibleCommand extends AbstractCommand {
 

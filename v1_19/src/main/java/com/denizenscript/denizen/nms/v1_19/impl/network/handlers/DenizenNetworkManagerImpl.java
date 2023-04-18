@@ -12,7 +12,10 @@ import com.denizenscript.denizen.nms.v1_19.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.network.packets.PacketOutChatImpl;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.scripts.commands.entity.*;
+import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
+import com.denizenscript.denizen.scripts.commands.entity.InvisibleCommand;
+import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
+import com.denizenscript.denizen.scripts.commands.entity.SneakCommand;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
@@ -835,9 +838,9 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             if (shouldModifyFlags) {
                 byte flags = currentFlags == null ? entity.getEntityData().get(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS) : currentFlags;
-                flags = applyByteFlag(flags, forceSneak, 0x02);
-                flags = applyByteFlag(flags, isInvisible, 0x20);
-                flags = applyByteFlag(flags, isGlowing, 0x40);
+                flags = applyEntityDataFlag(flags, forceSneak, 0x02);
+                flags = applyEntityDataFlag(flags, isInvisible, 0x20);
+                flags = applyEntityDataFlag(flags, isGlowing, 0x40);
                 data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS, flags));
             }
             if (nameToApply != null) {
@@ -852,7 +855,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
     }
 
-    public byte applyByteFlag(byte currentFlags, Boolean value, int flag) {
+    public byte applyEntityDataFlag(byte currentFlags, Boolean value, int flag) {
         if (value == null) {
             return currentFlags;
         }
