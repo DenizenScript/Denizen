@@ -34,16 +34,16 @@ public class InvisibleCommand extends AbstractCommand {
     // @Group entity
     //
     // @Description
-    // Makes the specified entity invisible (equivalent to an invisibility potion), defaults to the linked player/NPC if one wasn't specified.
+    // Sets whether the specified entities are invisible (equivalent to an invisibility potion), defaults to the linked player/NPC if none were specified.
     // If an NPC was specified, the 'invisible' trait is applied.
     //
-    // Optionally specify 'for:' with a list of players to fake the entity's visibility state for these players.
-    // When using the 'toggle' state with the 'for:' argument, the visibility state will be toggled for each player separately.
+    // Optionally specify 'for:' with a list of players to fake the entities' visibility state for these players.
+    // When using 'toggle' with the 'for:' argument, the visibility state will be toggled for each player separately.
     // If unspecified, will be set globally.
-    // 'For' players remain tracked even when offline/reconnecting, but are forgotten after server restart.
+    // 'for:' players remain tracked even when offline/reconnecting, but are forgotten after server restart.
     // Note that using the 'for:' argument won't apply the 'invisible' trait to NPCs.
     //
-    // When not using 'for', the effect is global / on the real entity, which will persist in that entity's data until changed.
+    // When not using 'for:', the effect is global / on the real entity, which will persist in that entity's data until changed.
     //
     // To reset an entity's fake visibility use the 'reset' state.
     // A reset is global by default, use the 'for:' argument to reset specific players.
@@ -60,15 +60,15 @@ public class InvisibleCommand extends AbstractCommand {
     //
     // @Usage
     // Use to make the linked NPC visible if previously invisible, and invisible if not.
-    // - invisible <npc> state:toggle
+    // - invisible <npc> toggle
     //
     // @Usage
     // Use to make an entity visible for specific players, without changing the way other players see it.
-    // - invisible <[entity]> state:false for:<[player1]>|<[player2]>
+    // - invisible <[entity]> false for:<[player1]>|<[player2]>
     //
     // @Usage
     // Use to reset an entity's fake visibility state for the linked player.
-    // - invisible <[entity]> state:reset for:<player>
+    // - invisible <[entity]> reset for:<player>
     // -->
 
     @Override

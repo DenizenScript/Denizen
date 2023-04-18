@@ -29,26 +29,40 @@ public class GlowCommand extends AbstractCommand {
     // @Syntax glow (<entity>|...) ({true}/false/toggle/reset) (for:<player>|...)
     // @Required 0
     // @Maximum 3
-    // @Short Makes the linked player see the chosen entities as glowing.
+    // @Short Sets whether an NPC or entity is glowing.
     // @Group player
     //
     // @Description
-    // Makes the linked player see the chosen entities as glowing.
-    // BE WARNED, THIS COMMAND IS HIGHLY EXPERIMENTAL AND MAY NOT WORK AS EXPECTED.
-    // This command works by globally enabling the glow effect, then whitelisting who is allowed to see it.
+    // Sets whether the specified entities glow, defaults to the linked player/NPC if none were specified.
     //
-    // THIS COMMAND IS UNSTABLE AND IS SUBJECT TO BEING REWRITTEN IN THE NEAR FUTURE.
+    // Optionally specify 'for:' with a list of players to fake the entities' glow state for these players.
+    // When using 'toggle' with the 'for:' argument, the glow state will be toggled for each player separately.
+    // If unspecified, will be set globally.
+    // 'for:' players remain tracked even when offline/reconnecting, but are forgotten after server restart.
+    //
+    // When not using 'for:', the glow is global / on the real entity, which will persist in that entity's data until changed.
+    //
+    // To reset an entity's fake glow use the 'reset' state.
+    // A reset is global by default, use the 'for:' argument to reset specific players.
     //
     // @Tags
     // <EntityTag.glowing>
     //
     // @Usage
-    // Use to make the player's target glow.
-    // - glow <player.target>
+    // Use to make the linked player (or NPC, if there isn't one) glow.
+    // - glow
     //
     // @Usage
-    // Use to make the player's target not glow.
-    // - glow <player.target> false
+    // Use to toggle whether the linked NPC is glowing.
+    // - glow <npc> toggle
+    //
+    // @Usage
+    // Use to make an entity glow for specific players, without changing the way other players see it.
+    // - glow <[entity]> for:<[player1]>|<[player2]>
+    //
+    // @Usage
+    // Use to reset an entity's fake glow state for the linked player.
+    // - glow <[entity]> reset for:<player>
     // -->
 
 
