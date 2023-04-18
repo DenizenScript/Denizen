@@ -65,12 +65,6 @@ public class GlowCommand extends AbstractCommand {
     // - glow <[entity]> reset for:<player>
     // -->
 
-
-    @Override
-    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        helper.tabComplete(tab);
-    }
-
     public static boolean isGlowing(Entity entity) {
         if (EntityTag.isCitizensNPC(entity)) {
             return NPCTag.fromEntity(entity).getCitizen().data().get(NPC.Metadata.GLOWING);

@@ -71,11 +71,6 @@ public class InvisibleCommand extends AbstractCommand {
     // - invisible <[entity]> reset for:<player>
     // -->
 
-    @Override
-    public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        helper.tabComplete(tab);
-    }
-
     public static Boolean isInvisible(Entity entity) {
         if (EntityTag.isCitizensNPC(entity)) {
             InvisibleTrait invisibleTrait = NPCTag.fromEntity(entity).getCitizen().getTraitNullable(InvisibleTrait.class);

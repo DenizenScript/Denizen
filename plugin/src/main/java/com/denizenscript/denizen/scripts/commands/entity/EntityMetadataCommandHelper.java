@@ -54,10 +54,6 @@ public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiCo
         return getter.apply(entity);
     }
 
-    public void tabComplete(AbstractCommand.TabCompletionsBuilder builder) {
-        builder.addWithPrefix("state:", Action.values());
-    }
-
     public boolean noOverrides() {
         return packetOverrides.isEmpty();
     }
