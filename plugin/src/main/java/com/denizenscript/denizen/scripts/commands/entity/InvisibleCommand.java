@@ -103,7 +103,7 @@ public class InvisibleCommand extends AbstractCommand {
         else if (entity.getBukkitEntity() instanceof ItemFrame itemFrame) {
             itemFrame.setVisible(!invisible);
         }
-        else if (entity.getBukkitEntity() instanceof LivingEntity livingEntity && !entity.isFake) {
+        else if (!entity.isFake && entity.getBukkitEntity() instanceof LivingEntity livingEntity) {
             livingEntity.setInvisible(invisible);
             if (!invisible) {
                 // Remove the invisibility potion effect for compact with old uses (the command used to add it)
