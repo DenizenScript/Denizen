@@ -7,6 +7,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -29,9 +30,8 @@ public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiCo
         Map<UUID, Boolean> playerMap = packetOverrides.computeIfAbsent(target.getUUID(), k -> new HashMap<>());
         for (PlayerTag player : players) {
             boolean state = stateSupplier.apply(player);
-            boolean wasModified = wasEntityAdded || !playerMap.containsKey(player.getUUID()) || playerMap.get(player.getUUID()) != state;
-            playerMap.put(player.getUUID(), state);
-            if (wasModified && player.isOnline()) {
+            Boolean oldState = playerMap.put(player.getUUID(), state);
+            if ((wasEntityAdded || oldState == null || oldState != state) && player.isOnline()) {
                 NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player.getPlayerEntity(), target.getBukkitEntity());
             }
         }
