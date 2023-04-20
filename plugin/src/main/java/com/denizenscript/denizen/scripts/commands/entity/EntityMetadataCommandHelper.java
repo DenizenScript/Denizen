@@ -112,11 +112,12 @@ public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiCo
                             packetOverrides.remove(target.getUUID());
                         }
                     }
-                    if (!playersToUpdate.isEmpty()) {
-                        for (Player player : NMSHandler.entityHelper.getPlayersThatSee(target.getBukkitEntity())) {
-                            if (playersToUpdate.contains(player.getUniqueId())) {
-                                NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player, target.getBukkitEntity());
-                            }
+                    if (playersToUpdate.isEmpty()) {
+                        return;
+                    }
+                    for (Player player : NMSHandler.entityHelper.getPlayersThatSee(target.getBukkitEntity())) {
+                        if (playersToUpdate.contains(player.getUniqueId())) {
+                            NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player, target.getBukkitEntity());
                         }
                     }
                 }
