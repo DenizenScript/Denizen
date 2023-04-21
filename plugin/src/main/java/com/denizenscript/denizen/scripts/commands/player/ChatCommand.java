@@ -108,7 +108,7 @@ public class ChatCommand extends AbstractCommand {
             chatRange = Settings.chatBystandersRange();
         }
         DenizenSpeechContext context = new DenizenSpeechContext(message, scriptEntry, chatRange);
-        if (!targets.isEmpty()) {
+        if (targets != null && !targets.isEmpty()) {
             for (EntityTag ent : targets) {
                 context.addRecipient(ent.getBukkitEntity());
             }
