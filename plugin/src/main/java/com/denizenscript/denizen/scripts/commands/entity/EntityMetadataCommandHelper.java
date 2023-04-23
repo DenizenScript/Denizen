@@ -7,21 +7,20 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
-public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiConsumer<EntityTag, Boolean> setter, Map<UUID, Map<UUID, Boolean>> packetOverrides) {
+public record EntityMetadataCommandHelper(Predicate<Entity> getter, BiConsumer<EntityTag, Boolean> setter, Map<UUID, Map<UUID, Boolean>> packetOverrides) {
 
-    public EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiConsumer<EntityTag, Boolean> setter) {
+    public EntityMetadataCommandHelper(Predicate<Entity> getter, BiConsumer<EntityTag, Boolean> setter) {
         this(getter, setter, new HashMap<>());
     }
 
-    public void setForPlayers(List<PlayerTag> players, EntityTag target, Function<PlayerTag, Boolean> stateSupplier) {
+    public void setForPlayers(List<PlayerTag> players, EntityTag target, Predicate<PlayerTag> stateSupplier) {
         if (target == null || target.getUUID() == null || players == null) {
             return;
         }
@@ -29,7 +28,7 @@ public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiCo
         boolean wasEntityAdded = !packetOverrides.containsKey(target.getUUID());
         Map<UUID, Boolean> playerMap = packetOverrides.computeIfAbsent(target.getUUID(), k -> new HashMap<>());
         for (PlayerTag player : players) {
-            boolean state = stateSupplier.apply(player);
+            boolean state = stateSupplier.test(player);
             Boolean oldState = playerMap.put(player.getUUID(), state);
             if ((wasEntityAdded || oldState == null || oldState != state) && player.isOnline()) {
                 NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player.getPlayerEntity(), target.getBukkitEntity());
@@ -50,7 +49,7 @@ public record EntityMetadataCommandHelper(Function<Entity, Boolean> getter, BiCo
         if (fakeOnly) {
             return null;
         }
-        return getter.apply(entity);
+        return getter.test(entity);
     }
 
     public boolean noOverrides() {

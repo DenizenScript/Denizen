@@ -74,7 +74,7 @@ public class InvisibleCommand extends AbstractCommand {
     // - invisible <[entity]> reset for:<player>
     // -->
 
-    public static Boolean isInvisible(Entity entity) {
+    public static boolean isInvisible(Entity entity) {
         if (EntityTag.isCitizensNPC(entity)) {
             InvisibleTrait invisibleTrait = NPCTag.fromEntity(entity).getCitizen().getTraitNullable(InvisibleTrait.class);
             return invisibleTrait != null && invisibleTrait.isInvisible();
