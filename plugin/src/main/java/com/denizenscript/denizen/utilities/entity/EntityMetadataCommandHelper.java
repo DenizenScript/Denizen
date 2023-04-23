@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.scripts.commands.entity;
+package com.denizenscript.denizen.utilities.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
