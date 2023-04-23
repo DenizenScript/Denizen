@@ -7,7 +7,6 @@ import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException
 import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -75,8 +74,8 @@ public class AttachCommand extends AbstractCommand {
                                    @ArgName("cancel") boolean cancel,
                                    @ArgName("offset") @ArgPrefixed @ArgDefaultNull LocationTag offset,
                                    @ArgName("relative") boolean relative,
-                                   @ArgName("yaw_offset") @ArgPrefixed @ArgDefaultNull ElementTag yawOffset,
-                                   @ArgName("pitch_offset") @ArgPrefixed @ArgDefaultNull ElementTag pitchOffset,
+                                   @ArgName("yaw_offset") @ArgPrefixed @ArgDefaultText("0") float yawOffset,
+                                   @ArgName("pitch_offset") @ArgPrefixed @ArgDefaultText("0") float pitchOffset,
                                    @ArgName("sync_server") boolean syncServer,
                                    @ArgName("no_rotate") boolean noRotate,
                                    @ArgName("no_pitch") boolean noPitch,
@@ -94,8 +93,8 @@ public class AttachCommand extends AbstractCommand {
                 attachment.to = target;
                 attachment.positionalOffset = offset == null ? null : offset.clone();
                 attachment.offsetRelative = relative;
-                attachment.yawAngleOffset = yawOffset == null ? 0 : yawOffset.asFloat();
-                attachment.pitchAngleOffset = pitchOffset == null ? 0 : pitchOffset.asFloat();
+                attachment.yawAngleOffset = yawOffset;
+                attachment.pitchAngleOffset = pitchOffset;
                 attachment.syncServer = syncServer;
                 attachment.forPlayer = player;
                 attachment.noRotate = noRotate;
