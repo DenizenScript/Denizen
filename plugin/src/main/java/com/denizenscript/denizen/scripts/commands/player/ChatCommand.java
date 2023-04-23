@@ -209,10 +209,11 @@ public class ChatCommand extends AbstractCommand {
         for (Talkable recipient : speechContext) {
             recipients.add(recipient.getEntity().getUniqueId());
         }
+        String parsedText = PaperAPITools.instance.convertTextToMiniMessage(text, true);
         double range = speechContext.getChatRange();
         for (Entity bystander : range == 0d ? Bukkit.getOnlinePlayers() : speechContext.getTalker().getEntity().getNearbyEntities(range, range, range)) {
             if (!recipients.contains(bystander.getUniqueId())) {
-                new TalkableEntity(bystander).talkNear(speechContext, PaperAPITools.instance.convertTextToMiniMessage(text, true));
+                new TalkableEntity(bystander).talkNear(speechContext, parsedText);
             }
         }
     }
