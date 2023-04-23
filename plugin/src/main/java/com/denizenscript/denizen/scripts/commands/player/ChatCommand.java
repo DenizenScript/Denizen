@@ -9,6 +9,8 @@ import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
@@ -21,10 +23,7 @@ import net.citizensnpcs.api.ai.speech.event.NPCSpeechEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class ChatCommand extends AbstractCommand {
 
@@ -134,102 +133,22 @@ public class ChatCommand extends AbstractCommand {
         }
     }
 
-    public static void speak(DenizenSpeechContext context) {
-        if (isNPC) {
-            NPCSpeechEvent event = new NPCSpeechEvent(context);
-            Bukkit.getServer().getPluginManager().callEvent(event);
+    public static void speak(DenizenSpeechContext speechContext) {
+        Entity talker = speechContext.getTalker().getEntity();
+        if (EntityTag.isCitizensNPC(talker)) {
+            NPCSpeechEvent event = new NPCSpeechEvent(speechContext);
+            Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 return;
             }
         }
-        Talkable talker = context.getTalker();
-        if (talker == null) {
-            return;
-        }
-
-        ScriptEntry entry = context.getScriptEntry();
+        ScriptEntry entry = speechContext.getScriptEntry();
         ScriptQueue queue = entry.getResidingQueue();
-
-        String defTalker = null;
-        if (queue.hasDefinition("talker")) {
-            defTalker = queue.getDefinition("talker");
-        }
-        queue.addDefinition("talker", new EntityTag(talker.getEntity()).identify());
-
-        String defMessage = null;
-        if (queue.hasDefinition("message")) {
-            defMessage = queue.getDefinition("message");
-        }
-        queue.addDefinition("message", context.getMessage());
-
-        // Chat to the world using Denizen chat settings
-        if (!context.hasRecipients()) {
-            String text = TagManager.tag(Settings.chatNoTargetFormat(), new BukkitTagContext(entry));
-            talkToBystanders(talker, text, context);
-        }
-
-        // Single recipient
-        else if (context.size() <= 1) {
-            // Send chat to target
-            String text = TagManager.tag(Settings.chatToTargetFormat(), new BukkitTagContext(entry));
-            for (Talkable entity : context) {
-                entity.talkTo(context, PaperAPITools.instance.convertTextToMiniMessage(text, true));
-            }
-            // Check if bystanders hear targeted chat
-            if (context.isBystandersEnabled()) {
-                String defTarget = null;
-                if (queue.hasDefinition("target")) {
-                    defTarget = queue.getDefinition("target");
-                }
-                queue.addDefinition("target", new EntityTag(context.iterator().next().getEntity()).identify());
-                String bystanderText = TagManager.tag(Settings.chatWithTargetToBystandersFormat(), new BukkitTagContext(entry));
-                talkToBystanders(talker, bystanderText, context);
-                if (defTarget != null) {
-                    queue.addDefinition("target", defTarget);
-                }
-            }
-        }
-
-        // Multiple recipients
-        else {
-            // Send chat to targets
-            String text = TagManager.tag(Settings.chatToTargetFormat(), new BukkitTagContext(entry));
-            for (Talkable entity : context) {
-                entity.talkTo(context, PaperAPITools.instance.convertTextToMiniMessage(text, true));
-            }
-            if (context.isBystandersEnabled()) {
-                String[] format = Settings.chatMultipleTargetsFormat().split("%target%");
-                if (format.length <= 1) {
-                    Debug.echoError("Invalid 'Commands.Chat.Options.Multiple targets format' in config.yml! Must have at least 1 %target%");
-                }
-                StringBuilder parsed = new StringBuilder();
-                Iterator<Talkable> iter = context.iterator();
-                int i = 0;
-                while (iter.hasNext()) {
-                    if (i == format.length - 1) {
-                        parsed.append(format[i]);
-                        break;
-                    }
-                    parsed.append(format[i]).append(new EntityTag(iter.next().getEntity()).getName());
-                    i++;
-                }
-                String targets = TagManager.tag(parsed.toString(), new BukkitTagContext(entry));
-
-                String defTargets = null;
-                if (queue.hasDefinition("targets")) {
-                    defTargets = queue.getDefinition("targets");
-                }
-                queue.addDefinition("targets", targets);
-
-                String bystanderText = TagManager.tag(Settings.chatWithTargetsToBystandersFormat(), new BukkitTagContext(entry));
-                talkToBystanders(talker, bystanderText, context);
-
-                if (defTargets != null) {
-                    queue.addDefinition("targets", defTargets);
-                }
-            }
-        }
-
+        ObjectTag defTalker = queue.getDefinitionObject("talker");
+        ObjectTag defMessage = queue.getDefinitionObject("message");
+        queue.addDefinition("talker", new EntityTag(talker));
+        queue.addDefinition("message", new ElementTag(speechContext.getMessage(), true));
+        talk(speechContext, entry, queue);
         if (defMessage != null) {
             queue.addDefinition("message", defMessage);
         }
@@ -238,31 +157,63 @@ public class ChatCommand extends AbstractCommand {
         }
     }
 
-    public static void talkToBystanders(Talkable talkable, String text, DenizenSpeechContext context) {
-        double range = context.getChatRange();
-        List<Entity> bystanderEntities;
-        if (range == 0D) {
-            bystanderEntities = new ArrayList<>(Bukkit.getServer().getOnlinePlayers());
+    private static void talk(DenizenSpeechContext speechContext, ScriptEntry entry, ScriptQueue queue) {
+        if (!speechContext.hasRecipients()) {
+            String text = TagManager.tag(Settings.chatNoTargetFormat(), new BukkitTagContext(entry));
+            talkToBystanders(text, speechContext);
+            return;
         }
-        else {
-            bystanderEntities = talkable.getEntity().getNearbyEntities(range, range, range);
+        String text = PaperAPITools.instance.convertTextToMiniMessage(TagManager.tag(Settings.chatToTargetFormat(), new BukkitTagContext(entry)), true);
+        for (Talkable entity : speechContext) {
+            entity.talkTo(speechContext, text);
         }
-        for (Entity bystander : bystanderEntities) {
-            boolean shouldTalk = true;
-            // Exclude targeted recipients
-            if (context.hasRecipients()) {
-                for (Talkable target : context) {
-                    if (target.getEntity().equals(bystander)) {
-                        shouldTalk = false;
-                        break;
-                    }
-                }
+        if (!speechContext.isBystandersEnabled()) {
+            return;
+        }
+        if (speechContext.size() == 1) {
+            ObjectTag defTarget = queue.getDefinitionObject("target");
+            queue.addDefinition("target", new EntityTag(speechContext.iterator().next().getEntity()));
+            talkToBystanders(TagManager.tag(Settings.chatWithTargetToBystandersFormat(), new BukkitTagContext(entry)), speechContext);
+            if (defTarget != null) {
+                queue.addDefinition("target", defTarget);
             }
-            // Found a nearby LivingEntity, make it Talkable and
-            // talkNear it if 'should_talk'
-            if (shouldTalk) {
-                new TalkableEntity(bystander).talkNear(context, PaperAPITools.instance.convertTextToMiniMessage(text, true));
+            return;
+        }
+        String[] format = Settings.chatMultipleTargetsFormat().split("%target%");
+        if (format.length <= 1) {
+            Debug.echoError("Invalid 'Commands.Chat.Options.Multiple targets format' in config.yml! Must have at least 1 %target%");
+        }
+        StringBuilder parsed = new StringBuilder();
+        int i = 0;
+        for (Talkable target : speechContext) {
+            parsed.append(format[i]);
+            if (i == format.length - 1) {
+                break;
+            }
+            parsed.append(new EntityTag(target.getEntity()).getName());
+            i++;
+        }
+        String targets = TagManager.tag(parsed.toString(), new BukkitTagContext(entry));
+        ObjectTag defTargets = queue.getDefinitionObject("targets");
+        queue.addDefinition("targets", new ElementTag(targets, true));
+        String bystanderText = TagManager.tag(Settings.chatWithTargetsToBystandersFormat(), new BukkitTagContext(entry));
+        talkToBystanders(bystanderText, speechContext);
+        if (defTargets != null) {
+            queue.addDefinition("targets", defTargets);
+        }
+    }
+
+    private static void talkToBystanders(String text, DenizenSpeechContext speechContext) {
+        Set<UUID> recipients = new HashSet<>(speechContext.size());
+        for (Talkable recipient : speechContext) {
+            recipients.add(recipient.getEntity().getUniqueId());
+        }
+        double range = speechContext.getChatRange();
+        for (Entity bystander : range == 0d ? Bukkit.getOnlinePlayers() : speechContext.getTalker().getEntity().getNearbyEntities(range, range, range)) {
+            if (!recipients.contains(bystander.getUniqueId())) {
+                new TalkableEntity(bystander).talkNear(speechContext, PaperAPITools.instance.convertTextToMiniMessage(text, true));
             }
         }
     }
+
 }
