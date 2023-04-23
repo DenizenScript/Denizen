@@ -3,12 +3,11 @@ package com.denizenscript.denizen.scripts.commands.entity;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -23,6 +22,7 @@ public class AttachCommand extends AbstractCommand {
         setSyntax("attach [<entity>|...] [to:<entity>/cancel] (offset:<offset>) (relative) (yaw_offset:<#.#>) (pitch_offset:<#.#>) (sync_server) (no_rotate/no_pitch) (for:<player>|...)");
         setRequiredArguments(2, 9);
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -69,99 +69,23 @@ public class AttachCommand extends AbstractCommand {
     // - attach <server.list_npcs.random> to:<npc> offset:0,3,0
     // -->
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("to")
-                    && !scriptEntry.hasObject("cancel")
-                    && arg.matchesPrefix("to")
-                    && arg.matchesArgumentType(EntityTag.class)) {
-                scriptEntry.addObject("to", arg.asType(EntityTag.class));
-            }
-            else if (!scriptEntry.hasObject("cancel")
-                    && !scriptEntry.hasObject("to")
-                    && arg.matches("cancel")) {
-                scriptEntry.addObject("cancel", new ElementTag(true));
-            }
-            else if (!scriptEntry.hasObject("relative")
-                    && arg.matches("relative")) {
-                scriptEntry.addObject("relative", new ElementTag(true));
-            }
-            else if (!scriptEntry.hasObject("sync_server")
-                    && arg.matches("sync_server")) {
-                scriptEntry.addObject("sync_server", new ElementTag(true));
-            }
-            else if (!scriptEntry.hasObject("no_rotate")
-                    && arg.matches("no_rotate")) {
-                scriptEntry.addObject("no_rotate", new ElementTag(true));
-            }
-            else if (!scriptEntry.hasObject("no_pitch")
-                    && arg.matches("no_pitch")) {
-                scriptEntry.addObject("no_pitch", new ElementTag(true));
-            }
-            else if (!scriptEntry.hasObject("yaw_offset")
-                    && arg.matchesPrefix("yaw_offset")
-                    && arg.matchesFloat()) {
-                scriptEntry.addObject("yaw_offset", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("pitch_offset")
-                    && arg.matchesPrefix("pitch_offset")
-                    && arg.matchesFloat()) {
-                scriptEntry.addObject("pitch_offset", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("offset")
-                    && arg.matchesPrefix("offset")
-                    && arg.matchesArgumentType(LocationTag.class)) {
-                scriptEntry.addObject("offset", arg.asType(LocationTag.class));
-            }
-            else if (!scriptEntry.hasObject("for")
-                    && arg.matchesPrefix("for")
-                    && arg.matchesArgumentList(PlayerTag.class)) {
-                scriptEntry.addObject("for", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
-            }
-            else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(EntityTag.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
-            }
-            else {
-                arg.reportUnhandled();
-            }
-        }
-        if (!scriptEntry.hasObject("entities")) {
-            throw new InvalidArgumentsException("Must specify attaching entities!");
-        }
-        if (!scriptEntry.hasObject("to") && !scriptEntry.hasObject("cancel")) {
-            throw new InvalidArgumentsException("Must specify a target entity, or 'cancel'!");
-        }
-        scriptEntry.defaultObject("cancel", new ElementTag(false));
-        scriptEntry.defaultObject("relative", new ElementTag(false));
-        scriptEntry.defaultObject("sync_server", new ElementTag(false));
-        scriptEntry.defaultObject("no_rotate", new ElementTag(false));
-        scriptEntry.defaultObject("no_pitch", new ElementTag(false));
-        scriptEntry.defaultObject("yaw_offset", new ElementTag(0f));
-        scriptEntry.defaultObject("pitch_offset", new ElementTag(0f));
-    }
-
-    @Override
-    public void execute(final ScriptEntry scriptEntry) {
-        LocationTag offset = scriptEntry.getObjectTag("offset");
-        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        EntityTag target = scriptEntry.getObjectTag("to");
-        List<PlayerTag> forPlayers = (List<PlayerTag>) scriptEntry.getObject("for");
-        ElementTag cancel = scriptEntry.getElement("cancel");
-        ElementTag relative = scriptEntry.getElement("relative");
-        ElementTag sync_server = scriptEntry.getElement("sync_server");
-        ElementTag no_rotate = scriptEntry.getElement("no_rotate");
-        ElementTag no_pitch = scriptEntry.getElement("no_pitch");
-        ElementTag yaw_offset = scriptEntry.getElement("yaw_offset");
-        ElementTag pitch_offset = scriptEntry.getElement("pitch_offset");
-        boolean shouldCancel = cancel.asBoolean();
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("entities", entities), shouldCancel ? cancel : target, relative, offset,
-                    yaw_offset, pitch_offset, sync_server, no_rotate, no_pitch, db("for", forPlayers));
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("entities") @ArgLinear @ArgSubType(EntityTag.class) List<EntityTag> entities,
+                                   @ArgName("to") @ArgPrefixed @ArgDefaultNull EntityTag target,
+                                   @ArgName("cancel") boolean cancel,
+                                   @ArgName("offset") @ArgPrefixed @ArgDefaultNull LocationTag offset,
+                                   @ArgName("relative") boolean relative,
+                                   @ArgName("yaw_offset") @ArgPrefixed @ArgDefaultNull ElementTag yawOffset,
+                                   @ArgName("pitch_offset") @ArgPrefixed @ArgDefaultNull ElementTag pitchOffset,
+                                   @ArgName("sync_server") boolean syncServer,
+                                   @ArgName("no_rotate") boolean noRotate,
+                                   @ArgName("no_pitch") boolean noPitch,
+                                   @ArgName("for") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> forPlayers) {
+        if (target == null && !cancel) {
+            throw new InvalidArgumentsRuntimeException("Must specify a target entity, or 'cancel'!");
         }
         BiConsumer<EntityTag, UUID> procPlayer = (entity, player) -> {
-            if (shouldCancel) {
+            if (cancel) {
                 EntityAttachmentHelper.removeAttachment(entity.getUUID(), player);
             }
             else {
@@ -169,22 +93,22 @@ public class AttachCommand extends AbstractCommand {
                 attachment.attached = entity;
                 attachment.to = target;
                 attachment.positionalOffset = offset == null ? null : offset.clone();
-                attachment.offsetRelative = relative.asBoolean();
-                attachment.yawAngleOffset = yaw_offset.asFloat();
-                attachment.pitchAngleOffset = pitch_offset.asFloat();
-                attachment.syncServer = sync_server.asBoolean();
+                attachment.offsetRelative = relative;
+                attachment.yawAngleOffset = yawOffset == null ? 0 : yawOffset.asFloat();
+                attachment.pitchAngleOffset = pitchOffset == null ? 0 : pitchOffset.asFloat();
+                attachment.syncServer = syncServer;
                 attachment.forPlayer = player;
-                attachment.noRotate = no_rotate.asBoolean();
-                attachment.noPitch = no_pitch.asBoolean();
+                attachment.noRotate = noRotate;
+                attachment.noPitch = noPitch;
                 EntityAttachmentHelper.registerAttachment(attachment);
             }
         };
         for (EntityTag entity : entities) {
-            if (!entity.isSpawned() && !entity.isFake && !shouldCancel) {
+            if (!entity.isSpawned() && !entity.isFake && !cancel) {
                 Debug.echoError("Cannot attach entity '" + entity + "': entity is not spawned.");
                 continue;
             }
-            if (forPlayers == null || (forPlayers.isEmpty() && sync_server.asBoolean())) {
+            if (forPlayers == null || (forPlayers.isEmpty() && syncServer)) {
                 procPlayer.accept(entity, null);
             }
             else {
