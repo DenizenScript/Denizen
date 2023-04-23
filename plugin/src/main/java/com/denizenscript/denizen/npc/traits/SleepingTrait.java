@@ -102,8 +102,7 @@ public class SleepingTrait extends Trait {
             Debug.echoError("NPC " + npc.getId() + " cannot sleep: invalid bed location.");
             return;
         }
-        //TODO Adjust the .add()
-        npc.getEntity().teleport(location.clone().add(0.5, 0, 0.5));
+        npc.getEntity().teleport(location.clone());
         bedLocation = location.clone();
         internalSleepNow();
     }

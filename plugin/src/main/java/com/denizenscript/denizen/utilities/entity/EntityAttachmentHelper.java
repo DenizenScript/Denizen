@@ -240,15 +240,12 @@ public class EntityAttachmentHelper {
         }
     }
 
-    public static void registerAttachment(AttachmentData attachment) {
-        NetworkInterceptHelper.enable();
-        removeAttachment(attachment.attached.getUUID(), attachment.forPlayer);
-        attachment.startTask();
-        PlayerAttachMap map = attachedEntityToData.get(attachment.attached.getUUID());
+    public static void addPlayerAttachMap(Map<UUID, PlayerAttachMap> target, AttachmentData attachment) {
+        PlayerAttachMap map = target.get(attachment.attached.getUUID());
         if (map == null) {
             map = new PlayerAttachMap();
             map.attached = attachment.attached;
-            attachedEntityToData.put(attachment.attached.getUUID(), map);
+            target.put(attachment.attached.getUUID(), map);
         }
         if (attachment.forPlayer == null) {
             map.everyoneAttachment = attachment;
@@ -259,12 +256,19 @@ public class EntityAttachmentHelper {
             }
             map.playerToAttachment.put(attachment.forPlayer, attachment);
         }
+    }
+
+    public static void registerAttachment(AttachmentData attachment) {
+        NetworkInterceptHelper.enable();
+        removeAttachment(attachment.attached.getUUID(), attachment.forPlayer);
+        attachment.startTask();
         EntityAttachedToMap toMap = toEntityToData.get(attachment.to.getUUID());
         if (toMap == null) {
             toMap = new EntityAttachedToMap();
             toEntityToData.put(attachment.to.getUUID(), toMap);
         }
-        toMap.attachedToMap.put(attachment.attached.getUUID(), map);
+        addPlayerAttachMap(attachedEntityToData, attachment);
+        addPlayerAttachMap(toMap.attachedToMap, attachment);
         if (attachment.syncServer) {
             attachment.doServerSync();
         }
