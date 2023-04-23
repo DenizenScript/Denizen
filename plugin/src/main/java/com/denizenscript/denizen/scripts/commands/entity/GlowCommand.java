@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.scripts.commands.player;
+package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -29,7 +29,7 @@ public class GlowCommand extends AbstractCommand {
     // @Required 0
     // @Maximum 3
     // @Short Sets whether an NPC or entity is glowing.
-    // @Group player
+    // @Group entity
     //
     // @Description
     // Sets whether the specified entities glow, defaults to the linked player/NPC if none were specified.
