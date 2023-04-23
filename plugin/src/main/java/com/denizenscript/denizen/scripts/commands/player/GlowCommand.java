@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.entity.EntityMetadataCommandHelper;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -14,7 +13,7 @@ import java.util.List;
 
 public class GlowCommand extends AbstractCommand {
 
-    public static final EntityMetadataCommandHelper helper = new EntityMetadataCommandHelper(GlowCommand::isGlowing, GlowCommand::setGlowing);
+    public static final EntityMetadataCommandHelper helper = new EntityMetadataCommandHelper(Entity::isGlowing, GlowCommand::setGlowing);
 
     public GlowCommand() {
         setName("glow");
@@ -64,13 +63,6 @@ public class GlowCommand extends AbstractCommand {
     // Use to reset an entity's fake glow state for the linked player.
     // - glow <[entity]> reset for:<player>
     // -->
-
-    public static boolean isGlowing(Entity entity) {
-        if (EntityTag.isCitizensNPC(entity)) {
-            return NPCTag.fromEntity(entity).getCitizen().data().get(NPC.Metadata.GLOWING);
-        }
-        return entity.isGlowing();
-    }
 
     public static void setGlowing(EntityTag entity, boolean glowing) {
         if (entity.isCitizensNPC()) {
