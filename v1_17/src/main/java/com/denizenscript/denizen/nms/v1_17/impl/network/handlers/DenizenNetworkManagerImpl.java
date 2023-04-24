@@ -953,9 +953,6 @@ public class DenizenNetworkManagerImpl extends Connection {
                 }
             }
         }
-        else if (packet instanceof ClientboundSetEntityDataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
-            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((ClientboundSetEntityDataPacket) packet));
-        }
         return false;
     }
 
