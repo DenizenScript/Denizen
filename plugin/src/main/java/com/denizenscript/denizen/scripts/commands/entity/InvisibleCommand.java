@@ -31,7 +31,7 @@ public class InvisibleCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Invisible
-    // @Syntax invisible (<entity>) ({true}/false/toggle/reset) (for:<player>|...)
+    // @Syntax invisible (<entity>|...) ({true}/false/toggle/reset) (for:<player>|...)
     // @Required 0
     // @Maximum 3
     // @Short Sets whether an NPC or entity are invisible.
