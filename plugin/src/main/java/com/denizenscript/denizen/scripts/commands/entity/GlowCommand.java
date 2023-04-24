@@ -75,7 +75,7 @@ public class GlowCommand extends AbstractCommand {
 
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("target") @ArgLinear @ArgDefaultNull @ArgSubType(EntityTag.class) List<EntityTag> targets,
-                                   @ArgName("state") @ArgDefaultText("TRUE") EntityMetadataCommandHelper.Action action,
+                                   @ArgName("state") @ArgDefaultText("true") EntityMetadataCommandHelper.Action action,
                                    @ArgName("for") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> forPlayers) {
         helper.execute(scriptEntry, targets, action, forPlayers);
     }
