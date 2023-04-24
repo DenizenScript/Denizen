@@ -902,8 +902,8 @@ public class DenizenNetworkManagerImpl extends Connection {
                         }
                         return;
                     }
-                    if (att.positionalOffset != null && (packet instanceof ClientboundMoveEntityPacket.Pos || packet instanceof ClientboundMoveEntityPacket.PosRot)) {
-                        boolean isRotate = packet instanceof ClientboundMoveEntityPacket.PosRot;
+                    if (att.positionalOffset != null) {
+                        boolean isRotate = packet instanceof ClientboundMoveEntityPacket.PosRot || packet instanceof ClientboundMoveEntityPacket.Rot;
                         byte yaw, pitch;
                         if (att.noRotate) {
                             Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
@@ -939,7 +939,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                         int offX = (int) (moveNeeded.getX() * (32 * 128));
                         int offY = (int) (moveNeeded.getY() * (32 * 128));
                         int offZ = (int) (moveNeeded.getZ() * (32 * 128));
-                        if (forceTele || offX < Short.MIN_VALUE || offX > Short.MAX_VALUE
+                        if ((isRotate && att.offsetRelative) || forceTele || offX < Short.MIN_VALUE || offX > Short.MAX_VALUE
                                 || offY < Short.MIN_VALUE || offY > Short.MAX_VALUE
                                 || offZ < Short.MIN_VALUE || offZ > Short.MAX_VALUE) {
                             ClientboundTeleportEntityPacket newTeleportPacket = new ClientboundTeleportEntityPacket(e);
@@ -980,6 +980,35 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (e.passengers != null && !e.passengers.isEmpty()) {
             for (Entity ent : e.passengers) {
                 tryProcessMovePacketForAttach(packet, ent);
+            }
+        }
+    }
+
+    public void tryProcessRotateHeadPacketForAttach(ClientboundRotateHeadPacket packet, Entity e) throws IllegalAccessException {
+        EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
+        if (attList != null) {
+            for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
+                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
+                if (attMap.attached.isValid() && att != null) {
+                    byte yaw = packet.getYHeadRot();
+                    Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
+                    if (att.positionalOffset != null) {
+                        if (att.noRotate) {
+                            yaw = EntityAttachmentHelper.compressAngle(attachedEntity.getYRot());
+                        }
+                        yaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
+                    }
+                    ClientboundRotateHeadPacket pNew = new ClientboundRotateHeadPacket(attachedEntity, yaw);
+                    if (NMSHandler.debugPackets) {
+                        doPacketOutput("Head Rotation Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getScoreboardName());
+                    }
+                    oldManager.send(pNew);
+                }
+            }
+        }
+        if (e.passengers != null && !e.passengers.isEmpty()) {
+            for (Entity ent : e.passengers) {
+                tryProcessRotateHeadPacketForAttach(packet, ent);
             }
         }
     }
@@ -1062,36 +1091,44 @@ public class DenizenNetworkManagerImpl extends Connection {
             return false;
         }
         try {
-            if (packet instanceof ClientboundMoveEntityPacket) {
-                Entity e = ((ClientboundMoveEntityPacket) packet).getEntity(player.getLevel());
+            if (packet instanceof ClientboundMoveEntityPacket moveEntityPacket) {
+                Entity e = moveEntityPacket.getEntity(player.getLevel());
                 if (e == null) {
                     return false;
                 }
                 if (!e.isPassenger()) {
-                    tryProcessMovePacketForAttach((ClientboundMoveEntityPacket) packet, e);
+                    tryProcessMovePacketForAttach(moveEntityPacket, e);
                 }
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
-            else if (packet instanceof ClientboundSetEntityMotionPacket) {
-                int ider = ((ClientboundSetEntityMotionPacket) packet).getId();
+            else if (packet instanceof ClientboundRotateHeadPacket rotateHeadPacket) {
+                Entity e = rotateHeadPacket.getEntity(player.getLevel());
+                if (e == null) {
+                    return false;
+                }
+                tryProcessRotateHeadPacketForAttach(rotateHeadPacket, e);
+                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
+            }
+            else if (packet instanceof ClientboundSetEntityMotionPacket setEntityMotionPacket) {
+                int ider = setEntityMotionPacket.getId();
                 Entity e = player.getLevel().getEntity(ider);
                 if (e == null) {
                     return false;
                 }
-                tryProcessVelocityPacketForAttach((ClientboundSetEntityMotionPacket) packet, e);
+                tryProcessVelocityPacketForAttach(setEntityMotionPacket, e);
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
-            else if (packet instanceof ClientboundTeleportEntityPacket) {
-                int ider = ((ClientboundTeleportEntityPacket) packet).getId();
+            else if (packet instanceof ClientboundTeleportEntityPacket teleportEntityPacket) {
+                int ider = teleportEntityPacket.getId();
                 Entity e = player.getLevel().getEntity(ider);
                 if (e == null) {
                     return false;
                 }
-                tryProcessTeleportPacketForAttach((ClientboundTeleportEntityPacket) packet, e, VECTOR_ZERO);
+                tryProcessTeleportPacketForAttach(teleportEntityPacket, e, VECTOR_ZERO);
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
-            else if (packet instanceof ClientboundRemoveEntitiesPacket) {
-                for (int id : ((ClientboundRemoveEntitiesPacket) packet).getEntityIds()) {
+            else if (packet instanceof ClientboundRemoveEntitiesPacket removeEntitiesPacket) {
+                for (int id : removeEntitiesPacket.getEntityIds()) {
                     Entity e = player.getLevel().getEntity(id);
                     if (e != null) {
                         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
