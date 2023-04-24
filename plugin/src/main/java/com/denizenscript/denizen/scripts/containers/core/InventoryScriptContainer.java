@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -13,6 +12,7 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
@@ -254,10 +254,13 @@ public class InventoryScriptContainer extends ScriptContainer {
                     InstantQueue queue = new InstantQueue(getName());
                     queue.addEntries(entries);
                     if (contains("definitions", Map.class)) {
-                        YamlConfiguration section = getConfigurationSection("definitions");
-                        for (StringHolder string : section.getKeys(false)) {
-                            String definition = string.str;
-                            queue.addDefinition(definition, section.getString(definition));
+                        for (Map.Entry<StringHolder, Object> entry : getConfigurationSection("definitions").getMap().entrySet()) {
+                            ItemTag definitionValue = ItemTag.valueOf(TagManager.tag(entry.getValue().toString(), context), context);
+                            if (definitionValue == null) {
+                                Debug.echoError(this, "Invalid item '" + entry.getValue() + "' for definition '" + entry.getKey().str + "'");
+                                continue;
+                            }
+                            queue.addDefinition(entry.getKey().low, definitionValue);
                         }
                     }
                     queue.procedural = true;
