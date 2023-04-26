@@ -22,7 +22,7 @@ public class TradeTag implements ObjectTag, Adjustable {
     // @base ElementTag
     // @implements PropertyHolderObject
     // @ExampleTagBase trade[trade[result=diamond;max_use=10;inputs=stick]]
-    // @ExampleValues trade[result=diamond;max_use=10;inputs=stick]
+    // @ExampleValues trade[result=diamond;max_uses=10;inputs=stick]
     // @format
     // The identity format for trades is just the text 'trade'. All other data is specified through properties.
     //

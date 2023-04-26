@@ -7,7 +7,6 @@ import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException
 import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
-import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 import java.util.List;
@@ -68,8 +67,7 @@ public class AttachCommand extends AbstractCommand {
     // - attach <server.list_npcs.random> to:<npc> offset:0,3,0
     // -->
 
-    public static void autoExecute(ScriptEntry scriptEntry,
-                                   @ArgName("entities") @ArgLinear @ArgSubType(EntityTag.class) List<EntityTag> entities,
+    public static void autoExecute(@ArgName("entities") @ArgLinear @ArgSubType(EntityTag.class) List<EntityTag> entities,
                                    @ArgName("to") @ArgPrefixed @ArgDefaultNull EntityTag target,
                                    @ArgName("cancel") boolean cancel,
                                    @ArgName("offset") @ArgPrefixed @ArgDefaultNull LocationTag offset,

@@ -2270,6 +2270,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.visual_pose>
         // @returns ElementTag
+        // @mechanism EntityTag.visual_pose
         // @group attributes
         // @description
         // Returns the name of the entity's current visual pose.
