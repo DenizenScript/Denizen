@@ -63,7 +63,6 @@ public class EntityDisplayEntityData implements Property {
     public MapTag getData() {
         Display display = getDisplay();
         MapTag map = new MapTag();
-        map.putObject("billboard", new ElementTag(display.getBillboard()));
         if (display.getBrightness() != null) {
             map.putObject("brightness_block", new ElementTag(display.getBrightness().getBlockLight()));
             map.putObject("brightness_sky", new ElementTag(display.getBrightness().getSkyLight()));
@@ -127,7 +126,7 @@ public class EntityDisplayEntityData implements Property {
         // @description
         // Returns a map tag of Display Entity data. This is a placeholder until more-proper tools are developed.
         // This placeholder exists to enable you to play with the new entity type straight away. Details are subject to change. Be prepared to update your scripts soon if you use this.
-        // Keys: billboard, brightness_block, brightness_sky, width, height, glow_color, interpolation_delay, interpolation_duration, shadow_radius, shadow_strength, view_range,
+        // Keys: brightness_block, brightness_sky, width, height, glow_color, interpolation_delay, interpolation_duration, shadow_radius, shadow_strength, view_range,
         // transformation_left_rotation, transformation_right_rotation, transformation_scale, transformation_translation
         // (Note: rotations use a temporary ListTag format, subject to replacement).
         // For block displays: (N/A)
@@ -151,7 +150,6 @@ public class EntityDisplayEntityData implements Property {
         // -->
         PropertyParser.registerMechanism(EntityDisplayEntityData.class, MapTag.class, "display_entity_data", (object, mechanism, map) -> {
             Display display = object.getDisplay();
-            display.setBillboard(map.getElement("billboard", display.getBillboard().name()).asEnum(Display.Billboard.class));
             if (map.getObject("brightness_block") != null) {
                 display.setBrightness(new Display.Brightness(map.getElement("brightness_block").asInt(), map.getElement("brightness_sky").asInt()));
             }
