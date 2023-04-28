@@ -75,6 +75,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityFlower.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFreezeDuration.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFramed.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityGlowColor.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityGravity.class, EntityTag.class);
         PropertyParser.registerProperty(EntityHasNectar.class, EntityTag.class);
         PropertyParser.registerProperty(EntityHasStung.class, EntityTag.class);
