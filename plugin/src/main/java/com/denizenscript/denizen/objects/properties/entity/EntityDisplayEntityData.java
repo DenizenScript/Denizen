@@ -63,10 +63,6 @@ public class EntityDisplayEntityData implements Property {
     public MapTag getData() {
         Display display = getDisplay();
         MapTag map = new MapTag();
-        if (display.getBrightness() != null) {
-            map.putObject("brightness_block", new ElementTag(display.getBrightness().getBlockLight()));
-            map.putObject("brightness_sky", new ElementTag(display.getBrightness().getSkyLight()));
-        }
         map.putObject("width", new ElementTag(display.getDisplayWidth()));
         map.putObject("height", new ElementTag(display.getDisplayHeight()));
         if (display.getGlowColorOverride() != null) {
@@ -150,9 +146,6 @@ public class EntityDisplayEntityData implements Property {
         // -->
         PropertyParser.registerMechanism(EntityDisplayEntityData.class, MapTag.class, "display_entity_data", (object, mechanism, map) -> {
             Display display = object.getDisplay();
-            if (map.getObject("brightness_block") != null) {
-                display.setBrightness(new Display.Brightness(map.getElement("brightness_block").asInt(), map.getElement("brightness_sky").asInt()));
-            }
             display.setDisplayWidth(map.getElement("width", String.valueOf(display.getWidth())).asFloat());
             display.setDisplayHeight(map.getElement("height", String.valueOf(display.getHeight())).asFloat());
             if (map.getObject("glow_color") != null) {
