@@ -56,6 +56,10 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityConversionPlayer.class, EntityTag.class);
         PropertyParser.registerProperty(EntityConversionTime.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCritical.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityCullingWidth.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityCullingHeight.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityCustomName.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCustomNameVisible.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDarkDuration.class, EntityTag.class);

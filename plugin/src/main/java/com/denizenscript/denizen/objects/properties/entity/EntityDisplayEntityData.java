@@ -63,8 +63,6 @@ public class EntityDisplayEntityData implements Property {
     public MapTag getData() {
         Display display = getDisplay();
         MapTag map = new MapTag();
-        map.putObject("width", new ElementTag(display.getDisplayWidth()));
-        map.putObject("height", new ElementTag(display.getDisplayHeight()));
         map.putObject("interpolation_delay", new DurationTag((long) display.getInterpolationDelay()));
         map.putObject("interpolation_duration", new DurationTag((long) display.getInterpolationDuration()));
         map.putObject("shadow_radius", new ElementTag(display.getShadowRadius()));
@@ -119,7 +117,7 @@ public class EntityDisplayEntityData implements Property {
         // @description
         // Returns a map tag of Display Entity data. This is a placeholder until more-proper tools are developed.
         // This placeholder exists to enable you to play with the new entity type straight away. Details are subject to change. Be prepared to update your scripts soon if you use this.
-        // Keys: width, height, interpolation_delay, interpolation_duration, shadow_radius, shadow_strength, view_range,
+        // Keys: interpolation_delay, interpolation_duration, shadow_radius, shadow_strength, view_range,
         // transformation_left_rotation, transformation_right_rotation, transformation_scale, transformation_translation
         // (Note: rotations use a temporary ListTag format, subject to replacement).
         // For block displays: (N/A)
@@ -143,8 +141,6 @@ public class EntityDisplayEntityData implements Property {
         // -->
         PropertyParser.registerMechanism(EntityDisplayEntityData.class, MapTag.class, "display_entity_data", (object, mechanism, map) -> {
             Display display = object.getDisplay();
-            display.setDisplayWidth(map.getElement("width", String.valueOf(display.getWidth())).asFloat());
-            display.setDisplayHeight(map.getElement("height", String.valueOf(display.getHeight())).asFloat());
             if (map.getObject("interpolation_delay") != null) {
                 display.setInterpolationDelay(map.getObjectAs("interpolation_delay", DurationTag.class, mechanism.context).getTicksAsInt());
                 display.setInterpolationDuration(map.getObjectAs("interpolation_duration", DurationTag.class, mechanism.context).getTicksAsInt());
