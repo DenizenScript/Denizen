@@ -100,7 +100,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityPatrolLeader.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPatrolTarget.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPickupStatus.class, EntityTag.class);
-        PropertyParser.registerProperty(EntityPivot.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityPivot.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityPlayerCreated.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPlayingDead.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPotion.class, EntityTag.class);

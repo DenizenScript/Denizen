@@ -25,6 +25,11 @@ public class EntityPivot extends EntityProperty<ElementTag> {
     }
 
     @Override
+    public boolean isDefaultValue(ElementTag value) {
+        return value.asEnum(Display.Billboard.class) == Display.Billboard.FIXED;
+    }
+
+    @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         if (mechanism.requireEnum(Display.Billboard.class)) {
             as(Display.class).setBillboard(value.asEnum(Display.Billboard.class));
