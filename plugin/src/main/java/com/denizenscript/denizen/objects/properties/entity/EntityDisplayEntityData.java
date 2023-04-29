@@ -63,7 +63,6 @@ public class EntityDisplayEntityData implements Property {
     public MapTag getData() {
         Display display = getDisplay();
         MapTag map = new MapTag();
-        map.putObject("shadow_radius", new ElementTag(display.getShadowRadius()));
         map.putObject("shadow_strength", new ElementTag(display.getShadowStrength()));
         Transformation trans = display.getTransformation();
         map.putObject("transformation_left_rotation", convertQuaternion(trans.getLeftRotation()));
@@ -115,7 +114,7 @@ public class EntityDisplayEntityData implements Property {
         // @description
         // Returns a map tag of Display Entity data. This is a placeholder until more-proper tools are developed.
         // This placeholder exists to enable you to play with the new entity type straight away. Details are subject to change. Be prepared to update your scripts soon if you use this.
-        // Keys: shadow_radius, shadow_strength, view_range,
+        // Keys: shadow_strength, view_range,
         // transformation_left_rotation, transformation_right_rotation, transformation_scale, transformation_translation
         // (Note: rotations use a temporary ListTag format, subject to replacement).
         // For block displays: (N/A)
@@ -139,7 +138,6 @@ public class EntityDisplayEntityData implements Property {
         // -->
         PropertyParser.registerMechanism(EntityDisplayEntityData.class, MapTag.class, "display_entity_data", (object, mechanism, map) -> {
             Display display = object.getDisplay();
-            display.setShadowRadius(map.getElement("shadow_radius", String.valueOf(display.getShadowRadius())).asFloat());
             display.setShadowStrength(map.getElement("shadow_strength", String.valueOf(display.getShadowStrength())).asFloat());
             if (map.getObject("transformation_translation") != null) {
                 Vector3f translation = toVector(map.getObjectAs("transformation_translation", LocationTag.class, mechanism.context));
