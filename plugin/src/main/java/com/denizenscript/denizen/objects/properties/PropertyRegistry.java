@@ -126,6 +126,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntitySmall.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityShadowRadius.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityShadowStrength.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityShivering.class, EntityTag.class);
         PropertyParser.registerProperty(EntityShotAtAngle.class, EntityTag.class);
