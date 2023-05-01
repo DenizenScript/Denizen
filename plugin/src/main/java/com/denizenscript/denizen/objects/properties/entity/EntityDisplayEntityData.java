@@ -1,11 +1,10 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.*;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.BlockDisplay;
@@ -14,7 +13,6 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 import java.util.Arrays;
 
@@ -44,20 +42,15 @@ public class EntityDisplayEntityData implements Property {
         return (Display) entity.getBukkitEntity();
     }
 
-    public static LocationTag convertVector(Vector3f vector) {
-        return new LocationTag(null, vector.x, vector.y, vector.z);
-    }
-
     public static ListTag convertQuaternion(Quaternionf quat) {
         return new ListTag(Arrays.asList(new ElementTag(quat.x), new ElementTag(quat.y), new ElementTag(quat.z), new ElementTag(quat.w)));
     }
 
-    public static Vector3f toVector(LocationTag loc) {
-        return new Vector3f((float) loc.getX(), (float) loc.getY(), (float) loc.getZ());
-    }
-
-    public static Quaternionf toQuaternion(ListTag list) {
-        return new Quaternionf(list.getObject(0).asElement().asFloat(), list.getObject(1).asElement().asFloat(), list.getObject(2).asElement().asFloat(), list.getObject(3).asElement().asFloat());
+    public static void setToQuaternion(Quaternionf quaternion, ListTag list) {
+        if (list == null) {
+            return;
+        }
+        quaternion.set(list.getObject(0).asElement().asFloat(), list.getObject(1).asElement().asFloat(), list.getObject(2).asElement().asFloat(), list.getObject(3).asElement().asFloat());
     }
 
     public MapTag getData() {
@@ -135,10 +128,13 @@ public class EntityDisplayEntityData implements Property {
         // -->
         PropertyParser.registerMechanism(EntityDisplayEntityData.class, MapTag.class, "display_entity_data", (object, mechanism, map) -> {
             Display display = object.getDisplay();
-            if (map.getObject("transformation_left_rotation") != null) {
-                Quaternionf leftRot = toQuaternion(map.getObjectAs("transformation_left_rotation", ListTag.class, mechanism.context));
-                Quaternionf rightRot = toQuaternion(map.getObjectAs("transformation_right_rotation", ListTag.class, mechanism.context));
-                display.setTransformation(new Transformation(display.getTransformation().getTranslation(), leftRot, display.getTransformation().getScale(), rightRot));
+            ListTag leftRotation = map.getObjectAs("transformation_left_rotation", ListTag.class, mechanism.context);
+            ListTag rightRotation = map.getObjectAs("transformation_right_rotation", ListTag.class, mechanism.context);
+            if (leftRotation != null || rightRotation != null) {
+                Transformation transformation = display.getTransformation();
+                setToQuaternion(transformation.getLeftRotation(), leftRotation);
+                setToQuaternion(transformation.getRightRotation(), rightRotation);
+                display.setTransformation(transformation);
             }
             display.setViewRange(map.getElement("view_range", String.valueOf(display.getViewRange())).asFloat());
             if (display instanceof BlockDisplay block) {
