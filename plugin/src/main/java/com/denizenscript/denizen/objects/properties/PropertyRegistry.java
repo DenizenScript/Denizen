@@ -72,6 +72,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityEquipment.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExplosionFire.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExplosionRadius.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityEyeTargetLocation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFirework.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFireworkLifetime.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFixed.class, EntityTag.class);
@@ -144,8 +145,10 @@ public class PropertyRegistry {
         }
         PropertyParser.registerProperty(EntityStrength.class, EntityTag.class);
         PropertyParser.registerProperty(EntityTame.class, EntityTag.class);
-        PropertyParser.registerProperty(EntityEyeTargetLocation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityTrades.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityTranslation.class, EntityTag.class);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
             PropertyParser.registerProperty(EntityTrapped.class, EntityTag.class);
             PropertyParser.registerProperty(EntityTrapTime.class, EntityTag.class);
