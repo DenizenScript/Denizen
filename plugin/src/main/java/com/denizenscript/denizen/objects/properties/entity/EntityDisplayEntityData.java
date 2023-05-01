@@ -66,7 +66,6 @@ public class EntityDisplayEntityData implements Property {
         Transformation trans = display.getTransformation();
         map.putObject("transformation_left_rotation", convertQuaternion(trans.getLeftRotation()));
         map.putObject("transformation_right_rotation", convertQuaternion(trans.getRightRotation()));
-        map.putObject("transformation_scale", convertVector(trans.getScale()));
         map.putObject("transformation_translation", convertVector(trans.getTranslation()));
         map.putObject("view_range", new ElementTag(display.getViewRange()));
         if (display instanceof BlockDisplay block) {
@@ -114,7 +113,7 @@ public class EntityDisplayEntityData implements Property {
         // Returns a map tag of Display Entity data. This is a placeholder until more-proper tools are developed.
         // This placeholder exists to enable you to play with the new entity type straight away. Details are subject to change. Be prepared to update your scripts soon if you use this.
         // Keys: view_range,
-        // transformation_left_rotation, transformation_right_rotation, transformation_scale, transformation_translation
+        // transformation_left_rotation, transformation_right_rotation, transformation_translation
         // (Note: rotations use a temporary ListTag format, subject to replacement).
         // For block displays: (N/A)
         // For item displays: item_transform
@@ -139,10 +138,9 @@ public class EntityDisplayEntityData implements Property {
             Display display = object.getDisplay();
             if (map.getObject("transformation_translation") != null) {
                 Vector3f translation = toVector(map.getObjectAs("transformation_translation", LocationTag.class, mechanism.context));
-                Vector3f scale = toVector(map.getObjectAs("transformation_scale", LocationTag.class, mechanism.context));
                 Quaternionf leftRot = toQuaternion(map.getObjectAs("transformation_left_rotation", ListTag.class, mechanism.context));
                 Quaternionf rightRot = toQuaternion(map.getObjectAs("transformation_right_rotation", ListTag.class, mechanism.context));
-                display.setTransformation(new Transformation(translation, leftRot, scale, rightRot));
+                display.setTransformation(new Transformation(translation, leftRot, display.getTransformation().getScale(), rightRot));
             }
             display.setViewRange(map.getElement("view_range", String.valueOf(display.getViewRange())).asFloat());
             if (display instanceof BlockDisplay block) {
