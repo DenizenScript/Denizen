@@ -59,7 +59,6 @@ public class EntityDisplayEntityData implements Property {
         Transformation trans = display.getTransformation();
         map.putObject("transformation_left_rotation", convertQuaternion(trans.getLeftRotation()));
         map.putObject("transformation_right_rotation", convertQuaternion(trans.getRightRotation()));
-        map.putObject("view_range", new ElementTag(display.getViewRange()));
         if (display instanceof BlockDisplay block) {
             // handled by EntityTag.material
             //map.putObject("block_display", new MaterialTag(block.getBlock()));
@@ -104,8 +103,7 @@ public class EntityDisplayEntityData implements Property {
         // @description
         // Returns a map tag of Display Entity data. This is a placeholder until more-proper tools are developed.
         // This placeholder exists to enable you to play with the new entity type straight away. Details are subject to change. Be prepared to update your scripts soon if you use this.
-        // Keys: view_range,
-        // transformation_left_rotation, transformation_right_rotation
+        // Keys: transformation_left_rotation, transformation_right_rotation
         // (Note: rotations use a temporary ListTag format, subject to replacement).
         // For block displays: (N/A)
         // For item displays: item_transform
@@ -136,7 +134,6 @@ public class EntityDisplayEntityData implements Property {
                 setToQuaternion(transformation.getRightRotation(), rightRotation);
                 display.setTransformation(transformation);
             }
-            display.setViewRange(map.getElement("view_range", String.valueOf(display.getViewRange())).asFloat());
             if (display instanceof BlockDisplay block) {
                 //block.setBlock(map.getObjectAs("block_display", MaterialTag.class, mechanism.context).getModernData());
             }
