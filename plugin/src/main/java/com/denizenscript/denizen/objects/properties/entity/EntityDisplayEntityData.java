@@ -63,10 +63,6 @@ public class EntityDisplayEntityData implements Property {
             // handled by EntityTag.material
             //map.putObject("block_display", new MaterialTag(block.getBlock()));
         }
-        else if (display instanceof ItemDisplay item) {
-            // "itemStack" handled by EntityTag.item
-            map.putObject("item_transform", new ElementTag(item.getItemDisplayTransform()));
-        }
         else if (display instanceof TextDisplay text) {
             map.putObject("text_alignment", new ElementTag(text.getAlignment()));
             // TODO: Broken in current spigot build
@@ -106,7 +102,6 @@ public class EntityDisplayEntityData implements Property {
         // Keys: transformation_left_rotation, transformation_right_rotation
         // (Note: rotations use a temporary ListTag format, subject to replacement).
         // For block displays: (N/A)
-        // For item displays: item_transform
         // For text displays: text_alignment, text_background_color, text_line_width, text, text_opacity, text_is_default_background, text_is_see_through, text_is_shadowed
         // -->
         PropertyParser.registerTag(EntityDisplayEntityData.class, MapTag.class, "display_entity_data", (attribute, object) -> {
@@ -136,9 +131,6 @@ public class EntityDisplayEntityData implements Property {
             }
             if (display instanceof BlockDisplay block) {
                 //block.setBlock(map.getObjectAs("block_display", MaterialTag.class, mechanism.context).getModernData());
-            }
-            else if (display instanceof ItemDisplay item) {
-                item.setItemDisplayTransform(map.getElement("item_transform").asEnum(ItemDisplay.ItemDisplayTransform.class));
             }
             else if (display instanceof TextDisplay text) {
                 text.setAlignment(map.getElement("text_alignment", text.getAlignment().name()).asEnum(TextDisplay.TextAlignment.class));
