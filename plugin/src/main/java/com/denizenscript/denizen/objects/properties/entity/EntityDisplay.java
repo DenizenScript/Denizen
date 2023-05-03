@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.TextDisplay;
 
 public class EntityDisplay extends EntityProperty<ElementTag> {
 
@@ -12,27 +13,39 @@ public class EntityDisplay extends EntityProperty<ElementTag> {
     // @name display
     // @input ElementTag
     // @description
-    // The model transform an item display entity will display, can be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/ItemDisplay.ItemDisplayTransform.html>.
+    // For an item display entity this is the model transform it will display, can be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/ItemDisplay.ItemDisplayTransform.html>.
+    // For a text display entity this is the text alignment, can be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/TextDisplay.html>.
     // -->
 
     public static boolean describes(EntityTag entity) {
-        return entity.getBukkitEntity() instanceof ItemDisplay;
+        return entity.getBukkitEntity() instanceof ItemDisplay || entity.getBukkitEntity() instanceof TextDisplay;
     }
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(as(ItemDisplay.class).getItemDisplayTransform());
+        if (getEntity() instanceof ItemDisplay itemDisplay) {
+            return new ElementTag(itemDisplay.getItemDisplayTransform());
+        }
+        return new ElementTag(as(TextDisplay.class).getAlignment());
     }
 
     @Override
     public boolean isDefaultValue(ElementTag value) {
-        return value.asEnum(ItemDisplay.ItemDisplayTransform.class) == ItemDisplay.ItemDisplayTransform.NONE;
+        if (getEntity() instanceof ItemDisplay) {
+            return value.asEnum(ItemDisplay.ItemDisplayTransform.class) == ItemDisplay.ItemDisplayTransform.NONE;
+        }
+        return value.asEnum(TextDisplay.TextAlignment.class) == TextDisplay.TextAlignment.CENTER;
     }
 
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        if (mechanism.requireEnum(ItemDisplay.ItemDisplayTransform.class)) {
-            as(ItemDisplay.class).setItemDisplayTransform(value.asEnum(ItemDisplay.ItemDisplayTransform.class));
+        if (getEntity() instanceof ItemDisplay itemDisplay) {
+            if (mechanism.requireEnum(ItemDisplay.ItemDisplayTransform.class)) {
+                itemDisplay.setItemDisplayTransform(value.asEnum(ItemDisplay.ItemDisplayTransform.class));
+            }
+        }
+        else if (mechanism.requireEnum(TextDisplay.TextAlignment.class)) {
+            as(TextDisplay.class).setAlignment(value.asEnum(TextDisplay.TextAlignment.class));
         }
     }
 

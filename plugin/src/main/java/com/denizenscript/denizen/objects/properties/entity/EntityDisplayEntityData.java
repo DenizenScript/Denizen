@@ -64,7 +64,6 @@ public class EntityDisplayEntityData implements Property {
             //map.putObject("block_display", new MaterialTag(block.getBlock()));
         }
         else if (display instanceof TextDisplay text) {
-            map.putObject("text_alignment", new ElementTag(text.getAlignment()));
             // TODO: Broken in current spigot build
             //if (text.getBackgroundColor() != null) {
                  // map.putObject("text_background_color", new ColorTag(text.getBackgroundColor()));
@@ -102,7 +101,7 @@ public class EntityDisplayEntityData implements Property {
         // Keys: transformation_left_rotation, transformation_right_rotation
         // (Note: rotations use a temporary ListTag format, subject to replacement).
         // For block displays: (N/A)
-        // For text displays: text_alignment, text_background_color, text_line_width, text, text_opacity, text_is_default_background, text_is_see_through, text_is_shadowed
+        // For text displays: text_background_color, text_line_width, text, text_opacity, text_is_default_background, text_is_see_through, text_is_shadowed
         // -->
         PropertyParser.registerTag(EntityDisplayEntityData.class, MapTag.class, "display_entity_data", (attribute, object) -> {
             return object.getData();
@@ -133,7 +132,6 @@ public class EntityDisplayEntityData implements Property {
                 //block.setBlock(map.getObjectAs("block_display", MaterialTag.class, mechanism.context).getModernData());
             }
             else if (display instanceof TextDisplay text) {
-                text.setAlignment(map.getElement("text_alignment", text.getAlignment().name()).asEnum(TextDisplay.TextAlignment.class));
                 if (map.getObject("text_background_color") != null) {
                     //text.setBackgroundColor(map.getObjectAs("text_background_color", ColorTag.class, mechanism.context).getColor());
                 }
