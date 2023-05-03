@@ -68,7 +68,6 @@ public class EntityDisplayEntityData implements Property {
             //if (text.getBackgroundColor() != null) {
                  // map.putObject("text_background_color", new ColorTag(text.getBackgroundColor()));
             //}
-            map.putObject("text_line_width", new ElementTag(text.getLineWidth()));
             map.putObject("text", new ElementTag(text.getText()));
             map.putObject("text_opacity", new ElementTag(text.getTextOpacity()));
             map.putObject("text_is_default_background", new ElementTag(text.isDefaultBackground()));
@@ -101,7 +100,7 @@ public class EntityDisplayEntityData implements Property {
         // Keys: transformation_left_rotation, transformation_right_rotation
         // (Note: rotations use a temporary ListTag format, subject to replacement).
         // For block displays: (N/A)
-        // For text displays: text_background_color, text_line_width, text, text_opacity, text_is_default_background, text_is_see_through, text_is_shadowed
+        // For text displays: text_background_color,  text, text_opacity, text_is_default_background, text_is_see_through, text_is_shadowed
         // -->
         PropertyParser.registerTag(EntityDisplayEntityData.class, MapTag.class, "display_entity_data", (attribute, object) -> {
             return object.getData();
@@ -138,7 +137,6 @@ public class EntityDisplayEntityData implements Property {
                 else {
                     //text.setBackgroundColor(null);
                 }
-                text.setLineWidth(map.getElement("text_line_width", String.valueOf(text.getLineWidth())).asInt());
                 text.setText(map.getElement("text", text.getText()).asString());
                 text.setTextOpacity((byte) map.getElement("text_opacity", String.valueOf(text.getTextOpacity())).asInt());
                 text.setDefaultBackground(map.getElement("text_is_default_background", String.valueOf(text.isDefaultBackground())).asBoolean());
