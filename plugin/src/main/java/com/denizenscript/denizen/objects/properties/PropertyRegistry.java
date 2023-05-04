@@ -139,6 +139,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityScoreboardTags.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySmall.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntitySeeThrough.class, EntityTag.class);
             PropertyParser.registerProperty(EntityShadowRadius.class, EntityTag.class);
             PropertyParser.registerProperty(EntityShadowStrength.class, EntityTag.class);
         }
