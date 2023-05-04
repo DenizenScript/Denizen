@@ -69,7 +69,6 @@ public class PropertyRegistry {
             PropertyParser.registerProperty(EntityDisplay.class, EntityTag.class);
             PropertyParser.registerProperty(EntityDisplayEntityData.class, EntityTag.class);
         }
-        PropertyParser.registerProperty(EntityPotionEffects.class, EntityTag.class);
         PropertyParser.registerProperty(EntityEquipment.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExplosionFire.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExplosionRadius.class, EntityTag.class);
@@ -112,6 +111,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityMarker.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaterial.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaxFuseTicks.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityOpacity.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityPainting.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPatrolLeader.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPatrolTarget.class, EntityTag.class);
@@ -122,6 +124,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityPlayerCreated.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPlayingDead.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPotion.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityPotionEffects.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPowered.class, EntityTag.class);
         PropertyParser.registerProperty(EntityProfession.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPumpkinHead.class, EntityTag.class);
