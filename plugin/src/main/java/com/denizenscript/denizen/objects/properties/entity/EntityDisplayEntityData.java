@@ -68,7 +68,6 @@ public class EntityDisplayEntityData implements Property {
             //if (text.getBackgroundColor() != null) {
                  // map.putObject("text_background_color", new ColorTag(text.getBackgroundColor()));
             //}
-            map.putObject("text_is_shadowed", new ElementTag(text.isShadowed()));
         }
         return map;
     }
@@ -96,7 +95,7 @@ public class EntityDisplayEntityData implements Property {
         // Keys: transformation_left_rotation, transformation_right_rotation
         // (Note: rotations use a temporary ListTag format, subject to replacement).
         // For block displays: (N/A)
-        // For text displays: text_background_color, text_is_shadowed
+        // For text displays: text_background_color
         // -->
         PropertyParser.registerTag(EntityDisplayEntityData.class, MapTag.class, "display_entity_data", (attribute, object) -> {
             return object.getData();
@@ -133,7 +132,6 @@ public class EntityDisplayEntityData implements Property {
                 else {
                     //text.setBackgroundColor(null);
                 }
-                text.setShadowed(map.getElement("text_is_shadowed", String.valueOf(text.isShadowed())).asBoolean());
             }
         });
     }
