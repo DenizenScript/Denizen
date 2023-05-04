@@ -9,6 +9,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -160,5 +161,13 @@ public class PaperAPITools {
 
     public Merchant createMerchant(String title) {
         return Bukkit.createMerchant(title);
+    }
+
+    public String getText(TextDisplay textDisplay) {
+        return textDisplay.getText();
+    }
+
+    public void setText(TextDisplay textDisplay, String text) {
+        textDisplay.setText(text);
     }
 }
