@@ -68,7 +68,6 @@ public class EntityDisplayEntityData implements Property {
             //if (text.getBackgroundColor() != null) {
                  // map.putObject("text_background_color", new ColorTag(text.getBackgroundColor()));
             //}
-            map.putObject("text_is_default_background", new ElementTag(text.isDefaultBackground()));
             map.putObject("text_is_see_through", new ElementTag(text.isSeeThrough()));
             map.putObject("text_is_shadowed", new ElementTag(text.isShadowed()));
         }
@@ -98,7 +97,7 @@ public class EntityDisplayEntityData implements Property {
         // Keys: transformation_left_rotation, transformation_right_rotation
         // (Note: rotations use a temporary ListTag format, subject to replacement).
         // For block displays: (N/A)
-        // For text displays: text_background_color, text_is_default_background, text_is_see_through, text_is_shadowed
+        // For text displays: text_background_color, text_is_see_through, text_is_shadowed
         // -->
         PropertyParser.registerTag(EntityDisplayEntityData.class, MapTag.class, "display_entity_data", (attribute, object) -> {
             return object.getData();
@@ -135,7 +134,6 @@ public class EntityDisplayEntityData implements Property {
                 else {
                     //text.setBackgroundColor(null);
                 }
-                text.setDefaultBackground(map.getElement("text_is_default_background", String.valueOf(text.isDefaultBackground())).asBoolean());
                 text.setSeeThrough(map.getElement("text_is_see_through", String.valueOf(text.isSeeThrough())).asBoolean());
                 text.setShadowed(map.getElement("text_is_shadowed", String.valueOf(text.isShadowed())).asBoolean());
             }
