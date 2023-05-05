@@ -38,7 +38,7 @@ public class EntityGlowColor extends EntityProperty<ColorTag> {
         return "glow_color";
     }
 
-    public static void autoRegister() {
+    public static void register() {
         autoRegisterNullable("glow_color", EntityGlowColor.class, ColorTag.class, false);
     }
 }
