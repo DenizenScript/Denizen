@@ -96,8 +96,8 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityHive.class, EntityTag.class);
         PropertyParser.registerProperty(EntityImmune.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            PropertyParser.registerProperty(EntityInterpolationDelay.class, EntityTag.class);
             PropertyParser.registerProperty(EntityInterpolationDuration.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityInterpolationStart.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityInventory.class, EntityTag.class);
         PropertyParser.registerProperty(EntityInvulnerable.class, EntityTag.class);

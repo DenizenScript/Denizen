@@ -5,14 +5,15 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import org.bukkit.entity.Display;
 
-public class EntityInterpolationDelay extends EntityProperty<DurationTag> {
+public class EntityInterpolationStart extends EntityProperty<DurationTag> {
 
     // <--[property]
     // @object EntityTag
-    // @name interpolation_delay
+    // @name interpolation_start
     // @input DurationTag
     // @description
     // The delay between a display entity receiving an update to an interpolated value(s) to it starting its interpolation.
+    // Interpolation is started whenever this value is set. If no changes were made to the entity in the same tick, it will (visually) redo it's last interpolation.
     // -->
 
     public static boolean describes(EntityTag entity) {
@@ -36,10 +37,10 @@ public class EntityInterpolationDelay extends EntityProperty<DurationTag> {
 
     @Override
     public String getPropertyId() {
-        return "interpolation_delay";
+        return "interpolation_start";
     }
 
     public static void register() {
-        autoRegister("interpolation_delay", EntityInterpolationDelay.class, DurationTag.class, false);
+        autoRegister("interpolation_start", EntityInterpolationStart.class, DurationTag.class, false);
     }
 }
