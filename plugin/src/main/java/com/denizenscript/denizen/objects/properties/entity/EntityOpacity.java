@@ -13,6 +13,7 @@ public class EntityOpacity extends EntityProperty<ElementTag> {
     // @input ElementTag(Number)
     // @description
     // A text display entity's text opacity, from 0 to 255.
+    // Can be interpolated.
     // -->
 
     public static boolean describes(EntityTag entity) {

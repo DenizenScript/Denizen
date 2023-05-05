@@ -15,6 +15,7 @@ public class EntityTranslation extends EntityProperty<LocationTag> {
     // @input LocationTag
     // @description
     // A display entity's translation, represented as a <@link objecttype LocationTag> vector.
+    // Can be interpolated.
     // -->
 
     public static boolean describes(EntityTag entity) {

@@ -14,6 +14,7 @@ public class EntityShadowStrength extends EntityProperty<ElementTag> {
     // @description
     // The strength of a display entity's shadow.
     // Note that the final opacity will change based on the entity's distance to the block the shadow is on.
+    // Can be interpolated.
     // -->
 
     public static boolean describes(EntityTag entity) {

@@ -13,6 +13,7 @@ public class EntityShadowRadius extends EntityProperty<ElementTag> {
     // @input ElementTag
     // @description
     // The radius of a display entity's shadow.
+    // Can be interpolated.
     // -->
 
     public static boolean describes(EntityTag entity) {
