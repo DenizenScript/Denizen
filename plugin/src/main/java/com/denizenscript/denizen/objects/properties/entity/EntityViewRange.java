@@ -13,7 +13,7 @@ public class EntityViewRange extends EntityProperty<ElementTag> {
     // @input ElementTag
     // @description
     // A display entity's view range, how far away from a player will it still be visible to them.
-    // Note that the final value used depends on client-side settings such as entity distance scaling.
+    // Note that the final value used depends on client settings such as entity distance scaling, and is multiplied by 64 client-side.
     // -->
 
     public static boolean describes(EntityTag entity) {
