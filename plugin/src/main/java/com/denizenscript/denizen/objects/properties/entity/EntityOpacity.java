@@ -21,12 +21,12 @@ public class EntityOpacity extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(as(TextDisplay.class).getTextOpacity() + 128);
+        return new ElementTag(Byte.toUnsignedInt(as(TextDisplay.class).getTextOpacity()));
     }
 
     @Override
     public boolean isDefaultValue(ElementTag value) {
-        return value.asInt() == 127; // Default value is -1, + 128
+        return value.asInt() == 255;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class EntityOpacity extends EntityProperty<ElementTag> {
                 mechanism.echoError("Invalid opacity specified, must be between 0 and 255.");
                 return;
             }
-            as(TextDisplay.class).setTextOpacity((byte) (opacity - 128));
+            as(TextDisplay.class).setTextOpacity((byte) opacity);
         }
     }
 
