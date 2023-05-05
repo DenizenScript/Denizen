@@ -56,10 +56,6 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityConversionPlayer.class, EntityTag.class);
         PropertyParser.registerProperty(EntityConversionTime.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCritical.class, EntityTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            PropertyParser.registerProperty(EntityCullingWidth.class, EntityTag.class);
-            PropertyParser.registerProperty(EntityCullingHeight.class, EntityTag.class);
-        }
         PropertyParser.registerProperty(EntityCustomName.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCustomNameVisible.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDarkDuration.class, EntityTag.class);
@@ -91,6 +87,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityHasStung.class, EntityTag.class);
         PropertyParser.registerProperty(EntityHealth.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityHeight.class, EntityTag.class);
             PropertyParser.registerProperty(EntityHorns.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityHive.class, EntityTag.class);
@@ -174,6 +171,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityVillagerExperience.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVillagerLevel.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVisible.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityWidth.class, EntityTag.class);
+        }
 
         // register core InventoryTag properties
         PropertyParser.registerProperty(InventoryContents.class, InventoryTag.class);

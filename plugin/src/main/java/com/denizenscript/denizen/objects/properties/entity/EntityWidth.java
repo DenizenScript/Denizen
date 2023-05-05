@@ -5,14 +5,14 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.Display;
 
-public class EntityCullingHeight extends EntityProperty<ElementTag> {
+public class EntityWidth extends EntityProperty<ElementTag> {
 
     // <--[property]
     // @object EntityTag
-    // @name culling_height
-    // @input ElementTag
+    // @name width
+    // @input ElementTag(Decimal)
     // @description
-    // The height of a display entity's culling box. The box will spawn from the entity's y to the entity's y + the height.
+    // The width of a display entity's culling box. The box will span half the width in every direction from the entity's position.
     // The default value is 0, which disables culling entirely.
     // -->
 
@@ -22,7 +22,7 @@ public class EntityCullingHeight extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(as(Display.class).getDisplayHeight());
+        return new ElementTag(as(Display.class).getDisplayWidth());
     }
 
     @Override
@@ -33,16 +33,16 @@ public class EntityCullingHeight extends EntityProperty<ElementTag> {
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         if (mechanism.requireFloat()) {
-            as(Display.class).setDisplayHeight(value.asFloat());
+            as(Display.class).setDisplayWidth(value.asFloat());
         }
     }
 
     @Override
     public String getPropertyId() {
-        return "culling_height";
+        return "width";
     }
 
     public static void register() {
-        autoRegister("culling_height", EntityCullingHeight.class, ElementTag.class, false);
+        autoRegister("width", EntityWidth.class, ElementTag.class, false);
     }
 }
