@@ -134,7 +134,6 @@ public class PropertyRegistry {
             PropertyParser.registerProperty(EntityScale.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityScoreboardTags.class, EntityTag.class);
-        PropertyParser.registerProperty(EntitySmall.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntitySeeThrough.class, EntityTag.class);
             PropertyParser.registerProperty(EntityShadowRadius.class, EntityTag.class);
@@ -146,6 +145,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntitySilent.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySitting.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySize.class, EntityTag.class);
+        PropertyParser.registerProperty(EntitySmall.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySpeed.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySpell.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
