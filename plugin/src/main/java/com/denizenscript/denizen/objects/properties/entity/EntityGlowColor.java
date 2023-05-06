@@ -14,7 +14,7 @@ public class EntityGlowColor extends EntityProperty<ColorTag> {
     // @name glow_color
     // @input ColorTag
     // @description
-    // The glow color override of a display entity, if any.
+    // A display entity's glow color override, if any.
     // For the mechanism: provide no input to remove the override.
     // -->
 

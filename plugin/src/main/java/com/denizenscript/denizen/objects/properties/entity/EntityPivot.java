@@ -12,7 +12,7 @@ public class EntityPivot extends EntityProperty<ElementTag> {
     // @name pivot
     // @input ElementTag
     // @description
-    // The pivot point/axes of a display entity, can be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Display.Billboard.html>.
+    // A display entity's pivot point/axes, can be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Display.Billboard.html>.
     // -->
 
     public static boolean describes(EntityTag entity) {

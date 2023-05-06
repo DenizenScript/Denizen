@@ -10,7 +10,7 @@ public class EntityLineWidth extends EntityProperty<ElementTag> {
     // <--[property]
     // @object EntityTag
     // @name line_width
-    // @input ElementTag
+    // @input ElementTag(Number)
     // @description
     // A text display entity's line width, used to split lines (note that newlines can still be added as normal).
     // -->
