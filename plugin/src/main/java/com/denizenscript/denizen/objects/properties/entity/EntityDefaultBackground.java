@@ -13,7 +13,7 @@ public class EntityDefaultBackground extends EntityProperty<ElementTag> {
     // @name default_background
     // @input ElementTag(Boolean)
     // @description
-    // Whether a text display entity's background is the default (same as the chat window), or custom set.
+    // Whether a text display entity's background is default (same as the chat window), or custom set.
     // -->
 
     public static boolean describes(EntityTag entity) {
