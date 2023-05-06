@@ -164,7 +164,8 @@ public class PaperAPITools {
     }
 
     public String getText(TextDisplay textDisplay) {
-        return textDisplay.getText();
+        String text = textDisplay.getText();
+        return text != null ? text : "";
     }
 
     public void setText(TextDisplay textDisplay, String text) {
