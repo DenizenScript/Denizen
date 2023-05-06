@@ -25,8 +25,9 @@ public class EntityDisplayEntityData extends EntityProperty<MapTag> {
     // This placeholder exists to enable you to play with the new entity type straight away. Details are subject to change. Be prepared to update your scripts soon if you use this.
     // Keys: transformation_left_rotation, transformation_right_rotation
     // (Note: rotations use a temporary ListTag format, subject to replacement).
-    // For text displays: text_background_color
     // -->
+    // TODO: background color API is currently broken
+    // For text displays: text_background_color
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Display;
@@ -49,9 +50,9 @@ public class EntityDisplayEntityData extends EntityProperty<MapTag> {
         Transformation trans = as(Display.class).getTransformation();
         map.putObject("transformation_left_rotation", convertQuaternion(trans.getLeftRotation()));
         map.putObject("transformation_right_rotation", convertQuaternion(trans.getRightRotation()));
-        if (getEntity() instanceof TextDisplay text && text.getBackgroundColor() != null) {
-            map.putObject("text_background_color", BukkitColorExtensions.fromColor(text.getBackgroundColor()));
-        }
+//        if (getEntity() instanceof TextDisplay text && text.getBackgroundColor() != null) {
+//            map.putObject("text_background_color", BukkitColorExtensions.fromColor(text.getBackgroundColor()));
+//        }
         return map;
     }
 
@@ -66,10 +67,10 @@ public class EntityDisplayEntityData extends EntityProperty<MapTag> {
             setToQuaternion(transformation.getRightRotation(), rightRotation);
             display.setTransformation(transformation);
         }
-        if (display instanceof TextDisplay text) {
-            ColorTag backgroundColor = value.getObjectAs("text_background_color", ColorTag.class, mechanism.context);
-            text.setBackgroundColor(backgroundColor == null ? null : BukkitColorExtensions.getColor(backgroundColor));
-        }
+//        if (display instanceof TextDisplay text) {
+//            ColorTag backgroundColor = value.getObjectAs("text_background_color", ColorTag.class, mechanism.context);
+//            text.setBackgroundColor(backgroundColor == null ? null : BukkitColorExtensions.getColor(backgroundColor));
+//        }
     }
 
     @Override
