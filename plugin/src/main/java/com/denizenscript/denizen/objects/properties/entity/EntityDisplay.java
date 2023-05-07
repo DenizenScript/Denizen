@@ -14,7 +14,7 @@ public class EntityDisplay extends EntityProperty<ElementTag> {
     // @input ElementTag
     // @description
     // For an item display entity this is the model transform it will display, can be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/ItemDisplay.ItemDisplayTransform.html>.
-    // For a text display entity this is the text alignment, can be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/TextDisplay.html>.
+    // For a text display entity this is its text alignment, can be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/TextDisplay.html>.
     // -->
 
     public static boolean describes(EntityTag entity) {

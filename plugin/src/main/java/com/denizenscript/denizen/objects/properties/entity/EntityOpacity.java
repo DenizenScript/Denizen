@@ -34,7 +34,7 @@ public class EntityOpacity extends EntityProperty<ElementTag> {
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         if (mechanism.requireInteger()) {
             int opacity = value.asInt();
-            if (opacity > 255 || opacity < 0) {
+            if (opacity < 0 || opacity > 255) {
                 mechanism.echoError("Invalid opacity specified, must be between 0 and 255.");
                 return;
             }
