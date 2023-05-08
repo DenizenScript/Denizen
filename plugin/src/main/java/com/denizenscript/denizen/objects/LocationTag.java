@@ -55,13 +55,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class LocationTag extends org.bukkit.Location implements ObjectTag, Notable, Adjustable, FlaggableObject {
+public class LocationTag extends org.bukkit.Location implements VectorObject, ObjectTag, Notable, Adjustable, FlaggableObject {
 
     // <--[ObjectType]
     // @name LocationTag
     // @prefix l
     // @base ElementTag
-    // @implements FlaggableObject
+    // @implements FlaggableObject, VectorObject
     // @ExampleTagBase player.location
     // @ExampleValues <player.location>,<npc.location>
     // @ExampleForReturns
@@ -3465,7 +3465,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns a 1-length vector in the same direction as this vector location.
         // -->
         tagProcessor.registerTag(LocationTag.class, "normalize", (attribute, object) -> {
-            double len = Math.sqrt(Math.pow(object.getX(), 2) + Math.pow(object.getY(), 2) + Math.pow(object.getZ(), 2));
+            double len = object.length();
             if (len == 0) {
                 len = 1;
             }
@@ -3481,7 +3481,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // Returns the 3D length of the vector/location.
         // -->
         tagProcessor.registerTag(ElementTag.class, "vector_length", (attribute, object) -> {
-            return new ElementTag(Math.sqrt(Math.pow(object.getX(), 2) + Math.pow(object.getY(), 2) + Math.pow(object.getZ(), 2)));
+            return new ElementTag(object.length());
         });
 
         // <--[tag]
