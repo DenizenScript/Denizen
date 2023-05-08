@@ -24,8 +24,8 @@ public class EntityTranslation extends EntityProperty<LocationTag> {
 
     @Override
     public LocationTag getPropertyValue() {
-        Vector3f scale = as(Display.class).getTransformation().getTranslation();
-        return new LocationTag(null, scale.x(), scale.y(), scale.z());
+        Vector3f translation = as(Display.class).getTransformation().getTranslation();
+        return new LocationTag(null, translation.x(), translation.y(), translation.z());
     }
 
     @Override
