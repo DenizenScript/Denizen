@@ -11,6 +11,7 @@ public class EntityPivot extends EntityProperty<ElementTag> {
     // @object EntityTag
     // @name pivot
     // @input ElementTag
+    // @synonyms EntityTag.billboard
     // @description
     // A display entity's pivot point/axes, can be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Display.Billboard.html>.
     // -->

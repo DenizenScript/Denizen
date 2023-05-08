@@ -13,7 +13,7 @@ public class EntityInterpolationStart extends EntityProperty<DurationTag> {
     // @input DurationTag
     // @description
     // The delay between a display entity receiving an update to an interpolated value(s) to it starting its interpolation.
-    // Interpolation is started whenever this value is set. If no changes were made to the entity in the same tick, it will (visually) redo it's last interpolation.
+    // Interpolation is started whenever this value is set. If no changes were made to the entity in the same tick, it will (visually) redo its last interpolation.
     // -->
 
     public static boolean describes(EntityTag entity) {
