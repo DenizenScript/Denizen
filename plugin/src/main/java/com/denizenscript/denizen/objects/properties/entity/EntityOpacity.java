@@ -14,6 +14,7 @@ public class EntityOpacity extends EntityProperty<ElementTag> {
     // @description
     // A text display entity's text opacity, from 0 to 255.
     // Can be interpolated, see <@link language Display entity interpolation>.
+    // Note that there's currently an edge-case/bug where 0-3 are completely opaque, and it only becomes transparent at 4.
     // -->
 
     public static boolean describes(EntityTag entity) {
