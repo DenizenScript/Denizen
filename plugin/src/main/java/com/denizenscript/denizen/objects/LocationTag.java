@@ -215,7 +215,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
     }
 
     @Override
-    public ObjectTag duplicate() {
+    public LocationTag duplicate() {
         return clone();
     }
 
@@ -882,7 +882,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @group math
         // @description
         // Returns the location above this location. Optionally specify a number of blocks to go up.
-        // This just moves straight along the Y axis, equivalent to <@link tag LocationTag.add> with input 0,1,0 (or the input value instead of '1').
+        // This just moves straight along the Y axis, equivalent to <@link tag VectorObject.add> with input 0,1,0 (or the input value instead of '1').
         // -->
         tagProcessor.registerTag(LocationTag.class, "above", (attribute, object) -> {
             return new LocationTag(object.clone().add(0, attribute.hasParam() ? attribute.getDoubleParam() : 1, 0));
@@ -894,7 +894,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @group math
         // @description
         // Returns the location below this location. Optionally specify a number of blocks to go down.
-        // This just moves straight along the Y axis, equivalent to <@link tag LocationTag.sub> with input 0,1,0 (or the input value instead of '1').
+        // This just moves straight along the Y axis, equivalent to <@link tag VectorObject.sub> with input 0,1,0 (or the input value instead of '1').
         // -->
         tagProcessor.registerTag(LocationTag.class, "below", (attribute, object) -> {
             return new LocationTag(object.clone().subtract(0, attribute.hasParam() ? attribute.getDoubleParam() : 1, 0));
@@ -1023,7 +1023,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @description
         // Returns the location relative to this location. Input is a vector location of the form left,up,forward.
         // For example, input -1,1,1 will return a location 1 block to the right, 1 block up, and 1 block forward.
-        // To just get the location relative to this without rotation math, use <@link tag LocationTag.add> instead.
+        // To just get the location relative to this without rotation math, use <@link tag VectorObject.add> instead.
         // -->
         tagProcessor.registerTag(LocationTag.class, "relative", (attribute, object) -> {
             if (!attribute.hasParam()) {

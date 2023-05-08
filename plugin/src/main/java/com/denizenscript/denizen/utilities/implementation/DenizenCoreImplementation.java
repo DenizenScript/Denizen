@@ -415,4 +415,9 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public VectorObject getVector(double x, double y, double z) {
         return new LocationTag(null, x, y, z);
     }
+
+    @Override
+    public VectorObject vectorize(ObjectTag obj, TagContext context) {
+        return obj.asType(LocationTag.class, context);
+    }
 }
