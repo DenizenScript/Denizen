@@ -7,6 +7,15 @@ import org.bukkit.entity.Display;
 
 public class EntityInterpolationStart extends EntityProperty<DurationTag> {
 
+    //<--[language]
+    // @name Display entity interpolation
+    // @group Minecraft Logic
+    // @description
+    // Display entities can interpolate between different properties, providing a smooth transition.
+    // Interpolation can be started (immediately or with a delay) using <@link mechanism EntityTag.interpolation_start>, and it's duration can be set using <@link mechanism EntityTag.interpolation_duration>.
+    // The following properties can be interpolated: <@link mechanism EntityTag.scale>, <@link mechanism EntityTag.translation>, <@link mechanism EntityTag.shadow_radius>, <@link mechanism EntityTag.shadow_strength>, <@link mechanism EntityTag.opacity>.
+    // -->
+
     // <--[property]
     // @object EntityTag
     // @name interpolation_start

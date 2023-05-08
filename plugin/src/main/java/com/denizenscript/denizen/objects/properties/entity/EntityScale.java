@@ -15,7 +15,7 @@ public class EntityScale extends EntityProperty<LocationTag> {
     // @input LocationTag
     // @description
     // A display entity's scale, represented as a <@link objecttype LocationTag> vector.
-    // Can be interpolated.
+    // Can be interpolated, see <@link language Display entity interpolation>.
     // -->
 
     public static boolean describes(EntityTag entity) {
