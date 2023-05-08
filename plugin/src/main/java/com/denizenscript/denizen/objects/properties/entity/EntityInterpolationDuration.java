@@ -13,6 +13,7 @@ public class EntityInterpolationDuration extends EntityProperty<DurationTag> {
     // @input DurationTag
     // @description
     // The duration a display entity will spend interpolating between interpolated value(s).
+    // See also <@link language Display entity interpolation>.
     // -->
 
     public static boolean describes(EntityTag entity) {
