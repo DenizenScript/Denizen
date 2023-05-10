@@ -14,6 +14,8 @@ public class EntityLeftRotation extends EntityProperty<QuaternionTag> {
     // @name left_rotation
     // @input QuaternionTag
     // @description
+    // A display entity's "left" rotation.
+    // Note that <@link mechanism EntityTag.right_rotation> is also available, but should normally use this instead.
     // -->
 
     public static boolean describes(EntityTag entity) {
