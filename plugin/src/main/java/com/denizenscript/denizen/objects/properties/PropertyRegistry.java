@@ -66,7 +66,6 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityDisabledSlots.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityDisplay.class, EntityTag.class);
-            PropertyParser.registerProperty(EntityDisplayEntityData.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityEquipment.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExplosionFire.class, EntityTag.class);
@@ -106,6 +105,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityJumpStrength.class, EntityTag.class);
         PropertyParser.registerProperty(EntityKnockback.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityLeftRotation.class, EntityTag.class);
             PropertyParser.registerProperty(EntityLineWidth.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityMarker.class, EntityTag.class);
@@ -129,6 +129,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityProfession.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPumpkinHead.class, EntityTag.class);
         PropertyParser.registerProperty(EntityRiptide.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityRightRotation.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityRotation.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityScale.class, EntityTag.class);
