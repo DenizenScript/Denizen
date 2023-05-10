@@ -7,13 +7,15 @@ import org.bukkit.entity.Display;
 import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 
-public class EntityLeftRotation extends EntityProperty<QuaternionTag> {
+public class EntityPrimaryRotation extends EntityProperty<QuaternionTag> {
 
     // <--[property]
     // @object EntityTag
-    // @name left_rotation
+    // @name primary_rotation
     // @input QuaternionTag
     // @description
+    // A display entity's primary rotation (this is the "left" rotation).
+    // See also <@link mechanism EntityTag.secondary_rotation>.
     // -->
 
     public static boolean describes(EntityTag entity) {
@@ -40,10 +42,10 @@ public class EntityLeftRotation extends EntityProperty<QuaternionTag> {
 
     @Override
     public String getPropertyId() {
-        return "left_rotation";
+        return "primary_rotation";
     }
 
     public static void register() {
-        autoRegister("left_rotation", EntityLeftRotation.class, QuaternionTag.class, false);
+        autoRegister("primary_rotation", EntityPrimaryRotation.class, QuaternionTag.class, false);
     }
 }
