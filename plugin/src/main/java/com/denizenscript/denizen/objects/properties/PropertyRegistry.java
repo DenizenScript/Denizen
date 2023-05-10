@@ -105,6 +105,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityJumpStrength.class, EntityTag.class);
         PropertyParser.registerProperty(EntityKnockback.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityLeftRotation.class, EntityTag.class);
             PropertyParser.registerProperty(EntityLineWidth.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityMarker.class, EntityTag.class);
@@ -125,19 +126,18 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityPotion.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPotionEffects.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPowered.class, EntityTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            PropertyParser.registerProperty(EntityPrimaryRotation.class, EntityTag.class);
-        }
         PropertyParser.registerProperty(EntityProfession.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPumpkinHead.class, EntityTag.class);
         PropertyParser.registerProperty(EntityRiptide.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityRightRotation.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityRotation.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityScale.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityScoreboardTags.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            PropertyParser.registerProperty(EntitySecondaryRotation.class, EntityTag.class);
             PropertyParser.registerProperty(EntitySeeThrough.class, EntityTag.class);
             PropertyParser.registerProperty(EntityShadowRadius.class, EntityTag.class);
             PropertyParser.registerProperty(EntityShadowStrength.class, EntityTag.class);
