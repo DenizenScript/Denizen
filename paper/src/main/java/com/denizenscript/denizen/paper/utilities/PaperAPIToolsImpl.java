@@ -20,6 +20,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -315,5 +316,15 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     @Override
     public Merchant createMerchant(String title) {
         return Bukkit.createMerchant(PaperModule.parseFormattedText(title, ChatColor.BLACK));
+    }
+
+    @Override
+    public String getText(TextDisplay textDisplay) {
+        return PaperModule.stringifyComponent(textDisplay.text());
+    }
+
+    @Override
+    public void setText(TextDisplay textDisplay, String text) {
+        textDisplay.text(PaperModule.parseFormattedText(text, ChatColor.WHITE));
     }
 }
