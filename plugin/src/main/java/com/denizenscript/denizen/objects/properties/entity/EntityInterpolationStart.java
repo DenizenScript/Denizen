@@ -7,8 +7,8 @@ import org.bukkit.entity.Display;
 
 public class EntityInterpolationStart extends EntityProperty<DurationTag> {
 
-    //<--[language]
-    // @name Display entity interpolation
+    // <--[language]
+    // @name Display Entity Interpolation
     // @group Minecraft Logic
     // @description
     // Display entities can interpolate between different properties, providing a smooth transition.
