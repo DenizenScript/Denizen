@@ -1055,16 +1055,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.is_whitelisted>
+        // @attribute <PlayerTag.whitelisted>
         // @returns ElementTag(Boolean)
-        // @mechanism PlayerTag.is_whitelisted
+        // @mechanism PlayerTag.whitelisted
         // @description
         // Returns whether the player is whitelisted.
         // Works with offline players.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "is_whitelisted", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "whitelisted", (attribute, object) -> {
             return new ElementTag(object.getOfflinePlayer().isWhitelisted());
-        });
+        }, "is_whitelisted");
 
         // <--[tag]
         // @attribute <PlayerTag.last_played_time>
@@ -2607,6 +2607,22 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         registerOnlineOnlyMechanism("refresh_player", (object, mechanism) -> {
             NMSHandler.playerHelper.refreshPlayer(object.getPlayerEntity());
         });
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name whitelisted
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the player is whitelisted.
+        // Works with offline players.
+        // @tags
+        // <PlayerTag.whitelisted>
+        // -->
+        tagProcessor.registerMechanism("whitelisted", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getOfflinePlayer().setWhitelisted(input.asBoolean());
+            }
+        }, "is_whitelisted");
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
@@ -3960,19 +3976,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("skin_blob") && mechanism.hasValue()) {
             PaperAPITools.instance.setSkinBlob(getPlayerEntity(), mechanism.getValue().asString());
-        }
-
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name is_whitelisted
-        // @input ElementTag(Boolean)
-        // @description
-        // Changes whether the player is whitelisted or not.
-        // @tags
-        // <PlayerTag.is_whitelisted>
-        // -->
-        if (mechanism.matches("is_whitelisted") && mechanism.requireBoolean()) {
-            getPlayerEntity().setWhitelisted(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
