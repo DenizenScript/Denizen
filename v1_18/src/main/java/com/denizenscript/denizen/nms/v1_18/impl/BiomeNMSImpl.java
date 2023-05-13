@@ -25,10 +25,9 @@ import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class BiomeNMSImpl extends BiomeNMS {
-
-    public static final MethodHandle BIOMESPECIALEFFECTS_BUILDER_CONSTRUCTOR = ReflectionHelper.getConstructor(BiomeSpecialEffects.Builder.class);
 
     public Holder<Biome> biomeBase;
 
@@ -83,7 +82,22 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public int getFoliageColor() {
-        return biomeBase.value().getFoliageColor();
+        // Check if the biome already has a default color
+        if (biomeBase.value().getFoliageColor() != 0) {
+            return biomeBase.value().getFoliageColor();
+        }
+
+        // Based on net.minecraft.world.level.biome.Biome#getFoliageColorFromTexture()
+        float temperature = clampColor(getTemperature());
+        float humidity = clampColor(getHumidity());
+
+        // Based on net.minecraft.world.level.FoliageColor#get()
+        humidity *= temperature;
+        int humidityValue = (int)((1.0f - humidity) * 255.0f);
+        int temperatureValue = (int)((1.0f - temperature) * 255.0f);
+        int index = temperatureValue << 8 | humidityValue;
+
+        return index >= 65536 ? 4764952 : getColor(index / 256, index % 256).asRGB();
     }
 
     public Object getClimate() {
@@ -117,15 +131,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setFoliageColor(int color) {
         try {
-            BiomeSpecialEffects.Builder builder = (BiomeSpecialEffects.Builder) BIOMESPECIALEFFECTS_BUILDER_CONSTRUCTOR.invoke();
-            // fogColor, waterColor, waterFogColor, and skyColor are needed for the Builder class.
-            builder.fogColor(biomeBase.value().getFogColor())
-                    .waterColor(biomeBase.value().getWaterColor())
-                    .waterFogColor(biomeBase.value().getWaterFogColor())
-                    .skyColor(biomeBase.value().getSkyColor())
-                    .foliageColorOverride(color);
-            BiomeSpecialEffects effects = builder.build();
-            ReflectionHelper.setFieldValue(Biome.class, ReflectionMappingsInfo.Biome_specialEffects, biomeBase.value(), effects);
+            ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_foliageColorOverride, biomeBase.value().getSpecialEffects(), Optional.of(color));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

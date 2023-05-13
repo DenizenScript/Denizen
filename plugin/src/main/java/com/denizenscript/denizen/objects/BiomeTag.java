@@ -289,8 +289,9 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @returns ColorTag
         // @mechanism BiomeTag.foliage_color
         // @description
-        // Returns the foliage color of this biome. Foliage includes leaves and vines.
-        // If the biome's foliage does not change color by default, this returns the color black.
+        // Returns the approximate foliage color of this biome. Foliage includes leaves and vines.
+        // The "swamp", "mangrove_swamp", "badlands", "wooded_badlands", and "eroded_badlands" biomes are the only biomes with hard-coded foliage colors.
+        // Biomes with no set foliage color already will have their foliage colors based on temperature and humidity of the biome.
         // -->
         tagProcessor.registerTag(ColorTag.class, "foliage_color", (attribute, object) -> {
             return new ColorTag(ColorTag.fromRGB(object.biome.getFoliageColor()));
@@ -310,13 +311,10 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // # Adjusts the foliage color of the plains biome permanently, using a server start event to keep it applied.
         // # Now the leaves and vines will be a nice salmon-pink!
         // on server start:
-        // - adjust <biome[plains]> foliage_color:<&color[#F48D8D]>
+        // - adjust <biome[plains]> foliage_color:#F48D8D
         // -->
-        tagProcessor.registerMechanism("foliage_color", false, (object, mechanism) -> {
-            if (!mechanism.requireObject(ColorTag.class)) {
-                return;
-            }
-            object.biome.setFoliageColor(mechanism.valueAsType(ColorTag.class).asRGB());
+        tagProcessor.registerMechanism("foliage_color", false, ColorTag.class, (object, mechanism, color) -> {
+            object.biome.setFoliageColor(color.asRGB());
         });
     }
 

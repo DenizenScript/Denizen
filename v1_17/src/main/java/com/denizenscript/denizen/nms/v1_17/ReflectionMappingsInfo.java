@@ -39,7 +39,7 @@ public class ReflectionMappingsInfo {
     public static String Biome_ClimateSettings_temperature = "c";
     public static String Biome_ClimateSettings_downfall = "e";
     public static String Biome_ClimateSettings_precipitation = "b";
-    public static String Biome_specialEffects = "q";
+    public static String BiomeSpecialEffects_foliageColorOverride = "f";
 
     public static String ThreadedLevelLightEngine_Update_PRE_UPDATE = "a";
 
