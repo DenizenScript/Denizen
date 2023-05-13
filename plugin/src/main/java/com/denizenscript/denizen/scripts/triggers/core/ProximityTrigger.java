@@ -12,7 +12,9 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.*;
 
@@ -158,6 +160,31 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Set<UUID> npcs = proximityTracker.remove(event.getPlayer().getUniqueId());
+        if (npcs == null) {
+            return;
+        }
+        PlayerTag player = new PlayerTag(event.getPlayer());
+        for (UUID id : npcs) {
+            NPC citizen = CitizensAPI.getNPCRegistry().getByUniqueId(id);
+            if (citizen == null) {
+                continue;
+            }
+            NPCTag npc = new NPCTag(citizen);
+            TriggerTrait triggerTrait = citizen.getTraitNullable(TriggerTrait.class);
+            if (triggerTrait == null) {
+                continue;
+            }
+            if (!triggerTrait.triggerCooldownOnly(this, player)) {
+                return;
+            }
+            npc.action("exit proximity", player);
+            parseAll(npc, player, "EXIT");
+        }
+    }
+
     @Override
     public void onDisable() {
         Bukkit.getScheduler().cancelTask(taskID);
@@ -179,6 +206,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
         return true;
     }
 
+    /**
+     * Player UUID to set of NPC UUIDs.
+     */
     private static Map<UUID, Set<UUID>> proximityTracker = new HashMap<>();
 
     //
@@ -218,7 +248,13 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
      * @param npc    the NPC
      */
     private void exitProximityOf(Player player, NPCTag npc) {
-        Set<UUID> npcs = proximityTracker.computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
+        Set<UUID> npcs = proximityTracker.get(player.getUniqueId());
+        if (npcs == null) {
+            return;
+        }
         npcs.remove(npc.getCitizen().getUniqueId());
+        if (npcs.isEmpty()) {
+            proximityTracker.remove(player.getUniqueId());
+        }
     }
 }

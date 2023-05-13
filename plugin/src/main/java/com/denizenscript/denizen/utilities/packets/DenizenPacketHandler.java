@@ -5,10 +5,8 @@ import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketInResourcePackStatus;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketInSteerVehicle;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
-import com.denizenscript.denizen.nms.interfaces.packets.PacketOutEntityMetadata;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.scripts.commands.player.GlowCommand;
 import com.denizenscript.denizen.scripts.commands.server.ExecuteCommand;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -137,14 +135,5 @@ public class DenizenPacketHandler {
             }
         }
         return null;
-    }
-
-    public boolean shouldInterceptMetadata() {
-        return !GlowCommand.glowViewers.isEmpty();
-    }
-
-    public boolean sendPacket(Player player, PacketOutEntityMetadata entityMetadata) {
-        HashSet<UUID> players = GlowCommand.glowViewers.get(entityMetadata.getEntityId());
-        return players != null && entityMetadata.checkForGlow() && !players.contains(player.getUniqueId());
     }
 }

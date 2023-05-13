@@ -474,7 +474,7 @@ public class NPCCommandHandler {
             if (npc.hasTrait(Anchors.class)) {
                 Anchors anchors = npc.getOrAddTrait(Anchors.class);
                 if (anchors.getAnchor(args.getFlag("anchor")) != null) {
-                    trait.toSleep(anchors.getAnchor(args.getFlag("anchor")).getLocation());
+                    trait.toSleep(anchors.getAnchor(args.getFlag("anchor")).getLocation().clone().add(0.5, 0, 0.5));
                     Messaging.send(sender, npc.getName() + " is now sleeping.");
                     return;
                 }

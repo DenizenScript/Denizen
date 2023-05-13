@@ -46,6 +46,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityBoatType.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBodyArrows.class, EntityTag.class);
         PropertyParser.registerProperty(EntityBoundingBox.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityBrightness.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityCanJoinRaid.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCharged.class, EntityTag.class);
         PropertyParser.registerProperty(EntityChestCarrier.class, EntityTag.class);
@@ -56,15 +59,18 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityCustomName.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCustomNameVisible.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDarkDuration.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityDefaultBackground.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityDirection.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDisabledSlots.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            PropertyParser.registerProperty(EntityDisplayEntityData.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityDisplay.class, EntityTag.class);
         }
-        PropertyParser.registerProperty(EntityPotionEffects.class, EntityTag.class);
         PropertyParser.registerProperty(EntityEquipment.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExplosionFire.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExplosionRadius.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityEyeTargetLocation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFirework.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFireworkLifetime.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFixed.class, EntityTag.class);
@@ -72,15 +78,23 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityFlower.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFreezeDuration.class, EntityTag.class);
         PropertyParser.registerProperty(EntityFramed.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityGlowColor.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityGravity.class, EntityTag.class);
         PropertyParser.registerProperty(EntityHasNectar.class, EntityTag.class);
         PropertyParser.registerProperty(EntityHasStung.class, EntityTag.class);
         PropertyParser.registerProperty(EntityHealth.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityHeight.class, EntityTag.class);
             PropertyParser.registerProperty(EntityHorns.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityHive.class, EntityTag.class);
         PropertyParser.registerProperty(EntityImmune.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityInterpolationDuration.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityInterpolationStart.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityInventory.class, EntityTag.class);
         PropertyParser.registerProperty(EntityInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(EntityInWaterTime.class, EntityTag.class);
@@ -90,29 +104,51 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityItemInOffHand.class, EntityTag.class);
         PropertyParser.registerProperty(EntityJumpStrength.class, EntityTag.class);
         PropertyParser.registerProperty(EntityKnockback.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityLeftRotation.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityLineWidth.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityMarker.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaterial.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaxFuseTicks.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityOpacity.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityPainting.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPatrolLeader.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPatrolTarget.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPickupStatus.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityPivot.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityPlayerCreated.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPlayingDead.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPotion.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityPotionEffects.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPowered.class, EntityTag.class);
         PropertyParser.registerProperty(EntityProfession.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPumpkinHead.class, EntityTag.class);
         PropertyParser.registerProperty(EntityRiptide.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityRightRotation.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityRotation.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityScale.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityScoreboardTags.class, EntityTag.class);
-        PropertyParser.registerProperty(EntitySmall.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntitySeeThrough.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityShadowRadius.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityShadowStrength.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityShivering.class, EntityTag.class);
         PropertyParser.registerProperty(EntityShotAtAngle.class, EntityTag.class);
         PropertyParser.registerProperty(EntityShulkerPeek.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySilent.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySitting.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySize.class, EntityTag.class);
+        PropertyParser.registerProperty(EntitySmall.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySpeed.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySpell.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
@@ -120,15 +156,27 @@ public class PropertyRegistry {
         }
         PropertyParser.registerProperty(EntityStrength.class, EntityTag.class);
         PropertyParser.registerProperty(EntityTame.class, EntityTag.class);
-        PropertyParser.registerProperty(EntityEyeTargetLocation.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityText.class, EntityTag.class);
+            PropertyParser.registerProperty(EntityTextShadowed.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityTrades.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityTranslation.class, EntityTag.class);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
             PropertyParser.registerProperty(EntityTrapped.class, EntityTag.class);
             PropertyParser.registerProperty(EntityTrapTime.class, EntityTag.class);
         }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityViewRange.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityVillagerExperience.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVillagerLevel.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVisible.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityWidth.class, EntityTag.class);
+        }
 
         // register core InventoryTag properties
         PropertyParser.registerProperty(InventoryContents.class, InventoryTag.class);

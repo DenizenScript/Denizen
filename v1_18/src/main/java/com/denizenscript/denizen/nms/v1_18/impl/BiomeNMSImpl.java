@@ -43,16 +43,12 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public DownfallType getDownfallType() {
         Biome.Precipitation nmsType = biomeBase.value().getPrecipitation();
-        switch (nmsType) {
-            case RAIN:
-                return DownfallType.RAIN;
-            case SNOW:
-                return DownfallType.SNOW;
-            case NONE:
-                return DownfallType.NONE;
-            default:
-                throw new UnsupportedOperationException();
-        }
+        return switch (nmsType) {
+            case RAIN -> DownfallType.RAIN;
+            case SNOW -> DownfallType.SNOW;
+            case NONE -> DownfallType.NONE;
+            default -> throw new UnsupportedOperationException();
+        };
     }
 
     @Override
@@ -91,7 +87,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     public Object getClimate() {
-        return ReflectionHelper.getFieldValue(net.minecraft.world.level.biome.Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeBase);
+        return ReflectionHelper.getFieldValue(net.minecraft.world.level.biome.Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeBase.value());
     }
 
     @Override
@@ -108,20 +104,12 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public void setPrecipitation(DownfallType type) {
-        Biome.Precipitation nmsType;
-        switch (type) {
-            case NONE:
-                nmsType = Biome.Precipitation.NONE;
-                break;
-            case RAIN:
-                nmsType = Biome.Precipitation.RAIN;
-                break;
-            case SNOW:
-                nmsType = Biome.Precipitation.SNOW;
-                break;
-            default:
-                throw new UnsupportedOperationException();
-        }
+        Biome.Precipitation nmsType = switch (type) {
+            case RAIN -> Biome.Precipitation.RAIN;
+            case SNOW -> Biome.Precipitation.SNOW;
+            case NONE -> Biome.Precipitation.NONE;
+            default -> throw new UnsupportedOperationException();
+        };
         Object climate = getClimate();
         ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_precipitation, climate, nmsType);
     }

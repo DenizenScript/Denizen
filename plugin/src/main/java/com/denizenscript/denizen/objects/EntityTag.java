@@ -1134,10 +1134,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return getDenizenPlayer().identify();
             }
             if (entityScript != null) {
-                return "e@" + getUUID() + "/" + entityScript + mechsHandler.get();
+                return "e@" + getUUID() + "/" + entityScript;
             }
             if (entity_type != null) {
-                return "e@" + getUUID() + "/" + entity_type.getLowercaseName() + mechsHandler.get();
+                return "e@" + getUUID() + "/" + entity_type.getLowercaseName();
             }
         }
         if (entityScript != null) {
@@ -2270,6 +2270,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.visual_pose>
         // @returns ElementTag
+        // @mechanism EntityTag.visual_pose
         // @group attributes
         // @description
         // Returns the name of the entity's current visual pose.
@@ -2899,6 +2900,22 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("Cannot parse UUID input '" + new_id + "': " + ex.getMessage());
             }
         });
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name visual_pose
+        // @input ElementTag
+        // @description
+        // Sets the entity's visual pose, must be one of <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/Pose.html>.
+        // Note that not all entities support all poses, some are only supported by specific entity types.
+        // @tags
+        // <EntityTag.visual_pose>
+        // -->
+        registerSpawnedOnlyMechanism("visual_pose", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireEnum(Pose.class)) {
+                NMSHandler.entityHelper.setPose(object.getBukkitEntity(), input.asEnum(Pose.class));
+            }
+        });
     }
 
     public EntityTag describe(TagContext context) {
@@ -2964,13 +2981,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public void adjust(Mechanism mechanism) {
-
         if (isGeneric()) {
             mechanisms.add(mechanism);
             mechanism.fulfill();
             return;
         }
-
         if (getBukkitEntity() == null) {
             if (isCitizensNPC()) {
                 mechanism.echoError("Cannot adjust not-spawned NPC " + getDenizenNPC());

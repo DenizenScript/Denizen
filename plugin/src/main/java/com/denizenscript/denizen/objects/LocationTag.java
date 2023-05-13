@@ -55,13 +55,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class LocationTag extends org.bukkit.Location implements ObjectTag, Notable, Adjustable, FlaggableObject {
+public class LocationTag extends org.bukkit.Location implements VectorObject, ObjectTag, Notable, Adjustable, FlaggableObject {
 
     // <--[ObjectType]
     // @name LocationTag
     // @prefix l
     // @base ElementTag
-    // @implements FlaggableObject
+    // @implements FlaggableObject, VectorObject
     // @ExampleTagBase player.location
     // @ExampleValues <player.location>,<npc.location>
     // @ExampleForReturns
@@ -215,7 +215,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
     }
 
     @Override
-    public ObjectTag duplicate() {
+    public LocationTag duplicate() {
         return clone();
     }
 
@@ -825,6 +825,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
 
     public static void register() {
 
+        VectorObject.register(LocationTag.class, tagProcessor);
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
 
         // <--[tag]
@@ -881,7 +882,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @group math
         // @description
         // Returns the location above this location. Optionally specify a number of blocks to go up.
-        // This just moves straight along the Y axis, equivalent to <@link tag LocationTag.add> with input 0,1,0 (or the input value instead of '1').
+        // This just moves straight along the Y axis, equivalent to <@link tag VectorObject.add> with input 0,1,0 (or the input value instead of '1').
         // -->
         tagProcessor.registerTag(LocationTag.class, "above", (attribute, object) -> {
             return new LocationTag(object.clone().add(0, attribute.hasParam() ? attribute.getDoubleParam() : 1, 0));
@@ -893,7 +894,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @group math
         // @description
         // Returns the location below this location. Optionally specify a number of blocks to go down.
-        // This just moves straight along the Y axis, equivalent to <@link tag LocationTag.sub> with input 0,1,0 (or the input value instead of '1').
+        // This just moves straight along the Y axis, equivalent to <@link tag VectorObject.sub> with input 0,1,0 (or the input value instead of '1').
         // -->
         tagProcessor.registerTag(LocationTag.class, "below", (attribute, object) -> {
             return new LocationTag(object.clone().subtract(0, attribute.hasParam() ? attribute.getDoubleParam() : 1, 0));
@@ -1022,7 +1023,7 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         // @description
         // Returns the location relative to this location. Input is a vector location of the form left,up,forward.
         // For example, input -1,1,1 will return a location 1 block to the right, 1 block up, and 1 block forward.
-        // To just get the location relative to this without rotation math, use <@link tag LocationTag.add> instead.
+        // To just get the location relative to this without rotation math, use <@link tag VectorObject.add> instead.
         // -->
         tagProcessor.registerTag(LocationTag.class, "relative", (attribute, object) -> {
             if (!attribute.hasParam()) {
@@ -3218,100 +3219,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
         });
 
         // <--[tag]
-        // @attribute <LocationTag.x>
-        // @returns ElementTag(Decimal)
-        // @group identity
-        // @description
-        // Returns the X coordinate of the location.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "x", (attribute, object) -> {
-            return new ElementTag(object.getX());
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.y>
-        // @returns ElementTag(Decimal)
-        // @group identity
-        // @description
-        // Returns the Y coordinate of the location.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "y", (attribute, object) -> {
-            return new ElementTag(object.getY());
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.z>
-        // @returns ElementTag(Decimal)
-        // @group identity
-        // @description
-        // Returns the Z coordinate of the location.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "z", (attribute, object) -> {
-            return new ElementTag(object.getZ());
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.xyz>
-        // @returns ElementTag
-        // @group identity
-        // @description
-        // Returns the location in "x,y,z" format.
-        // For example: 1,2,3
-        // World, yaw, and pitch will be excluded from this output.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "xyz", (attribute, object) -> {
-            return new ElementTag(CoreUtilities.doubleToString(object.getX()) + "," + CoreUtilities.doubleToString(object.getY()) + "," + CoreUtilities.doubleToString(object.getZ()));
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.with_x[<number>]>
-        // @returns LocationTag
-        // @group identity
-        // @description
-        // Returns a copy of the location with a changed X value.
-        // -->
-        tagProcessor.registerTag(LocationTag.class, "with_x", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            LocationTag output = object.clone();
-            output.setX(attribute.getDoubleParam());
-            return output;
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.with_y[<number>]>
-        // @returns LocationTag
-        // @group identity
-        // @description
-        // Returns a copy of the location with a changed Y value.
-        // -->
-        tagProcessor.registerTag(LocationTag.class, "with_y", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            LocationTag output = object.clone();
-            output.setY(attribute.getDoubleParam());
-            return output;
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.with_z[<number>]>
-        // @returns LocationTag
-        // @group identity
-        // @description
-        // Returns a copy of the location with a changed Z value.
-        // -->
-        tagProcessor.registerTag(LocationTag.class, "with_z", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            LocationTag output = object.clone();
-            output.setZ(attribute.getDoubleParam());
-            return output;
-        });
-
-        // <--[tag]
         // @attribute <LocationTag.with_yaw[<number>]>
         // @returns LocationTag
         // @group identity
@@ -3374,115 +3281,6 @@ public class LocationTag extends org.bukkit.Location implements ObjectTag, Notab
             }
             return new ElementTag(noteName);
         }, "notable_name");
-
-        // <--[tag]
-        // @attribute <LocationTag.add[<location>]>
-        // @returns LocationTag
-        // @group math
-        // @description
-        // Returns the location with the specified coordinates added to it.
-        // -->
-        tagProcessor.registerTag(LocationTag.class, "add", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            String[] ints = attribute.getParam().replace("l@", "").split(",", 4); // TODO: Just LocationTag.valueOf?
-            if (ints.length >= 3) {
-                if (ArgumentHelper.matchesDouble(ints[0])
-                        && ArgumentHelper.matchesDouble(ints[1])
-                        && ArgumentHelper.matchesDouble(ints[2])) {
-                    return new LocationTag(object.clone().add(Double.parseDouble(ints[0]),
-                            Double.parseDouble(ints[1]),
-                            Double.parseDouble(ints[2])));
-                }
-            }
-            if (LocationTag.matches(attribute.getParam())) {
-                return object.clone().add(attribute.paramAsType(LocationTag.class));
-            }
-            return null;
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.sub[<location>]>
-        // @returns LocationTag
-        // @group math
-        // @description
-        // Returns the location with the specified coordinates subtracted from it.
-        // -->
-        tagProcessor.registerTag(LocationTag.class, "sub", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            String[] ints = attribute.getParam().replace("l@", "").split(",", 4); // TODO: Just LocationTag.valueOf?
-            if (ints.length == 3 || ints.length == 4) {
-                if (ArgumentHelper.matchesDouble(ints[0])
-                        && ArgumentHelper.matchesDouble(ints[1])
-                        && ArgumentHelper.matchesDouble(ints[2])) {
-                    return new LocationTag(object.clone().subtract(Double.parseDouble(ints[0]),
-                            Double.parseDouble(ints[1]),
-                            Double.parseDouble(ints[2])));
-                }
-            }
-            if (LocationTag.matches(attribute.getParam())) {
-                return new LocationTag(object.clone().subtract(attribute.paramAsType(LocationTag.class)));
-            }
-            return null;
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.mul[<length>]>
-        // @returns LocationTag
-        // @group math
-        // @description
-        // Returns the location multiplied by the specified length.
-        // -->
-        tagProcessor.registerTag(LocationTag.class, "mul", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            return new LocationTag(object.clone().multiply(Double.parseDouble(attribute.getParam())));
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.div[<length>]>
-        // @returns LocationTag
-        // @group math
-        // @description
-        // Returns the location divided by the specified length.
-        // -->
-        tagProcessor.registerTag(LocationTag.class, "div", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            return new LocationTag(object.clone().multiply(1D / Double.parseDouble(attribute.getParam())));
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.normalize>
-        // @returns LocationTag
-        // @group math
-        // @description
-        // Returns a 1-length vector in the same direction as this vector location.
-        // -->
-        tagProcessor.registerTag(LocationTag.class, "normalize", (attribute, object) -> {
-            double len = Math.sqrt(Math.pow(object.getX(), 2) + Math.pow(object.getY(), 2) + Math.pow(object.getZ(), 2));
-            if (len == 0) {
-                len = 1;
-            }
-            return new LocationTag(object.clone().multiply(1D / len));
-        });
-
-        // <--[tag]
-        // @attribute <LocationTag.vector_length>
-        // @returns ElementTag(Decimal)
-        // @synonyms LocationTag.magnitude
-        // @group math
-        // @description
-        // Returns the 3D length of the vector/location.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "vector_length", (attribute, object) -> {
-            return new ElementTag(Math.sqrt(Math.pow(object.getX(), 2) + Math.pow(object.getY(), 2) + Math.pow(object.getZ(), 2)));
-        });
 
         // <--[tag]
         // @attribute <LocationTag.vector_to_face>

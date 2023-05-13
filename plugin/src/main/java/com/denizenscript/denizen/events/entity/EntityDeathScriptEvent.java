@@ -70,7 +70,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         registerSwitches("by", "cause");
     }
 
-
     public EntityTag entity;
     public EntityTag damager;
     public EntityTag projectile;

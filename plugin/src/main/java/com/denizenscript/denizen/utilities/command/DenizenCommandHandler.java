@@ -28,7 +28,7 @@ public class DenizenCommandHandler {
     }
 
     // <--[language]
-    // @name denizen permissions
+    // @name Denizen Permissions
     // @group Console Commands
     // @description
     // The following is a list of all permission nodes Denizen uses within Bukkit.

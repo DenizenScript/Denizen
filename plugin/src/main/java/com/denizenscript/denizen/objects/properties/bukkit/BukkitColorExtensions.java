@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.bukkit;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import org.bukkit.Color;
@@ -8,7 +10,7 @@ import org.bukkit.DyeColor;
 public class BukkitColorExtensions {
 
     public static ColorTag fromColor(Color color) {
-        return new ColorTag(color.getRed(), color.getGreen(), color.getBlue(), 255);
+        return new ColorTag(color.getRed(), color.getGreen(), color.getBlue(), NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) ? color.getAlpha() : 255);
     }
 
     public ColorTag fromDyeColor(DyeColor dyeColor) {
@@ -16,7 +18,10 @@ public class BukkitColorExtensions {
     }
 
     public static Color getColor(ColorTag tag) {
-        return Color.fromRGB(tag.red, tag.green, tag.blue);
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            return Color.fromRGB(tag.red, tag.green, tag.blue);
+        }
+        return Color.fromARGB(tag.alpha, tag.red, tag.green, tag.blue);
     }
 
     public static void register() {
