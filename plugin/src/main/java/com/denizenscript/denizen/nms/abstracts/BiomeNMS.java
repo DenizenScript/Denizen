@@ -67,22 +67,18 @@ public abstract class BiomeNMS {
 
     public ColorTag getColor(int x, int y) {
         ColorTag topLeft = new ColorTag(26, 191, 0);
+        ColorTag topRight = new ColorTag(28, 164, 73);
         ColorTag bottomLeft = new ColorTag(174, 164, 42);
         ColorTag bottomRight = new ColorTag(96, 161, 123);
-        ColorTag topRight = new ColorTag(28, 164, 73);
-
         float normalizedX = x / 255.0f;
         float normalizedY = y / 255.0f;
-
-        ColorTag ru = scaleColor(topRight, normalizedX * (1 - normalizedY));
         ColorTag lu = scaleColor(topLeft, (1 - normalizedX) * (1 - normalizedY));
+        ColorTag ru = scaleColor(topRight, normalizedX * (1 - normalizedY));
         ColorTag ld = scaleColor(bottomLeft, (1 - normalizedX) * normalizedY);
         ColorTag rd = scaleColor(bottomRight, normalizedX * normalizedY);
-
         int r = lu.red + ld.red + rd.red + ru.red;
         int g = lu.green + ld.green + rd.green + ru.green;
         int b = lu.blue + ld.blue + rd.blue + ru.blue;
-
         return new ColorTag(r, g, b);
     }
 

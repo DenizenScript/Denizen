@@ -86,17 +86,14 @@ public class BiomeNMSImpl extends BiomeNMS {
         if (biomeBase.value().getFoliageColor() != 0) {
             return biomeBase.value().getFoliageColor();
         }
-
         // Based on net.minecraft.world.level.biome.Biome#getFoliageColorFromTexture()
         float temperature = clampColor(getTemperature());
         float humidity = clampColor(getHumidity());
-
         // Based on net.minecraft.world.level.FoliageColor#get()
         humidity *= temperature;
         int humidityValue = (int)((1.0f - humidity) * 255.0f);
         int temperatureValue = (int)((1.0f - temperature) * 255.0f);
         int index = temperatureValue << 8 | humidityValue;
-
         return index >= 65536 ? 4764952 : getColor(index / 256, index % 256).asRGB();
     }
 

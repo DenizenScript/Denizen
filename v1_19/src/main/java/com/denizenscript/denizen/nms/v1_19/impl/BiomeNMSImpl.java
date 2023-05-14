@@ -3,7 +3,6 @@ package com.denizenscript.denizen.nms.v1_19.impl;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
-import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
@@ -92,11 +91,9 @@ public class BiomeNMSImpl extends BiomeNMS {
         if (biomeHolder.value().getFoliageColor() != 0) {
             return biomeHolder.value().getFoliageColor();
         }
-
         // Based on net.minecraft.world.level.biome.Biome#getFoliageColorFromTexture()
         float temperature = clampColor(getTemperature());
         float humidity = clampColor(getHumidity());
-
         // Based on net.minecraft.world.level.FoliageColor#get()
         humidity *= temperature;
         int humidityValue = (int)((1.0f - humidity) * 255.0f);

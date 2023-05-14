@@ -303,8 +303,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @input ColorTag
         // @description
         // Sets the foliage color of this biome. Foliage includes leaves and vines.
-        // Can be changed once until next server restart. Colors reset on server restart.
-        // For the change to take effect on the players' clients, they must quit and rejoin the server.
+        // Colors reset on server restart. For the change to take effect on the players' clients, they must quit and rejoin the server.
         // @tags
         // <BiomeTag.foliage_color>
         // @example
