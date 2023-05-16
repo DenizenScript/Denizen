@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.flags.RedirectionFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -281,6 +282,38 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
                 list.add(entityType.name());
             }
             return list;
+        });
+
+        // <--[tag]
+        // @attribute <BiomeTag.foliage_color>
+        // @returns ColorTag
+        // @mechanism BiomeTag.foliage_color
+        // @description
+        // Returns the approximate foliage color of this biome. Foliage includes leaves and vines.
+        // The "swamp", "mangrove_swamp", "badlands", "wooded_badlands", and "eroded_badlands" biomes are the only biomes with hard-coded foliage colors.
+        // Biomes with no set foliage color already will have their foliage colors based on temperature and humidity of the biome.
+        // -->
+        tagProcessor.registerTag(ColorTag.class, "foliage_color", (attribute, object) -> {
+            return new ColorTag(ColorTag.fromRGB(object.biome.getFoliageColor()));
+        });
+
+        // <--[mechanism]
+        // @object BiomeTag
+        // @name foliage_color
+        // @input ColorTag
+        // @description
+        // Sets the foliage color of this biome. Foliage includes leaves and vines.
+        // Colors reset on server restart. For the change to take effect on the players' clients, they must quit and rejoin the server.
+        // @tags
+        // <BiomeTag.foliage_color>
+        // @example
+        // # Adjusts the foliage color of the plains biome permanently, using a server start event to keep it applied.
+        // # Now the leaves and vines will be a nice salmon-pink!
+        // on server start:
+        // - adjust <biome[plains]> foliage_color:#F48D8D
+        // -->
+        tagProcessor.registerMechanism("foliage_color", false, ColorTag.class, (object, mechanism, color) -> {
+            object.biome.setFoliageColor(color.asRGB());
         });
     }
 

@@ -13,8 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
@@ -24,6 +23,7 @@ import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class BiomeNMSImpl extends BiomeNMS {
 
@@ -85,6 +85,23 @@ public class BiomeNMSImpl extends BiomeNMS {
         return getSpawnableEntities(MobCategory.WATER_CREATURE);
     }
 
+    @Override
+    public int getFoliageColor() {
+        // Check if the biome already has a default color
+        if (biomeHolder.value().getFoliageColor() != 0) {
+            return biomeHolder.value().getFoliageColor();
+        }
+        // Based on net.minecraft.world.level.biome.Biome#getFoliageColorFromTexture()
+        float temperature = clampColor(getTemperature());
+        float humidity = clampColor(getHumidity());
+        // Based on net.minecraft.world.level.FoliageColor#get()
+        humidity *= temperature;
+        int humidityValue = (int)((1.0f - humidity) * 255.0f);
+        int temperatureValue = (int)((1.0f - temperature) * 255.0f);
+        int index = temperatureValue << 8 | humidityValue;
+        return index >= 65536 ? 4764952 : getColor(index / 256, index % 256).asRGB();
+    }
+
     public Object getClimate() {
         return ReflectionHelper.getFieldValue(Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeHolder.value());
     }
@@ -128,6 +145,16 @@ public class BiomeNMSImpl extends BiomeNMS {
                 throw new UnsupportedOperationException();
         }
         setClimate(nmsType, getTemperature(), getTemperatureModifier(), getHumidity());*/
+    }
+
+    @Override
+    public void setFoliageColor(int color) {
+        try {
+            ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_foliageColorOverride, biomeHolder.value().getSpecialEffects(), Optional.of(color));
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {
