@@ -16,7 +16,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Color;
 
 import java.nio.charset.StandardCharsets;
 

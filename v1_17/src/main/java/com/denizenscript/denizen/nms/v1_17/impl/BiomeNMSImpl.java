@@ -19,7 +19,6 @@ import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.entity.EntityType;
 
-import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

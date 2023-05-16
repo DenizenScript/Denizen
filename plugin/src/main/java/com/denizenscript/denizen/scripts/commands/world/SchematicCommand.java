@@ -120,7 +120,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     // <schematic[<name>].origin>
     // <schematic[<name>].blocks>
     // <schematic[<name>].exists>
-    // <schematic[<name>].cuboid[<origin location>]>
+    // <schematic[<name>].cuboid[<origin_location>]>
     // <schematic.list>
     //
     // @Usage
