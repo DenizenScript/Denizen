@@ -23,7 +23,7 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     //
     // @Cancellable true
     //
-    // @Triggers when TNT is activated and will soon explode (Spigot 1.19+).
+    // @Triggers when TNT is activated and will soon explode.
     //
     // @Context
     // <context.entity> returns the entity that primed the TNT, if any.
