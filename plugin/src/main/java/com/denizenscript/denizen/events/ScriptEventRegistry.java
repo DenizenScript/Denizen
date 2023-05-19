@@ -86,6 +86,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PistonExtendsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PistonRetractsScriptEvent.class);
         ScriptEvent.registerScriptEvent(RedstoneScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
+        }
 
         // Entity events
         if (!Denizen.supportsPaper) {
