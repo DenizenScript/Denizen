@@ -69,7 +69,7 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     @EventHandler
-    public void tntPrimeEvent(TNTPrimeEvent event) {
+    public void onTntPrimesEvent(TNTPrimeEvent event) {
         this.event = event;
         location = new LocationTag(event.getBlock().getLocation());
         fire(event);
