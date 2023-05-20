@@ -30,7 +30,7 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     // <context.block> returns the location of the block that primed the TNT, if any.
     // <context.location> returns the location of the TNT block being primed.
     // <context.cause> returns the cause of the TNT being primed. Refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/TNTPrimeEvent.PrimeCause.html>
-    // <context.reason> deprecated in favor of <context.cause> for versions below 1.19.
+    // <context.reason> deprecated in favor of <context.cause> for 1.19+.
     //
     // @Player when the priming entity is a player.
     //
