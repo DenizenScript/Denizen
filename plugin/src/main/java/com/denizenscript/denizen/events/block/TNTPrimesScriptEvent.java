@@ -27,8 +27,10 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     //
     // @Context
     // <context.entity> returns the entity that primed the TNT, if any.
+    // <context.block> returns the location of the block that primed the TNT, if any.
     // <context.location> returns the location of the TNT block being primed.
-    // <context.reason> returns the reason the TNT was primed. Refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/TNTPrimeEvent.PrimeCause.html>
+    // <context.cause> returns the cause of the TNT being primed. Refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/TNTPrimeEvent.PrimeCause.html>
+    // <context.reason> deprecated in favor of <context.cause> for versions below 1.19.
     //
     // @Player when the priming entity is a player.
     //
@@ -56,16 +58,14 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity") && event.getPrimingEntity() != null) {
-            return new EntityTag(event.getPrimingEntity()).getDenizenObject();
-        }
-        else if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("reason")) {
-            return new ElementTag(event.getCause());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> event.getPrimingEntity() != null ? new EntityTag(event.getPrimingEntity()).getDenizenObject() : super.getContext(name);
+            case "block" -> event.getPrimingBlock() != null ? new LocationTag(event.getPrimingBlock().getLocation()) : super.getContext(name);
+            case "location" -> location;
+            case "cause" -> new ElementTag(event.getCause());
+            case "reason" -> new ElementTag(event.getCause().name().equals("PLAYER") ? "ITEM" : event.getCause().name()); // For backwards-compatibility
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
