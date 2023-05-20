@@ -59,11 +59,11 @@ public class TNTPrimesScriptEvent extends BukkitScriptEvent implements Listener 
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "entity" -> event.getPrimingEntity() != null ? new EntityTag(event.getPrimingEntity()).getDenizenObject() : super.getContext(name);
-            case "block" -> event.getPrimingBlock() != null ? new LocationTag(event.getPrimingBlock().getLocation()) : super.getContext(name);
+            case "entity" -> event.getPrimingEntity() != null ? new EntityTag(event.getPrimingEntity()).getDenizenObject() : null;
+            case "block" -> event.getPrimingBlock() != null ? new LocationTag(event.getPrimingBlock().getLocation()) : null;
             case "location" -> location;
             case "cause" -> new ElementTag(event.getCause());
-            case "reason" -> new ElementTag(event.getCause().name().equals("PLAYER") ? "ITEM" : event.getCause().name()); // For backwards-compatibility
+            case "reason" -> new ElementTag(event.getCause() == TNTPrimeEvent.PrimeCause.PLAYER ? "ITEM" : event.getCause().name(), true); // For backwards-compatibility
             default -> super.getContext(name);
         };
     }
