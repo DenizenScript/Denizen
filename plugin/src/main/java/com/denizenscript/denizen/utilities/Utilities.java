@@ -54,6 +54,16 @@ public class Utilities {
         return key.getNamespace().equals(NamespacedKey.MINECRAFT) ? key.getKey() : key.toString();
     }
 
+    public static boolean matchesNamespacedKeyButCaseInsensitive(String input) {
+        int colonIndex = input.indexOf(':');
+        if (colonIndex == -1) {
+            return namespaceMatcherButCaseInsensitive.isOnlyMatches(input);
+        }
+        return namespaceMatcherButCaseInsensitive.isOnlyMatches(input.substring(0, colonIndex)) && namespaceMatcherButCaseInsensitive.isOnlyMatches(input.substring(colonIndex + 1));
+    }
+
+    public static AsciiMatcher namespaceMatcherButCaseInsensitive = new AsciiMatcher(AsciiMatcher.LETTERS_LOWER + AsciiMatcher.LETTERS_UPPER + ".-_/" + AsciiMatcher.DIGITS);
+
     public static boolean matchesNamespacedKey(String input) {
         int colonIndex = input.indexOf(':');
         if (colonIndex == -1) {

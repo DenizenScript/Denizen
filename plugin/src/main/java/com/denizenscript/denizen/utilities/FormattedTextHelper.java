@@ -520,7 +520,7 @@ public class FormattedTextHelper {
                             ScoreComponent component = new ScoreComponent(unescape(innardBase.get(1)), unescape(innardParts.get(0)), unescape(innardParts.get(1)));
                             lastText.addExtra(component);
                         }
-                        else if (innardType.equals("keybind") && Utilities.matchesNamespacedKey(innardBase.get(1))) {
+                        else if (innardType.equals("keybind") && Utilities.matchesNamespacedKeyButCaseInsensitive(innardBase.get(1))) {
                             KeybindComponent component = new KeybindComponent();
                             component.setKeybind(unescape(innardBase.get(1)));
                             lastText.addExtra(component);
