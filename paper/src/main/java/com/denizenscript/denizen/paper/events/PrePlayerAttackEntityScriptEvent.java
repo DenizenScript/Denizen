@@ -32,10 +32,10 @@ public class PrePlayerAttackEntityScriptEvent extends BukkitScriptEvent implemen
     //
     // @Context
     // <context.entity> returns the entity that was attacked in this event.
-    // <context.attacked> returns if this entity would be attacked normally. Entities like falling sand would return
-    // false because their entity type does not allow them to be attacked.
-    // Note: there may be other factors (invulnerability, etc.) that will prevent this entity from being attacked that
-    // this event will not cover.
+    // <context.attacked> returns whether this entity would be attacked normally.
+    // Entities like falling sand would return false because their entity type does not allow them to be attacked.
+    // Note: there may be other factors (invulnerability, etc.) that will prevent this entity from being attacked
+    // that this event will not cover.
     //
     // @Player when the attacked entity is a player.
     //
@@ -48,23 +48,15 @@ public class PrePlayerAttackEntityScriptEvent extends BukkitScriptEvent implemen
 
     public PrePlayerAttackEntityEvent event;
     public EntityTag entity;
-    public ElementTag attacked;
     public ItemTag item;
 
     @Override
     public boolean matches(ScriptPath path) {
-        String attackedEntity = path.eventArgLowerAt(2);
-        if (!entity.tryAdvancedMatcher(attackedEntity)) {
+        if (!path.tryArgObject(2, entity)) {
             return false;
         }
-        if (path.switches.containsKey("with")) {
-            if (!EntityTag.isPlayer(event.getPlayer())) {
-                return false;
-            }
-            ItemStack held = event.getPlayer().getEquipment().getItemInMainHand();
-            if (!runWithCheck(path, new ItemTag(held))) {
-                return false;
-            }
+        if (!path.tryObjectSwitch("with", new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()))) {
+            return false;
         }
         return super.matches(path);
     }
@@ -76,22 +68,18 @@ public class PrePlayerAttackEntityScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "entity" -> {
-                return entity;
-            }
-            case "attacked" -> {
-                return attacked;
-            }
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity;
+            case "attacked" -> new ElementTag(event.willAttack());
+            default -> super.getContext(name);
+        };
+
     }
 
     @EventHandler
-    public void prePlayerAttackEntity(PrePlayerAttackEntityEvent event) {
+    public void onPrePlayerAttackEntity(PrePlayerAttackEntityEvent event) {
         this.event = event;
         entity = new EntityTag(event.getAttacked());
-        attacked = new ElementTag(event.willAttack());
         fire(event);
     }
 }
