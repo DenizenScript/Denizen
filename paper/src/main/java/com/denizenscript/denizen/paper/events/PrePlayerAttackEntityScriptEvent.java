@@ -73,7 +73,6 @@ public class PrePlayerAttackEntityScriptEvent extends BukkitScriptEvent implemen
             case "attacked" -> new ElementTag(event.willAttack());
             default -> super.getContext(name);
         };
-
     }
 
     @EventHandler
