@@ -26,12 +26,12 @@ public class PrePlayerAttackEntityScriptEvent extends BukkitScriptEvent implemen
     // @Switch with:<item> to only process the event if the player attacks the entity with the specified item.
     //
     // @Triggers when the player tries to attack an entity. This occurs before any of the damage logic, so cancelling this event will prevent any sort of sounds from being played when attacking.
-    // Entities like falling sand would return false because their entity type does not allow them to be attacked.
-    // Note: there may be other factors (invulnerability, etc.) that will prevent this entity from being attacked that this event will not cover.
     //
     // @Context
     // <context.entity> returns the entity that was attacked in this event.
     // <context.attacked> returns whether this entity would be attacked normally.
+    // Entities like falling sand would return false because their entity type does not allow them to be attacked.
+    // Note: there may be other factors (invulnerability, etc.) that will prevent this entity from being attacked that this event will not cover.
     //
     // @Player when the attacked entity is a player.
     //
