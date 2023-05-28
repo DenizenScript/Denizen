@@ -23,9 +23,11 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -134,7 +136,7 @@ public class LookCommand extends AbstractCommand {
                             NMSHandler.packetHelper.sendRelativeLookPacket(player, actualRelYaw, relPitch);
                         }
                         else {
-                            PaperAPITools.instance.teleportPlayerRelative(player, playerTeleDest);
+                            PaperAPITools.instance.teleport(player, playerTeleDest, PlayerTeleportEvent.TeleportCause.PLUGIN, null, Arrays.asList(TeleportCommand.Relative.values()));
                         }
                         if (offthreadRepeats != null) {
                             NetworkInterceptHelper.enable();

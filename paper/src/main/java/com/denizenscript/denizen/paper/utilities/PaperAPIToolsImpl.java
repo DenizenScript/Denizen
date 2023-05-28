@@ -4,10 +4,12 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.paper.PaperModule;
+import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.entity.TeleportFlag;
@@ -136,22 +138,35 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         return player.openAnvil(loc, true);
     }
 
-    public static Object teleportRelative;
-
-    static {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) { // TODO: 1.19: replace with TeleportFlag.Relative.values()
-            // (That breaks loading pre-1.19 due to Java silliness)
-            teleportRelative = TeleportFlag.Relative.class.getEnumConstants();
-        }
-    }
-
+    @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void teleportPlayerRelative(Player player, Location loc) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN, (TeleportFlag[]) teleportRelative);
+    public void teleport(Entity entity, Location loc, PlayerTeleportEvent.TeleportCause cause, List<TeleportCommand.EntityState> entityTeleportFlags, List<TeleportCommand.Relative> relativeTeleportFlags) {
+        if ((entityTeleportFlags != null || relativeTeleportFlags != null) && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            List<TeleportFlag> teleportFlags = new ArrayList<>();
+            if (entityTeleportFlags != null) {
+                for (TeleportCommand.EntityState entityTeleportFlag : entityTeleportFlags) {
+                    teleportFlags.add(switch (entityTeleportFlag) {
+                        case RETAIN_PASSENGERS -> TeleportFlag.EntityState.RETAIN_PASSENGERS;
+                        case RETAIN_VEHICLE -> TeleportFlag.EntityState.RETAIN_VEHICLE;
+                        case RETAIN_OPEN_INVENTORY -> TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY;
+                    });
+                }
+            }
+            if (relativeTeleportFlags != null) {
+                for (TeleportCommand.Relative relativeTeleportFlag : relativeTeleportFlags) {
+                    teleportFlags.add(switch (relativeTeleportFlag) {
+                        case X -> TeleportFlag.Relative.X;
+                        case Y -> TeleportFlag.Relative.Y;
+                        case Z -> TeleportFlag.Relative.Z;
+                        case YAW -> TeleportFlag.Relative.YAW;
+                        case PITCH -> TeleportFlag.Relative.PITCH;
+                    });
+                }
+            }
+            entity.teleport(loc, cause, teleportFlags.toArray(new TeleportFlag[0]));
         }
         else {
-            super.teleportPlayerRelative(player, loc);
+            super.teleport(entity, loc, cause, null, null);
         }
     }
 
