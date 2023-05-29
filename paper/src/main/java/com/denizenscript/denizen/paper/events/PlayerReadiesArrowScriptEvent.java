@@ -23,7 +23,7 @@ public class PlayerReadiesArrowScriptEvent extends BukkitScriptEvent implements 
     //
     // @Triggers when a player is firing a bow and the server is choosing an arrow to use.
     // Upon cancellation of this event, the server will try the next available arrow and trigger another event.
-    // The arrow will temporarily be removed from the player's inventory, a client-side, and will come back upon being updated.
+    // The arrow will be (temporarily) removed from the player's inventory, but will revert/come back upon being updated.
     //
     // @Context
     // <context.bow> returns an ItemTag of the bow that is about to be used.
