@@ -51,6 +51,7 @@ public class TeleportCommand extends AbstractCommand {
     // Optionally, specify additional teleport options using the 'relative_options:'/'entity_options:' arguments (Paper only).
     // This allows thing like relative teleports (smoother over short distances), retaining an open inventory/passengers when teleporting, etc.
     // See <@link url https://jd.papermc.io/paper/1.19/io/papermc/paper/entity/TeleportFlag.EntityState.html>/<@link url https://jd.papermc.io/paper/1.19/io/papermc/paper/entity/TeleportFlag.Relative.html> for all possible options.
+    // Note that the API this is based on is marked as experimental, so while unlikely, breaking changes are possible.
     //
     // @Tags
     // <EntityTag.location>
