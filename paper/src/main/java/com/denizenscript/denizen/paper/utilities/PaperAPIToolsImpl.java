@@ -145,22 +145,12 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             List<TeleportFlag> teleportFlags = new ArrayList<>();
             if (entityTeleportFlags != null) {
                 for (TeleportCommand.EntityState entityTeleportFlag : entityTeleportFlags) {
-                    teleportFlags.add(switch (entityTeleportFlag) {
-                        case RETAIN_PASSENGERS -> TeleportFlag.EntityState.RETAIN_PASSENGERS;
-                        case RETAIN_VEHICLE -> TeleportFlag.EntityState.RETAIN_VEHICLE;
-                        case RETAIN_OPEN_INVENTORY -> TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY;
-                    });
+                    teleportFlags.add(TeleportFlag.EntityState.values()[entityTeleportFlag.ordinal()]);
                 }
             }
             if (relativeTeleportFlags != null) {
                 for (TeleportCommand.Relative relativeTeleportFlag : relativeTeleportFlags) {
-                    teleportFlags.add(switch (relativeTeleportFlag) {
-                        case X -> TeleportFlag.Relative.X;
-                        case Y -> TeleportFlag.Relative.Y;
-                        case Z -> TeleportFlag.Relative.Z;
-                        case YAW -> TeleportFlag.Relative.YAW;
-                        case PITCH -> TeleportFlag.Relative.PITCH;
-                    });
+                    teleportFlags.add(TeleportFlag.Relative.values()[relativeTeleportFlag.ordinal()]);
                 }
             }
             entity.teleport(loc, cause, teleportFlags.toArray(new TeleportFlag[0]));
