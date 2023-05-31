@@ -140,7 +140,7 @@ public class EntityArmorPose implements Property {
         // For example, [head=4.5,3,4.5;body=5.4,3.2,1]
         // Valid parts: HEAD, BODY, LEFT_ARM, RIGHT_ARM, LEFT_LEG, RIGHT_LEG
         // Angles are in radians!
-        // Here's a website to help you figure out the correct values: <@link url https://bgielinor.github.io/Minecraft-ArmorStand/>.
+        // Here's a website to help you figure out the correct values: <@link url https://b-universe.github.io/Minecraft-ArmorStand/>.
         // @tags
         // <EntityTag.armor_pose_map>
         // -->

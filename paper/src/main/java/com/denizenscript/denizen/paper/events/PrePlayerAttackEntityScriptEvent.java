@@ -29,9 +29,9 @@ public class PrePlayerAttackEntityScriptEvent extends BukkitScriptEvent implemen
     //
     // @Context
     // <context.entity> returns the entity that was attacked in this event.
-    // <context.attacked> returns whether this entity would be attacked normally.
-    // Entities like falling sand would return false because their entity type does not allow them to be attacked.
-    // Note: there may be other factors (invulnerability, etc.) that will prevent this entity from being attacked that this event will not cover.
+    // <context.will_attack> returns whether this entity would be attacked normally.
+    // Entities like falling sand will return false because their entity type does not allow them to be attacked.
+    // Note: there may be other factors (invulnerability, etc.) that will prevent this entity from being attacked that this event does not cover.
     //
     // @Player Always.
     //
@@ -66,7 +66,7 @@ public class PrePlayerAttackEntityScriptEvent extends BukkitScriptEvent implemen
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "entity" -> entity;
-            case "attacked" -> new ElementTag(event.willAttack());
+            case "will_attack" -> new ElementTag(event.willAttack());
             default -> super.getContext(name);
         };
     }
