@@ -15,7 +15,7 @@ public class PrePlayerAttackEntityScriptEvent extends BukkitScriptEvent implemen
 
     // <--[event]
     // @Events
-    // player pre attacks <entity>
+    // player tries to attack <entity>
     //
     // @Plugin Paper
     //
@@ -38,7 +38,7 @@ public class PrePlayerAttackEntityScriptEvent extends BukkitScriptEvent implemen
     // -->
 
     public PrePlayerAttackEntityScriptEvent() {
-        registerCouldMatcher("player pre attacks <entity>");
+        registerCouldMatcher("player tries to attack <entity>");
         registerSwitches("with");
     }
 
@@ -48,7 +48,7 @@ public class PrePlayerAttackEntityScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!path.tryArgObject(3, entity)) {
+        if (!path.tryArgObject(4, entity)) {
             return false;
         }
         if (!path.tryObjectSwitch("with", new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()))) {
