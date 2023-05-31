@@ -33,7 +33,7 @@ public class PrePlayerAttackEntityScriptEvent extends BukkitScriptEvent implemen
     // Entities like falling sand would return false because their entity type does not allow them to be attacked.
     // Note: there may be other factors (invulnerability, etc.) that will prevent this entity from being attacked that this event will not cover.
     //
-    // @Player when the attacked entity is a player.
+    // @Player Always.
     //
     // -->
 
