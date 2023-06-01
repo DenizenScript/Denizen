@@ -26,7 +26,7 @@ public class TeleportCommand extends AbstractCommand {
 
     public TeleportCommand() {
         setName("teleport");
-        setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative_options:<option>|...)");
+        setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative_options:<option>|...) (relative)");
         setRequiredArguments(1, 5);
         isProcedural = false;
         autoCompile();
@@ -34,7 +34,7 @@ public class TeleportCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Teleport
-    // @Syntax teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative_options:<option>|...)
+    // @Syntax teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative_options:<option>|...) (relative)
     // @Required 1
     // @Maximum 5
     // @Short Teleports the entity(s) to a new location.
@@ -48,9 +48,10 @@ public class TeleportCommand extends AbstractCommand {
     //
     // Instead of a valid entity, an unspawned NPC or an offline player may also be used.
     //
-    // Optionally, specify additional teleport options using the 'relative_options:'/'entity_options:' arguments (Paper only).
-    // This allows thing like relative teleports (smoother over short distances), retaining an open inventory/passengers when teleporting, etc.
+    // Optionally, specify additional teleport options using the 'entity_options:'/'relative_options:' arguments (Paper only).
+    // This allows things like relative teleports (smoother over short distances), retaining an open inventory when teleporting, etc. - see the links below for more information.
     // See <@link url https://jd.papermc.io/paper/1.19/io/papermc/paper/entity/TeleportFlag.EntityState.html>/<@link url https://jd.papermc.io/paper/1.19/io/papermc/paper/entity/TeleportFlag.Relative.html> for all possible options.
+    // Alternatively, specify 'relative' to automatically use all the options in <@link url https://jd.papermc.io/paper/1.19/io/papermc/paper/entity/TeleportFlag.Relative.html>, for a fully relative teleport.
     // Note that the API this is based on is marked as experimental, so while unlikely, breaking changes are possible.
     //
     // @Tags
@@ -62,7 +63,7 @@ public class TeleportCommand extends AbstractCommand {
     //
     // @Usage
     // Use to teleport a player high above.
-    // - teleport <player> <player.location.add[0,200,0]>
+    // - teleport <player> <player.location.above[200]>
     //
     // @Usage
     // Use to teleport to a random online player.
@@ -73,12 +74,16 @@ public class TeleportCommand extends AbstractCommand {
     // - teleport <server.online_players> <player.location>
     //
     // @Usage
-    // Use to teleport the NPC to a location that was noted wih the <@link command note> command.
+    // Use to teleport the NPC to a location that was noted with the <@link command note> command.
     // - teleport <npc> my_prenoted_location
     //
     // @Usage
     // Use to teleport a player to some location, and inform events that it was caused by a nether portal.
     // - teleport <player> <server.flag[nether_hub_location]> cause:nether_portal
+    //
+    // @Usage
+    // Use to teleport the player without closing their currently open inventory.
+    // - teleport <player> <player.location.below[5]> entity_options:retain_open_inventory
     // -->
 
     @Override
@@ -97,7 +102,7 @@ public class TeleportCommand extends AbstractCommand {
                                    @ArgPrefixed @ArgName("cause") @ArgDefaultText("plugin") PlayerTeleportEvent.TeleportCause cause,
                                    @ArgName("entity_options") @ArgPrefixed @ArgDefaultNull @ArgSubType(EntityState.class) List<EntityState> entityOptions,
                                    @ArgName("relative_options") @ArgPrefixed @ArgDefaultNull @ArgSubType(Relative.class) List<Relative> relativeOptions,
-                                   @ArgNoDebug @ArgName("relative") boolean relative) {
+                                   @ArgName("relative") boolean relative) {
         if (locationRaw == null) { // Compensate for legacy "- teleport <loc>" default fill
             locationRaw = entityList;
             entityList = Utilities.entryDefaultEntity(scriptEntry, true);
@@ -110,7 +115,6 @@ public class TeleportCommand extends AbstractCommand {
         }
         if (relative) {
             relativeOptions = Arrays.asList(Relative.values());
-            BukkitImplDeprecations.teleportCommandRelative.warn(scriptEntry);
         }
         LocationTag location = locationRaw.asType(LocationTag.class, scriptEntry.context);
         ListTag entities = entityList.asType(ListTag.class, scriptEntry.context);
