@@ -142,7 +142,11 @@ public class TeleportCommand extends AbstractCommand {
                 NMSHandler.entityHelper.look(entity.getBukkitEntity(), location.getYaw(), location.getPitch());
                 return;
             }
-            PaperAPITools.instance.teleport(entity.getBukkitEntity(), location, cause, entityOptions, relativeOptions);
+            if (entityOptions != null || relativeOptions != null) {
+                PaperAPITools.instance.teleport(entity.getBukkitEntity(), location, cause, entityOptions, relativeOptions);
+                continue;
+            }
+            entity.teleport(location, cause);
         }
     }
 }

@@ -140,23 +140,21 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public void teleport(Entity entity, Location loc, PlayerTeleportEvent.TeleportCause cause, List<TeleportCommand.EntityState> entityTeleportFlags, List<TeleportCommand.Relative> relativeTeleportFlags) {
-        if ((entityTeleportFlags != null || relativeTeleportFlags != null) && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            List<TeleportFlag> teleportFlags = new ArrayList<>();
-            if (entityTeleportFlags != null) {
-                for (TeleportCommand.EntityState entityTeleportFlag : entityTeleportFlags) {
-                    teleportFlags.add(TeleportFlag.EntityState.values()[entityTeleportFlag.ordinal()]);
-                }
-            }
-            if (relativeTeleportFlags != null) {
-                for (TeleportCommand.Relative relativeTeleportFlag : relativeTeleportFlags) {
-                    teleportFlags.add(TeleportFlag.Relative.values()[relativeTeleportFlag.ordinal()]);
-                }
-            }
-            entity.teleport(loc, cause, teleportFlags.toArray(new TeleportFlag[0]));
-        }
-        else {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             super.teleport(entity, loc, cause, null, null);
         }
+        List<TeleportFlag> teleportFlags = new ArrayList<>();
+        if (entityTeleportFlags != null) {
+            for (TeleportCommand.EntityState entityTeleportFlag : entityTeleportFlags) {
+                teleportFlags.add(TeleportFlag.EntityState.values()[entityTeleportFlag.ordinal()]);
+            }
+        }
+        if (relativeTeleportFlags != null) {
+            for (TeleportCommand.Relative relativeTeleportFlag : relativeTeleportFlags) {
+                teleportFlags.add(TeleportFlag.Relative.values()[relativeTeleportFlag.ordinal()]);
+            }
+        }
+        entity.teleport(loc, cause, teleportFlags.toArray(new TeleportFlag[0]));
     }
 
     public static HashMap<NamespacedKey, PotionMix> potionMixes = new HashMap<>();
