@@ -137,7 +137,6 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         return player.openAnvil(loc, true);
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void teleport(Entity entity, Location loc, PlayerTeleportEvent.TeleportCause cause, List<TeleportCommand.EntityState> entityTeleportFlags, List<TeleportCommand.Relative> relativeTeleportFlags) {
         if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
