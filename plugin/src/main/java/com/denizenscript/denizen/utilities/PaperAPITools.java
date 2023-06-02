@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -17,6 +18,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
+
+import java.util.List;
 
 public class PaperAPITools {
 
@@ -104,8 +107,8 @@ public class PaperAPITools {
         throw new UnsupportedOperationException();
     }
 
-    public void teleportPlayerRelative(Player player, Location loc) {
-        player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
+    public void teleport(Entity entity, Location loc, PlayerTeleportEvent.TeleportCause cause, List<TeleportCommand.EntityState> entityTeleportFlags, List<TeleportCommand.Relative> relativeTeleportFlags) {
+        entity.teleport(loc, cause);
     }
 
     public void registerBrewingRecipe(String keyName, ItemStack result, ItemStack[] inputItem, boolean inputExact, ItemStack[] ingredientItem, boolean ingredientExact) {

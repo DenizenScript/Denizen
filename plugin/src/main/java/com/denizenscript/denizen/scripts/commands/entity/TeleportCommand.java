@@ -1,37 +1,42 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.PaperAPITools;
-import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.scripts.commands.generator.*;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.PaperAPITools;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.utilities.Deprecations;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.trait.CurrentLocation;
 import org.bukkit.event.player.PlayerTeleportEvent;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class TeleportCommand extends AbstractCommand {
 
     public TeleportCommand() {
         setName("teleport");
-        setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>) (relative)");
-        setRequiredArguments(1, 4);
+        setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative_options:<option>|...) (relative)");
+        setRequiredArguments(1, 5);
         isProcedural = false;
         autoCompile();
     }
 
     // <--[command]
     // @Name Teleport
-    // @Syntax teleport (<entity>|...) [<location>] (cause:<cause>) (relative)
+    // @Syntax teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative_options:<option>|...) (relative)
     // @Required 1
-    // @Maximum 4
+    // @Maximum 5
     // @Short Teleports the entity(s) to a new location.
     // @Synonyms tp
     // @Group entity
@@ -43,8 +48,11 @@ public class TeleportCommand extends AbstractCommand {
     //
     // Instead of a valid entity, an unspawned NPC or an offline player may also be used.
     //
-    // Optionally specify "relative" when teleporting a player to use relative teleporation (Paper only).
-    // Relative teleports are smoother for the client when teleporting over short distances.
+    // Optionally, specify additional teleport options using the 'entity_options:'/'relative_options:' arguments (Paper only).
+    // This allows things like relative teleports (smoother over short distances), retaining an open inventory when teleporting, etc. - see the links below for more information.
+    // See <@link url https://jd.papermc.io/paper/1.19/io/papermc/paper/entity/TeleportFlag.EntityState.html>/<@link url https://jd.papermc.io/paper/1.19/io/papermc/paper/entity/TeleportFlag.Relative.html> for all possible options.
+    // Alternatively, specify 'relative' to automatically use all the options in <@link url https://jd.papermc.io/paper/1.19/io/papermc/paper/entity/TeleportFlag.Relative.html>, for a fully relative teleport.
+    // Note that the API this is based on is marked as experimental, so while unlikely, breaking changes are possible.
     //
     // @Tags
     // <EntityTag.location>
@@ -55,7 +63,7 @@ public class TeleportCommand extends AbstractCommand {
     //
     // @Usage
     // Use to teleport a player high above.
-    // - teleport <player> <player.location.add[0,200,0]>
+    // - teleport <player> <player.location.above[200]>
     //
     // @Usage
     // Use to teleport to a random online player.
@@ -66,23 +74,34 @@ public class TeleportCommand extends AbstractCommand {
     // - teleport <server.online_players> <player.location>
     //
     // @Usage
-    // Use to teleport the NPC to a location that was noted wih the <@link command note> command.
+    // Use to teleport the NPC to a location that was noted with the <@link command note> command.
     // - teleport <npc> my_prenoted_location
     //
     // @Usage
     // Use to teleport a player to some location, and inform events that it was caused by a nether portal.
     // - teleport <player> <server.flag[nether_hub_location]> cause:nether_portal
+    //
+    // @Usage
+    // Use to teleport the player without closing their currently open inventory.
+    // - teleport <player> <player.location.below[5]> entity_options:retain_open_inventory
     // -->
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
         tab.addNotesOfType(LocationTag.class);
+        tab.addWithPrefix("entity_options:", EntityState.values());
+        tab.addWithPrefix("relative_options:", Relative.values());
     }
+
+    public enum EntityState { RETAIN_PASSENGERS, RETAIN_VEHICLE, RETAIN_OPEN_INVENTORY }
+    public enum Relative { X, Y, Z, YAW, PITCH }
 
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgLinear @ArgName("entities") ObjectTag entityList,
                                    @ArgLinear @ArgName("location") @ArgDefaultNull ObjectTag locationRaw,
-                                   @ArgPrefixed @ArgName("cause") @ArgDefaultText("PLUGIN") PlayerTeleportEvent.TeleportCause cause,
+                                   @ArgPrefixed @ArgName("cause") @ArgDefaultText("plugin") PlayerTeleportEvent.TeleportCause cause,
+                                   @ArgName("entity_options") @ArgPrefixed @ArgDefaultNull @ArgSubType(EntityState.class) List<EntityState> entityOptions,
+                                   @ArgName("relative_options") @ArgPrefixed @ArgDefaultNull @ArgSubType(Relative.class) List<Relative> relativeOptions,
                                    @ArgName("relative") boolean relative) {
         if (locationRaw == null) { // Compensate for legacy "- teleport <loc>" default fill
             locationRaw = entityList;
@@ -92,6 +111,10 @@ public class TeleportCommand extends AbstractCommand {
             ObjectTag swap = locationRaw;
             locationRaw = entityList;
             entityList = swap;
+            Deprecations.outOfOrderArgs.warn(scriptEntry);
+        }
+        if (relative) {
+            relativeOptions = Arrays.asList(Relative.values());
         }
         LocationTag location = locationRaw.asType(LocationTag.class, scriptEntry.context);
         ListTag entities = entityList.asType(ListTag.class, scriptEntry.context);
@@ -101,15 +124,9 @@ public class TeleportCommand extends AbstractCommand {
         for (ObjectTag entityObj : entities.objectForms) {
             if (entityObj.shouldBeType(PlayerTag.class)) {
                 PlayerTag player = entityObj.asType(PlayerTag.class, scriptEntry.context);
-                if (player != null) {
-                    if (!player.isOnline()) {
-                        player.setLocation(location);
-                        continue;
-                    }
-                    if (relative) {
-                        PaperAPITools.instance.teleportPlayerRelative(player.getPlayerEntity(), location);
-                        continue;
-                    }
+                if (player != null && !player.isOnline()) {
+                    player.setLocation(location);
+                    continue;
                 }
             }
             if (entityObj.shouldBeType(NPCTag.class)) {
@@ -128,6 +145,10 @@ public class TeleportCommand extends AbstractCommand {
                 NMSHandler.entityHelper.snapPositionTo(entity.getBukkitEntity(), location.toVector());
                 NMSHandler.entityHelper.look(entity.getBukkitEntity(), location.getYaw(), location.getPitch());
                 return;
+            }
+            if (entityOptions != null || relativeOptions != null) {
+                PaperAPITools.instance.teleport(entity.getBukkitEntity(), location, cause, entityOptions, relativeOptions);
+                continue;
             }
             entity.teleport(location, cause);
         }
