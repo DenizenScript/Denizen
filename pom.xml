@@ -13,6 +13,7 @@
         <craftbukkit.version>1.19.4-R0.1-SNAPSHOT</craftbukkit.version>
         <citizens.version>2.0.31-SNAPSHOT</citizens.version>
         <dcore.version>1.91.0-SNAPSHOT</dcore.version>
+        <vault.version>1.7.1</vault.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
         <BUILD_CLASS>CUSTOM</BUILD_CLASS>
         <DENIZEN_VERSION>1.2.7</DENIZEN_VERSION>
@@ -37,6 +38,10 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>-->
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <ciManagement>
