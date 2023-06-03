@@ -44,9 +44,9 @@
         <url>https://ci.citizensnpcs.co</url>
     </ciManagement>
     <scm>
-        <connection>scm:git:git://github.com/DenizenScript/Denizen-For-Bukkit.git</connection>
-        <developerConnection>scm:git:git:@github.com:DenizenScript/Denizen-For-Bukkit.git</developerConnection>
-        <url>https://github.com/DenizenScript/Denizen-For-Bukkit/tree/dev/</url>
+        <connection>scm:git:git://github.com/DenizenScript/Denizen.git</connection>
+        <developerConnection>scm:git:git:@github.com:DenizenScript/Denizen.git</developerConnection>
+        <url>https://github.com/DenizenScript/Denizen/tree/dev/</url>
     </scm>
     <distributionManagement>
         <repository>
