@@ -8,6 +8,7 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import io.papermc.paper.event.player.PlayerLecternPageChangeEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,25 +29,47 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
     //
     // @Triggers when the player flips to a page in a lectern.
     //
+    // @Switch book:<item> to only process the event if the book on the lectern matches the given item.
+    //
     // @Context
     // <context.book> returns an ItemTag of the book in the lectern.
     // <context.lectern> returns a LocationTag of the lectern.
-    // <context.old_page> returns the last page the player was on. Page numbers follow zero-based numbering, starting at 0.
-    // <context.new_page> returns the new page that the player flipped to.
-    // <context.page_direction> returns the direction in which the player flips the lectern book page.
+    // <context.old_page> returns an ElementTag(Number) of the last page the player was on. Page numbers follow zero-based numbering, starting at 0.
+    // <context.new_page> returns an ElementTag(Number) of the new page that the player flipped to.
+    // <context.page_direction> returns the direction in which the player flips the lectern book page, can be either LEFT or RIGHT.
     //
-    // @Player when the attacked entity is a player.
+    // @Determine
+    // "PAGE:<ElementTag(Number)>" to set the page that the player will flip to.
+    //
+    // @Example
+    // # Announce the page the player flipped to.
+    // on player flips lectern page:
+    // - announce "<player.name> flipped to page #<context.new_page>!"
+    //
+    // @Example
+    // # Flips the player to page 5 if they are flagged with "pancakes".
+    // on player flips lectern page flagged:pancakes:
+    // - determine page:5
     //
     // -->
 
     public PlayerLecternPageChangeScriptEvent() {
         registerCouldMatcher("player flips lectern page");
+        registerSwitches("book");
     }
 
     public PlayerLecternPageChangeEvent event;
+    public LocationTag location;
+
 
     @Override
     public boolean matches(ScriptPath path) {
+        if (!runInCheck(path, location)) {
+            return false;
+        }
+        if (!path.tryObjectSwitch("book", new ItemTag(event.getBook()))) {
+            return false;
+        }
         return super.matches(path);
     }
 
@@ -67,6 +90,20 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
         };
     }
 
+    @Override
+    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        if (determinationObj instanceof ElementTag) {
+            String lower = CoreUtilities.toLowerCase((determinationObj.toString()));
+            if (lower.startsWith("page:")) {
+                ElementTag value = new ElementTag(lower.substring("page:".length()));
+                if (value.isInt()) {
+                    event.setNewPage(value.asInt());
+                    return true;
+                }
+            }
+        }
+        return super.applyDetermination(path, determinationObj);
+    }
     @EventHandler
     public void onPlayerFlipsLecternPage(PlayerLecternPageChangeEvent event) {
         this.event = event;
