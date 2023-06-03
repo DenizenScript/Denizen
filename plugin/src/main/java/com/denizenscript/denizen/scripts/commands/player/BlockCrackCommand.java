@@ -79,12 +79,13 @@ public class BlockCrackCommand extends AbstractCommand {
                             @ArgName("players") @ArgDefaultNull @ArgPrefixed @ArgSubType(PlayerTag.class) List<PlayerTag> players,
                             @ArgName("duration") @ArgPrefixed @ArgDefaultNull DurationTag duration) {
         if (players == null) {
-            players = Collections.singletonList(Utilities.getEntryPlayer(scriptEntry));
+            players = List.of(Utilities.getEntryPlayer(scriptEntry));
         }
-        if (!progressTracker.containsKey(location)) {
-            progressTracker.put(location, new HashMap<>());
+        Location loc = location.getBlock().getLocation();
+        if (!progressTracker.containsKey(loc)) {
+            progressTracker.put(loc, new HashMap<>());
         }
-        Map<UUID, IntHolder> uuidInt = progressTracker.get(location);
+        Map<UUID, IntHolder> uuidInt = progressTracker.get(loc);
         for (PlayerTag player : players) {
             if (!player.isOnline()) {
                 Debug.echoError("Players must be online!");
@@ -102,7 +103,7 @@ public class BlockCrackCommand extends AbstractCommand {
             IntHolder intHolder = uuidInt.get(uuid);
             if (!stack && intHolder.theInt > intHolder.base) {
                 for (int i = intHolder.base; i <= intHolder.theInt; i++) {
-                    showBlockCrack(playerEnt, i, location, -1, duration, scriptEntry);
+                    showBlockCrack(playerEnt, i, loc, -1, duration);
                 }
                 intHolder.theInt = intHolder.base;
             }
@@ -110,31 +111,26 @@ public class BlockCrackCommand extends AbstractCommand {
                 continue;
             }
             int id = stack ? intHolder.theInt++ : intHolder.theInt;
-            showBlockCrack(playerEnt, id, location, progress - 1, duration, scriptEntry);
+            showBlockCrack(playerEnt, id, loc, progress - 1, duration);
         }
     }
 
-    private static void showBlockCrack(Player player, int id, Location location, int progress, DurationTag duration, ScriptEntry scriptEntry) {
-        if (duration == null) {
-            NMSHandler.packetHelper.showBlockCrack(player, id, location, progress - 1);
-            return;
-        }
-        if (progress == -1) {
-            NMSHandler.packetHelper.showBlockCrack(player, id, location, -1);
+    private static void showBlockCrack(Player player, int id, Location location, int progress, DurationTag duration) {
+        if (duration == null || progress == -1) {
+            NMSHandler.packetHelper.showBlockCrack(player, id, location, progress);
             return;
         }
         final RepeatingSchedulable schedulable = new RepeatingSchedulable(null, 1);
         long endTime = DenizenCore.serverTimeMillis + duration.getMillis();
         // Showing it before the schedulable will allow the block crack to appear as soon as the command is run.
-        NMSHandler.packetHelper.showBlockCrack(player, id, location, progress - 1);
+        NMSHandler.packetHelper.showBlockCrack(player, id, location, progress);
         schedulable.run = () -> {
             if (endTime <= DenizenCore.serverTimeMillis) {
                 NMSHandler.packetHelper.showBlockCrack(player, id, location, -1);
-                scriptEntry.setFinished(true);
                 schedulable.cancel();
                 return;
             }
-            NMSHandler.packetHelper.showBlockCrack(player, id, location, progress - 1);
+            NMSHandler.packetHelper.showBlockCrack(player, id, location, progress);
         };
         DenizenCore.schedule(schedulable);
     }
