@@ -14,7 +14,6 @@ import com.denizenscript.denizencore.utilities.scheduling.RepeatingSchedulable;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,6 +124,10 @@ public class BlockCrackCommand extends AbstractCommand {
         // Showing it before the schedulable will allow the block crack to appear as soon as the command is run.
         NMSHandler.packetHelper.showBlockCrack(player, id, location, progress);
         schedulable.run = () -> {
+            if (!player.isOnline()) {
+                schedulable.cancel();
+                return;
+            }
             if (endTime <= DenizenCore.serverTimeMillis) {
                 NMSHandler.packetHelper.showBlockCrack(player, id, location, -1);
                 schedulable.cancel();
