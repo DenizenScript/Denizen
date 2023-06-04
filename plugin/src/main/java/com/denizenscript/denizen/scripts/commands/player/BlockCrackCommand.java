@@ -1,16 +1,16 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.objects.core.DurationTag;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.scheduling.RepeatingSchedulable;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -24,23 +24,24 @@ public class BlockCrackCommand extends AbstractCommand {
 
     public BlockCrackCommand() {
         setName("blockcrack");
-        setSyntax("blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)");
-        setRequiredArguments(2, 4);
+        setSyntax("blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...) (duration:<duration>)");
+        setRequiredArguments(2, 5);
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
     // @Name BlockCrack
-    // @Syntax blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)
+    // @Syntax blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...) (duration:<duration>)
     // @Required 2
-    // @Maximum 4
+    // @Maximum 5
     // @Short Shows the player(s) a block cracking animation.
     // @Group player
     //
     // @Description
     // You must specify a progress number between 1 and 10, where 1 is the first stage and 10 is the last.
     // To remove the animation, you must specify any number outside of that range. For example, 0.
-    // Optionally, you can stack multiple effects
+    // Optionally, you can stack multiple effects or set a duration for how long the effect should be shown.
     //
     // @Tags
     // None
@@ -57,62 +58,34 @@ public class BlockCrackCommand extends AbstractCommand {
     // Use to show all 10 layers of block cracking at the same time.
     // - repeat 10:
     //   - blockcrack <context.location> progress:<[value]> stack
+    //
+    // @Usage
+    // Use to show a crack in a block to the attached player for 5 seconds.
+    // - blockcrack <context.location> progress:4 duration:5s
     // -->
-
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (arg.matchesPrefix("players")
-                    && arg.matchesArgumentList(PlayerTag.class)) {
-                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
-            }
-            else if (arg.matchesPrefix("progress")
-                    && arg.matchesInteger()) {
-                scriptEntry.addObject("progress", arg.asElement());
-            }
-            else if (arg.matchesArgumentType(LocationTag.class)) {
-                scriptEntry.addObject("location", arg.asType(LocationTag.class));
-            }
-            else if (arg.matches("stack")) {
-                scriptEntry.addObject("stack", new ElementTag(true));
-            }
-            else {
-                arg.reportUnhandled();
-            }
-        }
-        if (!scriptEntry.hasObject("progress")) {
-            throw new InvalidArgumentsException("Must specify crack animation progress!");
-        }
-        if (!scriptEntry.hasObject("location")) {
-            throw new InvalidArgumentsException("Must specify a valid location!");
-        }
-        scriptEntry.defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)))
-                .defaultObject("stack", new ElementTag(false));
-    }
 
     private static class IntHolder {
         public int theInt;
         public int base;
     }
 
-    private static Map<Location, Map<UUID, IntHolder>> progressTracker = new HashMap<>();
+    private static final Map<Location, Map<UUID, IntHolder>> progressTracker = new HashMap<>();
     private static int lastBase;
 
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
-        ElementTag progress = scriptEntry.getElement("progress");
-        LocationTag location = scriptEntry.getObjectTag("location");
-        ElementTag stack = scriptEntry.getElement("stack");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("players", players), progress, location, stack);
+    public static void autoExecute(ScriptEntry scriptEntry,
+                            @ArgName("location") @ArgLinear LocationTag location,
+                            @ArgName("progress") @ArgPrefixed int progress,
+                            @ArgName("stack") boolean stack,
+                            @ArgName("players") @ArgDefaultNull @ArgPrefixed @ArgSubType(PlayerTag.class) List<PlayerTag> players,
+                            @ArgName("duration") @ArgPrefixed @ArgDefaultNull DurationTag duration) {
+        if (players == null) {
+            players = List.of(Utilities.getEntryPlayer(scriptEntry));
         }
         Location loc = location.getBlock().getLocation();
         if (!progressTracker.containsKey(loc)) {
             progressTracker.put(loc, new HashMap<>());
         }
         Map<UUID, IntHolder> uuidInt = progressTracker.get(loc);
-        boolean stackVal = stack.asBoolean();
         for (PlayerTag player : players) {
             if (!player.isOnline()) {
                 Debug.echoError("Players must be online!");
@@ -128,17 +101,37 @@ public class BlockCrackCommand extends AbstractCommand {
                 uuidInt.put(uuid, newIntHolder);
             }
             IntHolder intHolder = uuidInt.get(uuid);
-            if (!stackVal && intHolder.theInt > intHolder.base) {
+            if (!stack && intHolder.theInt > intHolder.base) {
                 for (int i = intHolder.base; i <= intHolder.theInt; i++) {
-                    NMSHandler.packetHelper.showBlockCrack(playerEnt, i, loc, -1);
+                    showBlockCrack(playerEnt, i, loc, -1, duration);
                 }
                 intHolder.theInt = intHolder.base;
             }
-            else if (stackVal && intHolder.theInt - intHolder.base > 10) {
+            else if (stack && intHolder.theInt - intHolder.base > 10) {
                 continue;
             }
-            int id = stackVal ? intHolder.theInt++ : intHolder.theInt;
-            NMSHandler.packetHelper.showBlockCrack(player.getPlayerEntity(), id, loc, progress.asInt() - 1);
+            int id = stack ? intHolder.theInt++ : intHolder.theInt;
+            showBlockCrack(playerEnt, id, loc, progress - 1, duration);
         }
+    }
+
+    private static void showBlockCrack(Player player, int id, Location location, int progress, DurationTag duration) {
+        if (duration == null || progress == -1) {
+            NMSHandler.packetHelper.showBlockCrack(player, id, location, progress);
+            return;
+        }
+        final RepeatingSchedulable schedulable = new RepeatingSchedulable(null, 1);
+        long endTime = DenizenCore.serverTimeMillis + duration.getMillis();
+        // Showing it before the schedulable will allow the block crack to appear as soon as the command is run.
+        NMSHandler.packetHelper.showBlockCrack(player, id, location, progress);
+        schedulable.run = () -> {
+            if (endTime <= DenizenCore.serverTimeMillis) {
+                NMSHandler.packetHelper.showBlockCrack(player, id, location, -1);
+                schedulable.cancel();
+                return;
+            }
+            NMSHandler.packetHelper.showBlockCrack(player, id, location, progress);
+        };
+        DenizenCore.schedule(schedulable);
     }
 }
