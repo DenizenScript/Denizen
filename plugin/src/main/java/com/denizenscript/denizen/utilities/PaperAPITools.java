@@ -174,7 +174,7 @@ public class PaperAPITools {
     public void setText(TextDisplay textDisplay, String text) {
         textDisplay.setText(text);
     }
-    
+
     public void kickPlayer(Player player, String message) {
         player.kickPlayer(message);
     }
