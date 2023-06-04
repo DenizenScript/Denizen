@@ -328,4 +328,9 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     public void setText(TextDisplay textDisplay, String text) {
         textDisplay.text(PaperModule.parseFormattedText(text, ChatColor.WHITE));
     }
+
+    @Override
+    public void kickPlayer(Player player, String message) {
+        player.kick(PaperModule.parseFormattedText(message, ChatColor.WHITE));
+    }
 }
