@@ -66,6 +66,22 @@
         </dependency>
     </dependencies>
 
+    <ciManagement>
+        <system>jenkins</system>
+        <url>https://ci.citizensnpcs.co</url>
+    </ciManagement>
+    <scm>
+        <connection>scm:git:git://github.com/DenizenScript/Denizen.git</connection>
+        <developerConnection>scm:git:git:@github.com:DenizenScript/Denizen.git</developerConnection>
+        <url>https://github.com/DenizenScript/Denizen/tree/dev/</url>
+    </scm>
+    <distributionManagement>
+        <repository>
+            <id>citizens-repo</id>
+            <url>https://maven.citizensnpcs.co/repo</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
