@@ -2,10 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.PaperAPITools;
-import com.denizenscript.denizencore.scripts.commands.generator.ArgLinear;
-import com.denizenscript.denizencore.scripts.commands.generator.ArgName;
-import com.denizenscript.denizencore.scripts.commands.generator.ArgPrefixed;
-import com.denizenscript.denizencore.scripts.commands.generator.ArgSubType;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -50,7 +47,7 @@ public class KickCommand extends AbstractCommand {
     // -->
 
     public static void autoExecute(@ArgName("targets") @ArgLinear @ArgSubType(PlayerTag.class) List<PlayerTag> targets,
-                                   @ArgName("reason") @ArgPrefixed String reason) {
+                                   @ArgName("reason") @ArgPrefixed @ArgDefaultText("Kicked.") String reason) {
         for (PlayerTag player : targets) {
             if (player.isValid() && player.isOnline()) {
                 if (Denizen.supportsPaper) {
