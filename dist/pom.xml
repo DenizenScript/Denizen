@@ -11,20 +11,24 @@
 
     <artifactId>denizen-dist</artifactId>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <BUILD_NUMBER>Unknown</BUILD_NUMBER>
+        <BUILD_CLASS>CUSTOM</BUILD_CLASS>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.denizenscript</groupId>
             <artifactId>denizencore</artifactId>
-            <version>${dcore.version}</version>
+            <version>1.91.0-SNAPSHOT</version>
             <scope>compile</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.denizenscript</groupId>
             <artifactId>denizen</artifactId>
             <version>${project.parent.version}</version>
             <scope>compile</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.denizenscript</groupId>
