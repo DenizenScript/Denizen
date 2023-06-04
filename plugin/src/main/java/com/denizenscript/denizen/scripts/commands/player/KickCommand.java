@@ -50,11 +50,7 @@ public class KickCommand extends AbstractCommand {
                                    @ArgName("reason") @ArgPrefixed @ArgDefaultText("Kicked.") String reason) {
         for (PlayerTag player : targets) {
             if (player.isValid() && player.isOnline()) {
-                if (Denizen.supportsPaper) {
-                    PaperAPITools.instance.kickPlayer(player.getPlayerEntity(), reason);
-                    return;
-                }
-                player.getPlayerEntity().kickPlayer(reason);
+                PaperAPITools.instance.kickPlayer(player.getPlayerEntity(), reason);
             }
         }
     }
