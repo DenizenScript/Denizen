@@ -48,6 +48,12 @@ An implementation of the Denizen Scripting Language for Spigot servers, with str
             <version>1.2.7-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 ```

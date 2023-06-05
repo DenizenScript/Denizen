@@ -1,12 +1,9 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
-import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.utilities.PaperAPITools;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 import java.util.List;
@@ -18,6 +15,7 @@ public class KickCommand extends AbstractCommand {
         setSyntax("kick [<player>|...] (reason:<text>)");
         setRequiredArguments(1, 2);
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -48,33 +46,11 @@ public class KickCommand extends AbstractCommand {
     // - kick <[player]> "reason:Because I can."
     // -->
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (arg.matchesPrefix("reason")) {
-                scriptEntry.addObject("reason", arg.asElement());
-            }
-            else if (arg.matchesPrefix("targets", "target", "players")
-                    || arg.matchesArgumentList(PlayerTag.class)) {
-                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
-            }
-        }
-        scriptEntry.defaultObject("reason", new ElementTag("Kicked."));
-        if (!scriptEntry.hasObject("targets")) {
-            throw new InvalidArgumentsException("Must specify target(s).");
-        }
-    }
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        ElementTag reason = scriptEntry.getElement("reason");
-        List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("targets", targets), reason);
-        }
+    public static void autoExecute(@ArgName("targets") @ArgLinear @ArgSubType(PlayerTag.class) List<PlayerTag> targets,
+                                   @ArgName("reason") @ArgPrefixed @ArgDefaultText("Kicked.") String reason) {
         for (PlayerTag player : targets) {
             if (player.isValid() && player.isOnline()) {
-                player.getPlayerEntity().kickPlayer(reason.toString());
+                PaperAPITools.instance.kickPlayer(player.getPlayerEntity(), reason);
             }
         }
     }

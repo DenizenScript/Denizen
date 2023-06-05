@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.paper.PaperModule;
+import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
@@ -136,23 +137,23 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         return player.openAnvil(loc, true);
     }
 
-    public static Object teleportRelative;
-
-    static {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) { // TODO: 1.19: replace with TeleportFlag.Relative.values()
-            // (That breaks loading pre-1.19 due to Java silliness)
-            teleportRelative = TeleportFlag.Relative.class.getEnumConstants();
-        }
-    }
-
     @Override
-    public void teleportPlayerRelative(Player player, Location loc) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN, (TeleportFlag[]) teleportRelative);
+    public void teleport(Entity entity, Location loc, PlayerTeleportEvent.TeleportCause cause, List<TeleportCommand.EntityState> entityTeleportFlags, List<TeleportCommand.Relative> relativeTeleportFlags) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            super.teleport(entity, loc, cause, null, null);
         }
-        else {
-            super.teleportPlayerRelative(player, loc);
+        List<TeleportFlag> teleportFlags = new ArrayList<>();
+        if (entityTeleportFlags != null) {
+            for (TeleportCommand.EntityState entityTeleportFlag : entityTeleportFlags) {
+                teleportFlags.add(TeleportFlag.EntityState.values()[entityTeleportFlag.ordinal()]);
+            }
         }
+        if (relativeTeleportFlags != null) {
+            for (TeleportCommand.Relative relativeTeleportFlag : relativeTeleportFlags) {
+                teleportFlags.add(TeleportFlag.Relative.values()[relativeTeleportFlag.ordinal()]);
+            }
+        }
+        entity.teleport(loc, cause, teleportFlags.toArray(new TeleportFlag[0]));
     }
 
     public static HashMap<NamespacedKey, PotionMix> potionMixes = new HashMap<>();
@@ -326,5 +327,10 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     @Override
     public void setText(TextDisplay textDisplay, String text) {
         textDisplay.text(PaperModule.parseFormattedText(text, ChatColor.WHITE));
+    }
+
+    @Override
+    public void kickPlayer(Player player, String message) {
+        player.kick(PaperModule.parseFormattedText(message, ChatColor.WHITE));
     }
 }

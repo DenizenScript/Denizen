@@ -22,7 +22,7 @@ public class EntityText extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(PaperAPITools.instance.getText(as(TextDisplay.class)));
+        return new ElementTag(PaperAPITools.instance.getText(as(TextDisplay.class)), true);
     }
 
     @Override

@@ -15,11 +15,11 @@ import java.util.List;
 
 /**
  * Helper for player inventory slots.
- *
+ * <p>
  * These values are based on indices within the inventory contents array of a player.
- *
+ * <p>
  * These values are *NOT* equivalent to arbitrary Minecraft "slot ID" values, which are commonly mentioned online but have no connection to anything.
- *
+ * <p>
  * All values are Minecraft indices (0-based).
  */
 public class SlotHelper {

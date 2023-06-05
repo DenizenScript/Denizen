@@ -78,6 +78,9 @@ public class PaperModule {
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            ScriptEvent.registerScriptEvent(PrePlayerAttackEntityScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(UnknownCommandScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             ScriptEvent.registerScriptEvent(WardenChangesAngerLevelScriptEvent.class);

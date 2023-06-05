@@ -7,13 +7,12 @@ import org.bukkit.entity.TextDisplay;
 
 public class EntityDefaultBackground extends EntityProperty<ElementTag> {
 
-    // TODO: reference the background color property here, once that's created.
     // <--[property]
     // @object EntityTag
     // @name default_background
     // @input ElementTag(Boolean)
     // @description
-    // Whether a text display entity's background is default (same as the chat window), or custom set.
+    // Whether a text display entity's background is default (same as the chat window), or custom set (see <@link property EntityTag.background_color>).
     // -->
 
     public static boolean describes(EntityTag entity) {
