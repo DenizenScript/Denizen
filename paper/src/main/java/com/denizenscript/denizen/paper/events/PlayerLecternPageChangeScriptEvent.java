@@ -62,8 +62,7 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
     }
 
     public PlayerLecternPageChangeEvent event;
-
-
+    
     @Override
     public boolean matches(ScriptPath path) {
         if (!runInCheck(path, event.getLectern().getLocation())) {
