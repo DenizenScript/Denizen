@@ -27,6 +27,8 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
     //
     // @Cancellable true
     //
+    // @Player Always.
+    //
     // @Triggers when the player flips to a page in a lectern.
     //
     // @Switch book:<item> to only process the event if the book on the lectern matches the given item.
@@ -59,14 +61,10 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
     }
 
     public PlayerLecternPageChangeEvent event;
-    public LocationTag location;
 
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runInCheck(path, location)) {
-            return false;
-        }
         if (!path.tryObjectSwitch("book", new ItemTag(event.getBook()))) {
             return false;
         }
@@ -85,7 +83,7 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
             case "lectern" -> new LocationTag(event.getLectern().getLocation());
             case "old_page" -> new ElementTag(event.getOldPage());
             case "new_page" -> new ElementTag(event.getNewPage());
-            case "page_direction" -> new ElementTag(event.getPageChangeDirection());
+            case "flip_direction" -> new ElementTag(event.getPageChangeDirection());
             default -> super.getContext(name);
         };
     }
@@ -93,7 +91,7 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
-            String lower = CoreUtilities.toLowerCase((determinationObj.toString()));
+            String lower = CoreUtilities.toLowerCase(determinationObj.toString());
             if (lower.startsWith("page:")) {
                 ElementTag value = new ElementTag(lower.substring("page:".length()));
                 if (value.isInt()) {
