@@ -66,6 +66,9 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public boolean matches(ScriptPath path) {
+        if (!runInCheck(path, event.getLectern().getLocation())) {
+            return false;
+        }
         if (!path.tryObjectSwitch("book", new ItemTag(event.getBook()))) {
             return false;
         }
