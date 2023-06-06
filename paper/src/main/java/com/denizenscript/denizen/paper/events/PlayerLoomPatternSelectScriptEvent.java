@@ -38,7 +38,7 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
     // <@link url https://jd.papermc.io/paper/1.19/org/bukkit/block/banner/PatternType.html>
     //
     // @Determine
-    // "TYPE:<ElementTag>" to set the pattern type of the loom.
+    // "PATTERN:<ElementTag>" to set the pattern type of the loom.
     //
     // @Example
     // # Announce the player's selected loom pattern.
@@ -97,6 +97,7 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
         }
         return super.applyDetermination(path, determinationObj);
     }
+
     @EventHandler
     public void onPlayerSelectsLoomPattern(PlayerLoomPatternSelectEvent event) {
         this.event = event;
