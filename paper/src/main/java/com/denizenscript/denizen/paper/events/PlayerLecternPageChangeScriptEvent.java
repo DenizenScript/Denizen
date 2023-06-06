@@ -103,6 +103,7 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
         }
         return super.applyDetermination(path, determinationObj);
     }
+    
     @EventHandler
     public void onPlayerFlipsLecternPage(PlayerLecternPageChangeEvent event) {
         this.event = event;
