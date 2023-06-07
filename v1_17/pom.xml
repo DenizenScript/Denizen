@@ -6,7 +6,7 @@
 
     <groupId>com.denizenscript</groupId>
     <artifactId>denizen-v1_17</artifactId>
-    <version>1.2.7-SNAPSHOT</version>
+    <version>1.2.8-SNAPSHOT</version>
 
     <dependencies>
         <dependency>

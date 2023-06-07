@@ -5,7 +5,7 @@
 
     <groupId>com.denizenscript</groupId>
     <artifactId>denizen</artifactId>
-    <version>1.2.7-SNAPSHOT</version>
+    <version>1.2.8-SNAPSHOT</version>
 
     <name>Denizen</name>
     <description>Scriptable Minecraft and Citizens2</description>

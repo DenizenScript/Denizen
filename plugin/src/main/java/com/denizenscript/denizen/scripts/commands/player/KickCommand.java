@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
-import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizen.objects.PlayerTag;

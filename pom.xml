@@ -6,13 +6,13 @@
     <groupId>com.denizenscript</groupId>
     <artifactId>denizen-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.7-SNAPSHOT</version>
+    <version>1.2.8-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
         <BUILD_CLASS>CUSTOM</BUILD_CLASS>
-        <DENIZEN_VERSION>1.2.7</DENIZEN_VERSION>
+        <DENIZEN_VERSION>1.2.8</DENIZEN_VERSION>
     </properties>
 
     <modules>
