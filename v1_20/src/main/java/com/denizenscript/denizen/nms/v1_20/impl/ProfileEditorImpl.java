@@ -47,7 +47,7 @@ public class ProfileEditorImpl extends ProfileEditor {
             }
         }
         if (isSkinChanging) {
-            ((CraftServer) Bukkit.getServer()).getHandle().respawn(nmsPlayer, (ServerLevel) nmsPlayer.level, true, player.getLocation(), false, PlayerRespawnEvent.RespawnReason.PLUGIN);
+            ((CraftServer) Bukkit.getServer()).getHandle().respawn(nmsPlayer, (ServerLevel) nmsPlayer.level(), true, player.getLocation(), false, PlayerRespawnEvent.RespawnReason.PLUGIN);
         }
         player.updateInventory();
     }

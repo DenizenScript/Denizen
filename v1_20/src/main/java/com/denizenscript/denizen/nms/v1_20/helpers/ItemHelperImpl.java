@@ -38,7 +38,7 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -169,11 +169,14 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact) {
+        /*
         ResourceLocation key = new ResourceLocation("denizen", keyName);
         Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
         Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
-        LegacyUpgradeRecipe recipe = new LegacyUpgradeRecipe(key, baseItemRecipe, upgradeItemRecipe, CraftItemStack.asNMSCopy(result)); // TODO: 1.19.4: smithing system was changed
+        LegacyUpgradeRecipe recipe = new LegacyUpgradeRecipe(key, baseItemRecipe, upgradeItemRecipe, CraftItemStack.asNMSCopy(result));
         ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
+         */
+        // TODO: 1.19.4/1.20: smithing system was changed
     }
 
     @Override
@@ -399,7 +402,7 @@ public class ItemHelperImpl extends ItemHelper {
             for (int z = zMin; z < zMax; z++) {
                 int k2 = (mapX / scale + x - 64) * scale;
                 int l2 = (mapZ / scale + z - 64) * scale;
-                Multiset<MaterialColor> multiset = LinkedHashMultiset.create();
+                Multiset<MapColor> multiset = LinkedHashMultiset.create();
                 LevelChunk chunk = world.getChunkAt(new BlockPos(k2, 0, l2));
                 if (!chunk.isEmpty()) {
                     ChunkPos chunkcoordintpair = chunk.getPos();
@@ -434,7 +437,7 @@ public class ItemHelperImpl extends ItemHelper {
                                         --k4;
                                         blockposition_mutableblockposition.set(chunkcoordintpair.getMinBlockX() + i4 + i3, k4, chunkcoordintpair.getMinBlockZ() + j4 + j3);
                                         iblockdata = chunk.getBlockState(blockposition_mutableblockposition);
-                                    } while (iblockdata.getMapColor(world, blockposition_mutableblockposition) == MaterialColor.NONE && k4 > world.getMinBuildHeight());
+                                    } while (iblockdata.getMapColor(world, blockposition_mutableblockposition) == MapColor.NONE && k4 > world.getMinBuildHeight());
                                     if (k4 > world.getMinBuildHeight() && !blockStateFluidIsEmpty(iblockdata)) {
                                         int l4 = k4 - 1;
                                         blockposition_mutableblockposition1.set(blockposition_mutableblockposition);
@@ -463,8 +466,8 @@ public class ItemHelperImpl extends ItemHelper {
                     if (d2 < -0.6D) {
                         b0 = 0;
                     }
-                    MaterialColor materialmapcolor = Iterables.getFirst(Multisets.copyHighestCountFirst(multiset), MaterialColor.NONE);
-                    if (materialmapcolor == MaterialColor.WATER) {
+                    MapColor materialmapcolor = Iterables.getFirst(Multisets.copyHighestCountFirst(multiset), MapColor.NONE);
+                    if (materialmapcolor == MapColor.WATER) {
                         d2 = (double) k3 * 0.1D + (double) (x + z & 1) * 0.2D;
                         b0 = 1;
                         if (d2 < 0.5D) {

@@ -33,7 +33,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.material.PushReaction;
@@ -170,11 +169,16 @@ public class BlockHelperImpl implements BlockHelper {
 
     public static final MethodHandle CRAFTBLOCKSTATE_CONSTRUCTOR = ReflectionHelper.getConstructor(CraftBlockState.class, Block.class);
 
-    public static final Field BLOCK_MATERIAL = ReflectionHelper.getFields(net.minecraft.world.level.block.state.BlockBehaviour.class).getFirstOfType(net.minecraft.world.level.material.Material.class);
-
-    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(net.minecraft.world.level.material.Material.class, PushReaction.class);
+    public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(BlockBehaviour.BlockStateBase.class, PushReaction.class);
 
     public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase.class, float.class); // destroySpeed
+
+    public net.minecraft.world.level.block.state.BlockState getMaterialBlockState(Material bukkitMaterial) {
+        if (!bukkitMaterial.isBlock()) {
+            return null;
+        }
+        return ((CraftBlockData) bukkitMaterial.createBlockData()).getState();
+    }
 
     public net.minecraft.world.level.block.Block getMaterialBlock(Material bukkitMaterial) {
         if (!bukkitMaterial.isBlock()) {
@@ -183,25 +187,15 @@ public class BlockHelperImpl implements BlockHelper {
         return ((CraftBlockData) bukkitMaterial.createBlockData()).getState().getBlock();
     }
 
-    public net.minecraft.world.level.material.Material getInternalMaterial(Material bukkitMaterial) {
-        try {
-            return (net.minecraft.world.level.material.Material) BLOCK_MATERIAL.get(getMaterialBlock(bukkitMaterial));
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-            return null;
-        }
-    }
-
     @Override
     public String getPushReaction(Material mat) {
-        return getInternalMaterial(mat).getPushReaction().name();
+        return getMaterialBlockState(mat).getPistonPushReaction().name();
     }
 
     @Override
     public void setPushReaction(Material mat, String reaction) {
         try {
-            MATERIAL_PUSH_REACTION_SETTER.invoke(getInternalMaterial(mat), PushReaction.valueOf(reaction));
+            MATERIAL_PUSH_REACTION_SETTER.invoke(getMaterialBlockState(mat), PushReaction.valueOf(reaction));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -259,10 +253,13 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public Instrument getInstrumentFor(Material mat) {
+        return null; // TODO: 1.20
+        /*
         net.minecraft.world.level.block.Block blockType = getMaterialBlock(mat);
         Optional<NoteBlockInstrument> aboveInstrument = NoteBlockInstrument.byStateAbove(blockType.defaultBlockState());
         NoteBlockInstrument nmsInstrument = aboveInstrument.orElse(NoteBlockInstrument.byStateBelow(blockType.defaultBlockState()));
         return Instrument.values()[(nmsInstrument.ordinal())];
+         */
     }
 
     @Override

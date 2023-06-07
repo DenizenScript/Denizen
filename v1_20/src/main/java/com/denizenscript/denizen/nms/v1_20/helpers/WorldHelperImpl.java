@@ -98,7 +98,7 @@ public class WorldHelperImpl implements WorldHelper {
     // net.minecraft.server.level.ServerLevel#resetWeatherCycle()
     @Override
     public void clearWeather(World world) {
-        PrimaryLevelData data = ((CraftWorld) world).getHandle().J;
+        PrimaryLevelData data = ((CraftWorld) world).getHandle().K;
         data.setRaining(false);
         if (!data.isRaining()) {
             data.setRainTime(0);

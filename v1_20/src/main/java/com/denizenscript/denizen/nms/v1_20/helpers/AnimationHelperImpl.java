@@ -40,7 +40,7 @@ public class AnimationHelperImpl extends AnimationHelper {
         register("IRON_GOLEM_ATTACK", entity -> {
             if (entity instanceof IronGolem) {
                 Entity nmsEntity = ((CraftEntity) entity).getHandle();
-                nmsEntity.level.broadcastEntityEvent(nmsEntity, (byte) 4);
+                nmsEntity.level().broadcastEntityEvent(nmsEntity, (byte) 4);
             }
         });
     }

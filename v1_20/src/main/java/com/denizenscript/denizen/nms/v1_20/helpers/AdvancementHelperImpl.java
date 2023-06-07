@@ -192,7 +192,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                 requirements[i] = new String[] { IMPOSSIBLE_KEY + i };
             }
         }
-        return new Advancement(key, parent, display, AdvancementRewards.EMPTY, criteria, requirements);
+        return new Advancement(key, parent, display, AdvancementRewards.EMPTY, criteria, requirements, false); // TODO: 1.20: do we want to ever enable telemetry?
     }
 
     private static ResourceLocation asResourceLocation(NamespacedKey key) {

@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.FishingHelper;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.google.common.collect.Maps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -14,7 +15,9 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.storage.loot.LootDataManager;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
@@ -29,6 +32,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 public class FishingHelperImpl implements FishingHelper {
 
@@ -76,13 +80,13 @@ public class FishingHelperImpl implements FishingHelper {
     }
 
     public ItemStack getRandomReward(FishingHook hook, ResourceLocation key) {
-        ServerLevel worldServer = (ServerLevel) hook.level;
-        LootContext.Builder playerFishEvent2 = new LootContext.Builder(worldServer);
-        LootTables registry = ((ServerLevel) hook.level).getServer().getLootTables();
-        // registry.getLootTable(key).getLootContextParameterSet()
-        LootContext info = playerFishEvent2.withOptionalParameter(LootContextParams.ORIGIN, new Vec3(hook.getX(), hook.getY(), hook.getZ()))
-                .withOptionalParameter(LootContextParams.TOOL, new ItemStack(Items.FISHING_ROD)).create(LootContextParamSets.FISHING);
-        List<ItemStack> itemStacks = registry.get(key).getRandomItems(info);
+        ServerLevel worldServer = (ServerLevel) hook.level();
+        Map<LootContextParam<?>, Object> params = Maps.newIdentityHashMap();
+        params.put(LootContextParams.ORIGIN, new Vec3(hook.getX(), hook.getY(), hook.getZ()));
+        params.put(LootContextParams.TOOL, new ItemStack(Items.FISHING_ROD));
+        LootParams playerFishEvent2 = new LootParams(worldServer, params, Maps.newHashMap(), 0);
+        LootDataManager registry = worldServer.getServer().getLootData();
+        List<ItemStack> itemStacks = registry.getLootTable(key).getRandomItems(playerFishEvent2);
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
 

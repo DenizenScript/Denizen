@@ -81,7 +81,7 @@ public class ChunkHelperImpl implements ChunkHelper {
 
     @Override
     public int[] getHeightMap(Chunk chunk) {
-        Heightmap map = ((CraftChunk) chunk).getHandle(ChunkStatus.HEIGHTMAPS).heightmaps.get(Heightmap.Types.MOTION_BLOCKING);
+        Heightmap map = ((CraftChunk) chunk).getHandle(ChunkStatus.FEATURES).heightmaps.get(Heightmap.Types.MOTION_BLOCKING);
         int[] outputMap = new int[256];
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {

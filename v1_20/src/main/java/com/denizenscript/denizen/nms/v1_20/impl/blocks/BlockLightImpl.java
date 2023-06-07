@@ -203,7 +203,7 @@ public class BlockLightImpl extends BlockLight {
         Runnable runnable = () -> {
             LevelLightEngine lightEngine = chunk.getLevel().getChunkSource().getLightEngine();
             LayerLightEventListener engineBlock = lightEngine.getLayerListener(LightLayer.BLOCK);
-            engineBlock.onBlockEmissionIncrease(pos, level);
+            // engineBlock.onBlockEmissionIncrease(pos, level); // TODO: 1.20: ?
         };
         enqueueRunnable(chunk, runnable);
     }
@@ -251,13 +251,15 @@ public class BlockLightImpl extends BlockLight {
     }
 
     public static void sendSingleChunkUpdate(LevelChunk chunk) {
+        // TODO: 1.20: ?
+        /*
         doNotCheck = true;
         LevelLightEngine lightEngine = chunk.getLevel().getChunkSource().getLightEngine();
         ChunkPos pos = chunk.getPos();
-        ClientboundLightUpdatePacket packet = new ClientboundLightUpdatePacket(pos, lightEngine, null, null, true); // TODO: 1.16: should 'trust edges' be true here?
+        //ClientboundLightUpdatePacket packet = new ClientboundLightUpdatePacket(pos, lightEngine, null, null, true); // TODO: 1.16: should 'trust edges' be true here?
         ((ServerChunkCache) chunk.getLevel().getChunkSource()).chunkMap.getPlayers(pos, false).forEach((player) -> {
             player.connection.send(packet);
         });
-        doNotCheck = false;
+        doNotCheck = false;*/
     }
 }

@@ -99,7 +99,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void deTrackEntity(Player player, Entity entity) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        ServerLevel world = (ServerLevel) nmsPlayer.level;
+        ServerLevel world = (ServerLevel) nmsPlayer.level();
         ChunkMap.TrackedEntity tracker = world.getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
         if (tracker == null) {
             if (NMSHandler.debugPackets) {
@@ -432,7 +432,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void refreshPlayer(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        ServerLevel nmsWorld = (ServerLevel) nmsPlayer.level;
+        ServerLevel nmsWorld = (ServerLevel) nmsPlayer.level();
         nmsPlayer.connection.send(new ClientboundRespawnPacket(
                 nmsWorld.dimensionTypeId(),
                 nmsWorld.dimension(),
@@ -442,7 +442,8 @@ public class PlayerHelperImpl extends PlayerHelper {
                 nmsWorld.isDebug(),
                 nmsWorld.isFlat(),
                 ClientboundRespawnPacket.KEEP_ALL_DATA,
-                nmsPlayer.getLastDeathLocation()));
+                nmsPlayer.getLastDeathLocation(),
+                nmsPlayer.portalCooldown));
         nmsPlayer.connection.teleport(player.getLocation());
         if (nmsPlayer.isPassenger()) {
            nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer.getVehicle()));

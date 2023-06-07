@@ -495,7 +495,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         else if (packet instanceof ClientboundSoundEntityPacket) {
             ClientboundSoundEntityPacket spacket = (ClientboundSoundEntityPacket) packet;
-            Entity entity = player.getLevel().getEntity(spacket.getId());
+            Entity entity = player.level().getEntity(spacket.getId());
             if (entity == null) {
                 return false;
             }
@@ -512,7 +512,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         try {
             if (packet instanceof ClientboundSetEquipmentPacket) {
                 int eid = ((ClientboundSetEquipmentPacket) packet).getEntity();
-                Entity ent = player.level.getEntity(eid);
+                Entity ent = player.level().getEntity(eid);
                 if (ent == null) {
                     return false;
                 }
@@ -551,7 +551,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 return true;
             }
             else if (packet instanceof ClientboundEntityEventPacket) {
-                Entity ent = ((ClientboundEntityEventPacket) packet).getEntity(player.level);
+                Entity ent = ((ClientboundEntityEventPacket) packet).getEntity(player.level());
                 if (!(ent instanceof net.minecraft.world.entity.LivingEntity)) {
                     return false;
                 }
@@ -694,7 +694,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 entityID = teleportEntityPacket.getId();
             }
             else if (packet instanceof ClientboundMoveEntityPacket moveEntityPacket) {
-                Entity e = moveEntityPacket.getEntity(player.level);
+                Entity e = moveEntityPacket.getEntity(player.level());
                 if (e != null) {
                     entityID = e.getId();
                 }
@@ -702,7 +702,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             if (entityID == -1) {
                 return false;
             }
-            Entity entity = player.getLevel().getEntity(entityID);
+            Entity entity = player.level().getEntity(entityID);
             if (entity == null) {
                 return false;
             }
@@ -810,7 +810,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             return null;
         }
         try {
-            Entity entity = player.level.getEntity(metadataPacket.id());
+            Entity entity = player.level().getEntity(metadataPacket.id());
             if (entity == null) {
                 return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
             }
@@ -1083,7 +1083,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         try {
             if (packet instanceof ClientboundMoveEntityPacket moveEntityPacket) {
-                Entity e = moveEntityPacket.getEntity(player.getLevel());
+                Entity e = moveEntityPacket.getEntity(player.level());
                 if (e == null) {
                     return false;
                 }
@@ -1093,7 +1093,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
             }
             else if (packet instanceof ClientboundRotateHeadPacket rotateHeadPacket) {
-                Entity e = rotateHeadPacket.getEntity(player.getLevel());
+                Entity e = rotateHeadPacket.getEntity(player.level());
                 if (e == null) {
                     return false;
                 }
@@ -1102,7 +1102,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             else if (packet instanceof ClientboundSetEntityMotionPacket setEntityMotionPacket) {
                 int ider = setEntityMotionPacket.getId();
-                Entity e = player.getLevel().getEntity(ider);
+                Entity e = player.level().getEntity(ider);
                 if (e == null) {
                     return false;
                 }
@@ -1111,7 +1111,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             else if (packet instanceof ClientboundTeleportEntityPacket teleportEntityPacket) {
                 int ider = teleportEntityPacket.getId();
-                Entity e = player.getLevel().getEntity(ider);
+                Entity e = player.level().getEntity(ider);
                 if (e == null) {
                     return false;
                 }
@@ -1120,7 +1120,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             else if (packet instanceof ClientboundRemoveEntitiesPacket removeEntitiesPacket) {
                 for (int id : removeEntitiesPacket.getEntityIds()) {
-                    Entity e = player.getLevel().getEntity(id);
+                    Entity e = player.level().getEntity(id);
                     if (e != null) {
                         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
                         if (attList != null) {
@@ -1162,7 +1162,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 ider = ((ClientboundAddExperienceOrbPacket) packet).getId();
             }
             else if (packet instanceof ClientboundMoveEntityPacket) {
-                e = ((ClientboundMoveEntityPacket) packet).getEntity(player.getLevel());
+                e = ((ClientboundMoveEntityPacket) packet).getEntity(player.level());
             }
             else if (packet instanceof ClientboundSetEntityDataPacket) {
                 ider = ((ClientboundSetEntityDataPacket) packet).id();
@@ -1174,7 +1174,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 ider = ((ClientboundTeleportEntityPacket) packet).getId();
             }
             if (e == null && ider != -1) {
-                e = player.getLevel().getEntity(ider);
+                e = player.level().getEntity(ider);
             }
             if (e != null) {
                 if (isHidden(e)) {
@@ -1192,7 +1192,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (packet instanceof ClientboundAddPlayerPacket) {
             int id = ((ClientboundAddPlayerPacket) packet).getEntityId();
             if (id != -1) {
-                Entity e = player.getLevel().getEntity(id);
+                Entity e = player.level().getEntity(id);
                 processFakePlayerSpawn(e);
             }
         }
@@ -1258,7 +1258,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 }
                 int chunkX = ((ClientboundLevelChunkWithLightPacket) packet).getX();
                 int chunkZ = ((ClientboundLevelChunkWithLightPacket) packet).getZ();
-                ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, player.getLevel().getWorld().getName());
+                ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, player.level().getWorld().getName());
                 List<FakeBlock> blocks = FakeBlock.getFakeBlocksFor(player.getUUID(), chunkCoord);
                 if (blocks == null || blocks.isEmpty()) {
                     return false;
@@ -1273,12 +1273,12 @@ public class DenizenNetworkManagerImpl extends Connection {
                     return false;
                 }
                 SectionPos coord = (SectionPos) SECTIONPOS_MULTIBLOCKCHANGE.get(packet);
-                ChunkCoordinate coordinateDenizen = new ChunkCoordinate(coord.getX(), coord.getZ(), player.getLevel().getWorld().getName());
+                ChunkCoordinate coordinateDenizen = new ChunkCoordinate(coord.getX(), coord.getZ(), player.level().getWorld().getName());
                 if (!map.byChunk.containsKey(coordinateDenizen)) {
                     return false;
                 }
                 ClientboundSectionBlocksUpdatePacket newPacket = new ClientboundSectionBlocksUpdatePacket(copyPacket(packet));
-                LocationTag location = new LocationTag(player.getLevel().getWorld(), 0, 0, 0);
+                LocationTag location = new LocationTag(player.level().getWorld(), 0, 0, 0);
                 short[] originalOffsetArray = (short[])OFFSETARRAY_MULTIBLOCKCHANGE.get(newPacket);
                 BlockState[] originalDataArray = (BlockState[])BLOCKARRAY_MULTIBLOCKCHANGE.get(newPacket);
                 short[] offsetArray = Arrays.copyOf(originalOffsetArray, originalOffsetArray.length);
@@ -1301,7 +1301,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             else if (packet instanceof ClientboundBlockUpdatePacket) {
                 BlockPos pos = ((ClientboundBlockUpdatePacket) packet).getPos();
-                LocationTag loc = new LocationTag(player.getLevel().getWorld(), pos.getX(), pos.getY(), pos.getZ());
+                LocationTag loc = new LocationTag(player.level().getWorld(), pos.getX(), pos.getY(), pos.getZ());
                 FakeBlock block = FakeBlock.getFakeBlockFor(player.getUUID(), loc);
                 if (block != null) {
                     ClientboundBlockUpdatePacket newPacket = new ClientboundBlockUpdatePacket(((ClientboundBlockUpdatePacket) packet).getPos(), FakeBlockHelper.getNMSState(block));
@@ -1334,10 +1334,10 @@ public class DenizenNetworkManagerImpl extends Connection {
             return;
         }
         if (packet instanceof ClientboundLightUpdatePacket) {
-            BlockLightImpl.checkIfLightsBrokenByPacket((ClientboundLightUpdatePacket) packet, player.level);
+            BlockLightImpl.checkIfLightsBrokenByPacket((ClientboundLightUpdatePacket) packet, player.level());
         }
         else if (packet instanceof ClientboundBlockUpdatePacket) {
-            BlockLightImpl.checkIfLightsBrokenByPacket((ClientboundBlockUpdatePacket) packet, player.level);
+            BlockLightImpl.checkIfLightsBrokenByPacket((ClientboundBlockUpdatePacket) packet, player.level());
         }
     }
 

@@ -123,10 +123,10 @@ public class EntityHelperImpl extends EntityHelper {
             DamageSource source;
             net.minecraft.world.entity.Entity nmsTarget = ((CraftEntity) target).getHandle();
             if (attacker instanceof Player) {
-                source = nmsTarget.level.damageSources().playerAttack(((CraftPlayer) attacker).getHandle());
+                source = nmsTarget.level().damageSources().playerAttack(((CraftPlayer) attacker).getHandle());
             }
             else {
-                source = nmsTarget.level.damageSources().mobAttack(((CraftLivingEntity) attacker).getHandle());
+                source = nmsTarget.level().damageSources().mobAttack(((CraftLivingEntity) attacker).getHandle());
             }
             if (nmsTarget.isInvulnerableTo(source)) {
                 return 0;
@@ -350,7 +350,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public List<Player> getPlayersThatSee(Entity entity) {
-        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level).getChunkSource().chunkMap;
+        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level()).getChunkSource().chunkMap;
         ChunkMap.TrackedEntity entityTracker = tracker.entityMap.get(entity.getEntityId());
         ArrayList<Player> output = new ArrayList<>();
         if (entityTracker == null) {
@@ -364,7 +364,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void sendAllUpdatePackets(Entity entity) {
-        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level).getChunkSource().chunkMap;
+        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level()).getChunkSource().chunkMap;
         ChunkMap.TrackedEntity entityTracker = tracker.entityMap.get(entity.getEntityId());
         if (entityTracker == null) {
             return;
@@ -391,7 +391,7 @@ public class EntityHelperImpl extends EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer) pl;
         ServerPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
-            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level).getChunkSource().chunkMap;
+            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level()).getChunkSource().chunkMap;
             net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
             ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
             if (entry != null) {
@@ -412,7 +412,7 @@ public class EntityHelperImpl extends EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer) pl;
         ServerPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
-            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level).getChunkSource().chunkMap;
+            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level()).getChunkSource().chunkMap;
             net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
             ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
             if (entry != null) {
@@ -611,14 +611,14 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     public static DamageSource getSourceFor(net.minecraft.world.entity.Entity nmsSource, EntityDamageEvent.DamageCause cause, net.minecraft.world.entity.Entity nmsSourceProvider) {
-        DamageSources sources = nmsSourceProvider == null ? getReusableDamageSources() : nmsSourceProvider.level.damageSources();
+        DamageSources sources = nmsSourceProvider == null ? getReusableDamageSources() : nmsSourceProvider.level().damageSources();
         DamageSource src = sources.generic();
         if (nmsSource != null) {
             if (nmsSource instanceof net.minecraft.world.entity.player.Player) {
-                src = nmsSource.level.damageSources().playerAttack((net.minecraft.world.entity.player.Player) nmsSource);
+                src = nmsSource.level().damageSources().playerAttack((net.minecraft.world.entity.player.Player) nmsSource);
             }
             else if (nmsSource instanceof net.minecraft.world.entity.LivingEntity) {
-                src = nmsSource.level.damageSources().mobAttack((net.minecraft.world.entity.LivingEntity) nmsSource);
+                src = nmsSource.level().damageSources().mobAttack((net.minecraft.world.entity.LivingEntity) nmsSource);
             }
         }
         if (cause == null) {
@@ -656,7 +656,7 @@ public class EntityHelperImpl extends EntityHelper {
             case ENTITY_EXPLOSION:
                 return sources.explosion(nmsSource, null);
             case VOID:
-                return sources.outOfWorld();
+                return sources.fellOutOfWorld();
             case LIGHTNING:
                 return sources.lightningBolt();
             case STARVATION:
@@ -810,7 +810,7 @@ public class EntityHelperImpl extends EntityHelper {
             net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
             nmsEntity.stopRiding();
             nmsEntity.getPassengers().forEach(net.minecraft.world.entity.Entity::stopRiding);
-            Level level = nmsEntity.level;
+            Level level = nmsEntity.level();
             DedicatedPlayerList playerList = ((CraftServer) Bukkit.getServer()).getHandle();
             if (nmsEntity instanceof ServerPlayer) {
                 PLAYERLIST_REMOVE.invoke(playerList, nmsEntity);

@@ -23,7 +23,7 @@ public class EntityFakeArrowImpl extends SpectralArrow {
         }
         setPosRaw(location.getX(), location.getY(), location.getZ());
         setRot(location.getYaw(), location.getPitch());
-        level.addFreshEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        level().addFreshEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }
 
     @Override
