@@ -3674,8 +3674,25 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @group world
         // @description
         // Returns the current page on display in the book on this Lectern block.
+        // @Deprecated use 'LocationTag.page'
         // -->
         tagProcessor.registerTag(ElementTag.class, "lectern_page", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (state instanceof Lectern) {
+                return new ElementTag(((Lectern) state).getPage());
+            }
+            return null;
+        });
+        
+        // <--[tag]
+        // @attribute <LocationTag.page>
+        // @returns ElementTag(Number)
+        // @mechanism LocationTag.page
+        // @group world
+        // @description
+        // Returns the current page on display in the book.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "page", (attribute, object) -> {
             BlockState state = object.getBlockStateForTag(attribute);
             if (state instanceof Lectern) {
                 return new ElementTag(((Lectern) state).getPage() + 1);
@@ -4827,11 +4844,12 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // Changes the page currently displayed on the book in a lectern block.
         // @tags
         // <LocationTag.lectern_page>
+        // @Deprecated use 'LocationTag.page'
         // -->
         if (mechanism.matches("lectern_page") && mechanism.requireInteger()) {
             BlockState state = getBlockState();
             if (state instanceof Lectern) {
-                ((Lectern) state).setPage(mechanism.getValue().asInt() - 1);
+                ((Lectern) state).setPage(mechanism.getValue().asInt());
                 state.update();
             }
             else {
@@ -4839,6 +4857,26 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             }
         }
 
+        // <--[mechanism]
+        // @object LocationTag
+        // @name page
+        // @input ElementTag(Number)
+        // @description
+        // Changes the page currently displayed on the book.
+        // @tags
+        // <LocationTag.page>
+        // -->
+        if (mechanism.matches("page") && mechanism.requireInteger()) {
+            BlockState state = getBlockState();
+            if (state instanceof Lectern) {
+                ((Lectern) state).setPage(mechanism.getValue().asInt() - 1);
+                state.update();
+            }
+            else {
+                mechanism.echoError("'page' mechanism can only be called on a lectern block.");
+            }
+        }
+        
         // <--[mechanism]
         // @object LocationTag
         // @name clear_loot_table
