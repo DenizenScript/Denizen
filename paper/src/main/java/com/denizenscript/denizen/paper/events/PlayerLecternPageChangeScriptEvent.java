@@ -96,7 +96,7 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
             if (lower.startsWith("page:")) {
                 ElementTag value = new ElementTag(lower.substring("page:".length()));
                 if (value.isInt()) {
-                    event.setNewPage(value.asInt());
+                    event.setNewPage(value.asInt() - 1);
                     return true;
                 }
             }
