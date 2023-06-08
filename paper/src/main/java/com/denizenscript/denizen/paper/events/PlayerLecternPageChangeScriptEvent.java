@@ -82,8 +82,8 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
         return switch (name) {
             case "book" -> new ItemTag(event.getBook());
             case "lectern" -> new LocationTag(event.getLectern().getLocation());
-            case "old_page" -> new ElementTag(event.getOldPage());
-            case "new_page" -> new ElementTag(event.getNewPage());
+            case "old_page" -> new ElementTag(event.getOldPage() + 1);
+            case "new_page" -> new ElementTag(event.getNewPage() + 1);
             case "flip_direction" -> new ElementTag(event.getPageChangeDirection());
             default -> super.getContext(name);
         };
