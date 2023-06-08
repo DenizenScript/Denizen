@@ -3678,7 +3678,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         tagProcessor.registerTag(ElementTag.class, "lectern_page", (attribute, object) -> {
             BlockState state = object.getBlockStateForTag(attribute);
             if (state instanceof Lectern) {
-                return new ElementTag(((Lectern) state).getPage());
+                return new ElementTag(((Lectern) state).getPage() + 1);
             }
             return null;
         });
@@ -4831,7 +4831,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         if (mechanism.matches("lectern_page") && mechanism.requireInteger()) {
             BlockState state = getBlockState();
             if (state instanceof Lectern) {
-                ((Lectern) state).setPage(mechanism.getValue().asInt());
+                ((Lectern) state).setPage(mechanism.getValue().asInt() - 1);
                 state.update();
             }
             else {
