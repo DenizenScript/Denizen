@@ -79,7 +79,7 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "loom" -> new InventoryTag(event.getLoomInventory().getType());
+            case "loom" -> InventoryTag.mirrorBukkitInventory(event.getLoomInventory());
             case "pattern" -> new ElementTag(event.getPatternType());
             default -> super.getContext(name);
         };
@@ -91,7 +91,7 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
             String lower = CoreUtilities.toLowerCase(determinationObj.toString());
             if (lower.startsWith("pattern:")) {
                 ElementTag value = new ElementTag(lower.substring("pattern:".length()));
-                event.setPatternType(PatternType.valueOf(String.valueOf(value).toUpperCase()));
+                event.setPatternType(value.asEnum(PatternType.class));
                 return true;
             }
         }
