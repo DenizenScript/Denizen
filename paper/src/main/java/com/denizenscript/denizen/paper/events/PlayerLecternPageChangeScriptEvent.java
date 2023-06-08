@@ -35,7 +35,7 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
     // @Context
     // <context.book> returns an ItemTag of the book in the lectern.
     // <context.lectern> returns a LocationTag of the lectern.
-    // <context.old_page> returns an ElementTag(Number) of the last page the player was on. Page numbers follow zero-based numbering, starting at 0.
+    // <context.old_page> returns an ElementTag(Number) of the last page the player was on.
     // <context.new_page> returns an ElementTag(Number) of the new page that the player flipped to.
     // <context.flip_direction> returns the direction in which the player flips the lectern book page, can be either LEFT or RIGHT.
     //
