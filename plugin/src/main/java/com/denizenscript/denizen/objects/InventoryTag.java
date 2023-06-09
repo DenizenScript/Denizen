@@ -2356,6 +2356,28 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
             return list;
         });
+
+        // <--[tag]
+        // @attribute <InventoryTag.find_empty_slots>
+        // @returns ListTag(Number)
+        // @description
+        // Returns the index of all the empty slots in an inventory.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "find_empty_slots", (attribute, object) -> {
+            if (object == null) {
+                return new ListTag();
+            }
+            ListTag indexes = new ListTag(object.getStorageContents().length);
+            // Denizen starts at 1
+            int index = 1;
+            for (ItemStack itemStack : object.getContents()) {
+                if (itemStack == null) {
+                    indexes.add(String.valueOf(index));
+                }
+                index++;
+            }
+            return indexes;
+        });
     }
 
     public static ObjectTagProcessor<InventoryTag> tagProcessor = new ObjectTagProcessor<>();
