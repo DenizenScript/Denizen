@@ -2367,7 +2367,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             if (object == null) {
                 return new ListTag();
             }
-            ListTag indexes = new ListTag(object.getStorageContents().length);
+            ListTag indexes = new ListTag(object.getContents().length);
             // Denizen starts at 1
             int index = 1;
             for (ItemStack itemStack : object.getContents()) {
