@@ -2372,7 +2372,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             int index = 1;
             for (ItemStack itemStack : object.getContents()) {
                 if (itemStack == null) {
-                    indexes.add(String.valueOf(index));
+                    indexes.addObject(new ElementTag(index));
                 }
                 index++;
             }
