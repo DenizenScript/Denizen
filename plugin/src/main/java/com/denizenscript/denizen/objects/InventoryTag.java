@@ -2359,7 +2359,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
 
         // <--[tag]
         // @attribute <InventoryTag.find_empty_slots>
-        // @returns ListTag(Number)
+        // @returns ListTag
         // @description
         // Returns the index of all the empty slots in an inventory.
         // -->
