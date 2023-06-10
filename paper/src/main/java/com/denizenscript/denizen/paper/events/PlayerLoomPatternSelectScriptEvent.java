@@ -34,8 +34,7 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
     //
     // @Context
     // <context.loom> returns an InventoryTag of the loom.
-    // <context.pattern> returns an ElementTag of the selected pattern. Valid pattern types can be found at:
-    // <@link url https://jd.papermc.io/paper/1.19/org/bukkit/block/banner/PatternType.html>
+    // <context.pattern> returns an ElementTag of the selected pattern. Valid pattern types can be found at: <@link url https://jd.papermc.io/paper/1.19/org/bukkit/block/banner/PatternType.html>
     //
     // @Determine
     // "PATTERN:<ElementTag>" to set the pattern type of the loom.
