@@ -46,13 +46,16 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     public EntityCombustsScriptEvent() {
         registerCouldMatcher("<entity> combusts");
-        registerDetermination(null, ObjectTag.class, (context, determination) -> {
+        registerOptionalDetermination(null, ObjectTag.class, (context, determination) -> {
             if (determination instanceof ElementTag element && element.isInt()) {
                 event.setDuration(element.asInt());
+                return true;
             }
             else if (determination.canBeType(DurationTag.class)) {
                 event.setDuration(determination.asType(DurationTag.class, context).getSecondsAsInt());
+                return true;
             }
+            return false;
         });
     }
 
