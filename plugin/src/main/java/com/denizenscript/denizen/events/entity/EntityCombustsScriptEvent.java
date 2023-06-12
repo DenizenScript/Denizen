@@ -1,12 +1,12 @@
 package com.denizenscript.denizen.events.entity;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -46,6 +46,14 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     public EntityCombustsScriptEvent() {
         registerCouldMatcher("<entity> combusts");
+        registerDetermination(null, ObjectTag.class, (context, determination) -> {
+            if (determination instanceof ElementTag element && element.isInt()) {
+                event.setDuration(element.asInt());
+            }
+            else if (determination.canBeType(DurationTag.class)) {
+                event.setDuration(determination.asType(DurationTag.class, context).getSecondsAsInt());
+            }
+        });
     }
 
     public EntityTag entity;
@@ -60,19 +68,6 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            event.setDuration(element.asInt());
-            return true;
-        }
-        else if (DurationTag.matches(determinationObj.toString())) {
-            event.setDuration(DurationTag.valueOf(determinationObj.toString(), getTagContext(path)).getTicksAsInt());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
