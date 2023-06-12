@@ -403,7 +403,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         }
 
         public String getChanges() {
-            return changed_text != null ? changed_text : DetermineCommand.DETERMINE_NONE;
+            return changed_text != null ? changed_text : "none";
         }
 
         public boolean wasTriggered() {

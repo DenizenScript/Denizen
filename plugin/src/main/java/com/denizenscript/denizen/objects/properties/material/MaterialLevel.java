@@ -1,15 +1,15 @@
 package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
-import org.bukkit.block.data.type.Cake;
 import org.bukkit.block.data.type.Beehive;
+import org.bukkit.block.data.type.Cake;
 import org.bukkit.block.data.type.Farmland;
 import org.bukkit.block.data.type.Snow;
 
@@ -90,6 +90,7 @@ public class MaterialLevel implements Property {
         // For beehives/bee nests, this is the amount of honey contained.
         // For snow, this is the number of partial layers, or the height, of a snow block.
         // For farmland, this is the moisture level.
+        // For composters, this is the amount of compost.
         // -->
         PropertyParser.registerStaticTag(MaterialLevel.class, ElementTag.class, "level", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
