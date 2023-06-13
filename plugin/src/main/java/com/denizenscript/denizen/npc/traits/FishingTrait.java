@@ -181,7 +181,7 @@ public class FishingTrait extends Trait {
     // -->
     private void cast() {
         new NPCTag(npc).action("cast fishing rod", null);
-        if (fishingLocation == null) {
+        if (fishingLocation == null || fishingLocation.getWorld() == null || !fishingLocation.getWorld().equals(npc.getEntity().getWorld())) {
             Debug.echoError("Fishing location not found!");
             return;
         }
