@@ -34,7 +34,7 @@ public class MirrorTrait extends Trait {
 
     public void mirrorOn() {
         NetworkInterceptHelper.enable();
-        UUID uuid = npc.getUniqueId();
+        UUID uuid = npc.getMinecraftUniqueId();
         if (!ProfileEditor.mirrorUUIDs.contains(uuid)) {
             ProfileEditor.mirrorUUIDs.add(uuid);
             respawn();
@@ -42,7 +42,7 @@ public class MirrorTrait extends Trait {
     }
 
     public void mirrorOff() {
-        UUID uuid = npc.getUniqueId();
+        UUID uuid = npc.getMinecraftUniqueId();
         if (ProfileEditor.mirrorUUIDs.contains(uuid)) {
             ProfileEditor.mirrorUUIDs.remove(uuid);
             respawn();

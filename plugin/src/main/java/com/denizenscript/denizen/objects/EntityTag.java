@@ -3665,11 +3665,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("mirror_player") && mechanism.requireBoolean()) {
             if (isNPC()) {
-                NPC npc = getDenizenNPC().getCitizen();
-                if (!npc.hasTrait(MirrorTrait.class)) {
-                    npc.addTrait(MirrorTrait.class);
-                }
-                MirrorTrait mirror = npc.getOrAddTrait(MirrorTrait.class);
+                MirrorTrait mirror = getDenizenNPC().getCitizen().getOrAddTrait(MirrorTrait.class);
                 if (mechanism.getValue().asBoolean()) {
                     mirror.enableMirror();
                 }
