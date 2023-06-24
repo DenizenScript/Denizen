@@ -101,7 +101,7 @@ public class ItemSpawnerDelay implements Property {
     public String getPropertyString() {
         BlockStateMeta meta = (BlockStateMeta) item.getItemMeta();
         CreatureSpawner state = (CreatureSpawner) meta.getBlockState();
-        return state.getDelay() + "," + state.getMinSpawnDelay() + "," + state.getMaxSpawnDelay();
+        return state.getDelay() + "|" + state.getMinSpawnDelay() + "|" + state.getMaxSpawnDelay();
     }
 
     @Override
