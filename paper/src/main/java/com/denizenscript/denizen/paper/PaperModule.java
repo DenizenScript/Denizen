@@ -100,6 +100,7 @@ public class PaperModule {
             PropertyParser.registerProperty(EntityFriction.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityReputation.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityShouldBurn.class, EntityTag.class);
         PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
 
