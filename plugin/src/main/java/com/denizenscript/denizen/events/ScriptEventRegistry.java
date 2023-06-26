@@ -89,6 +89,7 @@ public class ScriptEventRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
+        ScriptEvent.registerScriptEvent(SpongeAbsorbsScriptEvent.class);
 
         // Entity events
         if (!Denizen.supportsPaper) {
