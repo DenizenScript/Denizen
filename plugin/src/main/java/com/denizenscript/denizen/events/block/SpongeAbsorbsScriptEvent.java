@@ -19,7 +19,7 @@ public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Group Block
     //
-    // @Warning this event may in some cases double-fire, requiring usage of the 'ratelimit' command (like 'ratelimit <script> 1t') to prevent doubling actions.
+    // @Warning this event may in some cases double-fire, requiring usage of the 'ratelimit' command (like 'ratelimit <context.location> 1t') to prevent doubling actions.
     //
     // @Cancellable true
     //
