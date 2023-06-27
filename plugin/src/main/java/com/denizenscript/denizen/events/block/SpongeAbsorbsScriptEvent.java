@@ -36,14 +36,18 @@ public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     public SpongeAbsorbEvent event;
-    public LocationTag location;
-    public ListTag blocks;
 
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "location" -> location;
-            case "blocks" -> blocks;
+            case "location" -> new LocationTag(event.getBlock().getLocation());
+            case "blocks" -> {
+                ListTag blocks = new ListTag();
+                for (BlockState blockState : event.getBlocks()) {
+                    blocks.addObject(new LocationTag(blockState.getLocation()));
+                }
+                yield blocks;
+            }
             default -> super.getContext(name);
         };
     }
@@ -51,12 +55,6 @@ public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Liste
     @EventHandler
     public void onSpongeAbsorbEvent(SpongeAbsorbEvent event) {
         this.event = event;
-        location = new LocationTag(event.getBlock().getLocation());
-        ListTag blocks = new ListTag();
-        for (BlockState blockState : event.getBlocks()) {
-            blocks.addObject(new LocationTag(blockState.getLocation()));
-        }
-        this.blocks = blocks;
         fire(event);
     }
 }
