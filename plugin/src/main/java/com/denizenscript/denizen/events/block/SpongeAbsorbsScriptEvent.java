@@ -57,4 +57,5 @@ public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Liste
         this.event = event;
         fire(event);
     }
+
 }
