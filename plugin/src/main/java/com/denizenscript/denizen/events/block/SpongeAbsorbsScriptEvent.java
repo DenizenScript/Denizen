@@ -27,7 +27,7 @@ public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Context
     // <context.location> returns the location of the Sponge.
-    // <context.blocks> returns a ListTag of blocks that are being removed.
+    // <context.blocks> returns a ListTag(LocationTag) of blocks that are being removed.
     //
     // -->
 
