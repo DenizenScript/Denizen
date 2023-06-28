@@ -9,6 +9,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SpongeAbsorbEvent;
 
+import java.util.stream.Collectors;
+
 public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -41,13 +43,9 @@ public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Liste
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "location" -> new LocationTag(event.getBlock().getLocation());
-            case "blocks" -> {
-                ListTag blocks = new ListTag();
-                for (BlockState blockState : event.getBlocks()) {
-                    blocks.addObject(new LocationTag(blockState.getLocation()));
-                }
-                yield blocks;
-            }
+            case "blocks" -> new ListTag(event.getBlocks().stream()
+                    .map(blockState -> new LocationTag(blockState.getLocation()))
+                    .toList());
             default -> super.getContext(name);
         };
     }
