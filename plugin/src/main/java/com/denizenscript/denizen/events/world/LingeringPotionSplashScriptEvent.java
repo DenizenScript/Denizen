@@ -67,6 +67,8 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
                 return item;
             case "entity":
                 return new EntityTag(event.getEntity());
+            case "cloud":
+                return new EntityTag(event.getAreaEffectCloud());
         }
         return super.getContext(name);
     }
