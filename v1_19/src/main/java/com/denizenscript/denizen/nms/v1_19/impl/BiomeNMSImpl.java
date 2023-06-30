@@ -44,8 +44,8 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public DownfallType getDownfallTypeAt(Location location) {
-        Biome.Precipitation nmsType = biomeHolder.value().getPrecipitationAt(CraftLocation.toBlockPosition(location));
-        return switch (nmsType) {
+        Biome.Precipitation precipitation = biomeHolder.value().getPrecipitationAt(CraftLocation.toBlockPosition(location));
+        return switch (precipitation) {
             case RAIN -> DownfallType.RAIN;
             case SNOW -> DownfallType.SNOW;
             case NONE -> DownfallType.NONE;
@@ -62,9 +62,9 @@ public class BiomeNMSImpl extends BiomeNMS {
         return biomeHolder.value().getBaseTemperature();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public float getTemperatureAt(Location location) {
+        //noinspection deprecation
         return biomeHolder.value().getTemperature(CraftLocation.toBlockPosition(location));
     }
 
@@ -126,8 +126,8 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     @Override
-    public void setBaseTemperature(float temperature) {
-        setClimate(hasDownfall(), temperature, getTemperatureModifier(), getHumidity());
+    public void setBaseTemperature(float baseTemperature) {
+        setClimate(hasDownfall(), baseTemperature, getTemperatureModifier(), getHumidity());
     }
 
     @Override
