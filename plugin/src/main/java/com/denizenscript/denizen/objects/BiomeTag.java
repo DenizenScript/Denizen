@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -173,11 +174,15 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns this biome's downfall type for when a world has weather.
         // This can be RAIN, SNOW, or NONE.
+        // @deprecated Minecraft changed the way biome downfall works, use <@link tag BiomeTag.downfall_at> on 1.19+.
         // @example
         // # In a plains biome, this fills with 'RAIN'.
         // - narrate "The downfall type in plains biomes is: <biome[plains].downfall_type>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "downfall_type", (attribute, object) -> {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                BukkitImplDeprecations.biomeGlobalDownfallType.warn(attribute.context);
+            }
             return new ElementTag(object.biome.getDownfallType());
         });
 
@@ -209,18 +214,18 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         // <--[tag]
-        // @attribute <BiomeTag.temperature>
+        // @attribute <BiomeTag.base_temperature>
         // @returns ElementTag(Decimal)
-        // @mechanism BiomeTag.temperature
+        // @mechanism BiomeTag.base_temperature
         // @description
-        // Returns the temperature of this biome.
+        // Returns the base temperature of this biome, which is used for per-location temperature calculations (see <@link tag BiomeTag.temperature_at>).
         // @example
         // # In a plains biome, this fills with '0.8'.
-        // - narrate "Stay warm! In a plains biome, the temperature is <biome[plains].temperature>!"
+        // - narrate "Stay warm! In a plains biome, the base temperature is <biome[plains].base_temperature>!"
         // -->
-        tagProcessor.registerTag(ElementTag.class, "temperature", (attribute, object) -> {
-            return new ElementTag(object.biome.getTemperature());
-        });
+        tagProcessor.registerTag(ElementTag.class, "base_temperature", (attribute, object) -> {
+            return new ElementTag(object.biome.getBaseTemperature());
+        }, "temperature");
 
         // <--[tag]
         // @attribute <BiomeTag.spawnable_entities[(<type>)]>
@@ -258,30 +263,15 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             }
             else {
                 String type = attribute.hasParam() ? CoreUtilities.toLowerCase(attribute.getParam()) : "all";
-                switch (type) {
-                    case "ambient":
-                        entityTypes = object.biome.getAmbientEntities();
-                        break;
-                    case "creatures":
-                        entityTypes = object.biome.getCreatureEntities();
-                        break;
-                    case "monsters":
-                        entityTypes = object.biome.getMonsterEntities();
-                        break;
-                    case "water":
-                        entityTypes = object.biome.getWaterEntities();
-                        break;
-                    default:
-                        entityTypes = object.biome.getAllEntities();
-                        break;
-                }
+                entityTypes = switch (type) {
+                    case "ambient" -> object.biome.getAmbientEntities();
+                    case "creatures" -> object.biome.getCreatureEntities();
+                    case "monsters" -> object.biome.getMonsterEntities();
+                    case "water" -> object.biome.getWaterEntities();
+                    default -> object.biome.getAllEntities();
+                };
             }
-
-            ListTag list = new ListTag();
-            for (EntityType entityType : entityTypes) {
-                list.add(entityType.name());
-            }
-            return list;
+            return new ListTag(entityTypes, ElementTag::new);
         });
 
         // <--[tag]
@@ -294,8 +284,75 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // Biomes with no set foliage color already will have their foliage colors based on temperature and humidity of the biome.
         // -->
         tagProcessor.registerTag(ColorTag.class, "foliage_color", (attribute, object) -> {
-            return new ColorTag(ColorTag.fromRGB(object.biome.getFoliageColor()));
+            return ColorTag.fromRGB(object.biome.getFoliageColor());
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
+            // <--[tag]
+            // @attribute <BiomeTag.temperature_at[<location>]>
+            // @returns ElementTag(Decimal)
+            // @description
+            // Returns the temperature of a specific location in this biome.
+            // If this is less than 0.15, snow will form on the ground when weather occurs in the world and a layer of ice will form over water.
+            // @example
+            // # Gives the player water if they are standing in a warm location.
+            // - if <player.location.biome.temperature_at[<player.location]> > 0.5:
+            //   - give water_bucket
+            // -->
+            tagProcessor.registerTag(ElementTag.class, LocationTag.class, "temperature_at", (attribute, object, param) -> {
+                return new ElementTag(object.biome.getTemperatureAt(param));
+            });
+
+            // <--[tag]
+            // @attribute <BiomeTag.downfall_at[<location>]>
+            // @returns ElementTag
+            // @description
+            // Returns this biome's downfall type at a location (for when a world has weather).
+            // This can be RAIN, SNOW, or NONE.
+            // @example
+            // # Tells the linked player what the downfall type at their location is.
+            // - narrate "The downfall type at your location is: <player.location.biome.downfall_at[<player.location>]>!"
+            // -->
+            tagProcessor.registerTag(ElementTag.class, LocationTag.class, "downfall_at", (attribute, object, param) -> {
+                return new ElementTag(object.biome.getDownfallTypeAt(param));
+            });
+
+            // <--[tag]
+            // @attribute <BiomeTag.has_downfall>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the biome has downfall (rain/snow).
+            // @example
+            // # Tells the linked player whether there's a possibility of rain.
+            // - if <player.location.biome.has_downfall>:
+            //   - narrate "It might rain or snow!"
+            // - else:
+            //   - narrate "It will be dry."
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "has_downfall", (attribute, object) -> {
+                return new ElementTag(object.biome.hasDownfall());
+            });
+
+            // <--[mechanism]
+            // @object BiomeTag
+            // @name has_downfall
+            // @input ElementTag(Boolean)
+            // @description
+            // Sets whether the biome has downfall (rain/snow).
+            // @tags
+            // <BiomeTag.has_downfall>
+            // @example
+            // # Disables downfall for the plains biome permanently, using a server start event to keep it applied.
+            // on server start:
+            // - adjust <biome[plains]> has_downfall:false
+            // -->
+            tagProcessor.registerMechanism("has_downfall", false, ElementTag.class, (object, mechanism, input) -> {
+                if (mechanism.requireBoolean()) {
+                    object.biome.setHasDownfall(input.asBoolean());
+                }
+            });
+        }
 
         // <--[mechanism]
         // @object BiomeTag
@@ -315,22 +372,27 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         tagProcessor.registerMechanism("foliage_color", false, ColorTag.class, (object, mechanism, color) -> {
             object.biome.setFoliageColor(color.asRGB());
         });
-    }
 
-    public static ObjectTagProcessor<BiomeTag> tagProcessor = new ObjectTagProcessor<>();
-
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-        return tagProcessor.getObjectAttribute(this, attribute);
-    }
-
-    @Override
-    public void applyProperty(Mechanism mechanism) {
-        mechanism.echoError("Cannot apply properties to a biome!");
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
+        // <--[mechanism]
+        // @object BiomeTag
+        // @name base_temperature
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the base temperature for this biome server-wide.
+        // This is used as a base for temperature calculations, but the end temperature is calculated per-location (see <@link tag BiomeTag.temperature_at>).
+        // Resets on server restart.
+        // @tags
+        // <BiomeTag.base_temperature>
+        // @example
+        // # Adjusts the temperature of the plains biome permanently, using a server start event to keep it applied.
+        // on server start:
+        // - adjust <biome[plains]> temperature:0.5
+        // -->
+        tagProcessor.registerMechanism("base_temperature", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireFloat()) {
+                object.biome.setBaseTemperature(input.asFloat());
+            }
+        }, "temperature");
 
         // <--[mechanism]
         // @object BiomeTag
@@ -347,49 +409,45 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // on server start:
         // - adjust <biome[plains]> humidity:0.5
         // -->
-        if (mechanism.matches("humidity") && mechanism.requireFloat()) {
-            biome.setHumidity(mechanism.getValue().asFloat());
-        }
-
-        // <--[mechanism]
-        // @object BiomeTag
-        // @name temperature
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the temperature for this biome server-wide.
-        // If this is less than 0.15, snow will form on the ground when weather occurs in the world and a layer of ice will form over water.
-        // Resets on server restart.
-        // @tags
-        // <BiomeTag.temperature>
-        // @example
-        // # Adjusts the temperature of the plains biome permanently, using a server start event to keep it applied.
-        // on server start:
-        // - adjust <biome[plains]> temperature:0.5
-        // -->
-        if (mechanism.matches("temperature") && mechanism.requireFloat()) {
-            biome.setTemperature(mechanism.getValue().asFloat());
-        }
+        tagProcessor.registerMechanism("humidity", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireFloat()) {
+                object.biome.setHumidity(input.asFloat());
+            }
+        });
 
         // <--[mechanism]
         // @object BiomeTag
         // @name downfall_type
         // @input ElementTag
         // @description
-        // Sets the downfall-type for this biome server-wide.
-        // This can be RAIN, SNOW, or NONE.
-        // Resets on server restart.
-        // @tags
-        // <BiomeTag.temperature>
-        // @example
-        // # Adjusts the downfall type of the plains biome permanently, using a server start event to keep it applied.
-        // on server start:
-        // - adjust <biome[plains]> temperature:-0.2
-        // - adjust <biome[plains]> downfall_type:SNOW
+        // No longer works on 1.19+, as Minecraft removed the ability to set this value.
+        // @deprecated This functionality was removed from Minecraft.
         // -->
-        if (mechanism.matches("downfall_type") && mechanism.requireEnum(BiomeNMS.DownfallType.class)) {
-            biome.setPrecipitation(BiomeNMS.DownfallType.valueOf(mechanism.getValue().asString().toUpperCase()));
-        }
+        tagProcessor.registerMechanism("downfall_type", false, ElementTag.class, (object, mechanism, input) -> {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                BukkitImplDeprecations.biomeSettingDownfallType.warn(mechanism.context);
+                return;
+            }
+            if (mechanism.requireEnum(BiomeNMS.DownfallType.class)) {
+                object.biome.setPrecipitation(input.asEnum(BiomeNMS.DownfallType.class));
+            }
+        });
+    }
 
+    public static final ObjectTagProcessor<BiomeTag> tagProcessor = new ObjectTagProcessor<>();
+
+    @Override
+    public ObjectTag getObjectAttribute(Attribute attribute) {
+        return tagProcessor.getObjectAttribute(this, attribute);
+    }
+
+    @Override
+    public void applyProperty(Mechanism mechanism) {
+        mechanism.echoError("Cannot apply properties to a biome!");
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
         tagProcessor.processMechanism(this, mechanism);
     }
 }

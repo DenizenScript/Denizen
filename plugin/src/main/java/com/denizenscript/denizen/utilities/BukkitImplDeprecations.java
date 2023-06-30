@@ -169,8 +169,13 @@ public class BukkitImplDeprecations {
     public static Warning materialPropertyTags = new SlowWarning("materialPropertyTags", "Old MaterialTag.is_x property tags are deprecated in favor of PropertyHolderObject.supports[property-name]");
 
     // In Paper module, Added 2022/03/20
-    // // bump to normal warning and/or past warning after 1.18 is the minimum supported version (change happened in MC 1.18)
+    // bump to normal warning and/or past warning after 1.18 is the minimum supported version (change happened in MC 1.18)
     public static Warning paperNoTickViewDistance = new SlowWarning("paperNoTickViewDistance", "Paper's 'no_tick_view_distance' is deprecated in favor of modern minecraft's 'simulation_distance' and 'view_distance' separation");
+
+    // Added 2023/06/30
+    // Bump to normal/past warning after 1.19 is the minimum supported version (change happened in 1.19)
+    public static Warning biomeGlobalDownfallType = new SlowWarning("biomeGlobalDownfallType", "The 'BiomeTag.downfall_type' tag is deprecated in favor of 'BiomeTag.downfall_at', as biome downfall is now location-based");
+    public static Warning biomeSettingDownfallType = new SlowWarning("biomeSettingDownfallType", "The 'BiomeTag.downfall_type' mechanism is removed, as Minecraft no longer allows for this value to be set.");
 
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
