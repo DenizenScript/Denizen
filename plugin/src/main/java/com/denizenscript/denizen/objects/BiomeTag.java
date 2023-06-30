@@ -376,27 +376,6 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
 
         // <--[mechanism]
         // @object BiomeTag
-        // @name base_temperature
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the base temperature for this biome server-wide.
-        // This is used as a base for temperature calculations, but the end temperature is calculated per-location (see <@link tag BiomeTag.temperature_at>).
-        // Resets on server restart.
-        // @tags
-        // <BiomeTag.base_temperature>
-        // @example
-        // # Adjusts the temperature of the plains biome permanently, using a server start event to keep it applied.
-        // on server start:
-        // - adjust <biome[plains]> temperature:0.5
-        // -->
-        tagProcessor.registerMechanism("base_temperature", false, ElementTag.class, (object, mechanism, input) -> {
-            if (mechanism.requireFloat()) {
-                object.biome.setBaseTemperature(input.asFloat());
-            }
-        }, "temperature");
-
-        // <--[mechanism]
-        // @object BiomeTag
         // @name humidity
         // @input ElementTag(Decimal)
         // @description
@@ -415,6 +394,27 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
                 object.biome.setHumidity(input.asFloat());
             }
         });
+
+        // <--[mechanism]
+        // @object BiomeTag
+        // @name base_temperature
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the base temperature for this biome server-wide.
+        // This is used as a base for temperature calculations, but the end temperature is calculated per-location (see <@link tag BiomeTag.temperature_at>).
+        // Resets on server restart.
+        // @tags
+        // <BiomeTag.base_temperature>
+        // @example
+        // # Adjusts the temperature of the plains biome permanently, using a server start event to keep it applied.
+        // on server start:
+        // - adjust <biome[plains]> temperature:0.5
+        // -->
+        tagProcessor.registerMechanism("base_temperature", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireFloat()) {
+                object.biome.setBaseTemperature(input.asFloat());
+            }
+        }, "temperature");
 
         // <--[mechanism]
         // @object BiomeTag
