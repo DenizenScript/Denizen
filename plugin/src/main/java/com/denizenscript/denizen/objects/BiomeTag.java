@@ -171,10 +171,11 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @attribute <BiomeTag.downfall_type>
         // @returns ElementTag
         // @mechanism BiomeTag.downfall_type
+        // @deprecated Minecraft changed the way biome downfall works, use <@link tag BiomeTag.downfall_at> on 1.19+.
         // @description
+        // Deprecated in favor of <@link tag BiomeTag.downfall_at> on 1.19+, as downfall is block-specific now.
         // Returns this biome's downfall type for when a world has weather.
         // This can be RAIN, SNOW, or NONE.
-        // @deprecated Minecraft changed the way biome downfall works, use <@link tag BiomeTag.downfall_at> on 1.19+.
         // @example
         // # In a plains biome, this fills with 'RAIN'.
         // - narrate "The downfall type in plains biomes is: <biome[plains].downfall_type>!"
@@ -419,9 +420,19 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // @object BiomeTag
         // @name downfall_type
         // @input ElementTag
+        // @deprecated This functionality was removed from Minecraft as of 1.19.
         // @description
-        // No longer works on 1.19+, as Minecraft removed the ability to set this value.
-        // @deprecated This functionality was removed from Minecraft.
+        // Deprecated on 1.19+, as Minecraft removed the ability to set this value.
+        // Sets the downfall-type for this biome server-wide.
+        // This can be RAIN, SNOW, or NONE.
+        // Resets on server restart.
+        // @tags
+        // <BiomeTag.temperature>
+        // @example
+        // # Adjusts the downfall type of the plains biome permanently, using a server start event to keep it applied.
+        // on server start:
+        // - adjust <biome[plains]> temperature:-0.2
+        // - adjust <biome[plains]> downfall_type:SNOW
         // -->
         tagProcessor.registerMechanism("downfall_type", false, ElementTag.class, (object, mechanism, input) -> {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
