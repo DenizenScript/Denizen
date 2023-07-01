@@ -4222,6 +4222,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @description
             // Returns a location's temperature, based on the biome it's in.
             // If this is less than 0.15, snow will form on the ground when weather occurs in the world and a layer of ice will form over water.
+            // See also <@link tag BiomeTag.temperature_at>.
             // @example
             // # Gives the player water if they are standing in a warm location.
             // - if <player.location.temperature> > 0.5:
@@ -4238,6 +4239,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @description
             // Returns a location's downfall type (for when a world has weather), based on the biome it's in.
             // This can be RAIN, SNOW, or NONE.
+            // See also <@link tag BiomeTag.downfall_at>.
             // @example
             // # Tells the linked player what the downfall type at their location is.
             // - narrate "The downfall type at your location is: <player.location.downfall_type>!"

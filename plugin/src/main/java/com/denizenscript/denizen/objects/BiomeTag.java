@@ -299,6 +299,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             // @description
             // Returns the temperature of a specific location in this biome.
             // If this is less than 0.15, snow will form on the ground when weather occurs in the world and a layer of ice will form over water.
+            // Generally <@link tag LocationTag.temperature> should be preferred, other than some special cases.
             // @example
             // # Gives the player water if they are standing in a warm location.
             // - if <player.location.biome.temperature_at[<player.location]> > 0.5:
@@ -314,6 +315,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             // @description
             // Returns this biome's downfall type at a location (for when a world has weather).
             // This can be RAIN, SNOW, or NONE.
+            // Generally <@link tag LocationTag.downfall_type> should be preferred, other than some special cases.
             // @example
             // # Tells the linked player what the downfall type at their location is.
             // - narrate "The downfall type at your location is: <player.location.biome.downfall_at[<player.location>]>!"
