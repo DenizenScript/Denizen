@@ -42,8 +42,8 @@ public class EntityTeleportedByPortalScriptEvent extends BukkitScriptEvent imple
     public EntityTeleportedByPortalScriptEvent() {
         registerCouldMatcher("<entity> teleported by portal");
         registerSwitches("to", "portal_type");
-        registerDetermination("target_world", WorldTag.class, (context, targetWorld) -> event.setTargetWorld(targetWorld.getWorld()));
-        registerTextDetermination("remove_target_world", () -> event.setTargetWorld(null));
+        this.<EntityTeleportedByPortalScriptEvent, WorldTag>registerDetermination("target_world", WorldTag.class, (evt, context, targetWorld) -> evt.event.setTargetWorld(targetWorld.getWorld()));
+        this.<EntityTeleportedByPortalScriptEvent>registerTextDetermination("remove_target_world", (evt) -> evt.event.setTargetWorld(null));
     }
 
     EntityPortalReadyEvent event;

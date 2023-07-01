@@ -30,6 +30,7 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     // <context.potion> returns an ItemTag of the potion that broke open.
     // <context.location> returns the LocationTag the splash potion broke open at.
     // <context.entity> returns an EntityTag of the splash potion.
+    // <context.cloud> returns the EntityTag of the area of effect cloud.
     // <context.radius> returns the radius of the effect cloud.
     // <context.duration> returns the lingering duration of the effect cloud.
     //
@@ -56,19 +57,15 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location":
-                return location;
-            case "radius":
-                return new ElementTag(event.getAreaEffectCloud().getRadius());
-            case "duration":
-                return new DurationTag((long) event.getAreaEffectCloud().getDuration());
-            case "potion":
-                return item;
-            case "entity":
-                return new EntityTag(event.getEntity());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "radius" -> new ElementTag(event.getAreaEffectCloud().getRadius());
+            case "duration" -> new DurationTag((long) event.getAreaEffectCloud().getDuration());
+            case "potion" -> item;
+            case "entity" -> new EntityTag(event.getEntity());
+            case "cloud" -> new EntityTag(event.getAreaEffectCloud());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
