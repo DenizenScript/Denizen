@@ -4,12 +4,9 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SpongeAbsorbEvent;
-
-import java.util.stream.Collectors;
 
 public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -43,9 +40,7 @@ public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Liste
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "location" -> new LocationTag(event.getBlock().getLocation());
-            case "blocks" -> new ListTag(event.getBlocks().stream()
-                    .map(blockState -> new LocationTag(blockState.getLocation()))
-                    .toList());
+            case "blocks" -> new ListTag(event.getBlocks(), block -> new LocationTag(block.getLocation()));
             default -> super.getContext(name);
         };
     }
