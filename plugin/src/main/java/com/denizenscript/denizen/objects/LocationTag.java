@@ -1,34 +1,38 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizen.nms.interfaces.EntityHelper;
+import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
-import com.denizenscript.denizen.objects.properties.material.*;
+import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
+import com.denizenscript.denizen.objects.properties.material.MaterialDistance;
+import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
+import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
+import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizen.utilities.world.PathFinder;
 import com.denizenscript.denizen.utilities.world.WorldListChangeTracker;
-import com.denizenscript.denizencore.objects.core.*;
-import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.interfaces.EntityHelper;
-import com.denizenscript.denizen.nms.util.PlayerProfile;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.SimplexNoise;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -48,8 +52,8 @@ import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.*;
 import org.bukkit.util.Vector;
+import org.bukkit.util.*;
 
 import java.util.*;
 import java.util.function.Function;
@@ -4209,9 +4213,43 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             output.putObject("show_invisible", new ElementTag(structure.isShowAir()));
             return output;
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
+            // <--[tag]
+            // @attribute <LocationTag.temperature>
+            // @returns ElementTag(Decimal)
+            // @description
+            // Returns a location's temperature, based on the biome it's in.
+            // If this is less than 0.15, snow will form on the ground when weather occurs in the world and a layer of ice will form over water.
+            // @example
+            // # Gives the player water if they are standing in a warm location.
+            // - if <player.location.temperature> > 0.5:
+            //   - give water_bucket
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "temperature", (attribute, object) -> {
+                BiomeNMS biome = object.getBiomeForTag(attribute);
+                return biome != null ? new ElementTag(biome.getTemperatureAt(object)) : null;
+            });
+
+            // <--[tag]
+            // @attribute <LocationTag.downfall_type>
+            // @returns ElementTag
+            // @description
+            // Returns a location's downfall type (for when a world has weather), based on the biome it's in.
+            // This can be RAIN, SNOW, or NONE.
+            // @example
+            // # Tells the linked player what the downfall type at their location is.
+            // - narrate "The downfall type at your location is: <player.location.downfall_type>!"
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "downfall_type", (attribute, object) -> {
+                BiomeNMS biome = object.getBiomeForTag(attribute);
+                return biome != null ? new ElementTag(biome.getDownfallTypeAt(object)) : null;
+            });
+        }
     }
 
-    public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
+    public static final ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
