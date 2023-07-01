@@ -111,7 +111,9 @@ public class RemoveCommand extends AbstractCommand {
                         Debug.echoError("Tried to remove already-removed entity.");
                         // Still remove() anyway to compensate for Spigot/NMS bugs
                     }
-                    entity.remove();
+                    if (entity.entity != null) {
+                        entity.remove();
+                    }
                 }
             }
             else {
