@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.abstracts;
 
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -20,15 +21,32 @@ public abstract class BiomeNMS {
         this.name = CoreUtilities.toLowerCase(name);
     }
 
-    public abstract DownfallType getDownfallType();
-
     public String getName() {
         return name;
     }
 
+    public DownfallType getDownfallType() {
+        if (!hasDownfall()) {
+            return DownfallType.NONE;
+        }
+        return getBaseTemperature() > 0.15f ? DownfallType.RAIN : DownfallType.SNOW;
+    }
+
+    public DownfallType getDownfallTypeAt(Location location) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract float getHumidity();
 
-    public abstract float getTemperature();
+    public abstract float getBaseTemperature();
+
+    public float getTemperatureAt(Location location) {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean hasDownfall() {
+        throw new UnsupportedOperationException();
+    }
 
     public List<EntityType> getAllEntities() {
         List<EntityType> entityTypes = new ArrayList<>();
@@ -51,9 +69,13 @@ public abstract class BiomeNMS {
 
     public abstract void setHumidity(float humidity);
 
-    public abstract void setTemperature(float temperature);
+    public abstract void setBaseTemperature(float temperature);
 
     public void setPrecipitation(DownfallType type) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setHasDownfall(boolean hasDownfall) {
         throw new UnsupportedOperationException();
     }
 
