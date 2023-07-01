@@ -12,7 +12,7 @@ public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // sponge absorbs
+    // sponge absorbs water
     //
     // @Location true
     //
@@ -22,16 +22,16 @@ public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when Sponge absorbs water.
+    // @Triggers when a sponge block absorbs water.
     //
     // @Context
     // <context.location> returns the location of the Sponge.
-    // <context.blocks> returns a ListTag(LocationTag) of blocks that are being removed.
+    // <context.blocks> returns a ListTag(LocationTag) of blocks (of water) that are being removed.
     //
     // -->
 
     public SpongeAbsorbsScriptEvent() {
-        registerCouldMatcher("sponge absorbs");
+        registerCouldMatcher("sponge absorbs water");
     }
 
     public SpongeAbsorbEvent event;
