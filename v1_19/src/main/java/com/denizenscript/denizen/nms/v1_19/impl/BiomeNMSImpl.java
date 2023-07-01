@@ -64,7 +64,6 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public float getTemperatureAt(Location location) {
-        //noinspection deprecation
         return biomeHolder.value().getTemperature(CraftLocation.toBlockPosition(location));
     }
 
