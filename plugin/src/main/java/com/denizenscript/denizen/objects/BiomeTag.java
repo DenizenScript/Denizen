@@ -327,6 +327,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             // <--[tag]
             // @attribute <BiomeTag.has_downfall>
             // @returns ElementTag(Boolean)
+            // @mechanism BiomeTag.has_downfall
             // @description
             // Returns whether the biome has downfall (rain/snow).
             // @example
@@ -432,7 +433,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // This can be RAIN, SNOW, or NONE.
         // Resets on server restart.
         // @tags
-        // <BiomeTag.temperature>
+        // <BiomeTag.base_temperature>
         // @example
         // # Adjusts the downfall type of the plains biome permanently, using a server start event to keep it applied.
         // on server start:

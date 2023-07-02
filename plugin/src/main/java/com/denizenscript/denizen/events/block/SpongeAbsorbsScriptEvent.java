@@ -25,7 +25,7 @@ public class SpongeAbsorbsScriptEvent extends BukkitScriptEvent implements Liste
     // @Triggers when a sponge block absorbs water.
     //
     // @Context
-    // <context.location> returns the location of the Sponge.
+    // <context.location> returns the location of the sponge.
     // <context.blocks> returns a ListTag(LocationTag) of blocks (of water) that are being removed.
     //
     // -->
