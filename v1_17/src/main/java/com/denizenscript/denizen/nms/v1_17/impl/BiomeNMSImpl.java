@@ -57,7 +57,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     @Override
-    public float getTemperature() {
+    public float getBaseTemperature() {
         return biomeBase.getBaseTemperature();
     }
 
@@ -88,7 +88,7 @@ public class BiomeNMSImpl extends BiomeNMS {
             return biomeBase.getFoliageColor();
         }
         // Based on net.minecraft.world.level.biome.Biome#getFoliageColorFromTexture()
-        float temperature = clampColor(getTemperature());
+        float temperature = clampColor(getBaseTemperature());
         float humidity = clampColor(getHumidity());
         // Based on net.minecraft.world.level.FoliageColor#get()
         humidity *= temperature;
@@ -109,7 +109,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     @Override
-    public void setTemperature(float temperature) {
+    public void setBaseTemperature(float temperature) {
         Object climate = getClimate();
         ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_temperature, climate, temperature);
     }
