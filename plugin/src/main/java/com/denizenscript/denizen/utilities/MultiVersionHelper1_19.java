@@ -3,17 +3,15 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
-import com.denizenscript.denizencore.objects.core.TimeTag;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Frog;
 import org.bukkit.entity.Interaction;
-
-import java.time.temporal.ChronoUnit;
 
 public class MultiVersionHelper1_19 {
 
@@ -47,8 +45,7 @@ public class MultiVersionHelper1_19 {
         }
         MapTag result = new MapTag();
         result.putObject("player", new PlayerTag(interaction.getPlayer()));
-        long millis = (world.getGameTime() - interaction.getTimestamp()) * 50L;
-        result.putObject("time", new TimeTag(TimeTag.now().instant.minus(millis, ChronoUnit.MILLIS)));
+        result.putObject("duration", new DurationTag((world.getGameTime() - interaction.getTimestamp()) / 20d));
         result.putObject("raw_game_time", new ElementTag(interaction.getTimestamp()));
         return result;
     }
