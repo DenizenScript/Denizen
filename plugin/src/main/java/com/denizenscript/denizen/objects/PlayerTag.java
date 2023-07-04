@@ -45,6 +45,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.block.sign.Side;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.*;
@@ -3842,6 +3843,52 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             else {
                 NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), null);
+            }
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name edit_sign_front
+        // @input LocationTag
+        // @description
+        // Allows the player to edit the front of an existing sign. To create a sign, see <@link command Sign>.
+        // Give no input to make a fake edit interface.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            if (mechanism.matches("edit_sign_front")) {
+                if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
+                    BlockState state = mechanism.valueAsType(LocationTag.class).getBlockState();
+                    if (!(state instanceof Sign)) {
+                        mechanism.echoError("Invalid location specified: must be a sign.");
+                        return;
+                    }
+                    getPlayerEntity().openSign((Sign) state, Side.FRONT);
+                } else {
+                    NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), null);
+                }
+            }
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name edit_sign_back
+        // @input LocationTag
+        // @description
+        // Allows the player to edit the back of an existing sign. To create a sign, see <@link command Sign>.
+        // Give no input to make a fake edit interface.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            if (mechanism.matches("edit_sign_back")) {
+                if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
+                    BlockState state = mechanism.valueAsType(LocationTag.class).getBlockState();
+                    if (!(state instanceof Sign)) {
+                        mechanism.echoError("Invalid location specified: must be a sign.");
+                        return;
+                    }
+                    getPlayerEntity().openSign((Sign) state, Side.BACK);
+                } else {
+                    NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), null);
+                }
             }
         }
 
