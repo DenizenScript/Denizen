@@ -12,8 +12,8 @@ public class EntityInterpolationStart extends EntityProperty<DurationTag> {
     // @group Minecraft Logic
     // @description
     // Display entities can interpolate between different properties, providing a smooth transition.
-    // Interpolation can be started (immediately or with a delay) using <@link mechanism EntityTag.interpolation_start>, and it's duration can be set using <@link mechanism EntityTag.interpolation_duration>.
-    // The following properties can be interpolated: <@link mechanism EntityTag.scale>, <@link mechanism EntityTag.translation>, <@link mechanism EntityTag.shadow_radius>, <@link mechanism EntityTag.shadow_strength>, <@link mechanism EntityTag.opacity>.
+    // Interpolation can be started (immediately or with a delay) using <@link property EntityTag.interpolation_start>, and it's duration can be set using <@link property EntityTag.interpolation_duration>.
+    // The following properties can be interpolated: <@link property EntityTag.scale>, <@link property EntityTag.translation>, <@link property EntityTag.shadow_radius>, <@link property EntityTag.shadow_strength>, <@link mechanism EntityTag.opacity>, <@link property EntityTag.left_rotation>, <@link property EntityTag.right_rotation>.
     // -->
 
     // <--[property]

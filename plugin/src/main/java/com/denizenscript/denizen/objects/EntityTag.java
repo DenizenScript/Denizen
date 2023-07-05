@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
@@ -13,6 +14,7 @@ import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.MultiVersionHelper1_19;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -2638,8 +2640,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns an element indicating the minecraft key for the loot-table for the entity (if any).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "loot_table_id", (attribute, object) -> {
-            if (object.getBukkitEntity() instanceof Lootable) {
-                LootTable table = ((Lootable) object.getBukkitEntity()).getLootTable();
+            if (object.getBukkitEntity() instanceof Lootable lootable) {
+                LootTable table = lootable.getLootTable();
                 if (table != null) {
                     return new ElementTag(table.getKey().toString());
                 }
@@ -2654,11 +2656,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the current state of the fish hook, as any of: UNHOOKED, HOOKED_ENTITY, BOBBING (unhooked means the fishing hook is in the air or on ground).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "fish_hook_state", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_state is only valid for fish hooks.");
                 return null;
             }
-            return new ElementTag(((FishHook) object.getBukkitEntity()).getState());
+            return new ElementTag(fishHook.getState());
         });
 
         // <--[tag]
@@ -2669,11 +2671,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the remaining time before this fish hook will lure a fish.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "fish_hook_lure_time", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_lure_time is only valid for fish hooks.");
                 return null;
             }
-            return new DurationTag((long) NMSHandler.fishingHelper.getLureTime((FishHook) object.getBukkitEntity()));
+            return new DurationTag((long) NMSHandler.fishingHelper.getLureTime(fishHook));
         });
 
         // <--[tag]
@@ -2684,11 +2686,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the minimum possible time before this fish hook can lure a fish.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "fish_hook_min_lure_time", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_min_lure_time is only valid for fish hooks.");
                 return null;
             }
-            return new DurationTag((long) ((FishHook) object.getBukkitEntity()).getMinWaitTime());
+            return new DurationTag((long) fishHook.getMinWaitTime());
         });
 
         // <--[tag]
@@ -2699,11 +2701,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the maximum possible time before this fish hook will lure a fish.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "fish_hook_max_lure_time", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_max_lure_time is only valid for fish hooks.");
                 return null;
             }
-            return new DurationTag((long) ((FishHook) object.getBukkitEntity()).getMaxWaitTime());
+            return new DurationTag((long) fishHook.getMaxWaitTime());
         });
 
         // <--[tag]
@@ -2714,11 +2716,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the entity this fish hook is attached to.
         // -->
         registerSpawnedOnlyTag(EntityTag.class, "fish_hook_hooked_entity", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_hooked_entity is only valid for fish hooks.");
                 return null;
             }
-            Entity entity = ((FishHook) object.getBukkitEntity()).getHookedEntity();
+            Entity entity = fishHook.getHookedEntity();
             return entity != null ? new EntityTag(entity) : null;
         });
 
@@ -2731,11 +2733,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Every level of lure enchantment reduces lure time by 5 seconds.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "fish_hook_apply_lure", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_apply_lure is only valid for fish hooks.");
                 return null;
             }
-            return new ElementTag(((FishHook) object.getBukkitEntity()).getApplyLure());
+            return new ElementTag(fishHook.getApplyLure());
         });
 
         // <--[tag]
@@ -2746,11 +2748,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // See <@link url https://minecraft.fandom.com/wiki/Fishing> for more info.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "fish_hook_in_open_water", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_in_open_water is only valid for fish hooks.");
                 return null;
             }
-            return new ElementTag(((FishHook) object.getBukkitEntity()).isInOpenWater());
+            return new ElementTag(fishHook.isInOpenWater());
         });
 
         // <--[tag]
@@ -2823,11 +2825,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the amount of time that passed since the start of the attack cooldown.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "attack_cooldown_duration", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof Player)) {
+            if (!(object.getBukkitEntity() instanceof Player player)) {
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
-            return new DurationTag((long) NMSHandler.playerHelper.ticksPassedDuringCooldown((Player) object.getLivingEntity()));
+            return new DurationTag((long) NMSHandler.playerHelper.ticksPassedDuringCooldown(player));
         });
 
         // <--[tag]
@@ -2841,11 +2843,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // cooldown progress.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "attack_cooldown_max_duration", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof Player)) {
+            if (!(object.getBukkitEntity() instanceof Player player)) {
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
-            return new DurationTag((long) NMSHandler.playerHelper.getMaxAttackCooldownTicks((Player) object.getLivingEntity()));
+            return new DurationTag((long) NMSHandler.playerHelper.getMaxAttackCooldownTicks(player));
         });
 
         // <--[tag]
@@ -2858,11 +2860,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // NOTE: This may not match exactly with the clientside attack cooldown indicator.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "attack_cooldown_percent", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof Player)) {
+            if (!(object.getBukkitEntity() instanceof Player player)) {
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
-            return new ElementTag(((Player) object.getLivingEntity()).getAttackCooldown() * 100);
+            return new ElementTag(player.getAttackCooldown() * 100);
         });
 
         // <--[tag]
@@ -2873,12 +2875,51 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // A player's hand is raised when they are blocking with a shield, aiming a crossbow, looking through a spyglass, etc.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "is_hand_raised", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof HumanEntity)) {
+            if (!(object.getBukkitEntity() instanceof HumanEntity humanEntity)) {
                 attribute.echoError("Only player-type entities can have is_hand_raised!");
                 return null;
             }
-            return new ElementTag(((HumanEntity) object.getLivingEntity()).isHandRaised());
+            return new ElementTag(humanEntity.isHandRaised());
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
+            // <--[tag]
+            // @attribute <EntityTag.last_attack>
+            // @returns MapTag
+            // @description
+            // Returns an interaction entity's last attack interaction, if any.
+            // The returned map contains:
+            // - 'player' (PlayerTag): the player who interacted
+            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this value is calculated, and may become inaccurate if the interaction entity changes worlds or the server lags.
+            // - 'raw_game_time' (ElementTag(Number)): the raw game time the interaction occurred at, used to calculate the time above.
+            // -->
+            registerSpawnedOnlyTag(MapTag.class, "last_attack", (attribute, object) -> {
+                if (!(object.getBukkitEntity() instanceof Interaction interaction)) {
+                    attribute.echoError("'EntityTag.last_attack' is only valid for interaction entities.");
+                    return null;
+                }
+                return MultiVersionHelper1_19.interactionToMap(interaction.getLastAttack(), interaction.getWorld());
+            });
+
+            // <--[tag]
+            // @attribute <EntityTag.last_interaction>
+            // @returns MapTag
+            // @description
+            // Returns an interaction entity's last right click interaction, if any.
+            // The returned map contains:
+            // - 'player' (PlayerTag): the player who interacted
+            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this value is calculated, and may become inaccurate if the interaction entity changes worlds or the server lags.
+            // - 'raw_game_time' (ElementTag(Number)): the raw game time the interaction occurred at, used to calculate the time above.
+            // -->
+            registerSpawnedOnlyTag(MapTag.class, "last_interaction", (attribute, object) -> {
+                if (!(object.getBukkitEntity() instanceof Interaction interaction)) {
+                    attribute.echoError("'EntityTag.last_interaction' is only valid for interaction entities.");
+                    return null;
+                }
+                return MultiVersionHelper1_19.interactionToMap(interaction.getLastInteraction(), interaction.getWorld());
+            });
+        }
 
         // <--[mechanism]
         // @object EntityTag
