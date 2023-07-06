@@ -406,9 +406,8 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public float getBaseYaw(Entity entity) {
-        net.minecraft.world.entity.Entity handle = ((CraftEntity) entity).getHandle();
-        return ((net.minecraft.world.entity.LivingEntity) handle).yBodyRot;
+    public float getBaseYaw(LivingEntity entity) {
+        return ((CraftLivingEntity) entity).getHandle().yBodyRot;
     }
 
     @Override

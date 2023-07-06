@@ -33,11 +33,11 @@ public abstract class EntityHelper {
 
     public abstract void setPose(Entity entity, Pose pose);
 
-    public void setSneaking(Entity player, boolean sneak) {
-        if (player instanceof  Player) {
-            ((Player) player).setSneaking(sneak);
+    public void setSneaking(Entity entity, boolean sneak) {
+        if (entity instanceof Player player) {
+            player.setSneaking(sneak);
         }
-        NMSHandler.entityHelper.setPose(player, sneak ? Pose.SNEAKING : Pose.STANDING);
+        NMSHandler.entityHelper.setPose(entity, sneak ? Pose.SNEAKING : Pose.STANDING);
     }
 
     public abstract double getDamageTo(LivingEntity attacker, Entity target);
@@ -46,7 +46,7 @@ public abstract class EntityHelper {
 
     public abstract void forceInteraction(Player player, Location location);
 
-    public abstract Entity getEntity(World world, UUID uuid);
+    public abstract Entity getEntity(World world, UUID uuid); // TODO: Bukkit#getEntity?
 
     public abstract CompoundTag getNbtData(Entity entity);
 
@@ -74,7 +74,7 @@ public abstract class EntityHelper {
      */
     public abstract void rotate(Entity entity, float yaw, float pitch);
 
-    public abstract float getBaseYaw(Entity entity);
+    public abstract float getBaseYaw(LivingEntity entity);
 
     // Taken from C2 NMS class for less dependency on C2
     public abstract void look(Entity entity, float yaw, float pitch);
@@ -406,37 +406,25 @@ public abstract class EntityHelper {
 
     public abstract void damage(LivingEntity target, float amount, EntityTag source, Location sourceLoc, EntityDamageEvent.DamageCause cause);
 
-    public void setLastHurtBy(LivingEntity mob, LivingEntity damager) {
-        throw new UnsupportedOperationException();
+    public abstract void setLastHurtBy(LivingEntity mob, LivingEntity damager);
+
+    public abstract void setFallingBlockType(FallingBlock entity, BlockData block);
+
+    public abstract EntityTag getMobSpawnerDisplayEntity(CreatureSpawner spawner);
+
+    public void setFireworkLifetime(Firework firework, int ticks) { // TODO: once minimum version is 1.19, remove from NMS
+        firework.setMaxLife(ticks);
     }
 
-    public void setFallingBlockType(FallingBlock entity, BlockData block) {
-        throw new UnsupportedOperationException();
+    public int getFireworkLifetime(Firework firework) { // TODO: once minimum version is 1.19, remove from NMS
+        return firework.getMaxLife();
     }
 
-    public EntityTag getMobSpawnerDisplayEntity(CreatureSpawner spawner) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract int getInWaterTime(Zombie zombie);
 
-    public void setFireworkLifetime(Firework firework, int ticks) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract void setInWaterTime(Zombie zombie, int ticks);
 
-    public int getFireworkLifetime(Firework firework) {
-        throw new UnsupportedOperationException();
-    }
-
-    public int getInWaterTime(Zombie zombie) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setInWaterTime(Zombie zombie, int ticks) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setTrackingRange(Entity entity, int range) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract void setTrackingRange(Entity entity, int range);
 
     public abstract boolean isAggressive(Mob mob);
 

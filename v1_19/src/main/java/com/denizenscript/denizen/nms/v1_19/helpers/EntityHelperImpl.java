@@ -450,9 +450,8 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public float getBaseYaw(Entity entity) {
-        net.minecraft.world.entity.Entity handle = ((CraftEntity) entity).getHandle();
-        return ((net.minecraft.world.entity.LivingEntity) handle).yBodyRot;
+    public float getBaseYaw(LivingEntity entity) {
+        return ((CraftLivingEntity) entity).getHandle().yBodyRot;
     }
 
     @Override
@@ -740,16 +739,6 @@ public class EntityHelperImpl extends EntityHelper {
         ServerLevel level = ((CraftWorld) spawner.getWorld()).getHandle();
         net.minecraft.world.entity.Entity nmsEntity = nmsSpawner.getSpawner().getOrCreateDisplayEntity(level, level.random, nmsSpawner.getBlockPos());
         return new EntityTag(nmsEntity.getBukkitEntity());
-    }
-
-    @Override
-    public void setFireworkLifetime(Firework firework, int ticks) {
-        ((CraftFirework) firework).getHandle().lifetime = ticks;
-    }
-
-    @Override
-    public int getFireworkLifetime(Firework firework) {
-        return ((CraftFirework) firework).getHandle().lifetime;
     }
 
     public static final Field ZOMBIE_INWATERTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.Zombie.class).get(ReflectionMappingsInfo.Zombie_inWaterTime, int.class);
