@@ -24,11 +24,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagNetworkSerialization;
 import net.minecraft.util.InclusiveRange;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BaseSpawner;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
@@ -46,7 +44,6 @@ import org.bukkit.craftbukkit.v1_20_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.block.*;
-import org.bukkit.craftbukkit.v1_20_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R1.tag.CraftBlockTag;
 import org.bukkit.craftbukkit.v1_20_R1.util.CraftLocation;
@@ -162,7 +159,7 @@ public class BlockHelperImpl implements BlockHelper {
     public org.bukkit.block.BlockState generateBlockState(Block block, Material mat) {
         try {
             CraftBlockState state = (CraftBlockState) CRAFTBLOCKSTATE_CONSTRUCTOR.invoke(block);
-            state.setData(CraftMagicNumbers.getBlock(mat).defaultBlockState());
+            state.setData(getMaterialBlockState(mat));
             return state;
         }
         catch (Throwable ex) {
@@ -177,17 +174,15 @@ public class BlockHelperImpl implements BlockHelper {
 
     public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase.class, float.class); // destroySpeed
 
-    public net.minecraft.world.level.block.state.BlockState getMaterialBlockState(Material bukkitMaterial) { // TODO: Is this needed? can probably just Block#defaultBlockState
-        if (!bukkitMaterial.isBlock()) {
-            return null;
-        }
-        return ((CraftBlockData) bukkitMaterial.createBlockData()).getState();
+    public net.minecraft.world.level.block.state.BlockState getMaterialBlockState(Material bukkitMaterial) {
+        net.minecraft.world.level.block.Block nmsBlock = CraftMagicNumbers.getBlock(bukkitMaterial);
+        return nmsBlock != null ? nmsBlock.defaultBlockState() : null;
     }
 
     @Override
     public void setPushReaction(Material mat, PistonPushReaction reaction) {
         try {
-            MATERIAL_PUSH_REACTION_SETTER.invoke(CraftMagicNumbers.getBlock(mat).defaultBlockState(), PushReaction.values()[reaction.ordinal()]);
+            MATERIAL_PUSH_REACTION_SETTER.invoke(getMaterialBlockState(mat), PushReaction.values()[reaction.ordinal()]);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -196,13 +191,13 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public float getBlockStrength(Material mat) {
-        return CraftMagicNumbers.getBlock(mat).defaultBlockState().destroySpeed;
+        return getMaterialBlockState(mat).destroySpeed;
     }
 
     @Override
     public void setBlockStrength(Material mat, float strength) {
         try {
-            BLOCK_STRENGTH_SETTER.invoke(CraftMagicNumbers.getBlock(mat).defaultBlockState(), strength);
+            BLOCK_STRENGTH_SETTER.invoke(getMaterialBlockState(mat), strength);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -245,10 +240,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public Instrument getInstrumentFor(Material mat) {
-        Instrument first = Instrument.values()[getMaterialBlockState(mat).instrument().ordinal()];
-        Instrument second = Instrument.values()[CraftMagicNumbers.getBlock(mat).defaultBlockState().instrument().ordinal()];
-        Debug.log("Getting instrument with both methods: " + (first == second));
-        return first;
+        return Instrument.values()[getMaterialBlockState(mat).instrument().ordinal()];
     }
 
     @Override
