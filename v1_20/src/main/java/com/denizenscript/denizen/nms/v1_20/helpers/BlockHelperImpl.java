@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -176,7 +177,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     public static final MethodHandle BLOCK_STRENGTH_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase.class, float.class); // destroySpeed
 
-    public net.minecraft.world.level.block.state.BlockState getMaterialBlockState(Material bukkitMaterial) {
+    public net.minecraft.world.level.block.state.BlockState getMaterialBlockState(Material bukkitMaterial) { // TODO: Is this needed? can probably just Block#defaultBlockState
         if (!bukkitMaterial.isBlock()) {
             return null;
         }
@@ -186,7 +187,7 @@ public class BlockHelperImpl implements BlockHelper {
     @Override
     public void setPushReaction(Material mat, PistonPushReaction reaction) {
         try {
-            MATERIAL_PUSH_REACTION_SETTER.invoke(getMaterialBlockState(mat), PushReaction.values()[reaction.ordinal()]);
+            MATERIAL_PUSH_REACTION_SETTER.invoke(CraftMagicNumbers.getBlock(mat).defaultBlockState(), PushReaction.values()[reaction.ordinal()]);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -227,14 +228,15 @@ public class BlockHelperImpl implements BlockHelper {
             nmsBlock.randomTick(nmsWorld, pos, nmsWorld.random);
         }
         try {
-            // FluidState fluid = nmsBlock.getFluidState();
-            // if (fluid.isRandomlyTicking()) {
-            //     fluid.animateTick(nmsWorld, pos, nmsWorld.random);
-            // }
-            Object fluid = BLOCKSTATEBASE_GETFLUIDSTATE.invoke(nmsBlock);
-            if ((boolean) FLUIDSTATE_ISRANDOMLYTICKING.invoke(fluid)) {
-                FLUIDSTATE_ANIMATETICK.invoke(fluid, nmsWorld, pos, nmsWorld.random);
-            }
+            Debug.log("Ticking fluid state");
+             FluidState fluid = nmsBlock.getFluidState();
+             if (fluid.isRandomlyTicking()) {
+                 fluid.animateTick(nmsWorld, pos, nmsWorld.random);
+             }
+//            Object fluid = BLOCKSTATEBASE_GETFLUIDSTATE.invoke(nmsBlock);
+//            if ((boolean) FLUIDSTATE_ISRANDOMLYTICKING.invoke(fluid)) {
+//                FLUIDSTATE_ANIMATETICK.invoke(fluid, nmsWorld, pos, nmsWorld.random);
+//            }
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -243,7 +245,10 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public Instrument getInstrumentFor(Material mat) {
-        return Instrument.values()[getMaterialBlockState(mat).instrument().ordinal()];
+        Instrument first = Instrument.values()[getMaterialBlockState(mat).instrument().ordinal()];
+        Instrument second = Instrument.values()[CraftMagicNumbers.getBlock(mat).defaultBlockState().instrument().ordinal()];
+        Debug.log("Getting instrument with both methods: " + (first == second));
+        return first;
     }
 
     @Override
@@ -307,8 +312,8 @@ public class BlockHelperImpl implements BlockHelper {
         return Color.fromRGB(craftBlock.getNMS().getMapColor(craftBlock.getHandle(), craftBlock.getPosition()).col);
     }
 
-    public static final MethodHandle HolderSet_Named_bind = ReflectionHelper.getMethodHandle(HolderSet.Named.class, ReflectionMappingsInfo.HolderSetNamed_bind_method, List.class);
-    public static final MethodHandle Holder_Reference_bindTags = ReflectionHelper.getMethodHandle(Holder.Reference.class, ReflectionMappingsInfo.HolderReference_bindTags_method, Collection.class);
+    public static final MethodHandle HOLDERSET_NAMED_BIND = ReflectionHelper.getMethodHandle(HolderSet.Named.class, ReflectionMappingsInfo.HolderSetNamed_bind_method, List.class);
+    public static final MethodHandle HOLDER_REFERENCE_BINDTAGS = ReflectionHelper.getMethodHandle(Holder.Reference.class, ReflectionMappingsInfo.HolderReference_bindTags_method, Collection.class);
 
     @Override
     public void setVanillaTags(Material material, Set<String> tags) {
@@ -321,7 +326,7 @@ public class BlockHelperImpl implements BlockHelper {
             List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
             nmsHolders.remove(nmsHolder);
             try {
-                HolderSet_Named_bind.invoke(nmsHolderSet, nmsHolders);
+                HOLDERSET_NAMED_BIND.invoke(nmsHolderSet, nmsHolders);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
@@ -335,7 +340,7 @@ public class BlockHelperImpl implements BlockHelper {
             List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
             nmsHolders.add(nmsHolder);
             try {
-                HolderSet_Named_bind.invoke(nmsHolderSet, nmsHolders);
+                HOLDERSET_NAMED_BIND.invoke(nmsHolderSet, nmsHolders);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
@@ -344,7 +349,7 @@ public class BlockHelperImpl implements BlockHelper {
             VanillaTagHelper.addOrUpdateMaterialTag(new CraftBlockTag(BuiltInRegistries.BLOCK, newNmsTag));
         }
         try {
-            Holder_Reference_bindTags.invoke(nmsHolder, newNmsTags);
+            HOLDER_REFERENCE_BINDTAGS.invoke(nmsHolder, newNmsTags);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

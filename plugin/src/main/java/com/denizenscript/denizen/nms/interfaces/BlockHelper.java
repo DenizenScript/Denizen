@@ -76,7 +76,7 @@ public interface BlockHelper {
 
     Instrument getInstrumentFor(Material mat);
 
-    default void ringBell(Bell bell) { // TODO: once 1.19 is the minimum supported version, remove from NMS
+    default void ringBell(Bell bell) { /// TODO: once minimum version is 1.19, remove from NMS
         bell.ring();
     }
 
