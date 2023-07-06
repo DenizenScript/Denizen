@@ -53,12 +53,12 @@ public class ItemTrim extends ItemProperty<MapTag> {
         ElementTag mat = trim.getElement("material");
         ElementTag pat = trim.getElement("pattern");
         if (mat == null && meta.getTrim() == null) {
-            mechanism.echoError("The armor piece needs to have a material already if you want to omit it!");
+            mechanism.echoError("The armor piece must have a material already if you want to omit it!");
             return;
         }
         TrimMaterial material = mat == null ? meta.getTrim().getMaterial() : Registry.TRIM_MATERIAL.get(Utilities.parseNamespacedKey(mat.asString()));
         if (pat == null && meta.getTrim() == null) {
-            mechanism.echoError("The armor piece needs to have a pattern already if you want to omit it!");
+            mechanism.echoError("The armor piece must have a pattern already if you want to omit it!");
             return;
         }
         TrimPattern pattern = pat == null ? meta.getTrim().getPattern() : Registry.TRIM_PATTERN.get(Utilities.parseNamespacedKey(pat.asString()));
