@@ -31,6 +31,11 @@ public class ItemTrim extends ItemProperty<MapTag> {
     }
 
     @Override
+    public boolean isDefaultValue(MapTag map) {
+        return !map.isTruthy();
+    }
+
+    @Override
     public MapTag getPropertyValue() {
         ArmorMeta meta = (ArmorMeta) getItemMeta();
         MapTag map = new MapTag();
