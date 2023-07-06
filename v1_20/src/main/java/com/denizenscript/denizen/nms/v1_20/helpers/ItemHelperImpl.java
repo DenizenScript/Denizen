@@ -9,6 +9,7 @@ import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_20.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -56,6 +57,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -528,5 +531,51 @@ public class ItemHelperImpl extends ItemHelper {
             });
         }
         return customBrewingRecipes;
+    }
+
+    @Override
+    public TrimMaterial convertToTrimMaterial(ElementTag material) {
+        if (material == null) {
+            return null;
+        }
+        return switch (material.asString().toLowerCase()) {
+            case "amethyst" -> TrimMaterial.AMETHYST;
+            case "copper" -> TrimMaterial.COPPER;
+            case "diamond" -> TrimMaterial.DIAMOND;
+            case "emerald" -> TrimMaterial.EMERALD;
+            case "gold" -> TrimMaterial.GOLD;
+            case "iron" -> TrimMaterial.IRON;
+            case "lapis" -> TrimMaterial.LAPIS;
+            case "netherite" -> TrimMaterial.NETHERITE;
+            case "quartz" -> TrimMaterial.QUARTZ;
+            case "redstone" -> TrimMaterial.REDSTONE;
+            default -> null;
+        };
+    }
+
+    @Override
+    public TrimPattern convertToTrimPattern(ElementTag pattern) {
+        if (pattern == null) {
+            return null;
+        }
+        return switch (pattern.asString().toLowerCase()) {
+            case "coast" -> TrimPattern.COAST;
+            case "dune" -> TrimPattern.DUNE;
+            case "eye" -> TrimPattern.EYE;
+            case "host" -> TrimPattern.HOST;
+            case "raiser" -> TrimPattern.RAISER;
+            case "rib" -> TrimPattern.RIB;
+            case "sentry" -> TrimPattern.SENTRY;
+            case "shaper" -> TrimPattern.SHAPER;
+            case "silence" -> TrimPattern.SILENCE;
+            case "snout" -> TrimPattern.SNOUT;
+            case "spire" -> TrimPattern.SPIRE;
+            case "tide" -> TrimPattern.TIDE;
+            case "vex" -> TrimPattern.VEX;
+            case "ward" -> TrimPattern.WARD;
+            case "wayfinder" -> TrimPattern.WAYFINDER;
+            case "wild" -> TrimPattern.WILD;
+            default -> null;
+        };
     }
 }
