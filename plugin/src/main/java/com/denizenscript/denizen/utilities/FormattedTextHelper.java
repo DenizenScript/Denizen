@@ -59,6 +59,9 @@ public class FormattedTextHelper {
     }
 
     public static boolean hasRootFormat(BaseComponent component) {
+        if (component == null) {
+            return false;
+        }
         if (component.hasFormatting()) {
             return true;
         }
@@ -87,7 +90,9 @@ public class FormattedTextHelper {
             builder.append(RESET);
         }
         for (BaseComponent component : components) {
-            builder.append(stringify(component));
+            if (component != null) {
+                builder.append(stringify(component));
+            }
         }
         String output = builder.toString();
         while (output.endsWith(RESET)) {
