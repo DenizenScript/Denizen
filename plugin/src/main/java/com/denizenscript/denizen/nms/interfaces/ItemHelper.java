@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.data.BlockData;
@@ -13,8 +12,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.trim.TrimMaterial;
-import org.bukkit.inventory.meta.trim.TrimPattern;
 
 import java.util.List;
 import java.util.Map;
@@ -81,9 +78,5 @@ public abstract class ItemHelper {
     public Map<NamespacedKey, BrewingRecipe> getCustomBrewingRecipes() {
         throw new UnsupportedOperationException();
     }
-
-    public TrimMaterial convertToTrimMaterial(ElementTag material) { throw new UnsupportedOperationException(); }
-
-    public TrimPattern convertToTrimPattern(ElementTag pattern) { throw new UnsupportedOperationException(); }
 
 }

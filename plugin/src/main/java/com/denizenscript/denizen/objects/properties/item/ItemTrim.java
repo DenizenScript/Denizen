@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
+import org.bukkit.Registry;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
@@ -50,17 +50,19 @@ public class ItemTrim extends ItemProperty<MapTag> {
     @Override
     public void setPropertyValue(MapTag trim, Mechanism mechanism) {
         ArmorMeta meta = (ArmorMeta) getItemMeta();
-        TrimMaterial material = NMSHandler.itemHelper.convertToTrimMaterial(trim.getElement("material"));
-        if (material == null && meta.getTrim() == null) {
+        ElementTag mat = trim.getElement("material");
+        ElementTag pat = trim.getElement("pattern");
+        if (mat == null && meta.getTrim() == null) {
             mechanism.echoError("The armor piece needs to have a material already if you want to omit it!");
             return;
         }
-        TrimPattern pattern = NMSHandler.itemHelper.convertToTrimPattern(trim.getElement("pattern"));
-        if (pattern == null && meta.getTrim() == null) {
+        TrimMaterial material = mat == null ? meta.getTrim().getMaterial() : Registry.TRIM_MATERIAL.get(Utilities.parseNamespacedKey(mat.asString()));
+        if (pat == null && meta.getTrim() == null) {
             mechanism.echoError("The armor piece needs to have a pattern already if you want to omit it!");
             return;
         }
-        meta.setTrim(new ArmorTrim(material == null ? meta.getTrim().getMaterial() : material, pattern == null ? meta.getTrim().getPattern() : pattern));
+        TrimPattern pattern = pat == null ? meta.getTrim().getPattern() : Registry.TRIM_PATTERN.get(Utilities.parseNamespacedKey(pat.asString()));
+        meta.setTrim(new ArmorTrim(material, pattern));
         getItemStack().setItemMeta(meta);
     }
 
