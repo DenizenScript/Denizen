@@ -2,8 +2,8 @@ package com.denizenscript.denizen.nms.v1_20.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Maps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -14,11 +14,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
@@ -38,45 +36,36 @@ public class FishingHelperImpl implements FishingHelper {
 
     @Override
     public org.bukkit.inventory.ItemStack getResult(FishHook fishHook, CatchType catchType) {
-        ItemStack result = null;
         FishingHook nmsHook = ((CraftFishHook) fishHook).getHandle();
-        if (catchType == CatchType.DEFAULT) {
-            float f = ((CraftWorld) fishHook.getWorld()).getHandle().random.nextFloat();
-            int i = EnchantmentHelper.getMobLooting(nmsHook.getPlayerOwner());
-            int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.FISHING_LUCK, nmsHook.getPlayerOwner());
-            float f1 = 0.1F - (float) i * 0.025F - (float) j * 0.01F;
-            float f2 = 0.05F + (float) i * 0.01F - (float) j * 0.01F;
+        ItemStack result = switch (catchType) {
+            case DEFAULT -> {
+                float f = ((CraftWorld) fishHook.getWorld()).getHandle().random.nextFloat();
+                int i = EnchantmentHelper.getMobLooting(nmsHook.getPlayerOwner());
+                int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.FISHING_LUCK, nmsHook.getPlayerOwner());
+                float f1 = 0.1F - (float) i * 0.025F - (float) j * 0.01F;
+                float f2 = 0.05F + (float) i * 0.01F - (float) j * 0.01F;
 
-            f1 = Mth.clamp(f1, 0.0F, 1.0F);
-            f2 = Mth.clamp(f2, 0.0F, 1.0F);
-            if (f < f1) {
-                result = catchRandomJunk(nmsHook);
-            }
-            else {
-                f -= f1;
-                if (f < f2) {
-                    result = catchRandomTreasure(nmsHook);
+                f1 = Mth.clamp(f1, 0.0F, 1.0F);
+                f2 = Mth.clamp(f2, 0.0F, 1.0F);
+                if (f < f1) {
+                    yield catchRandomJunk(nmsHook);
                 }
                 else {
-                    result = catchRandomFish(nmsHook);
+                    f -= f1;
+                    if (f < f2) {
+                        yield catchRandomTreasure(nmsHook);
+                    }
+                    else {
+                        yield catchRandomFish(nmsHook);
+                    }
                 }
             }
-        }
-        else if (catchType == CatchType.JUNK) {
-            result = catchRandomJunk(nmsHook);
-        }
-        else if (catchType == CatchType.TREASURE) {
-            result = catchRandomTreasure(nmsHook);
-        }
-        else if (catchType == CatchType.FISH) {
-            result = catchRandomFish(nmsHook);
-        }
-        if (result != null) {
-            return CraftItemStack.asBukkitCopy(result);
-        }
-        else {
-            return null;
-        }
+            case JUNK -> catchRandomJunk(nmsHook);
+            case TREASURE -> catchRandomTreasure(nmsHook);
+            case FISH -> catchRandomFish(nmsHook);
+            default -> null;
+        };
+        return result != null ? CraftItemStack.asBukkitCopy(result) : null;
     }
 
     public ItemStack getRandomReward(FishingHook hook, ResourceLocation key) {
@@ -110,9 +99,9 @@ public class FishingHelperImpl implements FishingHelper {
         return getRandomReward(fishHook, BuiltInLootTables.FISHING_FISH);
     }
 
-    public static Field FISHING_HOOK_NIBBLE_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_nibble, int.class);
-    public static Field FISHING_HOOK_LURE_TIME_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilLured, int.class);
-    public static Field FISHING_HOOK_HOOK_TIME_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilHooked, int.class);
+    public static final Field FISHING_HOOK_NIBBLE_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_nibble, int.class);
+    public static final Field FISHING_HOOK_LURE_TIME_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilLured, int.class);
+    public static final Field FISHING_HOOK_HOOK_TIME_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilHooked, int.class);
 
     @Override
     public FishHook getHookFrom(Player player) {

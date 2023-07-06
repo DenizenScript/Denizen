@@ -13,23 +13,13 @@ public interface FishingHelper {
 
     FishHook spawnHook(Location location, Player player);
 
-    default FishHook getHookFrom(Player player) {
-        throw new UnsupportedOperationException();
-    }
+    FishHook getHookFrom(Player player);
 
-    default void setNibble(FishHook hook, int ticks) {
-        throw new UnsupportedOperationException();
-    }
+    void setNibble(FishHook hook, int ticks);
 
-    default void setHookTime(FishHook hook, int ticks) {
-        throw new UnsupportedOperationException();
-    }
+    void setHookTime(FishHook hook, int ticks);
 
-    default int getLureTime(FishHook hook) {
-        throw new UnsupportedOperationException();
-    }
+    int getLureTime(FishHook hook);
 
-    default void setLureTime(FishHook hook, int ticks) {
-        throw new UnsupportedOperationException();
-    }
+    void setLureTime(FishHook hook, int ticks);
 }
