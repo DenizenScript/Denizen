@@ -4946,9 +4946,8 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                     ((Jukebox) state).setRecord(mechanism.valueAsType(ItemTag.class).getItemStack());
                 }
                 else {
-//                    NMSHandler.blockHelper.makeBlockStateRaw(state);
+                    NMSHandler.blockHelper.makeBlockStateRaw(state);
                     ((Jukebox) state).setRecord(null);
-                    Debug.log("Set record to null");
                 }
                 state.update();
             }
