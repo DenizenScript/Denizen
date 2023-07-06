@@ -132,7 +132,7 @@ public class AnimateCommand extends AbstractCommand {
                     else if (effect != null) {
                         if (forPlayers != null) {
                             for (PlayerTag player : forPlayers) {
-                                NMSHandler.packetHelper.sendEntityEffect(player.getPlayerEntity(), entity.getBukkitEntity(), effect.getData());
+                                NMSHandler.packetHelper.sendEntityEffect(player.getPlayerEntity(), entity.getBukkitEntity(), effect);
                             }
                         }
                         else {

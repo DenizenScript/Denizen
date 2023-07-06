@@ -48,7 +48,7 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
 import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
+import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -189,7 +189,7 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showBannerUpdate(Player player, Location location, DyeColor base, List<Pattern> patterns) {
+    public void showBannerUpdate(Player player, Location location, List<Pattern> patterns) {
         List<CompoundTag> nbtPatterns = new ArrayList<>();
         for (Pattern pattern : patterns) {
             nbtPatterns.add(NMSHandler.instance
@@ -360,8 +360,8 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void sendEntityEffect(Player player, Entity entity, byte effectId) {
-        send(player, new ClientboundEntityEventPacket(((CraftEntity) entity).getHandle(), effectId));
+    public void sendEntityEffect(Player player, Entity entity, EntityEffect effect) {
+        send(player, new ClientboundEntityEventPacket(((CraftEntity) entity).getHandle(), effect.getData()));
     }
 
     @Override
