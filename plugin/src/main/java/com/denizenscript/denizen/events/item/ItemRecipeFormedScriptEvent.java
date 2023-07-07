@@ -32,6 +32,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     // <context.item> returns the ItemTag to be formed in the result slot.
     // <context.recipe> returns a ListTag of ItemTags in the recipe.
     // <context.recipe_id> returns the ID of the recipe that was formed.
+    // <context.is_repair> returns an ElementTag(Boolean) if the event was triggered by a tool repair operation rather than a crafting recipe.
     //
     // @Determine
     // ItemTag to change the item that is formed in the result slot.
@@ -42,6 +43,14 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
 
     public ItemRecipeFormedScriptEvent() {
         registerCouldMatcher("<item> recipe formed");
+        this.<ItemRecipeFormedScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, determination) -> {
+            if (determination.canBeType(ItemTag.class)) {
+                ItemTag result = determination.asType(ItemTag.class, context);
+                evt.event.getInventory().setResult(result.getItemStack());
+                return true;
+            }
+            return false;
+        });
     }
 
 
@@ -57,18 +66,6 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj.canBeType(ItemTag.class)) {
-            ItemTag result = determinationObj.asType(ItemTag.class, getTagContext(path));
-            event.getInventory().setResult(result.getItemStack());
-            return true;
-        }
-        else {
-            return super.applyDetermination(path, determinationObj);
-        }
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(EntityTag.getPlayerFrom(event.getView().getPlayer()), null);
     }
@@ -76,9 +73,13 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "item": return result;
-            case "inventory": return InventoryTag.mirrorBukkitInventory(event.getInventory());
-            case "recipe": {
+            case "item" -> {
+                return result;
+            }
+            case "inventory" -> {
+                return InventoryTag.mirrorBukkitInventory(event.getInventory());
+            }
+            case "recipe" -> {
                 ListTag recipe = new ListTag();
                 for (ItemStack itemStack : event.getInventory().getMatrix()) {
                     if (itemStack != null && itemStack.getType() != Material.AIR) {
@@ -90,11 +91,14 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
                 }
                 return recipe;
             }
-            case "recipe_id":
+            case "recipe_id" -> {
                 if (event.getRecipe() instanceof Keyed) {
                     return new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
                 }
-                break;
+            }
+            case "is_repair" -> {
+                return new ElementTag(event.isRepair());
+            }
         }
         return super.getContext(name);
     }
