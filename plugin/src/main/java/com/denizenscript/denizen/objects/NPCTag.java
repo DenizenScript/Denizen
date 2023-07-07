@@ -1303,6 +1303,39 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 hologram.addTemporaryLine(text.asString(), duration.getTicksAsInt());
             }
         });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name set_xyrange
+        // @input MapTag
+        // @description
+        // Sets the xrange and/or yrange for an NPC's wander path.  
+        // Expected Input:
+        //   - A map with "xrange" (<#>) and/or "yrange" (<#>) number values.
+        // Citizens Default:
+        //   - map@[xrange=25;yrange=3]
+        // @tags
+        // TODO
+        // -->
+        tagProcessor.registerMechanism("set_xyrange", false, MapTag.class, (object, mechanism, input) -> {
+            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            MapTag map = mechanism.valueAsType(MapTag.class);
+            ElementTag xrangeElementTag = map.getObjectAs("xrange", ElementTag.class, mechanism.context);
+            ElementTag yrangeElementTag = map.getObjectAs("yrange", ElementTag.class, mechanism.context);
+            if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
+                Integer xrange = wanderWaypointProvider.xrange;
+                Integer yrange = wanderWaypointProvider.yrange;
+                if (xrangeElementTag != null && xrangeElementTag.isInt()) {
+                    xrange = xrangeElementTag.asInt();
+                }
+                if (yrangeElementTag != null && yrangeElementTag.isInt()) {
+                    yrange = yrangeElementTag.asInt();
+                }
+                wanderWaypointProvider.setXYRange(xrange, yrange);
+            } else {
+                mechanism.echoError("Setting the xrange and/or yrange requires Wander Waypoint Provider.");
+            }
+        });
     }
 
     public static ObjectTagProcessor<NPCTag> tagProcessor = new ObjectTagProcessor<>();
