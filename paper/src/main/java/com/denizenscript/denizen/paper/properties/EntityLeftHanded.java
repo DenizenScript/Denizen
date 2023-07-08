@@ -14,7 +14,7 @@ public class EntityLeftHanded extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @plugin Paper
     // @description
-    // Controls whether the mob is left-handed or not.
+    // Whether the mob is left-handed.
     // -->
 
     public static boolean describes(EntityTag entity) {
