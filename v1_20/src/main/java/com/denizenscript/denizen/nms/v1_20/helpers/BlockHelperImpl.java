@@ -204,15 +204,6 @@ public class BlockHelperImpl implements BlockHelper {
         }
     }
 
-    // This is to debork Spigot's class remapper mishandling 'getFluidState' which remaps 'FluidState' to 'material.FluidType' (incorrectly) in the call and thus errors out.
-    // Relevant issue: https://hub.spigotmc.org/jira/browse/SPIGOT-6696
-    // NOTE: Not fixed as of 1.19 initial update
-    public static final MethodHandle BLOCKSTATEBASE_GETFLUIDSTATE = ReflectionHelper.getMethodHandle(BlockBehaviour.BlockStateBase.class, ReflectionMappingsInfo.BlockBehaviourBlockStateBase_getFluidState_method);
-    public static final MethodHandle FLUIDSTATE_ISRANDOMLYTICKING = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), ReflectionMappingsInfo.FluidState_isRandomlyTicking_method);
-    public static final MethodHandle FLUIDSTATE_ISEMPTY = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), ReflectionMappingsInfo.FluidState_isEmpty_method);
-    public static final MethodHandle FLUIDSTATE_CREATELEGACYBLOCK = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), ReflectionMappingsInfo.FluidState_createLegacyBlock_method);
-    public static final MethodHandle FLUIDSTATE_ANIMATETICK = ReflectionHelper.getMethodHandle(BLOCKSTATEBASE_GETFLUIDSTATE.type().returnType(), ReflectionMappingsInfo.FluidState_animateTick_method, Level.class, BlockPos.class, RandomSource.class);
-
     @Override
     public void doRandomTick(Location location) {
         BlockPos pos = CraftLocation.toBlockPosition(location);
@@ -222,19 +213,9 @@ public class BlockHelperImpl implements BlockHelper {
         if (nmsBlock.isRandomlyTicking()) {
             nmsBlock.randomTick(nmsWorld, pos, nmsWorld.random);
         }
-        try {
-            Debug.log("Ticking fluid state");
-             FluidState fluid = nmsBlock.getFluidState();
-             if (fluid.isRandomlyTicking()) {
-                 fluid.animateTick(nmsWorld, pos, nmsWorld.random);
-             }
-//            Object fluid = BLOCKSTATEBASE_GETFLUIDSTATE.invoke(nmsBlock);
-//            if ((boolean) FLUIDSTATE_ISRANDOMLYTICKING.invoke(fluid)) {
-//                FLUIDSTATE_ANIMATETICK.invoke(fluid, nmsWorld, pos, nmsWorld.random);
-//            }
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
+        FluidState fluid = nmsBlock.getFluidState();
+        if (fluid.isRandomlyTicking()) {
+            fluid.animateTick(nmsWorld, pos, nmsWorld.random);
         }
     }
 
