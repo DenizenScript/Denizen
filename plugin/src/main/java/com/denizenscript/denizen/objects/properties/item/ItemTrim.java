@@ -22,6 +22,7 @@ public class ItemTrim extends ItemProperty<MapTag> {
     // Allowed keys: material, pattern.
     // Valid material inputs can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/meta/trim/TrimMaterial.html>
     // Valid pattern inputs can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/meta/trim/TrimPattern.html>
+    // Valid pattern and material inputs also include ones added by datapacks, plugins, etc. as a namespaced key.
     // If an item already has a trim, you can omit either material or pattern to keep the original data while also changing the other option.
     // For example, if you only want to change the pattern and not the material, you can omit the material, and it will use the already existing material.
     // -->
@@ -31,20 +32,20 @@ public class ItemTrim extends ItemProperty<MapTag> {
     }
 
     @Override
-    public boolean isDefaultValue(MapTag map) {
-        return !map.isTruthy();
+    public MapTag getPropertyValue() {
+        MapTag map = new MapTag();
+        ArmorTrim currentTrim = ((ArmorMeta) getItemMeta()).getTrim();
+        if (currentTrim == null) {
+            return null;
+        }
+        map.putObject("material", new ElementTag(Utilities.namespacedKeyToString(currentTrim.getMaterial().getKey()), true));
+        map.putObject("pattern", new ElementTag(Utilities.namespacedKeyToString(currentTrim.getPattern().getKey()), true));
+        return map;
     }
 
     @Override
-    public MapTag getPropertyValue() {
-        ArmorMeta meta = (ArmorMeta) getItemMeta();
-        MapTag map = new MapTag();
-        if (meta.getTrim() == null) {
-            return map;
-        }
-        map.putObject("material", new ElementTag(Utilities.namespacedKeyToString(meta.getTrim().getMaterial().getKey())));
-        map.putObject("pattern", new ElementTag(Utilities.namespacedKeyToString(meta.getTrim().getPattern().getKey())));
-        return map;
+    public boolean isDefaultValue(MapTag map) {
+        return map.map.isEmpty();
     }
 
     @Override
@@ -53,22 +54,23 @@ public class ItemTrim extends ItemProperty<MapTag> {
     }
 
     @Override
-    public void setPropertyValue(MapTag trim, Mechanism mechanism) {
+    public void setPropertyValue(MapTag map, Mechanism mechanism) {
+        ElementTag mat = map.getElement("material");
+        ElementTag pat = map.getElement("pattern");
         ArmorMeta meta = (ArmorMeta) getItemMeta();
-        ElementTag mat = trim.getElement("material");
-        ElementTag pat = trim.getElement("pattern");
-        if (mat == null && meta.getTrim() == null) {
+        ArmorTrim currentTrim = meta.getTrim();
+        if (mat == null && currentTrim == null) {
             mechanism.echoError("The armor piece must have a material already if you want to omit it!");
             return;
         }
-        TrimMaterial material = mat == null ? meta.getTrim().getMaterial() : Registry.TRIM_MATERIAL.get(Utilities.parseNamespacedKey(mat.asString()));
-        if (pat == null && meta.getTrim() == null) {
+        if (pat == null && currentTrim == null) {
             mechanism.echoError("The armor piece must have a pattern already if you want to omit it!");
             return;
         }
-        TrimPattern pattern = pat == null ? meta.getTrim().getPattern() : Registry.TRIM_PATTERN.get(Utilities.parseNamespacedKey(pat.asString()));
+        TrimMaterial material = mat == null ? currentTrim.getMaterial() : Registry.TRIM_MATERIAL.get(Utilities.parseNamespacedKey(mat.asString()));
+        TrimPattern pattern = pat == null ? currentTrim.getPattern() : Registry.TRIM_PATTERN.get(Utilities.parseNamespacedKey(pat.asString()));
         meta.setTrim(new ArmorTrim(material, pattern));
-        getItemStack().setItemMeta(meta);
+        setItemMeta(meta);
     }
 
     public static void register() {
