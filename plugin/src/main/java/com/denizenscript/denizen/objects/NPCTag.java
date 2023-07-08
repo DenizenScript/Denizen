@@ -1326,10 +1326,10 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 Integer xrange = wanderWaypointProvider.xrange;
                 Integer yrange = wanderWaypointProvider.yrange;
                 if (xrangeElementTag != null && xrangeElementTag.isInt()) {
-                    xrange = xrangeElementTag.asInt();
+                    xrange = (xrangeElementTag.asInt() < 0) ? 0 : xrangeElementTag.asInt();
                 }
                 if (yrangeElementTag != null && yrangeElementTag.isInt()) {
-                    yrange = yrangeElementTag.asInt();
+                    yrange = (yrangeElementTag.asInt() < 0) ? 0 : yrangeElementTag.asInt();
                 }
                 wanderWaypointProvider.setXYRange(xrange, yrange);
             } else {
