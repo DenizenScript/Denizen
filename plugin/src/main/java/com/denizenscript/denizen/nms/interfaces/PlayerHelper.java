@@ -71,9 +71,7 @@ public abstract class PlayerHelper {
 
     public abstract void setSkinLayers(Player player, byte flags);
 
-    public void setBossBarTitle(BossBar bar, String title) {
-        bar.setTitle(title);
-    }
+    public abstract void setBossBarTitle(BossBar bar, String title);
 
     public abstract boolean getSpawnForced(Player player);
 
