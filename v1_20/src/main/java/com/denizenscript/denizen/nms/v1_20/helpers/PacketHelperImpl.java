@@ -42,11 +42,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
-import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
@@ -58,7 +56,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -86,7 +83,7 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void setFakeAbsorption(Player player, float value) {
-        send(player, new ClientboundSetEntityDataPacket(player.getEntityId(), List.of(SynchedEntityData.DataValue.create(PLAYER_DATA_ACCESSOR_ABSORPTION, value))));
+        send(player, new ClientboundSetEntityDataPacket(player.getEntityId(), List.of(createEntityData(PLAYER_DATA_ACCESSOR_ABSORPTION, value))));
     }
 
     @Override
@@ -170,14 +167,8 @@ public class PacketHelperImpl implements PacketHelper {
     public void showMobHealth(Player player, LivingEntity mob, double health, double maxHealth) {
         AttributeInstance attr = new AttributeInstance(Attributes.MAX_HEALTH, (a) -> {});
         attr.setBaseValue(maxHealth);
-        send(player, new ClientboundUpdateAttributesPacket(mob.getEntityId(), Collections.singletonList(attr)));
-        FriendlyByteBuf healthData = new FriendlyByteBuf(Unpooled.buffer());
-        healthData.writeVarInt(mob.getEntityId());
-        healthData.writeByte(9); // health id
-        healthData.writeVarInt(2); // type = float
-        healthData.writeFloat((float) health);
-        healthData.writeByte(255); // Mark end of packet
-        send(player, new ClientboundSetEntityDataPacket(healthData));
+        send(player, new ClientboundUpdateAttributesPacket(mob.getEntityId(), List.of(attr)));
+        send(player, new ClientboundSetEntityDataPacket(mob.getEntityId(), List.of(createEntityData(net.minecraft.world.entity.LivingEntity.DATA_HEALTH_ID, (float) health))));
     }
 
     @Override
@@ -226,8 +217,8 @@ public class PacketHelperImpl implements PacketHelper {
                 return;
             }
             List<SynchedEntityData.DataValue<?>> list = List.of(
-                    new SynchedEntityData.DataValue<>(ENTITY_DATA_ACCESSOR_CUSTOM_NAME.getId(), ENTITY_DATA_ACCESSOR_CUSTOM_NAME.getSerializer(), Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)))),
-                    new SynchedEntityData.DataValue<>(ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE.getId(), ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE.getSerializer(), true)
+                    createEntityData(ENTITY_DATA_ACCESSOR_CUSTOM_NAME, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)))),
+                    createEntityData(ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE, true)
             );
             send(player, new ClientboundSetEntityDataPacket(entity.getEntityId(), list));
         }
@@ -271,7 +262,7 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void sendEntityMetadataFlagsUpdate(Player player, Entity entity) {
         byte flags = ((CraftEntity) entity).getHandle().getEntityData().get(ENTITY_DATA_ACCESSOR_FLAGS);
-        send(player, new ClientboundSetEntityDataPacket(entity.getEntityId(), List.of(SynchedEntityData.DataValue.create(ENTITY_DATA_ACCESSOR_FLAGS, flags))));
+        send(player, new ClientboundSetEntityDataPacket(entity.getEntityId(), List.of(createEntityData(ENTITY_DATA_ACCESSOR_FLAGS, flags))));
     }
 
     @Override
@@ -372,5 +363,9 @@ public class PacketHelperImpl implements PacketHelper {
 
     public static void send(Player player, Packet<?> packet) {
         ((CraftPlayer) player).getHandle().connection.send(packet);
+    }
+
+    public <T> SynchedEntityData.DataValue<T> createEntityData(EntityDataAccessor<T> accessor, T value) {
+        return new SynchedEntityData.DataValue<>(accessor.getId(), accessor.getSerializer(), value);
     }
 }
