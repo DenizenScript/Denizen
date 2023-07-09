@@ -187,7 +187,7 @@ public class PacketHelperImpl implements PacketHelper {
         FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(Material.OAK_WALL_SIGN), new DurationTag(1), true);
         BlockPos pos = new BlockPos(fakeSign.getBlockX(), 0, fakeSign.getBlockZ());
         DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.fakeSignExpected = pos;
-        send(player, new ClientboundOpenSignEditorPacket(pos, true)); // TODO: 1.20: "isFrontText"?
+        send(player, new ClientboundOpenSignEditorPacket(pos, true));
     }
 
     @Override
