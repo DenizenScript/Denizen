@@ -609,69 +609,38 @@ public class EntityHelperImpl extends EntityHelper {
         if (cause == null) {
             return src;
         }
-        switch (cause) {
-            case CONTACT:
-                return sources.cactus();
-            case ENTITY_ATTACK:
-                return sources.mobAttack(nmsSource instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) nmsSource : null);
-            case ENTITY_SWEEP_ATTACK:
-                if (src != sources.generic()) {
-                    src.sweep();
-                }
-                return src;
-            case PROJECTILE:
-                return sources.thrown(nmsSource, nmsSource != null && nmsSource.getBukkitEntity() instanceof Projectile
-                        && ((Projectile) nmsSource.getBukkitEntity()).getShooter() instanceof Entity ? ((CraftEntity) ((Projectile) nmsSource.getBukkitEntity()).getShooter()).getHandle() : null);
-            case SUFFOCATION:
-                return sources.inWall();
-            case FALL:
-                return sources.fall();
-            case FIRE:
-                return sources.inFire();
-            case FIRE_TICK:
-                return sources.onFire();
-            case MELTING:
-                return sources.melting;
-            case LAVA:
-                return sources.lava();
-            case DROWNING:
-                return sources.drown();
-            case BLOCK_EXPLOSION:
-                return sources.explosion(nmsSource instanceof TNTPrimed && ((TNTPrimed) nmsSource).getSource() instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) ((TNTPrimed) nmsSource).getSource() : null, null);
-            case ENTITY_EXPLOSION:
-                return sources.explosion(nmsSource, null);
-            case VOID:
-                return sources.fellOutOfWorld();
-            case LIGHTNING:
-                return sources.lightningBolt();
-            case STARVATION:
-                return sources.starve();
-            case POISON:
-                return sources.poison;
-            case MAGIC:
-                return sources.magic();
-            case WITHER:
-                return sources.wither();
-            case FALLING_BLOCK:
-                return sources.fallingBlock(nmsSource);
-            case THORNS:
-                return sources.thorns(nmsSource);
-            case DRAGON_BREATH:
-                return sources.dragonBreath();
-            case CUSTOM:
-                return sources.generic();
-            case FLY_INTO_WALL:
-                return sources.flyIntoWall();
-            case HOT_FLOOR:
-                return sources.hotFloor();
-            case CRAMMING:
-                return sources.cramming();
-            case DRYOUT:
-                return sources.dryOut();
-            //case SUICIDE:
-            default:
-                return new FakeDamageSrc(src);
-        }
+        return switch (cause) {
+            case CONTACT -> sources.cactus();
+            case ENTITY_ATTACK -> sources.mobAttack(nmsSource instanceof net.minecraft.world.entity.LivingEntity nmsLivingEntity ? nmsLivingEntity : null);
+            case ENTITY_SWEEP_ATTACK -> src != sources.generic() ? src.sweep() : src;
+            case PROJECTILE -> sources.thrown(nmsSource, nmsSource != null && nmsSource.getBukkitEntity() instanceof Projectile projectile
+                        && projectile.getShooter() instanceof Entity shooter ? ((CraftEntity) shooter).getHandle() : null);
+            case SUFFOCATION -> sources.inWall();
+            case FALL -> sources.fall();
+            case FIRE -> sources.inFire();
+            case FIRE_TICK -> sources.onFire();
+            case MELTING -> sources.melting;
+            case LAVA -> sources.lava();
+            case DROWNING -> sources.drown();
+            case BLOCK_EXPLOSION -> sources.explosion(nmsSource instanceof TNTPrimed primedTNT && primedTNT.getSource() instanceof net.minecraft.world.entity.LivingEntity nmsLivingEntity ? nmsLivingEntity : null, null);
+            case ENTITY_EXPLOSION -> sources.explosion(nmsSource, null);
+            case VOID -> sources.fellOutOfWorld();
+            case LIGHTNING -> sources.lightningBolt();
+            case STARVATION -> sources.starve();
+            case POISON -> sources.poison;
+            case MAGIC -> sources.magic();
+            case WITHER -> sources.wither();
+            case FALLING_BLOCK -> sources.fallingBlock(nmsSource);
+            case THORNS -> sources.thorns(nmsSource);
+            case DRAGON_BREATH -> sources.dragonBreath();
+            case CUSTOM -> sources.generic();
+            case FLY_INTO_WALL -> sources.flyIntoWall();
+            case HOT_FLOOR -> sources.hotFloor();
+            case CRAMMING -> sources.cramming();
+            case DRYOUT -> sources.dryOut();
+            //case SUICIDE ->
+            default -> new FakeDamageSrc(src);
+        };
     }
 
     @Override
