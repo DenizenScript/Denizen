@@ -403,10 +403,10 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void sendClimbableMaterials(Player player, List<Material> materials) {
         Map<ResourceKey<? extends Registry<?>>, TagNetworkSerialization.NetworkPayload> packetInput = TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registries());
         Map<ResourceLocation, IntList> tags = ReflectionHelper.getFieldValue(TagNetworkSerialization.NetworkPayload.class, ReflectionMappingsInfo.TagNetworkSerializationNetworkPayload_tags, packetInput.get(BuiltInRegistries.BLOCK.key()));
-        IntList climbable = tags.get(BlockTags.CLIMBABLE.location());
-        climbable.clear();
+        IntList climbableBlocks = tags.get(BlockTags.CLIMBABLE.location());
+        climbableBlocks.clear();
         for (Material material : materials) {
-            climbable.add(BuiltInRegistries.BLOCK.getId(CraftMagicNumbers.getBlock(material)));
+            climbableBlocks.add(BuiltInRegistries.BLOCK.getId(CraftMagicNumbers.getBlock(material)));
         }
         PacketHelperImpl.send(player, new ClientboundUpdateTagsPacket(packetInput));
     }
