@@ -52,6 +52,7 @@ import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R1.map.CraftMapCanvas;
 import org.bukkit.craftbukkit.v1_20_R1.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftLocation;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -142,7 +143,7 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showBlockAction(Player player, Location location, int action, int state) {
-        BlockPos position = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        BlockPos position = CraftLocation.toBlockPosition(location);
         Block block = ((CraftWorld) location.getWorld()).getHandle().getBlockState(position).getBlock();
         send(player, new ClientboundBlockEventPacket(position, block, action, state));
     }
@@ -151,8 +152,7 @@ public class PacketHelperImpl implements PacketHelper {
     public void showTabListHeaderFooter(Player player, String header, String footer) {
         Component cHeader = Handler.componentToNMS(FormattedTextHelper.parse(header, ChatColor.WHITE));
         Component cFooter = Handler.componentToNMS(FormattedTextHelper.parse(footer, ChatColor.WHITE));
-        ClientboundTabListPacket packet = new ClientboundTabListPacket(cHeader, cFooter);
-        send(player, packet);
+        send(player, new ClientboundTabListPacket(cHeader, cFooter));
     }
 
     @Override
@@ -168,7 +168,7 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showMobHealth(Player player, LivingEntity mob, double health, double maxHealth) {
-        AttributeInstance attr = new AttributeInstance(Attributes.MAX_HEALTH, (a) -> { });
+        AttributeInstance attr = new AttributeInstance(Attributes.MAX_HEALTH, (a) -> {});
         attr.setBaseValue(maxHealth);
         send(player, new ClientboundUpdateAttributesPacket(mob.getEntityId(), Collections.singletonList(attr)));
         FriendlyByteBuf healthData = new FriendlyByteBuf(Unpooled.buffer());
@@ -336,21 +336,19 @@ public class PacketHelperImpl implements PacketHelper {
     public void showDebugTestMarker(Player player, Location location, ColorTag color, String name, int time) {
         ResourceLocation packetKey = new ResourceLocation("minecraft", "debug/game_test_add_marker");
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        buf.writeBlockPos(new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
+        buf.writeBlockPos(CraftLocation.toBlockPosition(location));
         int colorInt = color.blue | (color.green << 8) | (color.red << 16) | (color.alpha << 24);
         buf.writeInt(colorInt);
         buf.writeByteArray(name.getBytes(StandardCharsets.UTF_8));
         buf.writeInt(time);
-        ClientboundCustomPayloadPacket packet = new ClientboundCustomPayloadPacket(packetKey, buf);
-        send(player, packet);
+        send(player, new ClientboundCustomPayloadPacket(packetKey, buf));
     }
 
     @Override
     public void clearDebugTestMarker(Player player) {
         ResourceLocation packetKey = new ResourceLocation("minecraft", "debug/game_test_clear");
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        ClientboundCustomPayloadPacket packet = new ClientboundCustomPayloadPacket(packetKey, buf);
-        send(player, packet);
+        send(player, new ClientboundCustomPayloadPacket(packetKey, buf));
     }
 
     @Override
@@ -358,8 +356,7 @@ public class PacketHelperImpl implements PacketHelper {
         ResourceLocation packetKey = new ResourceLocation("minecraft", "brand");
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         buf.writeUtf(brand);
-        ClientboundCustomPayloadPacket packet = new ClientboundCustomPayloadPacket(packetKey, buf);
-        send(player, packet);
+        send(player, new ClientboundCustomPayloadPacket(packetKey, buf));
     }
 
     @Override
