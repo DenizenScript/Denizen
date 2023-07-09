@@ -88,8 +88,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void deTrackEntity(Player player, Entity entity) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        ServerLevel world = (ServerLevel) nmsPlayer.level();
-        ChunkMap.TrackedEntity tracker = world.getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
+        ChunkMap.TrackedEntity tracker = nmsPlayer.serverLevel().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
         if (tracker == null) {
             if (NMSHandler.debugPackets) {
                 DenizenNetworkManagerImpl.doPacketOutput("Failed to de-track entity " + entity.getEntityId() + " for " + player.getName() + ": tracker null");
