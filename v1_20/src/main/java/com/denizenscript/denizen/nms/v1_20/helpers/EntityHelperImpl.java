@@ -577,9 +577,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void setHeadAngle(Entity entity, float angle) {
-        net.minecraft.world.entity.LivingEntity handle = ((CraftLivingEntity) entity).getHandle();
-        handle.yHeadRot = angle; // TODO: is this needed?
-        handle.setYHeadRot(angle);
+        ((CraftLivingEntity) entity).getHandle().setYHeadRot(angle);
     }
 
     @Override
