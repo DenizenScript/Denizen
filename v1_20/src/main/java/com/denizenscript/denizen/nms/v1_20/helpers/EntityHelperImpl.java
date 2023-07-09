@@ -448,27 +448,25 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void look(Entity entity, float yaw, float pitch) {
         net.minecraft.world.entity.Entity handle = ((CraftEntity) entity).getHandle();
-        if (handle != null) {
-            handle.setYRot(yaw);
-            if (handle instanceof net.minecraft.world.entity.LivingEntity) {
-                net.minecraft.world.entity.LivingEntity livingHandle = (net.minecraft.world.entity.LivingEntity) handle;
-                while (yaw < -180.0F) {
-                    yaw += 360.0F;
-                }
-                while (yaw >= 180.0F) {
-                    yaw -= 360.0F;
-                }
-                livingHandle.yBodyRotO = yaw;
-                if (!(handle instanceof net.minecraft.world.entity.player.Player)) {
-                    livingHandle.setYBodyRot(yaw);
-                }
-                livingHandle.setYHeadRot(yaw);
-            }
-            handle.setXRot(pitch);
-        }
-        else {
+        if (handle == null) {
             Debug.echoError("Cannot set look direction for unspawned entity " + entity.getUniqueId());
+            return;
         }
+        handle.setYRot(yaw);
+        if (handle instanceof net.minecraft.world.entity.LivingEntity nmsLivingEntity) {
+            while (yaw < -180.0F) {
+                yaw += 360.0F;
+            }
+            while (yaw >= 180.0F) {
+                yaw -= 360.0F;
+            }
+            nmsLivingEntity.yBodyRotO = yaw;
+            if (!(handle instanceof net.minecraft.world.entity.player.Player)) {
+                nmsLivingEntity.setYBodyRot(yaw);
+            }
+            nmsLivingEntity.setYHeadRot(yaw);
+        }
+        handle.setXRot(pitch);
     }
 
     private static HitResult rayTrace(World world, Vector start, Vector end) {
