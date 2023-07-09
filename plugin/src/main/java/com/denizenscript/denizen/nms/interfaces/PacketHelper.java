@@ -62,13 +62,10 @@ public interface PacketHelper {
     void showBlockAction(Player player, Location location, int action, int state);
 
     default void showBlockCrack(Player player, int id, Location location, int progress) {
-        float progressFloat;
+        float progressFloat = 0;
         if (progress >= 0 && progress <= 9) {
-            // Spigot treats 0 as -1, so add 0.1 which will then get floored
+            // Spigot treats 0 as -1, so replace 0 with 0.1 which will then get floored
             progressFloat = Math.max(progress, 0.1f) / 9f;
-        }
-        else {
-            progressFloat = 0;
         }
         player.sendBlockDamage(location, progressFloat, id);
     }
