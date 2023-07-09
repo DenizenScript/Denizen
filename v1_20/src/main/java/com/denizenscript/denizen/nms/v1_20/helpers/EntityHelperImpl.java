@@ -502,8 +502,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public boolean internalLook(Player player, Location at) {
-        ClientboundPlayerLookAtPacket packet = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.EYES, at.getX(), at.getY(), at.getZ());
-        PacketHelperImpl.send(player, packet);
+        PacketHelperImpl.send(player, new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.EYES, at.getX(), at.getY(), at.getZ()));
         return true;
     }
 
