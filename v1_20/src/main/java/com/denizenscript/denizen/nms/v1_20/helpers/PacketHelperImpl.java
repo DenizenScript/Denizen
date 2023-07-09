@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_20.helpers;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.nms.v1_20.Handler;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
@@ -137,8 +138,7 @@ public class PacketHelperImpl implements PacketHelper {
         // allowing the player to retain whatever vision the mob they spectated had.
         send(player, new ClientboundAddEntityPacket(entity));
         send(player, new ClientboundSetCameraPacket(entity));
-        ((CraftServer) Bukkit.getServer()).getHandle().respawn(((CraftPlayer) player).getHandle(),
-                ((CraftWorld) player.getWorld()).getHandle(), true, player.getLocation(), false, PlayerRespawnEvent.RespawnReason.PLUGIN);
+        NMSHandler.playerHelper.refreshPlayer(player);
     }
 
     @Override
