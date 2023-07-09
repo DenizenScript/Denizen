@@ -385,17 +385,14 @@ public class EntityHelperImpl extends EntityHelper {
             pl.hidePlayer(Denizen.getInstance(), player);
             return;
         }
-        CraftPlayer craftPlayer = (CraftPlayer) pl;
-        ServerPlayer entityPlayer = craftPlayer.getHandle();
-        if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
-            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level()).getChunkSource().chunkMap;
-            net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
-            ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
+        ServerPlayer nmsPlayer = ((CraftPlayer) pl).getHandle();
+        if (nmsPlayer.connection != null && !pl.equals(entity)) {
+            ChunkMap.TrackedEntity entry = nmsPlayer.serverLevel().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
             if (entry != null) {
-                entry.removePlayer(entityPlayer);
+                entry.removePlayer(nmsPlayer);
             }
             if (Denizen.supportsPaper) { // Workaround for Paper issue
-                entityPlayer.connection.send(new ClientboundRemoveEntitiesPacket(other.getId()));
+                nmsPlayer.connection.send(new ClientboundRemoveEntitiesPacket(entity.getEntityId()));
             }
         }
     }
@@ -406,15 +403,12 @@ public class EntityHelperImpl extends EntityHelper {
             pl.showPlayer(Denizen.getInstance(), player);
             return;
         }
-        CraftPlayer craftPlayer = (CraftPlayer) pl;
-        ServerPlayer entityPlayer = craftPlayer.getHandle();
-        if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
-            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level()).getChunkSource().chunkMap;
-            net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
-            ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
+        ServerPlayer nmsPlayer = ((CraftPlayer) pl).getHandle();
+        if (nmsPlayer.connection != null && !pl.equals(entity)) {
+            ChunkMap.TrackedEntity entry = nmsPlayer.serverLevel().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
             if (entry != null) {
-                entry.removePlayer(entityPlayer);
-                entry.updatePlayer(entityPlayer);
+                entry.removePlayer(nmsPlayer);
+                entry.updatePlayer(nmsPlayer);
             }
         }
     }
