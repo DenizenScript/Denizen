@@ -289,8 +289,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         GameProfile profile = ((CraftPlayer) player).getProfile();
         ServerOpList opList = server.getPlayerList().getOps();
         if (op) {
-            int permLevel = server.getOperatorUserPermissionLevel();
-            opList.add(new ServerOpListEntry(profile, permLevel, opList.canBypassPlayerLimit(profile)));
+            opList.add(new ServerOpListEntry(profile, server.getOperatorUserPermissionLevel(), opList.canBypassPlayerLimit(profile)));
         }
         else {
             opList.remove(profile);
@@ -427,7 +426,7 @@ public class PlayerHelperImpl extends PlayerHelper {
                 nmsWorld.isFlat(),
                 ClientboundRespawnPacket.KEEP_ALL_DATA,
                 nmsPlayer.getLastDeathLocation(),
-                nmsPlayer.portalCooldown));
+                nmsPlayer.getPortalCooldown()));
         nmsPlayer.connection.teleport(player.getLocation());
         if (nmsPlayer.isPassenger()) {
            nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer.getVehicle()));
