@@ -72,15 +72,6 @@ public interface PacketHelper {
             progressFloat = 0;
         }
         player.sendBlockDamage(location, progressFloat, id);
-        Debug.log("Actual sent progress: " + getSpigotProgress(progressFloat));
-    }
-
-    default int getSpigotProgress(float progress) {
-        int stage = (int)(9.0F * progress);
-        if (progress == 0.0F) {
-            stage = -1;
-        }
-        return stage;
     }
 
     default void showTileEntityData(Player player, Location location, int action, CompoundTag compoundTag) { // TODO: once minimum version is 1.20, remove in favor of Player#sendBlockUpdate
