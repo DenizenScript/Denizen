@@ -638,6 +638,10 @@ public class EntityHelperImpl extends EntityHelper {
             case HOT_FLOOR -> sources.hotFloor();
             case CRAMMING -> sources.cramming();
             case DRYOUT -> sources.dryOut();
+            case FREEZE -> sources.freeze();
+            case SONIC_BOOM -> sources.sonicBoom(nmsSource);
+            case WORLD_BORDER -> sources.outOfBorder();
+            case KILL -> sources.genericKill();
             //case SUICIDE ->
             default -> new FakeDamageSrc(src);
         };
