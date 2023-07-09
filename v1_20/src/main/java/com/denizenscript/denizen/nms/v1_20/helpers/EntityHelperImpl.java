@@ -205,11 +205,9 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void stopWalking(Entity entity) {
-        net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntity instanceof Mob)) {
-            return;
+        if (((CraftEntity) entity).getHandle() instanceof Mob nmsMob) {
+            nmsMob.getNavigation().stop();
         }
-        ((Mob) nmsEntity).getNavigation().stop();
     }
 
     @Override
@@ -220,10 +218,9 @@ public class EntityHelperImpl extends EntityHelper {
         }
 
         final net.minecraft.world.entity.Entity nmsEntityFollower = ((CraftEntity) follower).getHandle();
-        if (!(nmsEntityFollower instanceof Mob)) {
+        if (!(nmsEntityFollower instanceof Mob nmsFollower)) {
             return;
         }
-        final Mob nmsFollower = (Mob) nmsEntityFollower;
         final PathNavigation followerNavigation = nmsFollower.getNavigation();
 
         UUID uuid = follower.getUniqueId();
@@ -384,8 +381,8 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void sendHidePacket(Player pl, Entity entity) {
-        if (entity instanceof Player) {
-            pl.hidePlayer(Denizen.getInstance(), (Player) entity);
+        if (entity instanceof Player player) {
+            pl.hidePlayer(Denizen.getInstance(), player);
             return;
         }
         CraftPlayer craftPlayer = (CraftPlayer) pl;
@@ -405,8 +402,8 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void sendShowPacket(Player pl, Entity entity) {
-        if (entity instanceof Player) {
-            pl.showPlayer(Denizen.getInstance(), (Player) entity);
+        if (entity instanceof Player player) {
+            pl.showPlayer(Denizen.getInstance(), player);
             return;
         }
         CraftPlayer craftPlayer = (CraftPlayer) pl;
@@ -426,7 +423,7 @@ public class EntityHelperImpl extends EntityHelper {
     public void rotate(Entity entity, float yaw, float pitch) {
         // If this entity is a real player instead of a player type NPC,
         // it will appear to be online
-        if (entity instanceof Player && ((Player) entity).isOnline()) {
+        if (entity instanceof Player player && player.isOnline()) {
             NetworkInterceptHelper.enable();
             float relYaw = (yaw - entity.getLocation().getYaw()) % 360;
             if (relYaw > 180) {
@@ -434,7 +431,7 @@ public class EntityHelperImpl extends EntityHelper {
             }
             final float actualRelYaw = relYaw;
             float relPitch = pitch - entity.getLocation().getPitch();
-            NMSHandler.packetHelper.sendRelativeLookPacket((Player) entity, actualRelYaw, relPitch);
+            NMSHandler.packetHelper.sendRelativeLookPacket(player, actualRelYaw, relPitch);
         }
         else if (entity instanceof LivingEntity) {
             if (entity instanceof EnderDragon) {
@@ -613,11 +610,11 @@ public class EntityHelperImpl extends EntityHelper {
         DamageSources sources = nmsSourceProvider == null ? getReusableDamageSources() : nmsSourceProvider.level().damageSources();
         DamageSource src = sources.generic();
         if (nmsSource != null) {
-            if (nmsSource instanceof net.minecraft.world.entity.player.Player) {
-                src = nmsSource.level().damageSources().playerAttack((net.minecraft.world.entity.player.Player) nmsSource);
+            if (nmsSource instanceof net.minecraft.world.entity.player.Player nmsPlayer) {
+                src = nmsSource.level().damageSources().playerAttack(nmsPlayer);
             }
-            else if (nmsSource instanceof net.minecraft.world.entity.LivingEntity) {
-                src = nmsSource.level().damageSources().mobAttack((net.minecraft.world.entity.LivingEntity) nmsSource);
+            else if (nmsSource instanceof net.minecraft.world.entity.LivingEntity nmsLivingEntity) {
+                src = nmsSource.level().damageSources().mobAttack(nmsLivingEntity);
             }
         }
         if (cause == null) {
