@@ -66,7 +66,7 @@ public interface PacketHelper {
         float progressFloat;
         if (progress >= 0 && progress <= 9) {
             // Spigot treats 0 as -1, so add 0.1 which will then get floored
-            progressFloat = (progress + 0.1f) / 9f;
+            progressFloat = Math.max(progress, 0.1f) / 9f;
         }
         else {
             progressFloat = 0;

@@ -2764,12 +2764,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Forces the player to respawn if they are on the death screen.
         // -->
         if (mechanism.matches("respawn")) {
-            if (mechanism.value != null) {
-                Debug.log("Spigot respawn");
-                getPlayerEntity().spigot().respawn();
-                return;
-            }
-            Debug.log("NMS respawned");
             NMSHandler.packetHelper.respawn(getPlayerEntity());
         }
 
