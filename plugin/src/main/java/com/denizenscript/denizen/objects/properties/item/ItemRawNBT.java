@@ -86,6 +86,8 @@ public class ItemRawNBT implements Property {
                 "Items",
                 // Goat Horn specific
                 "instrument",
+                // Armor specific
+                "trim",
         };
         defaultNbtKeys = new StringHolder[defaultNbtKeysRaw.length];
         for (int i = 0; i < defaultNbtKeysRaw.length; i++) {
