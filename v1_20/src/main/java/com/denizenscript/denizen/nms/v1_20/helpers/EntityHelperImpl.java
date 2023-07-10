@@ -615,7 +615,7 @@ public class EntityHelperImpl extends EntityHelper {
             case ENTITY_ATTACK -> sources.mobAttack(nmsSource instanceof net.minecraft.world.entity.LivingEntity nmsLivingEntity ? nmsLivingEntity : null);
             case ENTITY_SWEEP_ATTACK -> src != sources.generic() ? src.sweep() : src;
             case PROJECTILE -> sources.thrown(nmsSource, nmsSource != null && nmsSource.getBukkitEntity() instanceof Projectile projectile
-                        && projectile.getShooter() instanceof Entity shooter ? ((CraftEntity) shooter).getHandle() : null);
+                        && projectile.getShooter() instanceof CraftEntity shooter ? shooter.getHandle() : null);
             case SUFFOCATION -> sources.inWall();
             case FALL -> sources.fall();
             case FIRE -> sources.inFire();
@@ -643,8 +643,7 @@ public class EntityHelperImpl extends EntityHelper {
             case SONIC_BOOM -> sources.sonicBoom(nmsSource);
             case WORLD_BORDER -> sources.outOfBorder();
             case KILL -> sources.genericKill();
-            //case SUICIDE ->
-            default -> new FakeDamageSrc(src);
+            case SUICIDE -> new FakeDamageSrc(src);
         };
     }
 
