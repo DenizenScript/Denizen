@@ -98,9 +98,18 @@ public abstract class EntityHelper {
             double expandX = 0, expandY = 0, expandZ = 0;
             BlockFace face = frame.getFacing();
             switch (face) {
-                case SOUTH: case NORTH: expandX = EXP_RATE; expandY = EXP_RATE; break;
-                case EAST: case WEST: expandZ = EXP_RATE; expandY = EXP_RATE; break;
-                case UP: case DOWN: expandX = EXP_RATE; expandZ = EXP_RATE; break;
+                case SOUTH, NORTH -> {
+                    expandX = EXP_RATE;
+                    expandY = EXP_RATE;
+                }
+                case EAST, WEST -> {
+                    expandZ = EXP_RATE;
+                    expandY = EXP_RATE;
+                }
+                case UP, DOWN -> {
+                    expandX = EXP_RATE;
+                    expandZ = EXP_RATE;
+                }
             }
             RayTraceResult traced = frame.getBoundingBox().expand(expandX, expandY, expandZ).rayTrace(startVec, direction, range);
             if (traced == null || traced.getHitBlockFace() == null || traced.getHitBlockFace() != face) {
@@ -120,47 +129,47 @@ public abstract class EntityHelper {
         double basey = bestHitPos.getY() - Math.floor(bestHitPos.getY());
         double basez = bestHitPos.getZ() - Math.floor(bestHitPos.getZ());
         switch (bestHitFace) {
-            case NORTH:
+            case NORTH -> {
                 x = 128f - (basex * 128f);
                 y = 128f - (basey * 128f);
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 x = basex * 128f;
                 y = 128f - (basey * 128f);
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 x = basez * 128f;
                 y = 128f - (basey * 128f);
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 x = 128f - (basez * 128f);
                 y = 128f - (basey * 128f);
-                break;
-            case UP:
+            }
+            case UP -> {
                 x = basex * 128f;
                 y = basez * 128f;
-                break;
-            case DOWN:
+            }
+            case DOWN -> {
                 x = basex * 128f;
                 y = 128f - (basez * 128f);
-                break;
+            }
         }
         MapMeta map = (MapMeta) best.getItem().getItemMeta();
         switch (best.getRotation()) {
-            case CLOCKWISE_45: case FLIPPED_45: // 90 deg
+            case CLOCKWISE_45, FLIPPED_45 -> { // 90 deg
                 double origX = x;
                 x = y;
                 y = 128f - origX;
-                break;
-            case CLOCKWISE: case COUNTER_CLOCKWISE: // 180 deg
+            }
+            case CLOCKWISE, COUNTER_CLOCKWISE -> { // 180 deg
                 x = 128f - x;
                 y = 128f - y;
-                break;
-            case CLOCKWISE_135: case COUNTER_CLOCKWISE_45: // 270 deg
+            }
+            case CLOCKWISE_135, COUNTER_CLOCKWISE_45 -> { // 270 deg
                 double origX2 = x;
                 x = 128f - y;
                 y = origX2;
-                break;
+            }
         }
         MapTag result = new MapTag();
         result.putObject("x", new ElementTag(Math.round(x)));
