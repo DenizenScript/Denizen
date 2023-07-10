@@ -41,6 +41,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
@@ -622,7 +623,7 @@ public class EntityHelperImpl extends EntityHelper {
             case MELTING -> sources.melting;
             case LAVA -> sources.lava();
             case DROWNING -> sources.drown();
-            case BLOCK_EXPLOSION -> sources.explosion(nmsSource instanceof TNTPrimed primedTNT && primedTNT.getSource() instanceof net.minecraft.world.entity.LivingEntity nmsLivingEntity ? nmsLivingEntity : null, null);
+            case BLOCK_EXPLOSION -> nmsSource instanceof PrimedTnt primedTnt ? sources.explosion(primedTnt, primedTnt.getOwner()) : sources.explosion(null);
             case ENTITY_EXPLOSION -> sources.explosion(nmsSource, null);
             case VOID -> sources.fellOutOfWorld();
             case LIGHTNING -> sources.lightningBolt();
