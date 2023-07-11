@@ -82,7 +82,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_onGround, boolean.class);
 
-    public static final EntityDataAccessor<Boolean> ENTITY_ENDERMAN_DATAWATCHER_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, ReflectionMappingsInfo.EnderMan_DATA_CREEPY, null);
+    public static final EntityDataAccessor<Boolean> ENDERMAN_DATA_ACCESSOR_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, ReflectionMappingsInfo.EnderMan_DATA_CREEPY, null);
 
     @Override
     public void setInvisible(Entity entity, boolean invisible) {
@@ -580,7 +580,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void setEndermanAngry(Enderman enderman, boolean angry) {
-        ((CraftEnderman) enderman).getHandle().getEntityData().set(ENTITY_ENDERMAN_DATAWATCHER_SCREAMING, angry);
+        ((CraftEnderman) enderman).getHandle().getEntityData().set(ENDERMAN_DATA_ACCESSOR_SCREAMING, angry);
     }
 
     public static class FakeDamageSrc extends DamageSource { public DamageSource real; public FakeDamageSrc(DamageSource src) { super(null); real = src; } }
