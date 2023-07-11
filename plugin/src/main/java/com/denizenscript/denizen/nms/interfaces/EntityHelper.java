@@ -46,7 +46,7 @@ public abstract class EntityHelper {
 
     public abstract void forceInteraction(Player player, Location location);
 
-    public abstract Entity getEntity(World world, UUID uuid); // TODO: Bukkit#getEntity?
+    public abstract Entity getEntity(World world, UUID uuid);
 
     public abstract CompoundTag getNbtData(Entity entity);
 
