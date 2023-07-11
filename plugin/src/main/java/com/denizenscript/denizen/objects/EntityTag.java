@@ -1598,7 +1598,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Decimal)
         // @group location
         // @description
-        // Returns the entity's body yaw (separate from head yaw), only for living entities.
+        // Returns a living entity's body yaw (separate from head yaw).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "body_yaw", (attribute, object) -> {
             return new ElementTag(NMSHandler.entityHelper.getBaseYaw(object.getLivingEntity()));
