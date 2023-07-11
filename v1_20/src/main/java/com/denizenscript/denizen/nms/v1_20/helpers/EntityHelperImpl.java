@@ -748,9 +748,6 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftMob) mob).getHandle().setAggressive(aggressive);
     }
 
-    public static final Field ENTITY_REMOVALREASON = ReflectionHelper.getFields(net.minecraft.world.entity.Entity.class).getFirstOfType(net.minecraft.world.entity.Entity.RemovalReason.class);
-    public static final MethodHandle PLAYERLIST_REMOVE = ReflectionHelper.getMethodHandle(PlayerList.class, "remove", ServerPlayer.class);
-
     @Override
     public void setUUID(Entity entity, UUID id) {
         try {
@@ -759,16 +756,16 @@ public class EntityHelperImpl extends EntityHelper {
             nmsEntity.getPassengers().forEach(net.minecraft.world.entity.Entity::stopRiding);
             Level level = nmsEntity.level();
             DedicatedPlayerList playerList = ((CraftServer) Bukkit.getServer()).getHandle();
-            if (nmsEntity instanceof ServerPlayer) {
-                PLAYERLIST_REMOVE.invoke(playerList, nmsEntity);
+            if (nmsEntity instanceof ServerPlayer nmsPlayer) {
+                playerList.remove(nmsPlayer);
             }
             else {
                 nmsEntity.remove(net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
             }
-            ENTITY_REMOVALREASON.set(nmsEntity, null);
+            nmsEntity.unsetRemoved();
             nmsEntity.setUUID(id);
-            if (nmsEntity instanceof ServerPlayer) {
-                playerList.placeNewPlayer(DenizenNetworkManagerImpl.getConnection((ServerPlayer) nmsEntity), (ServerPlayer) nmsEntity);
+            if (nmsEntity instanceof ServerPlayer nmsPlayer) {
+                playerList.placeNewPlayer(DenizenNetworkManagerImpl.getConnection(nmsPlayer), nmsPlayer);
             }
             else {
                 level.addFreshEntity(nmsEntity);
