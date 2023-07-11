@@ -571,20 +571,20 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void setHeadAngle(Entity entity, float angle) {
+    public void setHeadAngle(LivingEntity entity, float angle) {
         net.minecraft.world.entity.LivingEntity handle = ((CraftLivingEntity) entity).getHandle();
         handle.yHeadRot = angle;
         handle.setYHeadRot(angle);
     }
 
     @Override
-    public void setGhastAttacking(Entity entity, boolean attacking) {
-        ((CraftGhast) entity).getHandle().setCharging(attacking);
+    public void setGhastAttacking(Ghast ghast, boolean attacking) {
+        ((CraftGhast) ghast).getHandle().setCharging(attacking);
     }
 
     @Override
-    public void setEndermanAngry(Entity entity, boolean angry) {
-        ((CraftEnderman) entity).getHandle().getEntityData().set(ENTITY_ENDERMAN_DATAWATCHER_SCREAMING, angry);
+    public void setEndermanAngry(Enderman enderman, boolean angry) {
+        ((CraftEnderman) enderman).getHandle().getEntityData().set(ENTITY_ENDERMAN_DATAWATCHER_SCREAMING, angry);
     }
 
     public static class FakeDamageSrc extends DamageSource { public DamageSource real; public FakeDamageSrc(DamageSource src) { super("fake"); real = src; } }

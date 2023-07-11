@@ -3781,7 +3781,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // This will not rotate the body at all. Most users should prefer <@link command look>.
         // -->
         if (mechanism.matches("head_angle") && mechanism.requireFloat()) {
-            NMSHandler.entityHelper.setHeadAngle(getBukkitEntity(), mechanism.getValue().asFloat());
+            NMSHandler.entityHelper.setHeadAngle(getLivingEntity(), mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -3819,7 +3819,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the ghast entity should show the attacking face.
         // -->
         if (mechanism.matches("ghast_attacking") && mechanism.requireBoolean()) {
-            NMSHandler.entityHelper.setGhastAttacking(getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.entityHelper.setGhastAttacking((Ghast) getBukkitEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -3830,7 +3830,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the enderman entity should be screaming angrily.
         // -->
         if (mechanism.matches("enderman_angry") && mechanism.requireBoolean()) {
-            NMSHandler.entityHelper.setEndermanAngry(getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.entityHelper.setEndermanAngry((Enderman) getBukkitEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]

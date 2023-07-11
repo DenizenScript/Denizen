@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.nms.interfaces;
 
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -390,13 +389,13 @@ public abstract class EntityHelper {
 
     public abstract void setTicksLived(Entity entity, int ticks);
 
-    public abstract void setHeadAngle(Entity entity, float angle);
+    public abstract void setHeadAngle(LivingEntity entity, float angle);
 
-    public void setGhastAttacking(Entity entity, boolean attacking) { // TODO: once minimum version is 1.19 or higher, remove from NMS
-        ((Ghast) entity).setCharging(attacking);
+    public void setGhastAttacking(Ghast ghast, boolean attacking) { // TODO: once minimum version is 1.19 or higher, remove from NMS
+        ghast.setCharging(attacking);
     }
 
-    public abstract void setEndermanAngry(Entity entity, boolean angry);
+    public abstract void setEndermanAngry(Enderman enderman, boolean angry);
 
     public static EntityDamageEvent fireFakeDamageEvent(Entity target, EntityTag source, Location sourceLoc, EntityDamageEvent.DamageCause cause, float amount) {
         EntityDamageEvent ede;
