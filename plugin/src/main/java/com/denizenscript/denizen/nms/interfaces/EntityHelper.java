@@ -37,7 +37,7 @@ public abstract class EntityHelper {
         if (entity instanceof Player player) {
             player.setSneaking(sneak);
         }
-        NMSHandler.entityHelper.setPose(entity, sneak ? Pose.SNEAKING : Pose.STANDING);
+        setPose(entity, sneak ? Pose.SNEAKING : Pose.STANDING);
     }
 
     public abstract double getDamageTo(LivingEntity attacker, Entity target);
