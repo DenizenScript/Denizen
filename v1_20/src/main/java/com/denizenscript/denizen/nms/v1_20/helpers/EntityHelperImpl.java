@@ -14,7 +14,6 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerLookAtPacket;
@@ -27,7 +26,6 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerPlayerConnection;
-import net.minecraft.server.players.PlayerList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.CombatRules;
@@ -68,6 +66,7 @@ import org.bukkit.craftbukkit.v1_20_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_20_R1.entity.*;
 import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftLocation;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -163,10 +162,9 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void forceInteraction(Player player, Location location) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
-        BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         ((CraftBlock) location.getBlock()).getNMS().use(((CraftWorld) location.getWorld()).getHandle(),
                 craftPlayer != null ? craftPlayer.getHandle() : null, InteractionHand.MAIN_HAND,
-                new BlockHitResult(new Vec3(0, 0, 0), null, pos, false));
+                new BlockHitResult(new Vec3(0, 0, 0), null, CraftLocation.toBlockPosition(location), false));
     }
 
     @Override
