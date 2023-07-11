@@ -417,7 +417,7 @@ public abstract class EntityHelper {
 
     public abstract void setLastHurtBy(LivingEntity mob, LivingEntity damager);
 
-    public abstract void setFallingBlockType(FallingBlock entity, BlockData block);
+    public abstract void setFallingBlockType(FallingBlock fallingBlock, BlockData block);
 
     public abstract EntityTag getMobSpawnerDisplayEntity(CreatureSpawner spawner);
 
