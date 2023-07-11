@@ -88,7 +88,7 @@ public abstract class EntityHelper {
         ItemFrame best = null;
         Vector bestHitPos = null;
         BlockFace bestHitFace = null;
-        for (Entity entity : start.getWorld().getNearbyEntities(start.clone().add(direction.clone().multiply(50)), 100, 100, 100, (e) -> e instanceof ItemFrame && ((ItemFrame) e).getItem().getType() == Material.FILLED_MAP)) {
+        for (Entity entity : start.getWorld().getNearbyEntities(start.clone().add(direction.clone().multiply(50)), 100, 100, 100, (e) -> e instanceof ItemFrame itemFrame && itemFrame.getItem().getType() == Material.FILLED_MAP)) {
             double centerDist = entity.getLocation().distanceSquared(start);
             if (centerDist > bestDist) {
                 continue;
@@ -208,7 +208,7 @@ public abstract class EntityHelper {
                 return;
             }
         }
-        Location origin = from instanceof LivingEntity ? ((LivingEntity) from).getEyeLocation()
+        Location origin = from instanceof LivingEntity livingEntity ? livingEntity.getEyeLocation()
                 : new LocationTag(from.getLocation()).getBlockLocation().add(0.5, 0.5, 0.5);
         Location rotated = faceLocation(origin, at);
         rotate(from, rotated.getYaw(), rotated.getPitch());
