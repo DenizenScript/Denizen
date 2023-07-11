@@ -26,6 +26,7 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerPlayerConnection;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.CombatRules;
@@ -746,6 +747,8 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftMob) mob).getHandle().setAggressive(aggressive);
     }
 
+    public static final MethodHandle PLAYERLIST_REMOVE = ReflectionHelper.getMethodHandle(PlayerList.class, "remove", ServerPlayer.class);
+
     @Override
     public void setUUID(Entity entity, UUID id) {
         try {
@@ -755,7 +758,7 @@ public class EntityHelperImpl extends EntityHelper {
             Level level = nmsEntity.level();
             DedicatedPlayerList playerList = ((CraftServer) Bukkit.getServer()).getHandle();
             if (nmsEntity instanceof ServerPlayer nmsPlayer) {
-                playerList.remove(nmsPlayer);
+                PLAYERLIST_REMOVE.invoke(playerList, nmsPlayer);
             }
             else {
                 nmsEntity.remove(net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
