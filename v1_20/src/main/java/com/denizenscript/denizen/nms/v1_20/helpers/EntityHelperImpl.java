@@ -658,10 +658,9 @@ public class EntityHelperImpl extends EntityHelper {
         CraftEventFactory.blockDamage = sourceLoc == null ? null : sourceLoc.getBlock();
         try {
             DamageSource src = getSourceFor(nmsSource, cause, nmsTarget);
-            if (src instanceof FakeDamageSrc) {
-                src = ((FakeDamageSrc) src).real;
-                EntityDamageEvent ede = fireFakeDamageEvent(target, source, sourceLoc, cause, amount);
-                if (ede.isCancelled()) {
+            if (src instanceof FakeDamageSrc fakeDamageSrc) {
+                src = fakeDamageSrc.real;
+                if (fireFakeDamageEvent(target, source, sourceLoc, cause, amount).isCancelled()) {
                     return;
                 }
             }
