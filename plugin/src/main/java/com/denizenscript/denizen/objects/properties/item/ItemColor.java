@@ -82,7 +82,11 @@ public class ItemColor implements Property {
                 return BukkitColorExtensions.fromColor(pm.getColor()).getObjectAttribute(attribute.fulfill((1)));
             }
             if (mat == Material.FILLED_MAP){
-                return BukkitColorExtensions.fromColor(((MapMeta) item.getItemMeta()).getColor()).getObjectAttribute(attribute.fulfill(1));
+                MapMeta mapMeta = (MapMeta) item.getItemMeta();
+                if (!mapMeta.hasColor()){
+                    return BukkitColorExtensions.fromColor(Color.WHITE).getObjectAttribute(attribute.fulfill(1));
+                }
+                return BukkitColorExtensions.fromColor((mapMeta.getColor())).getObjectAttribute(attribute.fulfill(1));
             }
             return BukkitColorExtensions.fromColor(((LeatherArmorMeta) item.getItemMeta()).getColor()).getObjectAttribute(attribute.fulfill(1));
         }
