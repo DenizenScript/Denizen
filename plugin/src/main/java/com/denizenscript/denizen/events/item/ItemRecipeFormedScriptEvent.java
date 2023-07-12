@@ -78,9 +78,9 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
             case "item" -> result;
             case "inventory" -> InventoryTag.mirrorBukkitInventory(event.getInventory());
             case "recipe" -> new ListTag(Arrays.asList(event.getInventory().getMatrix()), ItemTag::new);
-            case "recipe_id" -> event.getRecipe() instanceof Keyed ? new ElementTag(((Keyed) event.getRecipe()).getKey().toString()) : null;
+            case "recipe_id" -> event.getRecipe() instanceof Keyed keyed ? new ElementTag(keyed.getKey().toString()): null;
             case "is_repair" -> new ElementTag(event.isRepair());
-            default -> null;
+            default -> super.getContext(name);
         };
     }
 
@@ -95,7 +95,9 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     @EventHandler
     public void onRecipeFormed(PrepareItemCraftEvent event) {
         this.event = event;
-        if (event.getRecipe() == null) return;
+        if (event.getRecipe() == null) {
+            return;
+        }
         result = new ItemTag(event.getInventory().getResult());
         if (result.getBukkitMaterial() == Material.AIR) {
             result = new ItemTag(event.getRecipe().getResult());
