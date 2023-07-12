@@ -99,24 +99,24 @@ public class FishingHelperImpl implements FishingHelper {
         return getRandomReward(fishHook, BuiltInLootTables.FISHING_FISH);
     }
 
-    public static final Field FISHING_HOOK_NIBBLE_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_nibble, int.class);
-    public static final Field FISHING_HOOK_LURE_TIME_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilLured, int.class);
-    public static final Field FISHING_HOOK_HOOK_TIME_SETTER = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilHooked, int.class);
+    public static final Field FISHING_HOOK_NIBBLE = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_nibble, int.class);
+    public static final Field FISHING_HOOK_LURE_TIME = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilLured, int.class);
+    public static final Field FISHING_HOOK_HOOK_TIME = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilHooked, int.class);
 
     @Override
     public FishHook getHookFrom(Player player) {
-        FishingHook hook = ((CraftPlayer) player).getHandle().fishing;
-        if (hook == null) {
+        FishingHook nmsHook = ((CraftPlayer) player).getHandle().fishing;
+        if (nmsHook == null) {
             return null;
         }
-        return (FishHook) hook.getBukkitEntity();
+        return (FishHook) nmsHook.getBukkitEntity();
     }
 
     @Override
     public void setNibble(FishHook hook, int ticks) {
-        FishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        FishingHook nmsHook = ((CraftFishHook) hook).getHandle();
         try {
-            FISHING_HOOK_NIBBLE_SETTER.setInt(nmsEntity, ticks);
+            FISHING_HOOK_NIBBLE.setInt(nmsHook, ticks);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -125,9 +125,9 @@ public class FishingHelperImpl implements FishingHelper {
 
     @Override
     public void setHookTime(FishHook hook, int ticks) {
-        FishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        FishingHook nmsHook = ((CraftFishHook) hook).getHandle();
         try {
-            FISHING_HOOK_HOOK_TIME_SETTER.setInt(nmsEntity, ticks);
+            FISHING_HOOK_HOOK_TIME.setInt(nmsHook, ticks);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -136,9 +136,9 @@ public class FishingHelperImpl implements FishingHelper {
 
     @Override
     public int getLureTime(FishHook hook) {
-        FishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        FishingHook nmsHook = ((CraftFishHook) hook).getHandle();
         try {
-            return FISHING_HOOK_LURE_TIME_SETTER.getInt(nmsEntity);
+            return FISHING_HOOK_LURE_TIME.getInt(nmsHook);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -148,9 +148,9 @@ public class FishingHelperImpl implements FishingHelper {
 
     @Override
     public void setLureTime(FishHook hook, int ticks) {
-        FishingHook nmsEntity = ((CraftFishHook) hook).getHandle();
+        FishingHook nmsHook = ((CraftFishHook) hook).getHandle();
         try {
-            FISHING_HOOK_LURE_TIME_SETTER.setInt(nmsEntity, ticks);
+            FISHING_HOOK_LURE_TIME.setInt(nmsHook, ticks);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
