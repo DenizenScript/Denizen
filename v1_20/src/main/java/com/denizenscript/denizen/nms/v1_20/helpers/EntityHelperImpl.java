@@ -746,6 +746,7 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftMob) mob).getHandle().setAggressive(aggressive);
     }
 
+    // Use reflection because Paper changes the method return type
     public static final MethodHandle PLAYERLIST_REMOVE = ReflectionHelper.getMethodHandle(PlayerList.class, "remove", ServerPlayer.class);
 
     @Override
