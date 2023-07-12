@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.bukkit.Bukkit;
@@ -365,43 +366,16 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     /**
-     * Copied from MapItem.getCorrectStateForFluidBlock, and rewritten as reflection due to Spigot bug - refer to bottom of BlockHelperImpl for detail.
+     * Copied from MapItem.getCorrectStateForFluidBlock.
      */
-    public static BlockState getCorrectStateForFluidBlock(Level world, BlockState iblockdata, BlockPos blockposition) {
-        try {
-            // FluidState fluid = iblockdata.getFluidState();
-            Object fluid = BlockHelperImpl.BLOCKSTATEBASE_GETFLUIDSTATE.invoke(iblockdata);
-            //return !fluid.isEmpty() && !iblockdata.isFaceSturdy(world, blockposition, Direction.UP) ? fluid.createLegacyBlock() : iblockdata;
-            boolean isEmpty = (boolean) BlockHelperImpl.FLUIDSTATE_ISEMPTY.invoke(fluid);
-            if (!isEmpty && !iblockdata.isFaceSturdy(world, blockposition, Direction.UP)) {
-                return (BlockState) BlockHelperImpl.FLUIDSTATE_CREATELEGACYBLOCK.invoke(fluid);
-            }
-            else {
-                return iblockdata;
-            }
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-            return iblockdata;
-        }
-    }
-
-    public static boolean blockStateFluidIsEmpty(BlockState iblockdata) {
-        try {
-            // return iblockdata.getFluidState().isEmpty();
-            Object fluid = BlockHelperImpl.BLOCKSTATEBASE_GETFLUIDSTATE.invoke(iblockdata);
-            return (boolean) BlockHelperImpl.FLUIDSTATE_ISEMPTY.invoke(fluid);
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-            return false;
-        }
+    public static BlockState getCorrectStateForFluidBlock(Level world, BlockState blockState, BlockPos blockPos) {
+        FluidState fluid = blockState.getFluidState();
+        return !fluid.isEmpty() && !blockState.isFaceSturdy(world, blockPos, Direction.UP) ? fluid.createLegacyBlock() : blockState;
     }
 
     /**
      * Copied from MapItem.update, redesigned slightly to render totally rather than just relative to a player.
      * Some variables manually renamed for readability.
-     * Also contains reflection fixes for Spigot's FluidState bug.
      */
     public static void renderFullMap(MapItemSavedData worldmap, int xMin, int zMin, int xMax, int zMax) {
         Level world = ((CraftWorld) worldmap.mapView.getWorld()).getHandle();
@@ -449,7 +423,7 @@ public class ItemHelperImpl extends ItemHelper {
                                         blockposition_mutableblockposition.set(chunkcoordintpair.getMinBlockX() + i4 + i3, k4, chunkcoordintpair.getMinBlockZ() + j4 + j3);
                                         iblockdata = chunk.getBlockState(blockposition_mutableblockposition);
                                     } while (iblockdata.getMapColor(world, blockposition_mutableblockposition) == MapColor.NONE && k4 > world.getMinBuildHeight());
-                                    if (k4 > world.getMinBuildHeight() && !blockStateFluidIsEmpty(iblockdata)) {
+                                    if (k4 > world.getMinBuildHeight() && !iblockdata.getFluidState().isEmpty()) {
                                         int l4 = k4 - 1;
                                         blockposition_mutableblockposition1.set(blockposition_mutableblockposition);
 
@@ -458,7 +432,7 @@ public class ItemHelperImpl extends ItemHelper {
                                             blockposition_mutableblockposition1.setY(l4--);
                                             iblockdata1 = chunk.getBlockState(blockposition_mutableblockposition1);
                                             k3++;
-                                        } while (l4 > world.getMinBuildHeight() && !blockStateFluidIsEmpty(iblockdata1));
+                                        } while (l4 > world.getMinBuildHeight() && !iblockdata1.getFluidState().isEmpty());
                                         iblockdata = getCorrectStateForFluidBlock(world, iblockdata, blockposition_mutableblockposition);
                                     }
                                 }
