@@ -16,6 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -75,28 +77,10 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         return switch (name) {
             case "item" -> result;
             case "inventory" -> InventoryTag.mirrorBukkitInventory(event.getInventory());
-            case "recipe" -> {
-                ListTag recipe = new ListTag();
-                for (ItemStack itemStack : event.getInventory().getMatrix()) {
-                    if (itemStack != null && itemStack.getType() != Material.AIR) {
-                        recipe.addObject(new ItemTag(itemStack));
-                    }
-                    else {
-                        recipe.addObject(new ItemTag(Material.AIR));
-                    }
-                }
-                yield recipe;
-            }
-            case "recipe_id" -> {
-                if (event.getRecipe() instanceof Keyed) {
-                    yield new ElementTag(((Keyed) event.getRecipe()).getKey().toString());
-                }
-                else {
-                    yield super.getContext(name);
-                }
-            }
+            case "recipe" -> new ListTag(Arrays.asList(event.getInventory().getMatrix()), ItemTag::new);
+            case "recipe_id" -> event.getRecipe() instanceof Keyed ? new ElementTag(((Keyed) event.getRecipe()).getKey().toString()) : null;
             case "is_repair" -> new ElementTag(event.isRepair());
-            default -> super.getContext(name);
+            default -> null;
         };
     }
 
@@ -111,9 +95,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     @EventHandler
     public void onRecipeFormed(PrepareItemCraftEvent event) {
         this.event = event;
-        if (event.getRecipe() == null) {
-            return;
-        }
+        if (event.getRecipe() == null) return;
         result = new ItemTag(event.getInventory().getResult());
         if (result.getBukkitMaterial() == Material.AIR) {
             result = new ItemTag(event.getRecipe().getResult());
