@@ -78,18 +78,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     public static final Field VEHICLE_FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundVehicleTickCount, int.class);
     public static final MethodHandle PLAYER_RESPAWNFORCED_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnForced, boolean.class);
 
-    public static final EntityDataAccessor<Byte> ENTITY_HUMAN_SKINLAYERS_DATAWATCHER;
-
-    static {
-        EntityDataAccessor<Byte> skinlayers = null;
-        try {
-            skinlayers = (EntityDataAccessor<Byte>) ReflectionHelper.getFields(net.minecraft.world.entity.player.Player.class).get(ReflectionMappingsInfo.Player_DATA_PLAYER_MODE_CUSTOMISATION).get(null);
-        }
-        catch (Throwable ex) {
-            ex.printStackTrace();
-        }
-        ENTITY_HUMAN_SKINLAYERS_DATAWATCHER = skinlayers;
-    }
+    public static final EntityDataAccessor<Byte> PLAYER_DATA_ACCESSOR_SKINLAYERS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.player.Player.class, ReflectionMappingsInfo.Player_DATA_PLAYER_MODE_CUSTOMISATION, null);
 
     @Override
     public void stopSound(Player player, String sound, SoundCategory category) {
@@ -99,8 +88,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void deTrackEntity(Player player, Entity entity) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        ServerLevel world = (ServerLevel) nmsPlayer.level();
-        ChunkMap.TrackedEntity tracker = world.getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
+        ChunkMap.TrackedEntity tracker = nmsPlayer.serverLevel().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
         if (tracker == null) {
             if (NMSHandler.debugPackets) {
                 DenizenNetworkManagerImpl.doPacketOutput("Failed to de-track entity " + entity.getEntityId() + " for " + player.getName() + ": tracker null");
@@ -111,10 +99,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         tracker.removePlayer(nmsPlayer);
     }
 
-    public static class TrackerData {
-        public PlayerTag player;
-        public ServerEntity tracker;
-    }
+    public record TrackerData(PlayerTag player, ServerEntity tracker) {}
 
     @Override
     public FakeEntity sendEntitySpawn(List<PlayerTag> players, DenizenEntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {
@@ -181,9 +166,7 @@ public class PlayerHelperImpl extends PlayerHelper {
             ServerGamePacketListenerImpl conn = nmsPlayer.connection;
             final ServerEntity tracker = new ServerEntity(world.getHandle(), nmsEntity, 1, true, conn::send, Collections.singleton(nmsPlayer.connection));
             tracker.addPairing(nmsPlayer);
-            final TrackerData data = new TrackerData();
-            data.player = player;
-            data.tracker = tracker;
+            final TrackerData data = new TrackerData(player, tracker);
             trackers.add(data);
             if (autoTrack) {
                 new BukkitRunnable() {
@@ -237,8 +220,8 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public int getFlyKickCooldown(Player player) {
         ServerGamePacketListenerImpl conn = ((CraftPlayer) player).getHandle().connection;
-        if (conn instanceof AbstractListenerPlayInImpl) {
-            conn = ((AbstractListenerPlayInImpl) conn).oldListener;
+        if (conn instanceof AbstractListenerPlayInImpl denizenListener) {
+            conn = denizenListener.oldListener;
         }
         try {
             return Math.max(80 - Math.max(FLY_TICKS.getInt(conn), VEHICLE_FLY_TICKS.getInt(conn)), 0);
@@ -253,8 +236,8 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void setFlyKickCooldown(Player player, int ticks) {
         ticks = 80 - ticks;
         ServerGamePacketListenerImpl conn = ((CraftPlayer) player).getHandle().connection;
-        if (conn instanceof AbstractListenerPlayInImpl) {
-            conn = ((AbstractListenerPlayInImpl) conn).oldListener;
+        if (conn instanceof AbstractListenerPlayInImpl denizenListener) {
+            conn = denizenListener.oldListener;
         }
         try {
             FLY_TICKS.setInt(conn, ticks);
@@ -305,8 +288,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         GameProfile profile = ((CraftPlayer) player).getProfile();
         ServerOpList opList = server.getPlayerList().getOps();
         if (op) {
-            int permLevel = server.getOperatorUserPermissionLevel();
-            opList.add(new ServerOpListEntry(profile, permLevel, opList.canBypassPlayerLimit(profile)));
+            opList.add(new ServerOpListEntry(profile, server.getOperatorUserPermissionLevel(), opList.canBypassPlayerLimit(profile)));
         }
         else {
             opList.remove(profile);
@@ -357,12 +339,12 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public byte getSkinLayers(Player player) {
-        return ((CraftPlayer) player).getHandle().getEntityData().get(ENTITY_HUMAN_SKINLAYERS_DATAWATCHER);
+        return ((CraftPlayer) player).getHandle().getEntityData().get(PLAYER_DATA_ACCESSOR_SKINLAYERS);
     }
 
     @Override
     public void setSkinLayers(Player player, byte flags) {
-        ((CraftPlayer) player).getHandle().getEntityData().set(ENTITY_HUMAN_SKINLAYERS_DATAWATCHER, flags);
+        ((CraftPlayer) player).getHandle().getEntityData().set(PLAYER_DATA_ACCESSOR_SKINLAYERS, flags);
     }
 
     @Override
@@ -421,10 +403,10 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void sendClimbableMaterials(Player player, List<Material> materials) {
         Map<ResourceKey<? extends Registry<?>>, TagNetworkSerialization.NetworkPayload> packetInput = TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registries());
         Map<ResourceLocation, IntList> tags = ReflectionHelper.getFieldValue(TagNetworkSerialization.NetworkPayload.class, ReflectionMappingsInfo.TagNetworkSerializationNetworkPayload_tags, packetInput.get(BuiltInRegistries.BLOCK.key()));
-        IntList intList = tags.get(BlockTags.CLIMBABLE.location());
-        intList.clear();
+        IntList climbableBlocks = tags.get(BlockTags.CLIMBABLE.location());
+        climbableBlocks.clear();
         for (Material material : materials) {
-            intList.add(BuiltInRegistries.BLOCK.getId(CraftMagicNumbers.getBlock(material)));
+            climbableBlocks.add(BuiltInRegistries.BLOCK.getId(CraftMagicNumbers.getBlock(material)));
         }
         PacketHelperImpl.send(player, new ClientboundUpdateTagsPacket(packetInput));
     }
@@ -443,7 +425,7 @@ public class PlayerHelperImpl extends PlayerHelper {
                 nmsWorld.isFlat(),
                 ClientboundRespawnPacket.KEEP_ALL_DATA,
                 nmsPlayer.getLastDeathLocation(),
-                nmsPlayer.portalCooldown));
+                nmsPlayer.getPortalCooldown()));
         nmsPlayer.connection.teleport(player.getLocation());
         if (nmsPlayer.isPassenger()) {
            nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer.getVehicle()));
