@@ -4,9 +4,10 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
+import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.WorldBorder;
+import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -60,11 +61,24 @@ public interface PacketHelper {
 
     void showBlockAction(Player player, Location location, int action, int state);
 
-    void showBlockCrack(Player player, int id, Location location, int progress);
+    default void showBlockCrack(Player player, int id, Location location, int progress) {
+        float progressFloat = 0;
+        if (progress >= 0 && progress <= 9) {
+            // Spigot treats 0 as -1, so replace 0 with 0.1 which will then get floored
+            progressFloat = Math.max(progress, 0.1f) / 9f;
+        }
+        player.sendBlockDamage(location, progressFloat, id);
+    }
 
-    void showTileEntityData(Player player, Location location, int action, CompoundTag compoundTag);
+    default void showTileEntityData(Player player, Location location, int action, CompoundTag compoundTag) { // TODO: once minimum version is 1.20, remove in favor of Player#sendBlockUpdate
+        throw new UnsupportedOperationException();
+    }
 
-    void showBannerUpdate(Player player, Location location, DyeColor base, List<Pattern> patterns);
+    default void showBannerUpdate(Player player, Location location, List<Pattern> patterns) { // TODO: once minimum version is 1.20, remove from NMS
+        Banner banner = (Banner) location.getBlock().getState();
+        banner.setPatterns(patterns);
+        player.sendBlockUpdate(location, banner);
+    }
 
     void showTabListHeaderFooter(Player player, String header, String footer);
 
@@ -83,11 +97,15 @@ public interface PacketHelper {
         player.sendEquipmentChange(entity, equipmentMap);
     }
 
-    void showHealth(Player player, float health, int food, float saturation);
+    default void showHealth(Player player, float health, int food, float saturation) { // TODO: once minimum version is 1.20, remove from NMS
+        player.sendHealthUpdate(health, food, saturation);
+    }
 
     void showMobHealth(Player player, LivingEntity mob, double health, double maxHealth);
 
-    void resetHealth(Player player);
+    default void resetHealth(Player player) { // TODO: once minimum version is 1.20, remove from NMS
+        player.sendHealthUpdate(player.getHealth(), player.getFoodLevel(), player.getSaturation());
+    }
 
     void showSignEditor(Player player, Location location); // TODO: once minimum version is 1.18 or higher, change to "showFakeSignEditor" and remove location param
 
@@ -107,7 +125,7 @@ public interface PacketHelper {
 
     void sendEntityMetadataFlagsUpdate(Player player, Entity entity);
 
-    void sendEntityEffect(Player player, Entity entity, byte effectId);
+    void sendEntityEffect(Player player, Entity entity, EntityEffect effect);
 
     int getPacketStats(Player player, boolean sent);
 

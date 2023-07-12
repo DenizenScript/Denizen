@@ -42,6 +42,7 @@ import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.PluginCommand;
@@ -3862,7 +3863,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("banner_update")) {
             if (mechanism.getValue().asString().length() > 0) {
                 String[] split = mechanism.getValue().asString().split("\\|");
-                List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<>();
+                List<Pattern> patterns = new ArrayList<>();
                 if (LocationTag.matches(split[0]) && split.length > 1) {
                     List<String> splitList;
                     for (int i = 1; i < split.length; i++) {
@@ -3872,7 +3873,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         }
                         try {
                             splitList = CoreUtilities.split(string, '/', 2);
-                            patterns.add(new org.bukkit.block.banner.Pattern(DyeColor.valueOf(splitList.get(0).toUpperCase()),
+                            patterns.add(new Pattern(DyeColor.valueOf(splitList.get(0).toUpperCase()),
                                     PatternType.valueOf(splitList.get(1).toUpperCase())));
                         }
                         catch (Exception e) {
@@ -3880,7 +3881,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         }
                     }
                     LocationTag location = LocationTag.valueOf(split[0], mechanism.context);
-                    NMSHandler.packetHelper.showBannerUpdate(getPlayerEntity(), location, DyeColor.WHITE, patterns);
+                    NMSHandler.packetHelper.showBannerUpdate(getPlayerEntity(), location, patterns);
                 }
                 else {
                     Debug.echoError("Must specify a valid location and pattern list!");
