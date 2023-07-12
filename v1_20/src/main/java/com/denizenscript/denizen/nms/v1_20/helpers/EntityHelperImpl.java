@@ -123,8 +123,8 @@ public class EntityHelperImpl extends EntityHelper {
         if (target != null) {
             DamageSource source;
             net.minecraft.world.entity.Entity nmsTarget = ((CraftEntity) target).getHandle();
-            if (attacker instanceof Player) {
-                source = nmsTarget.level().damageSources().playerAttack(((CraftPlayer) attacker).getHandle());
+            if (attacker instanceof CraftPlayer playerAttacker) {
+                source = nmsTarget.level().damageSources().playerAttack(playerAttacker.getHandle());
             }
             else {
                 source = nmsTarget.level().damageSources().mobAttack(((CraftLivingEntity) attacker).getHandle());
@@ -132,10 +132,9 @@ public class EntityHelperImpl extends EntityHelper {
             if (nmsTarget.isInvulnerableTo(source)) {
                 return 0;
             }
-            if (!(nmsTarget instanceof net.minecraft.world.entity.LivingEntity)) {
+            if (!(nmsTarget instanceof net.minecraft.world.entity.LivingEntity livingTarget)) {
                 return damage;
             }
-            net.minecraft.world.entity.LivingEntity livingTarget = (net.minecraft.world.entity.LivingEntity) nmsTarget;
             damage = CombatRules.getDamageAfterAbsorb((float) damage, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
             int enchantDamageModifier = EnchantmentHelper.getDamageProtection(livingTarget.getArmorSlots(), source);
             if (enchantDamageModifier > 0) {
