@@ -20,7 +20,7 @@ public class ItemColor implements Property {
             return false;
         }
         Material mat = ((ItemTag) item).getBukkitMaterial();
-        // Leather armor, potions and filled map
+        // Leather armor, potions, and filled map
         return mat == Material.LEATHER_BOOTS
                 || mat == Material.LEATHER_CHESTPLATE
                 || mat == Material.LEATHER_HELMET
@@ -68,7 +68,7 @@ public class ItemColor implements Property {
         // @mechanism ItemTag.color
         // @group properties
         // @description
-        // Returns the color of the leather armor item, potion item or filled map item.
+        // Returns the color of the leather armor item, potion item, or filled map item.
         // -->
         if (attribute.startsWith("color") || attribute.startsWith("dye_color")) {
             Material mat = item.getBukkitMaterial();
@@ -81,9 +81,9 @@ public class ItemColor implements Property {
                 }
                 return BukkitColorExtensions.fromColor(pm.getColor()).getObjectAttribute(attribute.fulfill((1)));
             }
-            if (mat == Material.FILLED_MAP){
+            if (mat == Material.FILLED_MAP) {
                 MapMeta mapMeta = (MapMeta) item.getItemMeta();
-                if (!mapMeta.hasColor()){
+                if (!mapMeta.hasColor()) {
                     return BukkitColorExtensions.fromColor(Color.WHITE).getObjectAttribute(attribute.fulfill(1));
                 }
                 return BukkitColorExtensions.fromColor((mapMeta.getColor())).getObjectAttribute(attribute.fulfill(1));
@@ -106,6 +106,13 @@ public class ItemColor implements Property {
             }
             return BukkitColorExtensions.fromColor(pm.getColor()).identify();
         }
+        if (mat == Material.FILLED_MAP) {
+            MapMeta mapMeta = (MapMeta) item.getItemMeta();
+            if (!mapMeta.hasColor()) {
+                return null;
+            }
+            return BukkitColorExtensions.fromColor(mapMeta.getColor()).identify();
+        }
         return BukkitColorExtensions.fromColor(((LeatherArmorMeta) item.getItemMeta()).getColor()).identify();
     }
 
@@ -122,7 +129,7 @@ public class ItemColor implements Property {
         // @name color
         // @input ColorTag
         // @description
-        // Sets the leather armor item's dye color, potion item's color or filled map item's color.
+        // Sets the leather armor item's dye color, potion item's color, or filled map item's color.
         // @tags
         // <ItemTag.color>
         // -->
@@ -136,7 +143,7 @@ public class ItemColor implements Property {
                 item.setItemMeta(meta);
                 return;
             }
-            if (mat == Material.FILLED_MAP){
+            if (mat == Material.FILLED_MAP) {
                 MapMeta meta = (MapMeta) item.getItemMeta();
                 meta.setColor(BukkitColorExtensions.getColor(color));
                 item.setItemMeta(meta);
