@@ -84,7 +84,7 @@ public class ItemColor implements Property {
             if (mat == Material.FILLED_MAP) {
                 MapMeta mapMeta = (MapMeta) item.getItemMeta();
                 if (!mapMeta.hasColor()) {
-                    return BukkitColorExtensions.fromColor(Color.WHITE).getObjectAttribute(attribute.fulfill(1));
+                    return null;
                 }
                 return BukkitColorExtensions.fromColor((mapMeta.getColor())).getObjectAttribute(attribute.fulfill(1));
             }
