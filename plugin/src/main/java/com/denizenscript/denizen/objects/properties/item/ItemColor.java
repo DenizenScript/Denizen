@@ -86,7 +86,7 @@ public class ItemColor implements Property {
                 if (!mapMeta.hasColor()) {
                     return null;
                 }
-                return BukkitColorExtensions.fromColor(mapMeta.getColor()).getObjectAttribute(attribute.fulfill((1)));
+                return BukkitColorExtensions.fromColor(mapMeta.getColor()).getObjectAttribute(attribute.fulfill(1));
             }
             return BukkitColorExtensions.fromColor(((LeatherArmorMeta) item.getItemMeta()).getColor()).getObjectAttribute(attribute.fulfill(1));
         }
