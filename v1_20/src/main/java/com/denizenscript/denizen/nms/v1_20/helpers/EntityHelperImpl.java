@@ -14,7 +14,6 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerLookAtPacket;
@@ -41,6 +40,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
@@ -67,6 +67,7 @@ import org.bukkit.craftbukkit.v1_20_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_20_R1.entity.*;
 import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftLocation;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -82,7 +83,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_onGround, boolean.class);
 
-    public static final EntityDataAccessor<Boolean> ENTITY_ENDERMAN_DATAWATCHER_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, ReflectionMappingsInfo.EnderMan_DATA_CREEPY, null);
+    public static final EntityDataAccessor<Boolean> ENDERMAN_DATA_ACCESSOR_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, ReflectionMappingsInfo.EnderMan_DATA_CREEPY, null);
 
     @Override
     public void setInvisible(Entity entity, boolean invisible) {
@@ -122,8 +123,8 @@ public class EntityHelperImpl extends EntityHelper {
         if (target != null) {
             DamageSource source;
             net.minecraft.world.entity.Entity nmsTarget = ((CraftEntity) target).getHandle();
-            if (attacker instanceof Player) {
-                source = nmsTarget.level().damageSources().playerAttack(((CraftPlayer) attacker).getHandle());
+            if (attacker instanceof CraftPlayer playerAttacker) {
+                source = nmsTarget.level().damageSources().playerAttack(playerAttacker.getHandle());
             }
             else {
                 source = nmsTarget.level().damageSources().mobAttack(((CraftLivingEntity) attacker).getHandle());
@@ -131,10 +132,9 @@ public class EntityHelperImpl extends EntityHelper {
             if (nmsTarget.isInvulnerableTo(source)) {
                 return 0;
             }
-            if (!(nmsTarget instanceof net.minecraft.world.entity.LivingEntity)) {
+            if (!(nmsTarget instanceof net.minecraft.world.entity.LivingEntity livingTarget)) {
                 return damage;
             }
-            net.minecraft.world.entity.LivingEntity livingTarget = (net.minecraft.world.entity.LivingEntity) nmsTarget;
             damage = CombatRules.getDamageAfterAbsorb((float) damage, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
             int enchantDamageModifier = EnchantmentHelper.getDamageProtection(livingTarget.getArmorSlots(), source);
             if (enchantDamageModifier > 0) {
@@ -162,10 +162,9 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void forceInteraction(Player player, Location location) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
-        BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         ((CraftBlock) location.getBlock()).getNMS().use(((CraftWorld) location.getWorld()).getHandle(),
                 craftPlayer != null ? craftPlayer.getHandle() : null, InteractionHand.MAIN_HAND,
-                new BlockHitResult(new Vec3(0, 0, 0), null, pos, false));
+                new BlockHitResult(new Vec3(0, 0, 0), null, CraftLocation.toBlockPosition(location), false));
     }
 
     @Override
@@ -205,11 +204,9 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void stopWalking(Entity entity) {
-        net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntity instanceof Mob)) {
-            return;
+        if (((CraftEntity) entity).getHandle() instanceof Mob nmsMob) {
+            nmsMob.getNavigation().stop();
         }
-        ((Mob) nmsEntity).getNavigation().stop();
     }
 
     @Override
@@ -220,10 +217,9 @@ public class EntityHelperImpl extends EntityHelper {
         }
 
         final net.minecraft.world.entity.Entity nmsEntityFollower = ((CraftEntity) follower).getHandle();
-        if (!(nmsEntityFollower instanceof Mob)) {
+        if (!(nmsEntityFollower instanceof Mob nmsFollower)) {
             return;
         }
-        final Mob nmsFollower = (Mob) nmsEntityFollower;
         final PathNavigation followerNavigation = nmsFollower.getNavigation();
 
         UUID uuid = follower.getUniqueId();
@@ -384,40 +380,34 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void sendHidePacket(Player pl, Entity entity) {
-        if (entity instanceof Player) {
-            pl.hidePlayer(Denizen.getInstance(), (Player) entity);
+        if (entity instanceof Player player) {
+            pl.hidePlayer(Denizen.getInstance(), player);
             return;
         }
-        CraftPlayer craftPlayer = (CraftPlayer) pl;
-        ServerPlayer entityPlayer = craftPlayer.getHandle();
-        if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
-            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level()).getChunkSource().chunkMap;
-            net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
-            ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
+        ServerPlayer nmsPlayer = ((CraftPlayer) pl).getHandle();
+        if (nmsPlayer.connection != null && !pl.equals(entity)) {
+            ChunkMap.TrackedEntity entry = nmsPlayer.serverLevel().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
             if (entry != null) {
-                entry.removePlayer(entityPlayer);
+                entry.removePlayer(nmsPlayer);
             }
             if (Denizen.supportsPaper) { // Workaround for Paper issue
-                entityPlayer.connection.send(new ClientboundRemoveEntitiesPacket(other.getId()));
+                nmsPlayer.connection.send(new ClientboundRemoveEntitiesPacket(entity.getEntityId()));
             }
         }
     }
 
     @Override
     public void sendShowPacket(Player pl, Entity entity) {
-        if (entity instanceof Player) {
-            pl.showPlayer(Denizen.getInstance(), (Player) entity);
+        if (entity instanceof Player player) {
+            pl.showPlayer(Denizen.getInstance(), player);
             return;
         }
-        CraftPlayer craftPlayer = (CraftPlayer) pl;
-        ServerPlayer entityPlayer = craftPlayer.getHandle();
-        if (entityPlayer.connection != null && !craftPlayer.equals(entity)) {
-            ChunkMap tracker = ((ServerLevel) craftPlayer.getHandle().level()).getChunkSource().chunkMap;
-            net.minecraft.world.entity.Entity other = ((CraftEntity) entity).getHandle();
-            ChunkMap.TrackedEntity entry = tracker.entityMap.get(other.getId());
+        ServerPlayer nmsPlayer = ((CraftPlayer) pl).getHandle();
+        if (nmsPlayer.connection != null && !pl.equals(entity)) {
+            ChunkMap.TrackedEntity entry = nmsPlayer.serverLevel().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
             if (entry != null) {
-                entry.removePlayer(entityPlayer);
-                entry.updatePlayer(entityPlayer);
+                entry.removePlayer(nmsPlayer);
+                entry.updatePlayer(nmsPlayer);
             }
         }
     }
@@ -426,7 +416,7 @@ public class EntityHelperImpl extends EntityHelper {
     public void rotate(Entity entity, float yaw, float pitch) {
         // If this entity is a real player instead of a player type NPC,
         // it will appear to be online
-        if (entity instanceof Player && ((Player) entity).isOnline()) {
+        if (entity instanceof Player player && player.isOnline()) {
             NetworkInterceptHelper.enable();
             float relYaw = (yaw - entity.getLocation().getYaw()) % 360;
             if (relYaw > 180) {
@@ -434,7 +424,7 @@ public class EntityHelperImpl extends EntityHelper {
             }
             final float actualRelYaw = relYaw;
             float relPitch = pitch - entity.getLocation().getPitch();
-            NMSHandler.packetHelper.sendRelativeLookPacket((Player) entity, actualRelYaw, relPitch);
+            NMSHandler.packetHelper.sendRelativeLookPacket(player, actualRelYaw, relPitch);
         }
         else if (entity instanceof LivingEntity) {
             if (entity instanceof EnderDragon) {
@@ -450,35 +440,32 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public float getBaseYaw(Entity entity) {
-        net.minecraft.world.entity.Entity handle = ((CraftEntity) entity).getHandle();
-        return ((net.minecraft.world.entity.LivingEntity) handle).yBodyRot;
+    public float getBaseYaw(LivingEntity entity) {
+        return ((CraftLivingEntity) entity).getHandle().yBodyRot;
     }
 
     @Override
     public void look(Entity entity, float yaw, float pitch) {
         net.minecraft.world.entity.Entity handle = ((CraftEntity) entity).getHandle();
-        if (handle != null) {
-            handle.setYRot(yaw);
-            if (handle instanceof net.minecraft.world.entity.LivingEntity) {
-                net.minecraft.world.entity.LivingEntity livingHandle = (net.minecraft.world.entity.LivingEntity) handle;
-                while (yaw < -180.0F) {
-                    yaw += 360.0F;
-                }
-                while (yaw >= 180.0F) {
-                    yaw -= 360.0F;
-                }
-                livingHandle.yBodyRotO = yaw;
-                if (!(handle instanceof net.minecraft.world.entity.player.Player)) {
-                    livingHandle.setYBodyRot(yaw);
-                }
-                livingHandle.setYHeadRot(yaw);
-            }
-            handle.setXRot(pitch);
-        }
-        else {
+        if (handle == null) {
             Debug.echoError("Cannot set look direction for unspawned entity " + entity.getUniqueId());
+            return;
         }
+        handle.setYRot(yaw);
+        if (handle instanceof net.minecraft.world.entity.LivingEntity nmsLivingEntity) {
+            while (yaw < -180.0F) {
+                yaw += 360.0F;
+            }
+            while (yaw >= 180.0F) {
+                yaw -= 360.0F;
+            }
+            nmsLivingEntity.yBodyRotO = yaw;
+            if (!(handle instanceof net.minecraft.world.entity.player.Player)) {
+                nmsLivingEntity.setYBodyRot(yaw);
+            }
+            nmsLivingEntity.setYHeadRot(yaw);
+        }
+        handle.setXRot(pitch);
     }
 
     private static HitResult rayTrace(World world, Vector start, Vector end) {
@@ -514,8 +501,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public boolean internalLook(Player player, Location at) {
-        ClientboundPlayerLookAtPacket packet = new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.EYES, at.getX(), at.getY(), at.getZ());
-        PacketHelperImpl.send(player, packet);
+        PacketHelperImpl.send(player, new ClientboundPlayerLookAtPacket(EntityAnchorArgument.Anchor.EYES, at.getX(), at.getY(), at.getZ()));
         return true;
     }
 
@@ -579,24 +565,22 @@ public class EntityHelperImpl extends EntityHelper {
     public void setTicksLived(Entity entity, int ticks) {
         // Bypass Spigot's must-be-at-least-1-tick requirement, as negative tick counts are useful
         ((CraftEntity) entity).getHandle().tickCount = ticks;
-        if (entity instanceof CraftFallingBlock) {
-            ((CraftFallingBlock) entity).getHandle().time = ticks;
+        if (entity instanceof CraftFallingBlock craftFallingBlock) {
+            craftFallingBlock.getHandle().time = ticks;
         }
-        else if (entity instanceof CraftItem) {
-            ((ItemEntity) ((CraftItem) entity).getHandle()).age = ticks;
+        else if (entity instanceof CraftItem craftItem) {
+            ((ItemEntity) craftItem.getHandle()).age = ticks;
         }
     }
 
     @Override
-    public void setHeadAngle(Entity entity, float angle) {
-        net.minecraft.world.entity.LivingEntity handle = ((CraftLivingEntity) entity).getHandle();
-        handle.yHeadRot = angle;
-        handle.setYHeadRot(angle);
+    public void setHeadAngle(LivingEntity entity, float angle) {
+        ((CraftLivingEntity) entity).getHandle().setYHeadRot(angle);
     }
 
     @Override
-    public void setEndermanAngry(Entity entity, boolean angry) {
-        ((CraftEnderman) entity).getHandle().getEntityData().set(ENTITY_ENDERMAN_DATAWATCHER_SCREAMING, angry);
+    public void setEndermanAngry(Enderman enderman, boolean angry) {
+        ((CraftEnderman) enderman).getHandle().getEntityData().set(ENDERMAN_DATA_ACCESSOR_SCREAMING, angry);
     }
 
     public static class FakeDamageSrc extends DamageSource { public DamageSource real; public FakeDamageSrc(DamageSource src) { super(null); real = src; } }
@@ -614,79 +598,51 @@ public class EntityHelperImpl extends EntityHelper {
         DamageSources sources = nmsSourceProvider == null ? getReusableDamageSources() : nmsSourceProvider.level().damageSources();
         DamageSource src = sources.generic();
         if (nmsSource != null) {
-            if (nmsSource instanceof net.minecraft.world.entity.player.Player) {
-                src = nmsSource.level().damageSources().playerAttack((net.minecraft.world.entity.player.Player) nmsSource);
+            if (nmsSource instanceof net.minecraft.world.entity.player.Player nmsPlayer) {
+                src = nmsSource.level().damageSources().playerAttack(nmsPlayer);
             }
-            else if (nmsSource instanceof net.minecraft.world.entity.LivingEntity) {
-                src = nmsSource.level().damageSources().mobAttack((net.minecraft.world.entity.LivingEntity) nmsSource);
+            else if (nmsSource instanceof net.minecraft.world.entity.LivingEntity nmsLivingEntity) {
+                src = nmsSource.level().damageSources().mobAttack(nmsLivingEntity);
             }
         }
         if (cause == null) {
             return src;
         }
-        switch (cause) {
-            case CONTACT:
-                return sources.cactus();
-            case ENTITY_ATTACK:
-                return sources.mobAttack(nmsSource instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) nmsSource : null);
-            case ENTITY_SWEEP_ATTACK:
-                if (src != sources.generic()) {
-                    src.sweep();
-                }
-                return src;
-            case PROJECTILE:
-                return sources.thrown(nmsSource, nmsSource != null && nmsSource.getBukkitEntity() instanceof Projectile
-                        && ((Projectile) nmsSource.getBukkitEntity()).getShooter() instanceof Entity ? ((CraftEntity) ((Projectile) nmsSource.getBukkitEntity()).getShooter()).getHandle() : null);
-            case SUFFOCATION:
-                return sources.inWall();
-            case FALL:
-                return sources.fall();
-            case FIRE:
-                return sources.inFire();
-            case FIRE_TICK:
-                return sources.onFire();
-            case MELTING:
-                return sources.melting;
-            case LAVA:
-                return sources.lava();
-            case DROWNING:
-                return sources.drown();
-            case BLOCK_EXPLOSION:
-                return sources.explosion(nmsSource instanceof TNTPrimed && ((TNTPrimed) nmsSource).getSource() instanceof net.minecraft.world.entity.LivingEntity ? (net.minecraft.world.entity.LivingEntity) ((TNTPrimed) nmsSource).getSource() : null, null);
-            case ENTITY_EXPLOSION:
-                return sources.explosion(nmsSource, null);
-            case VOID:
-                return sources.fellOutOfWorld();
-            case LIGHTNING:
-                return sources.lightningBolt();
-            case STARVATION:
-                return sources.starve();
-            case POISON:
-                return sources.poison;
-            case MAGIC:
-                return sources.magic();
-            case WITHER:
-                return sources.wither();
-            case FALLING_BLOCK:
-                return sources.fallingBlock(nmsSource);
-            case THORNS:
-                return sources.thorns(nmsSource);
-            case DRAGON_BREATH:
-                return sources.dragonBreath();
-            case CUSTOM:
-                return sources.generic();
-            case FLY_INTO_WALL:
-                return sources.flyIntoWall();
-            case HOT_FLOOR:
-                return sources.hotFloor();
-            case CRAMMING:
-                return sources.cramming();
-            case DRYOUT:
-                return sources.dryOut();
-            //case SUICIDE:
-            default:
-                return new FakeDamageSrc(src);
-        }
+        return switch (cause) {
+            case CONTACT -> sources.cactus();
+            case ENTITY_ATTACK -> sources.mobAttack(nmsSource instanceof net.minecraft.world.entity.LivingEntity nmsLivingEntity ? nmsLivingEntity : null);
+            case ENTITY_SWEEP_ATTACK -> src != sources.generic() ? src.sweep() : src;
+            case PROJECTILE -> sources.thrown(nmsSource, nmsSource != null && nmsSource.getBukkitEntity() instanceof Projectile projectile
+                        && projectile.getShooter() instanceof CraftEntity shooter ? shooter.getHandle() : null);
+            case SUFFOCATION -> sources.inWall();
+            case FALL -> sources.fall();
+            case FIRE -> sources.inFire();
+            case FIRE_TICK -> sources.onFire();
+            case MELTING -> sources.melting;
+            case LAVA -> sources.lava();
+            case DROWNING -> sources.drown();
+            case BLOCK_EXPLOSION -> nmsSource instanceof PrimedTnt primedTnt ? sources.explosion(primedTnt, primedTnt.getOwner()) : sources.explosion(null);
+            case ENTITY_EXPLOSION -> sources.explosion(nmsSource, null);
+            case VOID -> sources.fellOutOfWorld();
+            case LIGHTNING -> sources.lightningBolt();
+            case STARVATION -> sources.starve();
+            case POISON -> sources.poison;
+            case MAGIC -> sources.magic();
+            case WITHER -> sources.wither();
+            case FALLING_BLOCK -> sources.fallingBlock(nmsSource);
+            case THORNS -> sources.thorns(nmsSource);
+            case DRAGON_BREATH -> sources.dragonBreath();
+            case CUSTOM -> sources.generic();
+            case FLY_INTO_WALL -> sources.flyIntoWall();
+            case HOT_FLOOR -> sources.hotFloor();
+            case CRAMMING -> sources.cramming();
+            case DRYOUT -> sources.dryOut();
+            case FREEZE -> sources.freeze();
+            case SONIC_BOOM -> sources.sonicBoom(nmsSource);
+            case WORLD_BORDER -> sources.outOfBorder();
+            case KILL -> sources.genericKill();
+            case SUICIDE -> new FakeDamageSrc(src);
+        };
     }
 
     @Override
@@ -700,10 +656,9 @@ public class EntityHelperImpl extends EntityHelper {
         CraftEventFactory.blockDamage = sourceLoc == null ? null : sourceLoc.getBlock();
         try {
             DamageSource src = getSourceFor(nmsSource, cause, nmsTarget);
-            if (src instanceof FakeDamageSrc) {
-                src = ((FakeDamageSrc) src).real;
-                EntityDamageEvent ede = fireFakeDamageEvent(target, source, sourceLoc, cause, amount);
-                if (ede.isCancelled()) {
+            if (src instanceof FakeDamageSrc fakeDamageSrc) {
+                src = fakeDamageSrc.real;
+                if (fireFakeDamageEvent(target, source, sourceLoc, cause, amount).isCancelled()) {
                     return;
                 }
             }
@@ -720,14 +675,14 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftLivingEntity) mob).getHandle().setLastHurtByMob(((CraftLivingEntity) damager).getHandle());
     }
 
-    public static final MethodHandle FALLINGBLOCK_TYPE_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(net.minecraft.world.entity.item.FallingBlockEntity.class, BlockState.class);
+    public static final Field FALLINGBLOCK_BLOCK_STATE = ReflectionHelper.getFields(FallingBlockEntity.class).getFirstOfType(BlockState.class);
 
     @Override
-    public void setFallingBlockType(FallingBlock entity, BlockData block) {
+    public void setFallingBlockType(FallingBlock fallingBlock, BlockData block) {
         BlockState state = ((CraftBlockData) block).getState();
-        FallingBlockEntity nmsEntity = ((CraftFallingBlock) entity).getHandle();
+        FallingBlockEntity nmsEntity = ((CraftFallingBlock) fallingBlock).getHandle();
         try {
-            FALLINGBLOCK_TYPE_SETTER.invoke(nmsEntity, state);
+            FALLINGBLOCK_BLOCK_STATE.set(nmsEntity, state);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -740,16 +695,6 @@ public class EntityHelperImpl extends EntityHelper {
         ServerLevel level = ((CraftWorld) spawner.getWorld()).getHandle();
         net.minecraft.world.entity.Entity nmsEntity = nmsSpawner.getSpawner().getOrCreateDisplayEntity(level, level.random, nmsSpawner.getBlockPos());
         return new EntityTag(nmsEntity.getBukkitEntity());
-    }
-
-    @Override
-    public void setFireworkLifetime(Firework firework, int ticks) {
-        ((CraftFirework) firework).getHandle().lifetime = ticks;
-    }
-
-    @Override
-    public int getFireworkLifetime(Firework firework) {
-        return ((CraftFirework) firework).getHandle().lifetime;
     }
 
     public static final Field ZOMBIE_INWATERTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.Zombie.class).get(ReflectionMappingsInfo.Zombie_inWaterTime, int.class);
@@ -801,7 +746,7 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftMob) mob).getHandle().setAggressive(aggressive);
     }
 
-    public static final Field ENTITY_REMOVALREASON = ReflectionHelper.getFields(net.minecraft.world.entity.Entity.class).getFirstOfType(net.minecraft.world.entity.Entity.RemovalReason.class);
+    // Use reflection because Paper changes the method return type
     public static final MethodHandle PLAYERLIST_REMOVE = ReflectionHelper.getMethodHandle(PlayerList.class, "remove", ServerPlayer.class);
 
     @Override
@@ -812,16 +757,16 @@ public class EntityHelperImpl extends EntityHelper {
             nmsEntity.getPassengers().forEach(net.minecraft.world.entity.Entity::stopRiding);
             Level level = nmsEntity.level();
             DedicatedPlayerList playerList = ((CraftServer) Bukkit.getServer()).getHandle();
-            if (nmsEntity instanceof ServerPlayer) {
-                PLAYERLIST_REMOVE.invoke(playerList, nmsEntity);
+            if (nmsEntity instanceof ServerPlayer nmsPlayer) {
+                PLAYERLIST_REMOVE.invoke(playerList, nmsPlayer);
             }
             else {
                 nmsEntity.remove(net.minecraft.world.entity.Entity.RemovalReason.DISCARDED);
             }
-            ENTITY_REMOVALREASON.set(nmsEntity, null);
+            nmsEntity.unsetRemoved();
             nmsEntity.setUUID(id);
-            if (nmsEntity instanceof ServerPlayer) {
-                playerList.placeNewPlayer(DenizenNetworkManagerImpl.getConnection((ServerPlayer) nmsEntity), (ServerPlayer) nmsEntity);
+            if (nmsEntity instanceof ServerPlayer nmsPlayer) {
+                playerList.placeNewPlayer(DenizenNetworkManagerImpl.getConnection(nmsPlayer), nmsPlayer);
             }
             else {
                 level.addFreshEntity(nmsEntity);
