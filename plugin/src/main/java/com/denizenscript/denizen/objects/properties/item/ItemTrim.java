@@ -18,12 +18,12 @@ public class ItemTrim extends ItemProperty<MapTag> {
     // @name trim
     // @input MapTag
     // @description
-    // Controls the trim on armor.
+    // Controls an armor item's trim.
     // Allowed keys: material, pattern.
     // Valid material inputs can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/meta/trim/TrimMaterial.html>
     // Valid pattern inputs can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/meta/trim/TrimPattern.html>
-    // Valid pattern and material inputs also include ones added by datapacks, plugins, etc. as a namespaced key.
-    // If an item already has a trim, you can omit either material or pattern to keep the original data while also changing the other option.
+    // Valid values also include ones added by datapacks, plugins, etc. as a namespaced key.
+    // For the mechanism, if an item already has a trim, you can omit either material or pattern to keep the original data while also changing the other option.
     // For example, if you only want to change the pattern and not the material, you can omit the material, and it will use the already existing material.
     // -->
 
@@ -33,11 +33,11 @@ public class ItemTrim extends ItemProperty<MapTag> {
 
     @Override
     public MapTag getPropertyValue() {
-        MapTag map = new MapTag();
         ArmorTrim currentTrim = ((ArmorMeta) getItemMeta()).getTrim();
         if (currentTrim == null) {
             return null;
         }
+        MapTag map = new MapTag();
         map.putObject("material", new ElementTag(Utilities.namespacedKeyToString(currentTrim.getMaterial().getKey()), true));
         map.putObject("pattern", new ElementTag(Utilities.namespacedKeyToString(currentTrim.getPattern().getKey()), true));
         return map;
