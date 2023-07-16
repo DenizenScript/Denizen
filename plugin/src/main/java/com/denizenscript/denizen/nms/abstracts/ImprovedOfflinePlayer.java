@@ -250,12 +250,12 @@ public abstract class ImprovedOfflinePlayer {
     }
 
     public float getFlySpeed() {
-        return ((CompoundTag) this.compound.getValue().get("abilities")).getFloat("flySpeed");
+        return ((CompoundTag) this.compound.getValue().get("abilities")).getFloat("flySpeed") * 2;
     }
 
     public void setFlySpeed(float speed) {
         CompoundTag compoundTag = (CompoundTag) this.compound.getValue().get("abilities");
-        compoundTag = compoundTag.createBuilder().putFloat("flySpeed", speed).build();
+        compoundTag = compoundTag.createBuilder().putFloat("flySpeed", speed / 2).build();
         this.compound = compound.createBuilder().put("abilities", compoundTag).build();
         markModified();
     }
@@ -396,12 +396,12 @@ public abstract class ImprovedOfflinePlayer {
     }
 
     public float getWalkSpeed() {
-        return ((CompoundTag) this.compound.getValue().get("abilities")).getFloat("walkSpeed");
+        return ((CompoundTag) this.compound.getValue().get("abilities")).getFloat("walkSpeed") * 2;
     }
 
     public void setWalkSpeed(float speed) {
         CompoundTag compoundTag = (CompoundTag) this.compound.getValue().get("abilities");
-        compoundTag = compoundTag.createBuilder().putFloat("walkSpeed", speed).build();
+        compoundTag = compoundTag.createBuilder().putFloat("walkSpeed", speed / 2).build();
         this.compound = compound.createBuilder().put("abilities", compoundTag).build();
         markModified();
     }
