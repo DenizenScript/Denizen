@@ -579,15 +579,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
     }
 
-    public void setFlySpeed(float speed) {
-        if (isOnline()) {
-            getPlayerEntity().setFlySpeed(speed);
-        }
-        else {
-            getNBTEditor().setFlySpeed(speed);
-        }
-    }
-
     public void setGameMode(GameMode mode) {
         if (isOnline()) {
             getPlayerEntity().setGameMode(mode);
@@ -3098,7 +3089,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.fly_speed>
         // -->
         if (mechanism.matches("fly_speed") && mechanism.requireFloat()) {
-            setFlySpeed(mechanism.getValue().asFloat());
+            float val = mechanism.getValue().asFloat();
+            if (val < -1 || val > 1) {
+                mechanism.echoError("Invalid speed specified. Must be between -1 and 1.");
+                return;
+            }
+            if (isOnline()) {
+                getPlayerEntity().setFlySpeed(val);
+            }
+            else {
+                getNBTEditor().setFlySpeed(val);
+            }
         }
 
         // <--[mechanism]
@@ -3247,11 +3248,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.walk_speed>
         // -->
         if (mechanism.matches("walk_speed") && mechanism.requireFloat()) {
+            float val = mechanism.getValue().asFloat();
+            if (val < -1 || val > 1) {
+                mechanism.echoError("Invalid speed specified. Must be between -1 and 1.");
+                return;
+            }
             if (isOnline()) {
-                getPlayerEntity().setWalkSpeed(mechanism.getValue().asFloat());
+                getPlayerEntity().setWalkSpeed(val);
             }
             else {
-                getNBTEditor().setWalkSpeed(mechanism.getValue().asFloat());
+                getNBTEditor().setWalkSpeed(val);
             }
         }
 

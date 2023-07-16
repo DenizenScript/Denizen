@@ -2891,7 +2891,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // Returns an interaction entity's last attack interaction, if any.
             // The returned map contains:
             // - 'player' (PlayerTag): the player who interacted
-            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this value is calculated, and may become inaccurate if the interaction entity changes worlds or the server lags.
+            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this is a delta time (same limitations as <@link event delta time>), and may become inaccurate if the interaction entity changes worlds.
             // - 'raw_game_time' (ElementTag(Number)): the raw game time the interaction occurred at, used to calculate the time above.
             // -->
             registerSpawnedOnlyTag(MapTag.class, "last_attack", (attribute, object) -> {
@@ -2909,7 +2909,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // Returns an interaction entity's last right click interaction, if any.
             // The returned map contains:
             // - 'player' (PlayerTag): the player who interacted
-            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this value is calculated, and may become inaccurate if the interaction entity changes worlds or the server lags.
+            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this is a delta time (same limitations as <@link event delta time>), and may become inaccurate if the interaction entity changes worlds.
             // - 'raw_game_time' (ElementTag(Number)): the raw game time the interaction occurred at, used to calculate the time above.
             // -->
             registerSpawnedOnlyTag(MapTag.class, "last_interaction", (attribute, object) -> {
