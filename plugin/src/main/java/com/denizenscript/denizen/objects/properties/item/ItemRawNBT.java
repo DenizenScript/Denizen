@@ -52,7 +52,7 @@ public class ItemRawNBT implements Property {
                 // Denizen
                 "Denizen Item Script", "DenizenItemScript", "Denizen NBT", "Denizen",
                 // General
-                "Damage", "Unbreakable", "CanDestroy", "CustomModelData",
+                "Damage", "Unbreakable", "CanDestroy", "CustomModelData", "trim",
                 // Display data
                 "display", "HideFlags",
                 // Block

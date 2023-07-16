@@ -234,6 +234,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemSpawnerPlayerRange.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerRange.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerType.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(ItemTrim.class, ItemTag.class);
+        }
         PropertyParser.registerProperty(ItemUnbreakable.class, ItemTag.class);
 
         // register core MaterialTag properties
