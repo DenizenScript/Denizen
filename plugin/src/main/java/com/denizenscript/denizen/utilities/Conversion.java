@@ -64,7 +64,7 @@ public class Conversion {
         else if (arg.object instanceof MapTag || (isElement && arg.getValue().startsWith("map@"))) {
             MapTag map = arg.object instanceof MapTag ? (MapTag) arg.object : MapTag.valueOf(arg.getValue(), context);
             int maxSlot = 0;
-            for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> entry : map.entrySet()) {
                 if (!ArgumentHelper.matchesInteger(entry.getKey().str)) {
                     return null;
                 }
@@ -74,7 +74,7 @@ public class Conversion {
                 }
             }
             InventoryTag inventory = new InventoryTag(Math.min(InventoryTag.maxSlots, (maxSlot / 9) * 9 + 9));
-            for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> entry : map.entrySet()) {
                 int slot = new ElementTag(entry.getKey().str).asInt();
                 ItemTag item = ItemTag.getItemFor(entry.getValue(), context);
                 if (item == null) {

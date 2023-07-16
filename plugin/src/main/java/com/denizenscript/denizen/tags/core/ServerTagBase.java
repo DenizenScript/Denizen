@@ -1979,7 +1979,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // - debug log "The custom red is <&[myred]>"
         // -->
         tagProcessor.registerMechanism("default_colors", false, MapTag.class, (object, mechanism, input) -> {
-            for (Map.Entry<StringHolder, ObjectTag> pair : input.map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> pair : input.entrySet()) {
                 String name = pair.getKey().low;
                 if (!CustomColorTagBase.customColors.containsKey(name)) {
                     CustomColorTagBase.customColors.put(name, pair.getValue().toString().replace("<", "<&lt>"));

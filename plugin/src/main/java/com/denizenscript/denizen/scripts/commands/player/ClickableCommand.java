@@ -148,7 +148,7 @@ public class ClickableCommand extends BracedCommand {
         }
         Consumer<ScriptQueue> configure = (queue) -> {
             if (clickable.defMap != null) {
-                for (Map.Entry<StringHolder, ObjectTag> val : clickable.defMap.map.entrySet()) {
+                for (Map.Entry<StringHolder, ObjectTag> val : clickable.defMap.entrySet()) {
                     queue.addDefinition(val.getKey().str, val.getValue());
                 }
             }
@@ -168,7 +168,7 @@ public class ClickableCommand extends BracedCommand {
         for (Argument arg : scriptEntry) {
             if (arg.matchesPrefix("defmap")
                     && arg.matchesArgumentType(MapTag.class)) {
-                defMap.map.putAll(arg.asType(MapTag.class).map);
+                defMap.putAll(arg.asType(MapTag.class));
             }
             else if (arg.hasPrefix()
                     && arg.getPrefix().getRawValue().startsWith("def.")) {
@@ -193,7 +193,7 @@ public class ClickableCommand extends BracedCommand {
                 arg.reportUnhandled();
             }
         }
-        if (!defMap.map.isEmpty()) {
+        if (!defMap.isEmpty()) {
             scriptEntry.addObject("def_map", defMap);
         }
     }
@@ -261,7 +261,7 @@ public class ClickableCommand extends BracedCommand {
             newClickable.directEntries = getBracedCommandsDirect(scriptEntry, scriptEntry);
             newClickable.defMap = scriptEntry.queue.definitions.duplicate();
             if (defMap != null) {
-                newClickable.defMap.map.putAll(defMap.map);
+                newClickable.defMap.putAll(defMap);
             }
             newClickable.queueId = "CLICKABLE_" + (scriptEntry.getScript() == null ? "UNKNOWN" : scriptEntry.getScript().getName());
         }

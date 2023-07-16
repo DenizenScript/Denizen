@@ -2963,7 +2963,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         ArrayList<Mechanism> waitingMechs;
         if (isSpawnedOrValidForTag()) {
             waitingMechs = new ArrayList<>();
-            for (Map.Entry<StringHolder, ObjectTag> property : PropertyParser.getPropertiesMap(this).map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> property : PropertyParser.getPropertiesMap(this).entrySet()) {
                 waitingMechs.add(new Mechanism(property.getKey().str, property.getValue(), context));
             }
         }

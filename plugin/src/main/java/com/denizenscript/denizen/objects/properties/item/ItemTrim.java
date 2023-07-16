@@ -45,7 +45,7 @@ public class ItemTrim extends ItemProperty<MapTag> {
 
     @Override
     public boolean isDefaultValue(MapTag map) {
-        return map.map.isEmpty();
+        return map.isEmpty();
     }
 
     @Override

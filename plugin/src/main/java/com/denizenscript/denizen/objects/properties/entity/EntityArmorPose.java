@@ -163,7 +163,7 @@ public class EntityArmorPose implements Property {
             }
             else {
                 MapTag map = mechanism.valueAsType(MapTag.class);
-                for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
+                for (Map.Entry<StringHolder, ObjectTag> entry : map.entrySet()) {
                     PosePart posePart = PosePart.fromName(entry.getKey().str);
                     if (posePart == null) {
                         mechanism.echoError("Invalid pose part specified: " + entry.getKey().str);

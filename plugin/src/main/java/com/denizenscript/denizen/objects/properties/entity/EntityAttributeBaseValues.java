@@ -59,7 +59,7 @@ public class EntityAttributeBaseValues implements Property {
     @Override
     public String getPropertyString() {
         MapTag map = attributeBaseValues();
-        return map.map.isEmpty() ? null : map.savable();
+        return map.isEmpty() ? null : map.savable();
     }
 
     @Override
@@ -184,7 +184,7 @@ public class EntityAttributeBaseValues implements Property {
         if (mechanism.matches("attribute_base_values") && mechanism.requireObject(MapTag.class)) {
             MapTag input = mechanism.valueAsType(MapTag.class);
             Attributable ent = getAttributable();
-            for (Map.Entry<StringHolder, ObjectTag> subValue : input.map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> subValue : input.entrySet()) {
                 Attribute attr = Attribute.valueOf(subValue.getKey().str.toUpperCase());
                 AttributeInstance instance = ent.getAttribute(attr);
                 if (instance == null) {

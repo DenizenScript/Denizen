@@ -243,7 +243,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
-        if (tracker instanceof MapTagFlagTracker && ((MapTagFlagTracker) tracker).map.map.isEmpty()) {
+        if (tracker instanceof MapTagFlagTracker && ((MapTagFlagTracker) tracker).map.isEmpty()) {
             setItemStack(CustomNBT.removeCustomNBT(getItemStack(), "flags", "Denizen"));
         }
         else {

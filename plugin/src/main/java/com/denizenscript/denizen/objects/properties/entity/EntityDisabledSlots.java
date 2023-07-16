@@ -84,7 +84,7 @@ public class EntityDisabledSlots implements Property {
     @Override
     public String getPropertyString() {
         MapTag map = getDisabledSlotsMap();
-        return map.map.isEmpty() ? null : map.identify();
+        return map.isEmpty() ? null : map.identify();
     }
 
     @Override
@@ -179,7 +179,7 @@ public class EntityDisabledSlots implements Property {
             Map<EquipmentSlot, Set<Action>> map = new HashMap<>();
             if (mechanism.value.canBeType(MapTag.class)) {
                 MapTag input = mechanism.valueAsType(MapTag.class);
-                for (Map.Entry<StringHolder, ObjectTag> entry : input.map.entrySet()) {
+                for (Map.Entry<StringHolder, ObjectTag> entry : input.entrySet()) {
                     EquipmentSlot slot = new ElementTag(entry.getKey().str).asEnum(EquipmentSlot.class);
 
                     if (slot == null) {

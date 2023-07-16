@@ -176,7 +176,7 @@ public class ItemEnchantments implements Property {
     @Override
     public String getPropertyString() {
         MapTag map = getEnchantmentMap();
-        if (map.map.isEmpty()) {
+        if (map.isEmpty()) {
             return null;
         }
         return map.toString();
@@ -251,7 +251,7 @@ public class ItemEnchantments implements Property {
             String val = mechanism.getValue().asString();
             if (val.startsWith("map@") || val.startsWith("[") || (val.contains("=") && !val.contains(","))) {
                 MapTag map = mechanism.valueAsType(MapTag.class);
-                for (Map.Entry<StringHolder, ObjectTag> enchantments : map.map.entrySet()) {
+                for (Map.Entry<StringHolder, ObjectTag> enchantments : map.entrySet()) {
                     Enchantment ench = EnchantmentTag.valueOf(enchantments.getKey().low, mechanism.context).enchantment;
                     int level = enchantments.getValue().asElement().asInt();
                     if (ench != null) {
