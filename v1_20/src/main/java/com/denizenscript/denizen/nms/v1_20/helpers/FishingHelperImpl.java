@@ -14,7 +14,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -68,15 +67,14 @@ public class FishingHelperImpl implements FishingHelper {
         return result != null ? CraftItemStack.asBukkitCopy(result) : null;
     }
 
-    public ItemStack getRandomReward(FishingHook hook, ResourceLocation key) {
-        ServerLevel worldServer = (ServerLevel) hook.level();
+    public ItemStack getRandomReward(FishingHook nmsHook, ResourceLocation key) {
+        ServerLevel nmsWorld = (ServerLevel) nmsHook.level();
         Map<LootContextParam<?>, Object> params = Maps.newIdentityHashMap();
-        params.put(LootContextParams.ORIGIN, new Vec3(hook.getX(), hook.getY(), hook.getZ()));
+        params.put(LootContextParams.ORIGIN, new Vec3(nmsHook.getX(), nmsHook.getY(), nmsHook.getZ()));
         params.put(LootContextParams.TOOL, new ItemStack(Items.FISHING_ROD));
-        LootParams playerFishEvent2 = new LootParams(worldServer, params, Maps.newHashMap(), 0);
-        LootDataManager registry = worldServer.getServer().getLootData();
-        List<ItemStack> itemStacks = registry.getLootTable(key).getRandomItems(playerFishEvent2);
-        return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
+        LootParams nmsLootParams = new LootParams(nmsWorld, params, Maps.newHashMap(), 0);
+        List<ItemStack> nmsItems = nmsWorld.getServer().getLootData().getLootTable(key).getRandomItems(nmsLootParams);
+        return nmsItems.get(nmsWorld.random.nextInt(nmsItems.size()));
     }
 
     @Override
