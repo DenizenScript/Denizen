@@ -17,6 +17,13 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     // @description
     // Sets the instrument of a goat horn.
     // For a list of possible instruments, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/MusicInstrument.html>.
+    // @example
+    // # This can narrate: "This horn has the ponder instrument!"
+    // - narrate "This horn has the <player.item_in_hand.instrument> instrument!"
+    // @example
+    // # Forces the player's held item to play seek instead of whatever it played before.
+    // # Would break if the player isn't holding a goat horn.
+    // - inventory adjust slot:hand instrument:seek
     // -->
 
     public static boolean describes(ItemTag item) {
