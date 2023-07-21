@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
@@ -889,14 +890,17 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @object ChunkTag
         // @name refresh_chunk_sections
         // @input None
+        // @deprecated for MC 1.18+, use 'refresh_chunk'
         // @description
         // Refreshes all 16x16x16 chunk sections within the chunk.
+        // For MC 1.18+, prefer <@link mechanism ChunkTag.refresh_chunk>
         // @example
         // - adjust <player.location.chunk> refresh_chunk_sections
         // -->
         if (mechanism.matches("refresh_chunk_sections")) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                getBukkitWorld().regenerateChunk(chunkX, chunkZ);
+                BukkitImplDeprecations.chunkRefreshSections.warn(mechanism.context);
+                getBukkitWorld().refreshChunk(chunkX, chunkZ);
             }
             else {
                 NMSHandler.chunkHelper.refreshChunkSections(getChunk());
