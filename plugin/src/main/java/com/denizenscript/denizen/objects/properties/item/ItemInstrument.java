@@ -16,14 +16,15 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     // @input ElementTag
     // @description
     // Sets the instrument of a goat horn.
-    // For a list of possible instruments, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/MusicInstrument.html>.
+    // Here is a list of valid instruments: admire_goat_horn, call_goat_horn, dream_goat_horn, feel_goat_horn, ponder_goat_horn, seek_goat_horn, sing_goat_horn, yearn_goat_horn.
+    // Instruments added by datapacks, plugins, etc. are also valid as a namespaced key.
     // @example
-    // # This can narrate: "This horn has the ponder instrument!"
+    // # This can narrate: "This horn has the ponder_goat_horn instrument!"
     // - narrate "This horn has the <player.item_in_hand.instrument> instrument!"
     // @example
-    // # Forces the player's held item to play seek instead of whatever it played before.
+    // # Forces the player's held item to play seek_goat_horn instead of whatever it played before.
     // # Would break if the player isn't holding a goat horn.
-    // - inventory adjust slot:hand instrument:seek
+    // - inventory adjust slot:hand instrument:seek_goat_horn
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -34,16 +35,14 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     public ElementTag getPropertyValue() {
         MusicInstrument instrument = getMusicInstrument();
         if (instrument != null) {
-            String key = Utilities.namespacedKeyToString(instrument.getKey()).replace("_goat_horn", "");
-            return new ElementTag(key);
+            return new ElementTag(Utilities.namespacedKeyToString(instrument.getKey()));
         }
         return null;
     }
 
     @Override
     public void setPropertyValue(ElementTag param, Mechanism mechanism) {
-        String key = param.asString().endsWith("_goat_horn") ? param.asString() : param.asString().concat("_goat_horn");
-        MusicInstrument instrument = MusicInstrument.getByKey(Utilities.parseNamespacedKey(key));
+        MusicInstrument instrument = MusicInstrument.getByKey(Utilities.parseNamespacedKey(param.asString()));
         if (instrument == null) {
             mechanism.echoError("Invalid horn instrument: '" + param.asString() + "'!");
             return;
