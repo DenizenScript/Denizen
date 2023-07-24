@@ -78,7 +78,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
             case "item" -> result;
             case "inventory" -> InventoryTag.mirrorBukkitInventory(event.getInventory());
             case "recipe" -> new ListTag(Arrays.asList(event.getInventory().getMatrix()), ItemTag::new);
-            case "recipe_id" -> event.getRecipe() instanceof Keyed keyed ? new ElementTag(keyed.getKey().toString()): null;
+            case "recipe_id" -> event.getRecipe() instanceof Keyed keyed ? new ElementTag(keyed.getKey().toString(), true): null;
             case "is_repair" -> new ElementTag(event.isRepair());
             default -> super.getContext(name);
         };

@@ -17,7 +17,6 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     // @description
     // Sets the instrument of a goat horn.
     // Here is a list of valid instruments: admire_goat_horn, call_goat_horn, dream_goat_horn, feel_goat_horn, ponder_goat_horn, seek_goat_horn, sing_goat_horn, yearn_goat_horn.
-    // Instruments added by datapacks, plugins, etc. are also valid as a namespaced key.
     // @example
     // # This can narrate: "This horn has the ponder_goat_horn instrument!"
     // - narrate "This horn has the <player.item_in_hand.instrument> instrument!"
@@ -44,7 +43,7 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     public void setPropertyValue(ElementTag param, Mechanism mechanism) {
         MusicInstrument instrument = MusicInstrument.getByKey(Utilities.parseNamespacedKey(param.asString()));
         if (instrument == null) {
-            mechanism.echoError("Invalid horn instrument: '" + param.asString() + "'!");
+            mechanism.echoError("Invalid horn instrument: '" + param + "'!");
             return;
         }
         setMusicInstrument(instrument);
