@@ -13,6 +13,8 @@ public class EntitySneaking extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @description
     // Whether an entity is sneaking.
+    // For most entities this just makes the name tag less visible, and doesn't actually update the pose.
+    // Note that <@link command sneak> is also available.
     // -->
 
     public static boolean describes(EntityTag entity) {
