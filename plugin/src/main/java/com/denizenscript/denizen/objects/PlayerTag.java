@@ -2081,10 +2081,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <PlayerTag.is_sneaking>
         // @returns ElementTag(Boolean)
+        // @deprecated use 'EntityTag.sneaking' on 1.19+.
         // @description
-        // Returns whether the player is currently sneaking.
+        // Deprecated in favor of <@link property EntityTag.sneaking> on 1.19+.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "is_sneaking", (attribute, object) -> {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                BukkitImplDeprecations.playerIsSneaking.warn(attribute.context);
+            }
             return new ElementTag(object.getPlayerEntity().isSneaking());
         });
 

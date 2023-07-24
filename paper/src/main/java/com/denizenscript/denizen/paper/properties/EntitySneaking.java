@@ -11,6 +11,7 @@ public class EntitySneaking extends EntityProperty<ElementTag> {
     // @object EntityTag
     // @name sneaking
     // @input ElementTag(Boolean)
+    // @plugin Paper
     // @description
     // Whether an entity is sneaking.
     // For most entities this just makes the name tag less visible, and doesn't actually update the pose.
