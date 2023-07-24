@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
@@ -2081,12 +2082,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <PlayerTag.is_sneaking>
         // @returns ElementTag(Boolean)
-        // @deprecated use 'EntityTag.sneaking' on 1.19+.
+        // @deprecated use 'EntityTag.sneaking' on Paper 1.19+.
         // @description
-        // Deprecated in favor of <@link property EntityTag.sneaking> on 1.19+.
+        // Deprecated in favor of <@link property EntityTag.sneaking> on Paper 1.19+.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "is_sneaking", (attribute, object) -> {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
                 BukkitImplDeprecations.playerIsSneaking.warn(attribute.context);
             }
             return new ElementTag(object.getPlayerEntity().isSneaking());

@@ -287,7 +287,7 @@ public class BukkitImplDeprecations {
     public static Warning oldAgeLockedControls = new FutureWarning("oldAgeLockedControls", "Several old ways of controlling whether an entity's age is locked are deprecated in favor of the 'EntityTag.age_locked' tag/mech pair.");
 
     // Added 2023/07/24, deprecate officially by 2026
-    // Bump/convert to a deprecated variant once 1.19 is the minimum supported version, as that's when 'EntityTag.sneaking' was added.
+    // Bump once 1.19 is the minimum supported version, as that's when 'EntityTag.sneaking' was added.
     public static Warning playerIsSneaking = new FutureWarning("playerIsSneaking", "'PlayerTag.is_sneaking' is deprecated in favor of the 'EntityTag.sneaking' property.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
