@@ -18,7 +18,7 @@ public class ItemTrim extends ItemProperty<MapTag> {
     // @name trim
     // @input MapTag
     // @description
-    // Controls an armor item's trim.
+    // An armor item's trim.
     // Allowed keys: material, pattern.
     // Valid material values can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/meta/trim/TrimMaterial.html>
     // Valid pattern values can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/meta/trim/TrimPattern.html>
