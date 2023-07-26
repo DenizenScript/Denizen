@@ -53,6 +53,9 @@ public class ReflectionMappingsInfo {
     // net.minecraft.server.level.ThreadedLevelLightEngine$TaskType
     public static String ThreadedLevelLightEngineTaskType_PRE_UPDATE = "a";
 
+    // net.minecraft.world.entity.ExperienceOrb
+    public static String ExperienceOrb_age = "g";
+
     // net.minecraft.world.entity.item.ItemEntity
     public static String ItemEntity_DATA_ITEM = "c";
 

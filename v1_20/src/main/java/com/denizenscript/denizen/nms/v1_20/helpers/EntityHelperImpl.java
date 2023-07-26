@@ -561,6 +561,8 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftEntity) entity).getHandle().setBoundingBox(new AABB(box.getMinX(), box.getMinY(), box.getMinZ(), box.getMaxX(), box.getMaxY(), box.getMaxZ()));
     }
 
+    public static final Field EXPERIENCE_ORB_AGE = ReflectionHelper.getFields(net.minecraft.world.entity.ExperienceOrb.class).get(ReflectionMappingsInfo.ExperienceOrb_age, int.class);
+
     @Override
     public void setTicksLived(Entity entity, int ticks) {
         // Bypass Spigot's must-be-at-least-1-tick requirement, as negative tick counts are useful
@@ -570,6 +572,14 @@ public class EntityHelperImpl extends EntityHelper {
         }
         else if (entity instanceof CraftItem craftItem) {
             ((ItemEntity) craftItem.getHandle()).age = ticks;
+        }
+        else if (entity instanceof CraftExperienceOrb craftExperienceOrb) {
+            try {
+                EXPERIENCE_ORB_AGE.setInt(craftExperienceOrb.getHandle(), ticks);
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
         }
     }
 
