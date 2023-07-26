@@ -15,6 +15,12 @@ public class EntityBrightness extends EntityProperty<MapTag> {
     // @description
     // A map of the display entity's brightness override (if any), containing "block" and "sky" keys, each with a brightness level between 0 and 15.
     // For the mechanism: provide no input to remove the brightness override.
+    // @example
+    // # Sets the brightness of the display entity to be as if the block was well lit by a torch in a cave (no sky light).
+    // - adjust <[some_entity]> brightness:[sky=0;block=15]
+    // @example
+    // # Spawns a block_display entity of a stone that is middle brightness from both the sky and block sources.
+    // - spawn block_display[material=stone;brightness=[sky=7;block=7]] <player.location>
     // -->
 
     public static boolean describes(EntityTag entity) {
