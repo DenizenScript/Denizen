@@ -5,14 +5,14 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Settings;
-import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
-import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.core.FlagCommand;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.ExCommandHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
@@ -64,50 +64,41 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         //
         // -->
 
-        if (cmd.getName().equalsIgnoreCase("ex")) {
-            List<Object> entries = new ArrayList<>();
-            String entry = String.join(" ", args);
-            boolean quiet = !Settings.showExDebug();
-            if (entry.length() > 3 && entry.startsWith("-q ")) {
-                quiet = !quiet;
-                entry = entry.substring("-q ".length());
-            }
-            if (entry.length() < 2) {
-                sender.sendMessage("/ex (-q) <denizen script command> (arguments)");
-                return true;
-            }
-            if (Settings.showExHelp()) {
-                if (CoreConfiguration.shouldShowDebug) {
-                    if (quiet) {
-                        sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command... check the console for full debug output!");
-                    }
-                    else {
-                        //sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command...");
-                    }
-                }
-                else {
-                    sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command... to see debug, use /denizen debug");
-                }
-            }
-            entries.add(entry);
-            InstantQueue queue = new InstantQueue("EXCOMMAND");
-            NPCTag npc = null;
-            if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
-                npc = new NPCTag(Depends.citizens.getNPCSelector().getSelected(sender));
-            }
-            List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
-                    new BukkitScriptEntryData(sender instanceof Player ? new PlayerTag((Player) sender) : null, npc));
-            queue.addEntries(scriptEntries);
-            if (!quiet && sender instanceof Player) {
-                final Player player = (Player) sender;
-                queue.debugOutput = (s) -> {
-                    player.spigot().sendMessage(FormattedTextHelper.parse(s.replace("<FORCE_ALIGN>", ""), net.md_5.bungee.api.ChatColor.WHITE));
-                };
-            }
-            queue.start();
+        List<Object> entries = new ArrayList<>();
+        String entry = String.join(" ", args);
+        boolean quiet = !Settings.showExDebug();
+        if (entry.length() > 3 && entry.startsWith("-q ")) {
+            quiet = !quiet;
+            entry = entry.substring("-q ".length());
+        }
+        if (entry.length() < 2) {
+            sender.sendMessage("/ex (-q) <denizen script command> (arguments)");
             return true;
         }
-        return false;
+        if (Settings.showExHelp()) {
+            if (CoreConfiguration.shouldShowDebug) {
+                if (quiet) {
+                    sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command... check the console for full debug output!");
+                }
+            }
+            else {
+                sender.sendMessage(ChatColor.YELLOW + "Executing Denizen script command... to see debug, use /denizen debug");
+            }
+        }
+        entries.add(entry);
+        InstantQueue queue = new InstantQueue("EXCOMMAND");
+        NPCTag npc = null;
+        if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
+            npc = new NPCTag(Depends.citizens.getNPCSelector().getSelected(sender));
+        }
+        List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
+                new BukkitScriptEntryData(sender instanceof Player player ? new PlayerTag(player) : null, npc));
+        queue.addEntries(scriptEntries);
+        if (!quiet && sender instanceof Player) {
+            queue.debugOutput = s -> sender.spigot().sendMessage(FormattedTextHelper.parse(s.replace("<FORCE_ALIGN>", ""), net.md_5.bungee.api.ChatColor.WHITE));
+        }
+        queue.start();
+        return true;
     }
 
     static {
@@ -133,10 +124,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String cmdName, String[] rawArgs) {
-        if ((!cmdName.equalsIgnoreCase("ex") && !cmdName.equalsIgnoreCase("exs")) || !sender.hasPermission("denizen.ex")) {
-            return null;
-        }
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] rawArgs) {
         BukkitTagContext context = new BukkitTagContext(sender instanceof Player player ? new PlayerTag(player) : null, null, null);
         if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
             context.npc = new NPCTag(Depends.citizens.getNPCSelector().getSelected(sender));
