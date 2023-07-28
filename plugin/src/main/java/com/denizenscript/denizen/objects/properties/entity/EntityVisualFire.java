@@ -11,7 +11,7 @@ public class EntityVisualFire extends EntityProperty<ElementTag> {
     // @name visual_fire
     // @input ElementTag(Boolean)
     // @description
-    // Whether an entity has a fake fire effect. For actual fire, see <@link command burn> and <@link tag on_fire>.
+    // Whether an entity has a fake fire effect. For actual fire, see <@link command burn> and <@link tag EntityTag.on_fire>.
     // -->
 
     public static boolean describes(EntityTag entity) {
