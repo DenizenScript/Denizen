@@ -31,7 +31,6 @@ public class MaterialAttachment extends MaterialProperty<ElementTag> {
         return "attachment";
     }
 
-    // TODO: The bell does not set it's attachment in game. It stays the same. Make it so it actually changes lol.
     @Override
     public void setPropertyValue(ElementTag attachment, Mechanism mechanism) {
         if (!mechanism.requireEnum(Bell.Attachment.class)) {
