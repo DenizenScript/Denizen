@@ -10,7 +10,7 @@ import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.objects.properties.material.MaterialDistance;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
-import com.denizenscript.denizen.objects.properties.material.MaterialSwitchFace;
+import com.denizenscript.denizen.objects.properties.material.MaterialAttachmentFace;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
@@ -3902,8 +3902,8 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             else if (material.getMaterial() == Material.WALL_TORCH || material.getMaterial() == Material.REDSTONE_WALL_TORCH || material.getMaterial() == Material.SOUL_WALL_TORCH) {
                 face = ((Directional) material.getModernData()).getFacing().getOppositeFace();
             }
-            else if (MaterialSwitchFace.describes(material)) {
-                face = MaterialSwitchFace.getFrom(material).getAttachedTo();
+            else if (MaterialAttachmentFace.describes(material)) {
+                face = new MaterialAttachmentFace(material).getAttachedTo();
             }
             else if (material.hasModernData() && material.getModernData() instanceof org.bukkit.block.data.type.WallSign) {
                 face = ((org.bukkit.block.data.type.WallSign) material.getModernData()).getFacing().getOppositeFace();

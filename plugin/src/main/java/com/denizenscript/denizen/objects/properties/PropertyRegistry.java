@@ -242,6 +242,7 @@ public class PropertyRegistry {
         // register core MaterialTag properties
         PropertyParser.registerProperty(MaterialAge.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialAttached.class, MaterialTag.class);
+        PropertyParser.registerProperty(MaterialAttachmentFace.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialBlockType.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialBrewingStand.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialCampfire.class, MaterialTag.class);
@@ -266,7 +267,6 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialSides.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialSnowable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialSwitchable.class, MaterialTag.class);
-        PropertyParser.registerProperty(MaterialSwitchFace.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialUnstable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialWaterlogged.class, MaterialTag.class);
 
