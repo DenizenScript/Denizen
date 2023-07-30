@@ -45,7 +45,7 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         MusicInstrument instrument = value != null ? MusicInstrument.getByKey(Utilities.parseNamespacedKey(value.asString())) : null;
         if (value != null && instrument == null) {
-            mechanism.echoError("Invalid instrument specified: " + value);
+            mechanism.echoError("Invalid instrument: " + value);
             return;
         }
         editMeta(MusicInstrumentMeta.class, meta -> meta.setInstrument(instrument));
