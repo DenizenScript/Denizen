@@ -315,7 +315,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         });
         tagProcessor.registerTag(ElementTag.class, "is_switch", (attribute, object) -> {
             BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
-            return new ElementTag(MaterialSwitchFace.describes(object));
+            return new ElementTag(MaterialAttachmentFace.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "is_waterloggable", (attribute, object) -> {
             BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
