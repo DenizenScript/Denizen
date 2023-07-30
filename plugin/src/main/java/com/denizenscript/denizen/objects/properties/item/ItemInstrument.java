@@ -16,7 +16,9 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     // @input ElementTag
     // @description
     // A goat horn's instrument, if any.
+    // Goat horns will default to playing "ponder_goat_horn" when the instrument is unset, although this is effectively random and shouldn't be relied on.
     // Valid instruments are: admire_goat_horn, call_goat_horn, dream_goat_horn, feel_goat_horn, ponder_goat_horn, seek_goat_horn, sing_goat_horn, yearn_goat_horn.
+    // For the mechanism: provide no input to unset the instrument.
     // @example
     // # This can narrate: "This horn has the ponder_goat_horn instrument!"
     // - narrate "This horn has the <player.item_in_hand.instrument> instrument!"
@@ -27,7 +29,7 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     // -->
 
     public static boolean describes(ItemTag item) {
-        return item.getBukkitMaterial() == Material.GOAT_HORN;
+        return item.getItemMeta() instanceof MusicInstrumentMeta;
     }
 
     @Override
@@ -41,9 +43,9 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        MusicInstrument instrument = MusicInstrument.getByKey(Utilities.parseNamespacedKey(value.asString()));
-        if (instrument == null) {
-            mechanism.echoError("Invalid horn instrument: '" + value + "'!");
+        MusicInstrument instrument = value != null ? MusicInstrument.getByKey(Utilities.parseNamespacedKey(value.asString())) : null;
+        if (value != null && instrument == null) {
+            mechanism.echoError("Invalid instrument specified: " + value);
             return;
         }
         editMeta(MusicInstrumentMeta.class, meta -> meta.setInstrument(instrument));
@@ -55,6 +57,6 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     }
 
     public static void register() {
-        autoRegister("instrument", ItemInstrument.class, ElementTag.class, false);
+        autoRegisterNullable("instrument", ItemInstrument.class, ElementTag.class, false);
     }
 }
