@@ -19,7 +19,8 @@ public class MaterialAttachmentFace extends MaterialProperty<ElementTag> {
     // @input ElementTag
     // @description
     // Controls the current attach direction for attachable materials such as switches, grindstones, and bells.
-    // Values are "CEILING", "FLOOR", or "WALL". For bells, values are "CEILING", "FLOOR", "SINGLE_WALL", or "DOUBLE_WALL".
+    // For bell values, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/data/type/Bell.Attachment.html>
+    // For all other supported type values, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/data/FaceAttachable.AttachedFace.html>
     // -->
 
     public static boolean describes(MaterialTag material) {
@@ -76,10 +77,9 @@ public class MaterialAttachmentFace extends MaterialProperty<ElementTag> {
         }
         else if (getBlockData() instanceof Bell bell) {
             return switch (bell.getAttachment()) {
-                case SINGLE_WALL -> ((Directional) getBlockData()).getFacing();
+                case SINGLE_WALL, DOUBLE_WALL -> ((Directional) getBlockData()).getFacing();
                 case FLOOR -> BlockFace.DOWN;
                 case CEILING -> BlockFace.UP;
-                default -> null;
             };
         }
         return null;
