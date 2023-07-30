@@ -1,12 +1,9 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.FaceAttachable;
 import org.bukkit.block.data.type.Bell;
@@ -24,8 +21,7 @@ public class MaterialAttachmentFace extends MaterialProperty<ElementTag> {
     // -->
 
     public static boolean describes(MaterialTag material) {
-        BlockData data = material.getModernData();
-        return data instanceof FaceAttachable || data instanceof Bell;
+        return material.getModernData() instanceof FaceAttachable || material.getModernData() instanceof Bell;
     }
 
     public MaterialAttachmentFace(MaterialTag material) {
@@ -49,15 +45,15 @@ public class MaterialAttachmentFace extends MaterialProperty<ElementTag> {
     }
 
     @Override
-    public void setPropertyValue(ElementTag attachment, Mechanism mechanism) {
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         if (getBlockData() instanceof FaceAttachable attachable) {
             if (mechanism.requireEnum(FaceAttachable.AttachedFace.class)) {
-                attachable.setAttachedFace(FaceAttachable.AttachedFace.valueOf(attachment.asString().toUpperCase()));
+                attachable.setAttachedFace(value.asEnum(FaceAttachable.AttachedFace.class));
             }
         }
         else if (getBlockData() instanceof Bell bell) {
             if (mechanism.requireEnum(Bell.Attachment.class)) {
-                bell.setAttachment(Bell.Attachment.valueOf(attachment.asString().toUpperCase()));
+                bell.setAttachment(value.asEnum(Bell.Attachment.class));
             }
         }
     }
@@ -65,12 +61,7 @@ public class MaterialAttachmentFace extends MaterialProperty<ElementTag> {
     public BlockFace getAttachedTo() {
         if (getBlockData() instanceof FaceAttachable attachable) {
             return switch (attachable.getAttachedFace()) {
-                case WALL -> {
-                    if (getBlockData() instanceof Directional) {
-                        yield ((Directional) getBlockData()).getFacing().getOppositeFace();
-                    }
-                    yield BlockFace.SELF;
-                }
+                case WALL -> getBlockData() instanceof Directional directional ? directional.getFacing().getOppositeFace() : BlockFace.SELF;
                 case FLOOR -> BlockFace.DOWN;
                 case CEILING -> BlockFace.UP;
             };
