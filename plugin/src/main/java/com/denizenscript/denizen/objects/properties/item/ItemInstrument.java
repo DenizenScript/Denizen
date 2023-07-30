@@ -15,9 +15,8 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     // @name instrument
     // @input ElementTag
     // @description
-    // Sets the instrument of a goat horn.
-    // Here is a list of valid instruments: admire_goat_horn, call_goat_horn, dream_goat_horn, feel_goat_horn, ponder_goat_horn, seek_goat_horn, sing_goat_horn, yearn_goat_horn.
-    // Instruments added by datapacks, plugins, etc. are also valid as a namespaced key.
+    // A goat horn's instrument, if any.
+    // Valid instruments are: admire_goat_horn, call_goat_horn, dream_goat_horn, feel_goat_horn, ponder_goat_horn, seek_goat_horn, sing_goat_horn, yearn_goat_horn.
     // @example
     // # This can narrate: "This horn has the ponder_goat_horn instrument!"
     // - narrate "This horn has the <player.item_in_hand.instrument> instrument!"
@@ -33,7 +32,7 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        MusicInstrument instrument = getMusicInstrument();
+        MusicInstrument instrument = ((MusicInstrumentMeta) getItemMeta()).getInstrument();
         if (instrument != null) {
             return new ElementTag(Utilities.namespacedKeyToString(instrument.getKey()));
         }
@@ -41,29 +40,18 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     }
 
     @Override
-    public void setPropertyValue(ElementTag param, Mechanism mechanism) {
-        MusicInstrument instrument = MusicInstrument.getByKey(Utilities.parseNamespacedKey(param.asString()));
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        MusicInstrument instrument = MusicInstrument.getByKey(Utilities.parseNamespacedKey(value.asString()));
         if (instrument == null) {
-            mechanism.echoError("Invalid horn instrument: '" + param.asString() + "'!");
+            mechanism.echoError("Invalid horn instrument: '" + value + "'!");
             return;
         }
-        setMusicInstrument(instrument);
+        editMeta(MusicInstrumentMeta.class, meta -> meta.setInstrument(instrument));
     }
 
     @Override
     public String getPropertyId() {
         return "instrument";
-    }
-
-    public MusicInstrument getMusicInstrument() {
-        MusicInstrumentMeta itemMeta = (MusicInstrumentMeta) getItemMeta();
-        return itemMeta.getInstrument();
-    }
-
-    public void setMusicInstrument(MusicInstrument instrument) {
-        MusicInstrumentMeta itemMeta = (MusicInstrumentMeta) getItemMeta();
-        itemMeta.setInstrument(instrument);
-        setItemMeta(itemMeta);
     }
 
     public static void register() {
