@@ -19,7 +19,7 @@ public class ItemSpawnerType extends ItemProperty<EntityTag> {
     // -->
 
     public static boolean describes(ItemTag item) {
-        return item.getItemMeta() instanceof BlockStateMeta blockStateMeta && blockStateMeta.getBlockState() instanceof CreatureSpawner;
+        return item.getItemMeta() instanceof BlockStateMeta meta && meta.getBlockState() instanceof CreatureSpawner;
     }
 
     @Override
