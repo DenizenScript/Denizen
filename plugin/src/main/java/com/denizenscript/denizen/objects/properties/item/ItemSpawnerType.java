@@ -24,8 +24,8 @@ public class ItemSpawnerType extends ItemProperty<EntityTag> {
 
     @Override
     public EntityTag getPropertyValue() {
-        EntityType spawnerType = ((CreatureSpawner) ((BlockStateMeta) getItemMeta()).getBlockState()).getSpawnedType();
-        return spawnerType != null ? new EntityTag(spawnerType) : null;
+        EntityType spawnedType = ((CreatureSpawner) ((BlockStateMeta) getItemMeta()).getBlockState()).getSpawnedType();
+        return spawnedType != null ? new EntityTag(spawnedType) : null;
     }
 
     @Override
