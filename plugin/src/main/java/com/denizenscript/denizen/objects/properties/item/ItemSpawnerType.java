@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -16,6 +18,7 @@ public class ItemSpawnerType extends ItemProperty<EntityTag> {
     // @description
     // The entity type a spawner item will spawn, if any.
     // For the mechanism: provide no input to unset the type.
+    // Note that the type can only be unset on 1.20 and above.
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -30,6 +33,10 @@ public class ItemSpawnerType extends ItemProperty<EntityTag> {
 
     @Override
     public void setPropertyValue(EntityTag entity, Mechanism mechanism) {
+        if (entity == null && NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+            mechanism.echoError("must have input of type 'EntityTag', but none was given.");
+            return;
+        }
         editMeta(BlockStateMeta.class, meta -> {
             CreatureSpawner spawner = (CreatureSpawner) meta.getBlockState();
             spawner.setSpawnedType(entity != null ? entity.getBukkitEntityType() : null);
