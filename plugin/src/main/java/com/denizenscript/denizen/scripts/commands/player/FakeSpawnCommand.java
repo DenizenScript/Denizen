@@ -83,6 +83,9 @@ public class FakeSpawnCommand extends AbstractCommand {
         if (location == null && !cancel) {
             throw new InvalidArgumentsRuntimeException("Must specify a valid location!");
         }
+        if (vehicle != null && !vehicle.isValid()) {
+            throw new InvalidArgumentsRuntimeException("Must specify a valid entity to mount to!");
+        }
         if (!cancel) {
             FakeEntity created = FakeEntity.showFakeEntityTo(players, entity, location, duration, vehicle);
             scriptEntry.saveObject("faked_entity", created.entity);
