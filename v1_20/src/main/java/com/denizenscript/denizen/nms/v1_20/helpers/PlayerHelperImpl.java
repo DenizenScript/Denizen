@@ -58,6 +58,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R1.util.CraftMagicNumbers;
@@ -76,6 +77,7 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     public static final Field FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundTickCount, int.class);
     public static final Field VEHICLE_FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundVehicleTickCount, int.class);
+    public static final Field ENTITY_PASSENGERS = ReflectionHelper.getFields(ClientboundSetPassengersPacket.class).get(ReflectionMappingsInfo.ClientboundSetPassengersPacket_passengers, int[].class);
     public static final MethodHandle PLAYER_RESPAWNFORCED_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnForced, boolean.class);
 
     public static final EntityDataAccessor<Byte> PLAYER_DATA_ACCESSOR_SKINLAYERS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.player.Player.class, ReflectionMappingsInfo.Player_DATA_PLAYER_MODE_CUSTOMISATION, null);
@@ -100,6 +102,22 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     public record TrackerData(PlayerTag player, ServerEntity tracker) {}
+
+    @Override
+    public void addFakePassenger(List<PlayerTag> players, Entity vehicle, FakeEntity fakeEntity) {
+        ClientboundSetPassengersPacket packet = new ClientboundSetPassengersPacket(((CraftEntity) vehicle).getHandle());
+        int[] newPassengers = Arrays.copyOf(packet.getPassengers(), packet.getPassengers().length + 1);
+        newPassengers[packet.getPassengers().length] = fakeEntity.id;
+        try {
+            ENTITY_PASSENGERS.set(packet, newPassengers);
+        }
+        catch (IllegalAccessException e) {
+            Debug.echoError(e);
+        }
+        for (PlayerTag player : players) {
+            ((CraftPlayer) player.getPlayerEntity()).getHandle().connection.send(packet);
+        }
+    }
 
     @Override
     public FakeEntity sendEntitySpawn(List<PlayerTag> players, DenizenEntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack) {

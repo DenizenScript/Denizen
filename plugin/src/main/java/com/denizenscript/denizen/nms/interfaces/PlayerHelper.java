@@ -93,6 +93,10 @@ public abstract class PlayerHelper {
         throw new UnsupportedOperationException();
     }
 
+    public void addFakePassenger(List<PlayerTag> players, Entity entity, FakeEntity fakeEntity) {
+        throw new UnsupportedOperationException();
+    }
+
     public void refreshPlayer(Player player) {
         throw new UnsupportedOperationException();
     }

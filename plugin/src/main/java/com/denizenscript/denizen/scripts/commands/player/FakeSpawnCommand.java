@@ -3,15 +3,13 @@ package com.denizenscript.denizen.scripts.commands.player;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -22,14 +20,16 @@ public class FakeSpawnCommand extends AbstractCommand {
 
     public FakeSpawnCommand() {
         setName("fakespawn");
-        setSyntax("fakespawn [<entity>] [<location>/cancel] (players:<player>|...) (d:<duration>{10s})");
-        setRequiredArguments(2, 4);
+        setSyntax("fakespawn [<entity>] [<location>/cancel] (players:<player>|...) (duration:<duration>{10s}) (mount_to:<entity>)");
+        setRequiredArguments(2, 5);
         isProcedural = false;
+        addRemappedPrefixes("duration", "d");
+        autoCompile();
     }
 
     // <--[command]
     // @Name FakeSpawn
-    // @Syntax fakespawn [<entity>] [<location>/cancel] (players:<player>|...) (d:<duration>{10s})
+    // @Syntax fakespawn [<entity>] [<location>/cancel] (players:<player>|...) (duration:<duration>{10s}) (mount_to:<entity>)
     // @Required 2
     // @Maximum 4
     // @Short Makes the player see a fake entity spawn that didn't actually happen.
@@ -46,6 +46,8 @@ public class FakeSpawnCommand extends AbstractCommand {
     // Optionally, specify how long the fake entity should remain for. If unspecified, will default to 10 seconds.
     // After the duration is up, the entity will be removed from the player(s).
     //
+    // Optionally, specify an entity to mount the fake entity to via mount_to:<entity>.
+    //
     // @Tags
     // <PlayerTag.fake_entities>
     // <entry[saveName].faked_entity> returns the spawned faked entity.
@@ -54,6 +56,10 @@ public class FakeSpawnCommand extends AbstractCommand {
     // Use to show a fake creeper in front of the attached player.
     // - fakespawn creeper <player.location.forward[5]>
     //
+    // @Usage
+    // Use to spawn and mount a fake armor stand to the player.
+    // - fakespawn armor_stand <player.location> mount_to:<player>
+    //
     // -->
 
     @Override
@@ -61,72 +67,35 @@ public class FakeSpawnCommand extends AbstractCommand {
         TabCompleteHelper.tabCompleteEntityTypes(tab);
     }
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("players")
-                    && arg.matchesPrefix("to", "players")) {
-                scriptEntry.addObject("players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("entity") @ArgLinear EntityTag entity,
+                                   @ArgName("location") @ArgLinear @ArgDefaultNull LocationTag location,
+                                   @ArgName("cancel") boolean cancel,
+                                   @ArgName("players") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> players,
+                                   @ArgName("duration") @ArgPrefixed @ArgDefaultText("10s") DurationTag duration,
+                                   @ArgName("mount_to") @ArgPrefixed @ArgDefaultNull EntityTag vehicle) {
+        if (players == null) {
+            if (!Utilities.entryHasPlayer(scriptEntry)) {
+                throw new InvalidArgumentsRuntimeException("Must specify an online player!");
             }
-            else if (arg.matchesPrefix("d", "duration")
-                    && arg.matchesArgumentType(DurationTag.class)) {
-                scriptEntry.addObject("duration", arg.asType(DurationTag.class));
-            }
-            else if (!scriptEntry.hasObject("entity")
-                    && arg.matchesArgumentType(EntityTag.class)) {
-                scriptEntry.addObject("entity", arg.asType(EntityTag.class));
-            }
-            else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(LocationTag.class)) {
-                scriptEntry.addObject("location", arg.asType(LocationTag.class));
-            }
-            else if (!scriptEntry.hasObject("cancel")
-                    && arg.matches("cancel")) {
-                scriptEntry.addObject("cancel", new ElementTag(true));
+            players = Collections.singletonList(Utilities.getEntryPlayer(scriptEntry));
+        }
+        if (location == null && !cancel) {
+            throw new InvalidArgumentsRuntimeException("Must specify a valid location!");
+        }
+        if (!cancel) {
+            FakeEntity created = FakeEntity.showFakeEntityTo(players, entity, location, duration, vehicle);
+            scriptEntry.saveObject("faked_entity", created.entity);
+            return;
+        }
+        if (entity.isFake) {
+            FakeEntity fakeEnt = FakeEntity.idsToEntities.get(entity.getUUID());
+            if (fakeEnt != null) {
+                fakeEnt.cancelEntity();
             }
             else {
-                arg.reportUnhandled();
+                Debug.echoDebug(scriptEntry, "Entity '" + entity + "' cannot be cancelled: not listed in fake-entity map.");
             }
-        }
-        if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry)) {
-            scriptEntry.defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
-        }
-        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cancel")) {
-            throw new InvalidArgumentsException("Must specify a valid location!");
-        }
-        if (!scriptEntry.hasObject("players")) {
-            throw new InvalidArgumentsException("Must have a valid, online player attached!");
-        }
-        if (!scriptEntry.hasObject("entity")) {
-            throw new InvalidArgumentsException("Must specify a valid entity!");
-        }
-        scriptEntry.defaultObject("duration", new DurationTag(10));
-    }
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        EntityTag entity = scriptEntry.getObjectTag("entity");
-        LocationTag location = scriptEntry.getObjectTag("location");
-        List<PlayerTag> players = (List<PlayerTag>) scriptEntry.getObject("players");
-        DurationTag duration = scriptEntry.getObjectTag("duration");
-        ElementTag cancel = scriptEntry.getElement("cancel");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), entity, cancel, location, duration, db("players", players));
-        }
-        if (cancel != null && cancel.asBoolean()) {
-            if (entity.isFake) {
-                FakeEntity fakeEnt = FakeEntity.idsToEntities.get(entity.getUUID());
-                if (fakeEnt != null) {
-                    fakeEnt.cancelEntity();
-                }
-                else {
-                    Debug.echoDebug(scriptEntry, "Entity '" + entity + "' cannot be cancelled: not listed in fake-entity map.");
-                }
-            }
-        }
-        else {
-            FakeEntity created = FakeEntity.showFakeEntityTo(players, entity, location, duration);
-            scriptEntry.saveObject("faked_entity", created.entity);
         }
     }
 }
