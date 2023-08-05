@@ -120,7 +120,7 @@ public record EntityMetadataCommandHelper(Predicate<Entity> getter, BiConsumer<E
                             NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player, target.getBukkitEntity());
                         }
                     }
-                    if (playersToUpdate.contains(target.getUUID()) && target.isPlayer()) {
+                    if (playersToUpdate.contains(target.getUUID())) {
                         NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(target.as(Player.class), target.getBukkitEntity());
                     }
                 }
