@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.paper.properties;
 
+import com.denizenscript.denizen.npc.traits.SneakingTrait;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -35,7 +36,17 @@ public class EntitySneaking extends EntityProperty<ElementTag> {
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         if (mechanism.requireBoolean()) {
-            getEntity().setSneaking(value.asBoolean());
+            boolean sneaking = value.asBoolean();
+            getEntity().setSneaking(sneaking);
+            if (object.isCitizensNPC()) {
+                SneakingTrait sneakingTrait = object.getDenizenNPC().getCitizen().getOrAddTrait(SneakingTrait.class);
+                if (sneaking) {
+                    sneakingTrait.sneak();
+                }
+                else {
+                    sneakingTrait.stand();
+                }
+            }
         }
     }
 
