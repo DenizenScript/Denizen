@@ -37,7 +37,7 @@ public abstract class ItemProperty<TData extends ObjectTag> extends ObjectProper
     }
 
     public <T extends ItemMeta> void editMeta(Class<T> metaType, Consumer<T> editor) {
-        T meta = metaType.cast(getItemMeta());
+        T meta = (T) getItemMeta();
         editor.accept(meta);
         setItemMeta(meta);
     }
