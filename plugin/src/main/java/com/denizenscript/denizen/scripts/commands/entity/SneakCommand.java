@@ -48,8 +48,7 @@ public class SneakCommand extends AbstractCommand {
     // Note that <@link property EntityTag.sneaking> is also available.
     //
     // @Tags
-    // <NPCTag.is_sneaking>
-    // <EntityTag.sneaking>
+    // <EntityTag.is_sneaking>
     //
     // @Usage
     // Make the linked NPC start sneaking.

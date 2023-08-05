@@ -9,7 +9,7 @@ public class EntitySneaking extends EntityProperty<ElementTag> {
 
     // <--[property]
     // @object EntityTag
-    // @name sneaking
+    // @name is_sneaking
     // @input ElementTag(Boolean)
     // @plugin Paper
     // @description
@@ -41,10 +41,10 @@ public class EntitySneaking extends EntityProperty<ElementTag> {
 
     @Override
     public String getPropertyId() {
-        return "sneaking";
+        return "is_sneaking";
     }
 
     public static void register() {
-        autoRegister("sneaking", EntitySneaking.class, ElementTag.class, false);
+        autoRegister("is_sneaking", EntitySneaking.class, ElementTag.class, false);
     }
 }
