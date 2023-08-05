@@ -80,7 +80,7 @@ public class AssignmentScriptContainer extends ScriptContainer {
 
     public InteractScriptContainer getInteract() {
         if (interact == null && interactName != null) {
-            interact = ScriptRegistry.getScriptContainerAs(interactName, InteractScriptContainer.class);
+            interact = ScriptRegistry.getScriptContainer(interactName);
             if (interact == null) {
                 Debug.echoError("'" + interactName + "' is not a valid Interact Script. Is there a duplicate script by this name, or is it missing?");
             }

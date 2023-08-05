@@ -1255,13 +1255,14 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @mechanism LocationTag.spawner_type
         // @group world
         // @description
-        // Returns the type of entity spawned by a mob spawner.
+        // Returns the type of entity spawned by a mob spawner, if any.
         // -->
         tagProcessor.registerTag(EntityTag.class, "spawner_type", (attribute, object) -> {
-            if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
+            if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner spawner)) {
                 return null;
             }
-            return new EntityTag(DenizenEntityType.getByName(((CreatureSpawner) object.getBlockStateForTag(attribute)).getSpawnedType().name()));
+            EntityType spawnedType = spawner.getSpawnedType();
+            return spawnedType != null ? new EntityTag(spawnedType) : null;
         });
 
         // <--[tag]
@@ -4249,6 +4250,31 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 return biome != null ? new ElementTag(biome.getDownfallTypeAt(object)) : null;
             });
         }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name spawner_type
+        // @input EntityTag
+        // @description
+        // Sets the entity that a mob spawner will spawn.
+        // Provide no input to unset (only on 1.20 and above).
+        // @tags
+        // <LocationTag.spawner_type>
+        // -->
+        tagProcessor.registerMechanism("spawner_type", false, (object, mechanism) -> {
+            if (!(object.getBlockState() instanceof CreatureSpawner spawner)) {
+                mechanism.echoError("Mechanism 'LocationTag.spawner_type' is only valid for spawners.");
+                return;
+            }
+            if (!mechanism.hasValue() && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                spawner.setSpawnedType(null);
+                spawner.update();
+            }
+            else if (mechanism.requireObject(EntityTag.class)) {
+                NMSHandler.blockHelper.setSpawnerSpawnedType(spawner, mechanism.valueAsType(EntityTag.class));
+                spawner.update();
+            }
+        });
     }
 
     public static final ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
@@ -4329,21 +4355,6 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 return;
             }
             NMSHandler.blockHelper.setSpawnerCustomRules(spawner, skyMin.asInt(), skyMax.asInt(), blockMin.asInt(), blockMax.asInt());
-            spawner.update();
-        }
-
-        // <--[mechanism]
-        // @object LocationTag
-        // @name spawner_type
-        // @input EntityTag
-        // @description
-        // Sets the entity that a mob spawner will spawn.
-        // @tags
-        // <LocationTag.spawner_type>
-        // -->
-        if (mechanism.matches("spawner_type") && mechanism.requireObject(EntityTag.class) && getBlockState() instanceof CreatureSpawner) {
-            CreatureSpawner spawner = ((CreatureSpawner) getBlockState());
-            NMSHandler.blockHelper.setSpawnerSpawnedType(spawner, mechanism.valueAsType(EntityTag.class));
             spawner.update();
         }
 
