@@ -4266,7 +4266,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 mechanism.echoError("Mechanism 'LocationTag.spawner_type' is only valid for spawners.");
                 return;
             }
-            if (mechanism.value == null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            if (!mechanism.hasValue() && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
                 NMSHandler.blockHelper.makeBlockStateRaw(spawner); // Workaround for a Spigot bug - https://hub.spigotmc.org/jira/browse/SPIGOT-7446
                 spawner.setSpawnedType(null);
                 spawner.update();
