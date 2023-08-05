@@ -56,7 +56,7 @@ public class AssignmentTrait extends Trait {
     public void buildCache() {
         containerCache.clear();
         for (String assignment : assignments) {
-            AssignmentScriptContainer container = ScriptRegistry.getScriptContainerAs(assignment, AssignmentScriptContainer.class);
+            AssignmentScriptContainer container = ScriptRegistry.getScriptContainer(assignment);
             containerCache.add(container);
             if (container == null) {
                 Debug.echoError("NPC " + npc.getId() + " has assignment '" + assignment + "' which does not exist.");
