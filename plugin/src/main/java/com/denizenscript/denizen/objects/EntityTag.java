@@ -667,6 +667,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return entity instanceof Player && !isNPC();
     }
 
+    public <T extends Entity> T as(Class<T> entityClass) {
+        return entityClass.cast(getBukkitEntity());
+    }
+
     public Projectile getProjectile() {
         return (Projectile) entity;
     }
