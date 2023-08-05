@@ -668,7 +668,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public <T extends Entity> T as(Class<T> entityClass) {
-        return entityClass.cast(getBukkitEntity());
+        return (T) getBukkitEntity();
     }
 
     public Projectile getProjectile() {
