@@ -118,7 +118,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "entity": return entity.getDenizenEntity();
+            case "entity": return entity.getDenizenObject();
             case "damage": return new ElementTag(event.getDamage());
             case "final_damage": return final_damage;
             case "cause": return new ElementTag(event.getCause());
