@@ -47,6 +47,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // <context.cause> returns an ElementTag of the cause of the death. See <@link language damage cause> for a list of possible damage causes.
     // <context.drops> returns a ListTag of all pending item drops.
     // <context.xp> returns an ElementTag of the amount of experience to be dropped.
+    // <context.keep_inventory> returns true if the player dying is set to keep their inventory, false if not, or null if the dying entity is not a player.
     //
     // @Determine
     // ElementTag to change the death message.
@@ -68,7 +69,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         registerCouldMatcher("<entity> dies|death");
         registerSwitches("by", "cause");
     }
-
 
     public EntityTag entity;
     public EntityTag damager;
@@ -113,20 +113,20 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             event.setDroppedExp(0);
             return true;
         }
-        else if (lower.equals("keep_inv") && event instanceof PlayerDeathEvent) {
-            ((PlayerDeathEvent) event).setKeepInventory(true);
+        else if (lower.equals("keep_inv") && event instanceof PlayerDeathEvent playerEvent) {
+            playerEvent.setKeepInventory(true);
             return true;
         }
-        else if (lower.equals("keep_level") && event instanceof PlayerDeathEvent) {
-            ((PlayerDeathEvent) event).setKeepLevel(true);
+        else if (lower.equals("keep_level") && event instanceof PlayerDeathEvent playerEvent) {
+            playerEvent.setKeepLevel(true);
             return true;
         }
-        else if (lower.equals("no_message") && event instanceof PlayerDeathEvent) {
-            ((PlayerDeathEvent) event).setDeathMessage(null);
+        else if (lower.equals("no_message") && event instanceof PlayerDeathEvent playerEvent) {
+            playerEvent.setDeathMessage(null);
             return true;
         }
-        else if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            event.setDroppedExp(((ElementTag) determinationObj).asInt());
+        else if (determinationObj instanceof ElementTag element && element.isInt()) {
+            event.setDroppedExp(element.asInt());
             return true;
         }
         else if (Argument.valueOf(lower).matchesArgumentList(ItemTag.class)) {
@@ -139,8 +139,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             }
             return true;
         }
-        else if (event instanceof PlayerDeathEvent) {
-            PaperAPITools.instance.setDeathMessage((PlayerDeathEvent) event, determination);
+        else if (event instanceof PlayerDeathEvent playerEvent) {
+            PaperAPITools.instance.setDeathMessage(playerEvent, determination);
             return true;
         }
         else {
@@ -159,9 +159,10 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             case "entity": return entity.getDenizenObject();
             case "projectile": return projectile == null ? null : projectile.getDenizenObject();
             case "damager": return damager == null ? null : damager.getDenizenObject();
-            case "message": return event instanceof PlayerDeathEvent ? new ElementTag(PaperAPITools.instance.getDeathMessage((PlayerDeathEvent) event)) : null;
+            case "message": return event instanceof PlayerDeathEvent playerEvent ? new ElementTag(PaperAPITools.instance.getDeathMessage(playerEvent)) : null;
             case "cause": return cause;
             case "xp": return new ElementTag(event.getDroppedExp());
+            case "keep_inventory": return event instanceof PlayerDeathEvent playerEvent ? new ElementTag(playerEvent.getKeepInventory()) : null;
             case "drops":
                 ListTag list = new ListTag();
                 for (ItemStack stack : event.getDrops()) {
@@ -174,8 +175,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public void cancellationChanged() {
-        if (cancelled && event instanceof PlayerDeathEvent) {
-            ((PlayerDeathEvent) event).setDeathMessage(null); // Historical no_message was by cancelling.
+        if (cancelled && event instanceof PlayerDeathEvent playerEvent) {
+            playerEvent.setDeathMessage(null); // Historical no_message was by cancelling.
         }
         super.cancellationChanged();
     }
@@ -191,8 +192,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         EntityDamageEvent lastDamage = entity.getBukkitEntity().getLastDamageCause();
         if (lastDamage != null) {
             cause = new ElementTag(event.getEntity().getLastDamageCause().getCause().toString());
-            if (lastDamage instanceof EntityDamageByEntityEvent) {
-                damager = new EntityTag(((EntityDamageByEntityEvent) lastDamage).getDamager());
+            if (lastDamage instanceof EntityDamageByEntityEvent byEntEvent) {
+                damager = new EntityTag(byEntEvent.getDamager());
                 EntityTag shooter = damager.getShooter();
                 if (damager instanceof Projectile) {
                     projectile = damager;

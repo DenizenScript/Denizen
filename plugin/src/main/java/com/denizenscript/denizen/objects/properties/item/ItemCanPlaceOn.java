@@ -37,13 +37,13 @@ public class ItemCanPlaceOn implements Property {
             "can_place_on"
     };
 
-    private ItemCanPlaceOn(ItemTag item) {
+    public ItemCanPlaceOn(ItemTag item) {
         this.item = item;
     }
 
     ItemTag item;
 
-    private ListTag getMaterials() {
+    public ListTag getMaterials() {
         ItemStack itemStack = item.getItemStack();
         List<Material> materials = CustomNBT.getNBTMaterials(itemStack, CustomNBT.KEY_CAN_PLACE_ON);
         if (materials != null && !materials.isEmpty()) {

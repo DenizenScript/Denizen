@@ -29,7 +29,7 @@ public class MaterialShape implements Property {
             "shape"
     };
 
-    private MaterialShape(MaterialTag _material) {
+    public MaterialShape(MaterialTag _material) {
         material = _material;
     }
 

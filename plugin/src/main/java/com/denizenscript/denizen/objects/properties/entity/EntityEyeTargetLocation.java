@@ -28,7 +28,7 @@ public class EntityEyeTargetLocation implements Property {
             "ender_eye_target_location"
     };
 
-    private EntityEyeTargetLocation(EntityTag _entity) {
+    public EntityEyeTargetLocation(EntityTag _entity) {
         entity = _entity;
     }
 

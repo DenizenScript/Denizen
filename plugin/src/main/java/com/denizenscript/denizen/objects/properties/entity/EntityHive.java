@@ -36,7 +36,7 @@ public class EntityHive implements Property {
             "hive"
     };
 
-    private EntityHive(EntityTag entity) {
+    public EntityHive(EntityTag entity) {
         this.entity = entity;
     }
 

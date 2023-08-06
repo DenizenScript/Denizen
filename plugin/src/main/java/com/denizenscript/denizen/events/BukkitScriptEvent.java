@@ -104,8 +104,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
-    public static HashSet<String> areaCouldMatchableText = new HashSet<>(Arrays.asList("area", "cuboid", "polygon", "ellipsoid"));
-    public static HashSet<String> areaCouldMatchPrefixes = new HashSet<>(Arrays.asList("area_flagged", "biome"));
+    public static HashSet<String> areaCouldMatchableText = new HashSet<>(List.of("area", "cuboid", "polygon", "ellipsoid"));
+    public static HashSet<String> areaCouldMatchPrefixes = new HashSet<>(List.of("area_flagged", "biome"));
 
     public static boolean couldMatchArea(String text) {
         if (areaCouldMatchableText.contains(text)) {
@@ -162,8 +162,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public static HashSet<String> inventoryCouldMatchableText = new HashSet<>(Arrays.asList("inventory", "notable", "note"));
-    public static HashSet<String> inventoryCouldMatchPrefixes = new HashSet<>(Arrays.asList("inventory_flagged"));
+    public static HashSet<String> inventoryCouldMatchableText = new HashSet<>(List.of("inventory", "notable", "note"));
+    public static HashSet<String> inventoryCouldMatchPrefixes = new HashSet<>(List.of("inventory_flagged"));
 
     public static boolean couldMatchInventory(String text) {
         if (inventoryCouldMatchableText.contains(text)) {
@@ -226,7 +226,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public static HashSet<String> entityCouldMatchPrefixes = new HashSet<>(Arrays.asList("entity_flagged", "player_flagged", "npc_flagged"));
+    public static HashSet<String> entityCouldMatchPrefixes = new HashSet<>(List.of("entity_flagged", "player_flagged", "npc_flagged"));
 
     public static boolean exactMatchEntity(String text) {
         if (EntityTag.specialEntityMatchables.contains(text)) {
@@ -245,7 +245,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public static HashSet<String> vehicleCouldMatchPrefixes = new HashSet<>(Arrays.asList("entity_flagged"));
+    public static HashSet<String> vehicleCouldMatchPrefixes = new HashSet<>(List.of("entity_flagged"));
 
     public static boolean exactMatchesVehicle(String text) {
         if (text.equals("vehicle")) {
@@ -344,8 +344,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return couldMatchBlock(text, null);
     }
 
-    public static HashSet<String> materialCouldMatchableText = new HashSet<>(Arrays.asList("block", "material"));
-    public static HashSet<String> materialCouldMatchPrefixes = new HashSet<>(Arrays.asList("vanilla_tagged", "material_flagged"));
+    public static HashSet<String> materialCouldMatchableText = new HashSet<>(List.of("block", "material"));
+    public static HashSet<String> materialCouldMatchPrefixes = new HashSet<>(List.of("vanilla_tagged", "material_flagged"));
 
     public static boolean couldMatchBlock(String text, Function<Material, Boolean> requirement) {
         if (materialCouldMatchableText.contains(text)) {
@@ -383,8 +383,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public static HashSet<String> itemCouldMatchableText = new HashSet<>(Arrays.asList("item", "potion"));
-    public static HashSet<String> itemCouldMatchPrefixes = new HashSet<>(Arrays.asList("item_flagged", "vanilla_tagged", "item_enchanted", "material_flagged", "raw_exact"));
+    public static HashSet<String> itemCouldMatchableText = new HashSet<>(List.of("item", "potion"));
+    public static HashSet<String> itemCouldMatchPrefixes = new HashSet<>(List.of("item_flagged", "vanilla_tagged", "item_enchanted", "material_flagged", "raw_exact"));
 
     public static boolean couldMatchItem(String text) {
         if (itemCouldMatchableText.contains(text)) {
@@ -646,7 +646,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean runLocationFlaggedCheck(ScriptPath path, String switchName, Location location) {
-        if (!path.switches.containsKey(switchName)) { // NOTE: opti to avoid 'getFlagTracker' call, also prevents pre-1.16 borks
+        if (!path.switches.containsKey(switchName)) { // NOTE: opti to avoid 'getFlagTracker' call
             return true;
         }
         return runFlaggedCheck(path, switchName, location == null ? null : new LocationTag(location).getFlagTracker());

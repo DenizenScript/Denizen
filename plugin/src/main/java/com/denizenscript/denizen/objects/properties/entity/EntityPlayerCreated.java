@@ -32,7 +32,7 @@ public class EntityPlayerCreated implements Property {
             "player_created"
     };
 
-    private EntityPlayerCreated(EntityTag entity) {
+    public EntityPlayerCreated(EntityTag entity) {
         dentity = entity;
     }
 

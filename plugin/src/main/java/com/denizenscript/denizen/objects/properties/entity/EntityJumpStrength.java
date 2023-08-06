@@ -32,7 +32,7 @@ public class EntityJumpStrength implements Property {
             "jump_strength"
     };
 
-    private EntityJumpStrength(EntityTag ent) {
+    public EntityJumpStrength(EntityTag ent) {
         entity = ent;
     }
 
@@ -92,4 +92,3 @@ public class EntityJumpStrength implements Property {
         }
     }
 }
-

@@ -1,55 +1,55 @@
 package com.denizenscript.denizen.objects.properties.inventory;
 
 import com.denizenscript.denizen.objects.InventoryTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.objects.properties.ObjectProperty;
 import org.bukkit.event.inventory.InventoryType;
 
-public class InventorySize implements Property {
+public class InventorySize extends ObjectProperty<InventoryTag, ElementTag> {
+
+    // <--[property]
+    // @object InventoryTag
+    // @name size
+    // @input ElementTag(Number)
+    // @description
+    // Controls the size of the inventory.
+    // Note that the mechanism can only be set for "generic" chest inventories.
+    // -->
 
     public static boolean describes(ObjectTag inventory) {
-        // All inventories should have a size
-        return inventory instanceof InventoryTag;
-    }
-
-    public static InventorySize getFrom(ObjectTag inventory) {
-        if (!describes(inventory)) {
-            return null;
-        }
-        return new InventorySize((InventoryTag) inventory);
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "size"
-    };
-
-    InventoryTag inventory;
-
-    public InventorySize(InventoryTag inventory) {
-        this.inventory = inventory;
+        return true;
     }
 
     public int getSize() {
-        if (inventory.getInventory() == null) {
+        if (object.getInventory() == null) {
             return 0;
         }
-        return inventory.getInventory().getSize();
+        return object.getInventory().getSize();
     }
 
     public void setSize(int size) {
-        inventory.setSize(size);
+        object.setSize(size);
     }
 
     @Override
-    public String getPropertyString() {
-        if (getSize() > 0 && (inventory.getIdType().equals("generic") || inventory.getIdType().equals("script")) && inventory.getInventoryType() == InventoryType.CHEST) {
-            return String.valueOf(getSize());
+    public boolean isDefaultValue(ElementTag size) {
+        return !(getSize() > 0 && (object.getIdType().equals("generic") || object.getIdType().equals("script")) && object.getInventoryType() == InventoryType.CHEST);
+    }
+
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getSize());
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag param, Mechanism mechanism) {
+        if (object.getIdType().equals("generic") || object.getIdType().equals("script")) {
+            setSize(param.asInt());
         }
         else {
-            return null;
+            mechanism.echoError("Inventories of type '" + object.getIdType() + "' cannot have their size changed!");
         }
     }
 
@@ -59,40 +59,6 @@ public class InventorySize implements Property {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <InventoryTag.size>
-        // @returns ElementTag(Number)
-        // @group properties
-        // @mechanism InventoryTag.size
-        // @description
-        // Return the number of slots in the inventory.
-        // -->
-        PropertyParser.registerTag(InventorySize.class, ElementTag.class, "size", (attribute, inventory) -> {
-            return new ElementTag(inventory.getSize());
-        });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object InventoryTag
-        // @name size
-        // @input ElementTag(Number)
-        // @description
-        // Sets the size of the inventory. (Only works for "generic" chest inventories.)
-        // @tags
-        // <InventoryTag.size>
-        // -->
-        if (mechanism.matches("size") && mechanism.requireInteger()) {
-            if (inventory.getIdType().equals("generic") || inventory.getIdType().equals("script")) {
-                setSize(mechanism.getValue().asInt());
-            }
-            else {
-                mechanism.echoError("Inventories of type '" + inventory.getIdType() + "' cannot have their size changed!");
-            }
-        }
-
+        autoRegister("size", InventorySize.class, ElementTag.class, false);
     }
 }

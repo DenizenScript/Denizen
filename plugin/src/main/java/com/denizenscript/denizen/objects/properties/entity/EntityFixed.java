@@ -31,7 +31,7 @@ public class EntityFixed implements Property {
             "fixed"
     };
 
-    private EntityFixed(EntityTag ent) {
+    public EntityFixed(EntityTag ent) {
         entity = ent;
     }
 

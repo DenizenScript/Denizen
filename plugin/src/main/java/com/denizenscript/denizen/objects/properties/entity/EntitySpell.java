@@ -31,7 +31,7 @@ public class EntitySpell implements Property {
             "spell"
     };
 
-    private EntitySpell(EntityTag entity) {
+    public EntitySpell(EntityTag entity) {
         dentity = entity;
     }
 

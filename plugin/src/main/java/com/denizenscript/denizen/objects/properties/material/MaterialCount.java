@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.material;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -28,7 +26,7 @@ public class MaterialCount implements Property {
         return data instanceof SeaPickle
                 || data instanceof TurtleEgg
                 || data instanceof RespawnAnchor
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && data instanceof Candle);
+                || data instanceof Candle;
     }
 
     public static MaterialCount getFrom(ObjectTag _material) {
@@ -44,7 +42,7 @@ public class MaterialCount implements Property {
             "count", "pickle_count"
     };
 
-    private MaterialCount(MaterialTag _material) {
+    public MaterialCount(MaterialTag _material) {
         material = _material;
     }
 
@@ -102,7 +100,7 @@ public class MaterialCount implements Property {
     }
 
     public boolean isCandle() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && material.getModernData() instanceof Candle;
+        return material.getModernData() instanceof Candle;
     }
 
     public TurtleEgg getTurtleEgg() {
@@ -117,9 +115,9 @@ public class MaterialCount implements Property {
         return (RespawnAnchor) material.getModernData();
     }
 
-    /*public Candle getCandle() { // TODO: 1.17
+    public Candle getCandle() {
         return (Candle) material.getModernData();
-    }*/
+    }
 
     public int getCurrent() {
         if (isSeaPickle()) {
@@ -132,7 +130,7 @@ public class MaterialCount implements Property {
             return getRespawnAnchor().getCharges();
         }
         else if (isCandle()) {
-            return ((Candle) material.getModernData()).getCandles(); // TODO: 1.17
+            return getCandle().getCandles();
         }
         throw new UnsupportedOperationException();
     }
@@ -148,7 +146,7 @@ public class MaterialCount implements Property {
             return getRespawnAnchor().getMaximumCharges();
         }
         else if (isCandle()) {
-            return ((Candle) material.getModernData()).getMaximumCandles(); // TODO: 1.17
+            return getCandle().getMaximumCandles();
         }
         throw new UnsupportedOperationException();
     }
@@ -209,7 +207,7 @@ public class MaterialCount implements Property {
                 getRespawnAnchor().setCharges(count);
             }
             else if (isCandle()) {
-                ((Candle) material.getModernData()).setCandles(count); // TODO: 1.17
+                getCandle().setCandles(count);
             }
         }
     }

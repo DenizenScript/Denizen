@@ -173,7 +173,7 @@ public class PushableTrait extends Trait implements Listener {
                             if (npc.isSpawned()) {
                                 navigateBack();
                             }
-                        }, delay * 20);
+                        }, delay * 20L);
             }
         }
     }

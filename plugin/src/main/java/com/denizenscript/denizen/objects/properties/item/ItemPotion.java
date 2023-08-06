@@ -1,14 +1,11 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
+import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -49,7 +46,7 @@ public class ItemPotion implements Property {
             "potion_effects"
     };
 
-    private ItemPotion(ItemTag item) {
+    public ItemPotion(ItemTag item) {
         this.item = item;
     }
 
@@ -84,7 +81,7 @@ public class ItemPotion implements Property {
             base.putObject("upgraded", new ElementTag(meta.getBasePotionData().isUpgraded()));
             base.putObject("extended", new ElementTag(meta.getBasePotionData().isExtended()));
             if (meta.hasColor()) {
-                base.putObject("color", new ColorTag(meta.getColor()));
+                base.putObject("color", BukkitColorExtensions.fromColor(meta.getColor()));
             }
             result.addObject(base);
         }
@@ -285,7 +282,7 @@ public class ItemPotion implements Property {
             PotionMeta meta = object.getPotionMeta();
             return new ElementTag(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                     + "," + meta.getBasePotionData().isExtended() + "," + (object.item.getBukkitMaterial() == Material.SPLASH_POTION)
-                    + (meta.hasColor() ? "," + new ColorTag(meta.getColor()).identify() : ""));
+                    + (meta.hasColor() ? "," + BukkitColorExtensions.fromColor(meta.getColor()).identify() : ""));
         });
 
         // <--[tag]
@@ -526,7 +523,7 @@ public class ItemPotion implements Property {
                     extended = false;
                 }
                 if (color != null) {
-                    ((PotionMeta) meta).setColor(color.getColor());
+                    ((PotionMeta) meta).setColor(BukkitColorExtensions.getColor(color));
                 }
                 ((PotionMeta) meta).setBasePotionData(new PotionData(type, extended, upgraded));
                 ((PotionMeta) meta).clearCustomEffects();

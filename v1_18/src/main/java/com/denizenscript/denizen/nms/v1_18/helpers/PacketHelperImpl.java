@@ -9,7 +9,6 @@ import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_18.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.v1_18.impl.network.handlers.DenizenNetworkManagerImpl;
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -17,6 +16,7 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.maps.MapImage;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -48,7 +48,7 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
 import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
+import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -189,7 +189,7 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showBannerUpdate(Player player, Location location, DyeColor base, List<Pattern> patterns) {
+    public void showBannerUpdate(Player player, Location location, List<Pattern> patterns) {
         List<CompoundTag> nbtPatterns = new ArrayList<>();
         for (Pattern pattern : patterns) {
             nbtPatterns.add(NMSHandler.instance
@@ -360,8 +360,8 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void sendEntityEffect(Player player, Entity entity, byte effectId) {
-        send(player, new ClientboundEntityEventPacket(((CraftEntity) entity).getHandle(), effectId));
+    public void sendEntityEffect(Player player, Entity entity, EntityEffect effect) {
+        send(player, new ClientboundEntityEventPacket(((CraftEntity) entity).getHandle(), effect.getData()));
     }
 
     @Override

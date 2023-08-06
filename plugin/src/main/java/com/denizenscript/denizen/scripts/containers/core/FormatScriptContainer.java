@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.SimpleDefinitionProvider;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
@@ -55,7 +55,7 @@ public class FormatScriptContainer extends ScriptContainer {
         String text = getFormat();
         if (text.contains("<text") || text.contains("<name")) {
             BukkitImplDeprecations.pseudoTagBases.warn(this);
-            text = text.replace("<text", "<element[" + EscapeTagBase.escape(textToReplace) + "].unescaped").replace("<name", "<element[" + EscapeTagBase.escape(name) + "].unescaped");
+            text = text.replace("<text", "<element[" + EscapeTagUtil.escape(textToReplace) + "].unescaped").replace("<name", "<element[" + EscapeTagUtil.escape(name) + "].unescaped");
         }
         BukkitTagContext context = new BukkitTagContext(player, npc, new ScriptTag(this));
         context.definitionProvider = new SimpleDefinitionProvider();

@@ -8,7 +8,6 @@ import com.denizenscript.denizen.utilities.command.manager.Paginator;
 import com.denizenscript.denizen.utilities.command.manager.exceptions.CommandException;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizen.utilities.debugging.DebugConsoleSender;
-import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
@@ -29,7 +28,7 @@ public class DenizenCommandHandler {
     }
 
     // <--[language]
-    // @name denizen permissions
+    // @name Denizen Permissions
     // @group Console Commands
     // @description
     // The following is a list of all permission nodes Denizen uses within Bukkit.
@@ -273,11 +272,10 @@ public class DenizenCommandHandler {
             min = 1, max = 3, permission = "denizen.basic", flags = "a")
     public void reload(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('a')) {
-            Denizen.getInstance().reloadConfig();
-            DenizenCore.reloadScripts();
-            PlayerFlagHandler.reloadAllFlagsNow();
+            DenizenCore.implementation.reloadConfig();
+            DenizenCore.reloadScripts(false, null);
+            DenizenCore.implementation.reloadSaves();
             NoteManager.reload();
-            Denizen.getInstance().reloadSaves();
             Messaging.send(sender, "Denizen save data, config, and scripts reloaded from disk to memory.");
             if (ScriptHelper.hadError()) {
                 Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
@@ -286,8 +284,7 @@ public class DenizenCommandHandler {
         }
         if (args.length() > 2) {
             if (args.getString(1).equalsIgnoreCase("saves")) {
-                Denizen.getInstance().reloadSaves();
-                PlayerFlagHandler.reloadAllFlagsNow();
+                DenizenCore.implementation.reloadSaves();
                 Messaging.send(sender, "Denizen save data reloaded from disk to memory.");
                 return;
             }
@@ -297,12 +294,12 @@ public class DenizenCommandHandler {
                 return;
             }
             else if (args.getString(1).equalsIgnoreCase("config")) {
-                Denizen.getInstance().reloadConfig();
+                DenizenCore.implementation.reloadConfig();
                 Messaging.send(sender, "Denizen config file reloaded from disk to memory.");
                 return;
             }
             else if (args.getString(1).equalsIgnoreCase("scripts")) {
-                DenizenCore.reloadScripts();
+                DenizenCore.reloadScripts(false, null);
                 Messaging.send(sender, "Denizen/scripts/... reloaded from disk to memory.");
                 if (ScriptHelper.hadError()) {
                     Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");

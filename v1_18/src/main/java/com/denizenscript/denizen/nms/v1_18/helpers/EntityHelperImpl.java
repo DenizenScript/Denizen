@@ -280,18 +280,17 @@ public class EntityHelperImpl extends EntityHelper {
         if (entity == null || location == null) {
             return;
         }
-        net.minecraft.world.entity.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntityEntity instanceof Mob)) {
+        net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+        if (!(nmsEntity instanceof final Mob nmsMob)) {
             return;
         }
-        final Mob nmsEntity = (Mob) nmsEntityEntity;
-        final PathNavigation entityNavigation = nmsEntity.getNavigation();
+        final PathNavigation entityNavigation = nmsMob.getNavigation();
         final Path path;
         final boolean aiDisabled = !entity.hasAI();
         if (aiDisabled) {
             entity.setAI(true);
             try {
-                ENTITY_ONGROUND_SETTER.invoke(nmsEntity, true);
+                ENTITY_ONGROUND_SETTER.invoke(nmsMob, true);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
@@ -299,12 +298,11 @@ public class EntityHelperImpl extends EntityHelper {
         }
         path = entityNavigation.createPath(location.getX(), location.getY(), location.getZ(), 1);
         if (path != null) {
-            nmsEntity.goalSelector.enableControlFlag(Goal.Flag.MOVE);
+            nmsMob.goalSelector.enableControlFlag(Goal.Flag.MOVE);
             entityNavigation.moveTo(path, 1D);
-            entityNavigation.setSpeedModifier(2D);
-            final double oldSpeed = nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue();
+            final double oldSpeed = nmsMob.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue();
             if (speed != null) {
-                nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(speed);
+                nmsMob.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(speed);
             }
             new BukkitRunnable() {
                 @Override
@@ -316,15 +314,15 @@ public class EntityHelperImpl extends EntityHelper {
                         cancel();
                         return;
                     }
-                    if (aiDisabled && entity instanceof Wolf) {
-                        ((Wolf) entity).setAngry(false);
+                    if (aiDisabled && entity instanceof Wolf wolf) {
+                        wolf.setAngry(false);
                     }
                     if (entityNavigation.isDone() || path.isDone()) {
                         if (callback != null) {
                             callback.run();
                         }
                         if (speed != null) {
-                            nmsEntity.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(oldSpeed);
+                            nmsMob.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(oldSpeed);
                         }
                         if (aiDisabled) {
                             entity.setAI(false);
@@ -440,9 +438,8 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public float getBaseYaw(Entity entity) {
-        net.minecraft.world.entity.Entity handle = ((CraftEntity) entity).getHandle();
-        return ((net.minecraft.world.entity.LivingEntity) handle).yBodyRot;
+    public float getBaseYaw(LivingEntity entity) {
+        return ((CraftLivingEntity) entity).getHandle().yBodyRot;
     }
 
     @Override
@@ -574,20 +571,20 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void setHeadAngle(Entity entity, float angle) {
+    public void setHeadAngle(LivingEntity entity, float angle) {
         net.minecraft.world.entity.LivingEntity handle = ((CraftLivingEntity) entity).getHandle();
         handle.yHeadRot = angle;
         handle.setYHeadRot(angle);
     }
 
     @Override
-    public void setGhastAttacking(Entity entity, boolean attacking) {
-        ((CraftGhast) entity).getHandle().setCharging(attacking);
+    public void setGhastAttacking(Ghast ghast, boolean attacking) {
+        ((CraftGhast) ghast).getHandle().setCharging(attacking);
     }
 
     @Override
-    public void setEndermanAngry(Entity entity, boolean angry) {
-        ((CraftEnderman) entity).getHandle().getEntityData().set(ENTITY_ENDERMAN_DATAWATCHER_SCREAMING, angry);
+    public void setEndermanAngry(Enderman enderman, boolean angry) {
+        ((CraftEnderman) enderman).getHandle().getEntityData().set(ENTITY_ENDERMAN_DATAWATCHER_SCREAMING, angry);
     }
 
     public static class FakeDamageSrc extends DamageSource { public DamageSource real; public FakeDamageSrc(DamageSource src) { super("fake"); real = src; } }
@@ -692,6 +689,7 @@ public class EntityHelperImpl extends EntityHelper {
         }
         finally {
             CraftEventFactory.entityDamage = null;
+            CraftEventFactory.blockDamage = null;
         }
     }
 
@@ -703,9 +701,9 @@ public class EntityHelperImpl extends EntityHelper {
     public static final MethodHandle FALLINGBLOCK_TYPE_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(net.minecraft.world.entity.item.FallingBlockEntity.class, BlockState.class);
 
     @Override
-    public void setFallingBlockType(FallingBlock entity, BlockData block) {
+    public void setFallingBlockType(FallingBlock fallingBlock, BlockData block) {
         BlockState state = ((CraftBlockData) block).getState();
-        FallingBlockEntity nmsEntity = ((CraftFallingBlock) entity).getHandle();
+        FallingBlockEntity nmsEntity = ((CraftFallingBlock) fallingBlock).getHandle();
         try {
             FALLINGBLOCK_TYPE_SETTER.invoke(nmsEntity, state);
         }

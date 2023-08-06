@@ -101,7 +101,6 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         EntityTag.rememberEntity(eggEntity);
         egg = new EntityTag(event.getEgg());
         this.event = event;
-        cancelled = false;
         fire(event);
         EntityTag.forgetEntity(eggEntity);
     }

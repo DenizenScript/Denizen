@@ -36,7 +36,7 @@ public class EntityHasStung implements Property {
             "has_stung"
     };
 
-    private EntityHasStung(EntityTag entity) {
+    public EntityHasStung(EntityTag entity) {
         this.entity = entity;
     }
 

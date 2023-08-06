@@ -2,14 +2,14 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
-import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.utilities.Settings;
+import com.denizenscript.denizencore.objects.Adjustable;
+import com.denizenscript.denizencore.objects.Fetchable;
+import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -18,8 +18,9 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagRunnable;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -36,21 +37,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
-
-    /////////////////////
-    //   STATIC METHODS
-    /////////////////
-
-    public static WorldTag mirrorBukkitWorld(World world) {
-        if (world == null) {
-            return null;
-        }
-        return new WorldTag(world);
-    }
-
-    /////////////////////
-    //   OBJECT FETCHER
-    /////////////////
 
     // <--[ObjectType]
     // @name WorldTag
@@ -81,11 +67,6 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     // "world_flagged:<flag>": a Flag Matchable for WorldTag flags.
     //
     // -->
-
-    @Deprecated
-    public static WorldTag valueOf(String string) {
-        return valueOf(string, null);
-    }
 
     @Fetchable("w")
     public static WorldTag valueOf(String string, TagContext context) {
@@ -384,12 +365,6 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             return chunks;
         });
 
-        registerTag(ChunkTag.class, "random_loaded_chunk", (attribute, object) -> {
-            BukkitImplDeprecations.worldRandomLoadedChunkTag.warn(attribute.context);
-            int random = CoreUtilities.getRandom().nextInt(object.getWorld().getLoadedChunks().length);
-            return new ChunkTag(object.getWorld().getLoadedChunks()[random]);
-        });
-
         // <--[tag]
         // @attribute <WorldTag.sea_level>
         // @returns ElementTag(Number)
@@ -612,6 +587,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
 
         // <--[tag]
         // @attribute <WorldTag.duration_since_created>
+        // @mechanism WorldTag.duration_since_created
         // @returns DurationTag
         // @description
         // Returns the total duration of time since this world was first created.
@@ -960,14 +936,13 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // By default, automatically checks the playersSleepingPercentage gamerule,
         // but this can optionally be overridden by specifying a percentage integer.
         // Any integer above 100 will always yield 'false'. Requires at least one player to be sleeping to return 'true'.
-        // NOTE: In 1.16, input is ignored and assumed to be 100%.
         // -->
         registerTag(ElementTag.class, "enough_sleeping", (attribute, world) -> {
-            int percentage = 100;
+            int percentage;
             if (attribute.hasParam()) {
                 percentage = attribute.getIntParam();
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            else {
                 percentage = world.getGameRuleOrDefault(GameRule.PLAYERS_SLEEPING_PERCENTAGE);
             }
             return new ElementTag(NMSHandler.worldHelper.areEnoughSleeping(world.getWorld(), percentage));
@@ -982,14 +957,13 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // By default, automatically checks the playersSleepingPercentage gamerule,
         // but this can optionally be overridden by specifying a percentage integer.
         // Any integer above 100 will always yield 'false'. Requires at least one player to be sleeping to return 'true'.
-        // NOTE: In 1.16, input is ignored and assumed to be 100%.
         // -->
         registerTag(ElementTag.class, "enough_deep_sleeping", (attribute, world) -> {
-            int percentage = 100;
+            int percentage;
             if (attribute.hasParam()) {
                 percentage = attribute.getIntParam();
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            else {
                 percentage = world.getGameRuleOrDefault(GameRule.PLAYERS_SLEEPING_PERCENTAGE);
             }
             return new ElementTag(NMSHandler.worldHelper.areEnoughDeepSleeping(world.getWorld(), percentage));
@@ -1155,7 +1129,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             if (getWorld() != null) {
                 return;
             }
-            if (!Settings.allowDelete()) {
+            if (!CoreConfiguration.allowFileDeletion) {
                 mechanism.echoError("Unable to destroy world due to config setting, refer to 'WorldTag.destroy' meta documentation.");
                 return;
             }
@@ -1373,6 +1347,19 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         if (mechanism.matches("advance_ticks") && mechanism.requireInteger()) {
             World world = getWorld();
             NMSHandler.worldHelper.setDayTime(world, world.getFullTime() + mechanism.getValue().asInt());
+        }
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name duration_since_created
+        // @input DurationTag
+        // @description
+        // Changes the world's internal time-since-created value.
+        // @tags
+        // <WorldTag.duration_since_created>
+        // -->
+        if (mechanism.matches("duration_since_created") && mechanism.requireObject(DurationTag.class)) {
+            NMSHandler.worldHelper.setGameTime(getWorld(), mechanism.valueAsType(DurationTag.class).getTicks());
         }
 
         // <--[mechanism]

@@ -123,6 +123,6 @@ public class MountCommand extends AbstractCommand {
         }
         ListTag entityList = new ListTag();
         entityList.addObjects((List) entities);
-        scriptEntry.addObject("mounted_entities", entityList);
+        scriptEntry.saveObject("mounted_entities", entityList);
     }
 }

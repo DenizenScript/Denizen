@@ -32,9 +32,9 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     // <context.flying> returns whether the player is being automatically kicked for flying.
     //
     // @Determine
-    // "MESSAGE:" + ElementTag to change the kick message.
-    // "REASON:" + ElementTag to change the kick reason.
-    // "FLY_COOLDOWN:" + DurationTag to cancel the automatic fly kick and set its next cooldown.
+    // "MESSAGE:<ElementTag>" to change the kick message.
+    // "REASON:<ElementTag>" to change the kick reason.
+    // "FLY_COOLDOWN:<DurationTag>" to cancel the automatic fly kick and set its next cooldown.
     //
     // @Player Always.
     //

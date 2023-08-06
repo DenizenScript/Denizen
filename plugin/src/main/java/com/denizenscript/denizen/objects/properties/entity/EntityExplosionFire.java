@@ -31,7 +31,7 @@ public class EntityExplosionFire implements Property {
         return ((Explosive) entity.getBukkitEntity()).isIncendiary();
     }
 
-    private EntityExplosionFire(EntityTag ent) {
+    public EntityExplosionFire(EntityTag ent) {
         entity = ent;
     }
 

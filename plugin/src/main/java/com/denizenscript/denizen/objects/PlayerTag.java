@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
@@ -22,6 +23,7 @@ import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
 import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
@@ -36,13 +38,12 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.NPCSelector;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.*;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.PluginCommand;
@@ -50,6 +51,8 @@ import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 import org.bukkit.map.MapView;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.RayTraceResult;
 
 import java.util.*;
@@ -120,11 +123,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     /////////////////////
     //   OBJECT FETCHER
     /////////////////
-
-    @Deprecated
-    public static PlayerTag valueOf(String string) {
-        return valueOf(string, null);
-    }
 
     @Fetchable("p")
     public static PlayerTag valueOf(String string, TagContext context) {
@@ -256,7 +254,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     public ImprovedOfflinePlayer getNBTEditor() {
-        return NMSHandler.playerHelper.getOfflineData(getOfflinePlayer());
+        ImprovedOfflinePlayer result = ImprovedOfflinePlayer.offlinePlayers.get(uuid);
+        if (result == null || (!result.modified && result.timeLastLoaded + Settings.worldPlayerDataMaxCacheTicks < DenizenCore.currentTimeMonotonicMillis)) {
+            result = NMSHandler.playerHelper.getOfflineData(uuid);
+            if (result != null) {
+                ImprovedOfflinePlayer.offlinePlayers.put(uuid, result);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -575,15 +580,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
     }
 
-    public void setFlySpeed(float speed) {
-        if (isOnline()) {
-            getPlayerEntity().setFlySpeed(speed);
-        }
-        else {
-            getNBTEditor().setFlySpeed(speed);
-        }
-    }
-
     public void setGameMode(GameMode mode) {
         if (isOnline()) {
             getPlayerEntity().setGameMode(mode);
@@ -655,6 +651,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return false;
         }
         return getUUID().equals(((PlayerTag) other).getUUID());
+    }
+
+    @Override
+    public boolean isTruthy() {
+        return isOnline();
     }
 
     public static void register() {
@@ -825,10 +826,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         registerOfflineTag(LocationTag.class, "bed_spawn", (attribute, object) -> {
             try {
                 NMSHandler.chunkHelper.changeChunkServerThread(object.getWorld());
-                if (object.getOfflinePlayer().getBedSpawnLocation() == null) {
+                Location loc;
+                if (object.isOnline()) {
+                    loc = object.getPlayerEntity().getBedSpawnLocation();
+                }
+                else {
+                    loc = object.getNBTEditor().getBedSpawnLocation();
+                }
+                if (loc == null) {
                     return null;
                 }
-                return new LocationTag(object.getOfflinePlayer().getBedSpawnLocation());
+                return new LocationTag(loc);
             }
             finally {
                 NMSHandler.chunkHelper.restoreServerThread(object.getWorld());
@@ -1040,16 +1048,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
-        // @attribute <PlayerTag.is_whitelisted>
+        // @attribute <PlayerTag.whitelisted>
         // @returns ElementTag(Boolean)
-        // @mechanism PlayerTag.is_whitelisted
+        // @mechanism PlayerTag.whitelisted
         // @description
         // Returns whether the player is whitelisted.
         // Works with offline players.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "is_whitelisted", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "whitelisted", (attribute, object) -> {
             return new ElementTag(object.getOfflinePlayer().isWhitelisted());
-        });
+        }, "is_whitelisted");
 
         // <--[tag]
         // @attribute <PlayerTag.last_played_time>
@@ -2077,9 +2085,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns whether the player is currently sneaking.
         // -->
-        registerOnlineOnlyTag(ElementTag.class, "is_sneaking", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().isSneaking());
-        });
+        if (!Denizen.supportsPaper || NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
+            registerOnlineOnlyTag(ElementTag.class, "is_sneaking", (attribute, object) -> {
+                return new ElementTag(object.getPlayerEntity().isSneaking());
+            });
+        }
 
         // <--[tag]
         // @attribute <PlayerTag.is_sprinting>
@@ -2480,6 +2490,22 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
+        // @attribute <PlayerTag.scoreboard_team_name[(<board>)]>
+        // @returns ElementTag
+        // @description
+        // Returns the name of the team the player is in for a given scoreboard, if any.
+        // If no scoreboard is specified, uses the default (main) board.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "scoreboard_team_name", (attribute, object) -> {
+            Scoreboard board = attribute.hasParam() ? ScoreboardHelper.getScoreboard(attribute.getParam()) : ScoreboardHelper.getMain();
+            Team team = board.getEntryTeam(object.getName());
+            if (team == null) {
+                return null;
+            }
+            return new ElementTag(team.getName());
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.bossbar_ids>
         // @returns ListTag
         // @description
@@ -2552,6 +2578,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @description
             // Sets the player's last death location, note that this only updates clientside when the player respawns.
             // Works with offline players.
+            // See also <@link mechanism PlayerTag.refresh_player>.
             // @tags
             // <PlayerTag.last_death_location>
             // -->
@@ -2564,6 +2591,33 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             });
         }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name refresh_player
+        // @input None
+        // @description
+        // Refreshes the player's client, resending some internal data.
+        // -->
+        registerOnlineOnlyMechanism("refresh_player", (object, mechanism) -> {
+            NMSHandler.playerHelper.refreshPlayer(object.getPlayerEntity());
+        });
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name whitelisted
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the player is whitelisted.
+        // Works with offline players.
+        // @tags
+        // <PlayerTag.whitelisted>
+        // -->
+        tagProcessor.registerMechanism("whitelisted", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getOfflinePlayer().setWhitelisted(input.asBoolean());
+            }
+        }, "is_whitelisted");
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
@@ -3038,7 +3092,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.fly_speed>
         // -->
         if (mechanism.matches("fly_speed") && mechanism.requireFloat()) {
-            setFlySpeed(mechanism.getValue().asFloat());
+            float val = mechanism.getValue().asFloat();
+            if (val < -1 || val > 1) {
+                mechanism.echoError("Invalid speed specified. Must be between -1 and 1.");
+                return;
+            }
+            if (isOnline()) {
+                getPlayerEntity().setFlySpeed(val);
+            }
+            else {
+                getNBTEditor().setFlySpeed(val);
+            }
         }
 
         // <--[mechanism]
@@ -3187,11 +3251,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.walk_speed>
         // -->
         if (mechanism.matches("walk_speed") && mechanism.requireFloat()) {
+            float val = mechanism.getValue().asFloat();
+            if (val < -1 || val > 1) {
+                mechanism.echoError("Invalid speed specified. Must be between -1 and 1.");
+                return;
+            }
             if (isOnline()) {
-                getPlayerEntity().setWalkSpeed(mechanism.getValue().asFloat());
+                getPlayerEntity().setWalkSpeed(val);
             }
             else {
-                getNBTEditor().setWalkSpeed(mechanism.getValue().asFloat());
+                getNBTEditor().setWalkSpeed(val);
             }
         }
 
@@ -3803,7 +3872,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("banner_update")) {
             if (mechanism.getValue().asString().length() > 0) {
                 String[] split = mechanism.getValue().asString().split("\\|");
-                List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<>();
+                List<Pattern> patterns = new ArrayList<>();
                 if (LocationTag.matches(split[0]) && split.length > 1) {
                     List<String> splitList;
                     for (int i = 1; i < split.length; i++) {
@@ -3813,7 +3882,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         }
                         try {
                             splitList = CoreUtilities.split(string, '/', 2);
-                            patterns.add(new org.bukkit.block.banner.Pattern(DyeColor.valueOf(splitList.get(0).toUpperCase()),
+                            patterns.add(new Pattern(DyeColor.valueOf(splitList.get(0).toUpperCase()),
                                     PatternType.valueOf(splitList.get(1).toUpperCase())));
                         }
                         catch (Exception e) {
@@ -3821,7 +3890,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         }
                     }
                     LocationTag location = LocationTag.valueOf(split[0], mechanism.context);
-                    NMSHandler.packetHelper.showBannerUpdate(getPlayerEntity(), location, DyeColor.WHITE, patterns);
+                    NMSHandler.packetHelper.showBannerUpdate(getPlayerEntity(), location, patterns);
                 }
                 else {
                     Debug.echoError("Must specify a valid location and pattern list!");
@@ -3855,11 +3924,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
             }
             NMSHandler.playerHelper.stopSound(getPlayerEntity(), key, category);
-        }
-
-        if (mechanism.matches("action_bar")) {
-            BukkitImplDeprecations.playerActionBarMech.warn(mechanism.context);
-            getPlayerEntity().spigot().sendMessage(ChatMessageType.ACTION_BAR, FormattedTextHelper.parse(mechanism.getValue().asString(), ChatColor.WHITE));
         }
 
         // <--[mechanism]
@@ -3926,19 +3990,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object PlayerTag
-        // @name is_whitelisted
-        // @input ElementTag(Boolean)
-        // @description
-        // Changes whether the player is whitelisted or not.
-        // @tags
-        // <PlayerTag.is_whitelisted>
-        // -->
-        if (mechanism.matches("is_whitelisted") && mechanism.requireBoolean()) {
-            getPlayerEntity().setWhitelisted(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object PlayerTag
         // @name is_op
         // @input ElementTag(Boolean)
         // @description
@@ -3947,6 +3998,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <PlayerTag.is_op>
         // -->
         if (mechanism.matches("is_op") && mechanism.requireBoolean()) {
+            ImprovedOfflinePlayer.invalidateNow(getUUID());
             getOfflinePlayer().setOp(mechanism.getValue().asBoolean());
         }
 

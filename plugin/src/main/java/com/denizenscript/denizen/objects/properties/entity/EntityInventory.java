@@ -35,7 +35,7 @@ public class EntityInventory implements Property {
             "inventory_contents"
     };
 
-    private EntityInventory(EntityTag ent) {
+    public EntityInventory(EntityTag ent) {
         entity = ent;
     }
 

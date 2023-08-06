@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.properties.inventory.InventoryContents;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.objects.InventoryTag;
@@ -39,7 +37,7 @@ public class ItemInventory implements Property {
                 && ((BlockStateMeta) meta).getBlockState() instanceof InventoryHolder) {
             return true;
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && meta instanceof BundleMeta) {
+        else if (meta instanceof BundleMeta) {
             return true;
         }
         return false;
@@ -62,7 +60,7 @@ public class ItemInventory implements Property {
             "inventory", "inventory_contents"
     };
 
-    private InventoryTag getItemInventory() {
+    public InventoryTag getItemInventory() {
         InventoryHolder holder = ((InventoryHolder) ((BlockStateMeta) item.getItemMeta()).getBlockState());
         Inventory inv = getInventoryFor(holder);
         return InventoryTag.mirrorBukkitInventory(inv);
@@ -77,7 +75,7 @@ public class ItemInventory implements Property {
         }
     }
 
-    private ItemInventory(ItemTag _item) {
+    public ItemInventory(ItemTag _item) {
         item = _item;
     }
 
@@ -115,18 +113,15 @@ public class ItemInventory implements Property {
             if (inventory == null) {
                 return null;
             }
-            return InventoryContents.getFrom(inventory).getContents(false);
+            return new InventoryContents(inventory).getContents(false);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-            ListTag result = new ListTag();
-            for (ItemStack item : ((BundleMeta) item.getItemMeta()).getItems()) {
-                if (item != null && item.getType() != Material.AIR) {
-                    result.addObject(new ItemTag(item));
-                }
+        ListTag result = new ListTag();
+        for (ItemStack item : ((BundleMeta) item.getItemMeta()).getItems()) {
+            if (item != null && item.getType() != Material.AIR) {
+                result.addObject(new ItemTag(item));
             }
-            return result;
         }
-        return null;
+        return result;
     }
 
     @Override
@@ -168,7 +163,7 @@ public class ItemInventory implements Property {
                 bsm.setBlockState((BlockState) invHolder);
                 item.setItemMeta(bsm);
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            else {
                 BundleMeta bundle = (BundleMeta) item.getItemMeta();
                 bundle.setItems(items);
                 item.setItemMeta(bundle);
@@ -184,7 +179,7 @@ public class ItemInventory implements Property {
             if (inventoryPair == null || inventoryPair.getValue().getInventory() == null) {
                 return;
             }
-            ListTag items = InventoryContents.getFrom(inventoryPair.getValue()).getContents(false);
+            ListTag items = new InventoryContents(inventoryPair.getValue()).getContents(false);
             ItemStack[] itemArray = new ItemStack[items.size()];
             for (int i = 0; i < itemArray.length; i++) {
                 itemArray[i] = ((ItemTag) items.objectForms.get(i)).getItemStack().clone();
@@ -200,7 +195,7 @@ public class ItemInventory implements Property {
                 bsm.setBlockState((BlockState) invHolder);
                 item.setItemMeta(bsm);
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
+            else {
                 BundleMeta bundle = (BundleMeta) item.getItemMeta();
                 bundle.setItems(Arrays.asList(itemArray));
                 item.setItemMeta(bundle);

@@ -304,11 +304,6 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer) {
-        return new ImprovedOfflinePlayerImpl(offlinePlayer.getUniqueId());
-    }
-
-    @Override
     public void resendRecipeDetails(Player player) {
         Collection<Recipe<?>> recipes = ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().getRecipes();
         ClientboundUpdateRecipesPacket updatePacket = new ClientboundUpdateRecipesPacket(recipes);

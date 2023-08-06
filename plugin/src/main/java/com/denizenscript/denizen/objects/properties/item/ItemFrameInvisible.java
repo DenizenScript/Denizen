@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.jnbt.ByteTag;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
@@ -21,7 +20,7 @@ public class ItemFrameInvisible implements Property {
     public static boolean describes(ObjectTag object) {
         return object instanceof ItemTag &&
                 (((ItemTag) object).getBukkitMaterial() == Material.ITEM_FRAME
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && (((ItemTag) object).getBukkitMaterial().name().equals("GLOW_ITEM_FRAME"))));
+                || ((ItemTag) object).getBukkitMaterial() == Material.GLOW_ITEM_FRAME);
     }
 
     public static ItemFrameInvisible getFrom(ObjectTag object) {
@@ -39,7 +38,7 @@ public class ItemFrameInvisible implements Property {
             "invisible"
     };
 
-    private ItemFrameInvisible(ItemTag item) {
+    public ItemFrameInvisible(ItemTag item) {
         this.item = item;
     }
 

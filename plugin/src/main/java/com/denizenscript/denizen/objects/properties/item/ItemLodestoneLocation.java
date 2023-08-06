@@ -34,7 +34,7 @@ public class ItemLodestoneLocation implements Property {
             "lodestone_location"
     };
 
-    private ItemLodestoneLocation(ItemTag _item) {
+    public ItemLodestoneLocation(ItemTag _item) {
         item = _item;
     }
 

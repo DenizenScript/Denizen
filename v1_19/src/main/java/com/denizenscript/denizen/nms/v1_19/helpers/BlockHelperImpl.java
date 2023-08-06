@@ -28,24 +28,23 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
-import net.minecraft.world.level.block.BellBlock;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.material.PushReaction;
 import org.bukkit.*;
 import org.bukkit.block.*;
-import org.bukkit.craftbukkit.v1_19_R2.CraftChunk;
-import org.bukkit.craftbukkit.v1_19_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R2.block.*;
-import org.bukkit.craftbukkit.v1_19_R2.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_19_R2.tag.CraftBlockTag;
-import org.bukkit.craftbukkit.v1_19_R2.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_19_R3.CraftChunk;
+import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R3.block.*;
+import org.bukkit.craftbukkit.v1_19_R3.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R3.tag.CraftBlockTag;
+import org.bukkit.craftbukkit.v1_19_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 
 import java.lang.invoke.MethodHandle;
@@ -193,14 +192,9 @@ public class BlockHelperImpl implements BlockHelper {
     }
 
     @Override
-    public String getPushReaction(Material mat) {
-        return getInternalMaterial(mat).getPushReaction().name();
-    }
-
-    @Override
-    public void setPushReaction(Material mat, String reaction) {
+    public void setPushReaction(Material mat, PistonPushReaction reaction) {
         try {
-            MATERIAL_PUSH_REACTION_SETTER.invoke(getInternalMaterial(mat), PushReaction.valueOf(reaction));
+            MATERIAL_PUSH_REACTION_SETTER.invoke(getInternalMaterial(mat), PushReaction.values()[reaction.ordinal()]);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -235,7 +229,7 @@ public class BlockHelperImpl implements BlockHelper {
     @Override
     public void doRandomTick(Location location) {
         BlockPos pos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        LevelChunk nmsChunk = ((CraftChunk) location.getChunk()).getHandle();
+        ChunkAccess nmsChunk = ((CraftChunk) location.getChunk()).getHandle(ChunkStatus.FULL);
         net.minecraft.world.level.block.state.BlockState nmsBlock = nmsChunk.getBlockState(pos);
         ServerLevel nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
         if (nmsBlock.isRandomlyTicking()) {
@@ -262,29 +256,6 @@ public class BlockHelperImpl implements BlockHelper {
         Optional<NoteBlockInstrument> aboveInstrument = NoteBlockInstrument.byStateAbove(blockType.defaultBlockState());
         NoteBlockInstrument nmsInstrument = aboveInstrument.orElse(NoteBlockInstrument.byStateBelow(blockType.defaultBlockState()));
         return Instrument.values()[(nmsInstrument.ordinal())];
-    }
-
-    @Override
-    public void ringBell(Bell block) {
-        org.bukkit.block.data.type.Bell bellData = (org.bukkit.block.data.type.Bell) block.getBlockData();
-        Direction face = Direction.byName(bellData.getFacing().name());
-        Direction dir = Direction.NORTH;
-        switch (bellData.getAttachment()) {
-            case DOUBLE_WALL:
-            case SINGLE_WALL:
-                switch (face) {
-                    case NORTH:
-                    case SOUTH:
-                        dir = Direction.EAST;
-                        break;
-                }
-                break;
-            case FLOOR:
-                dir = face;
-                break;
-        }
-        CraftBlock craftBlock = (CraftBlock) block.getBlock();
-        ((BellBlock) Blocks.BELL).attemptToRing(craftBlock.getCraftWorld().getHandle(), craftBlock.getPosition(), dir);
     }
 
     @Override

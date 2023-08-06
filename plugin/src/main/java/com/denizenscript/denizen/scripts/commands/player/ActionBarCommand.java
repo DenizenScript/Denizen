@@ -26,7 +26,7 @@ public class ActionBarCommand extends AbstractCommand {
 
     public ActionBarCommand() {
         setName("actionbar");
-        setSyntax("actionbar [<text>] (targets:<player>|...) (format:<name>) (per_player)");
+        setSyntax("actionbar [<text>] (targets:<player>|...) (format:<script>) (per_player)");
         setRequiredArguments(1, 4);
         setParseArgs(false);
         isProcedural = false;
@@ -34,7 +34,7 @@ public class ActionBarCommand extends AbstractCommand {
 
     // <--[command]
     // @Name ActionBar
-    // @Syntax actionbar [<text>] (targets:<player>|...) (format:<name>) (per_player)
+    // @Syntax actionbar [<text>] (targets:<player>|...) (format:<script>) (per_player)
     // @Required 1
     // @Maximum 4
     // @Short Sends a message to a player's action bar.

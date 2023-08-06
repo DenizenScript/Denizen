@@ -32,7 +32,7 @@ public class EntityMaxFuseTicks implements Property {
             "max_fuse_ticks"
     };
 
-    private EntityMaxFuseTicks(EntityTag entity) {
+    public EntityMaxFuseTicks(EntityTag entity) {
         this.entity = entity;
     }
 

@@ -35,7 +35,7 @@ public class ItemMap implements Property {
             "map", "full_render", "map_locked", "map_center"
     };
 
-    private ItemMap(ItemTag _item) {
+    public ItemMap(ItemTag _item) {
         item = _item;
     }
 
@@ -175,12 +175,11 @@ public class ItemMap implements Property {
         // Input numbers are pixel indices within the map image - so, any integer from 0 to 128.
         // The input for a full map render would be 0,0,128,128.
         //
-        // Example usage to render sections slowly (to reduce server impact):
-        // <code>
+        // @example
+        // # Use to render sections slowly (to reduce server impact):
         // - repeat 16 as:x:
-        //     - adjust <item[map[map=4]]> full_render:<[x].sub[1].mul[8]>,0,<[x].mul[8]>,128
+        //     - adjust <item[filled_map[map=4]]> full_render:<[x].sub[1].mul[8]>,0,<[x].mul[8]>,128
         //     - wait 2t
-        // </code>
         // @tags
         // <ItemTag.map>
         // <ItemTag.map_scale>

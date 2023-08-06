@@ -33,7 +33,7 @@ public class ItemLodestoneTracked implements Property {
             "lodestone_tracked"
     };
 
-    private ItemLodestoneTracked(ItemTag _item) {
+    public ItemLodestoneTracked(ItemTag _item) {
         item = _item;
     }
 

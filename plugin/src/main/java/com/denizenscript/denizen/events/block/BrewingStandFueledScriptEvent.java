@@ -30,7 +30,7 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
     // <context.consuming> returns a boolean indicating whether the fuel item will be consumed.
     //
     // @Determine
-    // "FUEL_POWER:" + ElementTag(Number) to set the fuel power level to be added.
+    // "FUEL_POWER:<ElementTag(Number)>" to set the fuel power level to be added.
     // "CONSUMING" to indicate that the fuel item should be consumed.
     // "NOT_CONSUMING" to indicate that the fuel item should not be consumed.
     //
@@ -57,8 +57,8 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String val = ((ElementTag) determinationObj).asString();
+        if (determinationObj instanceof ElementTag element) {
+            String val = element.asString();
             if (val.startsWith("fuel_power:")) {
                 event.setFuelPower(Integer.parseInt(val.substring("fuel_power:".length())));
                 return true;

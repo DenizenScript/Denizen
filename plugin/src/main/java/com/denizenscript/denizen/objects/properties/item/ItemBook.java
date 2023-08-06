@@ -9,7 +9,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -36,7 +36,7 @@ public class ItemBook implements Property {
         }
     }
 
-    private ItemBook(ItemTag _item) {
+    public ItemBook(ItemTag _item) {
         item = _item;
     }
 
@@ -132,25 +132,11 @@ public class ItemBook implements Property {
                 attribute.fulfill(1);
                 return new ElementTag(FormattedTextHelper.stringify(bookMeta.spigot().getPage(attribute.getIntParam())));
             }
-            if ((attribute.startsWith("raw_page", 2) || attribute.startsWith("get_raw_page", 2)) && attribute.hasContext(2)) {
-                BukkitImplDeprecations.bookItemRawTags.warn(attribute.context);
-                attribute.fulfill(1);
-                return new ElementTag(FormattedTextHelper.componentToJson(bookMeta.spigot().getPage(attribute.getIntParam())));
-            }
             if (attribute.startsWith("pages", 2)) {
                 attribute.fulfill(1);
                 ListTag output = new ListTag();
                 for (BaseComponent[] page : bookMeta.spigot().getPages()) {
                     output.add(FormattedTextHelper.stringify(page));
-                }
-                return output;
-            }
-            if (attribute.startsWith("raw_pages", 2)) {
-                BukkitImplDeprecations.bookItemRawTags.warn(attribute.context);
-                attribute.fulfill(1);
-                ListTag output = new ListTag();
-                for (BaseComponent[] page : bookMeta.spigot().getPages()) {
-                    output.add(FormattedTextHelper.componentToJson(page));
                 }
                 return output;
             }
@@ -281,8 +267,8 @@ public class ItemBook implements Property {
                     mechanism.echoError("Only 'written_book' items can have a title or author!");
                 }
                 else {
-                    bookMeta.setAuthor(EscapeTagBase.unEscape(data.get(1)));
-                    bookMeta.setTitle(EscapeTagBase.unEscape(data.get(3)));
+                    bookMeta.setAuthor(EscapeTagUtil.unEscape(data.get(1)));
+                    bookMeta.setTitle(EscapeTagUtil.unEscape(data.get(3)));
                     for (int i = 0; i < 4; i++) {
                         data.removeObject(0); // No .removeRange?
                     }
@@ -291,31 +277,20 @@ public class ItemBook implements Property {
             if (data.get(0).equalsIgnoreCase("raw_pages")) {
                 List<BaseComponent[]> newPages = new ArrayList<>(data.size());
                 for (int i = 1; i < data.size(); i++) {
-                    newPages.add(ComponentSerializer.parse(EscapeTagBase.unEscape(data.get(i))));
+                    newPages.add(ComponentSerializer.parse(EscapeTagUtil.unEscape(data.get(i))));
                 }
                 bookMeta.spigot().setPages(newPages);
             }
             else if (data.get(0).equalsIgnoreCase("pages")) {
                 List<BaseComponent[]> newPages = new ArrayList<>(data.size());
                 for (int i = 1; i < data.size(); i++) {
-                    newPages.add(FormattedTextHelper.parse(EscapeTagBase.unEscape(data.get(i)), ChatColor.BLACK));
+                    newPages.add(FormattedTextHelper.parse(EscapeTagUtil.unEscape(data.get(i)), ChatColor.BLACK));
                 }
                 bookMeta.spigot().setPages(newPages);
             }
             else {
                 mechanism.echoError("Invalid book input!");
             }
-            object.item.setItemMeta(bookMeta);
-        });
-
-        PropertyParser.registerMechanism(ItemBook.class, ListTag.class, "book_raw_pages", (object, mechanism, input) -> {
-            BukkitImplDeprecations.bookItemRawTags.warn(mechanism.context);
-            BookMeta bookMeta = object.getBookMeta();
-            List<BaseComponent[]> newPages = new ArrayList<>();
-            for (String page : input) {
-                newPages.add(ComponentSerializer.parse(EscapeTagBase.unEscape(page)));
-            }
-            bookMeta.spigot().setPages(newPages);
             object.item.setItemMeta(bookMeta);
         });
     }
@@ -353,13 +328,13 @@ public class ItemBook implements Property {
         StringBuilder output = new StringBuilder(128);
         BookMeta bookMeta = getBookMeta();
         if (isWrittenBook() && bookMeta.hasAuthor() && bookMeta.hasTitle()) {
-            output.append("author|").append(EscapeTagBase.escape(bookMeta.getAuthor()))
-                    .append("|title|").append(EscapeTagBase.escape(bookMeta.getTitle())).append("|");
+            output.append("author|").append(EscapeTagUtil.escape(bookMeta.getAuthor()))
+                    .append("|title|").append(EscapeTagUtil.escape(bookMeta.getTitle())).append("|");
         }
         output.append("pages|");
         if (bookMeta.hasPages()) {
             for (BaseComponent[] page : bookMeta.spigot().getPages()) {
-                output.append(EscapeTagBase.escape(FormattedTextHelper.stringify(page))).append("|");
+                output.append(EscapeTagUtil.escape(FormattedTextHelper.stringify(page))).append("|");
             }
         }
         return output.substring(0, output.length() - 1);

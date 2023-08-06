@@ -10,9 +10,11 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class ItemHelper {
@@ -20,8 +22,6 @@ public abstract class ItemHelper {
     public abstract void setMaxStackSize(Material material, int size);
 
     public abstract Integer burnTime(Material material);
-
-    public abstract void removeRecipe(NamespacedKey key);
 
     public abstract void clearDenizenRecipes();
 
@@ -72,4 +72,11 @@ public abstract class ItemHelper {
     }
 
     public abstract boolean isValidMix(ItemStack input, ItemStack ingredient);
+
+    public record BrewingRecipe(RecipeChoice input, RecipeChoice ingredient, ItemStack result) {}
+
+    public Map<NamespacedKey, BrewingRecipe> getCustomBrewingRecipes() {
+        throw new UnsupportedOperationException();
+    }
+
 }

@@ -104,7 +104,6 @@ public class PlayersPrepareSmithingTableScriptEvent extends BukkitScriptEvent im
         this.event = event;
         result = new ItemTag(event.getResult());
         this.player = EntityTag.getPlayerFrom(humanEntity);
-        this.cancelled = false;
         fire(event);
     }
 }

@@ -21,8 +21,8 @@ public class PlayerReceivesActionbarScriptEvent extends PlayerReceivesMessageScr
     // <context.raw_json> returns an ElementTag of the raw JSON used for the actionbar.
     //
     // @Determine
-    // "MESSAGE:" + ElementTag to change the actionbar.
-    // "RAW_JSON:" + ElementTag to change the JSON used for the actionbar.
+    // "MESSAGE:<ElementTag>" to change the actionbar.
+    // "RAW_JSON:<ElementTag>" to change the JSON used for the actionbar.
     //
     // @Player Always.
     //

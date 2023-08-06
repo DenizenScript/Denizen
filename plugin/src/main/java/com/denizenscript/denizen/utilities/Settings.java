@@ -47,6 +47,7 @@ public class Settings {
         CoreConfiguration.webserverRoot = config.getString("Commands.WebServer.Webroot", "webroot/");
         CoreConfiguration.allowFileRead = config.getBoolean("Commands.File.Allow read", false);
         CoreConfiguration.allowFileWrite = config.getBoolean("Commands.File.Allow write", false);
+        CoreConfiguration.allowFileDeletion = config.getBoolean("Commands.Delete.Allow file deletion", true);
         CoreConfiguration.filePathLimit = config.getString("Commands.File.Restrict path", "data/");
         CoreConfiguration.verifyThreadMatches = config.getBoolean("Debug.Verify thread", false);
         CoreConfiguration.queueIdPrefix = config.getBoolean("Queues.Id parts.Prefix", true);
@@ -76,8 +77,11 @@ public class Settings {
         }
         // Spigot
         PolygonTag.preferInclusive = config.getBoolean("Tags.Polygon default inclusive", false);
+        allowAsyncPassThrough = config.getBoolean("Scripts.Economy.Pass async to main thread", false);
         skipChunkFlagCleaning = config.getBoolean("Saves.Skip chunk flag cleaning", false);
         nullifySkullSkinIds = config.getBoolean("Tags.Nullify skull skin ids", false);
+        worldPlayerDataSaveDelay = (float) DurationTag.valueOf(config.getString("Save world player file delay", "10s"), CoreUtilities.basicContext).getSeconds();
+        worldPlayerDataMaxCacheTicks = DurationTag.valueOf(config.getString("World player data max cache", "1h"), CoreUtilities.basicContext).getTicks();
         cache_overrideHelp = config.getBoolean("Debug.Override help", true);
         cache_useDefaultScriptPath = config.getBoolean("Scripts location.Use default script folder", true);
         cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
@@ -95,7 +99,6 @@ public class Settings {
         cache_engageTimeoutInSeconds = config.getString("Commands.Engage.Timeout", "150s");
         cache_createWorldSymbols = config.getBoolean("Commands.CreateWorld.Allow symbols in names", false);
         cache_createWorldWeirdPaths = config.getBoolean("Commands.CreateWorld.Allow weird paths", false);
-        cache_allowDelete = config.getBoolean("Commands.Delete.Allow file deletion", true);
         cache_allowServerStop = config.getBoolean("Commands.Restart.Allow server stop", false);
         cache_allowServerRestart = config.getBoolean("Commands.Restart.Allow server restart", true);
         cache_limitPath = config.getString("Commands.Yaml.Limit path", "none");
@@ -140,18 +143,26 @@ public class Settings {
 
     public static boolean nullifySkullSkinIds = false;
 
-    public static boolean cache_overrideHelp, cache_useDefaultScriptPath,
+    public static boolean allowAsyncPassThrough = false;
+
+    public static float worldPlayerDataSaveDelay = 10;
+
+    public static long worldPlayerDataMaxCacheTicks = 20 * 60 * 60;
+
+    public static boolean cache_overrideHelp,
             cache_showExHelp, cache_showExDebug, cache_canRecordStats,
             cache_defaultDebugMode, cache_healthTraitEnabledByDefault, cache_healthTraitAnimatedDeathEnabled,
-            cache_healthTraitRespawnEnabled, cache_allowDelete,
-            cache_allowServerStop, cache_allowServerRestart,
+            cache_healthTraitRespawnEnabled, cache_allowServerStop, cache_allowServerRestart,
             cache_healthTraitBlockDrops, cache_chatAsynchronous, cache_chatMustSeeNPC, cache_chatMustLookAtNPC,
             cache_chatGloballyIfFailedChatTriggers, cache_chatGloballyIfNoChatTriggers,
             cache_chatGloballyIfUninteractable, cache_worldScriptChatEventAsynchronous,
             cache_packetInterception, cache_createWorldSymbols, cache_createWorldWeirdPaths,
             cache_commandScriptAutoInit, cache_packetInterceptAutoInit, cache_warnOnAsyncPackets;
 
-    public static String cache_getAlternateScriptPath, cache_healthTraitRespawnDelay,
+    public static volatile boolean cache_useDefaultScriptPath;
+    public static volatile String cache_getAlternateScriptPath;
+
+    public static String cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
             cache_chatToTargetFormat, cache_chatWithTargetToBystandersFormat, cache_chatWithTargetsToBystandersFormat,
             cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_interactQueueSpeed, cache_limitPath;
@@ -279,10 +290,6 @@ public class Settings {
     public static boolean allowStupidx() {
         return Denizen.getInstance().getConfig()
                 .getBoolean("Commands.General.Don't change this unrestricted file access option though", false);
-    }
-
-    public static boolean allowDelete() {
-        return cache_allowDelete;
     }
 
     public static boolean allowServerStop() {

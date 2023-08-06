@@ -28,7 +28,7 @@ public class EntityDirection implements Property {
             "direction"
     };
 
-    private EntityDirection(EntityTag ent) {
+    public EntityDirection(EntityTag ent) {
         entity = ent;
     }
 

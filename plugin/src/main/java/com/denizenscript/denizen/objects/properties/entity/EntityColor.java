@@ -2,10 +2,10 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.utilities.MultiVersionHelper1_17;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizen.utilities.MultiVersionHelper1_19;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -42,7 +42,8 @@ public class EntityColor implements Property {
                 type == EntityType.ZOMBIE_VILLAGER ||
                 type == EntityType.TRADER_LLAMA ||
                 type == EntityType.TROPICAL_FISH ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) ||
+                type == EntityType.GOAT ||
+                type == EntityType.AXOLOTL ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type));
     }
 
@@ -59,7 +60,7 @@ public class EntityColor implements Property {
             "color"
     };
 
-    private EntityColor(EntityTag entity) {
+    public EntityColor(EntityTag entity) {
         colored = entity;
     }
 
@@ -109,14 +110,15 @@ public class EntityColor implements Property {
                 return ((ZombieVillager) colored.getBukkitEntity()).getVillagerType().name();
             case ARROW:
                 try {
-                    return new ColorTag(((Arrow) colored.getBukkitEntity()).getColor()).identify();
+                    return BukkitColorExtensions.fromColor(((Arrow) colored.getBukkitEntity()).getColor()).identify();
                 }
                 catch (Exception e) {
                     return null;
                 }
-        }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) {
-            return MultiVersionHelper1_17.getColor(colored.getBukkitEntity());
+            case GOAT:
+                return ((Goat) colored.getBukkitEntity()).isScreaming() ? "screaming" : "normal";
+            case AXOLOTL:
+                return ((Axolotl) colored.getBukkitEntity()).getVariant().name();
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
             return MultiVersionHelper1_19.getColor(colored.getBukkitEntity());
@@ -165,9 +167,13 @@ public class EntityColor implements Property {
             case VILLAGER:
             case ZOMBIE_VILLAGER:
                 return listForEnum(Villager.Type.values());
-        }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) {
-            return MultiVersionHelper1_17.getAllowedColors(type);
+            case GOAT:
+                ListTag result = new ListTag();
+                result.add("screaming");
+                result.add("normal");
+                return result;
+            case AXOLOTL:
+                return EntityColor.listForEnum(Axolotl.Variant.values());
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
             return MultiVersionHelper1_19.getAllowedColors(type);
@@ -391,10 +397,13 @@ public class EntityColor implements Property {
                 ((ZombieVillager) colored.getBukkitEntity()).setVillagerType(Villager.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (type == EntityType.ARROW && mechanism.requireObject(ColorTag.class)) {
-                ((Arrow) colored.getBukkitEntity()).setColor(mechanism.valueAsType(ColorTag.class).getColor());
+                ((Arrow) colored.getBukkitEntity()).setColor(BukkitColorExtensions.getColor(mechanism.valueAsType(ColorTag.class)));
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && MultiVersionHelper1_17.colorIsApplicable(type)) {
-                MultiVersionHelper1_17.setColor(colored.getBukkitEntity(), mechanism);
+            else if (type == EntityType.GOAT) {
+                ((Goat) colored.getBukkitEntity()).setScreaming(CoreUtilities.toLowerCase(mechanism.getValue().asString()).equals("screaming"));
+            }
+            else if (type == EntityType.AXOLOTL && mechanism.requireEnum(Axolotl.Variant.class)) {
+                ((Axolotl) colored.getBukkitEntity()).setVariant(Axolotl.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
                 MultiVersionHelper1_19.setColor(colored.getBukkitEntity(), mechanism);

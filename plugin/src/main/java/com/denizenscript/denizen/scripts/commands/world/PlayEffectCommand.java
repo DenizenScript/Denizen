@@ -2,7 +2,10 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.MultiVersionHelper1_17;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ColorTag;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.Particle;
@@ -281,7 +284,7 @@ public class PlayEffectCommand extends AbstractCommand {
                         else {
                             float size = Float.parseFloat(dataList.get(0));
                             ColorTag color = ColorTag.valueOf(dataList.get(1), scriptEntry.context);
-                            dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
+                            dataObject = new org.bukkit.Particle.DustOptions(BukkitColorExtensions.getColor(color), size);
                         }
                     }
                     else if (clazz == BlockData.class) {
@@ -292,8 +295,7 @@ public class PlayEffectCommand extends AbstractCommand {
                         ItemTag itemType = ItemTag.valueOf(special_data.asString(), scriptEntry.getContext());
                         dataObject = itemType.getItemStack();
                     }
-                    // Intentionally list last due to requiring 1.17+
-                    else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && clazz == org.bukkit.Particle.DustTransition.class) {
+                    else if (clazz == org.bukkit.Particle.DustTransition.class) {
                         ListTag dataList = ListTag.valueOf(special_data.asString(), scriptEntry.getContext());
                         if (dataList.size() != 3) {
                             Debug.echoError("DustTransition special_data must have 3 list entries for particle: " + particleEffect.getName());
@@ -303,17 +305,27 @@ public class PlayEffectCommand extends AbstractCommand {
                             float size = Float.parseFloat(dataList.get(0));
                             ColorTag fromColor = ColorTag.valueOf(dataList.get(1), scriptEntry.context);
                             ColorTag toColor = ColorTag.valueOf(dataList.get(2), scriptEntry.context);
-                            dataObject = new org.bukkit.Particle.DustTransition(fromColor.getColor(), toColor.getColor(), size);
+                            dataObject = new org.bukkit.Particle.DustTransition(BukkitColorExtensions.getColor(fromColor), BukkitColorExtensions.getColor(toColor), size);
                         }
                     }
-                    else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && clazz == Vibration.class) {
+                    else if (clazz == Vibration.class) {
                         ListTag dataList = ListTag.valueOf(special_data.asString(), scriptEntry.getContext());
                         if (dataList.size() != 3) {
                             Debug.echoError("Vibration special_data must have 3 list entries for particle: " + particleEffect.getName());
                             return;
                         }
                         else {
-                            dataObject = MultiVersionHelper1_17.getPlayEffectVibrationObject(dataList, scriptEntry);
+                            DurationTag duration = dataList.getObject(0).asType(DurationTag.class, scriptEntry.context);
+                            LocationTag origin = dataList.getObject(1).asType(LocationTag.class, scriptEntry.context);
+                            ObjectTag destination = dataList.getObject(2);
+                            Vibration.Destination destObj;
+                            if (destination.shouldBeType(EntityTag.class)) {
+                                destObj = new Vibration.Destination.EntityDestination(destination.asType(EntityTag.class, scriptEntry.context).getBukkitEntity());
+                            }
+                            else {
+                                destObj = new Vibration.Destination.BlockDestination(destination.asType(LocationTag.class, scriptEntry.context));
+                            }
+                            dataObject = new Vibration(origin, destObj, duration.getTicksAsInt());
                         }
                     }
                     else {

@@ -86,11 +86,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return cuboid;
     }
 
-    @Deprecated
-    public static CuboidTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("cu")
     public static CuboidTag valueOf(String string, TagContext context) {
         if (string == null) {
@@ -1071,7 +1066,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // Not valid for multi-member CuboidTags.
         // @example
         // # For example, this can return "6,7,8", meaning the cuboid is 6 blocks wide, 7 blocks high, and 8 blocks deep.
-        // - narrate "The size of the cuboid 'my_cuboid' is: <cuboid[my_cuboid].volume.xyz>!"
+        // - narrate "The size of the cuboid 'my_cuboid' is: <cuboid[my_cuboid].size.xyz>!"
         // -->
         tagProcessor.registerTag(LocationTag.class, "size", (attribute, cuboid) -> {
             LocationPair pair;

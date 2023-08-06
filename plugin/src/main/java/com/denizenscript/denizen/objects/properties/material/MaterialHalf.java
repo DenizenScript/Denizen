@@ -43,7 +43,7 @@ public class MaterialHalf implements Property {
             "half"
     };
 
-    private MaterialHalf(MaterialTag _material) {
+    public MaterialHalf(MaterialTag _material) {
         material = _material;
     }
 

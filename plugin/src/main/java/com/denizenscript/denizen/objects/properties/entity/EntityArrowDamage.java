@@ -28,7 +28,7 @@ public class EntityArrowDamage implements Property {
             "damage"
     };
 
-    private EntityArrowDamage(EntityTag entity) {
+    public EntityArrowDamage(EntityTag entity) {
         dentity = entity;
     }
 

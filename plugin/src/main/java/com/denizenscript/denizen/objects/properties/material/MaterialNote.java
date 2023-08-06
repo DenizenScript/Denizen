@@ -30,7 +30,7 @@ public class MaterialNote implements Property {
             "note"
     };
 
-    private MaterialNote(MaterialTag _material) {
+    public MaterialNote(MaterialTag _material) {
         material = _material;
     }
 

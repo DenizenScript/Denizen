@@ -35,7 +35,7 @@ public class ItemScript implements Property {
             "script"
     };
 
-    private ItemScript(ItemTag _item) {
+    public ItemScript(ItemTag _item) {
         item = _item;
     }
 

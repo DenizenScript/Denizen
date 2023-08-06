@@ -33,7 +33,7 @@ public class EntityPainting implements Property {
             "painting"
     };
 
-    private EntityPainting(EntityTag entity) {
+    public EntityPainting(EntityTag entity) {
         painting = entity;
     }
 

@@ -32,7 +32,7 @@ public class ItemDurability implements Property {
             "durability"
     };
 
-    private ItemDurability(ItemTag _item) {
+    public ItemDurability(ItemTag _item) {
         item = _item;
     }
 

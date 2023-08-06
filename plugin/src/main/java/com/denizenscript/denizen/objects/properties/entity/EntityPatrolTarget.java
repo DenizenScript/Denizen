@@ -28,7 +28,7 @@ public class EntityPatrolTarget implements Property {
             "patrol_target"
     };
 
-    private EntityPatrolTarget(EntityTag entity) {
+    public EntityPatrolTarget(EntityTag entity) {
         this.entity = entity;
     }
 

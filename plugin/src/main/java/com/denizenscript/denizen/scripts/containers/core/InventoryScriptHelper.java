@@ -1,9 +1,10 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.utilities.Settings;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.util.*;
 
@@ -35,26 +35,32 @@ public class InventoryScriptHelper implements Listener {
         Denizen.getInstance().getServer().getPluginManager().registerEvents(this, Denizen.getInstance());
     }
 
-    public static void _savePlayerInventories() {
-        for (Map.Entry<UUID, PlayerInventory> offlineInv : ImprovedOfflinePlayer.offlineInventories.entrySet()) {
-            NMSHandler.playerHelper.getOfflineData(offlineInv.getKey()).setInventory(offlineInv.getValue());
+    private final static List<UUID> toClearOfflinePlayers = new ArrayList<>();
+
+    public static void savePlayerInventories() {
+        for (ImprovedOfflinePlayer player : ImprovedOfflinePlayer.offlinePlayers.values()) {
+            if (player.inventory != null) { // TODO: optimize - remove inventories when no longer in use?
+                player.setInventory(player.inventory);
+            }
+            if (player.enderchest != null) {
+                player.setEnderChest(player.enderchest);
+            }
+            if (player.modified) {
+                player.saveToFile();
+            }
+            if (player.timeLastLoaded + Settings.worldPlayerDataMaxCacheTicks < DenizenCore.currentTimeMonotonicMillis) {
+                toClearOfflinePlayers.add(player.player);
+            }
         }
-        for (Map.Entry<UUID, Inventory> offlineEnderChest : ImprovedOfflinePlayer.offlineEnderChests.entrySet()) {
-            NMSHandler.playerHelper.getOfflineData(offlineEnderChest.getKey()).setEnderChest(offlineEnderChest.getValue());
+        for (UUID id : toClearOfflinePlayers) {
+            ImprovedOfflinePlayer.offlinePlayers.remove(id);
         }
+        toClearOfflinePlayers.clear();
     }
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        if (ImprovedOfflinePlayer.offlineInventories.containsKey(uuid)) {
-            NMSHandler.playerHelper.getOfflineData(uuid).setInventory(ImprovedOfflinePlayer.offlineInventories.get(uuid));
-            ImprovedOfflinePlayer.offlineInventories.remove(uuid);
-        }
-        if (ImprovedOfflinePlayer.offlineEnderChests.containsKey(uuid)) {
-            NMSHandler.playerHelper.getOfflineData(uuid).setEnderChest(ImprovedOfflinePlayer.offlineEnderChests.get(uuid));
-            ImprovedOfflinePlayer.offlineEnderChests.remove(uuid);
-        }
+        ImprovedOfflinePlayer.invalidateNow(event.getPlayer().getUniqueId());
     }
 
     public static HashSet<ClickType> allowedClicks = new HashSet<>(Arrays.asList(ClickType.CONTROL_DROP, ClickType.CREATIVE, ClickType.DROP, ClickType.LEFT,

@@ -36,7 +36,7 @@ public class EntityHasNectar implements Property {
             "has_nectar"
     };
 
-    private EntityHasNectar(EntityTag entity) {
+    public EntityHasNectar(EntityTag entity) {
         this.entity = entity;
     }
 

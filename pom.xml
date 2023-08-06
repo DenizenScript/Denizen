@@ -6,25 +6,22 @@
     <groupId>com.denizenscript</groupId>
     <artifactId>denizen-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.6-SNAPSHOT</version>
+    <version>1.2.8-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <craftbukkit.version>1.19.3-R0.1-SNAPSHOT</craftbukkit.version>
-        <citizens.version>2.0.30-SNAPSHOT</citizens.version>
-        <dcore.version>1.90.2-SNAPSHOT</dcore.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
         <BUILD_CLASS>CUSTOM</BUILD_CLASS>
-        <DENIZEN_VERSION>1.2.6</DENIZEN_VERSION>
+        <DENIZEN_VERSION>1.2.8</DENIZEN_VERSION>
     </properties>
 
     <modules>
         <module>plugin</module>
         <module>paper</module>
+        <module>v1_20</module>
         <module>v1_19</module>
         <module>v1_18</module>
         <module>v1_17</module>
-        <module>v1_16</module>
         <module>dist</module>
     </modules>
 
@@ -45,9 +42,9 @@
         <url>https://ci.citizensnpcs.co</url>
     </ciManagement>
     <scm>
-        <connection>scm:git:git://github.com/DenizenScript/Denizen-For-Bukkit.git</connection>
-        <developerConnection>scm:git:git:@github.com:DenizenScript/Denizen-For-Bukkit.git</developerConnection>
-        <url>https://github.com/DenizenScript/Denizen-For-Bukkit/tree/dev/</url>
+        <connection>scm:git:git://github.com/DenizenScript/Denizen.git</connection>
+        <developerConnection>scm:git:git:@github.com:DenizenScript/Denizen.git</developerConnection>
+        <url>https://github.com/DenizenScript/Denizen/tree/dev/</url>
     </scm>
     <distributionManagement>
         <repository>
@@ -75,8 +72,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>16</source>
+                    <target>16</target>
                 </configuration>
             </plugin>
         </plugins>

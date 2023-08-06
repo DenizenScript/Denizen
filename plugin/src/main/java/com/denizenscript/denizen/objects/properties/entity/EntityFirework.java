@@ -35,7 +35,7 @@ public class EntityFirework implements Property {
             "firework_item"
     };
 
-    private EntityFirework(EntityTag entity) {
+    public EntityFirework(EntityTag entity) {
         firework = entity;
     }
 

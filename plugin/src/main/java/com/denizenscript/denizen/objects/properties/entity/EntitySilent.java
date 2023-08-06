@@ -30,7 +30,7 @@ public class EntitySilent implements Property {
             "silent"
     };
 
-    private EntitySilent(EntityTag ent) {
+    public EntitySilent(EntityTag ent) {
         entity = ent;
     }
 
@@ -59,7 +59,7 @@ public class EntitySilent implements Property {
         // @mechanism EntityTag.silent
         // @group attributes
         // @description
-        // Returns whether the entity is silent. (Plays no sounds)
+        // Returns whether the entity is silent (Plays no sounds).
         // -->
         if (attribute.startsWith("silent")) {
             return new ElementTag(entity.getBukkitEntity().isSilent())
@@ -77,7 +77,8 @@ public class EntitySilent implements Property {
         // @name silent
         // @input ElementTag(Boolean)
         // @description
-        // Sets whether this entity is silent. (Plays no sounds)
+        // Sets whether this entity is silent (Plays no sounds).
+        // If you set a player as silent, it may also prevent the player from *hearing* sound.
         // @tags
         // <EntityTag.silent>
         // -->

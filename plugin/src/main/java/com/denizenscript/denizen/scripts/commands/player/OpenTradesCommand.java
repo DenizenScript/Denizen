@@ -1,17 +1,17 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
-import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.TradeTag;
+import com.denizenscript.denizen.utilities.PaperAPITools;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.Bukkit;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 
@@ -124,7 +124,7 @@ public class OpenTradesCommand extends AbstractCommand {
         }
         for (PlayerTag player : players) {
             if (player.isValid() && player.isOnline()) {
-                Merchant merchant = Bukkit.createMerchant(title.asString());
+                Merchant merchant = PaperAPITools.instance.createMerchant(title.asString());
                 merchant.setRecipes(recipes);
                 player.getPlayerEntity().openMerchant(merchant, true);
             }

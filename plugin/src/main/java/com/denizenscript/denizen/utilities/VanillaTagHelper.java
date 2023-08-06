@@ -38,7 +38,7 @@ public class VanillaTagHelper {
     }
 
     static <T extends Keyed> void update(Tag<T> tag, HashMap<T, HashSet<String>> tagByObj, HashMap<String, HashSet<T>> objByTag) {
-        String tagName = getTagName(tag);
+        String tagName = Utilities.namespacedKeyToString(tag.getKey());
         Set<T> objs = objByTag.get(tagName);
         if (objs == null) {
             return;
@@ -69,7 +69,7 @@ public class VanillaTagHelper {
     }
 
     static <T extends Keyed> void add(Tag<T> tag, HashMap<T, HashSet<String>> tagByObj, HashMap<String, HashSet<T>> objByTag) {
-        String tagName = getTagName(tag);
+        String tagName = Utilities.namespacedKeyToString(tag.getKey());
         objByTag.computeIfAbsent(tagName, (k) -> new HashSet<>()).addAll(tag.getValues());
         for (T obj : tag.getValues()) {
             tagByObj.computeIfAbsent(obj, (k) -> new HashSet<>()).add(tagName);
@@ -99,11 +99,6 @@ public class VanillaTagHelper {
         for (Tag<Material> tag : Bukkit.getTags("items", Material.class)) {
             addMaterialTag(tag);
         }
-    }
-
-    static String getTagName(Tag<?> tag) {
-        NamespacedKey key = tag.getKey();
-        return key.getNamespace().equals("minecraft") ? key.getKey() : key.toString();
     }
 
     public static boolean isValidTagName(String name) {

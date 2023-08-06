@@ -46,7 +46,7 @@ public class PlayerPreLoginScriptEvent extends BukkitScriptEvent implements List
     // @Determine
     // QueueTag to cause the event to wait until the queue is complete.
     // "KICKED" to kick the player from the server.
-    // "KICKED " + ElementTag to kick the player and specify a message to show.
+    // "KICKED <ElementTag>" to kick the player and specify a message to show.
     //
     // @Player When the player has previously joined (and thus the UUID is valid).
     //

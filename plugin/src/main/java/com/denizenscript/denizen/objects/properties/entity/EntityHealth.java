@@ -36,7 +36,7 @@ public class EntityHealth implements Property {
             "max_health", "health_data", "health"
     };
 
-    private EntityHealth(EntityTag ent) {
+    public EntityHealth(EntityTag ent) {
         entity = ent;
     }
 

@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
@@ -13,6 +14,7 @@ import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.MultiVersionHelper1_19;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.depends.Depends;
@@ -21,7 +23,6 @@ import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
-import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -122,7 +123,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public static HashSet<String> earlyValidMechanisms = new HashSet<>(Arrays.asList(
             "max_health", "health_data", "health",
             "visible", "armor_pose", "arms", "base_plate", "is_small", "marker",
-            "velocity", "age", "is_using_riptide", "size", "item"
+            "velocity", "age", "is_using_riptide", "size", "item", "scale", "translation",
+            "left_rotation", "right_rotation", "brightness", "display", "pivot",
+            "shadow_radius", "shadow_strength"
     ));
     // Definitely not valid: "item"
 
@@ -202,11 +205,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     //////////////////
     //    OBJECT FETCHER
     ////////////////
-
-    @Deprecated
-    public static EntityTag valueOf(String string) {
-        return valueOf(string, null);
-    }
 
     public static boolean allowDespawnedNpcs = false;
 
@@ -667,6 +665,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return entity_type.getBukkitEntityType() == EntityType.PLAYER && npc == null;
         }
         return entity instanceof Player && !isNPC();
+    }
+
+    public <T extends Entity> T as(Class<T> entityClass) {
+        return (T) getBukkitEntity();
     }
 
     public Projectile getProjectile() {
@@ -1140,10 +1142,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return getDenizenPlayer().identify();
             }
             if (entityScript != null) {
-                return "e@" + getUUID() + "/" + entityScript + mechsHandler.get();
+                return "e@" + getUUID() + "/" + entityScript;
             }
             if (entity_type != null) {
-                return "e@" + getUUID() + "/" + entity_type.getLowercaseName() + mechsHandler.get();
+                return "e@" + getUUID() + "/" + entity_type.getLowercaseName();
             }
         }
         if (entityScript != null) {
@@ -1351,16 +1353,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         /////////////////////
         //   IDENTIFICATION ATTRIBUTES
         /////////////////
-
-        registerSpawnedOnlyTag(ObjectTag.class, "custom_id", (attribute, object) -> {
-            BukkitImplDeprecations.entityCustomIdTag.warn(attribute.context);
-            if (CustomNBT.hasCustomNBT(object.getLivingEntity(), "denizen-script-id")) {
-                return ScriptTag.valueOf(CustomNBT.getCustomNBT(object.getLivingEntity(), "denizen-script-id"), CoreUtilities.noDebugContext);
-            }
-            else {
-                return new ElementTag(object.getBukkitEntity().getType());
-            }
-        });
 
         // <--[tag]
         // @attribute <EntityTag.name>
@@ -1612,10 +1604,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Decimal)
         // @group location
         // @description
-        // Returns the entity's body yaw (separate from head yaw).
+        // Returns a living entity's body yaw (separate from head yaw).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "body_yaw", (attribute, object) -> {
-            return new ElementTag(NMSHandler.entityHelper.getBaseYaw(object.getBukkitEntity()));
+            return new ElementTag(NMSHandler.entityHelper.getBaseYaw(object.getLivingEntity()));
         });
 
         // <--[tag]
@@ -1970,7 +1962,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "is_collidable", (attribute, object) -> {
             if (object.isCitizensNPC()) {
-                return new ElementTag(object.getDenizenNPC().getCitizen().data().get(NPC.COLLIDABLE_METADATA, true));
+                return new ElementTag(object.getDenizenNPC().getCitizen().data().get(NPC.Metadata.COLLIDABLE, true));
             }
             return new ElementTag(object.getLivingEntity().isCollidable());
         });
@@ -2286,6 +2278,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.visual_pose>
         // @returns ElementTag
+        // @mechanism EntityTag.visual_pose
         // @group attributes
         // @description
         // Returns the name of the entity's current visual pose.
@@ -2653,8 +2646,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns an element indicating the minecraft key for the loot-table for the entity (if any).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "loot_table_id", (attribute, object) -> {
-            if (object.getBukkitEntity() instanceof Lootable) {
-                LootTable table = ((Lootable) object.getBukkitEntity()).getLootTable();
+            if (object.getBukkitEntity() instanceof Lootable lootable) {
+                LootTable table = lootable.getLootTable();
                 if (table != null) {
                     return new ElementTag(table.getKey().toString());
                 }
@@ -2669,11 +2662,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the current state of the fish hook, as any of: UNHOOKED, HOOKED_ENTITY, BOBBING (unhooked means the fishing hook is in the air or on ground).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "fish_hook_state", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_state is only valid for fish hooks.");
                 return null;
             }
-            return new ElementTag(((FishHook) object.getBukkitEntity()).getState());
+            return new ElementTag(fishHook.getState());
         });
 
         // <--[tag]
@@ -2684,11 +2677,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the remaining time before this fish hook will lure a fish.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "fish_hook_lure_time", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_lure_time is only valid for fish hooks.");
                 return null;
             }
-            return new DurationTag((long) NMSHandler.fishingHelper.getLureTime((FishHook) object.getBukkitEntity()));
+            return new DurationTag((long) NMSHandler.fishingHelper.getLureTime(fishHook));
         });
 
         // <--[tag]
@@ -2699,11 +2692,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the minimum possible time before this fish hook can lure a fish.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "fish_hook_min_lure_time", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_min_lure_time is only valid for fish hooks.");
                 return null;
             }
-            return new DurationTag((long) ((FishHook) object.getBukkitEntity()).getMinWaitTime());
+            return new DurationTag((long) fishHook.getMinWaitTime());
         });
 
         // <--[tag]
@@ -2714,11 +2707,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the maximum possible time before this fish hook will lure a fish.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "fish_hook_max_lure_time", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_max_lure_time is only valid for fish hooks.");
                 return null;
             }
-            return new DurationTag((long) ((FishHook) object.getBukkitEntity()).getMaxWaitTime());
+            return new DurationTag((long) fishHook.getMaxWaitTime());
         });
 
         // <--[tag]
@@ -2729,11 +2722,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the entity this fish hook is attached to.
         // -->
         registerSpawnedOnlyTag(EntityTag.class, "fish_hook_hooked_entity", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_hooked_entity is only valid for fish hooks.");
                 return null;
             }
-            Entity entity = ((FishHook) object.getBukkitEntity()).getHookedEntity();
+            Entity entity = fishHook.getHookedEntity();
             return entity != null ? new EntityTag(entity) : null;
         });
 
@@ -2746,11 +2739,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Every level of lure enchantment reduces lure time by 5 seconds.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "fish_hook_apply_lure", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_apply_lure is only valid for fish hooks.");
                 return null;
             }
-            return new ElementTag(((FishHook) object.getBukkitEntity()).getApplyLure());
+            return new ElementTag(fishHook.getApplyLure());
         });
 
         // <--[tag]
@@ -2761,11 +2754,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // See <@link url https://minecraft.fandom.com/wiki/Fishing> for more info.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "fish_hook_in_open_water", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof FishHook)) {
+            if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
                 attribute.echoError("EntityTag.fish_hook_in_open_water is only valid for fish hooks.");
                 return null;
             }
-            return new ElementTag(((FishHook) object.getBukkitEntity()).isInOpenWater());
+            return new ElementTag(fishHook.isInOpenWater());
         });
 
         // <--[tag]
@@ -2838,11 +2831,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the amount of time that passed since the start of the attack cooldown.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "attack_cooldown_duration", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof Player)) {
+            if (!(object.getBukkitEntity() instanceof Player player)) {
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
-            return new DurationTag((long) NMSHandler.playerHelper.ticksPassedDuringCooldown((Player) object.getLivingEntity()));
+            return new DurationTag((long) NMSHandler.playerHelper.ticksPassedDuringCooldown(player));
         });
 
         // <--[tag]
@@ -2856,11 +2849,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // cooldown progress.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "attack_cooldown_max_duration", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof Player)) {
+            if (!(object.getBukkitEntity() instanceof Player player)) {
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
-            return new DurationTag((long) NMSHandler.playerHelper.getMaxAttackCooldownTicks((Player) object.getLivingEntity()));
+            return new DurationTag((long) NMSHandler.playerHelper.getMaxAttackCooldownTicks(player));
         });
 
         // <--[tag]
@@ -2873,11 +2866,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // NOTE: This may not match exactly with the clientside attack cooldown indicator.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "attack_cooldown_percent", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof Player)) {
+            if (!(object.getBukkitEntity() instanceof Player player)) {
                 attribute.echoError("Only player-type entities can have attack_cooldowns!");
                 return null;
             }
-            return new ElementTag(((Player) object.getLivingEntity()).getAttackCooldown() * 100);
+            return new ElementTag(player.getAttackCooldown() * 100);
         });
 
         // <--[tag]
@@ -2888,12 +2881,51 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // A player's hand is raised when they are blocking with a shield, aiming a crossbow, looking through a spyglass, etc.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "is_hand_raised", (attribute, object) -> {
-            if (!(object.getBukkitEntity() instanceof HumanEntity)) {
+            if (!(object.getBukkitEntity() instanceof HumanEntity humanEntity)) {
                 attribute.echoError("Only player-type entities can have is_hand_raised!");
                 return null;
             }
-            return new ElementTag(((HumanEntity) object.getLivingEntity()).isHandRaised());
+            return new ElementTag(humanEntity.isHandRaised());
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
+            // <--[tag]
+            // @attribute <EntityTag.last_attack>
+            // @returns MapTag
+            // @description
+            // Returns an interaction entity's last attack interaction, if any.
+            // The returned map contains:
+            // - 'player' (PlayerTag): the player who interacted
+            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this is a delta time (same limitations as <@link event delta time>), and may become inaccurate if the interaction entity changes worlds.
+            // - 'raw_game_time' (ElementTag(Number)): the raw game time the interaction occurred at, used to calculate the time above.
+            // -->
+            registerSpawnedOnlyTag(MapTag.class, "last_attack", (attribute, object) -> {
+                if (!(object.getBukkitEntity() instanceof Interaction interaction)) {
+                    attribute.echoError("'EntityTag.last_attack' is only valid for interaction entities.");
+                    return null;
+                }
+                return MultiVersionHelper1_19.interactionToMap(interaction.getLastAttack(), interaction.getWorld());
+            });
+
+            // <--[tag]
+            // @attribute <EntityTag.last_interaction>
+            // @returns MapTag
+            // @description
+            // Returns an interaction entity's last right click interaction, if any.
+            // The returned map contains:
+            // - 'player' (PlayerTag): the player who interacted
+            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this is a delta time (same limitations as <@link event delta time>), and may become inaccurate if the interaction entity changes worlds.
+            // - 'raw_game_time' (ElementTag(Number)): the raw game time the interaction occurred at, used to calculate the time above.
+            // -->
+            registerSpawnedOnlyTag(MapTag.class, "last_interaction", (attribute, object) -> {
+                if (!(object.getBukkitEntity() instanceof Interaction interaction)) {
+                    attribute.echoError("'EntityTag.last_interaction' is only valid for interaction entities.");
+                    return null;
+                }
+                return MultiVersionHelper1_19.interactionToMap(interaction.getLastInteraction(), interaction.getWorld());
+            });
+        }
 
         // <--[mechanism]
         // @object EntityTag
@@ -2915,13 +2947,29 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 mechanism.echoError("Cannot parse UUID input '" + new_id + "': " + ex.getMessage());
             }
         });
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name visual_pose
+        // @input ElementTag
+        // @description
+        // Sets the entity's visual pose, must be one of <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/Pose.html>.
+        // Note that not all entities support all poses, some are only supported by specific entity types.
+        // @tags
+        // <EntityTag.visual_pose>
+        // -->
+        registerSpawnedOnlyMechanism("visual_pose", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireEnum(Pose.class)) {
+                NMSHandler.entityHelper.setPose(object.getBukkitEntity(), input.asEnum(Pose.class));
+            }
+        });
     }
 
     public EntityTag describe(TagContext context) {
         ArrayList<Mechanism> waitingMechs;
         if (isSpawnedOrValidForTag()) {
             waitingMechs = new ArrayList<>();
-            for (Map.Entry<StringHolder, ObjectTag> property : PropertyParser.getPropertiesMap(this).map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> property : PropertyParser.getPropertiesMap(this).entrySet()) {
                 waitingMechs.add(new Mechanism(property.getKey().str, property.getValue(), context));
             }
         }
@@ -2980,13 +3028,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     @Override
     public void adjust(Mechanism mechanism) {
-
         if (isGeneric()) {
             mechanisms.add(mechanism);
             mechanism.fulfill();
             return;
         }
-
         if (getBukkitEntity() == null) {
             if (isCitizensNPC()) {
                 mechanism.echoError("Cannot adjust not-spawned NPC " + getDenizenNPC());
@@ -3227,11 +3273,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             getLivingEntity().setRemainingAir(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
-        if (mechanism.matches("remaining_air") && mechanism.requireInteger()) {
-            BukkitImplDeprecations.entityRemainingAir.warn(mechanism.context);
-            getLivingEntity().setRemainingAir(mechanism.getValue().asInt());
-        }
-
         // <--[mechanism]
         // @object EntityTag
         // @name remove_effects
@@ -3403,7 +3444,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("collidable") && mechanism.requireBoolean()) {
             if (isCitizensNPC()) {
-                getDenizenNPC().getCitizen().data().setPersistent(NPC.COLLIDABLE_METADATA, mechanism.getValue().asBoolean());
+                getDenizenNPC().getCitizen().data().setPersistent(NPC.Metadata.COLLIDABLE, mechanism.getValue().asBoolean());
             }
             else {
                 getLivingEntity().setCollidable(mechanism.getValue().asBoolean());
@@ -3563,7 +3604,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("glowing") && mechanism.requireBoolean()) {
             getBukkitEntity().setGlowing(mechanism.getValue().asBoolean());
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
-                CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, mechanism.getValue().asBoolean());
+                CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.Metadata.GLOWING, mechanism.getValue().asBoolean());
             }
         }
 
@@ -3671,11 +3712,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("mirror_player") && mechanism.requireBoolean()) {
             if (isNPC()) {
-                NPC npc = getDenizenNPC().getCitizen();
-                if (!npc.hasTrait(MirrorTrait.class)) {
-                    npc.addTrait(MirrorTrait.class);
-                }
-                MirrorTrait mirror = npc.getOrAddTrait(MirrorTrait.class);
+                MirrorTrait mirror = getDenizenNPC().getCitizen().getOrAddTrait(MirrorTrait.class);
                 if (mechanism.getValue().asBoolean()) {
                     mirror.enableMirror();
                 }
@@ -3750,7 +3787,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // This will not rotate the body at all. Most users should prefer <@link command look>.
         // -->
         if (mechanism.matches("head_angle") && mechanism.requireFloat()) {
-            NMSHandler.entityHelper.setHeadAngle(getBukkitEntity(), mechanism.getValue().asFloat());
+            NMSHandler.entityHelper.setHeadAngle(getLivingEntity(), mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -3788,7 +3825,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the ghast entity should show the attacking face.
         // -->
         if (mechanism.matches("ghast_attacking") && mechanism.requireBoolean()) {
-            NMSHandler.entityHelper.setGhastAttacking(getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.entityHelper.setGhastAttacking((Ghast) getBukkitEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -3799,7 +3836,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the enderman entity should be screaming angrily.
         // -->
         if (mechanism.matches("enderman_angry") && mechanism.requireBoolean()) {
-            NMSHandler.entityHelper.setEndermanAngry(getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.entityHelper.setEndermanAngry((Enderman) getBukkitEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]

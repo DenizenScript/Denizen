@@ -28,7 +28,7 @@ public class EntityBasePlate implements Property {
             "base_plate"
     };
 
-    private EntityBasePlate(EntityTag entity) {
+    public EntityBasePlate(EntityTag entity) {
         dentity = entity;
     }
 

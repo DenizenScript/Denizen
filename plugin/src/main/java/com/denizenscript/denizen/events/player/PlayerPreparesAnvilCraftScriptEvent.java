@@ -71,8 +71,8 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            event.getInventory().setRepairCost(((ElementTag) determinationObj).asInt());
+        if (determinationObj instanceof ElementTag element && element.isInt()) {
+            event.getInventory().setRepairCost(element.asInt());
             return true;
         }
         String determination = determinationObj.toString();
@@ -116,7 +116,6 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
         this.event = event;
         result = new ItemTag(event.getResult());
         this.player = EntityTag.getPlayerFrom(humanEntity);
-        this.cancelled = false;
         fire(event);
     }
 }

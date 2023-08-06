@@ -32,7 +32,7 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
     // <context.result> returns the ItemTag to be crafted.
     //
     // @Determine
-    // "RESULT:" + ItemTag to change the item that is crafted.
+    // "RESULT:<ItemTag>" to change the item that is crafted.
     //
     // @Player Always.
     //
@@ -67,9 +67,10 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
-            String lower = CoreUtilities.toLowerCase(determinationObj.toString());
+            String determination = determinationObj.toString();
+            String lower = CoreUtilities.toLowerCase(determination);
             if (lower.startsWith("result:")) {
-                ItemTag result = ItemTag.valueOf(lower.substring("result:".length()), path.container);
+                ItemTag result = ItemTag.valueOf(determination.substring("result:".length()), path.container);
                 event.setResult(result.getItemStack());
                 return true;
             }
@@ -79,11 +80,11 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "inventory": return InventoryTag.mirrorBukkitInventory(event.getInventory());
-            case "result": return new ItemTag(event.getResult());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "inventory" -> InventoryTag.mirrorBukkitInventory(event.getInventory());
+            case "result" -> new ItemTag(event.getResult());
+            default -> super.getContext(name);
+        };
     }
 
     @Override

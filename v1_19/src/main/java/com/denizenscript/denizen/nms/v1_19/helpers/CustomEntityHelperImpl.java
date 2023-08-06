@@ -18,8 +18,8 @@ import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
@@ -110,12 +110,6 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
             playerProfile.setTextureSignature(skinProfile.getTextureSignature());
         }
         UUID uuid = UUID.randomUUID();
-        if (uuid.version() == 4) {
-            long msb = uuid.getMostSignificantBits();
-            msb &= ~0x0000000000004000L;
-            msb |= 0x0000000000002000L;
-            uuid = new UUID(msb, uuid.getLeastSignificantBits());
-        }
         playerProfile.setUniqueId(uuid);
 
         GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());

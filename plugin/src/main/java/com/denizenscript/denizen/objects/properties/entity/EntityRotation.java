@@ -37,13 +37,13 @@ public class EntityRotation implements Property {
             "rotation"
     };
 
-    private EntityRotation(EntityTag entity) {
+    public EntityRotation(EntityTag entity) {
         this.entity = entity;
     }
 
     EntityTag entity;
 
-    private BlockFace getRotation() {
+    public BlockFace getRotation() {
         return ((Hanging) entity.getBukkitEntity()).getAttachedFace().getOppositeFace();
     }
 

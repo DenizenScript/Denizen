@@ -3,7 +3,7 @@ The Denizen Scripting Language - Spigot Impl
 
 An implementation of the Denizen Scripting Language for Spigot servers, with strong Citizens interlinks to emphasize the power of using Denizen with NPCs!
 
-**Version 1.2.6**: Compatible with Spigot 1.16.5, 1.17.1, 1.18.2, and 1.19.3!
+**Version 1.2.8**: Compatible with Spigot 1.17.1, 1.18.2, 1.19.4, and 1.20.1!
 
 **Learn about Denizen from the Beginner's guide:** https://guide.denizenscript.com/guides/background/index.html
 
@@ -26,7 +26,6 @@ An implementation of the Denizen Scripting Language for Spigot servers, with str
 - **Citizens2 (NPC support)**: https://github.com/CitizensDev/Citizens2/
 - **Depenizen (Other plugin support)**: https://github.com/DenizenScript/Depenizen
 - **dDiscordBot (Adds a Discord bot to Denizen)**: https://github.com/DenizenScript/dDiscordBot
-- **Webizen (Adds a webserver to Denizen)**: https://github.com/DenizenScript/Webizen
 - **DenizenCore (Our core, needed for building)**: https://github.com/DenizenScript/Denizen-Core
 - **DenizenVSCode (extension for writing Denizen scripts in VS Code)**: https://github.com/DenizenScript/DenizenVSCode
 
@@ -46,9 +45,15 @@ An implementation of the Denizen Scripting Language for Spigot servers, with str
         <dependency>
             <groupId>com.denizenscript</groupId>
             <artifactId>denizen</artifactId>
-            <version>1.2.6-SNAPSHOT</version>
+            <version>1.2.8-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 ```
@@ -73,7 +78,7 @@ Copyright (C) 2013-2019 The Denizen Script Team, All Rights Reserved.
 
 The MIT License (MIT)
 
-Copyright (c) 2019-2022 The Denizen Script Team
+Copyright (c) 2019-2023 The Denizen Script Team
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

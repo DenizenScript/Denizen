@@ -1,16 +1,13 @@
 package com.denizenscript.denizen.tags.core;
 
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
-import com.denizenscript.denizencore.tags.TagRunnable;
-import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.ReplaceableTagEvent;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.tags.core.EscapeTagBase;
+import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.ChatColor;
@@ -18,65 +15,11 @@ import org.bukkit.ChatColor;
 public class TextTagBase {
 
     public TextTagBase() {
-        TagManager.registerTagHandler(new TagRunnable.RootForm() {
-            @Override
-            public void run(ReplaceableTagEvent event) {
-                String lower = CoreUtilities.toLowerCase(event.getName());
-                Attribute attribute = event.getAttributes();
-                if (event.getName().equals("&auml")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag("ä").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (event.getName().equals("&Auml")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag("Ä").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (event.getName().equals("&ouml")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag("ö").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (event.getName().equals("&Ouml")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag("Ö").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (event.getName().equals("&uuml")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag("ü").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (event.getName().equals("&Uuml")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag("Ü").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (lower.equals("&amp")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag("&").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (lower.equals("&cm")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag(",").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (lower.equals("&sc")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag(";").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (lower.equals("&pipe")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag("|").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (lower.equals("&ds")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag("$").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (lower.equals("&dot")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag(".").getObjectAttribute(attribute.fulfill(1)));
-                }
-                else if (lower.equals("&hrt")) {
-                    BukkitImplDeprecations.pointlessTextTags.warn(event.getScriptEntry());
-                    event.setReplacedObject(new ElementTag("\u2665").getObjectAttribute(attribute.fulfill(1)));
-                }
-            }
-        }, "&auml", "&Auml", "&ouml", "&Ouml", "&uuml", "&Uuml", "&amp", "&cm", "&sc", "&pipe", "&ds", "&at", "&dot", "&hrt");
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&amp", (attribute) -> { BukkitImplDeprecations.pointlessTextTags.warn(attribute.context); return new ElementTag("&"); });
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&cm", (attribute) -> { BukkitImplDeprecations.pointlessTextTags.warn(attribute.context); return new ElementTag(","); });
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&sc", (attribute) -> { BukkitImplDeprecations.pointlessTextTags.warn(attribute.context); return new ElementTag(";"); });
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&pipe", (attribute) -> { BukkitImplDeprecations.pointlessTextTags.warn(attribute.context); return new ElementTag("|"); });
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&dot", (attribute) -> { BukkitImplDeprecations.pointlessTextTags.warn(attribute.context); return new ElementTag("."); });
 
         // <--[tag]
         // @attribute <p>
@@ -268,7 +211,7 @@ public class TextTagBase {
                 ListTag withList = attribute.contextAsType(2, ListTag.class);
                 attribute.fulfill(1);
                 for (String str : withList) {
-                    with.append(";").append(FormattedTextHelper.escape(EscapeTagBase.unEscape(str)));
+                    with.append(";").append(FormattedTextHelper.escape(EscapeTagUtil.unEscape(str)));
                 }
             }
             return new ElementTag(ChatColor.COLOR_CHAR + "[translate=" + FormattedTextHelper.escape(translateText) + with + "]");
@@ -291,9 +234,9 @@ public class TextTagBase {
             if (scoreList.size() < 2) {
                 return null;
             }
-            String name = FormattedTextHelper.escape(EscapeTagBase.unEscape(scoreList.get(0)));
-            String objective = FormattedTextHelper.escape(EscapeTagBase.unEscape(scoreList.get(1)));
-            String value = scoreList.size() >= 3 ? FormattedTextHelper.escape(EscapeTagBase.unEscape(scoreList.get(2))) : "";
+            String name = FormattedTextHelper.escape(EscapeTagUtil.unEscape(scoreList.get(0)));
+            String objective = FormattedTextHelper.escape(EscapeTagUtil.unEscape(scoreList.get(1)));
+            String value = scoreList.size() >= 3 ? FormattedTextHelper.escape(EscapeTagUtil.unEscape(scoreList.get(2))) : "";
             return new ElementTag(ChatColor.COLOR_CHAR + "[score=" + name + ";" + objective + ";" + value + "]");
         });
 
@@ -325,7 +268,7 @@ public class TextTagBase {
                 if (color == null && TagManager.isStaticParsing) {
                     return null;
                 }
-                String hex = Integer.toHexString(color.getColor().asRGB());
+                String hex = Integer.toHexString(color.asRGB());
                 colorOut = FormattedTextHelper.stringifyRGBSpigot(hex);
             }
             if (colorOut == null) {
@@ -379,6 +322,20 @@ public class TextTagBase {
                 return null;
             }
             return new ElementTag(ChatColor.COLOR_CHAR + "[font=" + attribute.getParam() + "]");
+        });
+
+        // <--[tag]
+        // @attribute <&optimize>
+        // @returns ElementTag
+        // @description
+        // Returns a chat code that tells the formatted text parser to try to produce mininalist JSON text.
+        // This is useful in particular for very long text or where text is being sent rapidly/repeatedly.
+        // It is not needed in most normal messages.
+        // It will produce incompatibility issues if used in items or other locations where raw JSON matching is required.
+        // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // -->
+        TagManager.registerStaticTagBaseHandler(ElementTag.class, "&optimize", (attribute) -> {
+            return new ElementTag(ChatColor.COLOR_CHAR + "[optimize=true]", true);
         });
 
         // <--[tag]

@@ -20,10 +20,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_19_R2.enchantments.CraftEnchantment;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_19_R2.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_19_R3.enchantments.CraftEnchantment;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -62,7 +62,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
                 @Override
                 public int getDamageProtection(int level, DamageSource src) {
-                    return script.script.getDamageProtection(level, src.msgId, src.getEntity() == null ? null : src.getEntity().getBukkitEntity());
+                    return script.script.getDamageProtection(level, src.getMsgId(), src.getEntity() == null ? null : src.getEntity().getBukkitEntity());
                 }
                 @Override
                 public float getDamageBonus(int level, MobType type) {
@@ -210,7 +210,8 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
 
     @Override
     public int getDamageProtection(Enchantment enchantment, int level, EntityDamageEvent.DamageCause type, org.bukkit.entity.Entity attacker) {
-        DamageSource src = EntityHelperImpl.getSourceFor(attacker == null ? null : ((CraftEntity) attacker).getHandle(), type);
+        Entity nmsAtacker = attacker == null ? null : ((CraftEntity) attacker).getHandle();
+        DamageSource src = EntityHelperImpl.getSourceFor(nmsAtacker, type, nmsAtacker);
         if (src instanceof EntityHelperImpl.FakeDamageSrc) {
             src = ((EntityHelperImpl.FakeDamageSrc) src).real;
         }

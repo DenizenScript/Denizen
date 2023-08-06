@@ -78,8 +78,8 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isFloat()) {
-            event.setPower(((ElementTag) determinationObj).asFloat());
+        if (determinationObj instanceof ElementTag element && element.isFloat()) {
+            event.setPower(element.asFloat());
             return true;
         }
         return super.applyDetermination(path, determinationObj);

@@ -37,7 +37,7 @@ public class ItemFlags implements Property {
             "flag", "flag_map"
     };
 
-    private ItemFlags(ItemTag item) {
+    public ItemFlags(ItemTag item) {
         this.item = item;
     }
 
@@ -90,7 +90,7 @@ public class ItemFlags implements Property {
     @Override
     public String getPropertyString() {
         AbstractFlagTracker tracker = item.getFlagTracker();
-        if (tracker instanceof MapTagFlagTracker && ((MapTagFlagTracker) tracker).map.map.isEmpty()) {
+        if (tracker instanceof MapTagFlagTracker && ((MapTagFlagTracker) tracker).map.isEmpty()) {
             return null;
         }
         return tracker.toString();

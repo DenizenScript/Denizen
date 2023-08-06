@@ -35,7 +35,7 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
     // <context.offers> returns a ListTag of the available enchanting offers, each as a MapTag with keys 'cost', 'enchantment_type', and 'level'.
     //
     // @Determine
-    // "OFFERS:" + ListTag of MapTags to set the offers available. Cannot be a different size list than the size of context.offers.
+    // "OFFERS:<ListTag>" of MapTags to set the offers available. Cannot be a different size list than the size of context.offers.
     //
     // @Player Always.
     //

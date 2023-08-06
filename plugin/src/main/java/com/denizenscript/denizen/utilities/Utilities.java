@@ -50,6 +50,20 @@ public class Utilities {
         }
     }
 
+    public static String namespacedKeyToString(NamespacedKey key) {
+        return key.getNamespace().equals(NamespacedKey.MINECRAFT) ? key.getKey() : key.toString();
+    }
+
+    public static boolean matchesNamespacedKeyButCaseInsensitive(String input) {
+        int colonIndex = input.indexOf(':');
+        if (colonIndex == -1) {
+            return namespaceMatcherButCaseInsensitive.isOnlyMatches(input);
+        }
+        return namespaceMatcherButCaseInsensitive.isOnlyMatches(input.substring(0, colonIndex)) && namespaceMatcherButCaseInsensitive.isOnlyMatches(input.substring(colonIndex + 1));
+    }
+
+    public static AsciiMatcher namespaceMatcherButCaseInsensitive = new AsciiMatcher(AsciiMatcher.LETTERS_LOWER + AsciiMatcher.LETTERS_UPPER + ".-_/" + AsciiMatcher.DIGITS);
+
     public static boolean matchesNamespacedKey(String input) {
         int colonIndex = input.indexOf(':');
         if (colonIndex == -1) {
@@ -108,7 +122,8 @@ public class Utilities {
                         (type.equals("shaped") && recipe instanceof ShapedRecipe) ||
                         (type.equals("shapeless") && recipe instanceof ShapelessRecipe) ||
                         (type.equals("smoking") && recipe instanceof SmokingRecipe) ||
-                        (type.equals("stonecutting") && recipe instanceof StonecuttingRecipe));
+                        (type.equals("stonecutting") && recipe instanceof StonecuttingRecipe) ||
+                        (type.equals("smithing") && recipe instanceof SmithingRecipe));
     }
 
     public static boolean canReadFile(File f) {

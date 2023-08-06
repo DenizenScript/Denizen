@@ -22,7 +22,7 @@ public class PaperItemTagProperties implements Property {
     public static final String[] handledMechs = new String[] {
     }; // None
 
-    private PaperItemTagProperties(ItemTag item) {
+    public PaperItemTagProperties(ItemTag item) {
         this.item = item;
     }
 

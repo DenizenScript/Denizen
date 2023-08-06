@@ -6,6 +6,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import net.kyori.adventure.util.TriState;
 import org.bukkit.Material;
 
 public class PaperPlayerExtensions {
@@ -81,6 +82,19 @@ public class PaperPlayerExtensions {
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
 
+            // <--[tag]
+            // @attribute <PlayerTag.flying_fall_damage>
+            // @returns ElementTag(Boolean)
+            // @mechanism PlayerTag.flying_fall_damage
+            // @group properties
+            // @Plugin Paper
+            // @description
+            // Returns whether the player will take fall damage while <@link tag PlayerTag.can_fly> is true.
+            // -->
+            PlayerTag.registerOnlineOnlyTag(ElementTag.class, "flying_fall_damage", (attribute, object) -> {
+                return new ElementTag(object.getPlayerEntity().hasFlyingFallDamage().toBooleanOrElse(false));
+            });
+
             // <--[mechanism]
             // @object PlayerTag
             // @name add_tab_completions
@@ -104,6 +118,23 @@ public class PaperPlayerExtensions {
             // -->
             PlayerTag.registerOnlineOnlyMechanism("remove_tab_completions", ListTag.class, (object, mechanism, input) -> {
                 object.getPlayerEntity().removeAdditionalChatCompletions(input);
+            });
+
+            // <--[mechanism]
+            // @object PlayerTag
+            // @name flying_fall_damage
+            // @input ElementTag(Boolean)
+            // @Plugin Paper
+            // @description
+            // Sets whether the player will take fall damage while <@link mechanism PlayerTag.can_fly> is true.
+            // @tags
+            // <PlayerTag.flying_fall_damage>
+            // <PlayerTag.can_fly>
+            // -->
+            PlayerTag.registerOnlineOnlyMechanism("flying_fall_damage", ElementTag.class, (object, mechanism, input) -> {
+                if (mechanism.requireBoolean()) {
+                    object.getPlayerEntity().setFlyingFallDamage(TriState.byBoolean(input.asBoolean()));
+                }
             });
         }
     }

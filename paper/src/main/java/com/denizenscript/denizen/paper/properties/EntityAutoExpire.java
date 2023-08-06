@@ -28,7 +28,7 @@ public class EntityAutoExpire implements Property {
             "auto_expire"
     };
 
-    private EntityAutoExpire(EntityTag _entity) {
+    public EntityAutoExpire(EntityTag _entity) {
         entity = _entity;
     }
 

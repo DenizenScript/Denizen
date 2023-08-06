@@ -38,13 +38,13 @@ public class EntityProfession implements Property {
             "profession"
     };
 
-    private EntityProfession(EntityTag entity) {
+    public EntityProfession(EntityTag entity) {
         professional = entity;
     }
 
     EntityTag professional;
 
-    private Villager.Profession getProfession() {
+    public Villager.Profession getProfession() {
         if (professional.getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER) {
             return ((ZombieVillager) professional.getBukkitEntity()).getVillagerProfession();
         }

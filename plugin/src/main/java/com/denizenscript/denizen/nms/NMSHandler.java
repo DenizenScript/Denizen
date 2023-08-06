@@ -56,9 +56,6 @@ public abstract class NMSHandler {
             if (NMSHandler.class.isAssignableFrom(clazz)) {
                 // Found and loaded - good to go!
                 instance = (NMSHandler) clazz.newInstance();
-                if (version.isAtMost(NMSVersion.v1_16)) {
-                    enchantmentHelper = new EnchantmentHelper();
-                }
                 return true;
             }
         }
@@ -128,8 +125,6 @@ public abstract class NMSHandler {
     public abstract double[] getRecentTps();
 
     public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
-
-    public abstract int getPort();
 
     public abstract String getTitle(Inventory inventory);
 

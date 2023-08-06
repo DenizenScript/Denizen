@@ -13,8 +13,8 @@ import com.denizenscript.denizen.nms.v1_18.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_18.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -167,11 +167,6 @@ public class Handler extends NMSHandler {
             }
         }
         return null;
-    }
-
-    @Override
-    public int getPort() {
-        return ((CraftServer) Bukkit.getServer()).getServer().getPort();
     }
 
     public static MethodHandle PAPER_INVENTORY_TITLE_GETTER;

@@ -15,11 +15,11 @@ import java.util.List;
 
 /**
  * Helper for player inventory slots.
- *
+ * <p>
  * These values are based on indices within the inventory contents array of a player.
- *
+ * <p>
  * These values are *NOT* equivalent to arbitrary Minecraft "slot ID" values, which are commonly mentioned online but have no connection to anything.
- *
+ * <p>
  * All values are Minecraft indices (0-based).
  */
 public class SlotHelper {
@@ -173,22 +173,23 @@ public class SlotHelper {
     }
 
     public static boolean doesMatch(String text, Entity entity, int slot) {
+        ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(text);
         if (slot >= 0 && slot < indexNameMap.length) {
             List<String> names = indexNameMap[slot];
             if (names != null) {
                 for (String name : names) {
-                    if (ScriptEvent.runGenericCheck(text, name)) {
+                    if (matcher.doesMatch(name)) {
                         return true;
                     }
                 }
             }
         }
         if (entity instanceof Player && slot == ((Player) entity).getInventory().getHeldItemSlot()) {
-            if (ScriptEvent.runGenericCheck(text, "hand")) {
+            if (matcher.doesMatch("hand")) {
                 return true;
             }
         }
-        if (ScriptEvent.runGenericCheck(text, String.valueOf(slot + 1))) {
+        if (matcher.doesMatch(String.valueOf(slot + 1))) {
             return true;
         }
         return false;

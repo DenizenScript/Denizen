@@ -5,14 +5,12 @@ import net.citizensnpcs.api.ai.speech.SpeechContext;
 
 public class DenizenSpeechContext extends SpeechContext {
 
-    private ScriptEntry scriptEntry;
-    private boolean bystandersEnabled;
-    private double chatRange;
+    private final ScriptEntry scriptEntry;
+    private final double chatRange;
 
     public DenizenSpeechContext(String message, ScriptEntry scriptEntry, double chatRange) {
-        setMessage(message);
+        super(message);
         this.scriptEntry = scriptEntry;
-        this.bystandersEnabled = chatRange >= 0;
         this.chatRange = chatRange;
     }
 
@@ -21,7 +19,7 @@ public class DenizenSpeechContext extends SpeechContext {
     }
 
     public boolean isBystandersEnabled() {
-        return bystandersEnabled;
+        return chatRange >= 0;
     }
 
     public double getChatRange() {

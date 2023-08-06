@@ -42,7 +42,7 @@ public class EntityTrades implements Property {
         return new ListTag(recipes);
     }
 
-    private EntityTag entity;
+    public EntityTag entity;
 
     public EntityTrades(EntityTag entity) {
         this.entity = entity;

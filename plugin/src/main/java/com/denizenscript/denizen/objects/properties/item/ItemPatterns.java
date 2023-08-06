@@ -51,13 +51,13 @@ public class ItemPatterns implements Property {
             "patterns"
     };
 
-    private ItemPatterns(ItemTag item) {
+    public ItemPatterns(ItemTag item) {
         this.item = item;
     }
 
     ItemTag item;
 
-    private ListTag listPatterns() {
+    public ListTag listPatterns() {
         ListTag list = new ListTag();
         for (Pattern pattern : getPatterns()) {
             list.add(pattern.getColor().name() + "/" + pattern.getPattern().name());
@@ -65,7 +65,7 @@ public class ItemPatterns implements Property {
         return list;
     }
 
-    private List<Pattern> getPatterns() {
+    public List<Pattern> getPatterns() {
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta instanceof BannerMeta) {
             return ((BannerMeta) itemMeta).getPatterns();
@@ -79,7 +79,7 @@ public class ItemPatterns implements Property {
         }
     }
 
-    private void setPatterns(List<Pattern> patterns) {
+    public void setPatterns(List<Pattern> patterns) {
         ItemMeta itemMeta = item.getItemMeta();
         if (itemMeta instanceof BannerMeta) {
             ((BannerMeta) itemMeta).setPatterns(patterns);

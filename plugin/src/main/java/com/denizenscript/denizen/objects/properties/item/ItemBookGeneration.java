@@ -32,7 +32,7 @@ public class ItemBookGeneration implements Property {
             "book_generation"
     };
 
-    private ItemBookGeneration(ItemTag _item) {
+    public ItemBookGeneration(ItemTag _item) {
         item = _item;
     }
 

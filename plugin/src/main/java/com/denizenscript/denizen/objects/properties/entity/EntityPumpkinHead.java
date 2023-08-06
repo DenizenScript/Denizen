@@ -32,7 +32,7 @@ public class EntityPumpkinHead implements Property {
             "has_pumpkin_head"
     };
 
-    private EntityPumpkinHead(EntityTag entity) {
+    public EntityPumpkinHead(EntityTag entity) {
         dentity = entity;
     }
 

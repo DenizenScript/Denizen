@@ -31,7 +31,7 @@ public class EntityGravity implements Property {
             "gravity"
     };
 
-    private EntityGravity(EntityTag entity) {
+    public EntityGravity(EntityTag entity) {
         dentity = entity;
     }
 

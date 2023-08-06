@@ -11,12 +11,11 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.event.world.EntitiesUnloadEvent;
 
 import java.util.HashMap;
 
@@ -35,25 +34,17 @@ public class EntityScriptHelper implements Listener {
         EntityTag.rememberEntity(entity);
         EntityDespawnScriptEvent.instance.entity = new EntityTag(entity);
         EntityDespawnScriptEvent.instance.cause = new ElementTag("DEATH");
-        EntityDespawnScriptEvent.instance.cancelled = false;
         EntityDespawnScriptEvent.instance.fire();
         EntityTag.forgetEntity(entity);
     }
 
     @EventHandler
-    public void onChunkUnload(ChunkUnloadEvent event) {
-        if (event instanceof Cancellable &&((Cancellable) event).isCancelled()) {
-            return;
-        }
-        // TODO: This doesn't work. Awaiting Entity Despawn Event PR's for Bukkit:
-        // Bukkit: https://github.com/Bukkit/Bukkit/pull/1070
-        // CraftBukkit: https://github.com/Bukkit/CraftBukkit/pull/1386
-        for (Entity ent : event.getChunk().getEntities()) {
+    public void onChunkUnload(EntitiesUnloadEvent event) {
+        for (Entity ent : event.getEntities()) {
             if (!(ent instanceof LivingEntity) || ((LivingEntity) ent).getRemoveWhenFarAway()) {
                 EntityTag.rememberEntity(ent);
                 EntityDespawnScriptEvent.instance.entity = new EntityTag(ent);
                 EntityDespawnScriptEvent.instance.cause = new ElementTag("CHUNK_UNLOAD");
-                EntityDespawnScriptEvent.instance.cancelled = false;
                 EntityDespawnScriptEvent.instance.fire();
                 EntityTag.forgetEntity(ent);
             }

@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -41,9 +41,7 @@ public class DebugBlockCommand extends AbstractCommand {
     // These are block-grid-aligned markers that are a perfect cube of a single (specifiable) transparent color, and stay for a specified duration of time or until cleared.
     // Markers can optionally also have simple text names.
     //
-    // If arguments are unspecified, the default color is white (in practice: green), the default player is the linked player, the default name is none, and the default duration is 10 seconds.
-    //
-    // The underlying color input is a full color value, however the current minecraft client can only render shades between green and gray (ie the red and blue color channels are ignored).
+    // If arguments are unspecified, the default color is white, the default player is the linked player, the default name is none, and the default duration is 10 seconds.
     //
     // @Tags
     // None

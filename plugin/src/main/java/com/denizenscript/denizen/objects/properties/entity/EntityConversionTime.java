@@ -33,7 +33,7 @@ public class EntityConversionTime implements Property {
             "conversion_duration", "drowned_conversion_duration"
     };
 
-    private EntityConversionTime(EntityTag ent) {
+    public EntityConversionTime(EntityTag ent) {
         entity = ent;
     }
 

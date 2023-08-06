@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -26,7 +28,7 @@ public class Conversion {
     public static List<Color> convertColors(List<ColorTag> colors) {
         List<Color> newList = new ArrayList<>();
         for (ColorTag color : colors) {
-            newList.add(color.getColor());
+            newList.add(BukkitColorExtensions.getColor(color));
         }
         return newList;
     }
@@ -62,7 +64,7 @@ public class Conversion {
         else if (arg.object instanceof MapTag || (isElement && arg.getValue().startsWith("map@"))) {
             MapTag map = arg.object instanceof MapTag ? (MapTag) arg.object : MapTag.valueOf(arg.getValue(), context);
             int maxSlot = 0;
-            for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> entry : map.entrySet()) {
                 if (!ArgumentHelper.matchesInteger(entry.getKey().str)) {
                     return null;
                 }
@@ -72,7 +74,7 @@ public class Conversion {
                 }
             }
             InventoryTag inventory = new InventoryTag(Math.min(InventoryTag.maxSlots, (maxSlot / 9) * 9 + 9));
-            for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> entry : map.entrySet()) {
                 int slot = new ElementTag(entry.getKey().str).asInt();
                 ItemTag item = ItemTag.getItemFor(entry.getValue(), context);
                 if (item == null) {

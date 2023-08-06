@@ -3,11 +3,12 @@ package com.denizenscript.denizen.scripts.commands.player;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgDefaultNull;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgName;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgPrefixed;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgSubType;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
@@ -21,6 +22,7 @@ public class ResourcePackCommand extends AbstractCommand {
         setSyntax("resourcepack [url:<url>] [hash:<hash>] (forced) (prompt:<text>) (targets:<player>|...)");
         setRequiredArguments(2, 5);
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -59,61 +61,19 @@ public class ResourcePackCommand extends AbstractCommand {
     //
     // -->
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("url")
-                    && arg.matchesPrefix("url")) {
-                scriptEntry.addObject("url", arg.asElement());
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("url") @ArgPrefixed String url,
+                                   @ArgName("hash") @ArgPrefixed String hash,
+                                   @ArgName("prompt") @ArgPrefixed @ArgDefaultNull String prompt,
+                                   @ArgName("targets") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> targets,
+                                   @ArgName("forced") boolean forced) {
+        if (targets == null) {
+            if (!Utilities.entryHasPlayer(scriptEntry)) {
+                throw new InvalidArgumentsRuntimeException("Must specify an online player!");
             }
-            else if (!scriptEntry.hasObject("hash")
-                    && arg.matchesPrefix("hash")) {
-                scriptEntry.addObject("hash", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("forced")
-                    && arg.matches("forced")) {
-                scriptEntry.addObject("forced", new ElementTag(true));
-            }
-            else if (!scriptEntry.hasObject("prompt")
-                    && arg.matchesPrefix("prompt")) {
-                scriptEntry.addObject("prompt", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("targets")
-                    && arg.matchesPrefix("targets")
-                    && arg.matchesArgumentList(PlayerTag.class)) {
-                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
-            }
-            else {
-                arg.reportUnhandled();
-            }
+            targets = Collections.singletonList(Utilities.getEntryPlayer(scriptEntry));
         }
-        if (!scriptEntry.hasObject("url")) {
-            throw new InvalidArgumentsException("Must specify a URL!");
-        }
-        if (!scriptEntry.hasObject("hash")) {
-            throw new InvalidArgumentsException("Must specify a hash!");
-        }
-        if (!scriptEntry.hasObject("targets")) {
-            if (Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline()) {
-                scriptEntry.addObject("targets", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)));
-            }
-            else {
-                throw new InvalidArgumentsException("Must specify an online player!");
-            }
-        }
-    }
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        List<PlayerTag> targets = scriptEntry.getObjectTag("targets");
-        ElementTag url = scriptEntry.getElement("url");
-        ElementTag hash = scriptEntry.getElement("hash");
-        ElementTag prompt = scriptEntry.getElement("prompt");
-        ElementTag forced = scriptEntry.getElement("forced");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("Targets", targets), url, hash, prompt, forced);
-        }
-        if (hash.asString().length() != 40) {
+        if (hash.length() != 40) {
             Debug.echoError("Invalid resource_pack hash. Should be 40 characters of hexadecimal data.");
             return;
         }
@@ -122,7 +82,7 @@ public class ResourcePackCommand extends AbstractCommand {
                 Debug.echoDebug(scriptEntry, "Player is offline, can't send resource pack to them. Skipping.");
                 continue;
             }
-            PaperAPITools.instance.sendResourcePack(player.getPlayerEntity(), url.asString(), hash.asString(), forced != null && forced.asBoolean(), prompt == null ? null : prompt.asString());
+            PaperAPITools.instance.sendResourcePack(player.getPlayerEntity(), url, hash, forced, prompt);
         }
     }
 }

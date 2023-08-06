@@ -27,7 +27,7 @@ public class StatsRecord extends Thread {
         String denizenVersion = Denizen.getInstance().coreImplementation.getImplementationVersion();
         // We don't need the real value of the MOTD / port, but they're useful for differentiating, so use them to generate a hash
         String differentiator = CoreUtilities.hash_md5((Bukkit.getServer().getMotd() + Bukkit.getServer().getPort()).getBytes(StandardCharsets.UTF_8));
-        String deprecations = String.join("\n", Deprecations.firedRecently);
+        String deprecations = String.join("\n", Deprecations.firedRecently.keySet());
         Deprecations.firedRecently.clear();
         String mcVersion = Bukkit.getVersion();
         int firstDash = mcVersion.indexOf('-');

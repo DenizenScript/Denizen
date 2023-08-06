@@ -37,7 +37,7 @@ public class EntityDisabledSlots implements Property {
             "disabled_slots_raw", "disabled_slots"
     };
 
-    private EntityDisabledSlots(EntityTag entity) {
+    public EntityDisabledSlots(EntityTag entity) {
         dentity = entity;
     }
 
@@ -46,7 +46,7 @@ public class EntityDisabledSlots implements Property {
     public enum Action {
         ALL(0), REMOVE(8), PLACE(16);
 
-        private final int id;
+        public final int id;
 
         Action(int id) {
             this.id = id;
@@ -57,7 +57,7 @@ public class EntityDisabledSlots implements Property {
         }
     }
 
-    private ListTag getDisabledSlots() {
+    public ListTag getDisabledSlots() {
         Map<EquipmentSlot, Set<Action>> map = CustomNBT.getDisabledSlots(dentity.getBukkitEntity());
         ListTag list = new ListTag();
         for (Map.Entry<EquipmentSlot, Set<Action>> entry : map.entrySet()) {
@@ -68,7 +68,7 @@ public class EntityDisabledSlots implements Property {
         return list;
     }
 
-    private MapTag getDisabledSlotsMap() {
+    public MapTag getDisabledSlotsMap() {
         Map<EquipmentSlot, Set<Action>> map = CustomNBT.getDisabledSlots(dentity.getBukkitEntity());
         MapTag mapTag = new MapTag();
         for (Map.Entry<EquipmentSlot, Set<Action>> entry : map.entrySet()) {
@@ -84,7 +84,7 @@ public class EntityDisabledSlots implements Property {
     @Override
     public String getPropertyString() {
         MapTag map = getDisabledSlotsMap();
-        return map.map.isEmpty() ? null : map.identify();
+        return map.isEmpty() ? null : map.identify();
     }
 
     @Override
@@ -179,7 +179,7 @@ public class EntityDisabledSlots implements Property {
             Map<EquipmentSlot, Set<Action>> map = new HashMap<>();
             if (mechanism.value.canBeType(MapTag.class)) {
                 MapTag input = mechanism.valueAsType(MapTag.class);
-                for (Map.Entry<StringHolder, ObjectTag> entry : input.map.entrySet()) {
+                for (Map.Entry<StringHolder, ObjectTag> entry : input.entrySet()) {
                     EquipmentSlot slot = new ElementTag(entry.getKey().str).asEnum(EquipmentSlot.class);
 
                     if (slot == null) {

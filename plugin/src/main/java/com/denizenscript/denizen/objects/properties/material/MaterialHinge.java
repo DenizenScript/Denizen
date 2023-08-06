@@ -29,7 +29,7 @@ public class MaterialHinge implements Property {
             "hinge"
     };
 
-    private MaterialHinge(MaterialTag _material) {
+    public MaterialHinge(MaterialTag _material) {
         material = _material;
     }
 

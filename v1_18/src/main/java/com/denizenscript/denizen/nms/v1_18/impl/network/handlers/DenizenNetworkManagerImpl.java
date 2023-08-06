@@ -4,19 +4,17 @@ import com.denizenscript.denizen.events.player.PlayerHearsSoundScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerReceivesActionbarScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerReceivesTablistUpdateScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_18.Handler;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_18.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v1_18.impl.network.packets.*;
 import com.denizenscript.denizen.nms.v1_18.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_18.impl.entities.EntityFakePlayerImpl;
+import com.denizenscript.denizen.nms.v1_18.impl.network.packets.PacketOutChatImpl;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
-import com.denizenscript.denizen.scripts.commands.entity.InvisibleCommand;
-import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
-import com.denizenscript.denizen.scripts.commands.entity.SneakCommand;
+import com.denizenscript.denizen.scripts.commands.entity.*;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Settings;
@@ -30,6 +28,8 @@ import com.denizenscript.denizen.utilities.packets.HideParticles;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
@@ -37,9 +37,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
@@ -709,7 +706,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public ClientboundSetEntityDataPacket getModifiedMetadataFor(ClientboundSetEntityDataPacket metadataPacket) {
-        if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty() && InvisibleCommand.invisibleEntities.isEmpty()) {
+        if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty() && InvisibleCommand.helper.noOverrides() && GlowCommand.helper.noOverrides()) {
             return null;
         }
         try {
@@ -720,8 +717,9 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             String nameToApply = RenameCommand.getCustomNameFor(ent.getUUID(), player.getBukkitEntity(), false);
             Boolean forceSneak = SneakCommand.shouldSneak(ent.getUUID(), player.getUUID());
-            Boolean isInvisible = InvisibleCommand.isInvisible(ent.getBukkitEntity(), player.getUUID(), true);
-            if (nameToApply == null && forceSneak == null) {
+            Boolean isInvisible = InvisibleCommand.helper.getState(ent.getBukkitEntity(), player.getUUID(), true);
+            Boolean isGlowing = GlowCommand.helper.getState(ent.getBukkitEntity(), player.getUUID(), true);
+            if (nameToApply == null && forceSneak == null && isInvisible == null && isGlowing == null) {
                 return null;
             }
             List<SynchedEntityData.DataItem<?>> data = new ArrayList<>(metadataPacket.getUnpackedData());
@@ -730,7 +728,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 SynchedEntityData.DataItem<?> item = data.get(i);
                 EntityDataAccessor<?> watcherObject = item.getAccessor();
                 int watcherId = watcherObject.getId();
-                if (watcherId == 0 && (forceSneak != null || isInvisible != null)) { // 0: Entity flags
+                if (watcherId == 0 && (forceSneak != null || isInvisible != null || isGlowing != null)) { // 0: Entity flags
                     byte val = (Byte) item.getValue();
                     if (forceSneak != null) {
                         if (forceSneak) {
@@ -746,6 +744,14 @@ public class DenizenNetworkManagerImpl extends Connection {
                         }
                         else {
                             val &= ~0x20;
+                        }
+                    }
+                    if (isGlowing != null) {
+                        if (isGlowing) {
+                            val |= 0x40;
+                        }
+                        else {
+                            val &= ~0x40;
                         }
                     }
                     data.set(i, new SynchedEntityData.DataItem(watcherObject, val));
@@ -1115,9 +1121,6 @@ public class DenizenNetworkManagerImpl extends Connection {
                     packetHelper.setRawJson(ComponentSerializer.toString(result.altMessageDetermination));
                 }
             }
-        }
-        else if (packet instanceof ClientboundSetEntityDataPacket && DenizenPacketHandler.instance.shouldInterceptMetadata()) {
-            return DenizenPacketHandler.instance.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadataImpl((ClientboundSetEntityDataPacket) packet));
         }
         return false;
     }

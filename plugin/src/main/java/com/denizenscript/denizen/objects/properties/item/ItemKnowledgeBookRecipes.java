@@ -37,7 +37,7 @@ public class ItemKnowledgeBookRecipes implements Property {
             "knowledge_book_recipes"
     };
 
-    private ItemKnowledgeBookRecipes(ItemTag _item) {
+    public ItemKnowledgeBookRecipes(ItemTag _item) {
         item = _item;
     }
 

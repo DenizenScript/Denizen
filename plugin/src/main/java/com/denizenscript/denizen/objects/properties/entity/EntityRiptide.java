@@ -30,7 +30,7 @@ public class EntityRiptide implements Property {
             "is_using_riptide"
     };
 
-    private EntityRiptide(EntityTag entity) {
+    public EntityRiptide(EntityTag entity) {
         this.entity = entity;
     }
 

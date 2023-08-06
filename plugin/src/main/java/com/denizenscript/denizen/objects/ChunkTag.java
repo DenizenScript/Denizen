@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
@@ -68,60 +69,32 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
     //    OBJECT FETCHER
     ////////////////
 
-    @Deprecated
-    public static ChunkTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
-    /**
-     * Gets a Chunk Object from a string form of x,z,world.
-     * This is not to be confused with the 'x,y,z,world' of a
-     * location, which is a finer grain of unit in a WorldTags.
-     *
-     * @param string the string or dScript argument String
-     * @return a ChunkTag, or null if incorrectly formatted
-     */
     @Fetchable("ch")
     public static ChunkTag valueOf(String string, TagContext context) {
         if (string == null) {
             return null;
         }
-
         string = CoreUtilities.toLowerCase(string).replace("ch@", "");
-
-        ////////
-        // Match location formats
-
-        // Get a location to fetch its chunk, return if null
         String[] parts = string.split(",");
-        if (parts.length == 3) {
-            try {
-                return new ChunkTag(new WorldTag(parts[2]), Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
-            }
-            catch (Exception e) {
-                if (context == null || context.showErrors()) {
-                    Debug.log("Minor: valueOf ChunkTag returning null: " + "ch@" + string);
-                }
-                return null;
-            }
-
-        }
-        else {
+        if (parts.length != 3) {
             if (context == null || context.showErrors()) {
                 Debug.log("Minor: valueOf ChunkTag unable to handle malformed format: " + "ch@" + string);
             }
+            return null;
         }
-
-        return null;
+        try {
+            return new ChunkTag(new WorldTag(parts[2]), Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+        }
+        catch (Exception e) {
+            if (context == null || context.showErrors()) {
+                Debug.log("Minor: valueOf ChunkTag returning null: " + "ch@" + string);
+            }
+            return null;
+        }
     }
 
     public static boolean matches(String string) {
-        if (CoreUtilities.toLowerCase(string).startsWith("ch@")) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return valueOf(string, CoreUtilities.noDebugContext) != null;
     }
 
     int chunkX, chunkZ;
@@ -469,12 +442,10 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         tagProcessor.registerTag(CuboidTag.class, "cuboid", (attribute, object) -> {
             int yMin = 0, yMax = 255;
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17)) {
-                World world = object.getBukkitWorld();
-                if (world != null) {
-                    yMin = world.getMinHeight();
-                    yMax = world.getMaxHeight();
-                }
+            World world = object.getBukkitWorld();
+            if (world != null) {
+                yMin = world.getMinHeight();
+                yMax = world.getMaxHeight();
             }
             return new CuboidTag(new LocationTag(object.getWorldName(), object.getX() * 16, yMin, object.getZ() * 16, 0, 0),
                     new LocationTag(object.getWorldName(), object.getX() * 16 + 15, yMax, object.getZ() * 16 + 15, 0, 0));
@@ -919,14 +890,17 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // @object ChunkTag
         // @name refresh_chunk_sections
         // @input None
+        // @deprecated for MC 1.18+, use 'refresh_chunk'
         // @description
         // Refreshes all 16x16x16 chunk sections within the chunk.
+        // For MC 1.18+, prefer <@link mechanism ChunkTag.refresh_chunk>
         // @example
         // - adjust <player.location.chunk> refresh_chunk_sections
         // -->
         if (mechanism.matches("refresh_chunk_sections")) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                getBukkitWorld().regenerateChunk(chunkX, chunkZ);
+                BukkitImplDeprecations.chunkRefreshSections.warn(mechanism.context);
+                getBukkitWorld().refreshChunk(chunkX, chunkZ);
             }
             else {
                 NMSHandler.chunkHelper.refreshChunkSections(getChunk());

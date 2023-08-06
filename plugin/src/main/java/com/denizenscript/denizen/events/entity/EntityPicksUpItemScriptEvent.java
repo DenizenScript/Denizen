@@ -37,7 +37,7 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
     // <context.location> returns a LocationTag of the item's location.
     //
     // @Determine
-    // "ITEM:" + ItemTag to changed the item being picked up.
+    // "ITEM:<ItemTag>" to changed the item being picked up.
     //
     // @Player when the entity picking up the item is a player.
     //

@@ -29,7 +29,7 @@ public class EntityBoatType implements Property {
             "boat_type"
     };
 
-    private EntityBoatType(EntityTag entity) {
+    public EntityBoatType(EntityTag entity) {
         this.entity = entity;
     }
 

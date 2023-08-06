@@ -57,7 +57,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     // @Actions
     // damage
     //
-    // @Triggers when the NPC is damaged by a player.
+    // @Triggers when the NPC is damaged by a player and the Damage trigger fires. Action does not run if you do not enable the Damage trigger.
     //
     // @Context
     // <context.damage> returns how much damage was done.
@@ -81,15 +81,12 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     // "cancelled" to cancel the damage event.
     //
     // -->
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void damageTrigger(EntityDamageByEntityEvent event) {
         Map<String, ObjectTag> context = new HashMap<>();
         context.put("damage", new ElementTag(event.getDamage()));
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             NPCTag npc = new NPCTag(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
-            if (npc == null) {
-                return;
-            }
             if (npc.getCitizen() == null) {
                 return;
             }

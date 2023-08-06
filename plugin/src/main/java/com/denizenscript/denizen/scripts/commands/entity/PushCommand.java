@@ -216,7 +216,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 entity.setShooter(originEntity);
             }
         }
-        scriptEntry.addObject("pushed_entities", entityList);
+        scriptEntry.saveObject("pushed_entities", entityList);
         Position.mount(Conversion.convertEntities(entities));
         final EntityTag lastEntity = entities.get(entities.size() - 1);
         final Vector v2 = destination.toVector();

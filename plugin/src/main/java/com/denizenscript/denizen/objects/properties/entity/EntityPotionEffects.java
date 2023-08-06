@@ -41,7 +41,7 @@ public class EntityPotionEffects implements Property {
             "potion_effects"
     };
 
-    private EntityPotionEffects(EntityTag entity) {
+    public EntityPotionEffects(EntityTag entity) {
         this.entity = entity;
     }
 

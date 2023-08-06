@@ -32,7 +32,7 @@ public class EntityVillagerExperience implements Property {
             "villager_experience"
     };
 
-    private EntityVillagerExperience(EntityTag ent) {
+    public EntityVillagerExperience(EntityTag ent) {
         entity = ent;
     }
 
@@ -88,4 +88,3 @@ public class EntityVillagerExperience implements Property {
         }
     }
 }
-

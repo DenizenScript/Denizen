@@ -28,7 +28,7 @@ public class EntityChestCarrier implements Property {
             "carries_chest"
     };
 
-    private EntityChestCarrier(EntityTag entity) {
+    public EntityChestCarrier(EntityTag entity) {
         this.entity = entity;
     }
 

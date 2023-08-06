@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -9,15 +10,16 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
+
+import java.util.List;
 
 public class PaperAPITools {
 
@@ -105,8 +107,8 @@ public class PaperAPITools {
         throw new UnsupportedOperationException();
     }
 
-    public void teleportPlayerRelative(Player player, Location loc) {
-        player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
+    public void teleport(Entity entity, Location loc, PlayerTeleportEvent.TeleportCause cause, List<TeleportCommand.EntityState> entityTeleportFlags, List<TeleportCommand.Relative> relativeTeleportFlags) {
+        entity.teleport(loc, cause);
     }
 
     public void registerBrewingRecipe(String keyName, ItemStack result, ItemStack[] inputItem, boolean inputExact, ItemStack[] ingredientItem, boolean ingredientExact) {
@@ -138,5 +140,42 @@ public class PaperAPITools {
 
     public <T extends Entity> T spawnEntity(Location location, Class<T> type, Consumer<T> configure, CreatureSpawnEvent.SpawnReason reason) {
         return location.getWorld().spawn(location, type, configure);
+    }
+
+    public void setTeamPrefix(Team team, String prefix) {
+        team.setPrefix(prefix);
+    }
+
+    public void setTeamSuffix(Team team, String suffix) {
+        team.setSuffix(suffix);
+    }
+
+    public String getTeamPrefix(Team team) {
+        return team.getPrefix();
+    }
+
+    public String getTeamSuffix(Team team) {
+        return team.getSuffix();
+    }
+
+    public String convertTextToMiniMessage(String text, boolean splitNewlines) {
+        return text;
+    }
+
+    public Merchant createMerchant(String title) {
+        return Bukkit.createMerchant(title);
+    }
+
+    public String getText(TextDisplay textDisplay) {
+        String text = textDisplay.getText();
+        return text != null ? text : "";
+    }
+
+    public void setText(TextDisplay textDisplay, String text) {
+        textDisplay.setText(text);
+    }
+
+    public void kickPlayer(Player player, String message) {
+        player.kickPlayer(message);
     }
 }

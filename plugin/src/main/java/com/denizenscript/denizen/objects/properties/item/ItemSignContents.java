@@ -39,11 +39,11 @@ public class ItemSignContents implements Property {
             "sign_contents"
     };
 
-    private ListTag getSignContents() {
+    public ListTag getSignContents() {
         return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines((Sign) ((BlockStateMeta) item.getItemMeta()).getBlockState())), true);
     }
 
-    private ItemSignContents(ItemTag _item) {
+    public ItemSignContents(ItemTag _item) {
         item = _item;
     }
 

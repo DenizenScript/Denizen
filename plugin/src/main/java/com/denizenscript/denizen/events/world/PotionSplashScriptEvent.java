@@ -43,7 +43,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     // <context.intensity> returns an ListTag(MapTag) of the intensity for all affected entities.
     //
     // @Determine
-    // INTENSITY:" + ListTag(MapTag) to set the intensity of specified entities.
+    // INTENSITY:<ListTag(MapTag)>" to set the intensity of specified entities.
     //
     // @Example
     // # This example sets the intensity of the first affected entity to 0.6.

@@ -34,7 +34,7 @@ public class ItemSpawnerCount implements Property {
             "spawner_count"
     };
 
-    private ItemSpawnerCount(ItemTag _item) {
+    public ItemSpawnerCount(ItemTag _item) {
         item = _item;
     }
 

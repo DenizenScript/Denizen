@@ -37,7 +37,7 @@ public class EntityArmorPose implements Property {
             "armor_pose"
     };
 
-    private EntityArmorPose(EntityTag ent) {
+    public EntityArmorPose(EntityTag ent) {
         entity = ent;
     }
 
@@ -53,7 +53,7 @@ public class EntityArmorPose implements Property {
         return "armor_pose";
     }
 
-    private ListTag getPoseList() {
+    public ListTag getPoseList() {
         ArmorStand armorStand = (ArmorStand) entity.getBukkitEntity();
         ListTag list = new ListTag();
         for (PosePart posePart : PosePart.values()) {
@@ -140,7 +140,7 @@ public class EntityArmorPose implements Property {
         // For example, [head=4.5,3,4.5;body=5.4,3.2,1]
         // Valid parts: HEAD, BODY, LEFT_ARM, RIGHT_ARM, LEFT_LEG, RIGHT_LEG
         // Angles are in radians!
-        // Here's a website to help you figure out the correct values: <@link url https://bgielinor.github.io/Minecraft-ArmorStand/>.
+        // Here's a website to help you figure out the correct values: <@link url https://b-universe.github.io/Minecraft-ArmorStand/>.
         // @tags
         // <EntityTag.armor_pose_map>
         // -->
@@ -163,7 +163,7 @@ public class EntityArmorPose implements Property {
             }
             else {
                 MapTag map = mechanism.valueAsType(MapTag.class);
-                for (Map.Entry<StringHolder, ObjectTag> entry : map.map.entrySet()) {
+                for (Map.Entry<StringHolder, ObjectTag> entry : map.entrySet()) {
                     PosePart posePart = PosePart.fromName(entry.getKey().str);
                     if (posePart == null) {
                         mechanism.echoError("Invalid pose part specified: " + entry.getKey().str);
@@ -176,15 +176,15 @@ public class EntityArmorPose implements Property {
         }
     }
 
-    private static LocationTag fromEulerAngle(EulerAngle eulerAngle) {
+    public static LocationTag fromEulerAngle(EulerAngle eulerAngle) {
         return new LocationTag(null, eulerAngle.getX(), eulerAngle.getY(), eulerAngle.getZ());
     }
 
-    private static EulerAngle toEulerAngle(LocationTag location) {
+    public static EulerAngle toEulerAngle(LocationTag location) {
         return new EulerAngle(location.getX(), location.getY(), location.getZ());
     }
 
-    private enum PosePart {
+    public enum PosePart {
         HEAD {
             @Override
             EulerAngle getAngle(ArmorStand armorStand) {

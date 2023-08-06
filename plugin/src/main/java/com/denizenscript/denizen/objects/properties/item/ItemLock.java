@@ -35,15 +35,15 @@ public class ItemLock implements Property {
             "lock"
     };
 
-    private String getItemLock() {
+    public String getItemLock() {
         return ((Lockable) ((BlockStateMeta) item.getItemMeta()).getBlockState()).getLock();
     }
 
-    private boolean isLocked() {
+    public boolean isLocked() {
         return ((Lockable) ((BlockStateMeta) item.getItemMeta()).getBlockState()).isLocked();
     }
 
-    private ItemLock(ItemTag _item) {
+    public ItemLock(ItemTag _item) {
         item = _item;
     }
 

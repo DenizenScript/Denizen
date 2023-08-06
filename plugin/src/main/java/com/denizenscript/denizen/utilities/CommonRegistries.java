@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizen.tags.core.*;
 import com.denizenscript.denizencore.objects.ObjectType;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
@@ -81,7 +82,6 @@ public class CommonRegistries {
         new CustomColorTagBase();
         new ServerTagBase();
         new TextTagBase();
-        new ParseTagBase();
     }
 
     public static void registerMainObjects() {
@@ -101,7 +101,6 @@ public class CommonRegistries {
 
     public static ObjectType<BiomeTag> TYPE_BIOME;
     public static ObjectType<ChunkTag> TYPE_CHUNK;
-    public static ObjectType<ColorTag> TYPE_COLOR;
     public static ObjectType<CuboidTag> TYPE_CUBOID;
     public static ObjectType<EllipsoidTag> TYPE_ELLIPSOID;
     public static ObjectType<EnchantmentTag> TYPE_ENCHANTMENT;
@@ -136,15 +135,6 @@ public class CommonRegistries {
         // Refer to <@link objecttype ChunkTag>.
         // -->
         TYPE_CHUNK = ObjectFetcher.registerWithObjectFetcher(ChunkTag.class, ChunkTag.tagProcessor).setAsNOtherCode().setCanConvertStatic().generateBaseTag(); // ch@
-
-        // <--[tag]
-        // @attribute <color[<color>]>
-        // @returns ColorTag
-        // @description
-        // Returns a color object constructed from the input value.
-        // Refer to <@link objecttype ColorTag>.
-        // -->
-        TYPE_COLOR = ObjectFetcher.registerWithObjectFetcher(ColorTag.class, ColorTag.tagProcessor).setAsNOtherCode().setCanConvertStatic().generateBaseTag(); // co@
 
         // <--[tag]
         // @attribute <cuboid[<cuboid>]>
@@ -394,7 +384,7 @@ public class CommonRegistries {
                 return new ChunkTag((Chunk) obj);
             }
             if (obj instanceof Color) {
-                return new ColorTag((Color) obj);
+                return BukkitColorExtensions.fromColor((Color) obj);
             }
             if (obj instanceof Enchantment) {
                 return new EnchantmentTag((Enchantment) obj);

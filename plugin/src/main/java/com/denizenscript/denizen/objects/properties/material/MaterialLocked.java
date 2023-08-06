@@ -29,7 +29,7 @@ public class MaterialLocked implements Property {
             "is_locked"
     };
 
-    private MaterialLocked(MaterialTag _material) {
+    public MaterialLocked(MaterialTag _material) {
         material = _material;
     }
 

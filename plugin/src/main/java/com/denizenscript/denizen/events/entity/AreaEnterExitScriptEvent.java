@@ -157,10 +157,12 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
             }
             if (area.equals("cuboid") || area.equals("ellipsoid") || area.equals("polygon")) {
                 doTrackAll = true;
+                needsMatchers = true;
             }
             MatchHelper matcher = createMatcher(area);
             if (matcher instanceof AlwaysMatchHelper) {
                 doTrackAll = true;
+                needsMatchers = true;
             }
             else if (!needsMatchers && (matcher instanceof ExactMatchHelper)) {
                 exacts.add(area);
@@ -171,6 +173,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
             matchList.add(matcher);
             if (area.startsWith("area_flagged:")) {
                 flags.add(CoreUtilities.toLowerCase(area.substring("area_flagged:".length())));
+                needsMatchers = true;
             }
         }
         exactTracked = needsMatchers ? null : exacts.toArray(new String[0]);

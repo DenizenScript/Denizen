@@ -59,8 +59,8 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isInt()) {
-            event.setAmount(((ElementTag) determinationObj).asInt());
+        if (determinationObj instanceof ElementTag element && element.isInt()) {
+            event.setAmount(element.asInt());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -94,7 +94,6 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
         }
         player = PlayerTag.mirrorBukkitPlayer(event.getPlayer());
         this.event = event;
-        cancelled = false;
         fire(event);
     }
 }

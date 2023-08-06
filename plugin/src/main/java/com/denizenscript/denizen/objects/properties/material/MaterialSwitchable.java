@@ -49,7 +49,7 @@ public class MaterialSwitchable implements Property {
             "switched"
     };
 
-    private MaterialSwitchable(MaterialTag _material) {
+    public MaterialSwitchable(MaterialTag _material) {
         material = _material;
     }
 
@@ -69,7 +69,7 @@ public class MaterialSwitchable implements Property {
         // - a Powerable material (like pressure plates) is activated
         // - an Openable material (like doors) is open
         // - a dispenser is powered and should dispense its contents
-        // - a daylight sensor can see the sun
+        // - a daylight sensor is inverted (detects darkness instead of light)
         // - a lightable block is lit
         // - a piston block is extended
         // - an end portal frame has an ender eye in it

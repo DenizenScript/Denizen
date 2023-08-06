@@ -28,7 +28,7 @@ public class EntityWitherInvulnerable implements Property {
             "invulnerable_duration"
     };
 
-    private EntityWitherInvulnerable(EntityTag _entity) {
+    public EntityWitherInvulnerable(EntityTag _entity) {
         entity = _entity;
     }
 

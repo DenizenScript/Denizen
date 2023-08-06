@@ -7,7 +7,6 @@ import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
@@ -102,12 +101,12 @@ public class BossBarCommand extends AbstractCommand {
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("action") @ArgDefaultText("auto") Action action,
                                    @ArgName("id") @ArgLinear ElementTag id,
-                                   @ArgName("players") @ArgPrefixed @ArgDefaultNull ListTag players,
+                                   @ArgName("players") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> players,
                                    @ArgName("title") @ArgPrefixed @ArgDefaultNull String title,
                                    @ArgName("progress") @ArgPrefixed @ArgDefaultNull ElementTag progress,
                                    @ArgName("color") @ArgPrefixed @ArgDefaultText("white") BarColor color,
                                    @ArgName("style") @ArgPrefixed @ArgDefaultText("solid") BarStyle style,
-                                   @ArgName("options") @ArgPrefixed @ArgDefaultNull ListTag options,
+                                   @ArgName("options") @ArgPrefixed @ArgDefaultNull @ArgSubType(BarFlag.class) List<BarFlag> options,
                                    @ArgName("uuid") @ArgPrefixed @ArgDefaultNull String uuid) {
         String idString = id.asLowerString();
         if (action == Action.AUTO) {
@@ -117,8 +116,7 @@ public class BossBarCommand extends AbstractCommand {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
                 throw new InvalidArgumentsRuntimeException("Missing player input!");
             }
-            players = new ListTag();
-            players.addObject(Utilities.getEntryPlayer(scriptEntry));
+            players = Collections.singletonList(Utilities.getEntryPlayer(scriptEntry));
         }
         BossBar bossBar = null;
         switch (action) {
@@ -127,18 +125,12 @@ public class BossBarCommand extends AbstractCommand {
                     Debug.echoError("BossBar '" + idString + "' already exists!");
                     return;
                 }
-                List<PlayerTag> barPlayers = players.filter(PlayerTag.class, scriptEntry);
+                List<PlayerTag> barPlayers = players;
                 double barProgress = progress != null ? progress.asDouble() : 1D;
-                BarFlag[] barFlags = new BarFlag[options != null ? options.size() : 0];
-                if (options != null) {
-                    for (int i = 0; i < options.size(); i++) {
-                        barFlags[i] = (BarFlag.valueOf(options.get(i).toUpperCase()));
-                    }
-                }
                 if (title == null) {
                     title = "";
                 }
-                bossBar = Bukkit.createBossBar(title, color, style, barFlags);
+                bossBar = Bukkit.createBossBar(title, color, style, options == null ? new BarFlag[0] : options.toArray(new BarFlag[0]));
                 NMSHandler.playerHelper.setBossBarTitle(bossBar, title);
                 bossBar.setProgress(barProgress);
                 if (uuid != null) {
@@ -176,8 +168,7 @@ public class BossBarCommand extends AbstractCommand {
                 if (options != null) {
                     HashSet<BarFlag> oldFlags = new HashSet<>(Arrays.asList(BarFlag.values()));
                     HashSet<BarFlag> newFlags = new HashSet<>(options.size());
-                    for (String flagName : options) {
-                        BarFlag flag = BarFlag.valueOf(flagName.toUpperCase());
+                    for (BarFlag flag : options) {
                         newFlags.add(flag);
                         oldFlags.remove(flag);
                     }
@@ -189,7 +180,7 @@ public class BossBarCommand extends AbstractCommand {
                     }
                 }
                 if (players != null) {
-                    for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
+                    for (PlayerTag player : players) {
                         bossBar.addPlayer(player.getPlayerEntity());
                     }
                 }
@@ -202,7 +193,7 @@ public class BossBarCommand extends AbstractCommand {
                     return;
                 }
                 if (players != null) {
-                    for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
+                    for (PlayerTag player : players) {
                         bossBar.removePlayer(player.getPlayerEntity());
                     }
                     break;
@@ -214,7 +205,7 @@ public class BossBarCommand extends AbstractCommand {
         if (bossBar != null) {
             UUID actualUuid = NMSHandler.instance.getBossbarUUID(bossBar);
             if (actualUuid != null) {
-                scriptEntry.addObject("bar_uuid", new ElementTag(actualUuid.toString()));
+                scriptEntry.saveObject("bar_uuid", new ElementTag(actualUuid.toString()));
             }
         }
     }

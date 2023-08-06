@@ -4,29 +4,35 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.paper.PaperModule;
+import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
-import io.papermc.paper.entity.RelativeTeleportFlag;
+import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.potion.PotionMix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.potion.PotionBrewer;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PaperAPIToolsImpl extends PaperAPITools {
 
@@ -132,13 +138,22 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
-    public void teleportPlayerRelative(Player player, Location loc) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            player.teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN, true, false, RelativeTeleportFlag.values());
+    public void teleport(Entity entity, Location loc, PlayerTeleportEvent.TeleportCause cause, List<TeleportCommand.EntityState> entityTeleportFlags, List<TeleportCommand.Relative> relativeTeleportFlags) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            super.teleport(entity, loc, cause, null, null);
         }
-        else {
-            super.teleportPlayerRelative(player, loc);
+        List<TeleportFlag> teleportFlags = new ArrayList<>();
+        if (entityTeleportFlags != null) {
+            for (TeleportCommand.EntityState entityTeleportFlag : entityTeleportFlags) {
+                teleportFlags.add(TeleportFlag.EntityState.values()[entityTeleportFlag.ordinal()]);
+            }
         }
+        if (relativeTeleportFlags != null) {
+            for (TeleportCommand.Relative relativeTeleportFlag : relativeTeleportFlags) {
+                teleportFlags.add(TeleportFlag.Relative.values()[relativeTeleportFlag.ordinal()]);
+            }
+        }
+        entity.teleport(loc, cause, teleportFlags.toArray(new TeleportFlag[0]));
     }
 
     public static HashMap<NamespacedKey, PotionMix> potionMixes = new HashMap<>();
@@ -267,5 +282,55 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         else {
             return super.spawnEntity(location, type, configure, reason);
         }
+    }
+
+    @Override
+    public void setTeamPrefix(Team team, String prefix) {
+        team.prefix(PaperModule.parseFormattedText(prefix, ChatColor.WHITE));
+    }
+
+    @Override
+    public void setTeamSuffix(Team team, String suffix) {
+        team.suffix(PaperModule.parseFormattedText(suffix, ChatColor.WHITE));
+    }
+
+    @Override
+    public String getTeamPrefix(Team team) {
+        return PaperModule.stringifyComponent(team.prefix());
+    }
+
+    @Override
+    public String getTeamSuffix(Team team) {
+        return PaperModule.stringifyComponent(team.suffix());
+    }
+
+    @Override
+    public String convertTextToMiniMessage(String text, boolean splitNewlines) {
+        if (splitNewlines) {
+            List<String> lines = CoreUtilities.split(text, '\n');
+            return lines.stream().map(l -> convertTextToMiniMessage(l, false)).collect(Collectors.joining("\n"));
+        }
+        Component parsed = PaperModule.jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(text, ChatColor.WHITE, false)));
+        return MiniMessage.miniMessage().serialize(parsed);
+    }
+
+    @Override
+    public Merchant createMerchant(String title) {
+        return Bukkit.createMerchant(PaperModule.parseFormattedText(title, ChatColor.BLACK));
+    }
+
+    @Override
+    public String getText(TextDisplay textDisplay) {
+        return PaperModule.stringifyComponent(textDisplay.text());
+    }
+
+    @Override
+    public void setText(TextDisplay textDisplay, String text) {
+        textDisplay.text(PaperModule.parseFormattedText(text, ChatColor.WHITE));
+    }
+
+    @Override
+    public void kickPlayer(Player player, String message) {
+        player.kick(PaperModule.parseFormattedText(message, ChatColor.WHITE));
     }
 }

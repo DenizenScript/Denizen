@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_17.impl;
 
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
+import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.nbt.ListTag;
@@ -28,7 +29,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         super(playeruuid);
     }
 
-    public class OfflinePlayerInventory extends net.minecraft.world.entity.player.Inventory {
+    public static class OfflinePlayerInventory extends net.minecraft.world.entity.player.Inventory {
 
         public OfflinePlayerInventory(net.minecraft.world.entity.player.Player entityhuman) {
             super(entityhuman);
@@ -40,7 +41,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         }
     }
 
-    public class OfflineCraftInventoryPlayer extends CraftInventoryPlayer {
+    public static class OfflineCraftInventoryPlayer extends CraftInventoryPlayer {
 
         public OfflineCraftInventoryPlayer(net.minecraft.world.entity.player.Inventory inventory) {
             super(inventory);
@@ -54,14 +55,12 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
 
     @Override
     public org.bukkit.inventory.PlayerInventory getInventory() {
-        if (offlineInventories.containsKey(getUniqueId())) {
-            return offlineInventories.get(getUniqueId());
+        if (inventory == null) {
+            net.minecraft.world.entity.player.Inventory newInv = new OfflinePlayerInventory(null);
+            newInv.load(((CompoundTagImpl) this.compound).toNMSTag().getList("Inventory", 10));
+            inventory = new OfflineCraftInventoryPlayer(newInv);
         }
-        net.minecraft.world.entity.player.Inventory inventory = new OfflinePlayerInventory(null);
-        inventory.load(((CompoundTagImpl) this.compound).toNMSTag().getList("Inventory", 10));
-        org.bukkit.inventory.PlayerInventory inv = new OfflineCraftInventoryPlayer(inventory);
-        offlineInventories.put(getUniqueId(), inv);
-        return inv;
+        return inventory;
     }
 
     @Override
@@ -70,21 +69,17 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         net.minecraft.nbt.CompoundTag nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
         nbtTagCompound.put("Inventory", inv.getInventory().save(new ListTag()));
         this.compound = CompoundTagImpl.fromNMSTag(nbtTagCompound);
-        if (this.autosave) {
-            savePlayerData();
-        }
+        markModified();
     }
 
     @Override
     public Inventory getEnderChest() {
-        if (offlineEnderChests.containsKey(getUniqueId())) {
-            return offlineEnderChests.get(getUniqueId());
+        if (enderchest == null) {
+            PlayerEnderChestContainer endchest = new PlayerEnderChestContainer(null);
+            endchest.fromTag(((CompoundTagImpl) this.compound).toNMSTag().getList("EnderItems", 10));
+            enderchest = new CraftInventory(endchest);
         }
-        PlayerEnderChestContainer endchest = new PlayerEnderChestContainer(null);
-        endchest.fromTag(((CompoundTagImpl) this.compound).toNMSTag().getList("EnderItems", 10));
-        org.bukkit.inventory.Inventory inv = new CraftInventory(endchest);
-        offlineEnderChests.put(getUniqueId(), inv);
-        return inv;
+        return enderchest;
     }
 
     @Override
@@ -92,9 +87,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         net.minecraft.nbt.CompoundTag nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
         nbtTagCompound.put("EnderItems", ((PlayerEnderChestContainer) ((CraftInventory) inventory).getInventory()).createTag());
         this.compound = CompoundTagImpl.fromNMSTag(nbtTagCompound);
-        if (this.autosave) {
-            savePlayerData();
-        }
+        markModified();
     }
 
     @Override
@@ -121,9 +114,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         net.minecraft.nbt.CompoundTag nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
         nbtTagCompound.put("Attributes", attributes.save());
         this.compound = CompoundTagImpl.fromNMSTag(nbtTagCompound);
-        if (this.autosave) {
-            savePlayerData();
-        }
+        markModified();
     }
 
     @Override
@@ -145,14 +136,12 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     }
 
     @Override
-    public void savePlayerData() {
-        if (this.exists) {
-            try {
-                NbtIo.writeCompressed(((CompoundTagImpl) this.compound).toNMSTag(), new FileOutputStream(this.file));
-            }
-            catch (Exception e) {
-                Debug.echoError(e);
-            }
+    public void saveInternal(CompoundTag compound) {
+        try {
+            NbtIo.writeCompressed(((CompoundTagImpl) compound).toNMSTag(), new FileOutputStream(this.file));
+        }
+        catch (Exception e) {
+            Debug.echoError(e);
         }
     }
 }

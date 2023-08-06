@@ -32,7 +32,7 @@ public class EntityVillagerLevel implements Property {
             "villager_level"
     };
 
-    private EntityVillagerLevel(EntityTag ent) {
+    public EntityVillagerLevel(EntityTag ent) {
         entity = ent;
     }
 
@@ -88,4 +88,3 @@ public class EntityVillagerLevel implements Property {
         }
     }
 }
-

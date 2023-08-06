@@ -29,7 +29,7 @@ public class MaterialUnstable implements Property {
             "unstable"
     };
 
-    private MaterialUnstable(MaterialTag _material) {
+    public MaterialUnstable(MaterialTag _material) {
         material = _material;
     }
 

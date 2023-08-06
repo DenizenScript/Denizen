@@ -1,37 +1,28 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
-import org.bukkit.entity.Arrow;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.entity.AbstractArrow;
 
 public class EntityKnockback implements Property {
 
-    public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntity() instanceof Arrow;
+    public static boolean describes(ObjectTag object) {
+        return object instanceof EntityTag entity && entity.getBukkitEntity() instanceof AbstractArrow;
     }
 
-    public static EntityKnockback getFrom(ObjectTag entity) {
-        if (!describes(entity)) {
+    public static EntityKnockback getFrom(ObjectTag object) {
+        if (!describes(object)) {
             return null;
         }
         else {
-            return new EntityKnockback((EntityTag) entity);
+            return new EntityKnockback((EntityTag) object);
         }
     }
 
-    public static final String[] handledTags = new String[] {
-            "knockback"
-    };
-
-    public static final String[] handledMechs = new String[] {
-            "knockback"
-    };
-
-    private EntityKnockback(EntityTag entity) {
+    public EntityKnockback(EntityTag entity) {
         arrow = entity;
     }
 
@@ -39,7 +30,7 @@ public class EntityKnockback implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(((Arrow) arrow.getBukkitEntity()).getKnockbackStrength());
+        return String.valueOf(getAbstractArrow().getKnockbackStrength());
     }
 
     @Override
@@ -47,12 +38,7 @@ public class EntityKnockback implements Property {
         return "knockback";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
+    public static void register() {
 
         // <--[tag]
         // @attribute <EntityTag.knockback>
@@ -60,30 +46,29 @@ public class EntityKnockback implements Property {
         // @mechanism EntityTag.knockback
         // @group properties
         // @description
-        // If the entity is an arrow or trident, returns the knockback strength of the arrow/trident.
+        // Returns the knockback strength of an arrow or trident.
         // -->
-        if (attribute.startsWith("knockback")) {
-            return new ElementTag(((Arrow) arrow.getBukkitEntity()).getKnockbackStrength())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
+        PropertyParser.registerTag(EntityKnockback.class, ElementTag.class, "knockback", (attribute, object) -> {
+            return new ElementTag(object.getAbstractArrow().getKnockbackStrength());
+        });
 
         // <--[mechanism]
         // @object EntityTag
         // @name knockback
         // @input ElementTag(Number)
         // @description
-        // Changes an arrow's/trident's knockback strength.
+        // Sets the knockback strength of an arrow or trident.
         // @tags
         // <EntityTag.knockback>
         // -->
-        if (mechanism.matches("knockback") && mechanism.requireInteger()) {
-            ((Arrow) arrow.getBukkitEntity()).setKnockbackStrength(mechanism.getValue().asInt());
-        }
+        PropertyParser.registerMechanism(EntityKnockback.class, ElementTag.class, "knockback", (object, mechanism, input) -> {
+            if (mechanism.requireInteger()) {
+                object.getAbstractArrow().setKnockbackStrength(input.asInt());
+            }
+        });
+    }
+
+    public AbstractArrow getAbstractArrow() {
+        return (AbstractArrow) arrow.getBukkitEntity();
     }
 }

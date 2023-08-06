@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.scripts.containers.core.MapScriptContainer;
 import com.denizenscript.denizen.utilities.maps.*;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.WorldTag;
@@ -26,7 +26,7 @@ public class MapCommand extends AbstractCommand {
         setSyntax("map [<#>/new:<world>] (reset:<location>) (scale:<value>) (tracking) (image:<file>) (resize) (script:<script>) (dot:<color>) (radius:<#>) (x:<#>) (y:<#>) (text:<text>)");
         setRequiredArguments(2, 10);
         isProcedural = false;
-        setPrefixesHandled("dot", "radius", "image", "script", "x", "y", "reset", "new", "text");
+        setPrefixesHandled("dot", "radius", "image", "script", "x", "y", "reset", "new", "text", "scale");
         setBooleansHandled("resize", "tracking");
     }
 
@@ -133,7 +133,7 @@ public class MapCommand extends AbstractCommand {
         MapView map;
         if (create != null) {
             map = Bukkit.getServer().createMap(create.getWorld());
-            scriptEntry.addObject("created_map", new ElementTag(map.getId()));
+            scriptEntry.saveObject("created_map", new ElementTag(map.getId()));
             Debug.echoDebug(scriptEntry, "Created map with id " + map.getId() + ".");
         }
         else { // id != null

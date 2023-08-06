@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.block.Block;
@@ -20,6 +22,7 @@ import org.bukkit.entity.EntityType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class BiomeNMSImpl extends BiomeNMS {
 
@@ -54,7 +57,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     @Override
-    public float getTemperature() {
+    public float getBaseTemperature() {
         return biomeBase.getBaseTemperature();
     }
 
@@ -78,6 +81,23 @@ public class BiomeNMSImpl extends BiomeNMS {
         return getSpawnableEntities(MobCategory.WATER_CREATURE);
     }
 
+    @Override
+    public int getFoliageColor() {
+        // Check if the biome already has a default color
+        if (biomeBase.getFoliageColor() != 0) {
+            return biomeBase.getFoliageColor();
+        }
+        // Based on net.minecraft.world.level.biome.Biome#getFoliageColorFromTexture()
+        float temperature = clampColor(getBaseTemperature());
+        float humidity = clampColor(getHumidity());
+        // Based on net.minecraft.world.level.FoliageColor#get()
+        humidity *= temperature;
+        int humidityValue = (int)((1.0f - humidity) * 255.0f);
+        int temperatureValue = (int)((1.0f - temperature) * 255.0f);
+        int index = temperatureValue << 8 | humidityValue;
+        return index >= 65536 ? 4764952 : getColor(index / 256, index % 256).asRGB();
+    }
+
     public Object getClimate() {
         return ReflectionHelper.getFieldValue(net.minecraft.world.level.biome.Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeBase);
     }
@@ -89,7 +109,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     @Override
-    public void setTemperature(float temperature) {
+    public void setBaseTemperature(float temperature) {
         Object climate = getClimate();
         ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_temperature, climate, temperature);
     }
@@ -112,6 +132,16 @@ public class BiomeNMSImpl extends BiomeNMS {
         }
         Object climate = getClimate();
         ReflectionHelper.setFieldValue(climate.getClass(), ReflectionMappingsInfo.Biome_ClimateSettings_precipitation, climate, nmsType);
+    }
+
+    @Override
+    public void setFoliageColor(int color) {
+        try {
+            ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_foliageColorOverride, biomeBase.getSpecialEffects(), Optional.of(color));
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
     }
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {

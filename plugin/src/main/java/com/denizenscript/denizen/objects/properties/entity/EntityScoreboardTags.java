@@ -30,7 +30,7 @@ public class EntityScoreboardTags implements Property {
             "scoreboard_tags", "clear_scoreboard_tags"
     };
 
-    private EntityScoreboardTags(EntityTag ent) {
+    public EntityScoreboardTags(EntityTag ent) {
         entity = ent;
     }
 

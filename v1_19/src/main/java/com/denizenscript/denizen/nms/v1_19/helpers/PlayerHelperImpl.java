@@ -21,7 +21,6 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
@@ -46,17 +45,22 @@ import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagNetworkSerialization;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.phys.AABB;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_19_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_19_R2.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_19_R2.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_19_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R3.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -118,7 +122,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         net.minecraft.world.entity.Entity nmsEntity;
         if (entityType.isCustom()) {
             if (entityType.customEntityType == CustomEntityType.ITEM_PROJECTILE) {
-                org.bukkit.inventory.ItemStack itemStack = new ItemStack(Material.STONE);
+                ItemStack itemStack = new ItemStack(Material.STONE);
                 for (Mechanism mechanism : mechanisms) {
                     if (mechanism.matches("item") && mechanism.requireObject(ItemTag.class)) {
                         itemStack = mechanism.valueAsType(ItemTag.class).getItemStack();
@@ -322,11 +326,6 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer) {
-        return new ImprovedOfflinePlayerImpl(offlinePlayer.getUniqueId());
-    }
-
-    @Override
     public void resendRecipeDetails(Player player) {
         Collection<Recipe<?>> recipes = ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().getRecipes();
         ClientboundUpdateRecipesPacket updatePacket = new ClientboundUpdateRecipesPacket(recipes);
@@ -353,7 +352,7 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public String getPlayerBrand(Player player) {
-        return ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.brand;
+        return DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.brand;
     }
 
     @Override
@@ -394,20 +393,28 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public void sendPlayerInfoAddPacket(Player player, ProfileEditMode mode, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode) {
-        boolean listed = true; // TODO: 1.19.3: Add 'listed' input
-        ClientboundPlayerInfoUpdatePacket.Action action = mode == ProfileEditMode.ADD ? ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER : (mode == ProfileEditMode.UPDATE_DISPLAY ? ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME : ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY);
+    public void sendPlayerInfoAddPacket(Player player, EnumSet<ProfileEditMode> editModes, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode, boolean listed) {
+        EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions = EnumSet.noneOf(ClientboundPlayerInfoUpdatePacket.Action.class);
+        for (ProfileEditMode editMode : editModes) {
+            actions.add(switch (editMode) {
+                case ADD -> ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER;
+                case UPDATE_DISPLAY -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME;
+                case UPDATE_LATENCY -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY;
+                case UPDATE_GAME_MODE -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE;
+                case UPDATE_LISTED -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED;
+            });
+        }
         GameProfile profile = new GameProfile(id, name);
         if (texture != null) {
             profile.getProperties().put("textures", new Property("textures", texture, signature));
         }
-        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(id, profile, listed, latency, GameType.byName(CoreUtilities.toLowerCase(gameMode.name())), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE)), null);
-        PacketHelperImpl.send(player, ProfileEditorImpl.createInfoPacket(EnumSet.of(action), Collections.singletonList(entry)));
+        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(id, profile, listed, latency, gameMode == null ? null : GameType.byId(gameMode.getValue()), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE)), null);
+        PacketHelperImpl.send(player, ProfileEditorImpl.createInfoPacket(actions, List.of(entry)));
     }
 
     @Override
-    public void sendPlayerRemovePacket(Player player, UUID id) {
-        PacketHelperImpl.send(player, new ClientboundPlayerInfoRemovePacket(Collections.singletonList(id)));
+    public void sendPlayerInfoRemovePacket(Player player, UUID id) {
+        PacketHelperImpl.send(player, new ClientboundPlayerInfoRemovePacket(List.of(id)));
     }
 
     @Override
@@ -420,5 +427,41 @@ public class PlayerHelperImpl extends PlayerHelper {
             intList.add(BuiltInRegistries.BLOCK.getId(CraftMagicNumbers.getBlock(material)));
         }
         PacketHelperImpl.send(player, new ClientboundUpdateTagsPacket(packetInput));
+    }
+
+    @Override
+    public void refreshPlayer(Player player) {
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        ServerLevel nmsWorld = (ServerLevel) nmsPlayer.level;
+        nmsPlayer.connection.send(new ClientboundRespawnPacket(
+                nmsWorld.dimensionTypeId(),
+                nmsWorld.dimension(),
+                BiomeManager.obfuscateSeed(nmsWorld.getSeed()),
+                nmsPlayer.gameMode.getGameModeForPlayer(),
+                nmsPlayer.gameMode.getPreviousGameModeForPlayer(),
+                nmsWorld.isDebug(),
+                nmsWorld.isFlat(),
+                ClientboundRespawnPacket.KEEP_ALL_DATA,
+                nmsPlayer.getLastDeathLocation()));
+        nmsPlayer.connection.teleport(player.getLocation());
+        if (nmsPlayer.isPassenger()) {
+           nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer.getVehicle()));
+        }
+        if (nmsPlayer.isVehicle()) {
+            nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer));
+        }
+        AABB boundingBox = new AABB(nmsPlayer.position(), nmsPlayer.position()).inflate(10);
+        for (Mob nmsMob : nmsWorld.getEntitiesOfClass(Mob.class, boundingBox, nmsMob -> nmsPlayer.equals(nmsMob.getLeashHolder()))) {
+            nmsPlayer.connection.send(new ClientboundSetEntityLinkPacket(nmsMob, nmsPlayer));
+        }
+        if (!nmsPlayer.getCooldowns().cooldowns.isEmpty()) {
+            int tickCount = nmsPlayer.getCooldowns().tickCount;
+            for (Map.Entry<Item, ItemCooldowns.CooldownInstance> entry : nmsPlayer.getCooldowns().cooldowns.entrySet()) {
+                nmsPlayer.connection.send(new ClientboundCooldownPacket(entry.getKey(), entry.getValue().endTime - tickCount));
+            }
+        }
+        nmsPlayer.onUpdateAbilities();
+        nmsPlayer.server.getPlayerList().sendAllPlayerInfo(nmsPlayer);
+        nmsPlayer.server.getPlayerList().sendPlayerPermissionLevel(nmsPlayer);
     }
 }

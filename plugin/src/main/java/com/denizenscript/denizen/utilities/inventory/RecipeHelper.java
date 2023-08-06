@@ -3,10 +3,7 @@ package com.denizenscript.denizen.utilities.inventory;
 import org.bukkit.Material;
 import org.bukkit.inventory.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RecipeHelper {
 
@@ -78,11 +75,13 @@ public class RecipeHelper {
     }
 
     public static boolean tryRemoveSingle(List<ItemStack> items, List<RecipeChoice> choices) {
+        HashSet<Integer> used = new HashSet<>();
         mainLoop:
         for (RecipeChoice choice : choices) {
             for (int i = 0; i < items.size(); i++) {
                 ItemStack item = items.get(i);
-                if (choice.test(item)) {
+                if (choice.test(item) && !used.contains(i)) {
+                    used.add(i);
                     if (item.getAmount() == 1) {
                         items.remove(i);
                     }

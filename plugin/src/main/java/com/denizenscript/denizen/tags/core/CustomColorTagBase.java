@@ -40,7 +40,7 @@ public class CustomColorTagBase {
     public CustomColorTagBase() {
 
         // <--[tag]
-        // @attribute <&[<color>]>
+        // @attribute <&[<custom_color_name>]>
         // @returns ElementTag
         // @description
         // Returns a custom color value based on the common base color names defined in the Denizen config file.

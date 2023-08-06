@@ -35,8 +35,8 @@ public class AnvilBlockDamagedScriptEvent extends BukkitScriptEvent implements L
     // <context.inventory> returns the InventoryTag of the anvil's inventory.
     //
     // @Determine
-    // "STATE:" + ElementTag to set the anvil's new damage state.
-    // "BREAK:" + ElementTag(Boolean) to set weather the anvil will break.
+    // "STATE:<ElementTag>" to set the anvil's new damage state.
+    // "BREAK:<ElementTag(Boolean)>" to set weather the anvil will break.
     // -->
 
     public AnvilBlockDamagedScriptEvent() {

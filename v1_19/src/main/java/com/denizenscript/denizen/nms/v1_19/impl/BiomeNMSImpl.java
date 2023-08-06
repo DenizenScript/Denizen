@@ -14,20 +14,24 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.chunk.LevelChunk;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_19_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_19_R3.util.CraftLocation;
 import org.bukkit.entity.EntityType;
 
 import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class BiomeNMSImpl extends BiomeNMS {
 
-    public static final MethodHandle BIOME_CLIMATESETTINGS_CONSTRUCTOR = ReflectionHelper.getConstructor(Biome.class.getDeclaredClasses()[0], Biome.Precipitation.class, float.class, Biome.TemperatureModifier.class, float.class);
+    public static final MethodHandle BIOME_CLIMATESETTINGS_CONSTRUCTOR = ReflectionHelper.getConstructor(Biome.ClimateSettings.class, boolean.class, float.class, Biome.TemperatureModifier.class, float.class);
 
     public Holder<Biome> biomeHolder;
     public ServerLevel world;
@@ -39,28 +43,33 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     @Override
-    public DownfallType getDownfallType() {
-        Biome.Precipitation nmsType = biomeHolder.value().getPrecipitation();
-        switch (nmsType) {
-            case RAIN:
-                return DownfallType.RAIN;
-            case SNOW:
-                return DownfallType.SNOW;
-            case NONE:
-                return DownfallType.NONE;
-            default:
-                throw new UnsupportedOperationException();
-        }
+    public DownfallType getDownfallTypeAt(Location location) {
+        Biome.Precipitation precipitation = biomeHolder.value().getPrecipitationAt(CraftLocation.toBlockPosition(location));
+        return switch (precipitation) {
+            case RAIN -> DownfallType.RAIN;
+            case SNOW -> DownfallType.SNOW;
+            case NONE -> DownfallType.NONE;
+        };
     }
 
     @Override
     public float getHumidity() {
-        return biomeHolder.value().getDownfall();
+        return biomeHolder.value().climateSettings.downfall();
     }
 
     @Override
-    public float getTemperature() {
+    public float getBaseTemperature() {
         return biomeHolder.value().getBaseTemperature();
+    }
+
+    @Override
+    public float getTemperatureAt(Location location) {
+        return biomeHolder.value().getTemperature(CraftLocation.toBlockPosition(location));
+    }
+
+    @Override
+    public boolean hasDownfall() {
+        return biomeHolder.value().hasPrecipitation();
     }
 
     @Override
@@ -83,13 +92,26 @@ public class BiomeNMSImpl extends BiomeNMS {
         return getSpawnableEntities(MobCategory.WATER_CREATURE);
     }
 
-    public Object getClimate() {
-        return ReflectionHelper.getFieldValue(Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeHolder.value());
+    @Override
+    public int getFoliageColor() {
+        // Check if the biome already has a default color
+        if (biomeHolder.value().getFoliageColor() != 0) {
+            return biomeHolder.value().getFoliageColor();
+        }
+        // Based on net.minecraft.world.level.biome.Biome#getFoliageColorFromTexture()
+        float temperature = clampColor(getBaseTemperature());
+        float humidity = clampColor(getHumidity());
+        // Based on net.minecraft.world.level.FoliageColor#get()
+        humidity *= temperature;
+        int humidityValue = (int)((1.0f - humidity) * 255.0f);
+        int temperatureValue = (int)((1.0f - temperature) * 255.0f);
+        int index = temperatureValue << 8 | humidityValue;
+        return index >= 65536 ? 4764952 : getColor(index / 256, index % 256).asRGB();
     }
 
-    public void setClimate(Biome.Precipitation precipitation, float temperature, Biome.TemperatureModifier temperatureModifier, float downfall) {
+    public void setClimate(boolean hasPrecipitation, float temperature, Biome.TemperatureModifier temperatureModifier, float downfall) {
         try {
-            Object newClimate = BIOME_CLIMATESETTINGS_CONSTRUCTOR.invoke(precipitation, temperature, temperatureModifier, downfall);
+            Object newClimate = BIOME_CLIMATESETTINGS_CONSTRUCTOR.invoke(hasPrecipitation, temperature, temperatureModifier, downfall);
             ReflectionHelper.setFieldValue(Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeHolder.value(), newClimate);
         }
         catch (Throwable ex) {
@@ -99,31 +121,42 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public void setHumidity(float humidity) {
-        setClimate(biomeHolder.value().getPrecipitation(), getTemperature(), getTemperatureModifier(), humidity);
+        setClimate(hasDownfall(), getBaseTemperature(), getTemperatureModifier(), humidity);
     }
 
     @Override
-    public void setTemperature(float temperature) {
-        setClimate(biomeHolder.value().getPrecipitation(), temperature, getTemperatureModifier(), getHumidity());
+    public void setBaseTemperature(float baseTemperature) {
+        setClimate(hasDownfall(), baseTemperature, getTemperatureModifier(), getHumidity());
     }
 
     @Override
-    public void setPrecipitation(DownfallType type) {
-        Biome.Precipitation nmsType;
-        switch (type) {
-            case NONE:
-                nmsType = Biome.Precipitation.NONE;
-                break;
-            case RAIN:
-                nmsType = Biome.Precipitation.RAIN;
-                break;
-            case SNOW:
-                nmsType = Biome.Precipitation.SNOW;
-                break;
-            default:
-                throw new UnsupportedOperationException();
-        }
-        setClimate(nmsType, getTemperature(), getTemperatureModifier(), getHumidity());
+    public void setHasDownfall(boolean hasDownfall) {
+        setClimate(hasDownfall, getBaseTemperature(), getTemperatureModifier(), getHumidity());
+    }
+
+    @Override
+    public void setFoliageColor(int color) {
+        ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_foliageColorOverride, biomeHolder.value().getSpecialEffects(), Optional.of(color));
+    }
+
+    @Override
+    public int getFogColor() {
+        return biomeHolder.value().getFogColor();
+    }
+
+    @Override
+    public void setFogColor(int color) {
+        ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_fogColor, biomeHolder.value().getSpecialEffects(), color);
+    }
+
+    @Override
+    public int getWaterFogColor() {
+        return biomeHolder.value().getWaterFogColor();
+    }
+
+    @Override
+    public void setWaterFogColor(int color) {
+        ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_waterFogColor, biomeHolder.value().getSpecialEffects(), color);
     }
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {
@@ -167,7 +200,6 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     public Biome.TemperatureModifier getTemperatureModifier() {
-        Object climate = getClimate();
-        return ReflectionHelper.getFieldValue(climate.getClass(), ReflectionMappingsInfo.BiomeClimateSettings_temperatureModifier, climate);
+        return biomeHolder.value().climateSettings.temperatureModifier();
     }
 }

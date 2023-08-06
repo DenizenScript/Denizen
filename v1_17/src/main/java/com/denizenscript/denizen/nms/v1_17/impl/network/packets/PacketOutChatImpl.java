@@ -12,7 +12,7 @@ import net.minecraft.network.protocol.game.ClientboundChatPacket;
 
 import java.lang.reflect.Field;
 
-public class PacketOutChatImpl implements PacketOutChat {
+public class PacketOutChatImpl extends PacketOutChat {
 
     private ClientboundChatPacket internal;
     private String message;

@@ -156,7 +156,8 @@ public class DenizenMapManager {
         int mapId = map.getId();
         DenizenMapRenderer dmr;
         if (!mapRenderers.containsKey(mapId)) {
-            dmr = new DenizenMapRenderer(map.getRenderers(), false, false);
+            boolean contextual = map.isTrackingPosition() || map.isUnlimitedTracking();
+            dmr = new DenizenMapRenderer(map.getRenderers(), false, contextual);
             setMap(map, dmr);
         }
         else {

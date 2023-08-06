@@ -1,73 +1,41 @@
 package com.denizenscript.denizen.objects.properties.trade;
 
 import com.denizenscript.denizen.objects.TradeTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 
-public class TradeUses implements Property {
+public class TradeUses extends TradeProperty<ElementTag> {
 
-    public static boolean describes(ObjectTag recipe) {
-        return recipe instanceof TradeTag;
+    // <--[property]
+    // @object TradeTag
+    // @name uses
+    // @input ElementTag(Number)
+    // @description
+    // Controls the amount of times the trade has been used.
+    // -->
+
+    public static boolean describes(TradeTag recipe) {
+        return true;
     }
 
-    public static TradeUses getFrom(ObjectTag recipe) {
-        if (!describes(recipe)) {
-            return null;
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getRecipe().getUses());
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag val, Mechanism mechanism) {
+        if (mechanism.requireInteger()) {
+            getRecipe().setUses(mechanism.getValue().asInt());
         }
-        return new TradeUses((TradeTag) recipe);
     }
 
-    public static final String[] handledMechs = new String[] {
-            "uses"
-    };
-
-    private TradeTag recipe;
-
-    public TradeUses(TradeTag recipe) {
-        this.recipe = recipe;
-    }
-
-    public String getPropertyString() {
-        if (recipe.getRecipe() == null) {
-            return null;
-        }
-        return String.valueOf(recipe.getRecipe().getUses());
-    }
-
+    @Override
     public String getPropertyId() {
         return "uses";
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <TradeTag.uses>
-        // @returns ElementTag(Number)
-        // @mechanism TradeTag.uses
-        // @description
-        // Returns how many times the trade has been used.
-        // -->
-        PropertyParser.registerTag(TradeUses.class, ElementTag.class, "uses", (attribute, recipe) -> {
-            return new ElementTag(recipe.recipe.getRecipe().getUses());
-        });
-    }
-
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object TradeTag
-        // @name uses
-        // @input ElementTag(Number)
-        // @description
-        // Sets the amount of times the trade has been used.
-        // @tags
-        // <TradeTag.uses>
-        // -->
-        if (mechanism.matches("uses") && mechanism.requireInteger()) {
-            recipe.getRecipe().setUses(mechanism.getValue().asInt());
-        }
+        autoRegister("uses", TradeUses.class, ElementTag.class, false);
     }
 }

@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.ColorTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
@@ -59,6 +59,9 @@ public class FormattedTextHelper {
     }
 
     public static boolean hasRootFormat(BaseComponent component) {
+        if (component == null) {
+            return false;
+        }
         if (component.hasFormatting()) {
             return true;
         }
@@ -87,7 +90,9 @@ public class FormattedTextHelper {
             builder.append(RESET);
         }
         for (BaseComponent component : components) {
-            builder.append(stringify(component));
+            if (component != null) {
+                builder.append(stringify(component));
+            }
         }
         String output = builder.toString();
         while (output.endsWith(RESET)) {
@@ -145,7 +150,8 @@ public class FormattedTextHelper {
         if (component.isObfuscated()) {
             builder.append(ChatColor.MAGIC);
         }
-        if (component.getFont() != null) {
+        boolean hasFont = component.getFontRaw() != null;
+        if (hasFont) {
             builder.append(ChatColor.COLOR_CHAR).append("[font=").append(component.getFont()).append("]");
         }
         boolean hasInsertion = component.getInsertion() != null;
@@ -201,6 +207,9 @@ public class FormattedTextHelper {
         if (hasInsertion) {
             builder.append(ChatColor.COLOR_CHAR + "[/insertion]");
         }
+        if (hasFont) {
+            builder.append(ChatColor.COLOR_CHAR + "[reset=font]");
+        }
         builder.append(RESET);
         String output = builder.toString();
         return cleanRedundantCodes(output);
@@ -208,13 +217,23 @@ public class FormattedTextHelper {
 
     public static final String RESET = ChatColor.RESET.toString(), POSSIBLE_RESET_PREFIX = RESET + ChatColor.COLOR_CHAR;
 
-    public static TextComponent copyFormatToNewText(TextComponent last) {
+    private static Boolean procBool(Boolean input, boolean optimize) {
+        if (input == null) {
+            return null;
+        }
+        if (optimize) {
+            return input ? true : null;
+        }
+        return input;
+    }
+
+    public static TextComponent copyFormatToNewText(TextComponent last, boolean optimize) {
         TextComponent toRet = new TextComponent();
-        toRet.setObfuscated(last.isObfuscatedRaw());
-        toRet.setBold(last.isBoldRaw());
-        toRet.setStrikethrough(last.isStrikethroughRaw());
-        toRet.setUnderlined(last.isUnderlinedRaw());
-        toRet.setItalic(last.isItalicRaw());
+        toRet.setObfuscated(procBool(last.isObfuscatedRaw(), optimize));
+        toRet.setBold(procBool(last.isBoldRaw(), optimize));
+        toRet.setStrikethrough(procBool(last.isStrikethroughRaw(), optimize));
+        toRet.setUnderlined(procBool(last.isUnderlinedRaw(), optimize));
+        toRet.setItalic(procBool(last.isItalicRaw(), optimize));
         toRet.setColor(last.getColorRaw());
         return toRet;
     }
@@ -382,7 +401,7 @@ public class FormattedTextHelper {
                     if (!nextText.getText().isEmpty()) {
                         root.addExtra(nextText);
                     }
-                    nextText = copyFormatToNewText(nextText);
+                    nextText = copyFormatToNewText(nextText, false);
                     if (c == 'k' || c == 'K') {
                         nextText.setObfuscated(true);
                     }
@@ -415,7 +434,7 @@ public class FormattedTextHelper {
             return null;
         }
         try {
-            return parseInternal(str, baseColor, cleanBase);
+            return parseInternal(str, baseColor, cleanBase, false);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -423,7 +442,7 @@ public class FormattedTextHelper {
         return new BaseComponent[]{new TextComponent(str)};
     }
 
-    public static BaseComponent[] parseInternal(String str, ChatColor baseColor, boolean cleanBase) {
+    public static BaseComponent[] parseInternal(String str, ChatColor baseColor, boolean cleanBase, boolean optimize) {
         str = CoreUtilities.clearNBSPs(str);
         int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
         if (firstChar == -1) {
@@ -448,16 +467,19 @@ public class FormattedTextHelper {
                 List<String> innardParts = CoreUtilities.split(translatable, ';');
                 component.setTranslate(unescape(innardParts.get(0)));
                 for (int i = 1; i < innardParts.size(); i++) {
-                    for (BaseComponent subComponent : parseInternal(unescape(innardParts.get(i)), baseColor, false)) {
+                    for (BaseComponent subComponent : parseInternal(unescape(innardParts.get(i)), baseColor, false, optimize)) {
                         component.addWith(subComponent);
                     }
                 }
                 return new BaseComponent[] { component };
             }
         }
+        if (!optimize) {
+            optimize = str.contains(ChatColor.COLOR_CHAR + "[optimize=true]");
+        }
         TextComponent root = new TextComponent();
         TextComponent base = new TextComponent();
-        if (cleanBase) {
+        if (cleanBase && !optimize) {
             base.setBold(false);
             base.setItalic(false);
             base.setStrikethrough(false);
@@ -497,13 +519,13 @@ public class FormattedTextHelper {
                         nextText.setText(nextText.getText() + str.substring(started, i));
                         base.addExtra(nextText);
                         lastText = nextText;
-                        nextText = copyFormatToNewText(lastText);
+                        nextText = copyFormatToNewText(lastText, optimize);
                         nextText.setText("");
                         if (innardType.equals("score") && innardParts.size() == 2) {
                             ScoreComponent component = new ScoreComponent(unescape(innardBase.get(1)), unescape(innardParts.get(0)), unescape(innardParts.get(1)));
                             lastText.addExtra(component);
                         }
-                        else if (innardType.equals("keybind") && Utilities.matchesNamespacedKey(innardBase.get(1))) {
+                        else if (innardType.equals("keybind") && Utilities.matchesNamespacedKeyButCaseInsensitive(innardBase.get(1))) {
                             KeybindComponent component = new KeybindComponent();
                             component.setKeybind(unescape(innardBase.get(1)));
                             lastText.addExtra(component);
@@ -516,7 +538,7 @@ public class FormattedTextHelper {
                             TranslatableComponent component = new TranslatableComponent();
                             component.setTranslate(unescape(innardBase.get(1)));
                             for (String extra : innardParts) {
-                                for (BaseComponent subComponent : parseInternal(unescape(extra), baseColor, false)) {
+                                for (BaseComponent subComponent : parseInternal(unescape(extra), baseColor, false, optimize)) {
                                     component.addWith(subComponent);
                                 }
                             }
@@ -530,7 +552,7 @@ public class FormattedTextHelper {
                             TextComponent clickableText = new TextComponent();
                             ClickEvent.Action action = ElementTag.asEnum(ClickEvent.Action.class, innardBase.get(1));
                             clickableText.setClickEvent(new ClickEvent(action == null ? ClickEvent.Action.SUGGEST_COMMAND : action, unescape(innardParts.get(0))));
-                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false, optimize)) {
                                 clickableText.addExtra(subComponent);
                             }
                             lastText.addExtra(clickableText);
@@ -546,7 +568,7 @@ public class FormattedTextHelper {
                             if (HoverFormatHelper.processHoverInput(action == null ? HoverEvent.Action.SHOW_TEXT : action, hoverableText, innardParts.get(0))) {
                                 continue;
                             }
-                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false, optimize)) {
                                 hoverableText.addExtra(subComponent);
                             }
                             lastText.addExtra(hoverableText);
@@ -563,7 +585,7 @@ public class FormattedTextHelper {
                             }
                             TextComponent insertableText = new TextComponent();
                             insertableText.setInsertion(unescape(innardBase.get(1)));
-                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                            for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false, optimize)) {
                                 insertableText.addExtra(subComponent);
                             }
                             lastText.addExtra(insertableText);
@@ -615,7 +637,7 @@ public class FormattedTextHelper {
                                 else {
                                     TextComponent colorText = new TextComponent();
                                     colorText.setColor(color);
-                                    for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), color, false)) {
+                                    for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), color, false, optimize)) {
                                         colorText.addExtra(subComponent);
                                     }
                                     lastText.addExtra(colorText);
@@ -639,7 +661,7 @@ public class FormattedTextHelper {
                                     endIndex = str.length();
                                 }
                                 String gradientText = BukkitElementExtensions.doGradient(str.substring(endBracket + 1, endIndex), fromColor, toColor, styleEnum);
-                                for (BaseComponent subComponent : parseInternal(gradientText, baseColor, false)) {
+                                for (BaseComponent subComponent : parseInternal(gradientText, baseColor, false, optimize)) {
                                     lastText.addExtra(subComponent);
                                 }
                                 endBracket = endIndex - 1;
@@ -653,12 +675,15 @@ public class FormattedTextHelper {
                             else {
                                 TextComponent fontText = new TextComponent();
                                 fontText.setFont(innardBase.get(1));
-                                for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false)) {
+                                for (BaseComponent subComponent : parseInternal(str.substring(endBracket + 1, endIndex), baseColor, false, optimize)) {
                                     fontText.addExtra(subComponent);
                                 }
                                 lastText.addExtra(fontText);
                                 endBracket = endIndex + "&[reset=font".length();
                             }
+                        }
+                        else if (innardType.equals("optimize")) {
+                            // Ignore
                         }
                         else {
                             if (CoreConfiguration.debugVerbose) {
@@ -722,7 +747,7 @@ public class FormattedTextHelper {
                     if (!nextText.getText().isEmpty()) {
                         base.addExtra(nextText);
                     }
-                    nextText = copyFormatToNewText(nextText);
+                    nextText = copyFormatToNewText(nextText, optimize);
                     if (code == 'k' || code == 'K') {
                         nextText.setObfuscated(true);
                     }
@@ -768,7 +793,7 @@ public class FormattedTextHelper {
         if (!nextText.getText().isEmpty()) {
             base.addExtra(nextText);
         }
-        return new BaseComponent[] { cleanBase ? root : base };
+        return new BaseComponent[] { cleanBase && !optimize ? root : base };
     }
 
     public static int indexOfLastColorBlockStart(String text) {

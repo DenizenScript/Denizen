@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -21,7 +19,7 @@ public class EntityCharged implements Property {
         Entity entity = ((EntityTag) object).getBukkitEntity();
         return entity instanceof WitherSkull
                 || entity instanceof Vex
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && entity instanceof Guardian);
+                || entity instanceof Guardian;
     }
 
     public static EntityCharged getFrom(ObjectTag entity) {
@@ -33,7 +31,7 @@ public class EntityCharged implements Property {
         }
     }
 
-    private EntityCharged(EntityTag entity) {
+    public EntityCharged(EntityTag entity) {
         this.entity = entity;
     }
 
@@ -107,7 +105,7 @@ public class EntityCharged implements Property {
     }
 
     public boolean isGuardian() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_17) && entity.getBukkitEntity() instanceof Guardian;
+        return entity.getBukkitEntity() instanceof Guardian;
     }
 
     public WitherSkull getWitherSkull() {

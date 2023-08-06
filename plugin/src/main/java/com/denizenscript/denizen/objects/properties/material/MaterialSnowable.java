@@ -29,7 +29,7 @@ public class MaterialSnowable implements Property {
             "snowy"
     };
 
-    private MaterialSnowable(MaterialTag _material) {
+    public MaterialSnowable(MaterialTag _material) {
         material = _material;
     }
 

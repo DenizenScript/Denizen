@@ -27,7 +27,7 @@ public class EntityPatrolLeader implements Property {
             "is_patrol_leader"
     };
 
-    private EntityPatrolLeader(EntityTag entity) {
+    public EntityPatrolLeader(EntityTag entity) {
         this.entity = entity;
     }
 

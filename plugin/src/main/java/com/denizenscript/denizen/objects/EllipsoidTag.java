@@ -59,16 +59,6 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     //    OBJECT FETCHER
     ////////////////
 
-    @Deprecated
-    public static EllipsoidTag valueOf(String string) {
-        return valueOf(string, null);
-    }
-
-    /**
-     * Gets an Ellipsoid Object from a string form.
-     *
-     * @param string the string
-     */
     @Fetchable("ellipsoid")
     public static EllipsoidTag valueOf(String string, TagContext context) {
         if (string.startsWith("ellipsoid@")) {

@@ -95,8 +95,8 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag && ((ElementTag) determinationObj).isDouble()) {
-            event.setDamage(((ElementTag) determinationObj).asDouble());
+        if (determinationObj instanceof ElementTag element && element.isDouble()) {
+            event.setDamage(element.asDouble());
             return true;
         }
         return super.applyDetermination(path, determinationObj);
@@ -118,7 +118,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "entity": return entity.getDenizenEntity();
+            case "entity": return entity.getDenizenObject();
             case "damage": return new ElementTag(event.getDamage());
             case "final_damage": return final_damage;
             case "cause": return new ElementTag(event.getCause());

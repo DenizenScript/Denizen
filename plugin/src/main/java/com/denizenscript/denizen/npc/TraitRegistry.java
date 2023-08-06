@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.npc;
 
-import com.denizenscript.denizen.npc.speech.DenizenChat;
 import com.denizenscript.denizen.npc.traits.*;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -25,8 +24,5 @@ public class TraitRegistry {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SleepingTrait.class).withName("sleeping"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SneakingTrait.class).withName("sneaking"));
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TriggerTrait.class).withName("triggers"));
-
-        // Register Speech AI
-        CitizensAPI.getSpeechFactory().register(DenizenChat.class, "denizen_chat");
     }
 }
