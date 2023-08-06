@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
@@ -2084,9 +2085,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns whether the player is currently sneaking.
         // -->
-        registerOnlineOnlyTag(ElementTag.class, "is_sneaking", (attribute, object) -> {
-            return new ElementTag(object.getPlayerEntity().isSneaking());
-        });
+        if (!Denizen.supportsPaper || NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
+            registerOnlineOnlyTag(ElementTag.class, "is_sneaking", (attribute, object) -> {
+                return new ElementTag(object.getPlayerEntity().isSneaking());
+            });
+        }
 
         // <--[tag]
         // @attribute <PlayerTag.is_sprinting>

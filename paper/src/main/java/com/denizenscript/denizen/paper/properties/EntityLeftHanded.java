@@ -14,7 +14,7 @@ public class EntityLeftHanded extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @plugin Paper
     // @description
-    // Whether the mob is left-handed. Mobs have a rare chance to spawn left-handed.
+    // Whether a mob is left-handed. Mobs have a rare chance of spawning left-handed.
     // -->
 
     public static boolean describes(EntityTag entity) {

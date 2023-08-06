@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizen.npc.traits.*;
 import com.denizenscript.denizen.scripts.commands.npc.EngageCommand;
@@ -772,12 +774,14 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC is currently sneaking. Only works for player-type NPCs.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "is_sneaking", (attribute, object) -> {
-            if (!object.isSpawned() && object.getEntity() instanceof Player) {
-                return null;
-            }
-            return new ElementTag(((Player) object.getEntity()).isSneaking());
-        });
+        if (!Denizen.supportsPaper || NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
+            tagProcessor.registerTag(ElementTag.class, "is_sneaking", (attribute, object) -> {
+                if (!object.isSpawned() && object.getEntity() instanceof Player) {
+                    return null;
+                }
+                return new ElementTag(((Player) object.getEntity()).isSneaking());
+            });
+        }
 
         // <--[tag]
         // @attribute <NPCTag.engaged[(<player>)]>
