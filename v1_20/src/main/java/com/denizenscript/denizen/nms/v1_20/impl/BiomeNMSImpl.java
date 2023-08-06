@@ -136,12 +136,27 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public void setFoliageColor(int color) {
-        try {
-            ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_foliageColorOverride, biomeHolder.value().getSpecialEffects(), Optional.of(color));
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
+        ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_foliageColorOverride, biomeHolder.value().getSpecialEffects(), Optional.of(color));
+    }
+
+    @Override
+    public int getFogColor() {
+        return biomeHolder.value().getFogColor();
+    }
+
+    @Override
+    public void setFogColor(int color) {
+        ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_fogColor, biomeHolder.value().getSpecialEffects(), color);
+    }
+
+    @Override
+    public int getWaterFogColor() {
+        return biomeHolder.value().getWaterFogColor();
+    }
+
+    @Override
+    public void setWaterFogColor(int color) {
+        ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_waterFogColor, biomeHolder.value().getSpecialEffects(), color);
     }
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {
