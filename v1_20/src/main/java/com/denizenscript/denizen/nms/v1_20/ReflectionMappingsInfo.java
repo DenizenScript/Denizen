@@ -64,6 +64,8 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.world.level.biome.BiomeSpecialEffects
     public static String BiomeSpecialEffects_foliageColorOverride = "f";
+    public static String BiomeSpecialEffects_fogColor = "b";
+    public static String BiomeSpecialEffects_waterFogColor = "d";
 
     // net.minecraft.network.Connection
     public static String Connection_receiving = "k";

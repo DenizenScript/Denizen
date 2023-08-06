@@ -85,6 +85,22 @@ public abstract class BiomeNMS {
 
     public abstract void setFoliageColor(int color);
 
+    public int getFogColor() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setFogColor(int color) {
+        throw new UnsupportedOperationException();
+    }
+
+    public int getWaterFogColor() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setWaterFogColor(int color) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract void setTo(Block block);
 
     public ColorTag getColor(int x, int y) {

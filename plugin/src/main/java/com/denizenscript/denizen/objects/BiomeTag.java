@@ -341,6 +341,68 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
                 return new ElementTag(object.biome.hasDownfall());
             });
 
+            // <--[tag]
+            // @attribute <BiomeTag.fog_color>
+            // @returns ColorTag
+            // @mechanism BiomeTag.fog_color
+            // @description
+            // Returns the biome's fog color, which is visible when outside water (see also <@link tag BiomeTag.water_fog_color>).
+            // @example
+            // # Sends the player a message in their current biome's fog color.
+            // - narrate "You are currently seeing fog that looks like <&color[<player.location.biome.fog_color>]>this!"
+            // -->
+            tagProcessor.registerTag(ColorTag.class, "fog_color", (attribute, object) -> {
+                return ColorTag.fromRGB(object.biome.getFogColor());
+            });
+
+            // <--[tag]
+            // @attribute <BiomeTag.water_fog_color>
+            // @returns ColorTag
+            // @mechanism BiomeTag.water_fog_color
+            // @description
+            // Returns the biome's water fog color, which is visible when underwater (see also <@link tag BiomeTag.fog_color>).
+            // @example
+            // # Sends the player a message in their current biome's water fog color.
+            // - narrate "If you are underwater, everything looks like <&color[<player.location.biome.water_fog_color>]>this!"
+            // -->
+            tagProcessor.registerTag(ColorTag.class, "water_fog_color", (attribute, object) -> {
+                return ColorTag.fromRGB(object.biome.getWaterFogColor());
+            });
+
+            // <--[mechanism]
+            // @object BiomeTag
+            // @name fog_color
+            // @input ColorTag
+            // @description
+            // Sets the biome's fog color, which is visible when outside water (see also <@link mechanism BiomeTag.water_fog_color>).
+            // @tags
+            // <BiomeTag.fog_color>
+            // @example
+            // # Makes the plains biome's fog color red permanently, using a server start event to keep it applied.
+            // on server start:
+            // - adjust <biome[plains]> fog_color:red
+            // -->
+            tagProcessor.registerMechanism("fog_color", false, ColorTag.class, (object, mechanism, input) -> {
+                object.biome.setFogColor(input.asRGB());
+            });
+
+            // <--[mechanism]
+            // @object BiomeTag
+            // @name water_fog_color
+            // @input ColorTag
+            // @description
+            // Sets the biome's water fog color, which is visible when underwater (see also <@link mechanism BiomeTag.fog_color>).
+            // @tags
+            // <BiomeTag.water_fog_color>
+            // @example
+            // # Makes the plains biome's water fog color fuchsia permanently, using a server start event to keep it applied.
+            // on server start:
+            // - adjust <biome[plains]> water_fog_color:fuchsia
+            // -->
+            tagProcessor.registerMechanism("water_fog_color", false, ColorTag.class, (object, mechanism, input) -> {
+                object.biome.setWaterFogColor(input.asRGB());
+            });
+
             // <--[mechanism]
             // @object BiomeTag
             // @name has_downfall
