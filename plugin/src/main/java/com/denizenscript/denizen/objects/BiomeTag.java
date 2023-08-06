@@ -371,25 +371,6 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
 
             // <--[mechanism]
             // @object BiomeTag
-            // @name has_downfall
-            // @input ElementTag(Boolean)
-            // @description
-            // Sets whether the biome has downfall (rain/snow).
-            // @tags
-            // <BiomeTag.has_downfall>
-            // @example
-            // # Disables downfall for the plains biome permanently, using a server start event to keep it applied.
-            // on server start:
-            // - adjust <biome[plains]> has_downfall:false
-            // -->
-            tagProcessor.registerMechanism("has_downfall", false, ElementTag.class, (object, mechanism, input) -> {
-                if (mechanism.requireBoolean()) {
-                    object.biome.setHasDownfall(input.asBoolean());
-                }
-            });
-
-            // <--[mechanism]
-            // @object BiomeTag
             // @name fog_color
             // @input ColorTag
             // @description
@@ -420,6 +401,25 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             // -->
             tagProcessor.registerMechanism("water_fog_color", false, ColorTag.class, (object, mechanism, input) -> {
                 object.biome.setWaterFogColor(input.asRGB());
+            });
+
+            // <--[mechanism]
+            // @object BiomeTag
+            // @name has_downfall
+            // @input ElementTag(Boolean)
+            // @description
+            // Sets whether the biome has downfall (rain/snow).
+            // @tags
+            // <BiomeTag.has_downfall>
+            // @example
+            // # Disables downfall for the plains biome permanently, using a server start event to keep it applied.
+            // on server start:
+            // - adjust <biome[plains]> has_downfall:false
+            // -->
+            tagProcessor.registerMechanism("has_downfall", false, ElementTag.class, (object, mechanism, input) -> {
+                if (mechanism.requireBoolean()) {
+                    object.biome.setHasDownfall(input.asBoolean());
+                }
             });
         }
 
