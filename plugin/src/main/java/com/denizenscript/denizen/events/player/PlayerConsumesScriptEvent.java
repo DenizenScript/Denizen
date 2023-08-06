@@ -3,6 +3,7 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
@@ -97,6 +98,9 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     public ObjectTag getContext(String name) {
         if (name.equals("item")) {
             return item;
+        }
+        if (name.equals("hand")) {
+            return new ElementTag(event.getHand());
         }
         return super.getContext(name);
     }
