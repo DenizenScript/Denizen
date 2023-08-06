@@ -1,13 +1,14 @@
 package com.denizenscript.denizen.events.player;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.event.EventHandler;
@@ -96,13 +97,17 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("item")) {
-            return item;
+        switch (name) {
+            case "item":
+                return item;
+            case "hand":
+                if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
+                    return super.getContext(name);
+                }
+                return new ElementTag(event.getHand());
+            default:
+                return super.getContext(name);
         }
-        if (name.equals("hand")) {
-            return new ElementTag(event.getHand());
-        }
-        return super.getContext(name);
     }
 
     @EventHandler
