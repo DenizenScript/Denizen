@@ -7,14 +7,13 @@ import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
+import com.denizenscript.denizen.objects.properties.material.MaterialAttachmentFace;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.objects.properties.material.MaterialDistance;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
-import com.denizenscript.denizen.objects.properties.material.MaterialAttachmentFace;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
-import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizen.utilities.world.PathFinder;
@@ -33,6 +32,7 @@ import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.SimplexNoise;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -4248,6 +4248,69 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             tagProcessor.registerTag(ElementTag.class, "downfall_type", (attribute, object) -> {
                 BiomeNMS biome = object.getBiomeForTag(attribute);
                 return biome != null ? new ElementTag(biome.getDownfallTypeAt(object)) : null;
+            });
+        }
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+
+            // <--[tag]
+            // @attribute <LocationTag.sherds>
+            // @returns MapTag
+            // @mechanism LocationTag.sherds
+            // @description
+            // Returns a decorated pot's sherds as a map of a side to a MaterialTag of the sherd.
+            // The map will always contain every side, with a brick being the default value for when nothing is set.
+            // Valid sides are: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/DecoratedPot.Side.html>.
+            // Valid sherd materials are either a brick or pottery sherds.
+            // @example
+            // # Tells the player if they're looking at a pot that has any sherds.
+            // - if <player.cursor_on.sherds.values.contains_match[!brick].if_null[false]>:
+            //   - narrate "That pot has sherds in it! You should check!"
+            // - else:
+            //   - narrate "Try looking somewhere else."
+            // -->
+            tagProcessor.registerTag(MapTag.class, "sherds", (attribute, object) -> {
+                if (!(object.getBlockStateForTag(attribute) instanceof DecoratedPot decoratedPot)) {
+                    return null;
+                }
+                MapTag sherdsMap = new MapTag();
+                for (Map.Entry<DecoratedPot.Side, Material> entry : decoratedPot.getSherds().entrySet()) {
+                    sherdsMap.putObject(entry.getKey().name(), new MaterialTag(entry.getValue()));
+                }
+                return sherdsMap;
+            });
+
+            // <--[mechanism]
+            // @object LocationTag
+            // @name sherds
+            // @input MapTag
+            // @description
+            // Sets a decorated pot's sherds, as a map of sides to <@link objecttype MaterialTag>s of the sherds.
+            // You only need to specify the sides you want to set, and the default value (for resetting a side) is a brick.
+            // Valid sides are: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/DecoratedPot.Side.html>.
+            // Valid materials are either a brick or pottery sherds.
+            // @tags
+            // <LocationTag.sherds>
+            // -->
+            tagProcessor.registerMechanism("sherds", false, MapTag.class, (object, mechanism, input) -> {
+                if (!(object.getBlockState() instanceof DecoratedPot decoratedPot)) {
+                    mechanism.echoError("Mechanism 'LocationTag.sherds' is only valid for decorated pots.");
+                    return;
+                }
+                for (Map.Entry<StringHolder, ObjectTag> entry : input.entrySet()) {
+                    DecoratedPot.Side side = ElementTag.asEnum(DecoratedPot.Side.class, entry.getKey().low);
+                    if (side == null) {
+                        mechanism.echoError("Invalid decorated pot side specified: " + entry.getKey());
+                        continue;
+                    }
+                    MaterialTag sherd = entry.getValue().asType(MaterialTag.class, mechanism.context);
+                    if (sherd == null || !Tag.ITEMS_DECORATED_POT_INGREDIENTS.isTagged(sherd.getMaterial())) {
+                        mechanism.echoError("Invalid sherd material specified: " + entry.getValue());
+                        continue;
+                    }
+                    decoratedPot.setSherd(side, sherd.getMaterial());
+                }
+                decoratedPot.update();
             });
         }
 
