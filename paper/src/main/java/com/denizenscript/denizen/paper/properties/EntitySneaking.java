@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import net.citizensnpcs.api.npc.NPC;
 
 public class EntitySneaking extends EntityProperty<ElementTag> {
 
@@ -39,12 +40,13 @@ public class EntitySneaking extends EntityProperty<ElementTag> {
             boolean sneaking = value.asBoolean();
             getEntity().setSneaking(sneaking);
             if (object.isCitizensNPC()) {
-                SneakingTrait sneakingTrait = object.getDenizenNPC().getCitizen().getOrAddTrait(SneakingTrait.class);
+                NPC npc = object.getDenizenNPC().getCitizen();
                 if (sneaking) {
-                    sneakingTrait.sneak();
+                    npc.getOrAddTrait(SneakingTrait.class).sneak();
                 }
-                else {
-                    sneakingTrait.stand();
+                else if (npc.hasTrait(SneakingTrait.class)) {
+                    npc.getTraitNullable(SneakingTrait.class).stand();
+                    npc.removeTrait(SneakingTrait.class);
                 }
             }
         }
