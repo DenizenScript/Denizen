@@ -4291,6 +4291,12 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // Valid materials are either a brick or any pottery sherds.
             // @tags
             // <LocationTag.sherds>
+            // @example
+            // # Sets a decorated pot's left side to a random sherd.
+            // - adjust <[potLocation]> sherds:[left=<server.vanilla_tagged_materials[decorated_pot_sherds].random>]
+            // @example
+            // # Clears a decorated pot's sherds.
+            // - adjust <[potLocation]> sherds:[left=brick;right=brick;front=brick;back=brick]
             // -->
             tagProcessor.registerMechanism("sherds", false, MapTag.class, (object, mechanism, input) -> {
                 if (!(object.getBlockState() instanceof DecoratedPot decoratedPot)) {
