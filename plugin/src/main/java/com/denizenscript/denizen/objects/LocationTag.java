@@ -4295,7 +4295,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // # Sets a decorated pot's left side to a random sherd.
             // - adjust <[potLocation]> sherds:[left=<server.vanilla_tagged_materials[decorated_pot_sherds].random>]
             // @example
-            // # Clears a decorated pot's sherds.
+            // # Removes a decorated pot's sherds.
             // - adjust <[potLocation]> sherds:[left=brick;right=brick;front=brick;back=brick]
             // -->
             tagProcessor.registerMechanism("sherds", false, MapTag.class, (object, mechanism, input) -> {
