@@ -4261,7 +4261,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // Returns a decorated pot's sherds as a map of sides to <@link objecttype MaterialTag>s of the sherds.
             // The map will always contain every side, with a brick being the default value for when a side has no sherd.
             // Valid sides are: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/DecoratedPot.Side.html>.
-            // Valid sherd materials are either a brick or any pottery sherds.
+            // Valid sherd materials are either a brick or any pottery sherd.
             // @example
             // # Tells the player if they're looking at a pot that has any sherds.
             // - if <player.cursor_on.sherds.values.contains_match[!brick].if_null[false]>:
@@ -4288,7 +4288,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // Sets a decorated pot's sherds, input is a map of sides to <@link objecttype MaterialTag>s of the sherds.
             // You only need to specify the sides you want to set, and the default value (for removing a side's sherd) is a brick.
             // Valid sides are: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/DecoratedPot.Side.html>.
-            // Valid materials are either a brick or any pottery sherds.
+            // Valid materials are either a brick or any pottery sherd.
             // @tags
             // <LocationTag.sherds>
             // @example
