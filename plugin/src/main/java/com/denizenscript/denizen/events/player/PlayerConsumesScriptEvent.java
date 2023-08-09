@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -34,6 +35,7 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.item> returns the ItemTag.
+    // <context.hand> returns an ElementTag of the hand being used to consume the item. Can be: MAIN_HAND, OFF_HAND. Requires a 1.19+ server.
     //
     // @Determine
     // ItemTag to change the item being consumed.
@@ -97,17 +99,11 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "item":
-                return item;
-            case "hand":
-                if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
-                    return super.getContext(name);
-                }
-                return new ElementTag(event.getHand());
-            default:
-                return super.getContext(name);
-        }
+        return switch (name) {
+            case "item" -> item;
+            case "hand" -> NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) ? new ElementTag(event.getHand()) : null;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
