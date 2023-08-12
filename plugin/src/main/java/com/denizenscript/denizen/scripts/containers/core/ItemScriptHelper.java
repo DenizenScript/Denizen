@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.MaterialTag;
@@ -238,27 +239,77 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.itemHelper.registerStonecuttingRecipe(internalId, group, item, items, exact);
     }
 
-    public static void registerSmithingRecipe(ItemScriptContainer container, ItemStack item, String baseItemString, String upgradeItemString, String internalId, String retain) {
-        boolean baseExact = true;
-        if (baseItemString.startsWith("material:")) {
-            baseExact = false;
-            baseItemString = baseItemString.substring("material:".length());
+    public static void registerSmithingRecipe(ItemScriptContainer container, ItemStack item, String templateString, String baseString, String additionString, String internalId, String retain) {
+        RecipeChoice template = null;
+        if (templateString != null) {
+            boolean templateExact = true;
+            if (templateString.startsWith("material:")) {
+                templateExact = false;
+                templateString = templateString.substring("material:".length());
+            }
+            ItemStack[] templateItems = textToItemArray(container, templateString, templateExact);
+            if (templateItems == null) {
+                return;
+            }
+            template = templateExact ? new RecipeChoice.ExactChoice(templateItems) : new RecipeChoice.MaterialChoice(Arrays.stream(templateItems).map(ItemStack::getType).toArray(Material[]::new));
         }
-        ItemStack[] baseItems = textToItemArray(container, baseItemString, baseExact);
+        boolean baseExact = true;
+        if (baseString.startsWith("material:")) {
+            baseExact = false;
+            baseString = baseString.substring("material:".length());
+        }
+        ItemStack[] baseItems = textToItemArray(container, baseString, baseExact);
         if (baseItems == null) {
             return;
         }
-        boolean upgradeExact = true;
-        if (upgradeItemString.startsWith("material:")) {
-            upgradeExact = false;
-            upgradeItemString = upgradeItemString.substring("material:".length());
+        RecipeChoice base = baseExact ? new RecipeChoice.ExactChoice(baseItems) : new RecipeChoice.MaterialChoice(Arrays.stream(baseItems).map(ItemStack::getType).toArray(Material[]::new));
+        boolean additionExact = true;
+        if (additionString.startsWith("material:")) {
+            additionExact = false;
+            additionString = additionString.substring("material:".length());
         }
-        ItemStack[] upgradeItems = textToItemArray(container, upgradeItemString, upgradeExact);
-        if (upgradeItems == null) {
+        ItemStack[] additionItems = textToItemArray(container, additionString, additionExact);
+        if (additionItems == null) {
             return;
         }
+        RecipeChoice addition = additionExact ? new RecipeChoice.ExactChoice(additionItems) : new RecipeChoice.MaterialChoice(Arrays.stream(additionItems).map(ItemStack::getType).toArray(Material[]::new));
         smithingRetain.put(internalId, retain == null ? new String[0] : CoreUtilities.split(CoreUtilities.toLowerCase(retain), '|').toArray(new String[0]));
-        NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, baseItems, baseExact, upgradeItems, upgradeExact);
+        NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, base, addition, template);
+    }
+
+    public static void registerSmithingTrimRecipe(ItemScriptContainer container, String templateString, String baseString, String additionString, String internalId, String retain) {
+        boolean templateExact = true;
+        if (templateString.startsWith("material:")) {
+            templateExact = false;
+            templateString = templateString.substring("material:".length());
+        }
+        ItemStack[] templateItems = textToItemArray(container, templateString, templateExact);
+        if (templateItems == null) {
+            return;
+        }
+        RecipeChoice template = templateExact ? new RecipeChoice.ExactChoice(templateItems) : new RecipeChoice.MaterialChoice(Arrays.stream(templateItems).map(ItemStack::getType).toArray(Material[]::new));
+        boolean baseExact = true;
+        if (baseString.startsWith("material:")) {
+            baseExact = false;
+            baseString = baseString.substring("material:".length());
+        }
+        ItemStack[] baseItems = textToItemArray(container, baseString, baseExact);
+        if (baseItems == null) {
+            return;
+        }
+        RecipeChoice base = baseExact ? new RecipeChoice.ExactChoice(baseItems) : new RecipeChoice.MaterialChoice(Arrays.stream(baseItems).map(ItemStack::getType).toArray(Material[]::new));
+        boolean additionExact = true;
+        if (additionString.startsWith("material:")) {
+            additionExact = false;
+            additionString = additionString.substring("material:".length());
+        }
+        ItemStack[] additionItems = textToItemArray(container, additionString, additionExact);
+        if (additionItems == null) {
+            return;
+        }
+        RecipeChoice addition = additionExact ? new RecipeChoice.ExactChoice(additionItems) : new RecipeChoice.MaterialChoice(Arrays.stream(additionItems).map(ItemStack::getType).toArray(Material[]::new));
+        smithingRetain.put(internalId, retain == null ? new String[0] : CoreUtilities.split(CoreUtilities.toLowerCase(retain), '|').toArray(new String[0]));
+        NMSHandler.itemHelper.registerSmithingTrimRecipe(internalId, template, base, addition);
     }
 
     public static void registerBrewingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String ingredientItemString, String internalId) {
@@ -337,7 +388,15 @@ public class ItemScriptHelper implements Listener {
                                 if (subSection.contains("retain")) {
                                     retain = getString.apply("retain");
                                 }
-                                registerSmithingRecipe(container, item, getString.apply("base"), getString.apply("upgrade"), internalId, retain);
+                                String template = null;
+                                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                                    template = getString.apply("template");
+                                }
+//                                if (subSection.contains("trim") && getString.apply("trim").equalsIgnoreCase("true")) {
+//                                    registerSmithingTrimRecipe(container, template, getString.apply("base"), getString.apply("upgrade"), internalId, retain);
+//                                    break;
+//                                }
+                                registerSmithingRecipe(container, item, template, getString.apply("base"), getString.apply("upgrade"), internalId, retain);
                                 break;
                             case "brewing":
                                 registerBrewingRecipe(container, item, getString.apply("input"), getString.apply("ingredient"), internalId);
@@ -629,6 +688,9 @@ public class ItemScriptHelper implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onItemSmithing(PrepareSmithingEvent event) {
         ItemStack inputItem = event.getInventory().getItem(0);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            inputItem = event.getInventory().getItem(1);
+        }
         Recipe recipe = event.getInventory().getRecipe();
         SmithingRecipe smithRecipe = (SmithingRecipe) recipe;
         if (smithRecipe == null || !(smithRecipe.getKey().getNamespace().equals("denizen"))) {
@@ -668,7 +730,7 @@ public class ItemScriptHelper implements Listener {
             ItemMeta newMeta = got.getItemMeta();
             for (String retainable : retain) {
                 switch (retainable) {
-                    case "display":
+                    case "display" -> {
                         if (originalMeta.hasDisplayName()) {
                             String originalName = NMSHandler.itemHelper.getDisplayName(new ItemTag(inputItem));
                             ItemScriptContainer origScript = getItemScriptContainer(inputItem);
@@ -677,14 +739,14 @@ public class ItemScriptHelper implements Listener {
                             }
                         }
                         newMeta = got.getItemMeta();
-                        break;
-                    case "enchantments":
+                    }
+                    case "enchantments" -> {
                         if (originalMeta.hasEnchants()) {
                             for (Map.Entry<Enchantment, Integer> enchant : originalMeta.getEnchants().entrySet()) {
                                 newMeta.addEnchant(enchant.getKey(), enchant.getValue(), true);
                             }
                         }
-                        break;
+                    }
                 }
             }
             got.setItemMeta(newMeta);

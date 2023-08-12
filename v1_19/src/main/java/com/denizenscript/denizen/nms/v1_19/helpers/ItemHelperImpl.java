@@ -168,12 +168,10 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact) {
-        ResourceLocation key = new ResourceLocation("denizen", keyName);
-        Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
-        Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
-        LegacyUpgradeRecipe recipe = new LegacyUpgradeRecipe(key, baseItemRecipe, upgradeItemRecipe, CraftItemStack.asNMSCopy(result)); // TODO: 1.19.4: smithing system was changed
-        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
+    public void registerSmithingRecipe(String keyName, ItemStack result, RecipeChoice baseItem, RecipeChoice upgradeItem, RecipeChoice template) {
+        NamespacedKey key = new NamespacedKey("denizen", keyName);
+        org.bukkit.inventory.SmithingRecipe recipe = new org.bukkit.inventory.SmithingRecipe(key, result, baseItem, upgradeItem);
+        Bukkit.addRecipe(recipe);
     }
 
     @Override

@@ -29,6 +29,10 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.BlastingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -51,9 +55,7 @@ import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftRecipe;
 import org.bukkit.craftbukkit.v1_18_R2.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_18_R2.util.CraftNamespacedKey;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.ShapedRecipe;
 
 import java.lang.reflect.Field;
@@ -166,12 +168,10 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact) {
-        ResourceLocation key = new ResourceLocation("denizen", keyName);
-        Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
-        Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
-        UpgradeRecipe recipe = new UpgradeRecipe(key, baseItemRecipe, upgradeItemRecipe, CraftItemStack.asNMSCopy(result));
-        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
+    public void registerSmithingRecipe(String keyName, ItemStack result, RecipeChoice baseItem, RecipeChoice upgradeItem, RecipeChoice template) {
+        NamespacedKey key = new NamespacedKey("denizen", keyName);
+        SmithingRecipe recipe = new SmithingRecipe(key, result, baseItem, upgradeItem);
+        Bukkit.addRecipe(recipe);
     }
 
     @Override

@@ -176,7 +176,9 @@ public class ItemScriptContainer extends ScriptContainer {
     //            input: ItemTag
     //        6:
     //            # Smithing recipes take one base item and one upgrade item.
+    //            # In versions 1.20 and up, smithing recipes take one template item, one base item, and one upgrade item.
     //            type: smithing
+    //            template: ItemTag
     //            base: ItemTag
     //            # Optionally, choose what values to retain, as a simple pipe-separated list of parts to retain.
     //            # If unspecified, no values will be retained.

@@ -29,6 +29,10 @@ public abstract class ItemHelper {
 
     public abstract void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact, String category);
 
+    public void registerSmithingTrimRecipe(String keyName, RecipeChoice baseItem, RecipeChoice upgradeItem, RecipeChoice templateItem) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact, String category);
 
     public abstract void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack[] item, boolean exact);
@@ -47,7 +51,7 @@ public abstract class ItemHelper {
 
     public abstract ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag);
 
-    public abstract void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact);
+    public abstract void registerSmithingRecipe(String keyName, ItemStack result, RecipeChoice baseItem, RecipeChoice upgradeItem, RecipeChoice template);
 
     public abstract void setInventoryItem(Inventory inventory, ItemStack item, int slot);
 
