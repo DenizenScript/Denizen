@@ -31,7 +31,7 @@ public class NPCBossBarCommand extends AbstractCommand {
     // @Syntax npcbossbar (remove) (color:<color>) (options:<option>|...) (range:<#>) (style:<style>) (title:<title>) (progress:<progress>) (view_permission:<permission>) (visible:<true/false>)
     // @Required 1
     // @Maximum 8
-    // @Short Controls an NPC's bossbar.
+    // @Short Controls or removes the linked NPC's bossbar.
     // @Group npc
     //
     // @Description
