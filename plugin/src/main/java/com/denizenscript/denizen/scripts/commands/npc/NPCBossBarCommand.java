@@ -41,6 +41,7 @@ public class NPCBossBarCommand extends AbstractCommand {
     // Placeholder API/Citizens placeholders are supported
     //
     // Optionally specify a range around the NPC where the bossbar is visible, and/or a permission required to view it.
+    // Input an empty view permission to remove it ('view_permission:').
     //
     // Valid colors: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarColor.html>.
     // Valid styles: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarStyle.html>.
