@@ -55,6 +55,7 @@ public class BukkitCommandRegistry {
         registerCommand(ActionCommand.class);
         registerCommand(AnchorCommand.class);
         registerCommand(AssignmentCommand.class);
+        registerCommand(NPCBossBarCommand.class);
         registerCommand(BreakCommand.class);
         registerCommand(CreateCommand.class);
         registerCommand(DespawnCommand.class);
