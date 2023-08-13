@@ -15,8 +15,10 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     // @name instrument
     // @input ElementTag
     // @description
-    // Sets the instrument of a goat horn.
-    // For a list of possible instruments, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/MusicInstrument.html>.
+    // A goat horn's instrument, if any.
+    // Goat horns will default to playing "ponder_goat_horn" when the instrument is unset, although this is effectively random and shouldn't be relied on.
+    // Valid instruments are: admire_goat_horn, call_goat_horn, dream_goat_horn, feel_goat_horn, ponder_goat_horn, seek_goat_horn, sing_goat_horn, yearn_goat_horn.
+    // For the mechanism: provide no input to unset the instrument.
     // @example
     // # This can narrate: "This horn has the ponder_goat_horn instrument!"
     // - narrate "This horn has the <player.item_in_hand.instrument> instrument!"
@@ -27,12 +29,12 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     // -->
 
     public static boolean describes(ItemTag item) {
-        return item.getBukkitMaterial() == Material.GOAT_HORN;
+        return item.getItemMeta() instanceof MusicInstrumentMeta;
     }
 
     @Override
     public ElementTag getPropertyValue() {
-        MusicInstrument instrument = getMusicInstrument();
+        MusicInstrument instrument = ((MusicInstrumentMeta) getItemMeta()).getInstrument();
         if (instrument != null) {
             return new ElementTag(Utilities.namespacedKeyToString(instrument.getKey()));
         }
@@ -40,13 +42,13 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
     }
 
     @Override
-    public void setPropertyValue(ElementTag param, Mechanism mechanism) {
-        MusicInstrument instrument = MusicInstrument.getByKey(Utilities.parseNamespacedKey(param.asString()));
-        if (instrument == null) {
-            mechanism.echoError("Invalid horn instrument: '" + param.asString() + "'! Instrument names should be like this: 'seek_goat_horn'.");
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        MusicInstrument instrument = value != null ? MusicInstrument.getByKey(Utilities.parseNamespacedKey(value.asString())) : null;
+        if (value != null && instrument == null) {
+            mechanism.echoError("Invalid instrument: " + value);
             return;
         }
-        setMusicInstrument(MusicInstrument.getByKey(Utilities.parseNamespacedKey(param.asString())));
+        editMeta(MusicInstrumentMeta.class, meta -> meta.setInstrument(instrument));
     }
 
     @Override
@@ -54,18 +56,7 @@ public class ItemInstrument extends ItemProperty<ElementTag> {
         return "instrument";
     }
 
-    public MusicInstrument getMusicInstrument() {
-        MusicInstrumentMeta itemMeta = (MusicInstrumentMeta) getItemMeta();
-        return itemMeta.getInstrument();
-    }
-
-    public void setMusicInstrument(MusicInstrument instrument) {
-        MusicInstrumentMeta itemMeta = (MusicInstrumentMeta) getItemMeta();
-        itemMeta.setInstrument(instrument);
-        setItemMeta(itemMeta);
-    }
-
     public static void register() {
-        autoRegister("instrument", ItemInstrument.class, ElementTag.class, false);
+        autoRegisterNullable("instrument", ItemInstrument.class, ElementTag.class, false);
     }
 }

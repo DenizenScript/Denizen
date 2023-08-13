@@ -45,10 +45,10 @@ public class SneakCommand extends AbstractCommand {
     // A fake sneak only affects the name plate, not the entity's pose.
     //
     // Note: using this command on a player will only show to other players. You cannot alter a player in their own view.
+    // Note that <@link property EntityTag.is_sneaking> is also available.
     //
     // @Tags
-    // <NPCTag.is_sneaking>
-    // <PlayerTag.is_sneaking>
+    // <EntityTag.is_sneaking>
     //
     // @Usage
     // Make the linked NPC start sneaking.

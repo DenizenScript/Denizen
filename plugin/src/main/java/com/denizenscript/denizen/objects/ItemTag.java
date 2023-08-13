@@ -126,7 +126,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         string = CoreUtilities.toLowerCase(string);
         try {
             if (ScriptRegistry.containsScript(string, ItemScriptContainer.class)) {
-                ItemScriptContainer isc = ScriptRegistry.getScriptContainerAs(string, ItemScriptContainer.class);
+                ItemScriptContainer isc = ScriptRegistry.getScriptContainer(string);
                 // TODO: If a script does not contain tags, get the clean reference here.
                 stack = isc.getItemFrom(context);
                 if (stack == null && (context == null || context.showErrors())) {
@@ -134,7 +134,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
                 }
             }
             else if (ScriptRegistry.containsScript(string, BookScriptContainer.class)) {
-                BookScriptContainer book = ScriptRegistry.getScriptContainerAs(string, BookScriptContainer.class);
+                BookScriptContainer book = ScriptRegistry.getScriptContainer(string);
                 stack = book.getBookFrom(context);
                 if (stack == null && (context == null || context.showErrors())) {
                     Debug.echoError("Book script '" + book.getName() + "' returned a null item.");
@@ -243,7 +243,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public void reapplyTracker(AbstractFlagTracker tracker) {
-        if (tracker instanceof MapTagFlagTracker && ((MapTagFlagTracker) tracker).map.map.isEmpty()) {
+        if (tracker instanceof MapTagFlagTracker && ((MapTagFlagTracker) tracker).map.isEmpty()) {
             setItemStack(CustomNBT.removeCustomNBT(getItemStack(), "flags", "Denizen"));
         }
         else {

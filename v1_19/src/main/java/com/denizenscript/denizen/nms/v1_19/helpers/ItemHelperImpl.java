@@ -338,7 +338,10 @@ public class ItemHelperImpl extends ItemHelper {
             tag.put("display", display);
         }
         if (lore == null || lore.isEmpty()) {
-            display.put("Lore", null);
+            display.remove("Lore");
+            if (display.isEmpty()) {
+                tag.remove("display");
+            }
         }
         else {
             ListTag tagList = new ListTag();

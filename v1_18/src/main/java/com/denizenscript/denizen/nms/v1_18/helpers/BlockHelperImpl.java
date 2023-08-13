@@ -192,14 +192,14 @@ public class BlockHelperImpl implements BlockHelper {
     }
 
     @Override
-    public String getPushReaction(Material mat) {
-        return getInternalMaterial(mat).getPushReaction().name();
+    public PistonPushReaction getPushReaction(Material mat) {
+        return PistonPushReaction.VALUES[getInternalMaterial(mat).getPushReaction().ordinal()];
     }
 
     @Override
-    public void setPushReaction(Material mat, String reaction) {
+    public void setPushReaction(Material mat, PistonPushReaction reaction) {
         try {
-            MATERIAL_PUSH_REACTION_SETTER.invoke(getInternalMaterial(mat), PushReaction.valueOf(reaction));
+            MATERIAL_PUSH_REACTION_SETTER.invoke(getInternalMaterial(mat), PushReaction.values()[reaction.ordinal()]);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -262,9 +262,9 @@ public class BlockHelperImpl implements BlockHelper {
     }
 
     @Override
-    public void ringBell(Bell block) {
-        org.bukkit.block.data.type.Bell bellData = (org.bukkit.block.data.type.Bell) block.getBlockData();
-        Direction face = Direction.byName(bellData.getFacing().name());
+    public void ringBell(Bell bell) {
+        org.bukkit.block.data.type.Bell bellData = (org.bukkit.block.data.type.Bell) bell.getBlockData();
+        Direction face = CraftBlock.blockFaceToNotch(bellData.getFacing());
         Direction dir = Direction.NORTH;
         switch (bellData.getAttachment()) {
             case DOUBLE_WALL:
@@ -280,7 +280,7 @@ public class BlockHelperImpl implements BlockHelper {
                 dir = face;
                 break;
         }
-        CraftBlock craftBlock = (CraftBlock) block.getBlock();
+        CraftBlock craftBlock = (CraftBlock) bell.getBlock();
         ((BellBlock) Blocks.BELL).attemptToRing(craftBlock.getCraftWorld().getHandle(), craftBlock.getPosition(), dir);
     }
 

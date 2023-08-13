@@ -177,6 +177,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityVillagerExperience.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVillagerLevel.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVisible.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityVisualFire.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityWidth.class, EntityTag.class);
         }
@@ -234,11 +235,15 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemSpawnerPlayerRange.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerRange.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerType.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(ItemTrim.class, ItemTag.class);
+        }
         PropertyParser.registerProperty(ItemUnbreakable.class, ItemTag.class);
 
         // register core MaterialTag properties
         PropertyParser.registerProperty(MaterialAge.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialAttached.class, MaterialTag.class);
+        PropertyParser.registerProperty(MaterialAttachmentFace.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialBlockType.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialBrewingStand.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialCampfire.class, MaterialTag.class);
@@ -263,7 +268,6 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialSides.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialSnowable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialSwitchable.class, MaterialTag.class);
-        PropertyParser.registerProperty(MaterialSwitchFace.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialUnstable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialWaterlogged.class, MaterialTag.class);
 

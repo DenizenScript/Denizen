@@ -36,7 +36,7 @@ public class TriggerRegistry {
 
     public <T extends AbstractTrigger> T get(Class<T> clazz) {
         if (classes.containsKey(clazz)) {
-            return clazz.cast(instances.get(classes.get(clazz)));
+            return (T) instances.get(classes.get(clazz));
         }
         else {
             return null;

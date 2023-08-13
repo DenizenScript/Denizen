@@ -123,7 +123,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public static HashSet<String> earlyValidMechanisms = new HashSet<>(Arrays.asList(
             "max_health", "health_data", "health",
             "visible", "armor_pose", "arms", "base_plate", "is_small", "marker",
-            "velocity", "age", "is_using_riptide", "size", "item"
+            "velocity", "age", "is_using_riptide", "size", "item", "scale", "translation",
+            "left_rotation", "right_rotation", "brightness", "display", "pivot",
+            "shadow_radius", "shadow_strength"
     ));
     // Definitely not valid: "item"
 
@@ -663,6 +665,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return entity_type.getBukkitEntityType() == EntityType.PLAYER && npc == null;
         }
         return entity instanceof Player && !isNPC();
+    }
+
+    public <T extends Entity> T as(Class<T> entityClass) {
+        return (T) getBukkitEntity();
     }
 
     public Projectile getProjectile() {
@@ -1598,10 +1604,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Decimal)
         // @group location
         // @description
-        // Returns the entity's body yaw (separate from head yaw).
+        // Returns a living entity's body yaw (separate from head yaw).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "body_yaw", (attribute, object) -> {
-            return new ElementTag(NMSHandler.entityHelper.getBaseYaw(object.getBukkitEntity()));
+            return new ElementTag(NMSHandler.entityHelper.getBaseYaw(object.getLivingEntity()));
         });
 
         // <--[tag]
@@ -2891,7 +2897,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // Returns an interaction entity's last attack interaction, if any.
             // The returned map contains:
             // - 'player' (PlayerTag): the player who interacted
-            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this value is calculated, and may become inaccurate if the interaction entity changes worlds or the server lags.
+            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this is a delta time (same limitations as <@link event delta time>), and may become inaccurate if the interaction entity changes worlds.
             // - 'raw_game_time' (ElementTag(Number)): the raw game time the interaction occurred at, used to calculate the time above.
             // -->
             registerSpawnedOnlyTag(MapTag.class, "last_attack", (attribute, object) -> {
@@ -2909,7 +2915,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // Returns an interaction entity's last right click interaction, if any.
             // The returned map contains:
             // - 'player' (PlayerTag): the player who interacted
-            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this value is calculated, and may become inaccurate if the interaction entity changes worlds or the server lags.
+            // - 'duration' (DurationTag): the amount of time since the interaction. Note that this is a delta time (same limitations as <@link event delta time>), and may become inaccurate if the interaction entity changes worlds.
             // - 'raw_game_time' (ElementTag(Number)): the raw game time the interaction occurred at, used to calculate the time above.
             // -->
             registerSpawnedOnlyTag(MapTag.class, "last_interaction", (attribute, object) -> {
@@ -2963,7 +2969,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         ArrayList<Mechanism> waitingMechs;
         if (isSpawnedOrValidForTag()) {
             waitingMechs = new ArrayList<>();
-            for (Map.Entry<StringHolder, ObjectTag> property : PropertyParser.getPropertiesMap(this).map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> property : PropertyParser.getPropertiesMap(this).entrySet()) {
                 waitingMechs.add(new Mechanism(property.getKey().str, property.getValue(), context));
             }
         }
@@ -3781,7 +3787,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // This will not rotate the body at all. Most users should prefer <@link command look>.
         // -->
         if (mechanism.matches("head_angle") && mechanism.requireFloat()) {
-            NMSHandler.entityHelper.setHeadAngle(getBukkitEntity(), mechanism.getValue().asFloat());
+            NMSHandler.entityHelper.setHeadAngle(getLivingEntity(), mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -3819,7 +3825,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the ghast entity should show the attacking face.
         // -->
         if (mechanism.matches("ghast_attacking") && mechanism.requireBoolean()) {
-            NMSHandler.entityHelper.setGhastAttacking(getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.entityHelper.setGhastAttacking((Ghast) getBukkitEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -3830,7 +3836,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets whether the enderman entity should be screaming angrily.
         // -->
         if (mechanism.matches("enderman_angry") && mechanism.requireBoolean()) {
-            NMSHandler.entityHelper.setEndermanAngry(getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.entityHelper.setEndermanAngry((Enderman) getBukkitEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]

@@ -46,7 +46,7 @@ public class DataPersistenceFlagTracker extends MapTagBasedFlagTracker {
             DataPersistenceHelper.removeDenizenKey(holder, keyPrefix + cleanKeyName(key));
             return;
         }
-        if (map.map.containsKey(expirationString) || map.map.get(valueString) instanceof MapTag) {
+        if (map.containsKey(expirationString) || map.getObject(valueString) instanceof MapTag) {
             holder.getPersistentDataContainer().set(expireNeededKey, PersistentDataType.STRING, "true");
         }
         DataPersistenceHelper.setDenizenKey(holder, keyPrefix + cleanKeyName(key), map);
@@ -73,12 +73,12 @@ public class DataPersistenceFlagTracker extends MapTagBasedFlagTracker {
             if (!(map instanceof MapTag)) {
                 continue;
             }
-            if (isExpired(((MapTag) map).map.get(expirationString))) {
+            if (isExpired(((MapTag) map).getObject(expirationString))) {
                 holder.getPersistentDataContainer().remove(key);
                 containsAnyToCheck = true;
                 continue;
             }
-            ObjectTag subValue = ((MapTag) map).map.get(valueString);
+            ObjectTag subValue = ((MapTag) map).getObject(valueString);
             if (subValue instanceof MapTag) {
                 if (doClean((MapTag) subValue)) {
                     holder.getPersistentDataContainer().set(key, DataPersistenceHelper.PERSISTER_TYPE, map);

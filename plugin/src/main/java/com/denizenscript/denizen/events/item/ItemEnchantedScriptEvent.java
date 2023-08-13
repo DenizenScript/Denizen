@@ -109,7 +109,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
                 if (itemText.startsWith("map@")) {
                     TagContext context = getTagContext(path);
                     MapTag map = MapTag.valueOf(itemText, context);
-                    for (Map.Entry<StringHolder, ObjectTag> enchantments : map.map.entrySet()) {
+                    for (Map.Entry<StringHolder, ObjectTag> enchantments : map.entrySet()) {
                         event.getEnchantsToAdd().put(EnchantmentTag.valueOf(enchantments.getKey().low, context).enchantment, enchantments.getValue().asElement().asInt());
                     }
                 }

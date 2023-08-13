@@ -558,7 +558,7 @@ public class Denizen extends JavaPlugin {
                 return false;
             }
             if (args.length >= 2 && CoreUtilities.equalsIgnoreCase(args[0], "chat")) {
-                ChatTrigger.instance.syncChatTrigger(new PlayerChatEvent((Player) sender, Arrays.stream(args).skip(1).collect(Collectors.joining(" "))));
+                ChatTrigger.instance.chatTriggerInternal(new PlayerChatEvent((Player) sender, Arrays.stream(args).skip(1).collect(Collectors.joining(" "))));
                 return true;
             }
             if (args.length != 1) {

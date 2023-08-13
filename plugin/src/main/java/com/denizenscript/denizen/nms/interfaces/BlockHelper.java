@@ -32,9 +32,16 @@ public interface BlockHelper {
 
     BlockState generateBlockState(Block block, Material mat);
 
-    String getPushReaction(Material mat);
+    enum PistonPushReaction {
+        NORMAL, DESTROY, BLOCK, IGNORE, PUSH_ONLY;
+        public static final PistonPushReaction[] VALUES = values();
+    }
 
-    void setPushReaction(Material mat, String reaction);
+    default PistonPushReaction getPushReaction(Material mat) { // TODO: once minimum version is 1.19, remove from NMS
+        return PistonPushReaction.VALUES[mat.createBlockData().getPistonMoveReaction().ordinal()];
+    }
+
+    void setPushReaction(Material mat, PistonPushReaction reaction);
 
     float getBlockStrength(Material mat);
 
@@ -63,25 +70,17 @@ public interface BlockHelper {
         return Material.matchMaterial(material).createBlockData(otherData);
     }
 
-    default void makeBlockStateRaw(BlockState state) {
-        throw new UnsupportedOperationException();
+    void makeBlockStateRaw(BlockState state);
+
+    void doRandomTick(Location location);
+
+    Instrument getInstrumentFor(Material mat);
+
+    default void ringBell(Bell bell) { /// TODO: once minimum version is 1.19, remove from NMS
+        bell.ring();
     }
 
-    default void doRandomTick(Location location) {
-        throw new UnsupportedOperationException();
-    }
-
-    default Instrument getInstrumentFor(Material mat) {
-        throw new UnsupportedOperationException();
-    }
-
-    default void ringBell(Bell block) {
-        throw new UnsupportedOperationException();
-    }
-
-    default int getExpDrop(Block block, ItemStack item) {
-        throw new UnsupportedOperationException();
-    }
+    int getExpDrop(Block block, ItemStack item);
 
     default void setSpawnerCustomRules(CreatureSpawner spawner, int skyMin, int skyMax, int blockMin, int blockMax) {
         throw new UnsupportedOperationException();
@@ -91,9 +90,7 @@ public interface BlockHelper {
         spawner.setSpawnedType(entity.getBukkitEntityType());
     }
 
-    default Color getMapColor(Block block) {
-        throw new UnsupportedOperationException();
-    }
+    Color getMapColor(Block block);
 
     default void setVanillaTags(Material material, Set<String> tags) {
         throw new UnsupportedOperationException();

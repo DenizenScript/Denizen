@@ -1,25 +1,26 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.objects.properties.material.*;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
-import com.denizenscript.denizencore.objects.core.MapTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.RedirectionFlagTracker;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -314,7 +315,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         });
         tagProcessor.registerTag(ElementTag.class, "is_switch", (attribute, object) -> {
             BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
-            return new ElementTag(MaterialSwitchFace.describes(object));
+            return new ElementTag(MaterialAttachmentFace.describes(object));
         });
         tagProcessor.registerTag(ElementTag.class, "is_waterloggable", (attribute, object) -> {
             BukkitImplDeprecations.materialPropertyTags.warn(attribute.context);
@@ -555,11 +556,27 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the material's piston reaction. (Only for block materials).
         // -->
         tagProcessor.registerTag(ElementTag.class, "piston_reaction", (attribute, object) -> {
-            String res = NMSHandler.blockHelper.getPushReaction(object.material);
-            if (res == null) {
-                return null;
+            return new ElementTag(NMSHandler.blockHelper.getPushReaction(object.material));
+        });
+
+        // <--[mechanism]
+        // @object MaterialTag
+        // @name piston_reaction
+        // @input ElementTag
+        // @description
+        // Sets the piston reaction for all blocks of this material type.
+        // Input may be: NORMAL (push and pull allowed), DESTROY (break when pushed), BLOCK (prevent a push or pull), IGNORE (don't use this), or PUSH_ONLY (push allowed but not pull)
+        // @tags
+        // <MaterialTag.piston_reaction>
+        // -->
+        tagProcessor.registerMechanism("piston_reaction", false, ElementTag.class, (object, mechanism, input) -> {
+            if (!mechanism.requireEnum(BlockHelper.PistonPushReaction.class)) {
+                return;
             }
-            return new ElementTag(res);
+            if (!object.getMaterial().isBlock()) {
+                mechanism.echoError("'piston_reaction' mechanism is only valid for block types.");
+            }
+            NMSHandler.blockHelper.setPushReaction(object.getMaterial(), input.asEnum(BlockHelper.PistonPushReaction.class));
         });
 
         // <--[tag]
@@ -605,7 +622,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // @attribute <MaterialTag.produced_instrument>
         // @returns ElementTag
         // @description
-        // Returns the name of the instrument that would be used by a note block placed above a block of this material.
+        // Returns the name of the instrument that would be used by a note block placed above or below (depending on the material type) a block of this material.
         // See list at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Instrument.html>.
         // For the current instrument of a note block material refer to <@link tag MaterialTag.instrument>.
         // -->
@@ -733,23 +750,6 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
                 Debug.echoError("'block_strength' mechanism is only valid for block types.");
             }
             NMSHandler.blockHelper.setBlockStrength(material, mechanism.getValue().asFloat());
-        }
-
-        // <--[mechanism]
-        // @object MaterialTag
-        // @name piston_reaction
-        // @input ElementTag
-        // @description
-        // Sets the piston reaction for all blocks of this material type.
-        // Input may be: NORMAL (push and pull allowed), DESTROY (break when pushed), BLOCK (prevent a push or pull), IGNORE (don't use this), or PUSH_ONLY (push allowed but not pull)
-        // @tags
-        // <MaterialTag.piston_reaction>
-        // -->
-        if (!mechanism.isProperty && mechanism.matches("piston_reaction")) {
-            if (!material.isBlock()) {
-                Debug.echoError("'piston_reaction' mechanism is only valid for block types.");
-            }
-            NMSHandler.blockHelper.setPushReaction(material, mechanism.getValue().asString().toUpperCase());
         }
 
         tagProcessor.processMechanism(this, mechanism);

@@ -76,7 +76,7 @@ public class EntityReputation implements Property {
         PropertyParser.registerMechanism(EntityReputation.class, MapTag.class, "reputation", (object, mechanism, input) -> {
             Villager villager = object.getVillager();
             villager.clearReputations();
-            for (Map.Entry<StringHolder, ObjectTag> entry : input.map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> entry : input.entrySet()) {
                 UUID uuid;
                 try {
                     uuid = UUID.fromString(entry.getKey().str);
@@ -91,7 +91,7 @@ public class EntityReputation implements Property {
                     continue;
                 }
                 Reputation reputation = new Reputation();
-                for (Map.Entry<StringHolder, ObjectTag> reputationEntry : reputationInput.map.entrySet()) {
+                for (Map.Entry<StringHolder, ObjectTag> reputationEntry : reputationInput.entrySet()) {
                     ReputationType reputationType = new ElementTag(reputationEntry.getKey().low).asEnum(ReputationType.class);
                     if (reputationType == null) {
                         mechanism.echoError("Invalid reputation type specified: " + reputationEntry.getKey().str);

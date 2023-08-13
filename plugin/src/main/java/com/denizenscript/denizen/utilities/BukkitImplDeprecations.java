@@ -240,6 +240,9 @@ public class BukkitImplDeprecations {
     public static Warning assignmentRemove = new VerySlowWarning("assignmentRemove", "'assignment remove' without a script is deprecated: use 'clear' to clear all scripts, or 'remove' to remove one at a time.");
     public static Warning npcScriptSingle = new VerySlowWarning("npcScriptSingle", "'npc.script' is deprecated in favor of 'npc.scripts' (plural).");
 
+    // Added 2023/07/21, bump when 1.17 is gone.
+    public static Warning chunkRefreshSections = new VerySlowWarning("chunkRefreshSections", "ChunkTag.refresh_chunk_sections, as of MC 1.18, is just a replica of ChunkTag.refresh_chunk, and so that mech should be used instead.");
+
     // ==================== FUTURE deprecations ====================
 
     // Added 2021/03/27, deprecate officially by 2024.

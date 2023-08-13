@@ -104,8 +104,9 @@ public record EntityMetadataCommandHelper(Predicate<Entity> getter, BiConsumer<E
                     }
                     else {
                         for (PlayerTag player : forPlayers) {
-                            playerMap.remove(player.getUUID());
-                            playersToUpdate.add(player.getUUID());
+                            if (playerMap.remove(player.getUUID()) != null) {
+                                playersToUpdate.add(player.getUUID());
+                            }
                         }
                         if (playerMap.isEmpty()) {
                             packetOverrides.remove(target.getUUID());
@@ -118,6 +119,9 @@ public record EntityMetadataCommandHelper(Predicate<Entity> getter, BiConsumer<E
                         if (playersToUpdate.contains(player.getUniqueId())) {
                             NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player, target.getBukkitEntity());
                         }
+                    }
+                    if (playersToUpdate.contains(target.getUUID())) {
+                        NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(target.as(Player.class), target.getBukkitEntity());
                     }
                 }
             }

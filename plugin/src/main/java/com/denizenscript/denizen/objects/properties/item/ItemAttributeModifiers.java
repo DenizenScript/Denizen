@@ -42,7 +42,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
 
     @Override
     public boolean isDefaultValue(MapTag map) {
-        return map.map.isEmpty();
+        return map.isEmpty();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
     @Override
     public void setPropertyValue(MapTag param, Mechanism mechanism) {
         Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = LinkedHashMultimap.create();
-        for (Map.Entry<StringHolder, ObjectTag> mapEntry : param.map.entrySet()) {
+        for (Map.Entry<StringHolder, ObjectTag> mapEntry : param.entrySet()) {
             org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(mapEntry.getKey().str.toUpperCase());
             for (ObjectTag listValue : CoreUtilities.objectToList(mapEntry.getValue(), mechanism.context)) {
                 metaMap.put(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue));
@@ -129,7 +129,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
         // -->
         PropertyParser.registerMechanism(ItemAttributeModifiers.class, MapTag.class, "add_attribute_modifiers", (prop, mechanism, param) -> {
             ItemMeta meta = prop.getItemMeta();
-            for (Map.Entry<StringHolder, ObjectTag> subValue : param.map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> subValue : param.entrySet()) {
                 org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
                 for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
                     meta.addAttributeModifier(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue));

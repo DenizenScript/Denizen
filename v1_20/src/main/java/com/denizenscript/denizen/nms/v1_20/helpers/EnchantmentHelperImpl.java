@@ -32,9 +32,9 @@ import java.util.Map;
 
 public class EnchantmentHelperImpl extends EnchantmentHelper {
 
-    public static Map<NamespacedKey, Enchantment> ENCHANTMENTS_BY_KEY = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byKey", null);
-    public static Map<String, org.bukkit.enchantments.Enchantment> ENCHANTMENTS_BY_NAME = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byName", null);
-    public static Field REGISTRY_FROZEN = ReflectionHelper.getFields(MappedRegistry.class).get(ReflectionMappingsInfo.MappedRegistry_frozen, boolean.class);
+    public static final Map<NamespacedKey, Enchantment> ENCHANTMENTS_BY_KEY = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byKey", null);
+    public static final Map<String, org.bukkit.enchantments.Enchantment> ENCHANTMENTS_BY_NAME = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byName", null);
+    public static final Field REGISTRY_FROZEN = ReflectionHelper.getFields(MappedRegistry.class).get(ReflectionMappingsInfo.MappedRegistry_frozen, boolean.class);
 
     @Override
     public org.bukkit.enchantments.Enchantment registerFakeEnchantment(EnchantmentScriptContainer.EnchantmentReference script) {
@@ -140,7 +140,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
             };
             if (wasFrozen) {
-                ((MappedRegistry) BuiltInRegistries.ENCHANTMENT).freeze();
+                BuiltInRegistries.ENCHANTMENT.freeze();
             }
             ENCHANTMENTS_BY_KEY.put(ench.getKey(), ench);
             ENCHANTMENTS_BY_NAME.put(enchName, ench);
@@ -190,30 +190,22 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
 
     @Override
     public float getDamageBonus(Enchantment enchantment, int level, String type) {
-        MobType mobType = MobType.UNDEFINED;
-        switch (type) {
-            case "illager":
-                mobType = MobType.ILLAGER;
-                break;
-            case "undead":
-                mobType = MobType.UNDEAD;
-                break;
-            case "water":
-                mobType = MobType.WATER;
-                break;
-            case "arthropod":
-                mobType = MobType.ARTHROPOD;
-                break;
-        }
+        MobType mobType = switch (type) {
+            case "illager" -> MobType.ILLAGER;
+            case "undead" -> MobType.UNDEAD;
+            case "water" -> MobType.WATER;
+            case "arthropod" -> MobType.ARTHROPOD;
+            default -> MobType.UNDEFINED;
+        };
         return ((CraftEnchantment) enchantment).getHandle().getDamageBonus(level, mobType);
     }
 
     @Override
     public int getDamageProtection(Enchantment enchantment, int level, EntityDamageEvent.DamageCause type, org.bukkit.entity.Entity attacker) {
-        Entity nmsAtacker = attacker == null ? null : ((CraftEntity) attacker).getHandle();
-        DamageSource src = EntityHelperImpl.getSourceFor(nmsAtacker, type, nmsAtacker);
-        if (src instanceof EntityHelperImpl.FakeDamageSrc) {
-            src = ((EntityHelperImpl.FakeDamageSrc) src).real;
+        Entity nmsAttacker = attacker == null ? null : ((CraftEntity) attacker).getHandle();
+        DamageSource src = EntityHelperImpl.getSourceFor(nmsAttacker, type, nmsAttacker);
+        if (src instanceof EntityHelperImpl.FakeDamageSrc fakeDamageSrc) {
+            src = fakeDamageSrc.real;
         }
         return ((CraftEnchantment) enchantment).getHandle().getDamageProtection(level, src);
     }

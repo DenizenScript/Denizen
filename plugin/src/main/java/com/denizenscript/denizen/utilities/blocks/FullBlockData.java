@@ -76,7 +76,7 @@ public class FullBlockData {
             for (String flag : flagMap.listAllFlags()) {
                 flags.putObject(flag, flagMap.getRootMap(flag));
             }
-            if (flags.map.isEmpty()) {
+            if (flags.isEmpty()) {
                 flags = null;
             }
         }
@@ -599,7 +599,7 @@ public class FullBlockData {
         }
         if (flags != null) {
             MapTagBasedFlagTracker flagMap = (MapTagBasedFlagTracker) new LocationTag(block.getLocation()).getFlagTracker();
-            for (Map.Entry<StringHolder, ObjectTag> entry : flags.map.entrySet()) {
+            for (Map.Entry<StringHolder, ObjectTag> entry : flags.entrySet()) {
                 flagMap.setRootMap(entry.getKey().str, entry.getValue().asType(MapTag.class, CoreUtilities.noDebugContext));
             }
         }
