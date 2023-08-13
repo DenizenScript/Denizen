@@ -52,21 +52,13 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "inventory": return InventoryTag.mirrorBukkitInventory(event.getContents());
-            case "fuel_level": return new ElementTag(event.getFuelLevel());
-            case "result":
-                ListTag results = new ListTag();
-                for (ItemStack itemStack : event.getResults()){
-                    if (itemStack == null){
-                        results.addObject(new ItemTag(Material.AIR));
-                    }
-                    results.addObject(new ItemTag(itemStack));
-                }
-                return results;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "inventory" -> InventoryTag.mirrorBukkitInventory(event.getContents());
+            case "fuel_level" -> new ElementTag(event.getFuelLevel());
+            case "result" -> new ListTag(event.getResults(), ItemTag::new);
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
