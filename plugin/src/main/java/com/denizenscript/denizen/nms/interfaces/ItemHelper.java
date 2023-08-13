@@ -29,10 +29,6 @@ public abstract class ItemHelper {
 
     public abstract void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact, String category);
 
-    public void registerSmithingTrimRecipe(String keyName, RecipeChoice baseItem, RecipeChoice upgradeItem, RecipeChoice templateItem) {
-        throw new UnsupportedOperationException();
-    }
-
     public abstract void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact, String category);
 
     public abstract void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack[] item, boolean exact);

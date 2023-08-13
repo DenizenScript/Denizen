@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_20.helpers;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
@@ -170,7 +171,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerSmithingRecipe(String keyName, ItemStack result, RecipeChoice baseItem, RecipeChoice upgradeItem, RecipeChoice template) {
-        NamespacedKey key = new NamespacedKey("denizen", keyName);
+        NamespacedKey key = NamespacedKey.fromString(keyName, Denizen.getInstance());
         org.bukkit.inventory.SmithingTransformRecipe recipe = new org.bukkit.inventory.SmithingTransformRecipe(key, result, template, baseItem, upgradeItem);
         Bukkit.addRecipe(recipe);
     }

@@ -277,41 +277,6 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, base, addition, template);
     }
 
-    public static void registerSmithingTrimRecipe(ItemScriptContainer container, String templateString, String baseString, String additionString, String internalId, String retain) {
-        boolean templateExact = true;
-        if (templateString.startsWith("material:")) {
-            templateExact = false;
-            templateString = templateString.substring("material:".length());
-        }
-        ItemStack[] templateItems = textToItemArray(container, templateString, templateExact);
-        if (templateItems == null) {
-            return;
-        }
-        RecipeChoice template = templateExact ? new RecipeChoice.ExactChoice(templateItems) : new RecipeChoice.MaterialChoice(Arrays.stream(templateItems).map(ItemStack::getType).toArray(Material[]::new));
-        boolean baseExact = true;
-        if (baseString.startsWith("material:")) {
-            baseExact = false;
-            baseString = baseString.substring("material:".length());
-        }
-        ItemStack[] baseItems = textToItemArray(container, baseString, baseExact);
-        if (baseItems == null) {
-            return;
-        }
-        RecipeChoice base = baseExact ? new RecipeChoice.ExactChoice(baseItems) : new RecipeChoice.MaterialChoice(Arrays.stream(baseItems).map(ItemStack::getType).toArray(Material[]::new));
-        boolean additionExact = true;
-        if (additionString.startsWith("material:")) {
-            additionExact = false;
-            additionString = additionString.substring("material:".length());
-        }
-        ItemStack[] additionItems = textToItemArray(container, additionString, additionExact);
-        if (additionItems == null) {
-            return;
-        }
-        RecipeChoice addition = additionExact ? new RecipeChoice.ExactChoice(additionItems) : new RecipeChoice.MaterialChoice(Arrays.stream(additionItems).map(ItemStack::getType).toArray(Material[]::new));
-        smithingRetain.put(internalId, retain == null ? new String[0] : CoreUtilities.split(CoreUtilities.toLowerCase(retain), '|').toArray(new String[0]));
-        NMSHandler.itemHelper.registerSmithingTrimRecipe(internalId, template, base, addition);
-    }
-
     public static void registerBrewingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String ingredientItemString, String internalId) {
         boolean inputExact = true;
         if (inputItemString.startsWith("material:")) {
@@ -360,19 +325,10 @@ public class ItemScriptHelper implements Listener {
                             item.setAmount(Integer.parseInt(getString.apply("output_quantity")));
                         }
                         switch (type) {
-                            case "shaped":
-                                registerShapedRecipe(container, item, subSection.getStringList("input"), internalId, group); // tagged in register code
-                                break;
-                            case "shapeless":
-                                registerShapelessRecipe(container, item, getString.apply("input"), internalId, group, subSection.getString("category"));
-                                break;
-                            case "stonecutting":
-                                registerStonecuttingRecipe(container, item, getString.apply("input"), internalId, group);
-                                break;
-                            case "furnace":
-                            case "blast":
-                            case "smoker":
-                            case "campfire":
+                            case "shaped" -> registerShapedRecipe(container, item, subSection.getStringList("input"), internalId, group); // tagged in register code
+                            case "shapeless" -> registerShapelessRecipe(container, item, getString.apply("input"), internalId, group, subSection.getString("category"));
+                            case "stonecutting" -> registerStonecuttingRecipe(container, item, getString.apply("input"), internalId, group);
+                            case "furnace", "blast", "smoker", "campfire" -> {
                                 float exp = 0;
                                 int cookTime = 40;
                                 if (subSection.contains("experience")) {
@@ -382,8 +338,8 @@ public class ItemScriptHelper implements Listener {
                                     cookTime = DurationTag.valueOf(getString.apply("cook_time"), context).getTicksAsInt();
                                 }
                                 registerFurnaceRecipe(container, item, getString.apply("input"), exp, cookTime, type, internalId, group, subSection.getString("category"));
-                                break;
-                            case "smithing":
+                            }
+                            case "smithing" -> {
                                 String retain = null;
                                 if (subSection.contains("retain")) {
                                     retain = getString.apply("retain");
@@ -392,15 +348,9 @@ public class ItemScriptHelper implements Listener {
                                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
                                     template = getString.apply("template");
                                 }
-//                                if (subSection.contains("trim") && getString.apply("trim").equalsIgnoreCase("true")) {
-//                                    registerSmithingTrimRecipe(container, template, getString.apply("base"), getString.apply("upgrade"), internalId, retain);
-//                                    break;
-//                                }
                                 registerSmithingRecipe(container, item, template, getString.apply("base"), getString.apply("upgrade"), internalId, retain);
-                                break;
-                            case "brewing":
-                                registerBrewingRecipe(container, item, getString.apply("input"), getString.apply("ingredient"), internalId);
-                                break;
+                            }
+                            case "brewing" -> registerBrewingRecipe(container, item, getString.apply("input"), getString.apply("ingredient"), internalId);
                         }
                     }
                 }
