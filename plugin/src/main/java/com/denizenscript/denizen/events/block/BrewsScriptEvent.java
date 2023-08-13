@@ -30,7 +30,7 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     // @Context
     // <context.location> returns the LocationTag of the brewing stand.
     // <context.inventory> returns the InventoryTag of the brewing stand's contents.
-    // <context.fuel_level> returns an ElementTag of the brewing stand's fuel.
+    // <context.fuel_level> returns an ElementTag(Number) of the brewing stand's fuel level.
     // <context.result> returns a ListTag(ItemTag) of the brewing stand's result.
     //
     // -->
