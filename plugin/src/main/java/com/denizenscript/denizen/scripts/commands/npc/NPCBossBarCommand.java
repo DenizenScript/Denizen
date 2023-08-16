@@ -38,7 +38,7 @@ public class NPCBossBarCommand extends AbstractCommand {
     // Controls or removes the linked NPC's bossbar.
     //
     // Progress can be a number between 1 and 100 or 'health' to make it track the NPC's health.
-    // Placeholder API/Citizens placeholders are supported
+    // Placeholder API/Citizens placeholders are supported.
     //
     // Optionally specify a range around the NPC where the bossbar is visible, and/or a permission required to view it.
     // Input an empty view permission to remove it ('view_permission:').
@@ -65,6 +65,7 @@ public class NPCBossBarCommand extends AbstractCommand {
         tab.addWithPrefix("color:", BarColor.values());
         tab.addWithPrefix("options:", BarFlag.values());
         tab.addWithPrefix("style:", BarStyle.values());
+        tab.add("progress:health");
     }
 
     public static void autoExecute(ScriptEntry scriptEntry,
