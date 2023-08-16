@@ -31,10 +31,19 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.fuel_level> returns an ElementTag(Number) of the brewing stand's fuel level.
     // <context.result> returns a ListTag(ItemTag) of the brewing stand's result.
     //
+    // @Determine
+    // "RESULT:<ListTag(ItemTag)>" to change the item that is brewed.
+    //
     // -->
 
     public BrewsScriptEvent() {
         registerCouldMatcher("brewing stand brews");
+        this.<BrewsScriptEvent, ListTag>registerDetermination("result" ,ListTag.class, (evt, context, listTag) -> {
+            evt.event.getResults().clear();
+            for (ItemTag item : listTag.filter(ItemTag.class, context)){
+                evt.event.getResults().add(item.getItemStack());
+            }
+        } );
     }
 
     public LocationTag location;
