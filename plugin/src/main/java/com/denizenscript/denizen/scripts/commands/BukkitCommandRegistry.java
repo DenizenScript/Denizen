@@ -1,19 +1,21 @@
 package com.denizenscript.denizen.scripts.commands;
 
-import com.denizenscript.denizen.scripts.commands.core.*;
+import com.denizenscript.denizen.scripts.commands.core.CooldownCommand;
+import com.denizenscript.denizen.scripts.commands.core.ResetCommand;
+import com.denizenscript.denizen.scripts.commands.core.ZapCommand;
 import com.denizenscript.denizen.scripts.commands.entity.*;
 import com.denizenscript.denizen.scripts.commands.item.*;
 import com.denizenscript.denizen.scripts.commands.npc.*;
 import com.denizenscript.denizen.scripts.commands.player.*;
 import com.denizenscript.denizen.scripts.commands.server.*;
 import com.denizenscript.denizen.scripts.commands.world.*;
-import com.denizenscript.denizencore.DenizenCore;
-import com.denizenscript.denizencore.utilities.CoreConfiguration;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 
 public class BukkitCommandRegistry {
 
@@ -55,6 +57,7 @@ public class BukkitCommandRegistry {
         registerCommand(ActionCommand.class);
         registerCommand(AnchorCommand.class);
         registerCommand(AssignmentCommand.class);
+        registerCommand(NPCBossBarCommand.class);
         registerCommand(BreakCommand.class);
         registerCommand(CreateCommand.class);
         registerCommand(DespawnCommand.class);
