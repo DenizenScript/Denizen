@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.nms.v1_20.impl.entities;
 
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
@@ -8,6 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
+import java.lang.invoke.MethodHandle;
 import java.util.UUID;
 
 public class CraftItemProjectileImpl extends CraftEntity implements ItemProjectile {
@@ -16,6 +19,15 @@ public class CraftItemProjectileImpl extends CraftEntity implements ItemProjecti
 
     public CraftItemProjectileImpl(CraftServer server, EntityItemProjectileImpl entity) {
         super(server, entity);
+        MethodHandle handle = ReflectionHelper.getFinalSetterForFirstOfType(CraftEntity.class, EntityType.class);
+        if (handle != null) {
+            try {
+                handle.invoke(this, EntityType.DROPPED_ITEM);
+            }
+            catch (Throwable ex) {
+                Debug.echoError(ex);
+            }
+        }
     }
 
     @Override
@@ -101,10 +113,5 @@ public class CraftItemProjectileImpl extends CraftEntity implements ItemProjecti
     @Override
     public void setBounce(boolean doesBounce) {
         this.doesBounce = doesBounce;
-    }
-
-    @Override
-    public EntityType getType() {
-        return EntityType.DROPPED_ITEM;
     }
 }
