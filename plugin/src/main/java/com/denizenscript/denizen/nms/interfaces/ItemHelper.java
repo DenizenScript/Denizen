@@ -47,7 +47,7 @@ public abstract class ItemHelper {
 
     public abstract ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag);
 
-    public abstract void registerSmithingRecipe(String keyName, ItemStack result, RecipeChoice baseItem, RecipeChoice upgradeItem, RecipeChoice template);
+    public abstract void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact, ItemStack[] templateItem, boolean templateExact);
 
     public abstract void setInventoryItem(Inventory inventory, ItemStack item, int slot);
 

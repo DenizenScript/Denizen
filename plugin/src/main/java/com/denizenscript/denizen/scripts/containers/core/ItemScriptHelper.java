@@ -240,18 +240,17 @@ public class ItemScriptHelper implements Listener {
     }
 
     public static void registerSmithingRecipe(ItemScriptContainer container, ItemStack item, String templateString, String baseString, String additionString, String internalId, String retain) {
-        RecipeChoice template = null;
+        ItemStack[] template = null;
+        boolean templateExact = true;
         if (templateString != null) {
-            boolean templateExact = true;
             if (templateString.startsWith("material:")) {
                 templateExact = false;
                 templateString = templateString.substring("material:".length());
             }
-            ItemStack[] templateItems = textToItemArray(container, templateString, templateExact);
-            if (templateItems == null) {
+            template = textToItemArray(container, templateString, templateExact);
+            if (template == null) {
                 return;
             }
-            template = templateExact ? new RecipeChoice.ExactChoice(templateItems) : new RecipeChoice.MaterialChoice(Arrays.stream(templateItems).map(ItemStack::getType).toArray(Material[]::new));
         }
         boolean baseExact = true;
         if (baseString.startsWith("material:")) {
@@ -262,7 +261,6 @@ public class ItemScriptHelper implements Listener {
         if (baseItems == null) {
             return;
         }
-        RecipeChoice base = baseExact ? new RecipeChoice.ExactChoice(baseItems) : new RecipeChoice.MaterialChoice(Arrays.stream(baseItems).map(ItemStack::getType).toArray(Material[]::new));
         boolean additionExact = true;
         if (additionString.startsWith("material:")) {
             additionExact = false;
@@ -272,9 +270,8 @@ public class ItemScriptHelper implements Listener {
         if (additionItems == null) {
             return;
         }
-        RecipeChoice addition = additionExact ? new RecipeChoice.ExactChoice(additionItems) : new RecipeChoice.MaterialChoice(Arrays.stream(additionItems).map(ItemStack::getType).toArray(Material[]::new));
         smithingRetain.put(internalId, retain == null ? new String[0] : CoreUtilities.split(CoreUtilities.toLowerCase(retain), '|').toArray(new String[0]));
-        NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, base, addition, template);
+        NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, baseItems, baseExact, additionItems, additionExact, template, templateExact);
     }
 
     public static void registerBrewingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String ingredientItemString, String internalId) {
@@ -637,9 +634,9 @@ public class ItemScriptHelper implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onItemSmithing(PrepareSmithingEvent event) {
-        ItemStack inputItem = event.getInventory().getItem(0);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            inputItem = event.getInventory().getItem(1);
+        ItemStack inputItem = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? event.getInventory().getItem(1) : event.getInventory().getItem(0);
+        if (inputItem == null) {
+            return;
         }
         Recipe recipe = event.getInventory().getRecipe();
         SmithingRecipe smithRecipe = (SmithingRecipe) recipe;
@@ -681,7 +678,7 @@ public class ItemScriptHelper implements Listener {
             for (String retainable : retain) {
                 switch (retainable) {
                     case "display" -> {
-                        if (originalMeta != null && originalMeta.hasDisplayName()) {
+                        if (originalMeta.hasDisplayName()) {
                             String originalName = NMSHandler.itemHelper.getDisplayName(new ItemTag(inputItem));
                             ItemScriptContainer origScript = getItemScriptContainer(inputItem);
                             if (origScript == null || !originalName.equals(NMSHandler.itemHelper.getDisplayName(origScript.getItemFrom()))) {
@@ -691,7 +688,7 @@ public class ItemScriptHelper implements Listener {
                         newMeta = got.getItemMeta();
                     }
                     case "enchantments" -> {
-                        if (originalMeta != null && originalMeta.hasEnchants()) {
+                        if (originalMeta.hasEnchants()) {
                             for (Map.Entry<Enchantment, Integer> enchant : originalMeta.getEnchants().entrySet()) {
                                 newMeta.addEnchant(enchant.getKey(), enchant.getValue(), true);
                             }
