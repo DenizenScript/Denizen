@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.MaterialTag;
@@ -238,27 +239,39 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.itemHelper.registerStonecuttingRecipe(internalId, group, item, items, exact);
     }
 
-    public static void registerSmithingRecipe(ItemScriptContainer container, ItemStack item, String baseItemString, String upgradeItemString, String internalId, String retain) {
-        boolean baseExact = true;
-        if (baseItemString.startsWith("material:")) {
-            baseExact = false;
-            baseItemString = baseItemString.substring("material:".length());
+    public static void registerSmithingRecipe(ItemScriptContainer container, ItemStack item, String templateString, String baseString, String additionString, String internalId, String retain) {
+        ItemStack[] template = null;
+        boolean templateExact = true;
+        if (templateString != null) {
+            if (templateString.startsWith("material:")) {
+                templateExact = false;
+                templateString = templateString.substring("material:".length());
+            }
+            template = textToItemArray(container, templateString, templateExact);
+            if (template == null) {
+                return;
+            }
         }
-        ItemStack[] baseItems = textToItemArray(container, baseItemString, baseExact);
+        boolean baseExact = true;
+        if (baseString.startsWith("material:")) {
+            baseExact = false;
+            baseString = baseString.substring("material:".length());
+        }
+        ItemStack[] baseItems = textToItemArray(container, baseString, baseExact);
         if (baseItems == null) {
             return;
         }
-        boolean upgradeExact = true;
-        if (upgradeItemString.startsWith("material:")) {
-            upgradeExact = false;
-            upgradeItemString = upgradeItemString.substring("material:".length());
+        boolean additionExact = true;
+        if (additionString.startsWith("material:")) {
+            additionExact = false;
+            additionString = additionString.substring("material:".length());
         }
-        ItemStack[] upgradeItems = textToItemArray(container, upgradeItemString, upgradeExact);
-        if (upgradeItems == null) {
+        ItemStack[] additionItems = textToItemArray(container, additionString, additionExact);
+        if (additionItems == null) {
             return;
         }
         smithingRetain.put(internalId, retain == null ? new String[0] : CoreUtilities.split(CoreUtilities.toLowerCase(retain), '|').toArray(new String[0]));
-        NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, baseItems, baseExact, upgradeItems, upgradeExact);
+        NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, baseItems, baseExact, additionItems, additionExact, template, templateExact);
     }
 
     public static void registerBrewingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String ingredientItemString, String internalId) {
@@ -309,19 +322,10 @@ public class ItemScriptHelper implements Listener {
                             item.setAmount(Integer.parseInt(getString.apply("output_quantity")));
                         }
                         switch (type) {
-                            case "shaped":
-                                registerShapedRecipe(container, item, subSection.getStringList("input"), internalId, group); // tagged in register code
-                                break;
-                            case "shapeless":
-                                registerShapelessRecipe(container, item, getString.apply("input"), internalId, group, subSection.getString("category"));
-                                break;
-                            case "stonecutting":
-                                registerStonecuttingRecipe(container, item, getString.apply("input"), internalId, group);
-                                break;
-                            case "furnace":
-                            case "blast":
-                            case "smoker":
-                            case "campfire":
+                            case "shaped" -> registerShapedRecipe(container, item, subSection.getStringList("input"), internalId, group); // tagged in register code
+                            case "shapeless" -> registerShapelessRecipe(container, item, getString.apply("input"), internalId, group, subSection.getString("category"));
+                            case "stonecutting" -> registerStonecuttingRecipe(container, item, getString.apply("input"), internalId, group);
+                            case "furnace", "blast", "smoker", "campfire" -> {
                                 float exp = 0;
                                 int cookTime = 40;
                                 if (subSection.contains("experience")) {
@@ -331,17 +335,19 @@ public class ItemScriptHelper implements Listener {
                                     cookTime = DurationTag.valueOf(getString.apply("cook_time"), context).getTicksAsInt();
                                 }
                                 registerFurnaceRecipe(container, item, getString.apply("input"), exp, cookTime, type, internalId, group, subSection.getString("category"));
-                                break;
-                            case "smithing":
+                            }
+                            case "smithing" -> {
                                 String retain = null;
                                 if (subSection.contains("retain")) {
                                     retain = getString.apply("retain");
                                 }
-                                registerSmithingRecipe(container, item, getString.apply("base"), getString.apply("upgrade"), internalId, retain);
-                                break;
-                            case "brewing":
-                                registerBrewingRecipe(container, item, getString.apply("input"), getString.apply("ingredient"), internalId);
-                                break;
+                                String template = null;
+                                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                                    template = getString.apply("template");
+                                }
+                                registerSmithingRecipe(container, item, template, getString.apply("base"), getString.apply("upgrade"), internalId, retain);
+                            }
+                            case "brewing" -> registerBrewingRecipe(container, item, getString.apply("input"), getString.apply("ingredient"), internalId);
                         }
                     }
                 }
@@ -628,7 +634,10 @@ public class ItemScriptHelper implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onItemSmithing(PrepareSmithingEvent event) {
-        ItemStack inputItem = event.getInventory().getItem(0);
+        ItemStack inputItem = event.getInventory().getItem(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? 1 : 0);
+        if (inputItem == null) {
+            return;
+        }
         Recipe recipe = event.getInventory().getRecipe();
         SmithingRecipe smithRecipe = (SmithingRecipe) recipe;
         if (smithRecipe == null || !(smithRecipe.getKey().getNamespace().equals("denizen"))) {
@@ -668,7 +677,7 @@ public class ItemScriptHelper implements Listener {
             ItemMeta newMeta = got.getItemMeta();
             for (String retainable : retain) {
                 switch (retainable) {
-                    case "display":
+                    case "display" -> {
                         if (originalMeta.hasDisplayName()) {
                             String originalName = NMSHandler.itemHelper.getDisplayName(new ItemTag(inputItem));
                             ItemScriptContainer origScript = getItemScriptContainer(inputItem);
@@ -677,14 +686,14 @@ public class ItemScriptHelper implements Listener {
                             }
                         }
                         newMeta = got.getItemMeta();
-                        break;
-                    case "enchantments":
+                    }
+                    case "enchantments" -> {
                         if (originalMeta.hasEnchants()) {
                             for (Map.Entry<Enchantment, Integer> enchant : originalMeta.getEnchants().entrySet()) {
                                 newMeta.addEnchant(enchant.getKey(), enchant.getValue(), true);
                             }
                         }
-                        break;
+                    }
                 }
             }
             got.setItemMeta(newMeta);
