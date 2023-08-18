@@ -634,7 +634,7 @@ public class ItemScriptHelper implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onItemSmithing(PrepareSmithingEvent event) {
-        ItemStack inputItem = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? event.getInventory().getItem(1) : event.getInventory().getItem(0);
+        ItemStack inputItem = event.getInventory().getItem(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? 1 : 0);
         if (inputItem == null) {
             return;
         }

@@ -144,8 +144,8 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {
         ResourceLocation key = new ResourceLocation("denizen", keyName);
-        Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
-        StonecutterRecipe recipe = new StonecutterRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result));
+        Ingredient baseItemRecipe = itemArrayToRecipe(ingredient, exact);
+        StonecutterRecipe recipe = new StonecutterRecipe(key, group, baseItemRecipe, CraftItemStack.asNMSCopy(result));
         ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
     }
 

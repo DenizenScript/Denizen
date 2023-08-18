@@ -170,9 +170,9 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact, ItemStack[] templateItem, boolean templateExact) {
         ResourceLocation key = new ResourceLocation("denizen", keyName);
-        Ingredient baseRecipe = itemArrayToRecipe(baseItem, baseExact);
-        Ingredient upgradeRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
-        LegacyUpgradeRecipe recipe = new LegacyUpgradeRecipe(key, baseRecipe, upgradeRecipe, CraftItemStack.asNMSCopy(result));
+        Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
+        Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
+        LegacyUpgradeRecipe recipe = new LegacyUpgradeRecipe(key, baseItemRecipe, upgradeItemRecipe, CraftItemStack.asNMSCopy(result));
         ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
     }
 
