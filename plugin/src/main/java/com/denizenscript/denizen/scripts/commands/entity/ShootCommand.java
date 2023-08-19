@@ -91,7 +91,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
     //
     // The shoot command is ~waitable. Refer to <@link language ~waitable>.
     //
-    // Note that for ~waiting or the "script" arg, tracking is only accurate for projectile entities (such as arrows). This will be inaccurately estimated for other entity types.
+    // Note that for ~waiting or the "script" arg, tracking will only work for projectile entities (such as arrows). This will fire immediately for non-projectile entities, and will not return accurate location or hit_entities.
     //
     // @Tags
     // <entry[saveName].shot_entity> returns the single entity that was shot (as in, the projectile) (if you only shot one).
