@@ -604,7 +604,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // See <@link tag FlaggableObject.list_flags>
         // -->
-        tagProcessor.registerTag(ListTag.class, ElementTag.class, "list_flags", (attribute, object, input) -> {
+        tagProcessor.registerTag(ListTag.class, "list_flags", (attribute, object) -> {
             return DenizenCore.serverFlagMap.doListFlagsTag(attribute);
         });
 
@@ -1803,11 +1803,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             MapTag worlds = new MapTag();
             for (Map.Entry<String, NotedAreaTracker.PerWorldSet> set : NotedAreaTracker.worlds.entrySet()) {
                 MapTag worldData = new MapTag();
-                worldData.putObject("global", new ListTag(set.getValue().globalSet.list.stream().map(t -> t.area).toList()));
-                worldData.putObject("x50", areaNotesDebugStreamHack(set.getValue().sets50));
-                worldData.putObject("x50_offset", areaNotesDebugStreamHack(set.getValue().sets50_offset));
-                worldData.putObject("x200", areaNotesDebugStreamHack(set.getValue().sets200));
-                worldData.putObject("x200_offset", areaNotesDebugStreamHack(set.getValue().sets200_offset));
+                worldData.putObject("global", new ListTag(set.getValue().globalSet.list, trackedArea -> trackedArea.area));
+                worldData.putObject("x50", areaNotesDebug(set.getValue().sets50));
+                worldData.putObject("x50_offset", areaNotesDebug(set.getValue().sets50_offset));
+                worldData.putObject("x200", areaNotesDebug(set.getValue().sets200));
+                worldData.putObject("x200_offset", areaNotesDebug(set.getValue().sets200_offset));
                 worlds.putObject(set.getKey(), worldData);
             }
             return worlds;
@@ -2399,10 +2399,10 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         }, deprecatedVariants);
     }
 
-    private static MapTag areaNotesDebugStreamHack(Int2ObjectOpenHashMap<NotedAreaTracker.AreaSet> set) {
+    private static MapTag areaNotesDebug(Int2ObjectOpenHashMap<NotedAreaTracker.AreaSet> set) {
         MapTag out = new MapTag();
         for (Int2ObjectMap.Entry<NotedAreaTracker.AreaSet> pair : set.int2ObjectEntrySet()) {
-            out.putObject(String.valueOf(pair.getIntKey()), new ListTag(pair.getValue().list.stream().map(t -> t.area).toList()));
+            out.putObject(String.valueOf(pair.getIntKey()), new ListTag(pair.getValue().list, trackedArea -> trackedArea.area));
         }
         return out;
     }
