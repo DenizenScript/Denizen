@@ -29,21 +29,21 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.location> returns the LocationTag of the brewing stand.
     // <context.inventory> returns the InventoryTag of the brewing stand's contents.
     // <context.fuel_level> returns an ElementTag(Number) of the brewing stand's fuel level.
-    // <context.result> returns a ListTag(ItemTag) of the brewing stand's result.
+    // <context.result> returns a ListTag(ItemTag) of the items that will be brewed.
     //
     // @Determine
-    // "RESULT:<ListTag(ItemTag)>" to change the item that is brewed.
+    // "RESULT:<ListTag(ItemTag)>" to change the items that are brewed.
     //
     // -->
 
     public BrewsScriptEvent() {
         registerCouldMatcher("brewing stand brews");
-        this.<BrewsScriptEvent, ListTag>registerDetermination("result", ListTag.class, (evt, context, listTag) -> {
+        this.<BrewsScriptEvent, ListTag>registerDetermination("result", ListTag.class, (evt, context, result) -> {
             evt.event.getResults().clear();
-            for (ItemTag item : listTag.filter(ItemTag.class, context)){
+            for (ItemTag item : result.filter(ItemTag.class, context)){
                 evt.event.getResults().add(item.getItemStack());
             }
-        } );
+        });
     }
 
     public LocationTag location;
