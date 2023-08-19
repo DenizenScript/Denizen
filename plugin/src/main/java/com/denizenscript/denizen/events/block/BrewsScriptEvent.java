@@ -38,7 +38,7 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
 
     public BrewsScriptEvent() {
         registerCouldMatcher("brewing stand brews");
-        this.<BrewsScriptEvent, ListTag>registerDetermination("result" ,ListTag.class, (evt, context, listTag) -> {
+        this.<BrewsScriptEvent, ListTag>registerDetermination("result", ListTag.class, (evt, context, listTag) -> {
             evt.event.getResults().clear();
             for (ItemTag item : listTag.filter(ItemTag.class, context)){
                 evt.event.getResults().add(item.getItemStack());
