@@ -23,6 +23,11 @@ public class MaterialDustLevel extends MaterialProperty<ElementTag> {
     }
 
     @Override
+    public boolean isDefaultValue(ElementTag value) {
+        return value.asInt() == 0;
+    }
+
+    @Override
     public ElementTag getPropertyValue() {
         return new ElementTag(getBrushable().getDusted());
     }
