@@ -4318,6 +4318,38 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 }
                 decoratedPot.update();
             });
+
+            // <--[tag]
+            // @attribute <LocationTag.buried_item>
+            // @returns ItemTag
+            // @mechanism LocationTag.buried_item
+            // @description
+            // Returns the item buried in a suspicious block. Returns air if there is no item buried.
+            // -->
+            tagProcessor.registerTag(ItemTag.class, "buried_item", (attribute, object) -> {
+                if (!(object.getBlockStateForTag(attribute) instanceof BrushableBlock brushableBlock)) {
+                    return null;
+                }
+                return new ItemTag(brushableBlock.getItem());
+            });
+
+            // <--[mechanism]
+            // @object LocationTag
+            // @name buried_item
+            // @input ItemTag
+            // @description
+            // Sets the buried item in a suspicious block.
+            // @tags
+            // <LocationTag.buried_item>
+            // -->
+            tagProcessor.registerMechanism("buried_item", false, ItemTag.class, (object, mechanism, item) -> {
+                if (!(object.getBlockState() instanceof BrushableBlock brushableBlock)) {
+                    mechanism.echoError("Mechanism 'LocationTag.buried_item' is only valid for suspicious blocks.");
+                    return;
+                }
+                brushableBlock.setItem(item.getItemStack());
+                brushableBlock.update();
+            });
         }
 
         // <--[mechanism]

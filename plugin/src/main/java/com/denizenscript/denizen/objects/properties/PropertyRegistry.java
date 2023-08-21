@@ -252,6 +252,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialDirectional.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialDistance.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialDrags.class, MaterialTag.class);
+        PropertyParser.registerProperty(MaterialDustLevel.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialFaces.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialHalf.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialHinge.class, MaterialTag.class);
