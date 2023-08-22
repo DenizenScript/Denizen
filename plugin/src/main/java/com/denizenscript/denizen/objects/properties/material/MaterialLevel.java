@@ -2,53 +2,69 @@ package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Brushable;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Beehive;
 import org.bukkit.block.data.type.Cake;
 import org.bukkit.block.data.type.Farmland;
 import org.bukkit.block.data.type.Snow;
 
-public class MaterialLevel implements Property {
+public class MaterialLevel extends MaterialProperty<ElementTag> {
 
-    public static boolean describes(ObjectTag material) {
-        if (!(material instanceof MaterialTag)) {
-            return false;
-        }
-        MaterialTag mat = (MaterialTag) material;
-        if (!mat.hasModernData()) {
-            return false;
-        }
-        BlockData data = mat.getModernData();
-        return data instanceof Levelled
-                || data instanceof Cake
-                || data instanceof Snow
-                || data instanceof Farmland
-                || data instanceof Beehive;
+    // <--[property]
+    // @object MaterialTag
+    // @name level
+    // @input ElementTag(Number)
+    // @description
+    // Controls the current level for a Levelled material, cake, beehives, snow, farmland, or brushable blocks.
+    // "Levelled" materials include: water, lava, cauldrons, composters, light blocks, brushable blocks, and any other future Levelled implementing types.
+    // For light blocks, this is the brightness of the light.
+    // For water/lava this is the height of the liquid block.
+    // For cauldrons, this is the amount of liquid contained.
+    // For cake, this is the number of bites left.
+    // For beehives/bee nests, this is the amount of honey contained.
+    // For snow, this is the number of partial layers, or the height, of a snow block.
+    // For farmland, this is the moisture level.
+    // For composters, this is the amount of compost.
+    // For brushable blocks, this is the level of dusting.
+    // See also <@link tag MaterialTag.maximum_level> and <@link tag MaterialTag.minimum_level>.
+    // -->
+
+    public static boolean describes(MaterialTag material) {
+        BlockData data = material.getModernData();
+        return data instanceof Levelled 
+                || data instanceof Cake 
+                || data instanceof Snow 
+                || data instanceof Farmland 
+                || data instanceof Beehive 
+                || data instanceof Brushable;
     }
 
-    public static MaterialLevel getFrom(ObjectTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialLevel((MaterialTag) _material);
-        }
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getCurrent());
     }
 
-    public static final String[] handledMechs = new String[] {
-            "level"
-    };
-
-    public MaterialLevel(MaterialTag _material) {
-        material = _material;
+    @Override
+    public String getPropertyId() {
+        return "level";
     }
 
-    MaterialTag material;
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        if (!mechanism.requireInteger()) {
+            return;
+        }
+        int level = value.asInt();
+        if (level < getMin() || level > getMax()) {
+            mechanism.echoError("Level value '" + level + "' is not valid. Must be between " + getMin() + " and " + getMax() + " for material '" + getBlockData().getMaterial().name() + "'.");
+            return;
+        }
+        setCurrent(level);
+    }
 
     public static void register() {
 
@@ -75,62 +91,51 @@ public class MaterialLevel implements Property {
             return new ElementTag(material.getMin());
         });
 
-        // <--[tag]
-        // @attribute <MaterialTag.level>
-        // @returns ElementTag(Number)
-        // @mechanism MaterialTag.level
-        // @group properties
-        // @description
-        // Returns the current level for a Levelled material, cake, beehives, snow, or farmland.
-        // "Levelled" materials include: water, lava, cauldrons, composters, light blocks, and any other future Levelled implementing types.
-        // For light blocks, this is the brightness of the light.
-        // For water/lava this is the height of the liquid block.
-        // For cauldrons, this is the amount of liquid contained.
-        // For cake, this is the number of bites left.
-        // For beehives/bee nests, this is the amount of honey contained.
-        // For snow, this is the number of partial layers, or the height, of a snow block.
-        // For farmland, this is the moisture level.
-        // For composters, this is the amount of compost.
-        // -->
-        PropertyParser.registerStaticTag(MaterialLevel.class, ElementTag.class, "level", (attribute, material) -> {
-            return new ElementTag(material.getCurrent());
-        });
+        autoRegister("level", MaterialLevel.class, ElementTag.class, false);
     }
 
     public Levelled getLevelled() {
-        return (Levelled) material.getModernData();
+        return (Levelled) getBlockData();
     }
 
     public boolean isCake() {
-        return material.getModernData() instanceof Cake;
+        return getBlockData() instanceof Cake;
     }
 
     public Cake getCake() {
-        return (Cake) material.getModernData();
+        return (Cake) getBlockData();
     }
 
     public boolean isSnow() {
-        return material.getModernData() instanceof Snow;
+        return getBlockData() instanceof Snow;
     }
 
     public Snow getSnow() {
-        return (Snow) material.getModernData();
+        return (Snow) getBlockData();
     }
 
     public boolean isHive() {
-        return material.getModernData() instanceof Beehive;
+        return getBlockData() instanceof Beehive;
     }
 
     public Beehive getHive() {
-        return (Beehive) material.getModernData();
+        return (Beehive) getBlockData();
     }
 
     public boolean isFarmland() {
-        return material.getModernData() instanceof Farmland;
+        return getBlockData() instanceof Farmland;
     }
 
     public Farmland getFarmland() {
-        return (Farmland) material.getModernData();
+        return (Farmland) getBlockData();
+    }
+
+    public boolean isBrushable() {
+        return getBlockData() instanceof Brushable;
+    }
+
+    public Brushable getBrushable() {
+        return (Brushable) getBlockData();
     }
 
     public int getCurrent() {
@@ -145,6 +150,9 @@ public class MaterialLevel implements Property {
         }
         else if (isFarmland()) {
             return getFarmland().getMoisture();
+        }
+        else if (isBrushable()) {
+            return getBrushable().getDusted();
         }
         return getLevelled().getLevel();
     }
@@ -161,6 +169,9 @@ public class MaterialLevel implements Property {
         }
         else if (isFarmland()) {
             return getFarmland().getMaximumMoisture();
+        }
+        else if (isBrushable()) {
+            return getBrushable().getMaximumDusted();
         }
         return getLevelled().getMaximumLevel();
     }
@@ -189,40 +200,10 @@ public class MaterialLevel implements Property {
             getFarmland().setMoisture(level);
             return;
         }
-        getLevelled().setLevel(level);
-    }
-
-    @Override
-    public String getPropertyString() {
-        return String.valueOf(getCurrent());
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "level";
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object MaterialTag
-        // @name level
-        // @input ElementTag(Number)
-        // @description
-        // Sets the current level for a Levelled material (like water, lava, and cauldrons), cake, beehives, snow, or farmland.
-        // @tags
-        // <MaterialTag.level>
-        // <MaterialTag.maximum_level>
-        // <MaterialTag.minimum_level>
-        // -->
-        if (mechanism.matches("level") && mechanism.requireInteger()) {
-            int level = mechanism.getValue().asInt();
-            if (level < getMin() || level > getMax()) {
-                mechanism.echoError("Level value '" + level + "' is not valid. Must be between " + getMin() + " and " + getMax() + " for material '" + material.name() + "'.");
-                return;
-            }
-            setCurrent(level);
+        else if (isBrushable()) {
+            getBrushable().setDusted(level);
+            return;
         }
+        getLevelled().setLevel(level);
     }
 }
