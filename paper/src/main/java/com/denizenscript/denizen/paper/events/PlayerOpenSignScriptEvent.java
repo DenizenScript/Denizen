@@ -24,10 +24,10 @@ public class PlayerOpenSignScriptEvent extends BukkitScriptEvent implements List
     //
     // @Cancellable true
     //
-    // @Triggers When player open sign.
+    // @Triggers When a player edits a sign.
     //
     // @Context
-    // <context.side> returns an ElementTag of side the sign was clicked.
+    // <context.side> returns an ElementTag of the side of the sign that was clicked.
     // <context.cause> returns an ElementTag of reason the sign was opened.
     // <context.location> returns a LocationTag of the sign's location.
     //
