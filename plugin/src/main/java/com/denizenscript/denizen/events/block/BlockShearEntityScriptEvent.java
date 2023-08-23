@@ -25,9 +25,9 @@ public class BlockShearEntityScriptEvent extends BukkitScriptEvent implements Li
     // @Triggers when a dispenser shears a nearby sheep.
     //
     // @Context
-    // <context.location> returns a LocationTag of the dispenser.
-    // <context.tool> returns an ItemTag of the item used to shear the entity.
-    // <context.entity> returns an EntityTag of the sheared entity.
+    // <context.location> returns the LocationTag of the dispenser.
+    // <context.tool> returns the ItemTag of the item used to shear the entity.
+    // <context.entity> returns the EntityTag of the sheared entity.
     //
     // -->
 
