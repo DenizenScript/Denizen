@@ -1,10 +1,9 @@
 package com.denizenscript.denizen.nms.v1_20.impl;
 
+import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.nms.v1_20.Handler;
 import com.denizenscript.denizen.nms.v1_20.helpers.PacketHelperImpl;
-import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.chat.MutableComponent;
