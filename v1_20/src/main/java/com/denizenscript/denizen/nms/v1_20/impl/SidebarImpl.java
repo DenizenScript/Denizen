@@ -65,12 +65,13 @@ public class SidebarImpl extends Sidebar {
         List<PlayerTeam> oldTeams = generatedTeams;
         generatedTeams = new ArrayList<>();
         PacketHelperImpl.send(player, new ClientboundSetObjectivePacket(this.obj1, 0));
+        String[] ids = getIds();
         for (int i = 0; i < this.lines.length; i++) {
             String line = this.lines[i];
             if (line == null) {
                 break;
             }
-            String lineId = Utilities.generateRandomColors(8);
+            String lineId = ids[i];
             PlayerTeam team = new PlayerTeam(dummyScoreboard, lineId);
             team.getPlayers().add(lineId);
             team.setPlayerPrefix(Handler.componentToNMS(FormattedTextHelper.parse(line, ChatColor.WHITE)));
