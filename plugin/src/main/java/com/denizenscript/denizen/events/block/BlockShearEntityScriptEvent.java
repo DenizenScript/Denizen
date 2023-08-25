@@ -36,7 +36,6 @@ public class BlockShearEntityScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public LocationTag location;
-    public ItemTag tool;
     public MaterialTag material;
     public EntityTag entity;
     public BlockShearEntityEvent event;
@@ -59,7 +58,7 @@ public class BlockShearEntityScriptEvent extends BukkitScriptEvent implements Li
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "location" -> location;
-            case "tool" -> tool;
+            case "tool" -> new ItemTag(event.getTool());
             case "entity" -> entity;
             default -> super.getContext(name);
         };
@@ -68,7 +67,6 @@ public class BlockShearEntityScriptEvent extends BukkitScriptEvent implements Li
     @EventHandler
     public void onShear(BlockShearEntityEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
-        tool = new ItemTag(event.getTool());
         material = new MaterialTag(event.getBlock());
         entity = new EntityTag(event.getEntity());
         this.event = event;
