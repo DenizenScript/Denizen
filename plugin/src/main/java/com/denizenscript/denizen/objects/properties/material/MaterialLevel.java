@@ -31,7 +31,7 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
     // For snow, this is the number of partial layers, or the height, of a snow block.
     // For farmland, this is the moisture level.
     // For composters, this is the amount of compost.
-    // For brushable blocks, this is the level of dusting.
+    // For brushable blocks, this is the level of dusting. 1.20+ only.
     // See also <@link tag MaterialTag.maximum_level> and <@link tag MaterialTag.minimum_level>.
     // -->
 
@@ -136,10 +136,6 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && getBlockData() instanceof Brushable;
     }
 
-    public Brushable getBrushable() {
-        return (Brushable) getBlockData();
-    }
-
     public int getCurrent() {
         if (isCake()) {
             return getCake().getBites();
@@ -153,8 +149,8 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         else if (isFarmland()) {
             return getFarmland().getMoisture();
         }
-        else if (isBrushable()) {
-            return getBrushable().getDusted();
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
+            return ((Brushable) getBlockData()).getDusted();
         }
         return getLevelled().getLevel();
     }
@@ -172,8 +168,8 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         else if (isFarmland()) {
             return getFarmland().getMaximumMoisture();
         }
-        else if (isBrushable()) {
-            return getBrushable().getMaximumDusted();
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
+            return ((Brushable) getBlockData()).getMaximumDusted();
         }
         return getLevelled().getMaximumLevel();
     }
@@ -202,8 +198,8 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
             getFarmland().setMoisture(level);
             return;
         }
-        else if (isBrushable()) {
-            getBrushable().setDusted(level);
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
+            ((Brushable) getBlockData()).setDusted(level);
             return;
         }
         getLevelled().setLevel(level);
