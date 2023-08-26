@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.material;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -40,7 +42,7 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
                 || data instanceof Snow 
                 || data instanceof Farmland 
                 || data instanceof Beehive 
-                || data instanceof Brushable;
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && data instanceof Brushable);
     }
 
     @Override
@@ -131,7 +133,7 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
     }
 
     public boolean isBrushable() {
-        return getBlockData() instanceof Brushable;
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && getBlockData() instanceof Brushable;
     }
 
     public Brushable getBrushable() {

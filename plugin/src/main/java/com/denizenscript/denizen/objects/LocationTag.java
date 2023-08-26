@@ -4324,7 +4324,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @returns ItemTag
             // @mechanism LocationTag.buried_item
             // @description
-            // Returns the item buried in a brushable block. Returns air if there is no item buried.
+            // Returns the item buried in a brushable block (also referred to as "suspicious blocks"). Returns air if there is no item buried.
             // -->
             tagProcessor.registerTag(ItemTag.class, "buried_item", (attribute, object) -> {
                 if (!(object.getBlockStateForTag(attribute) instanceof BrushableBlock brushableBlock)) {
@@ -4344,7 +4344,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // -->
             tagProcessor.registerMechanism("buried_item", false, ItemTag.class, (object, mechanism, item) -> {
                 if (!(object.getBlockState() instanceof BrushableBlock brushableBlock)) {
-                    mechanism.echoError("Mechanism 'LocationTag.buried_item' is only valid for suspicious blocks.");
+                    mechanism.echoError("Mechanism 'LocationTag.buried_item' is only valid for brushable blocks.");
                     return;
                 }
                 brushableBlock.setItem(item.getItemStack());
