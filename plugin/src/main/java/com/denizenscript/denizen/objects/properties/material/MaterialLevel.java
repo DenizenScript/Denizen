@@ -31,7 +31,7 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
     // For snow, this is the number of partial layers, or the height, of a snow block.
     // For farmland, this is the moisture level.
     // For composters, this is the amount of compost.
-    // For brushable blocks, this is the level of dusting. 1.20+ only.
+    // For brushable blocks (also referred to as "suspicious blocks"), this is the level of dusting. 1.20+ only.
     // See also <@link tag MaterialTag.maximum_level> and <@link tag MaterialTag.minimum_level>.
     // -->
 

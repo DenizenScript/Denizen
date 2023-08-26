@@ -4338,7 +4338,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @name buried_item
             // @input ItemTag
             // @description
-            // Sets the buried item in a brushable block.
+            // Sets the buried item in a brushable block (also referred to as "suspicious blocks"). Set to air to have no item buried.
             // @tags
             // <LocationTag.buried_item>
             // -->
