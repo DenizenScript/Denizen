@@ -1,10 +1,9 @@
 package com.denizenscript.denizen.nms.v1_20.impl;
 
+import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.nms.v1_20.Handler;
 import com.denizenscript.denizen.nms.v1_20.helpers.PacketHelperImpl;
-import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.chat.MutableComponent;
@@ -65,12 +64,13 @@ public class SidebarImpl extends Sidebar {
         List<PlayerTeam> oldTeams = generatedTeams;
         generatedTeams = new ArrayList<>();
         PacketHelperImpl.send(player, new ClientboundSetObjectivePacket(this.obj1, 0));
+        String[] ids = getIds();
         for (int i = 0; i < this.lines.length; i++) {
             String line = this.lines[i];
             if (line == null) {
                 break;
             }
-            String lineId = Utilities.generateRandomColors(8);
+            String lineId = ids[i];
             PlayerTeam team = new PlayerTeam(dummyScoreboard, lineId);
             team.getPlayers().add(lineId);
             team.setPlayerPrefix(Handler.componentToNMS(FormattedTextHelper.parse(line, ChatColor.WHITE)));
