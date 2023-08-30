@@ -6,15 +6,11 @@ import com.denizenscript.denizen.nms.v1_20.Handler;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_20.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
-import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.maps.MapImage;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.core.ColorTag;
-import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
@@ -44,7 +40,9 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
@@ -63,7 +61,10 @@ import org.bukkit.map.MapPalette;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class PacketHelperImpl implements PacketHelper {
 
@@ -173,12 +174,32 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showSignEditor(Player player, Location location) {
-        LocationTag fakeSign = new LocationTag(player.getLocation());
-        fakeSign.setY(0);
-        FakeBlock.showFakeBlockTo(Collections.singletonList(new PlayerTag(player)), fakeSign, new MaterialTag(Material.OAK_WALL_SIGN), new DurationTag(1), true);
-        BlockPos pos = new BlockPos(fakeSign.getBlockX(), 0, fakeSign.getBlockZ());
-        DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.fakeSignExpected = pos;
-        send(player, new ClientboundOpenSignEditorPacket(pos, true));
+        NetworkInterceptHelper.enable();
+        Sign sign = null;
+        BlockPos toOpen = null;
+        // It actually allows 8 blocks of distance, but we limit to 7 because the client doesn't properly round down
+        for (int i = 0; i < 8; i++) {
+            Location toCheck = player.getLocation();
+            toCheck.setY(toCheck.getY() - i);
+            if (toCheck.getBlock().getState() instanceof Sign foundSign) {
+                sign = foundSign;
+            }
+            else {
+                sign = null;
+                toOpen = CraftLocation.toBlockPosition(toCheck);
+                break;
+            }
+        }
+        if (sign != null) {
+            toOpen = CraftLocation.toBlockPosition(sign.getLocation());
+            SignSide front = sign.getSide(Side.FRONT);
+            for (int line = 0; line < 4; line++) {
+                front.setLine(line, "");
+            }
+            player.sendBlockUpdate(sign.getLocation(), sign);
+        }
+        DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.fakeSignExpected = toOpen;
+        send(player, new ClientboundOpenSignEditorPacket(toOpen, true));
     }
 
     @Override
