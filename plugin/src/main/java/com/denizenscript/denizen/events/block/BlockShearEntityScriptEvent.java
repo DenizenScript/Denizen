@@ -4,7 +4,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,7 +35,6 @@ public class BlockShearEntityScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public LocationTag location;
-    public MaterialTag material;
     public EntityTag entity;
     public BlockShearEntityEvent event;
 
@@ -45,7 +43,7 @@ public class BlockShearEntityScriptEvent extends BukkitScriptEvent implements Li
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!path.tryArgObject(0, material)) {
+        if (!path.tryArgObject(0, location)) {
             return false;
         }
         if (!path.tryArgObject(2, entity)) {
@@ -67,7 +65,6 @@ public class BlockShearEntityScriptEvent extends BukkitScriptEvent implements Li
     @EventHandler
     public void onShear(BlockShearEntityEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
-        material = new MaterialTag(event.getBlock());
         entity = new EntityTag(event.getEntity());
         this.event = event;
         fire(event);
