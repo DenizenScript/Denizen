@@ -61,7 +61,10 @@ import org.bukkit.map.MapPalette;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class PacketHelperImpl implements PacketHelper {
 
