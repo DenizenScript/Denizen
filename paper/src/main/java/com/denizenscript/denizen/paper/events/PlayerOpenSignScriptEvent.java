@@ -24,11 +24,11 @@ public class PlayerOpenSignScriptEvent extends BukkitScriptEvent implements List
     //
     // @Cancellable true
     //
-    // @Triggers When a player edits a sign.
+    // @Triggers When a player opens a sign by clicking on it to edit it.
     //
     // @Context
-    // <context.side> returns an ElementTag of the side of the sign that was clicked.
-    // <context.cause> returns an ElementTag of reason the sign was opened.
+    // <context.side> returns an ElementTag of the side of the sign that was clicked (FRONT or BACK).
+    // <context.cause> returns an ElementTag of reason the sign was opened - see <@link url https://purpurmc.org/javadoc/io/papermc/paper/event/player/PlayerOpenSignEvent.Cause.html>.
     // <context.location> returns a LocationTag of the sign's location.
     //
     // @Player Always.

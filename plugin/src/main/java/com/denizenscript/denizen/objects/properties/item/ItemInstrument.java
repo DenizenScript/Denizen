@@ -4,7 +4,6 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import org.bukkit.Material;
 import org.bukkit.MusicInstrument;
 import org.bukkit.inventory.meta.MusicInstrumentMeta;
 

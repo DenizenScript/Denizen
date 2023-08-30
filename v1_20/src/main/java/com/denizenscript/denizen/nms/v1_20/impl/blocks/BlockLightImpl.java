@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundLightUpdatePacket;
-import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ThreadedLevelLightEngine;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
