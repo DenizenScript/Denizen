@@ -16,6 +16,8 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftLocation;
 import org.bukkit.event.block.SignChangeEvent;
 
 import java.nio.charset.StandardCharsets;
@@ -100,13 +102,11 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void handleSignUpdate(ServerboundSignUpdatePacket packet) {
         if (fakeSignExpected != null && packet.getPos().equals(fakeSignExpected)) {
-            fakeSignExpected = null;
             PlayerChangesSignScriptEvent evt = (PlayerChangesSignScriptEvent) PlayerChangesSignScriptEvent.instance.clone();
             evt.material = new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN);
             evt.location = new LocationTag(player.getBukkitEntity().getLocation());
-            LocationTag loc = evt.location.clone();
-            loc.setY(0);
-            evt.event = new SignChangeEvent(loc.getBlock(), player.getBukkitEntity(), packet.getLines());
+            evt.event = new SignChangeEvent(CraftBlock.at(player.level(), fakeSignExpected), player.getBukkitEntity(), packet.getLines());
+            fakeSignExpected = null;
             evt.fire(evt.event);
         }
         super.handleSignUpdate(packet);

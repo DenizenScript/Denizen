@@ -40,6 +40,9 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
+import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
@@ -58,10 +61,7 @@ import org.bukkit.map.MapPalette;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class PacketHelperImpl implements PacketHelper {
 
@@ -172,9 +172,31 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void showSignEditor(Player player, Location location) {
         NetworkInterceptHelper.enable();
-        BlockPos pos = ((CraftPlayer) player).getHandle().blockPosition();
-        DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.fakeSignExpected = pos;
-        send(player, new ClientboundOpenSignEditorPacket(pos, true));
+        Sign sign = null;
+        BlockPos toOpen = null;
+        // It actually allows 8 blocks of distance, but we limit to 7 because the client doesn't properly round down
+        for (int i = 0; i < 8; i++) {
+            Location toCheck = player.getLocation();
+            toCheck.setY(toCheck.getY() - i);
+            if (toCheck.getBlock().getState() instanceof Sign foundSign) {
+                sign = foundSign;
+            }
+            else {
+                sign = null;
+                toOpen = CraftLocation.toBlockPosition(toCheck);
+                break;
+            }
+        }
+        if (sign != null) {
+            toOpen = CraftLocation.toBlockPosition(sign.getLocation());
+            SignSide front = sign.getSide(Side.FRONT);
+            for (int line = 0; line < 4; line++) {
+                front.setLine(line, "");
+            }
+            player.sendBlockUpdate(sign.getLocation(), sign);
+        }
+        DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.fakeSignExpected = toOpen;
+        send(player, new ClientboundOpenSignEditorPacket(toOpen, true));
     }
 
     @Override
