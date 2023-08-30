@@ -28,7 +28,7 @@ public class PlayerOpenSignScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.side> returns an ElementTag of the side of the sign that was clicked (FRONT or BACK).
-    // <context.cause> returns an ElementTag of reason the sign was opened - see <@link url https://purpurmc.org/javadoc/io/papermc/paper/event/player/PlayerOpenSignEvent.Cause.html>.
+    // <context.cause> returns an ElementTag of reason the sign was opened - see <@link url https://jd.papermc.io/paper/1.20/io/papermc/paper/event/player/PlayerOpenSignEvent.Cause.html>.
     // <context.location> returns a LocationTag of the sign's location.
     //
     // @Player Always.
