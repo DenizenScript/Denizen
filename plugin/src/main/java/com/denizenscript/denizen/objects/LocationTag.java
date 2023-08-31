@@ -1251,7 +1251,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
 
         // <--[tag]
         // @attribute <LocationTag.waxed>
-        // @returns ElementTag
+        // @returns ElementTag(Boolean)
         // @mechanism LocationTag.waxed
         // @group world
         // @description
