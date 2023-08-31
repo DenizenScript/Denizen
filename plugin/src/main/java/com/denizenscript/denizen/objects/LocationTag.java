@@ -1250,6 +1250,23 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         });
 
         // <--[tag]
+        // @attribute <LocationTag.waxed>
+        // @returns ElementTag
+        // @mechanism LocationTag.waxed
+        // @group world
+        // @description
+        // Returns whether the location is a Sign block that is waxed.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "waxed", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof Sign)) {
+                attribute.echoError("Location is not a valid Sign block.");
+                return null;
+            }
+            return new ElementTag(((Sign) state).isWaxed());
+        });
+
+        // <--[tag]
         // @attribute <LocationTag.spawner_type>
         // @returns EntityTag
         // @mechanism LocationTag.spawner_type
@@ -4596,6 +4613,27 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 }
             }
             state.update();
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name waxed
+        // @input ElementTag(Boolean)
+        // @description
+        // Changes whether the sign at the location is waxed.
+        // @tags
+        // <LocationTag.waxed>
+        // -->
+        if (mechanism.matches("waxed") && mechanism.requireBoolean()) {
+            BlockState state = getBlockState();
+            if (!(state instanceof Sign)) {
+                mechanism.echoError("'waxed' mechanism can only be called on Sign blocks.");
+            }
+            else {
+                Sign sign = (Sign) state;
+                sign.setWaxed(mechanism.getValue().asBoolean());
+                sign.update();
+            }
         }
 
         // <--[mechanism]
