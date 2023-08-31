@@ -1250,23 +1250,6 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         });
 
         // <--[tag]
-        // @attribute <LocationTag.waxed>
-        // @returns ElementTag(Boolean)
-        // @mechanism LocationTag.waxed
-        // @group world
-        // @description
-        // Returns whether the location is a Sign block that is waxed.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "waxed", (attribute, object) -> {
-            BlockState state = object.getBlockStateForTag(attribute);
-            if (!(state instanceof Sign)) {
-                attribute.echoError("Location is not a valid Sign block.");
-                return null;
-            }
-            return new ElementTag(((Sign) state).isWaxed());
-        });
-
-        // <--[tag]
         // @attribute <LocationTag.spawner_type>
         // @returns EntityTag
         // @mechanism LocationTag.spawner_type
@@ -4367,6 +4350,40 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 brushableBlock.setItem(item.getItemStack());
                 brushableBlock.update();
             });
+
+            // <--[tag]
+            // @attribute <LocationTag.waxed>
+            // @returns ElementTag(Boolean)
+            // @mechanism LocationTag.waxed
+            // @group world
+            // @description
+            // Returns whether the location is a sign block that is waxed.
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "waxed", (attribute, object) -> {
+                if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
+                    attribute.echoError("Location is not a valid Sign block.");
+                    return null;
+                }
+                return new ElementTag(sign.isWaxed());
+            });
+
+            // <--[mechanism]
+            // @object LocationTag
+            // @name waxed
+            // @input ElementTag(Boolean)
+            // @description
+            // Sets whether the sign at the location is waxed.
+            // @tags
+            // <LocationTag.waxed>
+            // -->
+            tagProcessor.registerMechanism("waxed", false, ElementTag.class, (object, mechanism, value) -> {
+                if (!(object.getBlockState() instanceof Sign sign)) {
+                    mechanism.echoError("'waxed' mechanism can only be called on Sign blocks.");
+                    return;
+                }
+                sign.setWaxed(value.asBoolean());
+                sign.update();
+            });
         }
 
         // <--[mechanism]
@@ -4613,27 +4630,6 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 }
             }
             state.update();
-        }
-
-        // <--[mechanism]
-        // @object LocationTag
-        // @name waxed
-        // @input ElementTag(Boolean)
-        // @description
-        // Changes whether the sign at the location is waxed.
-        // @tags
-        // <LocationTag.waxed>
-        // -->
-        if (mechanism.matches("waxed") && mechanism.requireBoolean()) {
-            BlockState state = getBlockState();
-            if (!(state instanceof Sign)) {
-                mechanism.echoError("'waxed' mechanism can only be called on Sign blocks.");
-            }
-            else {
-                Sign sign = (Sign) state;
-                sign.setWaxed(mechanism.getValue().asBoolean());
-                sign.update();
-            }
         }
 
         // <--[mechanism]
