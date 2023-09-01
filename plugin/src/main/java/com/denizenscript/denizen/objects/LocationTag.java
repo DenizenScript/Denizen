@@ -4357,7 +4357,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @mechanism LocationTag.waxed
             // @group world
             // @description
-            // Returns whether the location is a sign block that is waxed.
+            // If the location is a sign block, returns whether it is waxed (locked to prevent players editing the text).
             // -->
             tagProcessor.registerTag(ElementTag.class, "waxed", (attribute, object) -> {
                 if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
