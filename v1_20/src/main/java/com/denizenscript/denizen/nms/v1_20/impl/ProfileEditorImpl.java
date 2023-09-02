@@ -52,6 +52,7 @@ public class ProfileEditorImpl extends ProfileEditor {
         player.updateInventory();
     }
 
+    // TODO: properly rebundle the packet instead of splitting it up
     public static boolean handleAlteredProfiles(ClientboundPlayerInfoUpdatePacket packet, DenizenNetworkManagerImpl manager) {
         if (ProfileEditor.mirrorUUIDs.isEmpty() && !RenameCommand.hasAnyDynamicRenames() && fakeProfiles.isEmpty()) {
             return true;
