@@ -4,7 +4,9 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -13,7 +15,6 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
-import java.util.Collections;
 import java.util.List;
 
 public class FakeSpawnCommand extends AbstractCommand {
@@ -24,6 +25,7 @@ public class FakeSpawnCommand extends AbstractCommand {
         setRequiredArguments(2, 5);
         isProcedural = false;
         addRemappedPrefixes("duration", "d");
+        addRemappedPrefixes("players", "to");
         autoCompile();
     }
 
@@ -68,17 +70,28 @@ public class FakeSpawnCommand extends AbstractCommand {
     }
 
     public static void autoExecute(ScriptEntry scriptEntry,
-                                   @ArgName("entity") @ArgLinear EntityTag entity,
-                                   @ArgName("location") @ArgLinear @ArgDefaultNull LocationTag location,
+                                   @ArgName("entity") @ArgLinear ObjectTag entityObj,
+                                   @ArgName("location") @ArgLinear @ArgDefaultNull ObjectTag locationObj,
                                    @ArgName("cancel") boolean cancel,
                                    @ArgName("players") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> players,
                                    @ArgName("duration") @ArgPrefixed @ArgDefaultText("10s") DurationTag duration,
                                    @ArgName("mount_to") @ArgPrefixed @ArgDefaultNull EntityTag vehicle) {
+        if (locationObj != null && entityObj.identify().startsWith("l@")) { // Compensate for legacy entity/location out-of-order support
+            ObjectTag swap = locationObj;
+            locationObj = entityObj;
+            entityObj = swap;
+            Deprecations.outOfOrderArgs.warn(scriptEntry);
+        }
         if (players == null) {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
                 throw new InvalidArgumentsRuntimeException("Must specify an online player!");
             }
-            players = Collections.singletonList(Utilities.getEntryPlayer(scriptEntry));
+            players = List.of(Utilities.getEntryPlayer(scriptEntry));
+        }
+        LocationTag location = locationObj == null ? null : locationObj.asType(LocationTag.class, scriptEntry.context);
+        EntityTag entity = entityObj.asType(EntityTag.class, scriptEntry.context);
+        if (entity == null) {
+            throw new InvalidArgumentsRuntimeException("Must specify a valid entity!");
         }
         if (location == null && !cancel) {
             throw new InvalidArgumentsRuntimeException("Must specify a valid location!");
