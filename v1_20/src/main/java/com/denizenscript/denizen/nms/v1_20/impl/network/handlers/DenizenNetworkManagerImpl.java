@@ -313,8 +313,9 @@ public class DenizenNetworkManagerImpl extends Connection {
                     processed = packetHandler.handlePacket(this, packet);
                 }
                 catch (Exception ex) {
+                    Debug.echoError("Packet handler for " + packet.getClass().getCanonicalName() + " threw an exception:");
                     Debug.echoError(ex);
-                    processed = null;
+                    continue;
                 }
                 if (processed == null) {
                     if (NMSHandler.debugPackets) {
