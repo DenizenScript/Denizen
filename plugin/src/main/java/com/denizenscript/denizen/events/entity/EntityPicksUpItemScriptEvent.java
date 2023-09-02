@@ -49,7 +49,7 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
         registerCouldMatcher("<entity> picks up <item>");
         registerCouldMatcher("<entity> takes <item>");
         this.<EntityPicksUpItemScriptEvent, ItemTag>registerDetermination("item", ItemTag.class, (evt, context, item) -> {
-            EDITED_ITEMS.add(event.getItem().getUniqueId());
+            editedItems.add(event.getItem().getUniqueId());
             evt.event.getItem().setItemStack(item.getItemStack());
             evt.event.setCancelled(true);
         });
@@ -59,7 +59,7 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
     public EntityTag entity;
     public EntityPickupItemEvent event;
 
-    private static final Set<UUID> EDITED_ITEMS = new HashSet<>();
+    private static final Set<UUID> editedItems = new HashSet<>();
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -93,7 +93,7 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
 
     @EventHandler
     public void onEntityPicksUpItem(EntityPickupItemEvent event) {
-        if (EDITED_ITEMS.remove(event.getItem().getUniqueId())) {
+        if (editedItems.remove(event.getItem().getUniqueId())) {
             return;
         }
         entity = new EntityTag(event.getEntity());

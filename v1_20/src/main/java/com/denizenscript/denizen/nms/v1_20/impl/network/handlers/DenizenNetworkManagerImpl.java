@@ -57,10 +57,10 @@ public class DenizenNetworkManagerImpl extends Connection {
         Packet<ClientGamePacketListener> handlePacket(DenizenNetworkManagerImpl networkManager, T packet) throws Exception;
     }
 
-    public static final Map<Class<? extends Packet<ClientGamePacketListener>>, List<PacketHandler<?>>> PACKET_HANDLERS = new HashMap<>();
+    public static final Map<Class<? extends Packet<ClientGamePacketListener>>, List<PacketHandler<?>>> packetHandlers = new HashMap<>();
 
     public static <T extends Packet<ClientGamePacketListener>> void registerPacketHandler(Class<T> packetClass, PacketHandler<T> handler) {
-        PACKET_HANDLERS.computeIfAbsent(packetClass, k -> new ArrayList<>()).add(handler);
+        packetHandlers.computeIfAbsent(packetClass, k -> new ArrayList<>()).add(handler);
     }
 
     public static <T extends Packet<ClientGamePacketListener>> void registerPacketHandler(Class<T> packetClass, BiConsumer<DenizenNetworkManagerImpl, T> handler) {
@@ -300,7 +300,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public Packet<ClientGamePacketListener> processPacketHandlersFor(Packet<ClientGamePacketListener> packet) {
-        List<PacketHandler<?>> packetHandlers = PACKET_HANDLERS.get(packet.getClass());
+        List<PacketHandler<?>> packetHandlers = DenizenNetworkManagerImpl.packetHandlers.get(packet.getClass());
         if (packetHandlers != null) {
             for (PacketHandler<?> _packetHandler : packetHandlers) {
                 PacketHandler<Packet<ClientGamePacketListener>> packetHandler = (PacketHandler<Packet<ClientGamePacketListener>>) _packetHandler;
