@@ -282,8 +282,12 @@ public class DenizenNetworkManagerImpl extends Connection {
         packetsSent++;
         if (packet instanceof ClientboundBundlePacket bundlePacket) {
             List<Packet<ClientGamePacketListener>> processedPackets = new ArrayList<>();
+            boolean anyChange = false;
             for (Packet<ClientGamePacketListener> subPacket : bundlePacket.subPackets()) {
                 Packet<ClientGamePacketListener> processed = processPacketHandlersFor(subPacket);
+                if (!anyChange) {
+                    anyChange = processed != subPacket;
+                }
                 if (processed != null) {
                     processedPackets.add(processed);
                 }
@@ -291,7 +295,9 @@ public class DenizenNetworkManagerImpl extends Connection {
             if (processedPackets.isEmpty()) {
                 return;
             }
-            packet = new ClientboundBundlePacket(processedPackets);
+            if (anyChange) {
+                packet = new ClientboundBundlePacket(processedPackets);
+            }
         }
         else {
             Packet<?> processed = processPacketHandlersFor((Packet<ClientGamePacketListener>) packet);
