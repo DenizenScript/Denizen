@@ -2,12 +2,14 @@ package com.denizenscript.denizen.nms.v1_20.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
 import org.bukkit.util.Vector;
@@ -17,7 +19,11 @@ import java.lang.reflect.Field;
 public class AttachPacketHandlers {
 
     public static void registerHandlers() {
-
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundMoveEntityPacket.class, AttachPacketHandlers::processAttachToForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundRotateHeadPacket.class, AttachPacketHandlers::processAttachToForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundSetEntityMotionPacket.class, AttachPacketHandlers::processAttachToForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundTeleportEntityPacket.class, AttachPacketHandlers::processAttachToForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundRemoveEntitiesPacket.class, AttachPacketHandlers::processAttachToForPacket);
     }
 
     public static Field POS_X_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get(ReflectionMappingsInfo.ClientboundMoveEntityPacket_xa, short.class);
@@ -35,11 +41,11 @@ public class AttachPacketHandlers {
 
     public static Vector VECTOR_ZERO = new Vector(0, 0, 0);
 
-    public void tryProcessMovePacketForAttach(ClientboundMoveEntityPacket packet, Entity e) throws IllegalAccessException {
+    public static void tryProcessMovePacketForAttach(DenizenNetworkManagerImpl networkManager, ClientboundMoveEntityPacket packet, Entity e) throws IllegalAccessException {
         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
         if (attList != null) {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
-                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
+                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
                     ClientboundMoveEntityPacket pNew;
                     int newId = att.attached.getBukkitEntity().getEntityId();
@@ -84,14 +90,14 @@ public class AttachPacketHandlers {
                             pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
                         }
                         Vector goalPosition = att.fixedForOffset(new Vector(e.getX(), e.getY(), e.getZ()), e.getYRot(), e.getXRot());
-                        Vector oldPos = att.visiblePositions.get(player.getUUID());
+                        Vector oldPos = att.visiblePositions.get(networkManager.player.getUUID());
                         boolean forceTele = false;
                         if (oldPos == null) {
                             oldPos = att.attached.getLocation().toVector();
                             forceTele = true;
                         }
                         Vector moveNeeded = goalPosition.clone().subtract(oldPos);
-                        att.visiblePositions.put(player.getUUID(), goalPosition.clone());
+                        att.visiblePositions.put(networkManager.player.getUUID(), goalPosition.clone());
                         int offX = (int) (moveNeeded.getX() * (32 * 128));
                         int offY = (int) (moveNeeded.getY() * (32 * 128));
                         int offZ = (int) (moveNeeded.getZ() * (32 * 128));
@@ -106,9 +112,9 @@ public class AttachPacketHandlers {
                             YAW_PACKTELENT.setByte(newTeleportPacket, newYaw);
                             PITCH_PACKTELENT.setByte(newTeleportPacket, pitch);
                             if (NMSHandler.debugPackets) {
-                                doPacketOutput("Attach Move-Tele Packet: " + newTeleportPacket.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getScoreboardName() + " with original yaw " + yaw + " adapted to " + newYaw);
+                                DenizenNetworkManagerImpl.doPacketOutput("Attach Move-Tele Packet: " + newTeleportPacket.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName() + " with original yaw " + yaw + " adapted to " + newYaw);
                             }
-                            oldManager.send(newTeleportPacket);
+                            networkManager.oldManager.send(newTeleportPacket);
                         }
                         else {
                             POS_X_PACKENT.setShort(pNew, (short) Mth.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
@@ -119,32 +125,32 @@ public class AttachPacketHandlers {
                                 PITCH_PACKENT.setByte(pNew, pitch);
                             }
                             if (NMSHandler.debugPackets) {
-                                doPacketOutput("Attach Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getScoreboardName() + " with original yaw " + yaw + " adapted to " + newYaw);
+                                DenizenNetworkManagerImpl.doPacketOutput("Attach Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName() + " with original yaw " + yaw + " adapted to " + newYaw);
                             }
-                            oldManager.send(pNew);
+                            networkManager.oldManager.send(pNew);
                         }
                     }
                     else {
                         if (NMSHandler.debugPackets) {
-                            doPacketOutput("Attach Replica-Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getScoreboardName());
+                            DenizenNetworkManagerImpl.doPacketOutput("Attach Replica-Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName());
                         }
-                        oldManager.send(pNew);
+                        networkManager.oldManager.send(pNew);
                     }
                 }
             }
         }
         if (e.passengers != null && !e.passengers.isEmpty()) {
             for (Entity ent : e.passengers) {
-                tryProcessMovePacketForAttach(packet, ent);
+                tryProcessMovePacketForAttach(networkManager, packet, ent);
             }
         }
     }
 
-    public void tryProcessRotateHeadPacketForAttach(ClientboundRotateHeadPacket packet, Entity e) throws IllegalAccessException {
+    public static void tryProcessRotateHeadPacketForAttach(DenizenNetworkManagerImpl networkManager, ClientboundRotateHeadPacket packet, Entity e) throws IllegalAccessException {
         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
         if (attList != null) {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
-                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
+                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
                     byte yaw = packet.getYHeadRot();
                     Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
@@ -156,48 +162,48 @@ public class AttachPacketHandlers {
                     }
                     ClientboundRotateHeadPacket pNew = new ClientboundRotateHeadPacket(attachedEntity, yaw);
                     if (NMSHandler.debugPackets) {
-                        doPacketOutput("Head Rotation Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getScoreboardName());
+                        DenizenNetworkManagerImpl.doPacketOutput("Head Rotation Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName());
                     }
-                    oldManager.send(pNew);
+                    networkManager.oldManager.send(pNew);
                 }
             }
         }
         if (e.passengers != null && !e.passengers.isEmpty()) {
             for (Entity ent : e.passengers) {
-                tryProcessRotateHeadPacketForAttach(packet, ent);
+                tryProcessRotateHeadPacketForAttach(networkManager, packet, ent);
             }
         }
     }
 
-    public void tryProcessVelocityPacketForAttach(ClientboundSetEntityMotionPacket packet, Entity e) throws IllegalAccessException {
+    public static void tryProcessVelocityPacketForAttach(DenizenNetworkManagerImpl networkManager, ClientboundSetEntityMotionPacket packet, Entity e) throws IllegalAccessException {
         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
         if (attList != null) {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
-                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
+                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    ClientboundSetEntityMotionPacket pNew = new ClientboundSetEntityMotionPacket(copyPacket(packet));
+                    ClientboundSetEntityMotionPacket pNew = new ClientboundSetEntityMotionPacket(DenizenNetworkManagerImpl.copyPacket(packet));
                     ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     if (NMSHandler.debugPackets) {
-                        doPacketOutput("Attach Velocity Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + player.getScoreboardName());
+                        DenizenNetworkManagerImpl.doPacketOutput("Attach Velocity Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName());
                     }
-                    oldManager.send(pNew);
+                    networkManager.oldManager.send(pNew);
                 }
             }
         }
         if (e.passengers != null && !e.passengers.isEmpty()) {
             for (Entity ent : e.passengers) {
-                tryProcessVelocityPacketForAttach(packet, ent);
+                tryProcessVelocityPacketForAttach(networkManager, packet, ent);
             }
         }
     }
 
-    public void tryProcessTeleportPacketForAttach(ClientboundTeleportEntityPacket packet, Entity e, Vector relative) throws IllegalAccessException {
+    public static void tryProcessTeleportPacketForAttach(DenizenNetworkManagerImpl networkManager, ClientboundTeleportEntityPacket packet, Entity e, Vector relative) throws IllegalAccessException {
         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
         if (attList != null) {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
-                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
+                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    ClientboundTeleportEntityPacket pNew = new ClientboundTeleportEntityPacket(copyPacket(packet));
+                    ClientboundTeleportEntityPacket pNew = new ClientboundTeleportEntityPacket(DenizenNetworkManagerImpl.copyPacket(packet));
                     ENTITY_ID_PACKTELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew)).add(relative);
                     if (att.positionalOffset != null) {
@@ -224,75 +230,73 @@ public class AttachPacketHandlers {
                         YAW_PACKTELENT.setByte(pNew, newYaw);
                         PITCH_PACKTELENT.setByte(pNew, pitch);
                         if (NMSHandler.debugPackets) {
-                            doPacketOutput("Attach Teleport Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID()
-                                    + " sent to " + player.getScoreboardName() + " with raw yaw " + yaw + " adapted to " + newYaw);
+                            DenizenNetworkManagerImpl.doPacketOutput("Attach Teleport Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID()
+                                    + " sent to " + networkManager.player.getScoreboardName() + " with raw yaw " + yaw + " adapted to " + newYaw);
                         }
                     }
-                    att.visiblePositions.put(player.getUUID(), resultPos.clone());
-                    oldManager.send(pNew);
+                    att.visiblePositions.put(networkManager.player.getUUID(), resultPos.clone());
+                    networkManager.oldManager.send(pNew);
                 }
             }
         }
         if (e.passengers != null && !e.passengers.isEmpty()) {
             for (Entity ent : e.passengers) {
-                tryProcessTeleportPacketForAttach(packet, ent, new Vector(ent.getX() - e.getX(), ent.getY() - e.getY(), ent.getZ() - e.getZ()));
+                tryProcessTeleportPacketForAttach(networkManager, packet, ent, new Vector(ent.getX() - e.getX(), ent.getY() - e.getY(), ent.getZ() - e.getZ()));
             }
         }
     }
 
-    public static Vector VECTOR_ZERO = new Vector(0, 0, 0);
-
-    public boolean processAttachToForPacket(Packet<?> packet) {
+    public static Packet<ClientGamePacketListener> processAttachToForPacket(DenizenNetworkManagerImpl networkManager, Packet<ClientGamePacketListener> packet) {
         if (EntityAttachmentHelper.toEntityToData.isEmpty()) {
-            return false;
+            return packet;
         }
         try {
             if (packet instanceof ClientboundMoveEntityPacket moveEntityPacket) {
-                Entity e = moveEntityPacket.getEntity(player.level());
+                Entity e = moveEntityPacket.getEntity(networkManager.player.level());
                 if (e == null) {
-                    return false;
+                    return packet;
                 }
                 if (!e.isPassenger()) {
-                    tryProcessMovePacketForAttach(moveEntityPacket, e);
+                    tryProcessMovePacketForAttach(networkManager, moveEntityPacket, e);
                 }
-                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
+                return EntityAttachmentHelper.denyOriginalPacketSend(networkManager.player.getUUID(), e.getUUID()) ? null : packet;
             }
             else if (packet instanceof ClientboundRotateHeadPacket rotateHeadPacket) {
-                Entity e = rotateHeadPacket.getEntity(player.level());
+                Entity e = rotateHeadPacket.getEntity(networkManager.player.level());
                 if (e == null) {
-                    return false;
+                    return packet;
                 }
-                tryProcessRotateHeadPacketForAttach(rotateHeadPacket, e);
-                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
+                tryProcessRotateHeadPacketForAttach(networkManager, rotateHeadPacket, e);
+                return EntityAttachmentHelper.denyOriginalPacketSend(networkManager.player.getUUID(), e.getUUID()) ? null : packet;
             }
             else if (packet instanceof ClientboundSetEntityMotionPacket setEntityMotionPacket) {
                 int ider = setEntityMotionPacket.getId();
-                Entity e = player.level().getEntity(ider);
+                Entity e = networkManager.player.level().getEntity(ider);
                 if (e == null) {
-                    return false;
+                    return packet;
                 }
-                tryProcessVelocityPacketForAttach(setEntityMotionPacket, e);
-                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
+                tryProcessVelocityPacketForAttach(networkManager, setEntityMotionPacket, e);
+                return EntityAttachmentHelper.denyOriginalPacketSend(networkManager.player.getUUID(), e.getUUID()) ? null : packet;
             }
             else if (packet instanceof ClientboundTeleportEntityPacket teleportEntityPacket) {
                 int ider = teleportEntityPacket.getId();
-                Entity e = player.level().getEntity(ider);
+                Entity e = networkManager.player.level().getEntity(ider);
                 if (e == null) {
-                    return false;
+                    return packet;
                 }
-                tryProcessTeleportPacketForAttach(teleportEntityPacket, e, VECTOR_ZERO);
-                return EntityAttachmentHelper.denyOriginalPacketSend(player.getUUID(), e.getUUID());
+                tryProcessTeleportPacketForAttach(networkManager, teleportEntityPacket, e, VECTOR_ZERO);
+                return EntityAttachmentHelper.denyOriginalPacketSend(networkManager.player.getUUID(), e.getUUID()) ? null : packet;
             }
             else if (packet instanceof ClientboundRemoveEntitiesPacket removeEntitiesPacket) {
                 for (int id : removeEntitiesPacket.getEntityIds()) {
-                    Entity e = player.level().getEntity(id);
+                    Entity e = networkManager.player.level().getEntity(id);
                     if (e != null) {
                         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
                         if (attList != null) {
                             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
-                                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(player.getUUID());
+                                EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                                 if (attMap.attached.isValid() && att != null) {
-                                    att.visiblePositions.remove(player.getUUID());
+                                    att.visiblePositions.remove(networkManager.player.getUUID());
                                 }
                             }
                         }
@@ -303,6 +307,6 @@ public class AttachPacketHandlers {
         catch (Exception ex) {
             Debug.echoError(ex);
         }
-        return false;
+        return packet;
     }
 }

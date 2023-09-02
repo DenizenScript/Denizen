@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_20.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.nms.v1_20.Handler;
 import com.denizenscript.denizen.nms.v1_20.helpers.PacketHelperImpl;
+import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.scripts.commands.entity.GlowCommand;
 import com.denizenscript.denizen.scripts.commands.entity.InvisibleCommand;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
@@ -9,8 +10,8 @@ import com.denizenscript.denizen.scripts.commands.entity.SneakCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
@@ -22,22 +23,22 @@ import java.util.Optional;
 public class EntityMetadataPacketHandlers {
 
     public static void registerHandlers() {
-
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundSetEntityDataPacket.class, EntityMetadataPacketHandlers::processMetadataChangesForPacket);
     }
 
-    public ClientboundSetEntityDataPacket getModifiedMetadataFor(ClientboundSetEntityDataPacket metadataPacket) {
+    public static ClientboundSetEntityDataPacket getModifiedMetadataFor(DenizenNetworkManagerImpl networkManager, ClientboundSetEntityDataPacket metadataPacket) {
         if (!RenameCommand.hasAnyDynamicRenames() && SneakCommand.forceSetSneak.isEmpty() && InvisibleCommand.helper.noOverrides() && GlowCommand.helper.noOverrides()) {
             return null;
         }
         try {
-            Entity entity = player.level().getEntity(metadataPacket.id());
+            Entity entity = networkManager.player.level().getEntity(metadataPacket.id());
             if (entity == null) {
                 return null; // If it doesn't exist on-server, it's definitely not relevant, so move on
             }
-            String nameToApply = RenameCommand.getCustomNameFor(entity.getUUID(), player.getBukkitEntity(), false);
-            Boolean forceSneak = SneakCommand.shouldSneak(entity.getUUID(), player.getUUID());
-            Boolean isInvisible = InvisibleCommand.helper.getState(entity.getBukkitEntity(), player.getUUID(), true);
-            Boolean isGlowing = GlowCommand.helper.getState(entity.getBukkitEntity(), player.getUUID(), true);
+            String nameToApply = RenameCommand.getCustomNameFor(entity.getUUID(), networkManager.player.getBukkitEntity(), false);
+            Boolean forceSneak = SneakCommand.shouldSneak(entity.getUUID(), networkManager.player.getUUID());
+            Boolean isInvisible = InvisibleCommand.helper.getState(entity.getBukkitEntity(), networkManager.player.getUUID(), true);
+            Boolean isGlowing = GlowCommand.helper.getState(entity.getBukkitEntity(), networkManager.player.getUUID(), true);
             boolean shouldModifyFlags = isInvisible != null || forceSneak != null || isGlowing != null;
             if (nameToApply == null && !shouldModifyFlags) {
                 return null;
@@ -71,22 +72,21 @@ public class EntityMetadataPacketHandlers {
         }
     }
 
-    public byte applyEntityDataFlag(byte currentFlags, Boolean value, int flag) {
+    public static byte applyEntityDataFlag(byte currentFlags, Boolean value, int flag) {
         if (value == null) {
             return currentFlags;
         }
         return (byte) (value ? currentFlags | flag : currentFlags & ~flag);
     }
 
-    public boolean processMetadataChangesForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
+    public static Packet<ClientGamePacketListener> processMetadataChangesForPacket(DenizenNetworkManagerImpl networkManager, Packet<ClientGamePacketListener> packet) {
         if (!(packet instanceof ClientboundSetEntityDataPacket entityDataPacket)) {
-            return false;
+            return packet;
         }
-        ClientboundSetEntityDataPacket altPacket = getModifiedMetadataFor(entityDataPacket);
+        ClientboundSetEntityDataPacket altPacket = getModifiedMetadataFor(networkManager, entityDataPacket);
         if (altPacket == null) {
-            return false;
+            return packet;
         }
-        oldManager.send(altPacket, genericfuturelistener);
-        return true;
+        return altPacket;
     }
 }

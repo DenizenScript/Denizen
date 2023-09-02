@@ -3,6 +3,7 @@ package com.denizenscript.denizen.nms.v1_20.impl.network.handlers.packet;
 import com.denizenscript.denizen.events.player.PlayerReceivesTablistUpdateScriptEvent;
 import com.denizenscript.denizen.nms.v1_20.Handler;
 import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -10,8 +11,8 @@ import com.google.common.base.Joiner;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.world.level.GameType;
@@ -24,14 +25,16 @@ import java.util.UUID;
 public class TablistUpdateEventPacketHandlers {
 
     public static void registerHandlers() {
-
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundPlayerInfoUpdatePacket.class, TablistUpdateEventPacketHandlers::processTablistPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundPlayerInfoRemovePacket.class, TablistUpdateEventPacketHandlers::processTablistPacket);
     }
 
     public static boolean tablistBreakOnlyOnce = false;
 
-    public boolean processTablistPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
+    // TODO: properly rebundle the packet instead of splitting it up
+    public static Packet<ClientGamePacketListener> processTablistPacket(DenizenNetworkManagerImpl networkManager, Packet<ClientGamePacketListener> packet) {
         if (!PlayerReceivesTablistUpdateScriptEvent.enabled) {
-            return false;
+            return packet;
         }
         if (packet instanceof ClientboundPlayerInfoUpdatePacket) {
             ClientboundPlayerInfoUpdatePacket infoPacket = (ClientboundPlayerInfoUpdatePacket) packet;
@@ -64,7 +67,7 @@ public class TablistUpdateEventPacketHandlers {
                     tablistBreakOnlyOnce = true;
                     Debug.echoError("Tablist packet processing failed: unknown action " + Joiner.on(", ").join(infoPacket.actions()));
                 }
-                return false;
+                return packet;
             }
             boolean isOverriding = false;
             for (ClientboundPlayerInfoUpdatePacket.Entry update : infoPacket.entries()) {
@@ -78,7 +81,7 @@ public class TablistUpdateEventPacketHandlers {
                 String modeText = update.gameMode() == null ? null : update.gameMode().name();
                 PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.getId(), update.listed(), profile.getName(),
                         update.displayName() == null ? null : FormattedTextHelper.stringify(Handler.componentToSpigot(update.displayName())), modeText, texture, signature, update.latency());
-                PlayerReceivesTablistUpdateScriptEvent.fire(player.getBukkitEntity(), data);
+                PlayerReceivesTablistUpdateScriptEvent.fire(networkManager.player.getBukkitEntity(), data);
                 if (data.modified) {
                     if (!isOverriding) {
                         isOverriding = true;
@@ -86,7 +89,7 @@ public class TablistUpdateEventPacketHandlers {
                             if (priorUpdate == update) {
                                 break;
                             }
-                            oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(priorUpdate)));
+                            networkManager.oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(priorUpdate)));
                         }
                     }
                     if (!data.cancelled) {
@@ -96,14 +99,14 @@ public class TablistUpdateEventPacketHandlers {
                         }
                         ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(newProfile.getId(), newProfile, data.isListed, data.latency, data.gamemode == null ? null : GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
                                 data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE)), update.chatSession());
-                        oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(entry)), genericfuturelistener);
+                        networkManager.oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(entry)));
                     }
                 }
                 else if (isOverriding) {
-                    oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(update)), genericfuturelistener);
+                    networkManager.oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(update)));
                 }
             }
-            return isOverriding;
+            return isOverriding ? null : packet;
         }
         else if (packet instanceof ClientboundPlayerInfoRemovePacket) {
             ClientboundPlayerInfoRemovePacket removePacket = (ClientboundPlayerInfoRemovePacket) packet;
@@ -111,17 +114,16 @@ public class TablistUpdateEventPacketHandlers {
             List<UUID> altIds = new ArrayList<>(((ClientboundPlayerInfoRemovePacket) packet).profileIds());
             for (UUID id : ((ClientboundPlayerInfoRemovePacket) packet).profileIds()) {
                 PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData("remove", id, false, null, null, null, null, null, 0);
-                PlayerReceivesTablistUpdateScriptEvent.fire(player.getBukkitEntity(), data);
+                PlayerReceivesTablistUpdateScriptEvent.fire(networkManager.player.getBukkitEntity(), data);
                 if (data.modified && data.cancelled) {
                     modified = true;
                     altIds.remove(id);
                 }
             }
             if (modified) {
-                oldManager.send(new ClientboundPlayerInfoRemovePacket(altIds), genericfuturelistener);
-                return true;
+                return new ClientboundPlayerInfoRemovePacket(altIds);
             }
         }
-        return false;
+        return packet;
     }
 }

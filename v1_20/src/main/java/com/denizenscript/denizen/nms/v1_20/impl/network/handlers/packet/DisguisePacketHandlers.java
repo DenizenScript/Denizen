@@ -2,13 +2,13 @@ package com.denizenscript.denizen.nms.v1_20.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -26,7 +26,12 @@ import java.util.UUID;
 public class DisguisePacketHandlers {
 
     public static void registerHandlers() {
-
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundSetEntityDataPacket.class, DisguisePacketHandlers::processDisguiseForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundUpdateAttributesPacket.class, DisguisePacketHandlers::processDisguiseForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddPlayerPacket.class, DisguisePacketHandlers::processDisguiseForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddEntityPacket.class, DisguisePacketHandlers::processDisguiseForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundTeleportEntityPacket.class, DisguisePacketHandlers::processDisguiseForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandlerForChildren(ClientboundMoveEntityPacket.class, DisguisePacketHandlers::processDisguiseForPacket);
     }
 
     public static Field ENTITY_ID_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_id, int.class);
@@ -36,11 +41,11 @@ public class DisguisePacketHandlers {
     public static Field YAW_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_yRot, byte.class);
     public static Field PITCH_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_xRot, byte.class);
 
-    private boolean antiDuplicate = false;
+    private static boolean antiDuplicate = false;
 
-    public boolean processDisguiseForPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
+    public static Packet<ClientGamePacketListener> processDisguiseForPacket(DenizenNetworkManagerImpl networkManager, Packet<ClientGamePacketListener> packet) {
         if (DisguiseCommand.disguises.isEmpty() || antiDuplicate) {
-            return false;
+            return packet;
         }
         try {
             int entityID = -1;
@@ -60,39 +65,39 @@ public class DisguisePacketHandlers {
                 entityID = teleportEntityPacket.getId();
             }
             else if (packet instanceof ClientboundMoveEntityPacket moveEntityPacket) {
-                Entity e = moveEntityPacket.getEntity(player.level());
+                Entity e = moveEntityPacket.getEntity(networkManager.player.level());
                 if (e != null) {
                     entityID = e.getId();
                 }
             }
             if (entityID == -1) {
-                return false;
+                return packet;
             }
-            Entity entity = player.level().getEntity(entityID);
+            Entity entity = networkManager.player.level().getEntity(entityID);
             if (entity == null) {
-                return false;
+                return packet;
             }
             HashMap<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(entity.getUUID());
             if (playerMap == null) {
-                return false;
+                return packet;
             }
-            DisguiseCommand.TrackedDisguise disguise = playerMap.get(player.getUUID());
+            DisguiseCommand.TrackedDisguise disguise = playerMap.get(networkManager.player.getUUID());
             if (disguise == null) {
                 disguise = playerMap.get(null);
                 if (disguise == null) {
-                    return false;
+                    return packet;
                 }
             }
             if (!disguise.isActive) {
-                return false;
+                return packet;
             }
             if (NMSHandler.debugPackets) {
-                doPacketOutput("DISGUISED packet " + packet.getClass().getName() + " for entity " + entityID + " to player " + player.getScoreboardName());
+                DenizenNetworkManagerImpl.doPacketOutput("DISGUISED packet " + packet.getClass().getName() + " for entity " + entityID + " to player " + networkManager.player.getScoreboardName());
             }
             if (packet instanceof ClientboundSetEntityDataPacket metadataPacket) {
-                if (entityID == player.getId()) {
+                if (entityID == networkManager.player.getId()) {
                     if (!disguise.shouldFake) {
-                        return false;
+                        return packet;
                     }
                     List<SynchedEntityData.DataValue<?>> data = metadataPacket.packedItems();
                     for (SynchedEntityData.DataValue<?> dataValue : data) {
@@ -103,30 +108,26 @@ public class DisguisePacketHandlers {
                             flags |= 0x20; // Invisible flag
                             data.add(new SynchedEntityData.DataValue(dataValue.id(), dataValue.serializer(), flags));
                             ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(metadataPacket.id(), data);
-                            ClientboundSetEntityDataPacket updatedPacket = getModifiedMetadataFor(altPacket);
-                            oldManager.send(updatedPacket == null ? altPacket : updatedPacket, genericfuturelistener);
-                            return true;
+                            ClientboundSetEntityDataPacket updatedPacket = EntityMetadataPacketHandlers.getModifiedMetadataFor(networkManager, altPacket);
+                            return updatedPacket == null ? altPacket : updatedPacket;
                         }
                     }
                 }
                 else {
                     List<SynchedEntityData.DataValue<?>> data = ((CraftEntity) disguise.toOthers.entity.entity).getHandle().getEntityData().getNonDefaultValues();
-                    if (data != null) {
-                        oldManager.send(new ClientboundSetEntityDataPacket(entityID, data), genericfuturelistener);
-                    }
-                    return true;
+                    return data != null ? new ClientboundSetEntityDataPacket(entityID, data) : null;
                 }
-                return false;
+                return packet;
             }
             else if (packet instanceof ClientboundUpdateAttributesPacket) {
-                FakeEntity fake = entityID == player.getId() ? disguise.fakeToSelf : disguise.toOthers;
+                FakeEntity fake = entityID == networkManager.player.getId() ? disguise.fakeToSelf : disguise.toOthers;
                 if (fake == null) {
-                    return false;
+                    return packet;
                 }
                 if (fake.entity.entity instanceof LivingEntity) {
-                    return false;
+                    return packet;
                 }
-                return true; // Non-living don't have attributes
+                return null; // Non-living don't have attributes
             }
             else if (packet instanceof ClientboundTeleportEntityPacket) {
                 if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
@@ -138,8 +139,7 @@ public class DisguisePacketHandlers {
                     POS_Z_PACKTELENT.setDouble(pNew, pOld.getZ());
                     YAW_PACKTELENT.setByte(pNew, EntityAttachmentHelper.adaptedCompressedAngle(pOld.getyRot(), 180));
                     PITCH_PACKTELENT.setByte(pNew, pOld.getxRot());
-                    oldManager.send(pNew, genericfuturelistener);
-                    return true;
+                    return pNew;
                 }
             }
             else if (packet instanceof ClientboundMoveEntityPacket) {
@@ -153,21 +153,20 @@ public class DisguisePacketHandlers {
                         pNew = new ClientboundMoveEntityPacket.PosRot(entityID, pOld.getXa(), pOld.getYa(), pOld.getZa(), EntityAttachmentHelper.adaptedCompressedAngle(pOld.getyRot(), 180), pOld.getxRot(), pOld.isOnGround());
                     }
                     if (pNew != null) {
-                        oldManager.send(pNew, genericfuturelistener);
-                        return true;
+                        return pNew;
                     }
-                    return false;
+                    return packet;
                 }
             }
             antiDuplicate = true;
-            disguise.sendTo(List.of(new PlayerTag(player.getUUID())));
+            disguise.sendTo(List.of(new PlayerTag(networkManager.player.getUUID())));
             antiDuplicate = false;
-            return true;
+            return null;
         }
         catch (Throwable ex) {
             antiDuplicate = false;
             Debug.echoError(ex);
         }
-        return false;
+        return packet;
     }
 }
