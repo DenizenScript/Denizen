@@ -70,14 +70,6 @@ public class DenizenNetworkManagerImpl extends Connection {
         });
     }
 
-    public static <T extends Packet<ClientGamePacketListener>> void registerPacketHandlerForChildren(Class<T> parentPacketClass, PacketHandler<T> handler) {
-        for (Class<?> childClass : parentPacketClass.getDeclaredClasses()) {
-            if (parentPacketClass.isAssignableFrom(childClass)) {
-                registerPacketHandler((Class<T>) childClass, handler);
-            }
-        }
-    }
-
     public final Connection oldManager;
     public final DenizenPacketListenerImpl packetListener;
     public final ServerPlayer player;

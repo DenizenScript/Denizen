@@ -31,7 +31,8 @@ public class DisguisePacketHandlers {
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddPlayerPacket.class, DisguisePacketHandlers::processDisguiseForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddEntityPacket.class, DisguisePacketHandlers::processDisguiseForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundTeleportEntityPacket.class, DisguisePacketHandlers::processDisguiseForPacket);
-        DenizenNetworkManagerImpl.registerPacketHandlerForChildren(ClientboundMoveEntityPacket.class, DisguisePacketHandlers::processDisguiseForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundMoveEntityPacket.Rot.class, DisguisePacketHandlers::processDisguiseForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundMoveEntityPacket.PosRot.class, DisguisePacketHandlers::processDisguiseForPacket);
     }
 
     public static Field ENTITY_ID_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_id, int.class);

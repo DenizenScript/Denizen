@@ -14,7 +14,9 @@ public class HiddenEntitiesPacketHandlers {
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddPlayerPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddEntityPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddExperienceOrbPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
-        DenizenNetworkManagerImpl.registerPacketHandlerForChildren(ClientboundMoveEntityPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundMoveEntityPacket.Rot.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundMoveEntityPacket.Pos.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundMoveEntityPacket.PosRot.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundSetEntityDataPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundSetEntityMotionPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundTeleportEntityPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
