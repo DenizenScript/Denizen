@@ -33,7 +33,7 @@ public class FakeSpawnCommand extends AbstractCommand {
     // @Name FakeSpawn
     // @Syntax fakespawn [<entity>] [<location>/cancel] (players:<player>|...) (duration:<duration>{10s}) (mount_to:<entity>)
     // @Required 2
-    // @Maximum 4
+    // @Maximum 5
     // @Short Makes the player see a fake entity spawn that didn't actually happen.
     // @Group player
     //
