@@ -51,9 +51,12 @@ public class FakeEntity {
         this.id = id;
     }
 
-    public static FakeEntity showFakeEntityTo(List<PlayerTag> players, EntityTag typeToSpawn, LocationTag location, DurationTag duration) {
+    public static FakeEntity showFakeEntityTo(List<PlayerTag> players, EntityTag typeToSpawn, LocationTag location, DurationTag duration, EntityTag vehicle) {
         NetworkInterceptHelper.enable();
         FakeEntity fakeEntity = NMSHandler.playerHelper.sendEntitySpawn(players, typeToSpawn.getEntityType(), location, typeToSpawn.mechanisms == null ? null : new ArrayList<>(typeToSpawn.mechanisms), -1, null, true);
+        if (vehicle != null) {
+            NMSHandler.playerHelper.addFakePassenger(players, vehicle.getBukkitEntity(), fakeEntity);
+        }
         idsToEntities.put(fakeEntity.overrideUUID == null ? fakeEntity.entity.getUUID() : fakeEntity.overrideUUID, fakeEntity);
         for (PlayerTag player : players) {
             UUID uuid = player.getPlayerEntity().getUniqueId();
