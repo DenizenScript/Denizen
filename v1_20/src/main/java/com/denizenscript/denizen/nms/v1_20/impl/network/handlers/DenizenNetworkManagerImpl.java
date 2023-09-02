@@ -285,9 +285,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             boolean anyChange = false;
             for (Packet<ClientGamePacketListener> subPacket : bundlePacket.subPackets()) {
                 Packet<ClientGamePacketListener> processed = processPacketHandlersFor(subPacket);
-                if (!anyChange) {
-                    anyChange = processed != subPacket;
-                }
+                anyChange = anyChange || processed != subPacket;
                 if (processed != null) {
                     processedPackets.add(processed);
                 }
