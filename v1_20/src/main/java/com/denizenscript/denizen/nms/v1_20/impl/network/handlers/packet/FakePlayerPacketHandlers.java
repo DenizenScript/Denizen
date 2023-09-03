@@ -17,8 +17,7 @@ public class FakePlayerPacketHandlers {
     }
 
     public static void processAddPlayerPacket(DenizenNetworkManagerImpl networkManager, ClientboundAddPlayerPacket addPlayerPacket) {
-        int id = addPlayerPacket.getEntityId();
-        if (id != -1 && networkManager.player.level().getEntity(id) instanceof EntityFakePlayerImpl fakePlayer) {
+        if (networkManager.player.level().getEntity(addPlayerPacket.getEntityId()) instanceof EntityFakePlayerImpl fakePlayer) {
             networkManager.send(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, fakePlayer));
             Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(),
                     () -> networkManager.send(new ClientboundPlayerInfoRemovePacket(List.of(fakePlayer.getUUID()))), 5);
