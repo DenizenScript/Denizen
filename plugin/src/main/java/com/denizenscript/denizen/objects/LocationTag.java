@@ -4372,11 +4372,14 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @name waxed
             // @input ElementTag(Boolean)
             // @description
-            // Sets whether the sign at the location is waxed.
+            // Sets whether the sign at the location is waxed (locked to prevent players editing the text).
             // @tags
             // <LocationTag.waxed>
             // -->
             tagProcessor.registerMechanism("waxed", false, ElementTag.class, (object, mechanism, value) -> {
+                if (!mechanism.requireBoolean()) {
+                    return;
+                }
                 if (!(object.getBlockState() instanceof Sign sign)) {
                     mechanism.echoError("'waxed' mechanism can only be called on Sign blocks.");
                     return;
