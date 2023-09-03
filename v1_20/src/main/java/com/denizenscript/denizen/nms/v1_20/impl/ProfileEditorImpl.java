@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
@@ -56,7 +57,6 @@ public class ProfileEditorImpl extends ProfileEditor {
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundPlayerInfoUpdatePacket.class, ProfileEditorImpl::processPlayerInfoUpdatePacket);
     }
 
-    // TODO: properly rebundle the packet instead of splitting it up
     public static ClientboundPlayerInfoUpdatePacket processPlayerInfoUpdatePacket(DenizenNetworkManagerImpl networkManager, ClientboundPlayerInfoUpdatePacket playerInfoUpdatePacket) {
         if (ProfileEditor.mirrorUUIDs.isEmpty() && !RenameCommand.hasAnyDynamicRenames() && fakeProfiles.isEmpty()) {
             return playerInfoUpdatePacket;
@@ -65,44 +65,42 @@ public class ProfileEditorImpl extends ProfileEditor {
         if (!actions.contains(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER) && !actions.contains(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME)) {
             return playerInfoUpdatePacket;
         }
-        try {
-            boolean any = false;
-            for (ClientboundPlayerInfoUpdatePacket.Entry entry : playerInfoUpdatePacket.entries()) {
-                if (ProfileEditor.mirrorUUIDs.contains(entry.profileId()) || RenameCommand.customNames.containsKey(entry.profileId()) || fakeProfiles.containsKey(entry.profileId())) {
-                    any = true;
-                    break;
-                }
+        boolean any = false;
+        for (ClientboundPlayerInfoUpdatePacket.Entry entry : playerInfoUpdatePacket.entries()) {
+            if (shouldChange(entry)) {
+                any = true;
+                break;
             }
-            if (!any) {
-                return playerInfoUpdatePacket;
-            }
-            GameProfile ownProfile = networkManager.player.getGameProfile();
-            for (ClientboundPlayerInfoUpdatePacket.Entry data : playerInfoUpdatePacket.entries()) {
-                if (!ProfileEditor.mirrorUUIDs.contains(data.profileId()) && !RenameCommand.customNames.containsKey(data.profileId()) && !fakeProfiles.containsKey(data.profileId())) {
-                    networkManager.oldManager.send(createInfoPacket(actions, List.of(data)));
-                }
-                else {
-                    String rename = RenameCommand.getCustomNameFor(data.profileId(), networkManager.player.getBukkitEntity(), false);
-                    GameProfile baseProfile = fakeProfiles.containsKey(data.profileId()) ? getGameProfile(fakeProfiles.get(data.profileId())) : data.profile();
-                    GameProfile patchedProfile = new GameProfile(baseProfile.getId(), rename != null ? (rename.length() > 16 ? rename.substring(0, 16) : rename) : baseProfile.getName());
-                    if (ProfileEditor.mirrorUUIDs.contains(data.profileId())) {
-                        patchedProfile.getProperties().putAll(ownProfile.getProperties());
-                    }
-                    else {
-                        patchedProfile.getProperties().putAll(baseProfile.getProperties());
-                    }
-                    String listRename = RenameCommand.getCustomNameFor(data.profileId(), networkManager.player.getBukkitEntity(), true);
-                    Component displayName = listRename != null ? Handler.componentToNMS(FormattedTextHelper.parse(listRename, ChatColor.WHITE)) : data.displayName();
-                    ClientboundPlayerInfoUpdatePacket.Entry newData = new ClientboundPlayerInfoUpdatePacket.Entry(data.profileId(), patchedProfile, data.listed(), data.latency(), data.gameMode(), displayName, data.chatSession());
-                    networkManager.oldManager.send(createInfoPacket(actions, List.of(newData)));
-                }
-            }
-            return null;
         }
-        catch (Exception e) {
-            Debug.echoError(e);
+        if (!any) {
             return playerInfoUpdatePacket;
         }
+        GameProfile ownProfile = networkManager.player.getGameProfile();
+        List<ClientboundPlayerInfoUpdatePacket.Entry> modifiedEntries = new ArrayList<>(playerInfoUpdatePacket.entries().size());
+        for (ClientboundPlayerInfoUpdatePacket.Entry entry : playerInfoUpdatePacket.entries()) {
+            if (!shouldChange(entry)) {
+                modifiedEntries.add(entry);
+                continue;
+            }
+            String rename = RenameCommand.getCustomNameFor(entry.profileId(), networkManager.player.getBukkitEntity(), false);
+            GameProfile baseProfile = fakeProfiles.containsKey(entry.profileId()) ? getGameProfile(fakeProfiles.get(entry.profileId())) : entry.profile();
+            GameProfile modifiedProfile = new GameProfile(baseProfile.getId(), rename != null ? (rename.length() > 16 ? rename.substring(0, 16) : rename) : baseProfile.getName());
+            if (ProfileEditor.mirrorUUIDs.contains(entry.profileId())) {
+                modifiedProfile.getProperties().putAll(ownProfile.getProperties());
+            }
+            else {
+                modifiedProfile.getProperties().putAll(baseProfile.getProperties());
+            }
+            String listRename = RenameCommand.getCustomNameFor(entry.profileId(), networkManager.player.getBukkitEntity(), true);
+            Component displayName = listRename != null ? Handler.componentToNMS(FormattedTextHelper.parse(listRename, ChatColor.WHITE)) : entry.displayName();
+            ClientboundPlayerInfoUpdatePacket.Entry modifiedEntry = new ClientboundPlayerInfoUpdatePacket.Entry(entry.profileId(), modifiedProfile, entry.listed(), entry.latency(), entry.gameMode(), displayName, entry.chatSession());
+            modifiedEntries.add(modifiedEntry);
+        }
+        return createInfoPacket(actions, modifiedEntries);
+    }
+
+    public static boolean shouldChange(ClientboundPlayerInfoUpdatePacket.Entry entry) {
+        return ProfileEditor.mirrorUUIDs.contains(entry.profileId()) || RenameCommand.customNames.containsKey(entry.profileId()) || fakeProfiles.containsKey(entry.profileId());
     }
 
     public static final Field ClientboundPlayerInfoUpdatePacket_entries = ReflectionHelper.getFields(ClientboundPlayerInfoUpdatePacket.class).getFirstOfType(List.class);
