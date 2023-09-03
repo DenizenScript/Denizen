@@ -16,10 +16,10 @@ public class ActionBarEventPacketHandlers {
     }
 
     public static ClientboundSetActionBarTextPacket processActionbarPacket(DenizenNetworkManagerImpl networkManager, ClientboundSetActionBarTextPacket actionbarPacket) {
-        if (!PlayerReceivesActionbarScriptEvent.instance.loaded) {
+        PlayerReceivesActionbarScriptEvent event = PlayerReceivesActionbarScriptEvent.instance;
+        if (!event.loaded) {
             return actionbarPacket;
         }
-        PlayerReceivesActionbarScriptEvent event = PlayerReceivesActionbarScriptEvent.instance;
         event.reset();
         Component actionbarText = actionbarPacket.getText();
         event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(actionbarText)), true);
