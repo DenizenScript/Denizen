@@ -2963,6 +2963,30 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 NMSHandler.entityHelper.setPose(object.getBukkitEntity(), input.asEnum(Pose.class));
             }
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+
+            // <--[mechanism]
+            // @object EntityTag
+            // @name play_hurt_animation
+            // @input ElementTag(Decimal)
+            // @description
+            // Plays a hurt animation that makes the entity flash red. When the entity is a player, you can change the direction the camera rotates.
+            // Damage direction is relative to the player, where 0 is in front, 90 is to the right, 180 is behind, and 270 is to the left.
+            // For versions 1.19 or below, use <@link command animate>.
+            // @example
+            // # The player's camera will rotate as if the player took damage from the right.
+            // - adjust <player> play_hurt_animation:90
+            // @example
+            // # This will flash the entity red as if it took damage.
+            // - adjust <[entity]> play_hurt_animation:0
+            // -->
+            registerSpawnedOnlyMechanism("play_hurt_animation", false, ElementTag.class, (object, mechanism, value) -> {
+                if (mechanism.requireFloat()) {
+                    object.getLivingEntity().playHurtAnimation(value.asFloat());
+                }
+            });
+        }
     }
 
     public EntityTag describe(TagContext context) {
