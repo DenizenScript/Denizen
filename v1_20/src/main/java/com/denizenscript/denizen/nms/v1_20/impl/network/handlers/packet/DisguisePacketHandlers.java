@@ -19,8 +19,8 @@ import org.bukkit.entity.LivingEntity;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.ToIntFunction;
@@ -59,18 +59,15 @@ public class DisguisePacketHandlers {
             if (entity == null) {
                 return packet;
             }
-            HashMap<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(entity.getUUID());
+            Map<UUID, DisguiseCommand.TrackedDisguise> playerMap = DisguiseCommand.disguises.get(entity.getUUID());
             if (playerMap == null) {
                 return packet;
             }
             DisguiseCommand.TrackedDisguise disguise = playerMap.get(networkManager.player.getUUID());
             if (disguise == null) {
                 disguise = playerMap.get(null);
-                if (disguise == null) {
-                    return packet;
-                }
             }
-            if (!disguise.isActive) {
+            if (disguise == null || !disguise.isActive) {
                 return packet;
             }
             if (NMSHandler.debugPackets) {
