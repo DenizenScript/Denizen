@@ -12,6 +12,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.ToIntBiFunction;
+import java.util.function.BiFunction;
 import java.util.function.ToIntFunction;
 
 public class DisguisePacketHandlers {
@@ -32,14 +33,8 @@ public class DisguisePacketHandlers {
         registerPacketHandler(ClientboundAddPlayerPacket.class, ClientboundAddPlayerPacket::getEntityId, DisguisePacketHandlers::sendDisguiseForPacket);
         registerPacketHandler(ClientboundAddEntityPacket.class, ClientboundAddEntityPacket::getId, DisguisePacketHandlers::sendDisguiseForPacket);
         registerPacketHandler(ClientboundTeleportEntityPacket.class, ClientboundTeleportEntityPacket::getId, DisguisePacketHandlers::processTeleportPacket);
-        registerPacketHandler(ClientboundMoveEntityPacket.Rot.class, (networkManager, moveEntityPacket) -> {
-            Entity entity = moveEntityPacket.getEntity(networkManager.player.level());
-            return entity != null ? entity.getId() : -1;
-        }, DisguisePacketHandlers::processMoveEntityRotPacket);
-        registerPacketHandler(ClientboundMoveEntityPacket.PosRot.class, (networkManager, moveEntityPacket) -> {
-            Entity entity = moveEntityPacket.getEntity(networkManager.player.level());
-            return entity != null ? entity.getId() : -1;
-        }, DisguisePacketHandlers::processMoveEntityPosRotPacket);
+        registerPacketHandler(ClientboundMoveEntityPacket.Rot.class, ClientboundMoveEntityPacket::getEntity, DisguisePacketHandlers::processMoveEntityRotPacket);
+        registerPacketHandler(ClientboundMoveEntityPacket.PosRot.class, ClientboundMoveEntityPacket::getEntity, DisguisePacketHandlers::processMoveEntityPosRotPacket);
     }
 
     public static Field ENTITY_ID_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_id, int.class);
@@ -52,15 +47,15 @@ public class DisguisePacketHandlers {
     private static boolean antiDuplicate = false;
 
     public static <T extends Packet<ClientGamePacketListener>> void registerPacketHandler(Class<T> packetType, ToIntFunction<T> idGetter, DisguisePacketHandler<T> handler) {
-        registerPacketHandler(packetType, (networkManager, packet) -> idGetter.applyAsInt(packet), handler);
+        registerPacketHandler(packetType, (packet, level) -> level.getEntity(idGetter.applyAsInt(packet)), handler);
     }
 
-    public static <T extends Packet<ClientGamePacketListener>> void registerPacketHandler(Class<T> packetType, ToIntBiFunction<DenizenNetworkManagerImpl, T> idGetter, DisguisePacketHandler<T> handler) {
+    public static <T extends Packet<ClientGamePacketListener>> void registerPacketHandler(Class<T> packetType, BiFunction<T, Level, Entity> entityGetter, DisguisePacketHandler<T> handler) {
         DenizenNetworkManagerImpl.registerPacketHandler(packetType, (networkManager, packet) -> {
             if (DisguiseCommand.disguises.isEmpty() || antiDuplicate) {
                 return packet;
             }
-            Entity entity = networkManager.player.level().getEntity(idGetter.applyAsInt(networkManager, packet));
+            Entity entity = entityGetter.apply(packet, networkManager.player.level());
             if (entity == null) {
                 return packet;
             }
