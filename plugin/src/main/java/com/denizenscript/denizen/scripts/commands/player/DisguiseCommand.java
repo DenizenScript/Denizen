@@ -156,7 +156,7 @@ public class DisguiseCommand extends AbstractCommand {
             if (!player.isOnline()) {
                 return;
             }
-            fakeToSelf = FakeEntity.showFakeEntityTo(Collections.singletonList(player), as, player.getLocation(), null);
+            fakeToSelf = FakeEntity.showFakeEntityTo(Collections.singletonList(player), as, player.getLocation(), null, null);
             NMSHandler.packetHelper.generateNoCollideTeam(player.getPlayerEntity(), fakeToSelf.entity.getUUID());
             NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player.getPlayerEntity(), player.getPlayerEntity());
             new BukkitRunnable() {

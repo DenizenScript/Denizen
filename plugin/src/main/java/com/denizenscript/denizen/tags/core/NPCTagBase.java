@@ -283,7 +283,7 @@ public class NPCTagBase implements Listener {
     // -->
     @EventHandler(priority = EventPriority.MONITOR)
     public void onHit(EntityDamageByEntityEvent event) {
-        NPC citizen = CitizensAPI.getNPCRegistry().getNPC(event.getEntity());
+        NPC citizen = CitizensAPI.getNPCRegistry().getNPC(event.getDamager());
         if (citizen == null) {
             if (event.getDamager() instanceof Projectile) {
                 if (((Projectile) event.getDamager()).getShooter() instanceof Entity) {

@@ -95,6 +95,9 @@ public class ReflectionMappingsInfo {
     // net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
     public static String ClientboundSetEntityMotionPacket_id = "a";
 
+    // net.minecraft.network.protocol.game.ClientboundSetPassengersPacket
+    public static String ClientboundSetPassengersPacket_passengers = "b";
+
     // net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket
     public static String ClientboundTeleportEntityPacket_id = "a";
     public static String ClientboundTeleportEntityPacket_x = "b";

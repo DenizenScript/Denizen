@@ -73,6 +73,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BlockGrowsScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockIgnitesScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockPhysicsScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockShearEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockSpreadsScriptEvent.class);
         ScriptEvent.registerScriptEvent(BrewingStandFueledScriptEvent.class);
         ScriptEvent.registerScriptEvent(BrewsScriptEvent.class);

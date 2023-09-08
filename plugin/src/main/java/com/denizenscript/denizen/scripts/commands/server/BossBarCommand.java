@@ -187,7 +187,7 @@ public class BossBarCommand extends AbstractCommand {
                 break;
             }
             case REMOVE: {
-                bossBar = bossBarMap.remove(idString);
+                bossBar = bossBarMap.get(idString);
                 if (bossBar == null) {
                     Debug.echoError("BossBar '" + idString + "' does not exist!");
                     return;
@@ -199,6 +199,7 @@ public class BossBarCommand extends AbstractCommand {
                     break;
                 }
                 bossBar.setVisible(false);
+                bossBarMap.remove(idString);
                 break;
             }
         }

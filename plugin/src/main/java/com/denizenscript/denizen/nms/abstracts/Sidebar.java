@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.abstracts;
 
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Player;
 
@@ -22,15 +23,31 @@ public abstract class Sidebar {
     }
 
     public static final int MAX_LENGTH = 15;
+    public static final String[] firstIds = new String[MAX_LENGTH];
+    public static final String[] secondIds = new String[MAX_LENGTH];
+
+    static {
+        for (int i = 0; i < MAX_LENGTH; i++) {
+            firstIds[i] = Utilities.generateRandomColors(8);
+            secondIds[i] = Utilities.generateRandomColors(8);
+        }
+    }
+
     protected final Player player;
     protected String title;
     protected String[] lines = new String[MAX_LENGTH];
     protected int[] scores = new int[MAX_LENGTH];
+    protected String[] currentIds = null;
     public int setCount = 0;
 
     public Sidebar(Player player) {
         this.player = player;
         setTitle("");
+    }
+
+    public String[] getIds() {
+        currentIds = currentIds == firstIds ? secondIds : firstIds;
+        return currentIds;
     }
 
     public String getTitle() {

@@ -1,12 +1,12 @@
 package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -31,13 +31,13 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
     // @Triggers when an entity picks up an item.
     //
     // @Context
-    // <context.item> returns the ItemTag.
-    // <context.entity> returns the EntityTag of the item being picked up.
-    // <context.pickup_entity> returns the EntityTag of the entity picking up the item.
+    // <context.item> returns an ItemTag of the item being picked up.
+    // <context.entity> returns an EntityTag of the item entity being picked up.
+    // <context.pickup_entity> returns an EntityTag of the entity picking up the item.
     // <context.location> returns a LocationTag of the item's location.
     //
     // @Determine
-    // "ITEM:<ItemTag>" to changed the item being picked up.
+    // "ITEM:<ItemTag>" to change the item being picked up.
     //
     // @Player when the entity picking up the item is a player.
     //
@@ -48,11 +48,15 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
     public EntityPicksUpItemScriptEvent() {
         registerCouldMatcher("<entity> picks up <item>");
         registerCouldMatcher("<entity> takes <item>");
+        this.<EntityPicksUpItemScriptEvent, ItemTag>registerDetermination("item", ItemTag.class, (evt, context, item) -> {
+            editedItems.add(event.getItem().getUniqueId());
+            evt.event.getItem().setItemStack(item.getItemStack());
+            evt.event.setCancelled(true);
+        });
     }
 
     public ItemTag item;
     public EntityTag entity;
-    public LocationTag location;
     public EntityPickupItemEvent event;
 
     private static final Set<UUID> editedItems = new HashSet<>();
@@ -62,27 +66,13 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
         if (!path.tryArgObject(0, entity)) {
             return false;
         }
-        if (!item.tryAdvancedMatcher(path.eventArgLowerAt(path.eventArgLowerAt(1).equals("picks") ? 3 : 2))) {
+        if (!path.tryArgObject(path.eventArgLowerAt(1).equals("picks") ? 3 : 2, item)) {
             return false;
         }
-        if (!runInCheck(path, location)) {
+        if (!runInCheck(path, event.getItem().getLocation())) {
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        String lower = CoreUtilities.toLowerCase(determination);
-        if (lower.startsWith("item:")) {
-            item = ItemTag.valueOf(determination.substring("item:".length()), path.container);
-            editedItems.add(event.getItem().getUniqueId());
-            event.getItem().setItemStack(item.getItemStack());
-            event.setCancelled(true);
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
@@ -92,30 +82,22 @@ public class EntityPicksUpItemScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "item":
-                return item;
-            case "entity":
-                return new EntityTag(event.getItem());
-            case "pickup_entity":
-                return entity;
-            case "location":
-                return location;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "item" -> item;
+            case "entity" -> new EntityTag(event.getItem());
+            case "pickup_entity" -> entity.getDenizenObject();
+            case "location" -> new LocationTag(event.getItem().getLocation());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
     public void onEntityPicksUpItem(EntityPickupItemEvent event) {
-        entity = new EntityTag(event.getEntity());
-        Item itemEntity = event.getItem();
-        UUID itemUUID = itemEntity.getUniqueId();
-        if (editedItems.contains(itemUUID)) {
-            editedItems.remove(itemUUID);
+        if (editedItems.remove(event.getItem().getUniqueId())) {
             return;
         }
-        location = new LocationTag(itemEntity.getLocation());
-        item = new ItemTag(itemEntity.getItemStack());
+        entity = new EntityTag(event.getEntity());
+        item = new ItemTag(event.getItem().getItemStack());
         this.event = event;
         fire(event);
     }

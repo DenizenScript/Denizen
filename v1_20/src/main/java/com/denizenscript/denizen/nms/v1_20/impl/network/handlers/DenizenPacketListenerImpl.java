@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_20.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerChangesSignScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerSteersEntityScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_20.impl.network.packets.PacketInResourcePackStatusImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.network.packets.PacketInSteerVehicleImpl;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -9,13 +10,13 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizen.nms.NMSHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
 import org.bukkit.event.block.SignChangeEvent;
 
 import java.nio.charset.StandardCharsets;
@@ -100,13 +101,11 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void handleSignUpdate(ServerboundSignUpdatePacket packet) {
         if (fakeSignExpected != null && packet.getPos().equals(fakeSignExpected)) {
-            fakeSignExpected = null;
             PlayerChangesSignScriptEvent evt = (PlayerChangesSignScriptEvent) PlayerChangesSignScriptEvent.instance.clone();
             evt.material = new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN);
             evt.location = new LocationTag(player.getBukkitEntity().getLocation());
-            LocationTag loc = evt.location.clone();
-            loc.setY(0);
-            evt.event = new SignChangeEvent(loc.getBlock(), player.getBukkitEntity(), packet.getLines());
+            evt.event = new SignChangeEvent(CraftBlock.at(player.level(), fakeSignExpected), player.getBukkitEntity(), packet.getLines());
+            fakeSignExpected = null;
             evt.fire(evt.event);
         }
         super.handleSignUpdate(packet);
