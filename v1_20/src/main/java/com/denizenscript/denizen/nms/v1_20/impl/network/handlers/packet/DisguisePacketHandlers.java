@@ -114,14 +114,8 @@ public class DisguisePacketHandlers {
     }
 
     public static ClientboundUpdateAttributesPacket processAttributesPacket(DenizenNetworkManagerImpl networkManager, ClientboundUpdateAttributesPacket attributesPacket, DisguiseCommand.TrackedDisguise disguise) {
-        FakeEntity fake = disguise.entity.getBukkitEntity().getEntityId() == networkManager.player.getId() ? disguise.fakeToSelf : disguise.toOthers;
-        if (fake == null) {
-            return attributesPacket;
-        }
-        if (fake.entity.entity instanceof LivingEntity) {
-            return attributesPacket;
-        }
-        return null; // Non-living don't have attributes
+        FakeEntity fake = attributesPacket.getEntityId() == networkManager.player.getId() ? disguise.fakeToSelf : disguise.toOthers;
+        return fake == null || fake.entity.entity instanceof LivingEntity ? attributesPacket : null; // Non-living entities don't have attributes
     }
 
     public static ClientboundTeleportEntityPacket processTeleportPacket(DenizenNetworkManagerImpl networkManager, ClientboundTeleportEntityPacket teleportEntityPacket, DisguiseCommand.TrackedDisguise disguise) throws IllegalAccessException {
