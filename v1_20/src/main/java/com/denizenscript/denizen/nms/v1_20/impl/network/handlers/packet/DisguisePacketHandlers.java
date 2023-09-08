@@ -129,8 +129,7 @@ public class DisguisePacketHandlers {
             TELEPORT_PACKET_PITCH.setByte(pNew, teleportEntityPacket.getxRot());
             return pNew;
         }
-        sendDisguise(networkManager, disguise);
-        return null;
+        return sendDisguiseForPacket(networkManager, teleportEntityPacket, disguise);
     }
 
 
@@ -138,8 +137,7 @@ public class DisguisePacketHandlers {
         if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
             return new ClientboundMoveEntityPacket.Rot(disguise.entity.getBukkitEntity().getEntityId(), EntityAttachmentHelper.adaptedCompressedAngle(rotPacket.getyRot(), 180), rotPacket.getxRot(), rotPacket.isOnGround());
         }
-        sendDisguise(networkManager, disguise);
-        return null;
+        return sendDisguiseForPacket(networkManager, rotPacket, disguise);
     }
 
 
@@ -147,18 +145,13 @@ public class DisguisePacketHandlers {
         if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
             return new ClientboundMoveEntityPacket.PosRot(disguise.entity.getBukkitEntity().getEntityId(), posRotPacket.getXa(), posRotPacket.getYa(), posRotPacket.getZa(), EntityAttachmentHelper.adaptedCompressedAngle(posRotPacket.getyRot(), 180), posRotPacket.getxRot(), posRotPacket.isOnGround());
         }
-        sendDisguise(networkManager, disguise);
-        return null;
+        return sendDisguiseForPacket(networkManager, posRotPacket, disguise);
     }
 
     public static <T extends Packet<ClientGamePacketListener>> T sendDisguiseForPacket(DenizenNetworkManagerImpl networkManager, T packet, DisguiseCommand.TrackedDisguise disguise) {
-        sendDisguise(networkManager, disguise);
-        return null;
-    }
-
-    public static void sendDisguise(DenizenNetworkManagerImpl networkManager, DisguiseCommand.TrackedDisguise disguise) {
         antiDuplicate = true;
         disguise.sendTo(List.of(new PlayerTag(networkManager.player.getUUID())));
         antiDuplicate = false;
+        return null;
     }
 }
