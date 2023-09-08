@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v1_20.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v1_20.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
@@ -90,27 +91,24 @@ public class DisguisePacketHandlers {
     }
 
     public static ClientboundSetEntityDataPacket processEntityDataPacket(DenizenNetworkManagerImpl networkManager, ClientboundSetEntityDataPacket entityDataPacket, DisguiseCommand.TrackedDisguise disguise) {
-        if (disguise.entity.getBukkitEntity().getEntityId() == networkManager.player.getId()) {
+        if (entityDataPacket.id() == networkManager.player.getId()) {
             if (!disguise.shouldFake) {
                 return entityDataPacket;
             }
-            List<SynchedEntityData.DataValue<?>> data = entityDataPacket.packedItems();
-            for (SynchedEntityData.DataValue<?> dataValue : data) {
+            for (SynchedEntityData.DataValue<?> dataValue : entityDataPacket.packedItems()) {
                 if (dataValue.id() == 0) { // Entity flags
-                    data = new ArrayList<>(data);
-                    data.remove(dataValue);
+                    List<SynchedEntityData.DataValue<?>> newData = new ArrayList<>(entityDataPacket.packedItems());
+                    newData.remove(dataValue);
                     byte flags = (byte) dataValue.value();
                     flags |= 0x20; // Invisible flag
-                    data.add(new SynchedEntityData.DataValue(dataValue.id(), dataValue.serializer(), flags));
-                    ClientboundSetEntityDataPacket altPacket = new ClientboundSetEntityDataPacket(entityDataPacket.id(), data);
-                    ClientboundSetEntityDataPacket updatedPacket = EntityMetadataPacketHandlers.getModifiedMetadataFor(networkManager, altPacket);
-                    return updatedPacket == null ? altPacket : updatedPacket;
+                    newData.add(PacketHelperImpl.createEntityData(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS, flags));
+                    return new ClientboundSetEntityDataPacket(entityDataPacket.id(), newData);
                 }
             }
         }
         else {
             List<SynchedEntityData.DataValue<?>> data = ((CraftEntity) disguise.toOthers.entity.entity).getHandle().getEntityData().getNonDefaultValues();
-            return data != null ? new ClientboundSetEntityDataPacket(disguise.entity.getBukkitEntity().getEntityId(), data) : null;
+            return data != null ? new ClientboundSetEntityDataPacket(entityDataPacket.id(), data) : null;
         }
         return entityDataPacket;
     }
