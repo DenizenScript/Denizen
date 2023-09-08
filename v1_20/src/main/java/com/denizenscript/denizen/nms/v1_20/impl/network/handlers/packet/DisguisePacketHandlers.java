@@ -38,12 +38,12 @@ public class DisguisePacketHandlers {
         registerPacketHandler(ClientboundMoveEntityPacket.PosRot.class, ClientboundMoveEntityPacket::getEntity, DisguisePacketHandlers::processMoveEntityPosRotPacket);
     }
 
-    public static Field ENTITY_ID_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_id, int.class);
-    public static Field POS_X_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_x, double.class);
-    public static Field POS_Y_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_y, double.class);
-    public static Field POS_Z_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_z, double.class);
-    public static Field YAW_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_yRot, byte.class);
-    public static Field PITCH_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_xRot, byte.class);
+    public static final Field TELEPORT_PACKET_ENTITY_ID = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_id, int.class);
+    public static final Field TELEPORT_PACKET_X = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_x, double.class);
+    public static final Field TELEPORT_PACKET_Y = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_y, double.class);
+    public static final Field TELEPORT_PACKET_Z = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_z, double.class);
+    public static final Field TELEPORT_PACKET_YAW = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_yRot, byte.class);
+    public static final Field TELEPORT_PACKET_PITCH = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_xRot, byte.class);
 
     private static boolean antiDuplicate = false;
 
@@ -121,12 +121,12 @@ public class DisguisePacketHandlers {
     public static ClientboundTeleportEntityPacket processTeleportPacket(DenizenNetworkManagerImpl networkManager, ClientboundTeleportEntityPacket teleportEntityPacket, DisguiseCommand.TrackedDisguise disguise) throws IllegalAccessException {
         if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
             ClientboundTeleportEntityPacket pNew = new ClientboundTeleportEntityPacket(((CraftEntity) disguise.entity.getBukkitEntity()).getHandle());
-            ENTITY_ID_PACKTELENT.setInt(pNew, teleportEntityPacket.getId());
-            POS_X_PACKTELENT.setDouble(pNew, teleportEntityPacket.getX());
-            POS_Y_PACKTELENT.setDouble(pNew, teleportEntityPacket.getY());
-            POS_Z_PACKTELENT.setDouble(pNew, teleportEntityPacket.getZ());
-            YAW_PACKTELENT.setByte(pNew, EntityAttachmentHelper.adaptedCompressedAngle(teleportEntityPacket.getyRot(), 180));
-            PITCH_PACKTELENT.setByte(pNew, teleportEntityPacket.getxRot());
+            TELEPORT_PACKET_ENTITY_ID.setInt(pNew, teleportEntityPacket.getId());
+            TELEPORT_PACKET_X.setDouble(pNew, teleportEntityPacket.getX());
+            TELEPORT_PACKET_Y.setDouble(pNew, teleportEntityPacket.getY());
+            TELEPORT_PACKET_Z.setDouble(pNew, teleportEntityPacket.getZ());
+            TELEPORT_PACKET_YAW.setByte(pNew, EntityAttachmentHelper.adaptedCompressedAngle(teleportEntityPacket.getyRot(), 180));
+            TELEPORT_PACKET_PITCH.setByte(pNew, teleportEntityPacket.getxRot());
             return pNew;
         }
         sendDisguise(networkManager, disguise);
