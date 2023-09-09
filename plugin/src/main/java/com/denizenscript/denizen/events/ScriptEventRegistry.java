@@ -76,7 +76,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BlockShearEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockSpreadsScriptEvent.class);
         ScriptEvent.registerScriptEvent(BrewingStandFueledScriptEvent.class);
-        ScriptEvent.registerScriptEvent(BrewingStartsScriptEvent.class);
         ScriptEvent.registerScriptEvent(BrewsScriptEvent.class);
         ScriptEvent.registerScriptEvent(CauldronLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceBurnsItemScriptEvent.class);
@@ -90,6 +89,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(RedstoneScriptEvent.class);
         ScriptEvent.registerScriptEvent(SpongeAbsorbsScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            ScriptEvent.registerScriptEvent(BrewingStartsScriptEvent.class);
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
 
