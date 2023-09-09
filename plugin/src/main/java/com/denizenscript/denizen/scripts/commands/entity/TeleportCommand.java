@@ -30,7 +30,7 @@ public class TeleportCommand extends AbstractCommand {
 
     public TeleportCommand() {
         setName("teleport");
-        setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative) (relative_axes:<axis>|...) (offthread_repeat:<#>)");
+        setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative) (relative_axes:<axis>|...) (offthread_repeat:<#>) (offthread_yaw) (offthread_pitch)");
         setRequiredArguments(1, 7);
         isProcedural = false;
         autoCompile();
@@ -56,6 +56,7 @@ public class TeleportCommand extends AbstractCommand {
     // Relative teleports are smoother for the client when teleporting over short distances.
     // Optionally, you may use "relative_axes:" to specify a set of axes to move relative on (and other axes will be treated as absolute), as any of "X", "Y", "Z", "YAW", "PITCH".
     // Optionally, you may use "offthread_repeat:" with the relative arg to smooth out the teleport with a specified number of extra async packets sent within a single tick.
+    // Optionally, specify "offthread_yaw" or "offthread_pitch" while using offthread_repeat to smooth the player's yaw/pitch to the new location's yaw/pitch.
     //
     // Optionally, specify additional teleport options using the 'entity_options:' arguments (Paper only).
     // This allows things like retaining an open inventory when teleporting - see the links below for more information.
@@ -111,7 +112,9 @@ public class TeleportCommand extends AbstractCommand {
                                    @ArgName("entity_options") @ArgPrefixed @ArgDefaultNull @ArgSubType(EntityState.class) List<EntityState> entityOptions,
                                    @ArgName("relative_axes") @ArgPrefixed @ArgDefaultNull @ArgSubType(Relative.class) List<Relative> relativeAxes,
                                    @ArgName("relative") boolean relative,
-                                   @ArgName("offthread_repeat") @ArgDefaultNull @ArgPrefixed ElementTag offthreadRepeats) {
+                                   @ArgName("offthread_repeat") @ArgDefaultNull @ArgPrefixed ElementTag offthreadRepeats,
+                                   @ArgName("offthread_yaw") boolean offthreadYaw,
+                                   @ArgName("offthread_pitch") boolean offthreadPitch) {
         if (locationRaw == null) { // Compensate for legacy "- teleport <loc>" default fill
             locationRaw = entityList;
             entityList = Utilities.entryDefaultEntity(scriptEntry, true);
@@ -164,8 +167,24 @@ public class TeleportCommand extends AbstractCommand {
                 double x = relativeAxes.contains(Relative.X) ? increment.getX() : location.getX();
                 double y = relativeAxes.contains(Relative.Y) ? increment.getY() : location.getY();
                 double z = relativeAxes.contains(Relative.Z) ? increment.getZ() : location.getZ();
-                float yaw = relativeAxes.contains(Relative.YAW) ? 0 : location.getYaw();
-                float pitch = relativeAxes.contains(Relative.PITCH) ? 0 : location.getPitch();
+                float yaw;
+                if (relativeAxes.contains(Relative.YAW)) {
+                    float relYaw = (location.getYaw() - player.getLocation().getYaw()) % 360;
+                    if (relYaw > 180) {
+                        relYaw -= 360;
+                    }
+                    yaw = offthreadYaw ? relYaw / times : 0;
+                }
+                else {
+                    yaw = location.getYaw();
+                }
+                float pitch;
+                if (relativeAxes.contains(Relative.PITCH)) {
+                    pitch = offthreadPitch ? (location.getPitch() - player.getLocation().getPitch()) / times : 0;
+                }
+                else {
+                    pitch = location.getPitch();
+                }
                 List<Relative> finalRelativeAxes = relativeAxes;
                 DenizenCore.runAsync(() -> {
                     try {
