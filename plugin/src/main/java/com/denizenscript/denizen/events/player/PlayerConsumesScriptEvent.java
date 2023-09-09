@@ -35,7 +35,7 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.item> returns the ItemTag.
-    // <context.hand> returns an ElementTag of the hand being used to consume the item. Can be: MAIN_HAND, OFF_HAND. Requires a 1.19+ server.
+    // <context.hand> returns an ElementTag of the hand being used to consume the item. Can be either HAND or OFF_HAND. Requires a 1.19+ server.
     //
     // @Determine
     // ItemTag to change the item being consumed.
