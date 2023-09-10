@@ -386,7 +386,7 @@ public class PacketHelperImpl implements PacketHelper {
         ((CraftPlayer) player).getHandle().connection.send(packet);
     }
 
-    public <T> SynchedEntityData.DataValue<T> createEntityData(EntityDataAccessor<T> accessor, T value) {
+    public static <T> SynchedEntityData.DataValue<T> createEntityData(EntityDataAccessor<T> accessor, T value) {
         return new SynchedEntityData.DataValue<>(accessor.getId(), accessor.getSerializer(), value);
     }
 }
