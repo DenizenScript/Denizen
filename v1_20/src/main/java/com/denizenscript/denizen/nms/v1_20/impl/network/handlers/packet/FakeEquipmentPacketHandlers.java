@@ -75,12 +75,11 @@ public class FakeEquipmentPacketHandlers {
         if (FakeEquipCommand.overrides.isEmpty()) {
             return setContentPacket;
         }
-        FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(networkManager.player.getUUID(), networkManager.player.getBukkitEntity());
-        if (override == null) {
+        if (setContentPacket.getContainerId() != 0) {
             return setContentPacket;
         }
-        int window = setContentPacket.getContainerId();
-        if (window != 0) {
+        FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(networkManager.player.getUUID(), networkManager.player.getBukkitEntity());
+        if (override == null) {
             return setContentPacket;
         }
         NonNullList<ItemStack> items = (NonNullList<ItemStack>) setContentPacket.getItems();
@@ -102,8 +101,7 @@ public class FakeEquipmentPacketHandlers {
         if (override.hand != null) {
             items.set(networkManager.player.getInventory().selected + 36, CraftItemStack.asNMSCopy(override.hand.getItemStack()));
         }
-        ClientboundContainerSetContentPacket newPacket = new ClientboundContainerSetContentPacket(window, setContentPacket.getStateId(), items, setContentPacket.getCarriedItem());
-        return newPacket;
+        return new ClientboundContainerSetContentPacket(setContentPacket.getContainerId(), setContentPacket.getStateId(), items, setContentPacket.getCarriedItem());
     }
 
     public static ClientboundContainerSetSlotPacket processContainerSetSlotPacket(DenizenNetworkManagerImpl networkManager, ClientboundContainerSetSlotPacket setSlotPacket) {
