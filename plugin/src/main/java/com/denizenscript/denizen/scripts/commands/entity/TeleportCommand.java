@@ -7,8 +7,11 @@ import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
@@ -16,7 +19,9 @@ import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.trait.CurrentLocation;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,17 +30,17 @@ public class TeleportCommand extends AbstractCommand {
 
     public TeleportCommand() {
         setName("teleport");
-        setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative) (relative_axes:<axis>|...)");
-        setRequiredArguments(1, 6);
+        setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative) (relative_axes:<axis>|...) (offthread_repeat:<#>) (offthread_yaw) (offthread_pitch)");
+        setRequiredArguments(1, 9);
         isProcedural = false;
         autoCompile();
     }
 
     // <--[command]
     // @Name Teleport
-    // @Syntax teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative) (relative_axes:<axis>|...)
+    // @Syntax teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative) (relative_axes:<axis>|...) (offthread_repeat:<#>) (offthread_yaw) (offthread_pitch)
     // @Required 1
-    // @Maximum 6
+    // @Maximum 9
     // @Short Teleports the entity(s) to a new location.
     // @Synonyms tp
     // @Group entity
@@ -50,6 +55,8 @@ public class TeleportCommand extends AbstractCommand {
     // Optionally specify "relative" to use relative teleportation (Paper only). This is primarily useful only for players, but available for all entities.
     // Relative teleports are smoother for the client when teleporting over short distances.
     // Optionally, you may use "relative_axes:" to specify a set of axes to move relative on (and other axes will be treated as absolute), as any of "X", "Y", "Z", "YAW", "PITCH".
+    // Optionally, you may use "offthread_repeat:" with the relative arg to smooth out the teleport with a specified number of extra async packets sent within a single tick.
+    // Optionally, specify "offthread_yaw" or "offthread_pitch" while using offthread_repeat to smooth the player's yaw/pitch to the new location's yaw/pitch.
     //
     // Optionally, specify additional teleport options using the 'entity_options:' arguments (Paper only).
     // This allows things like retaining an open inventory when teleporting - see the links below for more information.
@@ -104,7 +111,10 @@ public class TeleportCommand extends AbstractCommand {
                                    @ArgPrefixed @ArgName("cause") @ArgDefaultText("plugin") PlayerTeleportEvent.TeleportCause cause,
                                    @ArgName("entity_options") @ArgPrefixed @ArgDefaultNull @ArgSubType(EntityState.class) List<EntityState> entityOptions,
                                    @ArgName("relative_axes") @ArgPrefixed @ArgDefaultNull @ArgSubType(Relative.class) List<Relative> relativeAxes,
-                                   @ArgName("relative") boolean relative) {
+                                   @ArgName("relative") boolean relative,
+                                   @ArgName("offthread_repeat") @ArgDefaultNull @ArgPrefixed ElementTag offthreadRepeats,
+                                   @ArgName("offthread_yaw") boolean offthreadYaw,
+                                   @ArgName("offthread_pitch") boolean offthreadPitch) {
         if (locationRaw == null) { // Compensate for legacy "- teleport <loc>" default fill
             locationRaw = entityList;
             entityList = Utilities.entryDefaultEntity(scriptEntry, true);
@@ -147,6 +157,48 @@ public class TeleportCommand extends AbstractCommand {
                 NMSHandler.entityHelper.snapPositionTo(entity.getBukkitEntity(), location.toVector());
                 NMSHandler.entityHelper.look(entity.getBukkitEntity(), location.getYaw(), location.getPitch());
                 return;
+            }
+            if (offthreadRepeats != null && relativeAxes != null && entity.isPlayer()) {
+                NetworkInterceptHelper.enable();
+                int times = offthreadRepeats.asInt() + 1;
+                int ms = 50 / times;
+                Player player = entity.getPlayer();
+                Vector increment = location.clone().subtract(player.getLocation()).toVector().multiply(1.0 / times);
+                double x = relativeAxes.contains(Relative.X) ? increment.getX() : location.getX();
+                double y = relativeAxes.contains(Relative.Y) ? increment.getY() : location.getY();
+                double z = relativeAxes.contains(Relative.Z) ? increment.getZ() : location.getZ();
+                float yaw;
+                if (relativeAxes.contains(Relative.YAW)) {
+                    float relYaw = (location.getYaw() - player.getLocation().getYaw()) % 360;
+                    if (relYaw > 180) {
+                        relYaw -= 360;
+                    }
+                    yaw = offthreadYaw ? relYaw / times : 0;
+                }
+                else {
+                    yaw = location.getYaw();
+                }
+                float pitch;
+                if (relativeAxes.contains(Relative.PITCH)) {
+                    pitch = offthreadPitch ? (location.getPitch() - player.getLocation().getPitch()) / times : 0;
+                }
+                else {
+                    pitch = location.getPitch();
+                }
+                List<Relative> finalRelativeAxes = relativeAxes;
+                NMSHandler.packetHelper.sendRelativePositionPacket(player, x, y, z, yaw, pitch, finalRelativeAxes);
+                DenizenCore.runAsync(() -> {
+                    try {
+                        for (int i = 0; i < times - 1; i++) {
+                            Thread.sleep(ms);
+                            NMSHandler.packetHelper.sendRelativePositionPacket(player, x, y, z, yaw, pitch, finalRelativeAxes);
+                        }
+                    }
+                    catch (Throwable ex) {
+                        Debug.echoError(ex);
+                    }
+                });
+                continue;
             }
             if (entityOptions != null || relativeAxes != null) {
                 PaperAPITools.instance.teleport(entity.getBukkitEntity(), location, cause, entityOptions, relativeAxes);

@@ -3,6 +3,7 @@ package com.denizenscript.denizen.nms.v1_20.impl.network.handlers;
 import com.denizenscript.denizen.events.player.PlayerReceivesPacketScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.packet.*;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptCodeGen;
@@ -344,7 +345,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         HiddenEntitiesPacketHandlers.registerHandlers();
         HideParticlesPacketHandlers.registerHandlers();
         PlayerHearsSoundEventPacketHandlers.registerHandlers();
-        ProfileMirrorPacketHandlers.registerHandlers();
+        ProfileEditorImpl.registerHandlers();
         TablistUpdateEventPacketHandlers.registerHandlers();
     }
 

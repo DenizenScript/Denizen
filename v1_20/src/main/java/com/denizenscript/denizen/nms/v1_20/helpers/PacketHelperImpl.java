@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.v1_20.Handler;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_20.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.maps.MapImage;
@@ -61,10 +62,7 @@ import org.bukkit.map.MapPalette;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class PacketHelperImpl implements PacketHelper {
 
@@ -376,17 +374,42 @@ public class PacketHelperImpl implements PacketHelper {
         send(player, new ClientboundTakeItemEntityPacket(item.getEntityId(), taker.getEntityId(), amount));
     }
 
+    public RelativeMovement toNmsRelativeMovement(TeleportCommand.Relative relative) {
+        return switch (relative) {
+            case X -> RelativeMovement.X;
+            case Y -> RelativeMovement.Y;
+            case Z -> RelativeMovement.Z;
+            case YAW -> RelativeMovement.Y_ROT;
+            case PITCH -> RelativeMovement.X_ROT;
+        };
+    }
+
+    @Override
+    public void sendRelativePositionPacket(Player player, double x, double y, double z, float yaw, float pitch, List<TeleportCommand.Relative> relativeAxis) {
+        Set<RelativeMovement> relativeMovements;
+        if (relativeAxis == null) {
+            relativeMovements = RelativeMovement.ALL;
+        }
+        else {
+            relativeMovements = EnumSet.noneOf(RelativeMovement.class);
+            for (TeleportCommand.Relative relative : relativeAxis) {
+                relativeMovements.add(toNmsRelativeMovement(relative));
+            }
+        }
+        ClientboundPlayerPositionPacket packet = new ClientboundPlayerPositionPacket(x, y, z, yaw, pitch, relativeMovements, 0);
+        DenizenNetworkManagerImpl.getNetworkManager(player).oldManager.channel.writeAndFlush(packet);
+    }
+
     @Override
     public void sendRelativeLookPacket(Player player, float yaw, float pitch) {
-        ClientboundPlayerPositionPacket packet = new ClientboundPlayerPositionPacket(0, 0, 0, yaw, pitch, RelativeMovement.ALL, 0);
-        DenizenNetworkManagerImpl.getNetworkManager(player).oldManager.channel.writeAndFlush(packet);
+        sendRelativePositionPacket(player, 0, 0, 0, yaw, pitch, null);
     }
 
     public static void send(Player player, Packet<?> packet) {
         ((CraftPlayer) player).getHandle().connection.send(packet);
     }
 
-    public <T> SynchedEntityData.DataValue<T> createEntityData(EntityDataAccessor<T> accessor, T value) {
+    public static <T> SynchedEntityData.DataValue<T> createEntityData(EntityDataAccessor<T> accessor, T value) {
         return new SynchedEntityData.DataValue<>(accessor.getId(), accessor.getSerializer(), value);
     }
 }
