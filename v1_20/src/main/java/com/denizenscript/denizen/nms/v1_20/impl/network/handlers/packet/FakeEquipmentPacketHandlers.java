@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.nms.v1_20.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
@@ -108,38 +109,24 @@ public class FakeEquipmentPacketHandlers {
         if (FakeEquipCommand.overrides.isEmpty()) {
             return setSlotPacket;
         }
+        if (setSlotPacket.getContainerId() != 0) {
+            return setSlotPacket;
+        }
         FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(networkManager.player.getUUID(), networkManager.player.getBukkitEntity());
         if (override == null) {
             return setSlotPacket;
         }
-        int window = setSlotPacket.getContainerId();
-        if (window != 0) {
-            return setSlotPacket;
-        }
-        int slot = setSlotPacket.getSlot();
-        org.bukkit.inventory.ItemStack item = null;
-        if (slot == 5 && override.head != null) {
-            item = override.head.getItemStack();
-        }
-        else if (slot == 6 && override.chest != null) {
-            item = override.chest.getItemStack();
-        }
-        else if (slot == 7 && override.legs != null) {
-            item = override.legs.getItemStack();
-        }
-        else if (slot == 8 && override.boots != null) {
-            item = override.boots.getItemStack();
-        }
-        else if (slot == 45 && override.offhand != null) {
-            item = override.offhand.getItemStack();
-        }
-        else if (slot == networkManager.player.getInventory().selected + 36 && override.hand != null) {
-            item = override.hand.getItemStack();
-        }
+        ItemTag item = switch (setSlotPacket.getSlot()) {
+            case 5 -> override.head;
+            case 6 -> override.chest;
+            case 7 -> override.legs;
+            case 8 -> override.boots;
+            case 45 -> override.offhand;
+            default -> setSlotPacket.getSlot() == networkManager.player.getInventory().selected + 36 ? override.hand : null;
+        };
         if (item == null) {
             return setSlotPacket;
         }
-        ClientboundContainerSetSlotPacket newPacket = new ClientboundContainerSetSlotPacket(window, setSlotPacket.getStateId(), slot, CraftItemStack.asNMSCopy(item));
-        return newPacket;
+        return new ClientboundContainerSetSlotPacket(setSlotPacket.getContainerId(), setSlotPacket.getStateId(), setSlotPacket.getSlot(), CraftItemStack.asNMSCopy(item.getItemStack()));
     }
 }
