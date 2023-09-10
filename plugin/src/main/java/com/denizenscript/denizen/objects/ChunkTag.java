@@ -676,9 +676,10 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
                 return null;
             }
             ChunkSnapshot snapshot = chunk.getChunkSnapshot();
+            int sub = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) ? 0 : 1;
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
-                    surface_blocks.addObject(new LocationTag(chunk.getWorld(), chunk.getX() << 4 | x, snapshot.getHighestBlockYAt(x, z) - 1, chunk.getZ() << 4 | z));
+                    surface_blocks.addObject(new LocationTag(chunk.getWorld(), chunk.getX() << 4 | x, snapshot.getHighestBlockYAt(x, z) - sub, chunk.getZ() << 4 | z));
                 }
             }
             return surface_blocks;
