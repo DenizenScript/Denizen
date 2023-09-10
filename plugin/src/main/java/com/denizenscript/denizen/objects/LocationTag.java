@@ -4350,6 +4350,43 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 brushableBlock.setItem(item.getItemStack());
                 brushableBlock.update();
             });
+
+            // <--[tag]
+            // @attribute <LocationTag.waxed>
+            // @returns ElementTag(Boolean)
+            // @mechanism LocationTag.waxed
+            // @group world
+            // @description
+            // If the location is a sign block, returns whether it is waxed (locked to prevent players editing the text).
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "waxed", (attribute, object) -> {
+                if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
+                    attribute.echoError("Location is not a valid Sign block.");
+                    return null;
+                }
+                return new ElementTag(sign.isWaxed());
+            });
+
+            // <--[mechanism]
+            // @object LocationTag
+            // @name waxed
+            // @input ElementTag(Boolean)
+            // @description
+            // Sets whether the sign at the location is waxed (locked to prevent players editing the text).
+            // @tags
+            // <LocationTag.waxed>
+            // -->
+            tagProcessor.registerMechanism("waxed", false, ElementTag.class, (object, mechanism, value) -> {
+                if (!mechanism.requireBoolean()) {
+                    return;
+                }
+                if (!(object.getBlockState() instanceof Sign sign)) {
+                    mechanism.echoError("'waxed' mechanism can only be called on Sign blocks.");
+                    return;
+                }
+                sign.setWaxed(value.asBoolean());
+                sign.update();
+            });
         }
 
         // <--[mechanism]
