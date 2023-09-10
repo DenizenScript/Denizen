@@ -2,7 +2,6 @@ package com.denizenscript.denizen.nms.v1_20.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.Packet;
@@ -18,146 +17,150 @@ import java.util.List;
 public class FakeEquipmentPacketHandlers {
 
     public static void registerHandlers() {
-        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundSetEquipmentPacket.class, FakeEquipmentPacketHandlers::processEquipmentForPacket);
-        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundEntityEventPacket.class, FakeEquipmentPacketHandlers::processEquipmentForPacket);
-        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundContainerSetContentPacket.class, FakeEquipmentPacketHandlers::processEquipmentForPacket);
-        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundContainerSetSlotPacket.class, FakeEquipmentPacketHandlers::processEquipmentForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundSetEquipmentPacket.class, FakeEquipmentPacketHandlers::processSetEquipmentPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundEntityEventPacket.class, FakeEquipmentPacketHandlers::processEntityEventPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundContainerSetContentPacket.class, FakeEquipmentPacketHandlers::processContainerSetContentPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundContainerSetSlotPacket.class, FakeEquipmentPacketHandlers::processContainerSetSlotPacket);
     }
 
-    public static Packet<ClientGamePacketListener> processEquipmentForPacket(DenizenNetworkManagerImpl networkManager, Packet<ClientGamePacketListener> packet) {
+    public static ClientboundSetEquipmentPacket processSetEquipmentPacket(DenizenNetworkManagerImpl networkManager, ClientboundSetEquipmentPacket setEquipmentPacket) {
         if (FakeEquipCommand.overrides.isEmpty()) {
-            return packet;
+            return setEquipmentPacket;
         }
-        try {
-            if (packet instanceof ClientboundSetEquipmentPacket) {
-                int eid = ((ClientboundSetEquipmentPacket) packet).getEntity();
-                Entity ent = networkManager.player.level().getEntity(eid);
-                if (ent == null) {
-                    return packet;
-                }
-                FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(ent.getUUID(), networkManager.player.getBukkitEntity());
-                if (override == null) {
-                    return packet;
-                }
-                List<Pair<EquipmentSlot, ItemStack>> equipment = new ArrayList<>(((ClientboundSetEquipmentPacket) packet).getSlots());
-                ClientboundSetEquipmentPacket newPacket = new ClientboundSetEquipmentPacket(eid, equipment);
-                for (int i = 0; i < equipment.size(); i++) {
-                    Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack> pair =  equipment.get(i);
-                    ItemStack use = pair.getSecond();
-                    switch (pair.getFirst()) {
-                        case MAINHAND:
-                            use = override.hand == null ? use : CraftItemStack.asNMSCopy(override.hand.getItemStack());
-                            break;
-                        case OFFHAND:
-                            use = override.offhand == null ? use : CraftItemStack.asNMSCopy(override.offhand.getItemStack());
-                            break;
-                        case CHEST:
-                            use = override.chest == null ? use : CraftItemStack.asNMSCopy(override.chest.getItemStack());
-                            break;
-                        case HEAD:
-                            use = override.head == null ? use : CraftItemStack.asNMSCopy(override.head.getItemStack());
-                            break;
-                        case LEGS:
-                            use = override.legs == null ? use : CraftItemStack.asNMSCopy(override.legs.getItemStack());
-                            break;
-                        case FEET:
-                            use = override.boots == null ? use : CraftItemStack.asNMSCopy(override.boots.getItemStack());
-                            break;
-                    }
-                    equipment.set(i, new Pair<>(pair.getFirst(), use));
-                }
-                return newPacket;
-            }
-            else if (packet instanceof ClientboundEntityEventPacket) {
-                Entity ent = ((ClientboundEntityEventPacket) packet).getEntity(networkManager.player.level());
-                if (!(ent instanceof net.minecraft.world.entity.LivingEntity)) {
-                    return packet;
-                }
-                FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(ent.getUUID(), networkManager.player.getBukkitEntity());
-                if (override == null || (override.hand == null && override.offhand == null)) {
-                    return packet;
-                }
-                if (((ClientboundEntityEventPacket) packet).getEventId() != (byte) 55) {
-                    return packet;
-                }
-                List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipment = new ArrayList<>();
-                ItemStack hand = override.hand != null ? CraftItemStack.asNMSCopy(override.hand.getItemStack()) : ((net.minecraft.world.entity.LivingEntity) ent).getMainHandItem();
-                ItemStack offhand = override.offhand != null ? CraftItemStack.asNMSCopy(override.offhand.getItemStack()) : ((net.minecraft.world.entity.LivingEntity) ent).getOffhandItem();
-                equipment.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.MAINHAND, hand));
-                equipment.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.OFFHAND, offhand));
-                ClientboundSetEquipmentPacket newPacket = new ClientboundSetEquipmentPacket(ent.getId(), equipment);
-                return newPacket;
-            }
-            else if (packet instanceof ClientboundContainerSetContentPacket) {
-                FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(networkManager.player.getUUID(), networkManager.player.getBukkitEntity());
-                if (override == null) {
-                    return packet;
-                }
-                int window = ((ClientboundContainerSetContentPacket) packet).getContainerId();
-                if (window != 0) {
-                    return packet;
-                }
-                NonNullList<ItemStack> items = (NonNullList<ItemStack>) ((ClientboundContainerSetContentPacket) packet).getItems();
-                if (override.head != null) {
-                    items.set(5, CraftItemStack.asNMSCopy(override.head.getItemStack()));
-                }
-                if (override.chest != null) {
-                    items.set(6, CraftItemStack.asNMSCopy(override.chest.getItemStack()));
-                }
-                if (override.legs != null) {
-                    items.set(7, CraftItemStack.asNMSCopy(override.legs.getItemStack()));
-                }
-                if (override.boots != null) {
-                    items.set(8, CraftItemStack.asNMSCopy(override.boots.getItemStack()));
-                }
-                if (override.offhand != null) {
-                    items.set(45, CraftItemStack.asNMSCopy(override.offhand.getItemStack()));
-                }
-                if (override.hand != null) {
-                    items.set(networkManager.player.getInventory().selected + 36, CraftItemStack.asNMSCopy(override.hand.getItemStack()));
-                }
-                ClientboundContainerSetContentPacket newPacket = new ClientboundContainerSetContentPacket(window, ((ClientboundContainerSetContentPacket) packet).getStateId(), items, ((ClientboundContainerSetContentPacket) packet).getCarriedItem());
-                return newPacket;
-            }
-            else if (packet instanceof ClientboundContainerSetSlotPacket) {
-                FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(networkManager.player.getUUID(), networkManager.player.getBukkitEntity());
-                if (override == null) {
-                    return packet;
-                }
-                int window = ((ClientboundContainerSetSlotPacket) packet).getContainerId();
-                if (window != 0) {
-                    return packet;
-                }
-                int slot = ((ClientboundContainerSetSlotPacket) packet).getSlot();
-                org.bukkit.inventory.ItemStack item = null;
-                if (slot == 5 && override.head != null) {
-                    item = override.head.getItemStack();
-                }
-                else if (slot == 6 && override.chest != null) {
-                    item = override.chest.getItemStack();
-                }
-                else if (slot == 7 && override.legs != null) {
-                    item = override.legs.getItemStack();
-                }
-                else if (slot == 8 && override.boots != null) {
-                    item = override.boots.getItemStack();
-                }
-                else if (slot == 45 && override.offhand != null) {
-                    item = override.offhand.getItemStack();
-                }
-                else if (slot == networkManager.player.getInventory().selected + 36 && override.hand != null) {
-                    item = override.hand.getItemStack();
-                }
-                if (item == null) {
-                    return packet;
-                }
-                ClientboundContainerSetSlotPacket newPacket = new ClientboundContainerSetSlotPacket(window, ((ClientboundContainerSetSlotPacket) packet).getStateId(), slot, CraftItemStack.asNMSCopy(item));
-                return newPacket;
-            }
+        int eid = setEquipmentPacket.getEntity();
+        Entity ent = networkManager.player.level().getEntity(eid);
+        if (ent == null) {
+            return setEquipmentPacket;
         }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
+        FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(ent.getUUID(), networkManager.player.getBukkitEntity());
+        if (override == null) {
+            return setEquipmentPacket;
         }
-        return packet;
+        List<Pair<EquipmentSlot, ItemStack>> equipment = new ArrayList<>(setEquipmentPacket.getSlots());
+        ClientboundSetEquipmentPacket newPacket = new ClientboundSetEquipmentPacket(eid, equipment);
+        for (int i = 0; i < equipment.size(); i++) {
+            Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack> pair =  equipment.get(i);
+            ItemStack use = pair.getSecond();
+            switch (pair.getFirst()) {
+                case MAINHAND:
+                    use = override.hand == null ? use : CraftItemStack.asNMSCopy(override.hand.getItemStack());
+                    break;
+                case OFFHAND:
+                    use = override.offhand == null ? use : CraftItemStack.asNMSCopy(override.offhand.getItemStack());
+                    break;
+                case CHEST:
+                    use = override.chest == null ? use : CraftItemStack.asNMSCopy(override.chest.getItemStack());
+                    break;
+                case HEAD:
+                    use = override.head == null ? use : CraftItemStack.asNMSCopy(override.head.getItemStack());
+                    break;
+                case LEGS:
+                    use = override.legs == null ? use : CraftItemStack.asNMSCopy(override.legs.getItemStack());
+                    break;
+                case FEET:
+                    use = override.boots == null ? use : CraftItemStack.asNMSCopy(override.boots.getItemStack());
+                    break;
+            }
+            equipment.set(i, new Pair<>(pair.getFirst(), use));
+        }
+        return newPacket;
+    }
+
+    public static Packet<ClientGamePacketListener> processEntityEventPacket(DenizenNetworkManagerImpl networkManager, ClientboundEntityEventPacket entityEventPacket) {
+        if (FakeEquipCommand.overrides.isEmpty()) {
+            return entityEventPacket;
+        }
+        Entity ent = entityEventPacket.getEntity(networkManager.player.level());
+        if (!(ent instanceof net.minecraft.world.entity.LivingEntity)) {
+            return entityEventPacket;
+        }
+        FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(ent.getUUID(), networkManager.player.getBukkitEntity());
+        if (override == null || (override.hand == null && override.offhand == null)) {
+            return entityEventPacket;
+        }
+        if (entityEventPacket.getEventId() != (byte) 55) {
+            return entityEventPacket;
+        }
+        List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipment = new ArrayList<>();
+        ItemStack hand = override.hand != null ? CraftItemStack.asNMSCopy(override.hand.getItemStack()) : ((net.minecraft.world.entity.LivingEntity) ent).getMainHandItem();
+        ItemStack offhand = override.offhand != null ? CraftItemStack.asNMSCopy(override.offhand.getItemStack()) : ((net.minecraft.world.entity.LivingEntity) ent).getOffhandItem();
+        equipment.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.MAINHAND, hand));
+        equipment.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.OFFHAND, offhand));
+        ClientboundSetEquipmentPacket newPacket = new ClientboundSetEquipmentPacket(ent.getId(), equipment);
+        return newPacket;
+    }
+
+    public static ClientboundContainerSetContentPacket processContainerSetContentPacket(DenizenNetworkManagerImpl networkManager, ClientboundContainerSetContentPacket setContentPacket) {
+        if (FakeEquipCommand.overrides.isEmpty()) {
+            return setContentPacket;
+        }
+        FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(networkManager.player.getUUID(), networkManager.player.getBukkitEntity());
+        if (override == null) {
+            return setContentPacket;
+        }
+        int window = setContentPacket.getContainerId();
+        if (window != 0) {
+            return setContentPacket;
+        }
+        NonNullList<ItemStack> items = (NonNullList<ItemStack>) setContentPacket.getItems();
+        if (override.head != null) {
+            items.set(5, CraftItemStack.asNMSCopy(override.head.getItemStack()));
+        }
+        if (override.chest != null) {
+            items.set(6, CraftItemStack.asNMSCopy(override.chest.getItemStack()));
+        }
+        if (override.legs != null) {
+            items.set(7, CraftItemStack.asNMSCopy(override.legs.getItemStack()));
+        }
+        if (override.boots != null) {
+            items.set(8, CraftItemStack.asNMSCopy(override.boots.getItemStack()));
+        }
+        if (override.offhand != null) {
+            items.set(45, CraftItemStack.asNMSCopy(override.offhand.getItemStack()));
+        }
+        if (override.hand != null) {
+            items.set(networkManager.player.getInventory().selected + 36, CraftItemStack.asNMSCopy(override.hand.getItemStack()));
+        }
+        ClientboundContainerSetContentPacket newPacket = new ClientboundContainerSetContentPacket(window, setContentPacket.getStateId(), items, setContentPacket.getCarriedItem());
+        return newPacket;
+    }
+
+    public static ClientboundContainerSetSlotPacket processContainerSetSlotPacket(DenizenNetworkManagerImpl networkManager, ClientboundContainerSetSlotPacket setSlotPacket) {
+        if (FakeEquipCommand.overrides.isEmpty()) {
+            return setSlotPacket;
+        }
+        FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(networkManager.player.getUUID(), networkManager.player.getBukkitEntity());
+        if (override == null) {
+            return setSlotPacket;
+        }
+        int window = setSlotPacket.getContainerId();
+        if (window != 0) {
+            return setSlotPacket;
+        }
+        int slot = setSlotPacket.getSlot();
+        org.bukkit.inventory.ItemStack item = null;
+        if (slot == 5 && override.head != null) {
+            item = override.head.getItemStack();
+        }
+        else if (slot == 6 && override.chest != null) {
+            item = override.chest.getItemStack();
+        }
+        else if (slot == 7 && override.legs != null) {
+            item = override.legs.getItemStack();
+        }
+        else if (slot == 8 && override.boots != null) {
+            item = override.boots.getItemStack();
+        }
+        else if (slot == 45 && override.offhand != null) {
+            item = override.offhand.getItemStack();
+        }
+        else if (slot == networkManager.player.getInventory().selected + 36 && override.hand != null) {
+            item = override.hand.getItemStack();
+        }
+        if (item == null) {
+            return setSlotPacket;
+        }
+        ClientboundContainerSetSlotPacket newPacket = new ClientboundContainerSetSlotPacket(window, setSlotPacket.getStateId(), slot, CraftItemStack.asNMSCopy(item));
+        return newPacket;
     }
 }
