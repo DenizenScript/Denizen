@@ -100,7 +100,7 @@ public class FakeEquipmentPacketHandlers {
             items.set(45, CraftItemStack.asNMSCopy(override.offhand.getItemStack()));
         }
         if (override.hand != null) {
-            items.set(networkManager.player.getInventory().selected + 36, CraftItemStack.asNMSCopy(override.hand.getItemStack()));
+            items.set(getMainHandSlot(networkManager), CraftItemStack.asNMSCopy(override.hand.getItemStack()));
         }
         return new ClientboundContainerSetContentPacket(setContentPacket.getContainerId(), setContentPacket.getStateId(), items, setContentPacket.getCarriedItem());
     }
@@ -122,11 +122,15 @@ public class FakeEquipmentPacketHandlers {
             case 7 -> override.legs;
             case 8 -> override.boots;
             case 45 -> override.offhand;
-            default -> setSlotPacket.getSlot() == networkManager.player.getInventory().selected + 36 ? override.hand : null;
+            default -> setSlotPacket.getSlot() == getMainHandSlot(networkManager) ? override.hand : null;
         };
         if (item == null) {
             return setSlotPacket;
         }
         return new ClientboundContainerSetSlotPacket(setSlotPacket.getContainerId(), setSlotPacket.getStateId(), setSlotPacket.getSlot(), CraftItemStack.asNMSCopy(item.getItemStack()));
+    }
+
+    public static int getMainHandSlot(DenizenNetworkManagerImpl networkManager) {
+        return networkManager.player.getInventory().selected + 36;
     }
 }
