@@ -186,9 +186,10 @@ public class TeleportCommand extends AbstractCommand {
                     pitch = location.getPitch();
                 }
                 List<Relative> finalRelativeAxes = relativeAxes;
+                NMSHandler.packetHelper.sendRelativePositionPacket(player, x, y, z, yaw, pitch, finalRelativeAxes);
                 DenizenCore.runAsync(() -> {
                     try {
-                        for (int i = 0; i < times; i++) {
+                        for (int i = 0; i < times - 1; i++) {
                             Thread.sleep(ms);
                             NMSHandler.packetHelper.sendRelativePositionPacket(player, x, y, z, yaw, pitch, finalRelativeAxes);
                         }
