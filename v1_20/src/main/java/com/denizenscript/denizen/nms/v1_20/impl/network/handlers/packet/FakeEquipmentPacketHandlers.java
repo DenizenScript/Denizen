@@ -27,43 +27,28 @@ public class FakeEquipmentPacketHandlers {
         if (FakeEquipCommand.overrides.isEmpty()) {
             return setEquipmentPacket;
         }
-        int eid = setEquipmentPacket.getEntity();
-        Entity ent = networkManager.player.level().getEntity(eid);
-        if (ent == null) {
+        Entity entity = networkManager.player.level().getEntity(setEquipmentPacket.getEntity());
+        if (entity == null) {
             return setEquipmentPacket;
         }
-        FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(ent.getUUID(), networkManager.player.getBukkitEntity());
+        FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(entity.getUUID(), networkManager.player.getBukkitEntity());
         if (override == null) {
             return setEquipmentPacket;
         }
         List<Pair<EquipmentSlot, ItemStack>> equipment = new ArrayList<>(setEquipmentPacket.getSlots());
-        ClientboundSetEquipmentPacket newPacket = new ClientboundSetEquipmentPacket(eid, equipment);
         for (int i = 0; i < equipment.size(); i++) {
-            Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack> pair =  equipment.get(i);
-            ItemStack use = pair.getSecond();
-            switch (pair.getFirst()) {
-                case MAINHAND:
-                    use = override.hand == null ? use : CraftItemStack.asNMSCopy(override.hand.getItemStack());
-                    break;
-                case OFFHAND:
-                    use = override.offhand == null ? use : CraftItemStack.asNMSCopy(override.offhand.getItemStack());
-                    break;
-                case CHEST:
-                    use = override.chest == null ? use : CraftItemStack.asNMSCopy(override.chest.getItemStack());
-                    break;
-                case HEAD:
-                    use = override.head == null ? use : CraftItemStack.asNMSCopy(override.head.getItemStack());
-                    break;
-                case LEGS:
-                    use = override.legs == null ? use : CraftItemStack.asNMSCopy(override.legs.getItemStack());
-                    break;
-                case FEET:
-                    use = override.boots == null ? use : CraftItemStack.asNMSCopy(override.boots.getItemStack());
-                    break;
-            }
+            Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack> pair = equipment.get(i);
+            ItemStack use = switch (pair.getFirst()) {
+                case MAINHAND -> override.hand == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.hand.getItemStack());
+                case OFFHAND -> override.offhand == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.offhand.getItemStack());
+                case CHEST -> override.chest == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.chest.getItemStack());
+                case HEAD -> override.head == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.head.getItemStack());
+                case LEGS -> override.legs == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.legs.getItemStack());
+                case FEET -> override.boots == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.boots.getItemStack());
+            };
             equipment.set(i, new Pair<>(pair.getFirst(), use));
         }
-        return newPacket;
+        return new ClientboundSetEquipmentPacket(setEquipmentPacket.getEntity(), equipment);
     }
 
     public static Packet<ClientGamePacketListener> processEntityEventPacket(DenizenNetworkManagerImpl networkManager, ClientboundEntityEventPacket entityEventPacket) {
