@@ -31,16 +31,16 @@ public class TeleportCommand extends AbstractCommand {
     public TeleportCommand() {
         setName("teleport");
         setSyntax("teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative) (relative_axes:<axis>|...) (offthread_repeat:<#>) (offthread_yaw) (offthread_pitch)");
-        setRequiredArguments(1, 7);
+        setRequiredArguments(1, 9);
         isProcedural = false;
         autoCompile();
     }
 
     // <--[command]
     // @Name Teleport
-    // @Syntax teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative) (relative_axes:<axis>|...) (offthread_repeat:<#>)
+    // @Syntax teleport (<entity>|...) [<location>] (cause:<cause>) (entity_options:<option>|...) (relative) (relative_axes:<axis>|...) (offthread_repeat:<#>) (offthread_yaw) (offthread_pitch)
     // @Required 1
-    // @Maximum 7
+    // @Maximum 9
     // @Short Teleports the entity(s) to a new location.
     // @Synonyms tp
     // @Group entity
