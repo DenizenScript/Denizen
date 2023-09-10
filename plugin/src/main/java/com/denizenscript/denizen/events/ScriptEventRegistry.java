@@ -89,6 +89,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(RedstoneScriptEvent.class);
         ScriptEvent.registerScriptEvent(SpongeAbsorbsScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            ScriptEvent.registerScriptEvent(BrewingStartsScriptEvent.class);
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
 
