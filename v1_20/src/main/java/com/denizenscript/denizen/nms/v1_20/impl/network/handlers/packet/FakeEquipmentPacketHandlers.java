@@ -7,6 +7,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -100,7 +101,7 @@ public class FakeEquipmentPacketHandlers {
             items.set(45, CraftItemStack.asNMSCopy(override.offhand.getItemStack()));
         }
         if (override.hand != null) {
-            items.set(getMainHandSlot(networkManager), CraftItemStack.asNMSCopy(override.hand.getItemStack()));
+            items.set(getMainHandSlot(networkManager.player), CraftItemStack.asNMSCopy(override.hand.getItemStack()));
         }
         return new ClientboundContainerSetContentPacket(setContentPacket.getContainerId(), setContentPacket.getStateId(), items, setContentPacket.getCarriedItem());
     }
@@ -122,7 +123,7 @@ public class FakeEquipmentPacketHandlers {
             case 7 -> override.legs;
             case 8 -> override.boots;
             case 45 -> override.offhand;
-            default -> setSlotPacket.getSlot() == getMainHandSlot(networkManager) ? override.hand : null;
+            default -> setSlotPacket.getSlot() == getMainHandSlot(networkManager.player) ? override.hand : null;
         };
         if (item == null) {
             return setSlotPacket;
@@ -130,7 +131,7 @@ public class FakeEquipmentPacketHandlers {
         return new ClientboundContainerSetSlotPacket(setSlotPacket.getContainerId(), setSlotPacket.getStateId(), setSlotPacket.getSlot(), CraftItemStack.asNMSCopy(item.getItemStack()));
     }
 
-    public static int getMainHandSlot(DenizenNetworkManagerImpl networkManager) {
-        return networkManager.player.getInventory().selected + 36;
+    public static int getMainHandSlot(ServerPlayer player) {
+        return player.getInventory().selected + 36;
     }
 }
