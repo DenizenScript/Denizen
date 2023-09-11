@@ -13,8 +13,16 @@ import com.denizenscript.denizen.nms.v1_20.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.objects.core.QuaternionTag;
+import com.denizenscript.denizencore.scripts.commands.core.ReflectionSetCommand;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -29,7 +37,9 @@ import net.md_5.bungee.api.chat.hover.content.Content;
 import net.md_5.bungee.api.chat.hover.content.Item;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Rotations;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.StringTag;
@@ -47,6 +57,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -54,6 +65,7 @@ import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_20_R1.boss.CraftBossBar;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
@@ -62,11 +74,14 @@ import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryView;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.craftbukkit.v1_20_R1.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_20_R1.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_20_R1.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.spigotmc.AsyncCatcher;
 
 import java.lang.invoke.MethodHandle;
@@ -76,6 +91,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
 public class Handler extends NMSHandler {
 
@@ -93,6 +109,23 @@ public class Handler extends NMSHandler {
         playerHelper = new PlayerHelperImpl();
         worldHelper = new WorldHelperImpl();
         enchantmentHelper = new EnchantmentHelperImpl();
+
+        registerConversion(ItemTag.class, ItemStack.class, item -> CraftItemStack.asNMSCopy(item.getItemStack()));
+        registerConversion(ElementTag.class, Component.class, element -> componentToNMS(FormattedTextHelper.parse(element.asString(), ChatColor.WHITE)));
+        registerConversion(MaterialTag.class, BlockState.class, material -> ((CraftBlockData) material.getModernData()).getState());
+        registerConversion(LocationTag.class, Rotations.class, location -> new Rotations((float) location.getX(), (float) location.getY(), (float) location.getZ()));
+        registerConversion(LocationTag.class, BlockPos.class, CraftLocation::toBlockPosition);
+        registerConversion(MapTag.class, net.minecraft.nbt.CompoundTag.class, map ->
+                ItemRawNBT.convertObjectToNbt(map.identify(), CoreUtilities.noDebugContext, "(item).") instanceof CompoundTagImpl compoundTag ? compoundTag.toNMSTag() : null);
+        registerConversion(LocationTag.class, Vector3f.class, location -> new Vector3f((float) location.getX(), (float) location.getY(), (float) location.getZ()));
+        registerConversion(QuaternionTag.class, Quaternionf.class, quaternion -> new Quaternionf(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
+    }
+
+    public static <DT extends ObjectTag, JT> void registerConversion(Class<DT> denizenType, Class<JT> javaType, Function<DT, JT> convertor) {
+        ReflectionSetCommand.typeConverters.put(javaType, objectTag -> {
+            DT denizenObject = objectTag.asType(denizenType, CoreUtilities.noDebugContext);
+            return denizenObject != null ? convertor.apply(denizenObject) : null;
+        });
     }
 
     private final ProfileEditor profileEditor = new ProfileEditorImpl();

@@ -110,6 +110,10 @@ public class ReflectionMappingsInfo {
     public static String ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ = "a";
     public static String ClientboundLevelChunkPacketDataBlockEntityInfo_y = "b";
 
+    // net.minecraft.network.protocol.syncher.SynchedEntityData
+
+    public static String SynchedEntityData_itemsById = "e";
+
     // net.minecraft.world.entity.projectile.FishingHook
     public static String FishingHook_nibble = "j";
     public static String FishingHook_timeUntilLured = "k";

@@ -2990,6 +2990,30 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     object.getLivingEntity().playHurtAnimation(value.asFloat());
                 }
             });
+
+            // <--[mechanism]
+            // @object EntityTag
+            // @name internal_data
+            // @input MapTag
+            // @description
+            // Modifies an entity's internal entity data as a map of data id to value.
+            // The values can be Denizen objects, and will be automatically converted to the relevant internal value.
+            // This is an advanced mechanism that directly controls an entity's data, with no verification/limitations on what's being set (other than basic type checking).
+            // You should almost always prefer using the appropriate mechanism/property instead of this, other than very specific special cases.
+            // See <@link url https://wiki.vg/Entity_metadata> for a documentation of different entity data values
+            // (note that it documents the values that eventually get sent to the client, so the input this expects might be slightly different in some cases).
+            // -->
+            tagProcessor.registerMechanism("internal_data", false, MapTag.class, (object, mechanism, input) -> {
+                Map<Integer, ObjectTag> internalData = new HashMap<>(input.size());
+                for (Map.Entry<StringHolder, ObjectTag> entry : input.entrySet()) {
+                    if (!ArgumentHelper.matchesInteger(entry.getKey().str)) {
+                        mechanism.echoError("Invalid internal data id '" + entry.getKey() + "': must be a number.");
+                        continue;
+                    }
+                    internalData.put(new ElementTag(entry.getKey().str).asInt(), entry.getValue());
+                }
+                NMSHandler.entityHelper.setInternalEntityData(object.getBukkitEntity(), internalData);
+            });
         }
     }
 

@@ -3,6 +3,7 @@ package com.denizenscript.denizen.nms.interfaces;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import org.bukkit.Bukkit;
@@ -22,6 +23,7 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class EntityHelper {
@@ -447,6 +449,10 @@ public abstract class EntityHelper {
     }
 
     public void setStepHeight(Entity entity, float stepHeight) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setInternalEntityData(Entity entity, Map<Integer, ObjectTag> internalData) {
         throw new UnsupportedOperationException();
     }
 }
