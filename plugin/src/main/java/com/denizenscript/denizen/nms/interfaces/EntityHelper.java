@@ -450,11 +450,7 @@ public abstract class EntityHelper {
         throw new UnsupportedOperationException();
     }
 
-    public ElementTag getBoatType(Boat boat) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract ElementTag getBoatType(Boat boat);
 
-    public void setBoatType(Boat boat, ElementTag type) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract void setBoatType(Boat boat, ElementTag type);
 }
