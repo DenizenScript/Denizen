@@ -1,8 +1,11 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
+import org.bukkit.TreeSpecies;
 import org.bukkit.entity.Boat;
 
 public class EntityBoatType extends EntityProperty<ElementTag> {
@@ -22,7 +25,7 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(getBoat().getBoatType());
+        return getBoatType();
     }
 
     @Override
@@ -32,14 +35,21 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag type, Mechanism mechanism) {
-        if (!mechanism.requireEnum(Boat.Type.class)) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18) && !mechanism.requireEnum(TreeSpecies.class)) {
             return;
         }
-        getBoat().setBoatType(type.asEnum(Boat.Type.class));
+        else if (!mechanism.requireEnum(Boat.Type.class)) {
+            return;
+        }
+        setBoatType(type);
     }
 
-    public Boat getBoat() {
-        return (Boat) getEntity();
+    public ElementTag getBoatType() {
+        return NMSHandler.entityHelper.getBoatType(as(Boat.class));
+    }
+
+    public void setBoatType(ElementTag type) {
+        NMSHandler.entityHelper.setBoatType(as(Boat.class), type);
     }
 
     public static void register() {
