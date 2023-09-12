@@ -3012,7 +3012,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     }
                     internalData.put(new ElementTag(entry.getKey().str).asInt(), entry.getValue());
                 }
-                NMSHandler.entityHelper.setInternalEntityData(object.getBukkitEntity(), internalData);
+                NMSHandler.entityHelper.modifyInternalEntityData(object.getBukkitEntity(), internalData);
             });
         }
     }

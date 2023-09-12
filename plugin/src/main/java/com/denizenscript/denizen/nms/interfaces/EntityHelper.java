@@ -452,7 +452,7 @@ public abstract class EntityHelper {
         throw new UnsupportedOperationException();
     }
 
-    public void setInternalEntityData(Entity entity, Map<Integer, ObjectTag> internalData) {
+    public void modifyInternalEntityData(Entity entity, Map<Integer, ObjectTag> internalData) {
         throw new UnsupportedOperationException();
     }
 }
