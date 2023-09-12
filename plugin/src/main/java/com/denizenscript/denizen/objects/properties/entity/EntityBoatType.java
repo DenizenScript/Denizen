@@ -16,7 +16,8 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
     // @input ElementTag
     // @description
     // Controls the wood type of the boat.
-    // Valid wood types can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Boat.Type.html>
+    // Valid wood types can be found here: <@linke url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/TreeSpecies.html>
+    // For versions 1.19 and above, valid wood types can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Boat.Type.html>
     // -->
 
     public static boolean describes(EntityTag boat) {
