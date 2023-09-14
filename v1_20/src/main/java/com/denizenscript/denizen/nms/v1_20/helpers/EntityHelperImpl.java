@@ -10,7 +10,6 @@ import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkM
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
@@ -796,15 +795,5 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void setStepHeight(Entity entity, float stepHeight) {
         ((CraftEntity) entity).getHandle().setMaxUpStep(stepHeight);
-    }
-
-    @Override
-    public ElementTag getBoatType(Boat boat) {
-        return new ElementTag(boat.getBoatType());
-    }
-
-    @Override
-    public void setBoatType(Boat boat, ElementTag type) {
-        boat.setBoatType(type.asEnum(Boat.Type.class));
     }
 }

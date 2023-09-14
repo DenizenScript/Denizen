@@ -3,6 +3,7 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import org.bukkit.TreeSpecies;
@@ -16,8 +17,8 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
     // @input ElementTag
     // @description
     // Controls the wood type of the boat.
-    // Valid wood types can be found here: <@linke url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/TreeSpecies.html>
-    // For versions 1.19 and above, valid wood types can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Boat.Type.html>
+    // Valid wood types can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/TreeSpecies.html>
+    // Deprecated in versions 1.19 and above. Use <@link property EntityTag.color>.
     // -->
 
     public static boolean describes(EntityTag boat) {
@@ -26,6 +27,9 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            BukkitImplDeprecations.boatType.warn();
+        }
         return getBoatType();
     }
 
@@ -39,18 +43,18 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18) && !mechanism.requireEnum(TreeSpecies.class)) {
             return;
         }
-        else if (!mechanism.requireEnum(Boat.Type.class)) {
-            return;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            BukkitImplDeprecations.boatType.warn();
         }
         setBoatType(type);
     }
 
     public ElementTag getBoatType() {
-        return NMSHandler.entityHelper.getBoatType(as(Boat.class));
+        return new ElementTag(as(Boat.class).getWoodType());
     }
 
     public void setBoatType(ElementTag type) {
-        NMSHandler.entityHelper.setBoatType(as(Boat.class), type);
+        as(Boat.class).setWoodType(type.asEnum(TreeSpecies.class));
     }
 
     public static void register() {

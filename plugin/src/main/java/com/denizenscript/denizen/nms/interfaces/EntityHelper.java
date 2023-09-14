@@ -449,8 +449,4 @@ public abstract class EntityHelper {
     public void setStepHeight(Entity entity, float stepHeight) {
         throw new UnsupportedOperationException();
     }
-
-    public abstract ElementTag getBoatType(Boat boat);
-
-    public abstract void setBoatType(Boat boat, ElementTag type);
 }

@@ -8,7 +8,6 @@ import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
@@ -40,7 +39,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.TreeSpecies;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -701,15 +699,5 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void setAggressive(org.bukkit.entity.Mob mob, boolean aggressive) {
         ((CraftMob) mob).getHandle().setAggressive(aggressive);
-    }
-
-    @Override
-    public ElementTag getBoatType(Boat boat) {
-        return new ElementTag(boat.getWoodType());
-    }
-
-    @Override
-    public void setBoatType(Boat boat, ElementTag type) {
-        boat.setWoodType(type.asEnum(TreeSpecies.class));
     }
 }
