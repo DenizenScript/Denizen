@@ -40,7 +40,7 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag type, Mechanism mechanism) {
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18) && !mechanism.requireEnum(TreeSpecies.class)) {
+        if (!mechanism.requireEnum(TreeSpecies.class)) {
             return;
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
