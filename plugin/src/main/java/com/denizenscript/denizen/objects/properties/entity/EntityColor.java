@@ -64,7 +64,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag color, Mechanism mechanism) {
-        EntityType type = getColored().getBukkitEntityType();
+        EntityType type = getType();
         if (type == EntityType.HORSE && mechanism.requireObject(ListTag.class)) {
             ListTag list = mechanism.valueAsType(ListTag.class);
             Horse horse = (Horse) getEntity();
@@ -202,7 +202,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
     }
 
     public String getColor(boolean includeDeprecated) {
-        EntityType type = getColored().getBukkitEntityType();
+        EntityType type = getType();
         switch (type) {
             case HORSE -> {
                 Horse horse = (Horse) getEntity();
@@ -286,7 +286,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
     }
 
     public ListTag getAllowedColors() {
-        EntityType type = getColored().getBukkitEntityType();
+        EntityType type = getType();
         switch (type) {
             case HORSE -> {
                 ListTag horseColors = listForEnum(Horse.Color.values());
@@ -389,9 +389,5 @@ public class EntityColor extends EntityProperty<ElementTag> {
         PropertyParser.registerTag(EntityColor.class, ListTag.class, "allowed_colors", (attribute, object) -> {
             return object.getAllowedColors();
         });
-    }
-
-    public EntityTag getColored() {
-        return new EntityTag(getEntity());
     }
 }

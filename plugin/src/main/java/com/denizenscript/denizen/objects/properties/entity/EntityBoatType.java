@@ -6,6 +6,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.TreeSpecies;
 import org.bukkit.entity.Boat;
 
@@ -43,9 +44,6 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
         if (!mechanism.requireEnum(TreeSpecies.class)) {
             return;
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            BukkitImplDeprecations.boatType.warn();
-        }
         setBoatType(type);
     }
 
@@ -58,6 +56,18 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
     }
 
     public static void register() {
-        autoRegister("boat_type", EntityBoatType.class, ElementTag.class, false);
+        PropertyParser.registerTag(EntityBoatType.class, ElementTag.class, "boat_type", (attribute, object) -> {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                BukkitImplDeprecations.boatType.warn(attribute.context);
+            }
+            return object.getPropertyValue();
+        });
+
+        PropertyParser.registerMechanism(EntityBoatType.class, ElementTag.class, "boat_type", (object, mechanism, type) -> {
+           if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+               BukkitImplDeprecations.boatType.warn(mechanism.context);
+           }
+           object.setPropertyValue(type, mechanism);
+        });
     }
 }
