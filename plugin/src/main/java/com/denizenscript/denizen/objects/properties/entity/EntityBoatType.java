@@ -28,7 +28,7 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        return getBoatType();
+        return new ElementTag(as(Boat.class).getWoodType());
     }
 
     @Override
@@ -38,14 +38,6 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag type, Mechanism mechanism) {
-        setBoatType(type);
-    }
-
-    public ElementTag getBoatType() {
-        return new ElementTag(as(Boat.class).getWoodType());
-    }
-
-    public void setBoatType(ElementTag type) {
         as(Boat.class).setWoodType(type.asEnum(TreeSpecies.class));
     }
 
