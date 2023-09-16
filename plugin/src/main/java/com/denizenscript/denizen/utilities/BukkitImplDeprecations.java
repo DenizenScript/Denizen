@@ -177,8 +177,9 @@ public class BukkitImplDeprecations {
     public static Warning biomeGlobalDownfallType = new SlowWarning("biomeGlobalDownfallType", "The 'BiomeTag.downfall_type' tag is deprecated in favor of 'BiomeTag.downfall_at', as biome downfall is now location-based");
     public static Warning biomeSettingDownfallType = new SlowWarning("biomeSettingDownfallType", "The 'BiomeTag.downfall_type' mechanism is removed, as Minecraft no longer allows for this value to be set.");
 
-    // Added 2023/09/12
-    public static Warning boatType = new SlowWarning("boatType", "The 'EntityTag.boat_type' property is deprecated in favor of 'EntityTag.color'.");
+    // Added 2023/09/16
+    // Bump to normal warning after 1.19 is the minimum supported version (change happened in 1.19)
+    public static Warning boatType = new SlowWarning("boatType", "The 'EntityTag.boat_type' property is deprecated in favor of 'EntityTag.color' in 1.19+.");
 
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
