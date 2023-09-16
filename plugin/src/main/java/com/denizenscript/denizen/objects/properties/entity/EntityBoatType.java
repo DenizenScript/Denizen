@@ -38,6 +38,9 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag type, Mechanism mechanism) {
+        if (!mechanism.requireEnum(TreeSpecies.class)) {
+            return;
+        }
         as(Boat.class).setWoodType(type.asEnum(TreeSpecies.class));
     }
 
@@ -50,9 +53,6 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
         });
 
         PropertyParser.registerMechanism(EntityBoatType.class, ElementTag.class, "boat_type", (object, mechanism, type) -> {
-            if (!mechanism.requireEnum(TreeSpecies.class)) {
-                return;
-            }
            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
                BukkitImplDeprecations.boatType.warn(mechanism.context);
            }

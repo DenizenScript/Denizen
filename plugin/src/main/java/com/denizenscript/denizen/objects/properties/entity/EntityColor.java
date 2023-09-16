@@ -203,78 +203,57 @@ public class EntityColor extends EntityProperty<ElementTag> {
 
     public String getColor(boolean includeDeprecated) {
         EntityType type = getType();
-        switch (type) {
-            case HORSE -> {
-                Horse horse = (Horse) getEntity();
-                return horse.getColor().name() + "|" + horse.getStyle().name();
-            }
-            case SHEEP -> {
-                return ((Sheep) getEntity()).getColor().name();
-            }
-            case WOLF -> {
-                return ((Wolf) getEntity()).getCollarColor().name();
-            }
-            case OCELOT -> {
-                if (includeDeprecated) {
-                    return ((Ocelot) getEntity()).getCatType().name();
-                }
-            }
-            case RABBIT -> {
-                return ((Rabbit) getEntity()).getRabbitType().name();
-            }
-            case LLAMA, TRADER_LLAMA -> {
-                return ((Llama) getEntity()).getColor().name();
-            }
-            case PARROT -> {
-                return ((Parrot) getEntity()).getVariant().name();
-            }
-            case SHULKER -> {
-                DyeColor color = ((Shulker) getEntity()).getColor();
-                return color == null ? null : color.name();
-            }
-            case MUSHROOM_COW -> {
-                return ((MushroomCow) getEntity()).getVariant().name();
-            }
-            case TROPICAL_FISH -> {
-                TropicalFish fish = ((TropicalFish) getEntity());
-                return new ListTag(Arrays.asList(fish.getPattern().name(), fish.getBodyColor().name(), fish.getPatternColor().name())).identify();
-            }
-            case FOX -> {
-                return ((Fox) getEntity()).getFoxType().name();
-            }
-            case CAT -> {
-                Cat cat = (Cat) getEntity();
-                return cat.getCatType().name() + "|" + cat.getCollarColor().name();
-            }
-            case PANDA -> {
-                Panda panda = (Panda) getEntity();
-                return panda.getMainGene().name() + "|" + panda.getHiddenGene().name();
-            }
-            case VILLAGER -> {
-                return ((Villager) getEntity()).getVillagerType().name();
-            }
-            case ZOMBIE_VILLAGER -> {
-                return ((ZombieVillager) getEntity()).getVillagerType().name();
-            }
-            case ARROW -> {
-                try {
-                    return BukkitColorExtensions.fromColor(((Arrow) getEntity()).getColor()).identify();
-                }
-                catch (Exception e) {
-                    return null;
-                }
-            }
-            case GOAT -> {
-                return ((Goat) getEntity()).isScreaming() ? "screaming" : "normal";
-            }
-            case AXOLOTL -> {
-                return ((Axolotl) getEntity()).getVariant().name();
-            }
-        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
             return MultiVersionHelper1_19.getColor(getEntity());
         }
-        return null;
+        return switch (type) {
+            case HORSE -> {
+                Horse horse = (Horse) getEntity();
+                yield horse.getColor().name() + "|" + horse.getStyle().name();
+            }
+            case SHEEP -> ((Sheep) getEntity()).getColor().name();
+            case WOLF -> ((Wolf) getEntity()).getCollarColor().name();
+            case OCELOT -> {
+                if (includeDeprecated) {
+                    yield ((Ocelot) getEntity()).getCatType().name();
+                }
+                yield null;
+            }
+            case RABBIT -> ((Rabbit) getEntity()).getRabbitType().name();
+            case LLAMA, TRADER_LLAMA -> ((Llama) getEntity()).getColor().name();
+            case PARROT -> ((Parrot) getEntity()).getVariant().name();
+            case SHULKER -> {
+                DyeColor color = ((Shulker) getEntity()).getColor();
+                yield  color == null ? null : color.name();
+            }
+            case MUSHROOM_COW -> ((MushroomCow) getEntity()).getVariant().name();
+            case TROPICAL_FISH -> {
+                TropicalFish fish = ((TropicalFish) getEntity());
+                yield new ListTag(Arrays.asList(fish.getPattern().name(), fish.getBodyColor().name(), fish.getPatternColor().name())).identify();
+            }
+            case FOX -> ((Fox) getEntity()).getFoxType().name();
+            case CAT -> {
+                Cat cat = (Cat) getEntity();
+                yield cat.getCatType().name() + "|" + cat.getCollarColor().name();
+            }
+            case PANDA -> {
+                Panda panda = (Panda) getEntity();
+                yield panda.getMainGene().name() + "|" + panda.getHiddenGene().name();
+            }
+            case VILLAGER -> ((Villager) getEntity()).getVillagerType().name();
+            case ZOMBIE_VILLAGER -> ((ZombieVillager) getEntity()).getVillagerType().name();
+            case ARROW -> {
+                try {
+                    yield BukkitColorExtensions.fromColor(((Arrow) getEntity()).getColor()).identify();
+                }
+                catch (Exception e) {
+                    yield null;
+                }
+            }
+            case GOAT -> ((Goat) getEntity()).isScreaming() ? "screaming" : "normal";
+            case AXOLOTL -> ((Axolotl) getEntity()).getVariant().name();
+            default -> null;
+        };
     }
 
     public static ListTag listForEnum(Enum<?>[] values) {
@@ -287,58 +266,38 @@ public class EntityColor extends EntityProperty<ElementTag> {
 
     public ListTag getAllowedColors() {
         EntityType type = getType();
-        switch (type) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
+            return MultiVersionHelper1_19.getAllowedColors(type);
+        }
+        return switch (type) {
             case HORSE -> {
                 ListTag horseColors = listForEnum(Horse.Color.values());
                 horseColors.addAll(listForEnum(Horse.Style.values()));
-                return horseColors;
+                yield horseColors;
             }
-            case SHEEP, WOLF, SHULKER -> {
-                return listForEnum(DyeColor.values());
-            }
-            case RABBIT -> {
-                return listForEnum(Rabbit.Type.values());
-            }
-            case LLAMA, TRADER_LLAMA -> {
-                return listForEnum(Llama.Color.values());
-            }
-            case PARROT -> {
-                return listForEnum(Parrot.Variant.values());
-            }
-            case MUSHROOM_COW -> {
-                return listForEnum(MushroomCow.Variant.values());
-            }
+            case SHEEP, WOLF, SHULKER -> listForEnum(DyeColor.values());
+            case RABBIT -> listForEnum(Rabbit.Type.values());
+            case LLAMA, TRADER_LLAMA -> listForEnum(Llama.Color.values());
+            case PARROT -> listForEnum(Parrot.Variant.values());
+            case MUSHROOM_COW -> listForEnum(MushroomCow.Variant.values());
             case TROPICAL_FISH -> {
                 ListTag patterns = listForEnum(TropicalFish.Pattern.values());
                 patterns.addAll(listForEnum(DyeColor.values()));
-                return patterns;
+                yield patterns;
             }
-            case FOX -> {
-                return listForEnum(Fox.Type.values());
-            }
-            case CAT -> {
-                return listForEnum(Cat.Type.values());
-            }
-            case PANDA -> {
-                return listForEnum(Panda.Gene.values());
-            }
-            case VILLAGER, ZOMBIE_VILLAGER -> {
-                return listForEnum(Villager.Type.values());
-            }
+            case FOX -> listForEnum(Fox.Type.values());
+            case CAT -> listForEnum(Cat.Type.values());
+            case PANDA -> listForEnum(Panda.Gene.values());
+            case VILLAGER, ZOMBIE_VILLAGER -> listForEnum(Villager.Type.values());
             case GOAT -> {
                 ListTag result = new ListTag();
                 result.add("screaming");
                 result.add("normal");
-                return result;
+                yield result;
             }
-            case AXOLOTL -> {
-                return EntityColor.listForEnum(Axolotl.Variant.values());
-            }
-        }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
-            return MultiVersionHelper1_19.getAllowedColors(type);
-        }
-        return null; // includes Ocelot (deprecated) and arrow (ColorTag)
+            case AXOLOTL -> EntityColor.listForEnum(Axolotl.Variant.values());
+            default -> null; // includes Ocelot (deprecated) and arrow (ColorTag)
+        };
     }
 
     // <--[language]
