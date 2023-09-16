@@ -2414,8 +2414,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @group properties
         // @description
         // Returns whether the entity can be colored.
-        // If this returns true, it will enable access to:
-        // <@link mechanism EntityTag.color> and <@link tag EntityTag.color>
+        // If this returns true, it will enable access to <@link property EntityTag.color>.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "colorable", (attribute, object) -> {
             return new ElementTag(EntityColor.describes(object));

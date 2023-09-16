@@ -1,43 +1,34 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.TreeSpecies;
 import org.bukkit.entity.Boat;
 
-public class EntityBoatType implements Property {
+public class EntityBoatType extends EntityProperty<ElementTag> {
 
-    public static boolean describes(ObjectTag object) {
-        return object instanceof EntityTag
-                && ((EntityTag) object).getBukkitEntity() instanceof Boat;
+    // <--[property]
+    // @object EntityTag
+    // @name boat_type
+    // @input ElementTag
+    // @description
+    // Controls the wood type of the boat.
+    // Valid wood types can be found here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/TreeSpecies.html>
+    // Deprecated in versions 1.19 and above. Use <@link property EntityTag.color>.
+    // -->
+
+    public static boolean describes(EntityTag boat) {
+        return boat.getBukkitEntity() instanceof Boat;
     }
-
-    public static EntityBoatType getFrom(ObjectTag object) {
-        if (!describes(object)) {
-            return null;
-        }
-        else {
-            return new EntityBoatType((EntityTag) object);
-        }
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "boat_type"
-    };
-
-    public EntityBoatType(EntityTag entity) {
-        this.entity = entity;
-    }
-
-    EntityTag entity;
 
     @Override
-    public String getPropertyString() {
-        return getBoat().getWoodType().name();
+    public ElementTag getPropertyValue() {
+        return new ElementTag(as(Boat.class).getWoodType());
     }
 
     @Override
@@ -45,41 +36,27 @@ public class EntityBoatType implements Property {
         return "boat_type";
     }
 
-    public Boat getBoat() {
-        return (Boat) entity.getBukkitEntity();
+    @Override
+    public void setPropertyValue(ElementTag type, Mechanism mechanism) {
+        if (!mechanism.requireEnum(TreeSpecies.class)) {
+            return;
+        }
+        as(Boat.class).setWoodType(type.asEnum(TreeSpecies.class));
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.boat_type>
-        // @returns ElementTag
-        // @mechanism EntityTag.boat_type
-        // @group properties
-        // @description
-        // Returns the wood type of the boat.
-        // Valid wood types: GENERIC, REDWOOD, BIRCH, JUNGLE, ACACIA, DARK_OAK.
-        // -->
         PropertyParser.registerTag(EntityBoatType.class, ElementTag.class, "boat_type", (attribute, object) -> {
-            return new ElementTag(object.getBoat().getWoodType());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                BukkitImplDeprecations.boatType.warn(attribute.context);
+            }
+            return object.getPropertyValue();
         });
-    }
 
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name boat_type
-        // @input ElementTag
-        // @description
-        // Changes the wood type of the boat.
-        // Valid wood types: GENERIC, REDWOOD, BIRCH, JUNGLE, ACACIA, DARK_OAK.
-        // @tags
-        // <EntityTag.boat_type>
-        // -->
-        if (mechanism.matches("boat_type") && mechanism.requireEnum(TreeSpecies.class)) {
-            getBoat().setWoodType(TreeSpecies.valueOf(mechanism.getValue().asString().toUpperCase()));
-        }
+        PropertyParser.registerMechanism(EntityBoatType.class, ElementTag.class, "boat_type", (object, mechanism, type) -> {
+           if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+               BukkitImplDeprecations.boatType.warn(mechanism.context);
+           }
+           object.setPropertyValue(type, mechanism);
+        });
     }
 }
