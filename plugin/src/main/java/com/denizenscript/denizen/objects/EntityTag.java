@@ -3006,11 +3006,12 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             tagProcessor.registerMechanism("internal_data", false, MapTag.class, (object, mechanism, input) -> {
                 Map<Integer, ObjectTag> internalData = new HashMap<>(input.size());
                 for (Map.Entry<StringHolder, ObjectTag> entry : input.entrySet()) {
-                    if (!ArgumentHelper.matchesInteger(entry.getKey().str)) {
-                        mechanism.echoError("Invalid internal data id '" + entry.getKey() + "': must be a number.");
+                    int id = NMSHandler.entityHelper.mapInternalEntityDataName(object.getBukkitEntity(), entry.getKey().low);
+                    if (id == -1) {
+                        mechanism.echoError("Invalid internal data key: " + entry.getKey());
                         continue;
                     }
-                    internalData.put(new ElementTag(entry.getKey().str).asInt(), entry.getValue());
+                    internalData.put(id, entry.getValue());
                 }
                 NMSHandler.entityHelper.modifyInternalEntityData(object.getBukkitEntity(), internalData);
             });

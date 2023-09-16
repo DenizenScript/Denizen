@@ -802,6 +802,11 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
+    public int mapInternalEntityDataName(Entity entity, String name) {
+        return EntityDataNameMapper.getIdForName(((CraftEntity) entity).getHandle().getClass(), name);
+    }
+
+    @Override
     public void modifyInternalEntityData(Entity entity, Map<Integer, ObjectTag> internalData) {
         SynchedEntityData nmsEntityData = ((CraftEntity) entity).getHandle().getEntityData();
         Int2ObjectMap<SynchedEntityData.DataItem<Object>> dataItemsById = ReflectionHelper.getFieldValue(SynchedEntityData.class, ReflectionMappingsInfo.SynchedEntityData_itemsById, nmsEntityData);
