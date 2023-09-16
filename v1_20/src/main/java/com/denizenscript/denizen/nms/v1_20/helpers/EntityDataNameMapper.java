@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.nms.v1_20.helpers;
 
 
+import com.denizenscript.denizencore.objects.ArgumentHelper;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.*;
@@ -440,9 +442,10 @@ public class EntityDataNameMapper {
 
     private static int getIdFromClass(Class<?> entityClass, String name) {
         Map<String, Integer> nameToId = entityDataNames.get(entityClass);
-        if (nameToId != null) {
-            return nameToId.getOrDefault(name, -1);
+        int id = nameToId != null ? nameToId.getOrDefault(name, -1) : -1;
+        if (id == -1 && ArgumentHelper.matchesInteger(name)) {
+            id = new ElementTag(name).asInt();
         }
-        return -1;
+        return id;
     }
 }
