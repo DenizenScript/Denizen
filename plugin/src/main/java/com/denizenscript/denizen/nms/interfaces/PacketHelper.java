@@ -161,7 +161,7 @@ public interface PacketHelper {
         throw new UnsupportedOperationException();
     }
 
-    default void sendEntityDataPacket(List<Player> players, Entity entity, List<Pair<Integer, Object>> data) {
+    default void sendEntityDataPacket(List<Player> players, Entity entity, List<Object> data) {
         throw new UnsupportedOperationException();
     }
 }

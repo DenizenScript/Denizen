@@ -34,41 +34,43 @@ public class SmoothEntityDataCommand extends AbstractCommand {
     }
 
     public static void autoExecute(ScriptEntry scriptEntry,
-                                   @ArgName("entity") @ArgPrefixed EntityTag entity,
+                                   @ArgName("entity") @ArgPrefixed EntityTag inputEntity,
                                    @ArgName("for") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> forPlayers,
                                    @ArgName("data") @ArgPrefixed MapTag inputData,
                                    @ArgName("speed") @ArgPrefixed DurationTag speed) {
-        Map<Integer, List<Object>> data = new HashMap<>();
+        Entity entity = inputEntity.getBukkitEntity();
+        // Each sub-list contains DataValues for a specific id
+        List<List<Object>> data = new ArrayList<>();
         int maxLength = 0;
         for (Map.Entry<StringHolder, ObjectTag> entry : inputData.entrySet()) {
-            int id = NMSHandler.entityHelper.mapInternalEntityDataName(entity.getBukkitEntity(), entry.getKey().low);
-            List<Object> convertedObjects = new ArrayList<>();
-            for (ObjectTag object : entry.getValue().asType(ListTag.class, scriptEntry.context).objectForms) {
-                Object converted = NMSHandler.entityHelper.convertInternalEntityDataValue(entity.getBukkitEntity(), id, object);
+            int id = NMSHandler.entityHelper.mapInternalEntityDataName(entity, entry.getKey().low);
+            List<ObjectTag> denizenObjects = entry.getValue().asType(ListTag.class, scriptEntry.context).objectForms;
+            List<Object> convertedDataValues = new ArrayList<>(denizenObjects.size());
+            for (ObjectTag object : denizenObjects) {
+                Object converted = NMSHandler.entityHelper.convertInternalEntityDataValue(entity, id, object);
                 if (converted != null) {
-                    convertedObjects.add(converted);
+                    convertedDataValues.add(converted);
                 }
             }
-            maxLength = Math.max(maxLength, convertedObjects.size());
-            data.put(id, convertedObjects);
+            maxLength = Math.max(maxLength, convertedDataValues.size());
+            data.add(convertedDataValues);
         }
         List<Player> sendTo = new ArrayList<>(forPlayers.size());
         for (PlayerTag player : forPlayers) {
             sendTo.add(player.getPlayerEntity());
         }
-        Entity bukkitEntity = entity.getBukkitEntity();
         long ms = speed.getMillis();
         final int finalMaxLength = maxLength;
         DenizenCore.runAsync(() -> {
             try {
                 for (int i = 0; i < finalMaxLength; i++) {
-                    List<Pair<Integer, Object>> toSend = new ArrayList<>();
-                    for (Map.Entry<Integer, List<Object>> entry : data.entrySet()) {
-                        if (entry.getValue().size() > i) {
-                            toSend.add(Pair.of(entry.getKey(), entry.getValue().get(i)));
+                    List<Object> toSend = new ArrayList<>();
+                    for (List<Object> dataValues : data) {
+                        if (dataValues.size() > i) {
+                            toSend.add(dataValues.get(i));
                         }
                     }
-                    NMSHandler.packetHelper.sendEntityDataPacket(sendTo, bukkitEntity, toSend);
+                    NMSHandler.packetHelper.sendEntityDataPacket(sendTo, entity, toSend);
                     Thread.sleep(ms);
                 }
             }

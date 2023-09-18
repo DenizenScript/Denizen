@@ -408,13 +408,8 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void sendEntityDataPacket(List<Player> players, Entity entity, List<Pair<Integer, Object>> data) {
-        Int2ObjectMap<SynchedEntityData.DataItem<Object>> dataItemsById = EntityHelperImpl.getDataItems(entity);
-        List<SynchedEntityData.DataValue<?>> dataValues = new ArrayList<>();
-        for (Pair<Integer, Object> entry : data) {
-            dataValues.add(createEntityData(dataItemsById.get(entry.left().intValue()).getAccessor(), entry.right()));
-        }
-        ClientboundSetEntityDataPacket setEntityDataPacket = new ClientboundSetEntityDataPacket(entity.getEntityId(), dataValues);
+    public void sendEntityDataPacket(List<Player> players, Entity entity, List<Object> data) {
+        ClientboundSetEntityDataPacket setEntityDataPacket = new ClientboundSetEntityDataPacket(entity.getEntityId(), (List<SynchedEntityData.DataValue<?>>) (Object) data);
         for (Player player : players) {
             sendAsyncSafe(player, setEntityDataPacket);
         }

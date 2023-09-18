@@ -818,13 +818,17 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public Object convertInternalEntityDataValue(Entity entity, int id, ObjectTag objectTag) {
+    public SynchedEntityData.DataValue<?> convertInternalEntityDataValue(Entity entity, int id, ObjectTag objectTag) {
         SynchedEntityData.DataItem<Object> dataItem = getDataItems(entity).get(id);
         if (dataItem == null) {
             Debug.echoError("Invalid internal data id '" + id + "': couldn't be matched to any internal data for entity of type '" + entity.getType() + "'.");
             return null;
         }
-        return ReflectionSetCommand.convertObjectTypeFor(dataItem.getValue().getClass(), objectTag);
+        Object converted = ReflectionSetCommand.convertObjectTypeFor(dataItem.getValue().getClass(), objectTag);
+        if (converted == null) {
+            return null;
+        }
+        return PacketHelperImpl.createEntityData(dataItem.getAccessor(), converted);
     }
 
     @Override
