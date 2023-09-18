@@ -456,6 +456,10 @@ public abstract class EntityHelper {
         throw new UnsupportedOperationException();
     }
 
+    public Object convertInternalEntityDataValue(Entity entity, int id, ObjectTag objectTag) {
+        throw new UnsupportedOperationException();
+    }
+
     public void modifyInternalEntityData(Entity entity, Map<Integer, ObjectTag> internalData) {
         throw new UnsupportedOperationException();
     }

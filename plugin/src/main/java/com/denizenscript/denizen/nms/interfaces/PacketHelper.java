@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizencore.objects.core.ColorTag;
+import it.unimi.dsi.fastutil.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -157,6 +158,10 @@ public interface PacketHelper {
     }
 
     default void sendRelativeLookPacket(Player player, float yaw, float pitch) {
+        throw new UnsupportedOperationException();
+    }
+
+    default void sendEntityDataPacket(List<Player> players, Entity entity, List<Pair<Integer, Object>> data) {
         throw new UnsupportedOperationException();
     }
 }

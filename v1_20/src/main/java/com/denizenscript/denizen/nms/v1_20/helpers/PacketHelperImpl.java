@@ -15,6 +15,8 @@ import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -397,7 +399,7 @@ public class PacketHelperImpl implements PacketHelper {
             }
         }
         ClientboundPlayerPositionPacket packet = new ClientboundPlayerPositionPacket(x, y, z, yaw, pitch, relativeMovements, 0);
-        DenizenNetworkManagerImpl.getNetworkManager(player).oldManager.channel.writeAndFlush(packet);
+        sendAsyncSafe(player, packet);
     }
 
     @Override
@@ -405,8 +407,25 @@ public class PacketHelperImpl implements PacketHelper {
         sendRelativePositionPacket(player, 0, 0, 0, yaw, pitch, null);
     }
 
+    @Override
+    public void sendEntityDataPacket(List<Player> players, Entity entity, List<Pair<Integer, Object>> data) {
+        Int2ObjectMap<SynchedEntityData.DataItem<Object>> dataItemsById = EntityHelperImpl.getDataItems(entity);
+        List<SynchedEntityData.DataValue<?>> dataValues = new ArrayList<>();
+        for (Pair<Integer, Object> entry : data) {
+            dataValues.add(createEntityData(dataItemsById.get(entry.left().intValue()).getAccessor(), entry.right()));
+        }
+        ClientboundSetEntityDataPacket setEntityDataPacket = new ClientboundSetEntityDataPacket(entity.getEntityId(), dataValues);
+        for (Player player : players) {
+            sendAsyncSafe(player, setEntityDataPacket);
+        }
+    }
+
     public static void send(Player player, Packet<?> packet) {
         ((CraftPlayer) player).getHandle().connection.send(packet);
+    }
+
+    public static void sendAsyncSafe(Player player, Packet<?> packet) {
+        DenizenNetworkManagerImpl.getNetworkManager(player).oldManager.channel.writeAndFlush(packet);
     }
 
     public static <T> SynchedEntityData.DataValue<T> createEntityData(EntityDataAccessor<T> accessor, T value) {

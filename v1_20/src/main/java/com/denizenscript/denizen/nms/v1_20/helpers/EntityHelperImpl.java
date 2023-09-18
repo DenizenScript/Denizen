@@ -806,6 +806,27 @@ public class EntityHelperImpl extends EntityHelper {
         return EntityDataNameMapper.getIdForName(((CraftEntity) entity).getHandle().getClass(), name);
     }
 
+    public static final Field SynchedEntityData_itemsById = ReflectionHelper.getFields(SynchedEntityData.class).get(ReflectionMappingsInfo.SynchedEntityData_itemsById);
+
+    public static Int2ObjectMap<SynchedEntityData.DataItem<Object>> getDataItems(Entity entity) {
+        try {
+            return (Int2ObjectMap<SynchedEntityData.DataItem<Object>>) SynchedEntityData_itemsById.get(((CraftEntity) entity).getHandle().getEntityData());
+        }
+        catch (IllegalAccessException e) {
+            throw new RuntimeException(e); // Stop the code here to avoid NPEs down the road
+        }
+    }
+
+    @Override
+    public Object convertInternalEntityDataValue(Entity entity, int id, ObjectTag objectTag) {
+        SynchedEntityData.DataItem<Object> dataItem = getDataItems(entity).get(id);
+        if (dataItem == null) {
+            Debug.echoError("Invalid internal data id '" + id + "': couldn't be matched to any internal data for entity of type '" + entity.getType() + "'.");
+            return null;
+        }
+        return ReflectionSetCommand.convertObjectTypeFor(dataItem.getValue().getClass(), objectTag);
+    }
+
     @Override
     public void modifyInternalEntityData(Entity entity, Map<Integer, ObjectTag> internalData) {
         SynchedEntityData nmsEntityData = ((CraftEntity) entity).getHandle().getEntityData();
