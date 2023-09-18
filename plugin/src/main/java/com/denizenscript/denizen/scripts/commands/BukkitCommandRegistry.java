@@ -85,7 +85,6 @@ public class BukkitCommandRegistry {
         registerCommand(ResetCommand.class);
         registerCommand(ZapCommand.class);
         // entity
-        registerCommand(SmoothEntityDataCommand.class); // <---------
         registerCommand(AgeCommand.class);
         registerCommand(AttachCommand.class);
         registerCommand(AttackCommand.class);
@@ -110,6 +109,7 @@ public class BukkitCommandRegistry {
         registerCommand(RenameCommand.class);
         registerCommand(RotateCommand.class);
         registerCommand(ShootCommand.class);
+        registerCommand(SmoothEntityDataCommand.class);
         registerCommand(SneakCommand.class);
         registerCommand(SpawnCommand.class);
         registerCommand(TeleportCommand.class);
