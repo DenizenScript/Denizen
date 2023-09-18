@@ -92,6 +92,7 @@ public class BukkitCommandRegistry {
         registerCommand(CastCommand.class);
         registerCommand(EquipCommand.class);
         registerCommand(FakeEquipCommand.class);
+        registerCommand(FakeInternalDataCommand.class);
         registerCommand(FeedCommand.class);
         registerCommand(FlyCommand.class);
         registerCommand(FollowCommand.class);
@@ -109,7 +110,6 @@ public class BukkitCommandRegistry {
         registerCommand(RenameCommand.class);
         registerCommand(RotateCommand.class);
         registerCommand(ShootCommand.class);
-        registerCommand(SmoothEntityDataCommand.class);
         registerCommand(SneakCommand.class);
         registerCommand(SpawnCommand.class);
         registerCommand(TeleportCommand.class);

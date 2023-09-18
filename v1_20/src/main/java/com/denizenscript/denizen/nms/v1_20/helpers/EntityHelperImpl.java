@@ -818,17 +818,21 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public SynchedEntityData.DataValue<?> convertInternalEntityDataValue(Entity entity, int id, ObjectTag objectTag) {
-        SynchedEntityData.DataItem<Object> dataItem = getDataItems(entity).get(id);
-        if (dataItem == null) {
-            Debug.echoError("Invalid internal data id '" + id + "': couldn't be matched to any internal data for entity of type '" + entity.getType() + "'.");
-            return null;
+    public List<Object> convertInternalEntityDataValues(Entity entity, Map<Integer, ObjectTag> data) {
+        List<Object> dataValues = new ArrayList<>(data.size());
+        Int2ObjectMap<SynchedEntityData.DataItem<Object>> dataItemsById = getDataItems(entity);
+        for (Map.Entry<Integer, ObjectTag> entry : data.entrySet()) {
+            SynchedEntityData.DataItem<Object> dataItem = dataItemsById.get(entry.getKey().intValue());
+            if (dataItem == null) {
+                Debug.echoError("Invalid internal data id '" + entry.getKey() + "': couldn't be matched to any internal data for entity of type '" + entity.getType() + "'.");
+                continue;
+            }
+            Object converted = ReflectionSetCommand.convertObjectTypeFor(dataItem.getValue().getClass(), entry.getValue());
+            if (converted != null) {
+                dataValues.add(PacketHelperImpl.createEntityData(dataItem.getAccessor(), converted));
+            }
         }
-        Object converted = ReflectionSetCommand.convertObjectTypeFor(dataItem.getValue().getClass(), objectTag);
-        if (converted == null) {
-            return null;
-        }
-        return PacketHelperImpl.createEntityData(dataItem.getAccessor(), converted);
+        return dataValues;
     }
 
     @Override

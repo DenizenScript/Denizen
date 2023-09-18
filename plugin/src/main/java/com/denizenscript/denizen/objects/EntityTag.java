@@ -10,6 +10,7 @@ import com.denizenscript.denizen.npc.traits.MirrorTrait;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizen.objects.properties.entity.EntityTame;
+import com.denizenscript.denizen.scripts.commands.entity.FakeInternalDataCommand;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
@@ -3004,16 +3005,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // (note that it documents the values that eventually get sent to the client, so the input this expects might be slightly different in some cases).
             // -->
             tagProcessor.registerMechanism("internal_data", false, MapTag.class, (object, mechanism, input) -> {
-                Map<Integer, ObjectTag> internalData = new HashMap<>(input.size());
-                for (Map.Entry<StringHolder, ObjectTag> entry : input.entrySet()) {
-                    int id = NMSHandler.entityHelper.mapInternalEntityDataName(object.getBukkitEntity(), entry.getKey().low);
-                    if (id == -1) {
-                        mechanism.echoError("Invalid internal data key: " + entry.getKey());
-                        continue;
-                    }
-                    internalData.put(id, entry.getValue());
-                }
-                NMSHandler.entityHelper.modifyInternalEntityData(object.getBukkitEntity(), internalData);
+                NMSHandler.entityHelper.modifyInternalEntityData(object.getBukkitEntity(), FakeInternalDataCommand.parseEntityDataMap(object.getBukkitEntity(), input));
             });
         }
     }
