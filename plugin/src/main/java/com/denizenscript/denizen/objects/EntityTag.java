@@ -10,7 +10,6 @@ import com.denizenscript.denizen.npc.traits.MirrorTrait;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizen.objects.properties.entity.EntityTame;
-import com.denizenscript.denizen.scripts.commands.entity.FakeInternalDataCommand;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
@@ -3005,7 +3004,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // (note that it documents the values that eventually get sent to the client, so the input this expects might be slightly different in some cases).
             // -->
             tagProcessor.registerMechanism("internal_data", false, MapTag.class, (object, mechanism, input) -> {
-                NMSHandler.entityHelper.modifyInternalEntityData(object.getBukkitEntity(), FakeInternalDataCommand.parseEntityDataMap(object.getBukkitEntity(), input));
+                NMSHandler.entityHelper.modifyInternalEntityData(object.getBukkitEntity(), input);
             });
         }
     }
