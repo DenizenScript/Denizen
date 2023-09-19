@@ -27,6 +27,36 @@ public class FakeInternalDataCommand extends AbstractCommand {
         autoCompile();
     }
 
+    // <--[command]
+    // @Name FakeInternalData
+    // @Syntax fakeinternaldata [entity:<entity>] [data:<map>|...] (for:<player>|...) (speed:<duration>)
+    // @Required 3
+    // @Maximum 4
+    // @Short Sends fake entity data updates, optionally animating them with sub-tick precision.
+    // @Group entity
+    //
+    // @Description
+    // Sends fake internal entity data updates, optionally sending multiple over time.
+    // This supports sub-tick precision, allowing smooth/high FPS animations.
+    //
+    // The input to 'data:' is a list of <@link object MapTag>s, with each map being a frame to send, with each map being formatted like <@link mechanism EntityTag.internal_data>'s input.
+    //
+    // Optionally specify a list of players to fake the data for, defaults to the linked player.
+    //
+    // 'speed:' is the amount of time between each frame getting sent, supporting sub-tick delays.
+    //
+    // @Usage
+    // Animates an item display entity's item for the linked player, and slowly scales it up.
+    // - fakeinternaldata entity:<[item_display]> data:[item=iron_ingot;scale=0.6,0.6,0.6]|[item=gold_ingot;scale=0.8,0.8,0.8]|[item=netherite_ingot;scale=1,1,1] speed:0.5s
+    //
+    // @Usage
+    // Animates a rainbow glow on a display entity for all online players.
+    // - define color <color[red]>
+    // - repeat 361 from:0 as:hue:
+    //   - define frames:->:<map[glow_color=<[color].with_hue[<[hue]>].argb_integer>]>
+    // - fakeinternaldata entity:<[display]> data:<[frames]> for:<server.online_players> speed:0.01s
+    // -->
+
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("entity") @ArgPrefixed EntityTag inputEntity,
                                    @ArgName("data") @ArgPrefixed @ArgSubType(MapTag.class) List<MapTag> data,
