@@ -816,13 +816,14 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     public static void convertToInternalData(Entity entity, MapTag internalData, BiConsumer<SynchedEntityData.DataItem<Object>, Object> processConverted) {
+        Int2ObjectMap<SynchedEntityData.DataItem<Object>> dataItemsById = getDataItems(entity);
         for (Map.Entry<StringHolder, ObjectTag> entry : internalData.entrySet()) {
             int id = EntityDataNameMapper.getIdForName(((CraftEntity) entity).getHandle().getClass(), entry.getKey().low);
             if (id == -1) {
                 Debug.echoError("Invalid internal data key: " + entry.getKey());
                 return;
             }
-            SynchedEntityData.DataItem<Object> dataItem = getDataItems(entity).get(id);
+            SynchedEntityData.DataItem<Object> dataItem = dataItemsById.get(id);
             if (dataItem == null) {
                 Debug.echoError("Invalid internal data id '" + id + "': couldn't be matched to any internal data for entity of type '" + entity.getType() + "'.");
                 return;
