@@ -16,7 +16,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_20_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlock;
 import org.bukkit.event.block.SignChangeEvent;
 
 import java.nio.charset.StandardCharsets;

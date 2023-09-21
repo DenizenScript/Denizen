@@ -17,8 +17,8 @@ import net.minecraft.world.level.chunk.*;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.bukkit.World;
 import org.bukkit.Chunk;
-import org.bukkit.craftbukkit.v1_20_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R2.CraftChunk;
+import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
