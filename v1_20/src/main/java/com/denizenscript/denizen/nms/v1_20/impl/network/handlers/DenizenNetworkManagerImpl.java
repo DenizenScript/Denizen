@@ -202,11 +202,6 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
-    public void setListener(PacketListener packetlistener) {
-        oldManager.setListener(packetlistener);
-    }
-
-    @Override
     public void setListenerForServerboundHandshake(PacketListener packetlistener) {
         oldManager.setListenerForServerboundHandshake(packetlistener);
     }
@@ -422,7 +417,7 @@ public class DenizenNetworkManagerImpl extends Connection {
 
     @Override
     public boolean isMemoryConnection() {
-        return oldManager.isMemoryConnection();
+        return oldManager != null && oldManager.isMemoryConnection();
     }
 
     @Override
