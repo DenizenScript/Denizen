@@ -17,6 +17,7 @@ import net.minecraft.network.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.protocol.handshake.ClientIntent;
 import net.minecraft.network.protocol.login.ClientLoginPacketListener;
@@ -88,9 +89,16 @@ public class DenizenNetworkManagerImpl extends Connection {
         super(getProtocolDirection(oldManager));
         this.oldManager = oldManager;
         this.channel = oldManager.channel;
-        this.packetListener = (DenizenPacketListenerImpl) NetworkInterceptCodeGen.generateAppropriateInterceptor(this, entityPlayer, DenizenPacketListenerImpl.class, AbstractListenerPlayInImpl.class, ServerGamePacketListenerImpl.class);
-        oldManager.setListener(packetListener);
-        this.player = this.packetListener.player;
+        this.player = entityPlayer;
+        packetListener = (DenizenPacketListenerImpl) NetworkInterceptCodeGen.generateAppropriateInterceptor(this, entityPlayer, DenizenPacketListenerImpl.class, AbstractListenerPlayInImpl.class, ServerGamePacketListenerImpl.class);
+        if (!(oldManager.getPacketListener() instanceof ServerConfigurationPacketListener)) {
+            setListener(packetListener);
+        }
+    }
+
+    @Override
+    public void setListener(PacketListener listener) {
+        oldManager.setListener(listener instanceof ServerConfigurationPacketListener || packetListener == null ? listener : packetListener);
     }
 
     public static Connection getConnection(ServerPlayer player) {
