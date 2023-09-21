@@ -10,9 +10,11 @@ import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.*;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.phys.Vec3;
@@ -29,8 +31,8 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public final ServerGamePacketListenerImpl oldListener;
     public final DenizenNetworkManagerImpl denizenNetworkManager;
 
-    public AbstractListenerPlayInImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer, ServerGamePacketListenerImpl oldListener) {
-        super(MinecraftServer.getServer(), networkManager, entityPlayer);
+    public AbstractListenerPlayInImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer, ServerGamePacketListenerImpl oldListener, CommonListenerCookie cookie) {
+        super(MinecraftServer.getServer(), networkManager, entityPlayer, cookie);
         this.oldListener = oldListener;
         this.denizenNetworkManager = networkManager;
     }
@@ -113,7 +115,7 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public static Field AWAITING_POS_FIELD = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_awaitingPositionFromClient, Vec3.class);
     public static Field AWAITING_TELEPORT_FIELD = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_awaitingTeleport, int.class);
 
-    public void debugPacketOutput(Packet<ServerGamePacketListener> packet) {
+    public void debugPacketOutput(Packet<?> packet) {
         try {
             if (packet instanceof ServerboundMovePlayerPacket) {
                 ServerboundMovePlayerPacket movePacket = (ServerboundMovePlayerPacket) packet;
@@ -137,7 +139,7 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
         }
     }
 
-    public boolean handlePacketIn(Packet<ServerGamePacketListener> packet) {
+    public boolean handlePacketIn(Packet<?> packet) {
         denizenNetworkManager.packetsReceived++;
         if (NMSHandler.debugPackets) {
             debugPacketOutput(packet);

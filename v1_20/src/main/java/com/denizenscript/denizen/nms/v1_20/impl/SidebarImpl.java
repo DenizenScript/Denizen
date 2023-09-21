@@ -12,6 +12,7 @@ import net.minecraft.network.protocol.game.ClientboundSetObjectivePacket;
 import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
 import net.minecraft.network.protocol.game.ClientboundSetScorePacket;
 import net.minecraft.server.ServerScoreboard;
+import net.minecraft.world.scores.DisplaySlot;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
@@ -78,7 +79,7 @@ public class SidebarImpl extends Sidebar {
             PacketHelperImpl.send(player, ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
             PacketHelperImpl.send(player, new ClientboundSetScorePacket(ServerScoreboard.Method.CHANGE, obj1.getName(), lineId, this.scores[i]));
         }
-        PacketHelperImpl.send(player, new ClientboundSetDisplayObjectivePacket(1, this.obj1));
+        PacketHelperImpl.send(player, new ClientboundSetDisplayObjectivePacket(DisplaySlot.SIDEBAR, this.obj1));
         PacketHelperImpl.send(player, new ClientboundSetObjectivePacket(this.obj2, 1));
         Objective temp = this.obj2;
         this.obj2 = this.obj1;

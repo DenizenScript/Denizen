@@ -31,7 +31,7 @@ public class DisguisePacketHandlers {
     public static void registerHandlers() {
         registerPacketHandler(ClientboundSetEntityDataPacket.class, ClientboundSetEntityDataPacket::id, DisguisePacketHandlers::processEntityDataPacket);
         registerPacketHandler(ClientboundUpdateAttributesPacket.class, ClientboundUpdateAttributesPacket::getEntityId, DisguisePacketHandlers::processAttributesPacket);
-        registerPacketHandler(ClientboundAddPlayerPacket.class, ClientboundAddPlayerPacket::getEntityId, DisguisePacketHandlers::sendDisguiseForPacket);
+        //registerPacketHandler(ClientboundAddPlayerPacket.class, ClientboundAddPlayerPacket::getEntityId, DisguisePacketHandlers::sendDisguiseForPacket);
         registerPacketHandler(ClientboundAddEntityPacket.class, ClientboundAddEntityPacket::getId, DisguisePacketHandlers::sendDisguiseForPacket);
         registerPacketHandler(ClientboundTeleportEntityPacket.class, ClientboundTeleportEntityPacket::getId, DisguisePacketHandlers::processTeleportPacket);
         registerPacketHandler(ClientboundMoveEntityPacket.Rot.class, ClientboundMoveEntityPacket::getEntity, DisguisePacketHandlers::processMoveEntityRotPacket);

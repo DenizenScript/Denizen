@@ -14,16 +14,17 @@ import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import io.netty.buffer.Unpooled;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.custom.BrandPayload;
+import net.minecraft.network.protocol.common.custom.GameTestAddMarkerDebugPayload;
+import net.minecraft.network.protocol.common.custom.GameTestClearMarkersDebugPayload;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
@@ -61,7 +62,6 @@ import org.bukkit.map.MapPalette;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class PacketHelperImpl implements PacketHelper {
@@ -344,29 +344,21 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showDebugTestMarker(Player player, Location location, ColorTag color, String name, int time) {
-        ResourceLocation packetKey = new ResourceLocation("minecraft", "debug/game_test_add_marker");
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        buf.writeBlockPos(CraftLocation.toBlockPosition(location));
         int colorInt = color.blue | (color.green << 8) | (color.red << 16) | (color.alpha << 24);
-        buf.writeInt(colorInt);
-        buf.writeByteArray(name.getBytes(StandardCharsets.UTF_8));
-        buf.writeInt(time);
-        send(player, new ClientboundCustomPayloadPacket(packetKey, buf));
+        GameTestAddMarkerDebugPayload payload = new GameTestAddMarkerDebugPayload(CraftLocation.toBlockPosition(location), colorInt, name, time);
+        send(player, new ClientboundCustomPayloadPacket(payload));
     }
 
     @Override
     public void clearDebugTestMarker(Player player) {
-        ResourceLocation packetKey = new ResourceLocation("minecraft", "debug/game_test_clear");
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        send(player, new ClientboundCustomPayloadPacket(packetKey, buf));
+        GameTestClearMarkersDebugPayload payload = new GameTestClearMarkersDebugPayload();
+        send(player, new ClientboundCustomPayloadPacket(payload));
     }
 
     @Override
     public void sendBrand(Player player, String brand) {
-        ResourceLocation packetKey = new ResourceLocation("minecraft", "brand");
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        buf.writeUtf(brand);
-        send(player, new ClientboundCustomPayloadPacket(packetKey, buf));
+        BrandPayload payload = new BrandPayload(brand);
+        send(player, new ClientboundCustomPayloadPacket(payload));
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -116,7 +117,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
         gameProfile.getProperties().put("textures",
                 new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
 
-        final EntityFakePlayerImpl fakePlayer = new EntityFakePlayerImpl(worldServer.getServer(), worldServer, gameProfile, doAdd);
+        final EntityFakePlayerImpl fakePlayer = new EntityFakePlayerImpl(worldServer.getServer(), worldServer, gameProfile, ClientInformation.createDefault(), doAdd);
 
         fakePlayer.forceSetPositionRotation(location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());

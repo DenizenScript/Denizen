@@ -63,10 +63,10 @@ import java.util.*;
 
 public class ItemHelperImpl extends ItemHelper {
 
-    public static net.minecraft.world.item.crafting.Recipe<?> getNMSRecipe(NamespacedKey key) {
+    public static net.minecraft.world.item.crafting.RecipeHolder<?> getNMSRecipe(NamespacedKey key) {
         ResourceLocation nmsKey = CraftNamespacedKey.toMinecraft(key);
-        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().recipes.values()) {
-            net.minecraft.world.item.crafting.Recipe<?> recipe = recipeMap.get(nmsKey);
+        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.RecipeHolder<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().recipes.values()) {
+            net.minecraft.world.item.crafting.RecipeHolder<?> recipe = recipeMap.get(nmsKey);
             if (recipe != null) {
                 return recipe;
             }
@@ -102,7 +102,7 @@ public class ItemHelperImpl extends ItemHelper {
             Debug.echoError(ex);
             return;
         }
-        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : recipeManager.recipes.values()) {
+        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.RecipeHolder<?>> recipeMap : recipeManager.recipes.values()) {
             for (ResourceLocation key : new ArrayList<>(recipeMap.keySet())) {
                 if (key.getNamespace().equalsIgnoreCase("denizen")) {
                     recipeMap.remove(key);
@@ -146,26 +146,28 @@ public class ItemHelperImpl extends ItemHelper {
         AbstractCookingRecipe recipe;
         CookingBookCategory categoryValue = category == null ? CookingBookCategory.MISC : CookingBookCategory.valueOf(CoreUtilities.toUpperCase(category));
         if (type.equalsIgnoreCase("smoker")) {
-            recipe = new SmokingRecipe(key, group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new SmokingRecipe(group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else if (type.equalsIgnoreCase("blast")) {
-            recipe = new BlastingRecipe(key, group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new BlastingRecipe(group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else if (type.equalsIgnoreCase("campfire")) {
-            recipe = new CampfireCookingRecipe(key, group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new CampfireCookingRecipe(group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         else {
-            recipe = new SmeltingRecipe(key, group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new SmeltingRecipe(group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
-        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
+        RecipeHolder<AbstractCookingRecipe> holder = new RecipeHolder<>(key, recipe);
+        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(holder);
     }
 
     @Override
     public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {
         ResourceLocation key = new ResourceLocation("denizen", keyName);
         Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
-        StonecutterRecipe recipe = new StonecutterRecipe(key, group, itemRecipe, CraftItemStack.asNMSCopy(result));
-        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
+        StonecutterRecipe recipe = new StonecutterRecipe(group, itemRecipe, CraftItemStack.asNMSCopy(result));
+        RecipeHolder<StonecutterRecipe> holder = new RecipeHolder<>(key, recipe);
+        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(holder);
     }
 
     @Override
@@ -174,8 +176,9 @@ public class ItemHelperImpl extends ItemHelper {
         Ingredient templateItemRecipe = itemArrayToRecipe(templateItem, templateExact);
         Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
         Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
-        SmithingTransformRecipe recipe = new SmithingTransformRecipe(key, templateItemRecipe, baseItemRecipe, upgradeItemRecipe, CraftItemStack.asNMSCopy(result));
-        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
+        SmithingTransformRecipe recipe = new SmithingTransformRecipe(templateItemRecipe, baseItemRecipe, upgradeItemRecipe, CraftItemStack.asNMSCopy(result));
+        RecipeHolder<SmithingTransformRecipe> holder = new RecipeHolder<>(key, recipe);
+        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(holder);
     }
 
     @Override
@@ -187,8 +190,9 @@ public class ItemHelperImpl extends ItemHelper {
             ingredientList.add(itemArrayToRecipe(ingredients.get(i), exact[i]));
         }
         // TODO: 1.19.3: Add support for choosing a CraftingBookCategory
-        ShapelessRecipe recipe = new ShapelessRecipe(key, group, categoryValue, CraftItemStack.asNMSCopy(result), NonNullList.of(null, ingredientList.toArray(new Ingredient[0])));
-        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(recipe);
+        ShapelessRecipe recipe = new ShapelessRecipe(group, categoryValue, CraftItemStack.asNMSCopy(result), NonNullList.of(null, ingredientList.toArray(new Ingredient[0])));
+        RecipeHolder<ShapelessRecipe> holder = new RecipeHolder<>(key, recipe);
+        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(holder);
     }
 
     @Override
@@ -216,8 +220,8 @@ public class ItemHelperImpl extends ItemHelper {
                 if (profile != null) {
                     Property property = Iterables.getFirst(profile.getProperties().get("textures"), null);
                     return new PlayerProfile(profile.getName(), profile.getId(),
-                            property != null ? property.getValue() : null,
-                            property != null ? property.getSignature() : null);
+                            property != null ? property.value() : null,
+                            property != null ? property.signature() : null);
                 }
             }
         }

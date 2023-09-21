@@ -30,6 +30,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -193,10 +194,14 @@ public class Handler extends NMSHandler {
             }
             Property textures = profile.getProperties().containsKey("textures") ? Iterables.getFirst(profile.getProperties().get("textures"), null) : null;
             if (textures == null || !textures.hasSignature() || profile.getName() == null || profile.getId() == null) {
-                profile = minecraftServer.getSessionService().fillProfileProperties(profile, true);
+                ProfileResult actualProfile = minecraftServer.getSessionService().fetchProfile(profile.getId(), true);
+                if (actualProfile == null) {
+                    return null;
+                }
+                profile = actualProfile.profile();
                 textures = profile.getProperties().containsKey("textures") ? Iterables.getFirst(profile.getProperties().get("textures"), null) : null;
             }
-            return new PlayerProfile(profile.getName(), profile.getId(), textures == null ? null : textures.getValue(), textures == null ? null : textures.getSignature());
+            return new PlayerProfile(profile.getName(), profile.getId(), textures == null ? null : textures.value(), textures == null ? null : textures.signature());
         }
         catch (Exception e) {
             if (CoreConfiguration.debugVerbose) {
@@ -278,8 +283,8 @@ public class Handler extends NMSHandler {
         GameProfile gameProfile = ((CraftPlayer) player).getProfile();
         Property property = Iterables.getFirst(gameProfile.getProperties().get("textures"), null);
         return new PlayerProfile(gameProfile.getName(), gameProfile.getId(),
-                property != null ? property.getValue() : null,
-                property != null ? property.getSignature() : null);
+                property != null ? property.value() : null,
+                property != null ? property.signature() : null);
     }
 
     @Override

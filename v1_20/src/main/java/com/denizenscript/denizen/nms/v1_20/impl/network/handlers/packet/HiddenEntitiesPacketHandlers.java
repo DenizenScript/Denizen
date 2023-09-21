@@ -11,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 public class HiddenEntitiesPacketHandlers {
 
     public static void registerHandlers() {
-        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddPlayerPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
+        //DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddPlayerPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddEntityPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddExperienceOrbPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundMoveEntityPacket.Rot.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
@@ -33,10 +33,10 @@ public class HiddenEntitiesPacketHandlers {
         try {
             int ider = -1;
             Entity e = null;
-            if (packet instanceof ClientboundAddPlayerPacket) {
+            /*if (packet instanceof ClientboundAddPlayerPacket) {
                 ider = ((ClientboundAddPlayerPacket) packet).getEntityId();
-            }
-            else if (packet instanceof ClientboundAddEntityPacket) {
+            }*/
+            if (packet instanceof ClientboundAddEntityPacket) {
                 ider = ((ClientboundAddEntityPacket) packet).getId();
             }
             else if (packet instanceof ClientboundAddExperienceOrbPacket) {

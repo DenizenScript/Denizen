@@ -25,10 +25,8 @@ import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
-import net.minecraft.server.level.ChunkMap;
-import net.minecraft.server.level.ServerEntity;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.*;
+import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.util.Mth;
@@ -780,7 +778,7 @@ public class EntityHelperImpl extends EntityHelper {
             nmsEntity.unsetRemoved();
             nmsEntity.setUUID(id);
             if (nmsEntity instanceof ServerPlayer nmsPlayer) {
-                playerList.placeNewPlayer(DenizenNetworkManagerImpl.getConnection(nmsPlayer), nmsPlayer);
+                playerList.placeNewPlayer(DenizenNetworkManagerImpl.getConnection(nmsPlayer), nmsPlayer, new CommonListenerCookie(nmsPlayer.getGameProfile(), nmsPlayer.connection.latency(), nmsPlayer.clientInformation()));
             }
             else {
                 level.addFreshEntity(nmsEntity);

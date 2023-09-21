@@ -8,8 +8,10 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
@@ -17,8 +19,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class EntityFakePlayerImpl extends ServerPlayer {
 
-    public EntityFakePlayerImpl(MinecraftServer minecraftserver, ServerLevel worldserver, GameProfile gameprofile, boolean doAdd) {
-        super(minecraftserver, worldserver, gameprofile);
+    public EntityFakePlayerImpl(MinecraftServer minecraftserver, ServerLevel worldserver, GameProfile gameprofile, ClientInformation clientInfo, boolean doAdd) {
+        super(minecraftserver, worldserver, gameprofile, clientInfo);
         try {
             Handler.ENTITY_BUKKITYENTITY.set(this, new CraftFakePlayerImpl((CraftServer) Bukkit.getServer(), this));
         }
@@ -26,7 +28,7 @@ public class EntityFakePlayerImpl extends ServerPlayer {
             Debug.echoError(ex);
         }
         Connection networkManager = new FakeNetworkManagerImpl(PacketFlow.CLIENTBOUND);
-        connection = new FakePlayerConnectionImpl(minecraftserver, networkManager, this);
+        connection = new FakePlayerConnectionImpl(minecraftserver, networkManager, this, new CommonListenerCookie(gameprofile, 0, clientInfo));
         networkManager.setListener(connection);
         getEntityData().set(Player.DATA_PLAYER_MODE_CUSTOMISATION, (byte) 127);
         if (doAdd) {

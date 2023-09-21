@@ -75,8 +75,8 @@ public class TablistUpdateEventPacketHandlers {
                 String texture = null, signature = null;
                 if (profile.getProperties().containsKey("textures")) {
                     Property property = profile.getProperties().get("textures").stream().findFirst().get();
-                    texture = property.getValue();
-                    signature = property.getSignature();
+                    texture = property.value();
+                    signature = property.signature();
                 }
                 String modeText = update.gameMode() == null ? null : update.gameMode().name();
                 PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.getId(), update.listed(), profile.getName(),

@@ -18,7 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.protocol.game.ClientboundUpdateTagsPacket;
+import net.minecraft.network.protocol.common.ClientboundUpdateTagsPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
@@ -95,7 +95,7 @@ public class BlockHelperImpl implements BlockHelper {
         String name = profile.getName();
         UUID id = profile.getId();
         com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.getProperties().get("textures"), null);
-        return new PlayerProfile(name, id, property != null ? property.getValue() : null);
+        return new PlayerProfile(name, id, property != null ? property.value() : null);
     }
 
     @Override
