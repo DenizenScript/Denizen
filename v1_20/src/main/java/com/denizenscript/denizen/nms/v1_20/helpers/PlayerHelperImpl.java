@@ -29,6 +29,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.protocol.common.ClientboundUpdateTagsPacket;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceKey;
@@ -48,20 +49,20 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemCooldowns;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.phys.AABB;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R1.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R2.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R2.util.CraftMagicNumbers;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -327,7 +328,7 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public void resendRecipeDetails(Player player) {
-        Collection<Recipe<?>> recipes = ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().getRecipes();
+        Collection<RecipeHolder<?>> recipes = ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().getRecipes();
         ClientboundUpdateRecipesPacket updatePacket = new ClientboundUpdateRecipesPacket(recipes);
         ((CraftPlayer) player).getHandle().connection.send(updatePacket);
     }
@@ -341,7 +342,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void quietlyAddRecipe(Player player, NamespacedKey key) {
         ServerRecipeBook recipeBook = ((CraftPlayer) player).getHandle().getRecipeBook();
-        Recipe<?> recipe = ItemHelperImpl.getNMSRecipe(key);
+        RecipeHolder<?> recipe = ItemHelperImpl.getNMSRecipe(key);
         if (recipe == null) {
             Debug.echoError("Cannot add recipe '" + key + "': it does not exist.");
             return;
@@ -433,7 +434,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void refreshPlayer(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         ServerLevel nmsWorld = (ServerLevel) nmsPlayer.level();
-        nmsPlayer.connection.send(new ClientboundRespawnPacket(
+        CommonPlayerSpawnInfo spawnInfo = new CommonPlayerSpawnInfo(
                 nmsWorld.dimensionTypeId(),
                 nmsWorld.dimension(),
                 BiomeManager.obfuscateSeed(nmsWorld.getSeed()),
@@ -441,9 +442,10 @@ public class PlayerHelperImpl extends PlayerHelper {
                 nmsPlayer.gameMode.getPreviousGameModeForPlayer(),
                 nmsWorld.isDebug(),
                 nmsWorld.isFlat(),
-                ClientboundRespawnPacket.KEEP_ALL_DATA,
                 nmsPlayer.getLastDeathLocation(),
-                nmsPlayer.getPortalCooldown()));
+                nmsPlayer.getPortalCooldown()
+        );
+        nmsPlayer.connection.send(new ClientboundRespawnPacket(spawnInfo, ClientboundRespawnPacket.KEEP_ALL_DATA));
         nmsPlayer.connection.teleport(player.getLocation());
         if (nmsPlayer.isPassenger()) {
            nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer.getVehicle()));

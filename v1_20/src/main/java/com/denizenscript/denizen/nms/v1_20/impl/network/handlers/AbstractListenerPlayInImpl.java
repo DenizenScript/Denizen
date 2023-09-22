@@ -5,19 +5,25 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.*;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.status.ServerboundPingRequestPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.lang.reflect.Field;
@@ -29,8 +35,8 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public final ServerGamePacketListenerImpl oldListener;
     public final DenizenNetworkManagerImpl denizenNetworkManager;
 
-    public AbstractListenerPlayInImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer, ServerGamePacketListenerImpl oldListener) {
-        super(MinecraftServer.getServer(), networkManager, entityPlayer);
+    public AbstractListenerPlayInImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer, ServerGamePacketListenerImpl oldListener, CommonListenerCookie cookie) {
+        super(MinecraftServer.getServer(), networkManager, entityPlayer, cookie);
         this.oldListener = oldListener;
         this.denizenNetworkManager = networkManager;
     }
@@ -91,6 +97,16 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
+    public GameProfile getOwner() {
+        return oldListener.getOwner();
+    }
+
+    @Override
+    public int latency() {
+        return oldListener.latency();
+    }
+
+    @Override
     public void onDisconnect(Component ichatbasecomponent) {
         oldListener.onDisconnect(ichatbasecomponent);
     }
@@ -113,7 +129,7 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public static Field AWAITING_POS_FIELD = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_awaitingPositionFromClient, Vec3.class);
     public static Field AWAITING_TELEPORT_FIELD = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_awaitingTeleport, int.class);
 
-    public void debugPacketOutput(Packet<ServerGamePacketListener> packet) {
+    public void debugPacketOutput(Packet<?> packet) {
         try {
             if (packet instanceof ServerboundMovePlayerPacket) {
                 ServerboundMovePlayerPacket movePacket = (ServerboundMovePlayerPacket) packet;
@@ -137,7 +153,7 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
         }
     }
 
-    public boolean handlePacketIn(Packet<ServerGamePacketListener> packet) {
+    public boolean handlePacketIn(Packet<?> packet) {
         denizenNetworkManager.packetsReceived++;
         if (NMSHandler.debugPackets) {
             debugPacketOutput(packet);
@@ -309,6 +325,16 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
+    public void suspendFlushing() {
+        oldListener.suspendFlushing();
+    }
+
+    @Override
+    public void resumeFlushing() {
+        oldListener.resumeFlushing();
+    }
+
+    @Override
     public void handlePaddleBoat(ServerboundPaddleBoatPacket packet) {
         if (handlePacketIn(packet)) { return; }
         oldListener.handlePaddleBoat(packet);
@@ -341,6 +367,11 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public void chat(String s, PlayerChatMessage original, boolean async) {
         oldListener.chat(s, original, async);
+    }
+
+    @Override
+    public ConnectionProtocol protocol() {
+        return oldListener == null ? ConnectionProtocol.PLAY : oldListener.protocol();
     }
 
     @Override
@@ -378,6 +409,17 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public SocketAddress getRawAddress() {
         return oldListener.getRawAddress();
+    }
+
+    @Override
+    public void switchToConfig() {
+        oldListener.switchToConfig();
+    }
+
+    @Override
+    public void handlePingRequest(ServerboundPingRequestPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handlePingRequest(packet);
     }
 
     @Override
@@ -465,8 +507,21 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void handleChatSessionUpdate(ServerboundChatSessionUpdatePacket serverboundchatsessionupdatepacket) {
-        oldListener.handleChatSessionUpdate(serverboundchatsessionupdatepacket);
+    public void handleChatSessionUpdate(ServerboundChatSessionUpdatePacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleChatSessionUpdate(packet);
+    }
+
+    @Override
+    public void handleConfigurationAcknowledged(ServerboundConfigurationAcknowledgedPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleConfigurationAcknowledged(packet);
+    }
+
+    @Override
+    public void handleChunkBatchReceived(ServerboundChunkBatchReceivedPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleChunkBatchReceived(packet);
     }
 
     @Override
@@ -477,5 +532,10 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public boolean shouldPropagateHandlingExceptions() {
         return oldListener.shouldPropagateHandlingExceptions();
+    }
+
+    @Override
+    public PacketFlow flow() {
+        return oldListener == null ? PacketFlow.SERVERBOUND : oldListener.flow();
     }
 }

@@ -30,6 +30,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -63,19 +64,19 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_20_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R1.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_20_R1.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventoryView;
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.v1_20_R1.util.CraftChatMessage;
-import org.bukkit.craftbukkit.v1_20_R1.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_20_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R2.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_20_R2.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R2.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_20_R2.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_20_R2.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_20_R2.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -145,7 +146,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("bcf3dcb22ad42792794079f9443df2c0");
+        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("3478a65bfd04b15b431fe107b3617dfc");
     }
 
     @Override
@@ -193,10 +194,14 @@ public class Handler extends NMSHandler {
             }
             Property textures = profile.getProperties().containsKey("textures") ? Iterables.getFirst(profile.getProperties().get("textures"), null) : null;
             if (textures == null || !textures.hasSignature() || profile.getName() == null || profile.getId() == null) {
-                profile = minecraftServer.getSessionService().fillProfileProperties(profile, true);
+                ProfileResult actualProfile = minecraftServer.getSessionService().fetchProfile(profile.getId(), true);
+                if (actualProfile == null) {
+                    return null;
+                }
+                profile = actualProfile.profile();
                 textures = profile.getProperties().containsKey("textures") ? Iterables.getFirst(profile.getProperties().get("textures"), null) : null;
             }
-            return new PlayerProfile(profile.getName(), profile.getId(), textures == null ? null : textures.getValue(), textures == null ? null : textures.getSignature());
+            return new PlayerProfile(profile.getName(), profile.getId(), textures == null ? null : textures.value(), textures == null ? null : textures.signature());
         }
         catch (Exception e) {
             if (CoreConfiguration.debugVerbose) {
@@ -278,8 +283,8 @@ public class Handler extends NMSHandler {
         GameProfile gameProfile = ((CraftPlayer) player).getProfile();
         Property property = Iterables.getFirst(gameProfile.getProperties().get("textures"), null);
         return new PlayerProfile(gameProfile.getName(), gameProfile.getId(),
-                property != null ? property.getValue() : null,
-                property != null ? property.getSignature() : null);
+                property != null ? property.value() : null,
+                property != null ? property.signature() : null);
     }
 
     @Override
