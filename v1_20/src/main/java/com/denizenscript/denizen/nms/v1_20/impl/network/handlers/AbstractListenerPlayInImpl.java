@@ -39,6 +39,7 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
         super(MinecraftServer.getServer(), networkManager, entityPlayer, cookie);
         this.oldListener = oldListener;
         this.denizenNetworkManager = networkManager;
+        ReflectionHelper.setFieldValue(ServerGamePacketListenerImpl.class, ReflectionMappingsInfo.ServerGamePacketListenerImpl_chunkSender, this, oldListener.chunkSender);
     }
 
     @Override
