@@ -23,7 +23,7 @@ public class FakeInternalDataCommand extends AbstractCommand {
     public FakeInternalDataCommand() {
         setName("fakeinternaldata");
         setSyntax("fakeinternaldata [entity:<entity>] [data:<map>|...] (for:<player>|...) (speed:<duration>)");
-        setRequiredArguments(3, 4);
+        setRequiredArguments(2, 4);
         autoCompile();
     }
 
