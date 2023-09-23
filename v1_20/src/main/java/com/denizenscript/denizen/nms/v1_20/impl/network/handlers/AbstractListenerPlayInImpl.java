@@ -32,6 +32,8 @@ import java.util.Set;
 
 public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
 
+    public static final Field ServerGamePacketListenerImpl_chunkSender = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_chunkSender);
+
     public final ServerGamePacketListenerImpl oldListener;
     public final DenizenNetworkManagerImpl denizenNetworkManager;
 
@@ -39,6 +41,12 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
         super(MinecraftServer.getServer(), networkManager, entityPlayer, cookie);
         this.oldListener = oldListener;
         this.denizenNetworkManager = networkManager;
+        try {
+            ServerGamePacketListenerImpl_chunkSender.set(this, oldListener.chunkSender);
+        }
+        catch (IllegalAccessException e) {
+            Debug.echoError(e);
+        }
     }
 
     @Override
