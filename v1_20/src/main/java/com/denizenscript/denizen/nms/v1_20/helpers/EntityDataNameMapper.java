@@ -65,20 +65,21 @@ public class EntityDataNameMapper {
         registerDataName(Interaction.class, 10, "responsive");
 
         // Display
-        registerDataName(Display.class, 8, "interpolation_delay");
-        registerDataName(Display.class, 9, "interpolation_duration");
-        registerDataName(Display.class, 10, "translation");
-        registerDataName(Display.class, 11, "scale");
-        registerDataName(Display.class, 12, "left_rotation");
-        registerDataName(Display.class, 13, "right_rotation");
-        registerDataName(Display.class, 14, "billboard");
-        registerDataName(Display.class, 15, "brightness");
-        registerDataName(Display.class, 16, "view_range");
-        registerDataName(Display.class, 17, "shadow_radius");
-        registerDataName(Display.class, 18, "shadow_strength");
-        registerDataName(Display.class, 19, "width");
-        registerDataName(Display.class, 20, "height");
-        registerDataName(Display.class, 21, "glow_color");
+        registerDataName(Display.class, 8, "transform_interpolation_start");
+        registerDataName(Display.class, 9, "transform_interpolation_duration");
+        registerDataName(Display.class, 10, "movement_interpolation_duration");
+        registerDataName(Display.class, 11, "translation");
+        registerDataName(Display.class, 12, "scale");
+        registerDataName(Display.class, 13, "left_rotation");
+        registerDataName(Display.class, 14, "right_rotation");
+        registerDataName(Display.class, 15, "billboard");
+        registerDataName(Display.class, 16, "brightness");
+        registerDataName(Display.class, 17, "view_range");
+        registerDataName(Display.class, 18, "shadow_radius");
+        registerDataName(Display.class, 19, "shadow_strength");
+        registerDataName(Display.class, 20, "width");
+        registerDataName(Display.class, 21, "height");
+        registerDataName(Display.class, 22, "glow_color");
 
         // Block display
         registerDataName(Display.BlockDisplay.class, 22, "material");
