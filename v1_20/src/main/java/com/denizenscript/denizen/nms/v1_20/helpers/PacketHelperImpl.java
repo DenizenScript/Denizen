@@ -410,7 +410,7 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     public static void sendAsyncSafe(Player player, Packet<?> packet) {
-        DenizenNetworkManagerImpl.getNetworkManager(player).oldManager.channel.writeAndFlush(packet);
+        DenizenNetworkManagerImpl.getConnection(((CraftPlayer) player).getHandle()).channel.writeAndFlush(packet);
     }
 
     public static <T> SynchedEntityData.DataValue<T> createEntityData(EntityDataAccessor<T> accessor, T value) {
