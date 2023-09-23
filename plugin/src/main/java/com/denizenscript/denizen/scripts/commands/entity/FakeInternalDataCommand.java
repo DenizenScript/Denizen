@@ -52,8 +52,8 @@ public class FakeInternalDataCommand extends AbstractCommand {
     // @Usage
     // Animates a rainbow glow on a display entity for all online players.
     // - define color <color[red]>
-    // - repeat 361 from:0 as:hue:
-    //   - define frames:->:<map[glow_color=<[color].with_hue[<[hue]>].argb_integer>]>
+    // - repeat 256 from:0 as:hue:
+    //   - define frames:->:[glow_color=<[color].with_hue[<[hue]>].argb_integer>]
     // - fakeinternaldata entity:<[display]> data:<[frames]> for:<server.online_players> speed:0.01s
     // -->
 
