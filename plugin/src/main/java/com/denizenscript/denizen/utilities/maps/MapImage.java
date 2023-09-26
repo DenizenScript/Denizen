@@ -158,7 +158,7 @@ public class MapImage extends MapObject {
         temp.getRGB(0, 0, width, height, pixels, 0, width);
         byte[] result = new byte[width * height];
         for (int i = 0; i < pixels.length; i++) {
-            result[i] = matchColor(new Color(pixels[i]));
+            result[i] = matchColor(new Color(pixels[i], true));
         }
         return result;
     }
