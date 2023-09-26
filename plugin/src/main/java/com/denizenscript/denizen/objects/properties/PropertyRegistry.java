@@ -102,6 +102,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(EntityInWaterTime.class, EntityTag.class);
         PropertyParser.registerProperty(EntityIsShowingBottom.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityIsSleeping.class, EntityTag.class);
         PropertyParser.registerProperty(EntityItem.class, EntityTag.class);
         PropertyParser.registerProperty(EntityItemInHand.class, EntityTag.class);
         PropertyParser.registerProperty(EntityItemInOffHand.class, EntityTag.class);
