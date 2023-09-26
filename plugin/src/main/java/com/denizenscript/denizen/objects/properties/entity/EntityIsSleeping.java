@@ -12,14 +12,6 @@ import org.bukkit.entity.Villager;
 
 public class EntityIsSleeping implements Property {
 
-    // <--[property]
-    // @object EntityTag
-    // @name is_sleeping
-    // @input ElementTag(Boolean)
-    // @description
-    // Controls whether the entity is sleeping.
-    // -->
-
     public static boolean describes(ObjectTag e) {
         if (!(e instanceof EntityTag)) {
             return false;
