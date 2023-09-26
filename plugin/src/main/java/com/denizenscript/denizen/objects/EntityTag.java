@@ -1968,22 +1968,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
-        // @attribute <EntityTag.is_sleeping>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether the player, NPC, or villager is currently sleeping.
-        // -->
-        registerSpawnedOnlyTag(ElementTag.class, "is_sleeping", (attribute, object) -> {
-            if (object.getBukkitEntity() instanceof Player) {
-                return new ElementTag(((Player) object.getBukkitEntity()).isSleeping());
-            }
-            else if (object.getBukkitEntity() instanceof Villager) {
-                return new ElementTag(((Villager) object.getBukkitEntity()).isSleeping());
-            }
-            return null;
-        });
-
-        // <--[tag]
         // @attribute <EntityTag.killer>
         // @returns PlayerTag
         // @group attributes
