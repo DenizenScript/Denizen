@@ -11,12 +11,13 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 public class FakeInternalDataCommand extends AbstractCommand {
 
@@ -80,16 +81,13 @@ public class FakeInternalDataCommand extends AbstractCommand {
         for (MapTag frame : data) {
             frames.add(NMSHandler.entityHelper.convertInternalEntityDataValues(entity, frame));
         }
-        long ms = speed.getMillis();
+        long delayNanos = TimeUnit.MILLISECONDS.toNanos(speed.getMillis());
         DenizenCore.runAsync(() -> {
-            try {
-                for (List<Object> frame : frames) {
-                    NMSHandler.packetHelper.sendEntityDataPacket(sendTo, entity, frame);
-                    Thread.sleep(ms);
-                }
-            }
-            catch (Exception ex) {
-                Debug.echoError(ex);
+            long expectedTime = System.nanoTime();
+            for (List<Object> frame : frames) {
+                NMSHandler.packetHelper.sendEntityDataPacket(sendTo, entity, frame);
+                LockSupport.parkNanos(delayNanos + (expectedTime - System.nanoTime()));
+                expectedTime += delayNanos;
             }
         });
     }
