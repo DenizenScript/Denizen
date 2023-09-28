@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -85,6 +86,9 @@ public class FakeInternalDataCommand extends AbstractCommand {
         DenizenCore.runAsync(() -> {
             long expectedTime = System.nanoTime();
             for (List<Object> frame : frames) {
+                if (sendTo.isEmpty()) {
+                    break;
+                }
                 NMSHandler.packetHelper.sendEntityDataPacket(sendTo, entity, frame);
                 LockSupport.parkNanos(delayNanos + (expectedTime - System.nanoTime()));
                 expectedTime += delayNanos;

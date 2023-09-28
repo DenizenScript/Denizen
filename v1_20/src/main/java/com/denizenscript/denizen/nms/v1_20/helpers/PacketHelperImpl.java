@@ -400,7 +400,13 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void sendEntityDataPacket(List<Player> players, Entity entity, List<Object> data) {
         ClientboundSetEntityDataPacket setEntityDataPacket = new ClientboundSetEntityDataPacket(entity.getEntityId(), (List<SynchedEntityData.DataValue<?>>) (Object) data);
-        for (Player player : players) {
+        Iterator<Player> playerIterator = players.iterator();
+        while (playerIterator.hasNext()) {
+            Player player = playerIterator.next();
+            if (!DenizenNetworkManagerImpl.getConnection(player).isConnected()) {
+                playerIterator.remove();
+                continue;
+            }
             sendAsyncSafe(player, setEntityDataPacket);
         }
     }
@@ -410,7 +416,7 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     public static void sendAsyncSafe(Player player, Packet<?> packet) {
-        DenizenNetworkManagerImpl.getConnection(((CraftPlayer) player).getHandle()).channel.writeAndFlush(packet);
+        DenizenNetworkManagerImpl.getConnection(player).channel.writeAndFlush(packet);
     }
 
     public static <T> SynchedEntityData.DataValue<T> createEntityData(EntityDataAccessor<T> accessor, T value) {
