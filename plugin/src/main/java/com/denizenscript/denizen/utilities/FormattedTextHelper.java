@@ -174,7 +174,7 @@ public class FormattedTextHelper {
         }
         else if (component instanceof TranslatableComponent translatableComponent) {
             builder.append(ChatColor.COLOR_CHAR).append("[translate=").append(escape(translatableComponent.getTranslate()));
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && translatableComponent.getFallback() != null) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && translatableComponent.getFallback() != null) {
                 builder.append(';').append(ChatColor.COLOR_CHAR).append("fallback=").append(escape(translatableComponent.getFallback()));
             }
             List<BaseComponent> with = translatableComponent.getWith();
@@ -470,7 +470,7 @@ public class FormattedTextHelper {
                 TranslatableComponent component = new TranslatableComponent();
                 List<String> innardParts = CoreUtilities.split(translatable, ';');
                 component.setTranslate(unescape(innardParts.get(0)));
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && innardParts.size() > 1 && innardParts.get(1).startsWith(ChatColor.COLOR_CHAR + "fallback=")) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && innardParts.size() > 1 && innardParts.get(1).startsWith(ChatColor.COLOR_CHAR + "fallback=")) {
                     component.setFallback(unescape(innardParts.remove(1).substring("&fallback=".length())));
                 }
                 for (int i = 1; i < innardParts.size(); i++) {
@@ -544,7 +544,7 @@ public class FormattedTextHelper {
                         else if (innardType.equals("translate")) {
                             TranslatableComponent component = new TranslatableComponent();
                             component.setTranslate(unescape(innardBase.get(1)));
-                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && !innardParts.isEmpty() && innardParts.get(0).startsWith(ChatColor.COLOR_CHAR + "fallback=")) {
+                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && !innardParts.isEmpty() && innardParts.get(0).startsWith(ChatColor.COLOR_CHAR + "fallback=")) {
                                 component.setFallback(unescape(innardParts.remove(0).substring("&fallback=".length())));
                             }
                             for (String extra : innardParts) {
