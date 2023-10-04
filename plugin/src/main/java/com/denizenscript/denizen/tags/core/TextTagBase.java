@@ -234,7 +234,7 @@ public class TextTagBase {
                 }
             }
             StringBuilder output = new StringBuilder().append(ChatColor.COLOR_CHAR).append("[translate=").append(FormattedTextHelper.escape(translateText));
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && fallback != null) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && fallback != null) {
                 output.append(';').append(ChatColor.COLOR_CHAR).append("fallback=").append(FormattedTextHelper.escape(fallback.asString()));
             }
             if (with != null) {
