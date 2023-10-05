@@ -1,15 +1,14 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.*;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.TimeTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 
@@ -23,6 +22,9 @@ public class BanCommand extends AbstractCommand {
         setSyntax("ban ({add}/remove) [<player>|.../addresses:<address>|...] (reason:<text>) (expire:<time>) (source:<text>)");
         setRequiredArguments(1, 5);
         isProcedural = false;
+        autoCompile();
+        addRemappedPrefixes("addresses", "address");
+        addRemappedPrefixes("expire", "duration", "time", "d", "expiration");
     }
 
     // <--[command]
@@ -94,88 +96,51 @@ public class BanCommand extends AbstractCommand {
         ADD, REMOVE
     }
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("addresses")
-                    && arg.matchesPrefix("addresses", "address")) {
-                scriptEntry.addObject("addresses", arg.asType(ListTag.class));
-            }
-            else if (!scriptEntry.hasObject("reason")
-                    && arg.matchesPrefix("reason")) {
-                scriptEntry.addObject("reason", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesPrefix("expire", "duration", "time", "d", "expiration")) {
-                if (arg.matchesArgumentType(TimeTag.class)) {
-                    scriptEntry.addObject("expire", arg.asType(TimeTag.class));
+    public static void execute(ScriptEntry scriptEntry,
+                               @ArgName("action") @ArgDefaultText("add") Actions action,
+                               @ArgName("targets") @ArgLinear @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> targets,
+                               @ArgName("addresses") @ArgPrefixed @ArgDefaultNull ListTag addresses,
+                               @ArgName("reason") @ArgPrefixed @ArgDefaultText("Banned.") String reason,
+                               @ArgName("expire") @ArgPrefixed @ArgDefaultNull ObjectTag rawExpire,
+                               @ArgName("source") @ArgPrefixed @ArgDefaultText("(Unknown)") String source) {
+        if ((targets == null || targets.isEmpty()) && (addresses == null || addresses.isEmpty())) {
+            throw new InvalidArgumentsRuntimeException("Must specify valid players or addresses to ban.");
+        }
+        Date expiration = null;
+        if (rawExpire != null) {
+            if (rawExpire.canBeType(DurationTag.class)) {
+                DurationTag banDuration = rawExpire.asType(DurationTag.class, scriptEntry.context);
+                if (banDuration.getSeconds() > 0) {
+                    expiration = new Date(TimeTag.now().millis() + banDuration.getMillis());
                 }
-                else {
-                    long duration = arg.asType(DurationTag.class).getMillis();
-                    if (duration > 0) { // Explicitly consider infinite duration as null input
-                        scriptEntry.addObject("expire", new TimeTag(TimeTag.now().millis() + duration));
-                    }
-                }
-            }
-            else if (!scriptEntry.hasObject("source")
-                    && arg.matchesPrefix("source")) {
-                scriptEntry.addObject("source", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("action")
-                    && arg.limitToOnlyPrefix("action")
-                    && arg.matchesEnum(Actions.class)) {
-                scriptEntry.addObject("action", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("targets")
-                    && arg.limitToOnlyPrefix("targets")
-                    && arg.matchesArgumentList(PlayerTag.class)) {
-                scriptEntry.addObject("targets", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
             }
             else {
-                arg.reportUnhandled();
+                TimeTag expirationTime = rawExpire.asType(TimeTag.class, scriptEntry.context);
+                if (expirationTime == null) {
+                    throw new InvalidArgumentsRuntimeException("Invalid 'expire:' input, must be a DurationTag or a TimeTag.");
+                }
+                expiration = new Date(expirationTime.millis());
             }
         }
-        scriptEntry.defaultObject("action", new ElementTag("add"))
-                .defaultObject("reason", new ElementTag("Banned."))
-                .defaultObject("source", new ElementTag("(Unknown)"));
-        if ((!scriptEntry.hasObject("targets") || ((List<PlayerTag>) scriptEntry.getObject("targets")).isEmpty())
-                && (!scriptEntry.hasObject("addresses") || ((List<ElementTag>) scriptEntry.getObject("addresses")).isEmpty())) {
-            throw new IllegalArgumentException("Must specify a valid target or address!");
-        }
-    }
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        ElementTag action = scriptEntry.getElement("action");
-        List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
-        ListTag addresses = scriptEntry.getObjectTag("addresses");
-        ElementTag reason = scriptEntry.getElement("reason");
-        TimeTag expire = scriptEntry.getObjectTag("expire");
-        ElementTag source = scriptEntry.getElement("source");
-        Date expiration = expire == null ? null : new Date(expire.millis());
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), action, db("targets", targets), addresses, reason, expire, source);
-        }
-        Actions banAction = Actions.valueOf(action.toString().toUpperCase());
-        switch (banAction) {
-            case ADD:
+        switch (action) {
+            case ADD -> {
                 if (targets != null) {
                     for (PlayerTag player : targets) {
                         if (player.isValid()) {
-                            Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), reason.toString(), expiration, source.toString());
+                            Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), reason, expiration, source);
                             if (player.isOnline()) {
-                                player.getPlayerEntity().kickPlayer(reason.toString());
+                                player.getPlayerEntity().kickPlayer(reason);
                             }
                         }
                     }
                 }
                 if (addresses != null) {
                     for (String address : addresses) {
-                        Bukkit.getBanList(BanList.Type.IP).addBan(address, reason.toString(), expiration, source.toString());
+                        Bukkit.getBanList(BanList.Type.IP).addBan(address, reason, expiration, source);
                     }
                 }
-                break;
-            case REMOVE:
+            }
+            case REMOVE -> {
                 if (targets != null) {
                     for (PlayerTag player : targets) {
                         if (player.isValid()) {
@@ -190,7 +155,7 @@ public class BanCommand extends AbstractCommand {
                         Bukkit.getBanList(BanList.Type.IP).pardon(address);
                     }
                 }
-                break;
+            }
         }
     }
 }
