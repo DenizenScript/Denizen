@@ -26,11 +26,11 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
     // @Triggers when an NPC spawns.
     //
     // @Switch npc:<npc> to only process the event if the spawned NPC matches.
-    // @Switch cause:<cause> to only process the event if the cause of the NPC's spawn matches. See <@link url https://jd.citizensnpcs.co/net/citizensnpcs/api/event/SpawnReason.html> for a list of causes.
+    // @Switch reason:<reason> to only process the event if the NPC's spawn reason matches. See <@link url https://jd.citizensnpcs.co/net/citizensnpcs/api/event/SpawnReason.html> for a list of reasons.
     //
     // @Context
     // <context.location> returns the location the entity will spawn at.
-    // <context.cause> returns the cause of the spawn.
+    // <context.reason> returns the reason of the spawn.
     //
     // @NPC Always.
     //
@@ -38,7 +38,7 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
 
     public NPCSpawnScriptEvent() {
         registerCouldMatcher("npc spawns");
-        registerSwitches("npc", "cause");
+        registerSwitches("npc", "reason");
     }
 
     public NPCTag npc;
@@ -50,7 +50,7 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
         if (!path.tryObjectSwitch("npc", npc)) {
             return false;
         }
-        if (!path.tryObjectSwitch("cause", new ElementTag(event.getReason()))) {
+        if (!path.tryObjectSwitch("reason", new ElementTag(event.getReason()))) {
             return false;
         }
         if (!runInCheck(path, location)) {
@@ -68,7 +68,7 @@ public class NPCSpawnScriptEvent extends BukkitScriptEvent implements Listener {
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "location" -> location;
-            case "cause" -> new ElementTag(event.getReason());
+            case "reason" -> new ElementTag(event.getReason());
             default -> super.getContext(name);
         };
     }
