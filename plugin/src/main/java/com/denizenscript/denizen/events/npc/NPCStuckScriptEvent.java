@@ -24,6 +24,8 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
     //
     // @Triggers when an NPC's navigator is stuck.
     //
+    // @Switch npc:<npc> to only process the event if the spawned NPC matches.
+    //
     // @Context
     // <context.action> returns 'teleport' or 'none'
     //
@@ -37,6 +39,10 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
 
     public NPCStuckScriptEvent() {
         registerCouldMatcher("npc stuck");
+        registerSwitches("npc");
+        this.<NPCStuckScriptEvent, ElementTag>registerDetermination(null, ElementTag.class, (evt, context, action) -> {
+            evt.event.setAction(action.asLowerString().equals("none") ? null : TeleportStuckAction.INSTANCE);
+        });
     }
 
     public NavigationStuckEvent event;
@@ -44,10 +50,12 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptPath path) {
+        if (!path.tryObjectSwitch("npc", npc)) {
+            return false;
+        }
         if (!runInCheck(path, npc.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 
@@ -57,25 +65,11 @@ public class NPCStuckScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String lowVal = CoreUtilities.toLowerCase(determinationObj.toString());
-        if (lowVal.equals("none")) {
-            event.setAction(null);
-            return true;
-        }
-        else if (lowVal.equals("teleport")) {
-            event.setAction(TeleportStuckAction.INSTANCE);
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "action": return new ElementTag(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport" : "none");
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "action" -> new ElementTag(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport" : "none");
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
