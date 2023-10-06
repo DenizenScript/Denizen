@@ -1276,7 +1276,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @attribute <EntityTag.vanilla_tags>
         // @returns ListTag
         // @description
-        // Returns a list of vanilla tags that apply to this entity type. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // Returns a list of vanilla tags that apply to this entity type. See also <@link url https://minecraft.wiki/w/Tag>.
         // -->
         tagProcessor.registerTag(ListTag.class, "vanilla_tags", (attribute, object) -> {
             HashSet<String> tags = VanillaTagHelper.tagsByEntity.get(object.getBukkitEntityType());
@@ -2750,7 +2750,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether this fish hook is in open water. Fish hooks in open water can catch treasure.
-        // See <@link url https://minecraft.fandom.com/wiki/Fishing> for more info.
+        // See <@link url https://minecraft.wiki/w/Fishing> for more info.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "fish_hook_in_open_water", (attribute, object) -> {
             if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {

@@ -608,7 +608,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // @returns ListTag
         // @mechanism MaterialTag.vanilla_tags
         // @description
-        // Returns a list of vanilla tags that apply to this material. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // Returns a list of vanilla tags that apply to this material. See also <@link url https://minecraft.wiki/w/Tag>.
         // -->
         tagProcessor.registerTag(ListTag.class, "vanilla_tags", (attribute, object) -> {
             HashSet<String> tags = VanillaTagHelper.tagsByMaterial.get(object.getMaterial());

@@ -674,7 +674,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns a list of all registered advancement names.
         // Generally used with <@link tag PlayerTag.has_advancement>.
-        // See also <@link url https://minecraft.fandom.com/wiki/Advancement>.
+        // See also <@link url https://minecraft.wiki/w/Advancement>.
         // -->
         tagProcessor.registerTag(ListTag.class, "advancement_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
@@ -1629,7 +1629,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @attribute <server.vanilla_entity_tags>
         // @returns ListTag
         // @description
-        // Returns a list of vanilla tags applicable to entity types. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // Returns a list of vanilla tags applicable to entity types. See also <@link url https://minecraft.wiki/w/Tag>.
         // -->
         tagProcessor.registerTag(ListTag.class, "vanilla_entity_tags", (attribute, object) -> {
             return new ListTag(VanillaTagHelper.entityTagsByKey.keySet());
@@ -1639,7 +1639,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @attribute <server.vanilla_tagged_entities[<tag>]>
         // @returns ListTag(EntityTag)
         // @description
-        // Returns a list of entity types referred to by the specified vanilla tag. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // Returns a list of entity types referred to by the specified vanilla tag. See also <@link url https://minecraft.wiki/w/Tag>.
         // -->
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "vanilla_tagged_entities", (attribute, object, tag) -> {
             Set<EntityType> entityTypes = VanillaTagHelper.entityTagsByKey.get(tag.asLowerString());
@@ -1657,7 +1657,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @attribute <server.vanilla_material_tags>
         // @returns ListTag
         // @description
-        // Returns a list of vanilla tags applicable to blocks, fluids, or items. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // Returns a list of vanilla tags applicable to blocks, fluids, or items. See also <@link url https://minecraft.wiki/w/Tag>.
         // -->
         tagProcessor.registerTag(ListTag.class, "vanilla_material_tags", (attribute, object) -> {
             return new ListTag(VanillaTagHelper.materialTagsByKey.keySet());
@@ -1667,7 +1667,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @attribute <server.vanilla_tagged_materials[<tag>]>
         // @returns ListTag(MaterialTag)
         // @description
-        // Returns a list of materials referred to by the specified vanilla tag. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // Returns a list of materials referred to by the specified vanilla tag. See also <@link url https://minecraft.wiki/w/Tag>.
         // -->
         tagProcessor.registerTag(ListTag.class, ElementTag.class, "vanilla_tagged_materials", (attribute, object, tag) -> {
             Set<Material> materials = VanillaTagHelper.materialTagsByKey.get(tag.asLowerString());
@@ -1734,7 +1734,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         //
         // Some inputs will be strictly required for some loot tables, and ignored for others.
         //
-        // A list of valid loot tables can be found here: <@link url https://minecraft.fandom.com/wiki/Loot_table#List_of_loot_tables>
+        // A list of valid loot tables can be found here: <@link url https://minecraft.wiki/w/Loot_table#List_of_loot_tables>
         // Note that the tree view represented on the wiki should be split by slashes for the input - for example, "cow" is under "entities" in the tree so "entities/cow" is how you input that.
         // CAUTION: Invalid loot table IDs will generate an empty list rather than an error.
         //
