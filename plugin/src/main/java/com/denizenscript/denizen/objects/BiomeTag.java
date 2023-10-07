@@ -45,7 +45,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     // @description
     // A BiomeTag represents a world biome type. Vanilla biomes are globally available, however some biomes are world-specific when added by datapacks.
     //
-    // A list of all vanilla biomes can be found at <@link url https://minecraft.fandom.com/wiki/Biome#Biome_IDs>.
+    // A list of all vanilla biomes can be found at <@link url https://minecraft.wiki/w/Biome#Biome_IDs>.
     //
     // BiomeTags without a specific world will work as though they are in the server's default world.
     //

@@ -67,7 +67,7 @@ public class ScoreboardCommand extends AbstractCommand {
     // "Rendertype" can be "INTEGER" or "HEARTS". Defaults to integer.
     //
     // You can set scores manually, or you can use different Minecraft criteria that set and update the scores automatically.
-    // A list of these criteria can be found here: <@link url https://minecraft.fandom.com/wiki/Scoreboard#Objectives>
+    // A list of these criteria can be found here: <@link url https://minecraft.wiki/w/Scoreboard#Objectives>
     // If the object already exists, and you don't specify the criteria, it will use the existing setting.
     //
     // You can use the "remove" argument to remove different parts of scoreboards.
