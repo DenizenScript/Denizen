@@ -1281,60 +1281,30 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.waypoint_provider>
         // @returns ElementTag
         // @description
-        // Returns the NPC's current Waypoint Provider type.
+        // Returns the NPC's current Waypoint Provider type (default types: linear, wander, guided.)
         // -->
         tagProcessor.registerTag(ElementTag.class, "waypoint_provider", (attribute, object) -> {
-            if (object.getCitizen().hasTrait(Waypoints.class)) {
-                Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            Waypoints wp = object.getCitizen().getTraitNullable(Waypoints.class);
+            if (wp != null) {
                 return new ElementTag(wp.getCurrentProviderName());
             }
             return null;
         });
 
         // <--[tag]
-        // @attribute <NPCTag.wander_delay>
-        // @returns ElementTag(Number)
+        // @attribute <DurationTag.wander_delay>
+        // @returns DurationTag(Number)
         // @description
         // Returns the delay for the NPC's wander Waypoint Provider.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "wander_delay", (attribute, object) -> {
-            if (object.getCitizen().hasTrait(Waypoints.class)) {
-                Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+        tagProcessor.registerTag(DurationTag.class, "wander_delay", (attribute, object) -> {
+            Waypoints wp = object.getCitizen().getTraitNullable(Waypoints.class);
+            if (wp != null) {
                 if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
-                    return new ElementTag(wanderWaypointProvider.getDelay());
+                    return new DurationTag(wanderWaypointProvider.getDelay());
                 }
             }
             return null;
-        });
-
-        // <--[tag]
-        // @attribute <NPCTag.wander_worldguardregion>
-        // @returns ElementTag
-        // @description
-        // Returns the worldguardRegion for the NPC's wander Waypoint Provider.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "wander_worldguardregion", (attribute, object) -> {
-            if (object.getCitizen().hasTrait(Waypoints.class)) {
-                Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
-                if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
-                    Object worldguardRegion = wanderWaypointProvider.getWorldGuardRegion();
-                    if (Objects.nonNull(worldguardRegion)) {
-                        String fieldListString = "OBJTOSTRING: " + worldguardRegion.toString();
-                        Class clazz = worldguardRegion.getClass();
-                        fieldListString += "Name: " + clazz.getName() + "\r\n";
-                        fieldListString += "SimpleName: " + clazz.getSimpleName() + "\r\n";
-                        Method[] ed = clazz.getMethods();
-                        fieldListString += "Method: \r\n";
-                        for (Method mth : ed) {
-                            fieldListString += " - " + mth.toString();
-                        }
-                        return new ElementTag(fieldListString);
-                    }
-                    return new ElementTag("WGREGIION");
-                }
-                return new ElementTag("FAILWANDER");
-            }
-            return new ElementTag("FAILTRAIT");
         });
 
         // <--[tag]
@@ -1344,8 +1314,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the xrange for the NPC's wander Waypoint Provider.
         // -->
         tagProcessor.registerTag(ElementTag.class, "wander_xrange", (attribute, object) -> {
-            if (object.getCitizen().hasTrait(Waypoints.class)) {
-                Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            Waypoints wp = object.getCitizen().getTraitNullable(Waypoints.class);
+            if (wp != null) {
                 if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
                     return new ElementTag(wanderWaypointProvider.getXRange());
                 }
@@ -1360,8 +1330,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the yrange for the NPC's wander Waypoint Provider.
         // -->
         tagProcessor.registerTag(ElementTag.class, "wander_yrange", (attribute, object) -> {
-            if (object.getCitizen().hasTrait(Waypoints.class)) {
-                Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            Waypoints wp = object.getCitizen().getTraitNullable(Waypoints.class);
+            if (wp != null) {
                 if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
                     return new ElementTag(wanderWaypointProvider.getYRange());
                 }
@@ -1405,7 +1375,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @name waypoint_provider
         // @input ElementTag
         // @description
-        // Sets the NPC's Waypoints Provider. (default options: linear, wander, guided)
+        // Sets the NPC's Waypoints Provider (default options: linear, wander, guided.)
         // @tags
         // <NPCTag.waypoint_provider>
         // -->
@@ -1415,11 +1385,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[mechanism]
-        // @object NPCTag
+        // @object DurationTag
         // @name wander_delay
-        // @input ElementTag(Integer)
+        // @input DurationTag(Integer)
         // @description
-        // Sets the delay for an NPC's wander Waypoints Provider.  Set to -1 to use Mincraft's default value.
+        // Sets the delay for an NPC's wander Waypoints Provider. Provider must be set to Wander before setting wander_delay. Set to -1 to use Mincraft's default value.
         // @tags
         // <NPCTag.wander_delay>
         // -->
@@ -1428,7 +1398,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
                 if (input.isInt() && input.asInt() >= -1) {
                     wanderWaypointProvider.setDelay(input.asInt());
-                } else {
+                }
+                else {
                     mechanism.echoError("Invalid value for wander delay");
                 }
             }
@@ -1465,7 +1436,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 int yrange = wanderWaypointProvider.getYRange();
                 if (input.isInt() && input.asInt() >= 0) {
                     wanderWaypointProvider.setXYRange(input.asInt(), yrange);
-                } else {
+                }
+                else {
                     mechanism.echoError("Invalid value for wander xrange");
                 }
             }
@@ -1486,7 +1458,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 int xrange = wanderWaypointProvider.getXRange();
                 if (input.isInt() && input.asInt() >= 0) {
                     wanderWaypointProvider.setXYRange(xrange, input.asInt());
-                } else {
+                }
+                else {
                     mechanism.echoError("Invalid value for wander yrange");
                 }
             }
