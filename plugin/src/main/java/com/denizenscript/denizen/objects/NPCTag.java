@@ -43,7 +43,7 @@ import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import java.lang.reflect.Method;
+
 import java.util.*;
 
 public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFormObject, FlaggableObject {
@@ -1293,7 +1293,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
         // <--[tag]
         // @attribute <DurationTag.wander_delay>
-        // @returns DurationTag(Number)
+        // @returns DurationTag
         // @description
         // Returns the delay for the NPC's wander Waypoint Provider.
         // -->
@@ -1387,17 +1387,17 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object DurationTag
         // @name wander_delay
-        // @input DurationTag(Integer)
+        // @input DurationTag
         // @description
-        // Sets the delay for an NPC's wander Waypoints Provider. Provider must be set to Wander before setting wander_delay. Set to -1 to use Mincraft's default value.
+        // Sets the delay (in seconds) for an NPC's wander Waypoints Provider. Provider must be set to Wander before setting wander_delay. Set to -1 to use Mincraft's default value.
         // @tags
         // <NPCTag.wander_delay>
         // -->
-        tagProcessor.registerMechanism("wander_delay", false, ElementTag.class, (object, mechanism, input) -> {
+        tagProcessor.registerMechanism("wander_delay", false, DurationTag.class, (object, mechanism, input) -> {
             Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
             if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
-                if (input.isInt() && input.asInt() >= -1) {
-                    wanderWaypointProvider.setDelay(input.asInt());
+                if (input.getSecondsAsInt() >= -1) {
+                    wanderWaypointProvider.setDelay(input.getSecondsAsInt());
                 }
                 else {
                     mechanism.echoError("Invalid value for wander delay");
@@ -1408,7 +1408,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name wander_worldguardregion
-        // @input ElementTag(String)
+        // @input ElementTag
         // @description
         // Sets the worldguardRegion for an NPC's wander Waypoints Provider.  
         // @tags
@@ -1424,7 +1424,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name wander_xrange
-        // @input ElementTag(Integer)
+        // @input ElementTag(Number)
         // @description
         // Sets the xrange for an NPC's wander path.  
         // @tags
@@ -1446,7 +1446,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <--[mechanism]
         // @object NPCTag
         // @name wander_yrange
-        // @input ElementTag(Integer)
+        // @input ElementTag(Number)
         // @description
         // Sets the yrange for an NPC's wander path.  
         // @tags
