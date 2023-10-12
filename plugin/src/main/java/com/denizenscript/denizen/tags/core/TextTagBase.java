@@ -198,28 +198,17 @@ public class TextTagBase {
         // - narrate "Reward: <&translate[key=item.minecraft.diamond_sword]>"
         // @example
         // Narrates a translatable with some input data.
-        // - narrate <&translate[key=commands.give.success.single;with=32|<&translate[key=item.minecraft.diamond_sword].escaped>|<player.name.escaped>]>
+        // - narrate <&translate[key=commands.give.success.single;with=32|<&translate[key=item.minecraft.diamond_sword]>|<player.name>]>
         // @example
         // Narrates a custom translatable (from something like a resource pack), with a fallback in case it can't be translated.
         // - narrate <&translate[key=my.custom.translation;fallback=Please use the resource pack!]>
         // -->
         TagManager.registerTagHandler(ElementTag.class, ObjectTag.class, "&translate", (attribute, param) -> { // Cannot be static due to hacked sub-tag
-            String translateText;
-            ElementTag fallback = null;
-            ListTag with = null;
             MapTag translateMap = param.asType(MapTag.class, CoreUtilities.noDebugContext);
-            if (translateMap != null) {
-                ElementTag translateElement = translateMap.getRequiredObjectAs("key", ElementTag.class, attribute);
-                if (translateElement == null) {
-                    return null;
-                }
-                translateText = translateElement.asString();
-                fallback = translateMap.getElement("fallback");
-                with = translateMap.getObjectAs("with", ListTag.class, attribute.context);
-            }
-            else {
+            if (translateMap == null) {
                 BukkitImplDeprecations.translateLegacySyntax.warn(attribute.context);
-                translateText = param.toString();
+                translateMap = new MapTag();
+                translateMap.putObject("key", param);
 
                 // <--[tag]
                 // @attribute <&translate[<key>].with[<text>|...]>
@@ -229,21 +218,11 @@ public class TextTagBase {
                 // Deprecated in favor of <@link tag &translate>.
                 // -->
                 if (attribute.startsWith("with", 2)) {
-                    with = attribute.contextAsType(2, ListTag.class);
+                    translateMap.putObject("with", new ListTag(attribute.contextAsType(2, ListTag.class), with -> new ElementTag(EscapeTagUtil.unEscape(with), true)));
                     attribute.fulfill(1);
                 }
             }
-            StringBuilder output = new StringBuilder().append(ChatColor.COLOR_CHAR).append("[translate=").append(FormattedTextHelper.escape(translateText));
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && fallback != null) {
-                output.append(';').append(ChatColor.COLOR_CHAR).append("fallback=").append(FormattedTextHelper.escape(fallback.asString()));
-            }
-            if (with != null) {
-                for (String str : with) {
-                    output.append(';').append(FormattedTextHelper.escape(EscapeTagUtil.unEscape(str)));
-                }
-            }
-            output.append(']');
-            return new ElementTag(output.toString(), true);
+            return new ElementTag(ChatColor.COLOR_CHAR + "[translate=" + FormattedTextHelper.escape(translateMap.savable()) + ']', true);
         });
 
         // <--[tag]

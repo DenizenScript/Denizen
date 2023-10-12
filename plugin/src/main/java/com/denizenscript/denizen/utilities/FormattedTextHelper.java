@@ -1,10 +1,13 @@
 package com.denizenscript.denizen.utilities;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -173,17 +176,15 @@ public class FormattedTextHelper {
             builder.append(((TextComponent) component).getText());
         }
         else if (component instanceof TranslatableComponent translatableComponent) {
-            builder.append(ChatColor.COLOR_CHAR).append("[translate=").append(escape(translatableComponent.getTranslate()));
+            MapTag map = new MapTag();
+            map.putObject("key", new ElementTag(translatableComponent.getTranslate(), true));
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && translatableComponent.getFallback() != null) {
-                builder.append(';').append(ChatColor.COLOR_CHAR).append("fallback=").append(escape(translatableComponent.getFallback()));
+                map.putObject("fallback", new ElementTag(translatableComponent.getFallback(), true));
             }
-            List<BaseComponent> with = translatableComponent.getWith();
-            if (with != null) {
-                for (BaseComponent withComponent : with) {
-                    builder.append(";").append(escape(stringify(withComponent)));
-                }
+            if (translatableComponent.getWith() != null) {
+                map.putObject("with", new ListTag(translatableComponent.getWith(), baseComponent -> new ElementTag(stringify(baseComponent), true)));
             }
-            builder.append("]");
+            builder.append(ChatColor.COLOR_CHAR).append("[translate=").append(escape(map.savable())).append(']');
         }
         else if (component instanceof SelectorComponent) {
             builder.append(ChatColor.COLOR_CHAR).append("[selector=").append(escape(((SelectorComponent) component).getSelector())).append("]");
@@ -446,6 +447,42 @@ public class FormattedTextHelper {
         return new BaseComponent[]{new TextComponent(str)};
     }
 
+    private static TranslatableComponent tryParseTranslatable(String str, ChatColor baseColor, boolean optimize) {
+        TranslatableComponent component = new TranslatableComponent();
+        if (!str.startsWith("map@")) {
+            List<String> innardParts = CoreUtilities.split(str, ';');
+            component.setTranslate(unescape(innardParts.get(0)));
+            for (int i = 1; i < innardParts.size(); i++) {
+                for (BaseComponent subComponent : parseInternal(unescape(innardParts.get(i)), baseColor, false, optimize)) {
+                    component.addWith(subComponent);
+                }
+            }
+            return component;
+        }
+        MapTag map = MapTag.valueOf(unescape(str), CoreUtilities.noDebugContext);
+        if (map == null) {
+            return component;
+        }
+        ElementTag translationKey = map.getElement("key");
+        if (translationKey == null) {
+            return component;
+        }
+        component.setTranslate(translationKey.asString());
+        ElementTag fallback = map.getElement("fallback");
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && fallback != null) {
+            component.setFallback(fallback.asString());
+        }
+        ListTag withList = map.getObjectAs("with", ListTag.class, CoreUtilities.noDebugContext);
+        if (withList != null) {
+            for (String with : withList) {
+                for (BaseComponent withComponent : parseInternal(with, baseColor, false, optimize)) {
+                    component.addWith(withComponent);
+                }
+            }
+        }
+        return component;
+    }
+
     public static BaseComponent[] parseInternal(String str, ChatColor baseColor, boolean cleanBase, boolean optimize) {
         str = CoreUtilities.clearNBSPs(str);
         int firstChar = str.indexOf(ChatColor.COLOR_CHAR);
@@ -466,19 +503,7 @@ public class FormattedTextHelper {
             }
             // Ensure compat with certain weird vanilla translate strings.
             if (str.startsWith(ChatColor.COLOR_CHAR + "[translate=") && str.indexOf(']') == str.length() - 1) {
-                String translatable = str.substring("&[translate=".length(), str.length() - 1);
-                TranslatableComponent component = new TranslatableComponent();
-                List<String> innardParts = CoreUtilities.split(translatable, ';');
-                component.setTranslate(unescape(innardParts.get(0)));
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && innardParts.size() > 1 && innardParts.get(1).startsWith(ChatColor.COLOR_CHAR + "fallback=")) {
-                    component.setFallback(unescape(innardParts.remove(1).substring("&fallback=".length())));
-                }
-                for (int i = 1; i < innardParts.size(); i++) {
-                    for (BaseComponent subComponent : parseInternal(unescape(innardParts.get(i)), baseColor, false, optimize)) {
-                        component.addWith(subComponent);
-                    }
-                }
-                return new BaseComponent[] { component };
+                return new BaseComponent[] {tryParseTranslatable(str.substring("&[translate=".length(), str.length() - 1), baseColor, optimize)};
             }
         }
         if (!optimize) {
@@ -542,17 +567,7 @@ public class FormattedTextHelper {
                             lastText.addExtra(component);
                         }
                         else if (innardType.equals("translate")) {
-                            TranslatableComponent component = new TranslatableComponent();
-                            component.setTranslate(unescape(innardBase.get(1)));
-                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && !innardParts.isEmpty() && innardParts.get(0).startsWith(ChatColor.COLOR_CHAR + "fallback=")) {
-                                component.setFallback(unescape(innardParts.remove(0).substring("&fallback=".length())));
-                            }
-                            for (String extra : innardParts) {
-                                for (BaseComponent subComponent : parseInternal(unescape(extra), baseColor, false, optimize)) {
-                                    component.addWith(subComponent);
-                                }
-                            }
-                            lastText.addExtra(component);
+                            lastText.addExtra(tryParseTranslatable(innards.substring("translate=".length()), baseColor, optimize));
                         }
                         else if (innardType.equals("click") && innardParts.size() == 1) {
                             int endIndex = findEndIndexFor(str, "click", endBracket);
