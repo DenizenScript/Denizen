@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.utilities;
 
-import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
@@ -447,7 +446,7 @@ public class FormattedTextHelper {
         return new BaseComponent[]{new TextComponent(str)};
     }
 
-    private static TranslatableComponent tryParseTranslatable(String str, ChatColor baseColor, boolean optimize) {
+    private static TranslatableComponent parseTranslatable(String str, ChatColor baseColor, boolean optimize) {
         TranslatableComponent component = new TranslatableComponent();
         if (!str.startsWith("map@")) {
             List<String> innardParts = CoreUtilities.split(str, ';');
@@ -503,7 +502,7 @@ public class FormattedTextHelper {
             }
             // Ensure compat with certain weird vanilla translate strings.
             if (str.startsWith(ChatColor.COLOR_CHAR + "[translate=") && str.indexOf(']') == str.length() - 1) {
-                return new BaseComponent[] {tryParseTranslatable(str.substring("&[translate=".length(), str.length() - 1), baseColor, optimize)};
+                return new BaseComponent[] {parseTranslatable(str.substring("&[translate=".length(), str.length() - 1), baseColor, optimize)};
             }
         }
         if (!optimize) {
@@ -567,7 +566,7 @@ public class FormattedTextHelper {
                             lastText.addExtra(component);
                         }
                         else if (innardType.equals("translate")) {
-                            lastText.addExtra(tryParseTranslatable(innards.substring("translate=".length()), baseColor, optimize));
+                            lastText.addExtra(parseTranslatable(innards.substring("translate=".length()), baseColor, optimize));
                         }
                         else if (innardType.equals("click") && innardParts.size() == 1) {
                             int endIndex = findEndIndexFor(str, "click", endBracket);
