@@ -37,8 +37,6 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
         registerCouldMatcher("<block> spreads"); // NOTE: exists for historical compat reasons.
         registerSwitches("type");
     }
-
-    public LocationTag location;
     public MaterialTag material;
     public BlockSpreadEvent event;
 
@@ -58,7 +56,7 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runInCheck(path, location)) {
+        if (!runInCheck(path, event.getBlock().getLocation())) {
             return false;
         }
         if (!path.tryArgObject(0, material)) {
@@ -73,17 +71,16 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "material": return material;
-            case "source_location": return new LocationTag(event.getBlock().getLocation());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> new LocationTag(event.getBlock().getLocation());
+            case "material" -> material;
+            case "source_location" -> new LocationTag(event.getSource().getLocation());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
     public void onBlockSpreads(BlockSpreadEvent event) {
-        location = new LocationTag(event.getBlock().getLocation());
         material = new MaterialTag(event.getSource());
         this.event = event;
         fire(event);
