@@ -1277,6 +1277,68 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             return result;
         });
 
+        // <--[tag]
+        // @attribute <NPCTag.waypoint_provider>
+        // @returns ElementTag
+        // @description
+        // Returns the NPC's current Waypoint Provider type (default types: linear, wander, guided.)
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "waypoint_provider", (attribute, object) -> {
+            Waypoints wp = object.getCitizen().getTraitNullable(Waypoints.class);
+            if (wp != null) {
+                return new ElementTag(wp.getCurrentProviderName());
+            }
+            return null;
+        });
+
+        // <--[tag]
+        // @attribute <DurationTag.wander_delay>
+        // @returns DurationTag
+        // @description
+        // Returns the delay for the NPC's wander Waypoint Provider.
+        // -->
+        tagProcessor.registerTag(DurationTag.class, "wander_delay", (attribute, object) -> {
+            Waypoints wp = object.getCitizen().getTraitNullable(Waypoints.class);
+            if (wp != null) {
+                if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
+                    return new DurationTag((long) wanderWaypointProvider.getDelay());
+                }
+            }
+            return null;
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.wander_xrange>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the xrange for the NPC's wander Waypoint Provider.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "wander_xrange", (attribute, object) -> {
+            Waypoints wp = object.getCitizen().getTraitNullable(Waypoints.class);
+            if (wp != null) {
+                if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
+                    return new ElementTag(wanderWaypointProvider.getXRange());
+                }
+            }
+            return null;
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.wander_yrange>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the yrange for the NPC's wander Waypoint Provider.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "wander_yrange", (attribute, object) -> {
+            Waypoints wp = object.getCitizen().getTraitNullable(Waypoints.class);
+            if (wp != null) {
+                if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
+                    return new ElementTag(wanderWaypointProvider.getYRange());
+                }
+            }
+            return null;
+        });
+
         // <--[mechanism]
         // @object NPCTag
         // @name hologram_lines
@@ -1305,6 +1367,85 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                     continue;
                 }
                 hologram.addTemporaryLine(text.asString(), duration.getTicksAsInt());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name waypoint_provider
+        // @input ElementTag
+        // @description
+        // Sets the NPC's Waypoints Provider (default options: linear, wander, guided.)
+        // @tags
+        // <NPCTag.waypoint_provider>
+        // -->
+        tagProcessor.registerMechanism("waypoint_provider", false, ElementTag.class, (object, mechanism, input) -> {
+            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            wp.setWaypointProvider(input.asString());
+        });
+
+        // <--[mechanism]
+        // @object DurationTag
+        // @name wander_delay
+        // @input DurationTag
+        // @description
+        // Sets the delay for an NPC's wander Waypoints Provider. Provider must be set to Wander before setting wander_delay. Set to -1 to use Mincraft's default value.
+        // @tags
+        // <NPCTag.wander_delay>
+        // -->
+        tagProcessor.registerMechanism("wander_delay", false, DurationTag.class, (object, mechanism, input) -> {
+            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
+                if (input.getTicksAsInt() >= -1) {
+                    wanderWaypointProvider.setDelay(input.getTicksAsInt());
+                }
+                else {
+                    mechanism.echoError("Invalid value for wander delay");
+                }
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name wander_xrange
+        // @input ElementTag(Number)
+        // @description
+        // Sets the xrange for an NPC's wander path.  
+        // @tags
+        // <NPCTag.wander_xrange>
+        // -->
+        tagProcessor.registerMechanism("wander_xrange", false, ElementTag.class, (object, mechanism, input) -> {
+            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
+                int yrange = wanderWaypointProvider.getYRange();
+                if (input.isInt() && input.asInt() >= 0) {
+                    wanderWaypointProvider.setXYRange(input.asInt(), yrange);
+                }
+                else {
+                    mechanism.echoError("Invalid value for wander xrange");
+                }
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name wander_yrange
+        // @input ElementTag(Number)
+        // @description
+        // Sets the yrange for an NPC's wander path.  
+        // @tags
+        // <NPCTag.wander_yrange>
+        // -->
+        tagProcessor.registerMechanism("wander_yrange", false, ElementTag.class, (object, mechanism, input) -> {
+            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
+                int xrange = wanderWaypointProvider.getXRange();
+                if (input.isInt() && input.asInt() >= 0) {
+                    wanderWaypointProvider.setXYRange(xrange, input.asInt());
+                }
+                else {
+                    mechanism.echoError("Invalid value for wander yrange");
+                }
             }
         });
     }
