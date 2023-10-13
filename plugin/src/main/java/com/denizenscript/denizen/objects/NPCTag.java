@@ -1293,7 +1293,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[tag]
-        // @attribute <DurationTag.wander_delay>
+        // @attribute <NPCTag.wander_delay>
         // @returns DurationTag
         // @mechanism NPCTag.wander_delay
         // @description
@@ -1383,7 +1383,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         });
 
         // <--[mechanism]
-        // @object DurationTag
+        // @object NPCTag
         // @name wander_delay
         // @input DurationTag
         // @description
