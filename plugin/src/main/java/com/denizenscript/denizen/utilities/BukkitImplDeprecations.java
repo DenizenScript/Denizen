@@ -290,6 +290,9 @@ public class BukkitImplDeprecations {
     // Added 2023/03/27, deprecate officially by 2026
     public static Warning oldAgeLockedControls = new FutureWarning("oldAgeLockedControls", "Several old ways of controlling whether an entity's age is locked are deprecated in favor of the 'EntityTag.age_locked' tag/mech pair.");
 
+    // Added 2023/10/04, deprecate officially by 2027
+    public static Warning translateLegacySyntax = new FutureWarning("translateLegacySyntax", "<&translate[...].with[...]> is deprecated in favor of the modern <&translate[key=...;with=...]> syntax.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Added on 2019/10/13

@@ -1,7 +1,9 @@
 package com.denizenscript.denizen.tags.core;
 
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -9,7 +11,6 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.ChatColor;
 
 public class TextTagBase {
@@ -180,41 +181,46 @@ public class TextTagBase {
         });
 
         // <--[tag]
-        // @attribute <&translate[<key>]>
+        // @attribute <&translate[key=<key>;(fallback=<fallback>);(with=<text>|...)]>
         // @returns ElementTag
         // @description
-        // Returns a special chat code that displays an autotranslated message.
-        // For example: - narrate "Reward: <&translate[item.minecraft.diamond_sword]>"
-        // Be warned that language keys change between Minecraft versions.
+        // Returns a special chat code that is read by the client to display an auto-translated message.
+        // "key" is the translation key.
+        // Optionally specify "fallback" as text to display when the client can't find a translation for the key.
+        // Optionally specify "with" as a list of input data for the translatable message (parts of the message that are dynamic).
+        // Be warned that language keys can change between Minecraft versions.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // You can use <@link tag ElementTag.strip_color> to convert the translated output to plain text (pre-translated).
+        // @example
+        // Narrates a translatable of a diamond sword's name.
+        // - narrate "Reward: <&translate[key=item.minecraft.diamond_sword]>"
+        // @example
+        // Narrates a translatable with some input data.
+        // - narrate <&translate[key=commands.give.success.single;with=32|<&translate[key=item.minecraft.diamond_sword]>|<player.name>]>
+        // @example
+        // Narrates a custom translatable (from something like a resource pack), with a fallback in case it can't be translated.
+        // - narrate <&translate[key=my.custom.translation;fallback=Please use the resource pack!]>
         // -->
-        TagManager.registerTagHandler(ElementTag.class, "&translate", (attribute) -> { // Cannot be static due to hacked sub-tag
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            String translateText = attribute.getParam();
+        TagManager.registerTagHandler(ElementTag.class, ObjectTag.class, "&translate", (attribute, param) -> { // Cannot be static due to hacked sub-tag
+            MapTag translateMap = param.asType(MapTag.class, CoreUtilities.noDebugContext);
+            if (translateMap == null) {
+                BukkitImplDeprecations.translateLegacySyntax.warn(attribute.context);
+                translateMap = new MapTag();
+                translateMap.putObject("key", param);
 
-            // <--[tag]
-            // @attribute <&translate[<key>].with[<text>|...]>
-            // @returns ElementTag
-            // @description
-            // Returns a special chat code that displays an autotranslated message.
-            // Optionally, specify a list of escaped text values representing input data for the translatable message.
-            // Be aware that missing 'with' values will cause exceptions in your console.
-            // For example: - narrate "<&translate[commands.give.success.single].with[32|<&translate[item.minecraft.diamond_sword].escaped>|<player.name.escaped>]>"
-            // Be warned that language keys change between Minecraft versions.
-            // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
-            // -->
-            StringBuilder with = new StringBuilder();
-            if (attribute.startsWith("with", 2)) {
-                ListTag withList = attribute.contextAsType(2, ListTag.class);
-                attribute.fulfill(1);
-                for (String str : withList) {
-                    with.append(";").append(FormattedTextHelper.escape(EscapeTagUtil.unEscape(str)));
+                // <--[tag]
+                // @attribute <&translate[<key>].with[<text>|...]>
+                // @returns ElementTag
+                // @deprecated Use '<&translate[key=<key>;with=<text>|...]>'.
+                // @description
+                // Deprecated in favor of <@link tag &translate>.
+                // -->
+                if (attribute.startsWith("with", 2)) {
+                    translateMap.putObject("with", new ListTag(attribute.contextAsType(2, ListTag.class), with -> new ElementTag(EscapeTagUtil.unEscape(with), true)));
+                    attribute.fulfill(1);
                 }
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[translate=" + FormattedTextHelper.escape(translateText) + with + "]");
+            return new ElementTag(ChatColor.COLOR_CHAR + "[translate=" + FormattedTextHelper.escape(translateMap.savable()) + ']', true);
         });
 
         // <--[tag]
