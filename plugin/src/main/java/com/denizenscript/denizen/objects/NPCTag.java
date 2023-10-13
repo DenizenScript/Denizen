@@ -1301,7 +1301,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             Waypoints wp = object.getCitizen().getTraitNullable(Waypoints.class);
             if (wp != null) {
                 if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
-                    return new DurationTag(wanderWaypointProvider.getDelay());
+                    return new DurationTag((long) wanderWaypointProvider.getDelay());
                 }
             }
             return null;
@@ -1389,35 +1389,19 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @name wander_delay
         // @input DurationTag
         // @description
-        // Sets the delay (in seconds) for an NPC's wander Waypoints Provider. Provider must be set to Wander before setting wander_delay. Set to -1 to use Mincraft's default value.
+        // Sets the delay for an NPC's wander Waypoints Provider. Provider must be set to Wander before setting wander_delay. Set to -1 to use Mincraft's default value.
         // @tags
         // <NPCTag.wander_delay>
         // -->
         tagProcessor.registerMechanism("wander_delay", false, DurationTag.class, (object, mechanism, input) -> {
             Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
             if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
-                if (input.getSecondsAsInt() >= -1) {
-                    wanderWaypointProvider.setDelay(input.getSecondsAsInt());
+                if (input.getTicksAsInt() >= -1) {
+                    wanderWaypointProvider.setDelay(input.getTicksAsInt());
                 }
                 else {
                     mechanism.echoError("Invalid value for wander delay");
                 }
-            }
-        });
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name wander_worldguardregion
-        // @input ElementTag
-        // @description
-        // Sets the worldguardRegion for an NPC's wander Waypoints Provider.  
-        // @tags
-        // <NPCTag.wander_worldguardregion>
-        // -->
-        tagProcessor.registerMechanism("wander_worldguardregion", false, ElementTag.class, (object, mechanism, input) -> {
-            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
-            if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
-                    wanderWaypointProvider.setWorldGuardRegion(input.asString());
             }
         });
 
