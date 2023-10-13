@@ -4083,7 +4083,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @attribute <LocationTag.last_interacted_slot>
         // @returns ElementTag(Number)
         // @description
-        // Returns the last interacted slot of this Chiseled Bookshelf inventory.
+        // Returns the last interacted slot of a Chiseled Bookshelf inventory.
         // -->
         tagProcessor.registerTag(ElementTag.class, "last_interacted_slot", (attribute, object) -> {
             return new ElementTag(((ChiseledBookshelf) object.getBlockState()).getLastInteractedSlot() + 1);
@@ -4445,7 +4445,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @name last_interacted_slot
         // @input ElementTag(Number)
         // @description
-        // Sets the last interacted slot of this Chiseled Bookshelf inventory.
+        // Sets the last interacted slot of a Chiseled Bookshelf inventory.
         // @tags
         // <LocationTag.last_interacted_slot
         // -->
