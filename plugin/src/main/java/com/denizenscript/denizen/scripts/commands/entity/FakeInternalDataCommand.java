@@ -32,7 +32,7 @@ public class FakeInternalDataCommand extends AbstractCommand {
     // <--[command]
     // @Name FakeInternalData
     // @Syntax fakeinternaldata [entity:<entity>] [data:<map>|...] (for:<player>|...) (speed:<duration>)
-    // @Required 3
+    // @Required 2
     // @Maximum 4
     // @Short Sends fake entity data updates, optionally animating them with sub-tick precision.
     // @Group entity
