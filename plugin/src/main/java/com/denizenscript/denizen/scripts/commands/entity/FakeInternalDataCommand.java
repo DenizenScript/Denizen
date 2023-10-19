@@ -48,6 +48,9 @@ public class FakeInternalDataCommand extends AbstractCommand {
     // 'speed:' is the amount of time between each frame getting sent, supporting sub-tick delays.
     // Note that this is the delay between each frame, regardless of their content (see examples).
     //
+    // @Tags
+    // None
+    //
     // @Usage
     // Animates an item display entity's item for the linked player, and slowly scales it up.
     // - fakeinternaldata entity:<[item_display]> data:[item=iron_ingot;scale=0.6,0.6,0.6]|[item=gold_ingot;scale=0.8,0.8,0.8]|[item=netherite_ingot;scale=1,1,1] speed:0.5s
