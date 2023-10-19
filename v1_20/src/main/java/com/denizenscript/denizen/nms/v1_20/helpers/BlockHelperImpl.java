@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
@@ -13,7 +14,6 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -100,11 +100,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public void setPlayerProfile(Skull skull, PlayerProfile playerProfile) {
-        GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
-        if (playerProfile.hasTexture()) {
-            gameProfile.getProperties().put("textures",
-                    new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
-        }
+        GameProfile gameProfile = ProfileEditorImpl.getGameProfile(playerProfile);
         try {
             craftSkull_profile.set(skull, gameProfile);
         }
