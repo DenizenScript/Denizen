@@ -405,7 +405,7 @@ public class PlayerHelperImpl extends PlayerHelper {
                 case UPDATE_LISTED -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED;
             });
         }
-        GameProfile profile = new GameProfile(id, name);
+        GameProfile profile = new GameProfile(id, name != null ? name : ProfileEditorImpl.EMPTY_NAME);
         if (texture != null) {
             profile.getProperties().put("textures", new Property("textures", texture, signature));
         }

@@ -1,19 +1,19 @@
 package com.denizenscript.denizen.nms.v1_20.helpers;
 
-import com.denizenscript.denizen.nms.v1_20.impl.entities.CraftFakePlayerImpl;
-import com.denizenscript.denizen.nms.v1_20.impl.entities.EntityFakeArrowImpl;
-import com.denizenscript.denizen.nms.v1_20.impl.entities.EntityFakePlayerImpl;
-import com.denizenscript.denizen.nms.v1_20.impl.entities.EntityItemProjectileImpl;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.CustomEntityHelper;
 import com.denizenscript.denizen.nms.interfaces.FakeArrow;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
+import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v1_20.impl.entities.CraftFakePlayerImpl;
+import com.denizenscript.denizen.nms.v1_20.impl.entities.EntityFakeArrowImpl;
+import com.denizenscript.denizen.nms.v1_20.impl.entities.EntityFakePlayerImpl;
+import com.denizenscript.denizen.nms.v1_20.impl.entities.EntityItemProjectileImpl;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
@@ -113,10 +113,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
         UUID uuid = UUID.randomUUID();
         playerProfile.setUniqueId(uuid);
 
-        GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
-        gameProfile.getProperties().put("textures",
-                new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
-
+        GameProfile gameProfile = ProfileEditorImpl.getGameProfile(playerProfile);
         final EntityFakePlayerImpl fakePlayer = new EntityFakePlayerImpl(worldServer.getServer(), worldServer, gameProfile, ClientInformation.createDefault(), doAdd);
 
         fakePlayer.forceSetPositionRotation(location.getX(), location.getY(), location.getZ(),
