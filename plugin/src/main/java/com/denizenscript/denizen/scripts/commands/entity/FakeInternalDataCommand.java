@@ -46,10 +46,15 @@ public class FakeInternalDataCommand extends AbstractCommand {
     // Optionally specify a list of players to fake the data for, defaults to the linked player.
     //
     // 'speed:' is the amount of time between each frame getting sent, supporting sub-tick delays.
+    // Note that this is the delay between each frame, regardless of their content (see examples).
     //
     // @Usage
     // Animates an item display entity's item for the linked player, and slowly scales it up.
     // - fakeinternaldata entity:<[item_display]> data:[item=iron_ingot;scale=0.6,0.6,0.6]|[item=gold_ingot;scale=0.8,0.8,0.8]|[item=netherite_ingot;scale=1,1,1] speed:0.5s
+    //
+    // @Usage
+    // Changes an item display's item, then it's scale a second later, then it's item again another second later.
+    // - fakeinternaldata entity:<[item_display]> data:[item=stone]|[scale=2,2,2]|[item=waxed_weathered_cut_copper_slab] speed:1s
     //
     // @Usage
     // Animates a rainbow glow on a display entity for all online players.
