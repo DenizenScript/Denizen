@@ -82,18 +82,18 @@ public class EntityDataNameMapper {
         registerDataName(Display.class, 22, "glow_color");
 
         // Block display
-        registerDataName(Display.BlockDisplay.class, 22, "material");
+        registerDataName(Display.BlockDisplay.class, 23, "material");
 
         // Item display
-        registerDataName(Display.ItemDisplay.class, 22, "item");
-        registerDataName(Display.ItemDisplay.class, 23, "model_transform");
+        registerDataName(Display.ItemDisplay.class, 23, "item");
+        registerDataName(Display.ItemDisplay.class, 24, "model_transform");
 
         // Text display
-        registerDataName(Display.TextDisplay.class, 22, "text");
-        registerDataName(Display.TextDisplay.class, 23, "line_width");
-        registerDataName(Display.TextDisplay.class, 24, "background_color");
-        registerDataName(Display.TextDisplay.class, 25, "text_opacity");
-        registerDataName(Display.TextDisplay.class, 26, "text_display_flags");
+        registerDataName(Display.TextDisplay.class, 23, "text");
+        registerDataName(Display.TextDisplay.class, 24, "line_width");
+        registerDataName(Display.TextDisplay.class, 25, "background_color");
+        registerDataName(Display.TextDisplay.class, 26, "text_opacity");
+        registerDataName(Display.TextDisplay.class, 27, "text_display_flags");
 
         // Thrown item projectile
         registerDataName(ThrowableProjectile.class, 8, "item");
