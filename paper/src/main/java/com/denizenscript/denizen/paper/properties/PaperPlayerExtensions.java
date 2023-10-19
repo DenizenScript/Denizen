@@ -71,7 +71,7 @@ public class PaperPlayerExtensions {
         // @description
         // Sends a fake operator level to the client, enabling clientside op-required features like the debug gamemode hotkey (F3+F4).
         // Input should be a number from 0 to 4, 0 indicating not op and 4 indicating maximum level op.
-        // The input number value corresponds to "op-permission-level" in the server.properties. See also <@link url https://minecraft.fandom.com/wiki/Permission_level>
+        // The input number value corresponds to "op-permission-level" in the server.properties. See also <@link url https://minecraft.wiki/w/Permission_level>
         // This will be reset when a player rejoins, changes world, has their real op status changed, ...
         // -->
         PlayerTag.registerOnlineOnlyMechanism("fake_op_level", ElementTag.class, (object, mechanism, input) -> {

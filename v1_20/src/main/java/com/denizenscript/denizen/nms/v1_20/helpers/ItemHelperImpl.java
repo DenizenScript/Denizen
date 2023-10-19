@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
@@ -230,16 +231,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public ItemStack setSkullSkin(ItemStack itemStack, PlayerProfile playerProfile) {
-        GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
-        if (playerProfile.hasTexture()) {
-            gameProfile.getProperties().get("textures").clear();
-            if (playerProfile.getTextureSignature() != null) {
-                gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
-            }
-            else {
-                gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture()));
-            }
-        }
+        GameProfile gameProfile = ProfileEditorImpl.getGameProfile(playerProfile);
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         net.minecraft.nbt.CompoundTag tag = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new net.minecraft.nbt.CompoundTag();
         tag.put("SkullOwner", NbtUtils.writeGameProfile(new net.minecraft.nbt.CompoundTag(), gameProfile));

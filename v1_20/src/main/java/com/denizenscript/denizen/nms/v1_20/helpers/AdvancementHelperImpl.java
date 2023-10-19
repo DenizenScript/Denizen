@@ -192,7 +192,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             }
         }
         AdvancementRequirements reqs = new AdvancementRequirements(requirements);
-        Advancement adv = new Advancement(Optional.of(parent.id()), Optional.of(display), AdvancementRewards.EMPTY, criteria, reqs, false); // TODO: 1.20: do we want to ever enable telemetry?
+        Advancement adv = new Advancement(parent == null ? Optional.empty() : Optional.of(parent.id()), Optional.of(display), AdvancementRewards.EMPTY, criteria, reqs, false); // TODO: 1.20: do we want to ever enable telemetry?
         return new AdvancementHolder(key, adv);
     }
 

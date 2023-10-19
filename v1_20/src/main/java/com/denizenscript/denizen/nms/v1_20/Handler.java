@@ -190,7 +190,7 @@ public class Handler extends NMSHandler {
                 profile = minecraftServer.getProfileCache().get(playerProfile.getName()).orElse(null);
             }
             if (profile == null) {
-                profile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
+                profile = ProfileEditorImpl.getGameProfileNoProperties(playerProfile);
             }
             Property textures = profile.getProperties().containsKey("textures") ? Iterables.getFirst(profile.getProperties().get("textures"), null) : null;
             if (textures == null || !textures.hasSignature() || profile.getName() == null || profile.getId() == null) {

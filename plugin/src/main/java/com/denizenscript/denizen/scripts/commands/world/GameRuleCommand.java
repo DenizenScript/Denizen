@@ -30,7 +30,7 @@ public class GameRuleCommand extends AbstractCommand {
     // @Group world
     //
     // @Description
-    // Sets a gamerule on the world. A list of valid gamerules can be found here: <@link url https://minecraft.fandom.com/wiki/Game_rule>
+    // Sets a gamerule on the world. A list of valid gamerules can be found here: <@link url https://minecraft.wiki/w/Game_rule>
     // Note: Be careful, gamerules are CASE SENSITIVE.
     //
     // @Tags
