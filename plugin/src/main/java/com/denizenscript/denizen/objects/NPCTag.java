@@ -288,7 +288,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             return getEntity().getWorld();
         }
         else {
-            return null;
+            return getCitizen().getStoredLocation().getWorld();
         }
     }
 
