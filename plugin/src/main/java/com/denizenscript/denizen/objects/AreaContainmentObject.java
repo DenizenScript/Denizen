@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
@@ -353,6 +354,22 @@ public interface AreaContainmentObject extends ObjectTag {
         // -->
         processor.registerTag(type, WorldTag.class, "with_world", (attribute, area, world) -> {
             return (T) area.withWorld(world);
+        });
+
+        // <--[tag]
+        // @attribute <AreaObject.approximate_overlap_areas>
+        // @returns ListTag(AreaObject)
+        // @description
+        // Returns a list of all noted areas that approximately overlap this area.
+        // May be inaccurate for objects with complex shapes.
+        // Errs on the side of over-inclusion (ie areas that don't overlap may be in the list, but areas that do overlap will never be excluded).
+        // -->
+        processor.registerTag(ListTag.class, "approximate_overlap_areas", (attribute, area) -> {
+            ListTag list = new ListTag();
+            CuboidTag boundary = area.getCuboidBoundary();
+            CuboidTag.LocationPair pair = boundary.pairs.get(0);
+            NotedAreaTracker.forEachAreaThatIntersects(pair.low, pair.high, list::addObject);
+            return list;
         });
     }
 

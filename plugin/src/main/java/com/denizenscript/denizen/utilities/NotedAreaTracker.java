@@ -24,22 +24,38 @@ public class NotedAreaTracker {
 
     public static final class TrackedArea {
 
+        public TrackedArea(AreaContainmentObject area, LocationTag low, LocationTag high) {
+            this.area = area;
+            lowX = low.getBlockX();
+            lowY = low.getBlockY();
+            lowZ = low.getBlockZ();
+            highX = high.getBlockX();
+            highY = high.getBlockY();
+            highZ = high.getBlockZ();
+        }
+
         public TrackedArea(AreaContainmentObject area) {
             CuboidTag boundary = area.getCuboidBoundary();
             LocationTag low = boundary.getLow(0), high = boundary.getHigh(0);
             this.area = area;
             lowX = low.getBlockX();
+            lowY = low.getBlockY();
             lowZ = low.getBlockZ();
             highX = high.getBlockX();
+            highY = high.getBlockY();
             highZ = high.getBlockZ();
         }
 
         public final AreaContainmentObject area;
 
-        public final int lowX, lowZ, highX, highZ;
+        public final int lowX, lowY, lowZ, highX, highY, highZ;
 
-        public boolean mightContain(int x, int z) {
-            return x >= lowX && x <= highX && z >= lowZ && z <= highZ;
+        public boolean mightContain(int x, int y, int z) {
+            return x >= lowX && x <= highX && z >= lowZ && z <= highZ && y >= lowY && y <= highY;
+        }
+
+        public boolean mightIntersect(TrackedArea area2) {
+            return area2.lowX <= highX && area2.highX >= lowX && area2.lowZ <= highZ && area2.highZ >= lowZ && area2.lowY <= highY && area2.highY >= lowY;
         }
 
         @Override
@@ -49,11 +65,12 @@ public class NotedAreaTracker {
 
         @Override
         public boolean equals(Object other) {
-            if (!(other instanceof TrackedArea)) {
+            if (!(other instanceof TrackedArea compareTo)) {
                 return false;
             }
-            TrackedArea compareTo = (TrackedArea) other;
-            return lowX == compareTo.lowX && lowZ == compareTo.lowZ && highX == compareTo.highX && highZ == compareTo.highZ && area.equals(compareTo.area);
+            return lowX == compareTo.lowX && lowZ == compareTo.lowZ && lowY == compareTo.lowY
+                    && highX == compareTo.highX && highZ == compareTo.highZ && highY == compareTo.highY
+                    && area.equals(compareTo.area);
         }
     }
 
@@ -124,10 +141,10 @@ public class NotedAreaTracker {
 
         public void remove(AreaSet set) {
             switch (set.type) {
-                case 1: sets50.remove(set.index); break;
-                case 2: sets50_offset.remove(set.index); break;
-                case 3: sets200.remove(set.index); break;
-                case 4: sets200_offset.remove(set.index); break;
+                case 1 -> sets50.remove(set.index);
+                case 2 -> sets50_offset.remove(set.index);
+                case 3 -> sets200.remove(set.index);
+                case 4 -> sets200_offset.remove(set.index);
             }
         }
     }
@@ -172,12 +189,12 @@ public class NotedAreaTracker {
         }
     }
 
-    public static void forEachAreaInSetThatContains(int x, int z, LocationTag location, AreaSet set, Consumer<AreaContainmentObject> action) {
+    public static void forEachAreaInSetThatContains(int x, int y, int z, LocationTag location, AreaSet set, Consumer<AreaContainmentObject> action) {
         if (set == null) {
             return;
         }
         for (TrackedArea area : set.list) {
-            if (area.mightContain(x, z) && area.area.doesContainLocation(location)) {
+            if (area.mightContain(x, y, z) && area.area.doesContainLocation(location)) {
                 action.accept(area.area);
             }
         }
@@ -187,15 +204,71 @@ public class NotedAreaTracker {
      * Call to run an action over every Area that contains a given location.
      */
     public static void forEachAreaThatContains(LocationTag location, Consumer<AreaContainmentObject> action) {
-        int x = location.getBlockX(), z = location.getBlockZ();
+        int x = location.getBlockX(), y = location.getBlockY(), z = location.getBlockZ();
         PerWorldSet set = worlds.get(CoreUtilities.toLowerCase(location.getWorldName()));
         if (set == null) {
             return;
         }
-        forEachAreaInSetThatContains(x, z, location, set.globalSet, action);
-        forEachAreaInSetThatContains(x, z, location, set.sets50.get(PerWorldSet.getIndex(x, z, 50, 0)), action);
-        forEachAreaInSetThatContains(x, z, location, set.sets50_offset.get(PerWorldSet.getIndex(x, z, 50, 25)), action);
-        forEachAreaInSetThatContains(x, z, location, set.sets200.get(PerWorldSet.getIndex(x, z, 200, 0)), action);
-        forEachAreaInSetThatContains(x, z, location, set.sets200_offset.get(PerWorldSet.getIndex(x, z, 200, 100)), action);
+        forEachAreaInSetThatContains(x, y, z, location, set.globalSet, action);
+        forEachAreaInSetThatContains(x, y, z, location, set.sets50.get(PerWorldSet.getIndex(x, z, 50, 0)), action);
+        forEachAreaInSetThatContains(x, y, z, location, set.sets50_offset.get(PerWorldSet.getIndex(x, z, 50, 25)), action);
+        forEachAreaInSetThatContains(x, y, z, location, set.sets200.get(PerWorldSet.getIndex(x, z, 200, 0)), action);
+        forEachAreaInSetThatContains(x, y, z, location, set.sets200_offset.get(PerWorldSet.getIndex(x, z, 200, 100)), action);
+    }
+
+    public static void forEachAreaInSetThatIntersects(TrackedArea area2, AreaSet set, Consumer<AreaContainmentObject> action) {
+        if (set == null) {
+            return;
+        }
+        for (TrackedArea area : set.list) {
+            if (area.mightIntersect(area2)) {
+                action.accept(area.area);
+            }
+        }
+    }
+
+    public static void forEachAreaThatIntersects(LocationTag min, LocationTag max, Consumer<AreaContainmentObject> action) {
+        CuboidTag.LocationPair pair = new CuboidTag.LocationPair(min, max);
+        min = pair.low;
+        max = pair.high;
+        TrackedArea area2 = new TrackedArea(null, min, max);
+        PerWorldSet set = worlds.get(CoreUtilities.toLowerCase(min.getWorldName()));
+        if (set == null) {
+            return;
+        }
+        forEachAreaInSetThatIntersects(area2, set.globalSet, action);
+        // Loose heuristic for when a regional-indexed loop is probably counterproductive - total looped regions exceeds 10x actual total areas available
+        if (pair.xDistance() * pair.zDistance() / (50 * 50) > (set.sets50.size() + set.sets50_offset.size()) * 10) {
+            for (AreaSet areaSet : set.sets50.values()) {
+                forEachAreaInSetThatIntersects(area2, areaSet, action);
+            }
+            for (AreaSet areaSet : set.sets50_offset.values()) {
+                forEachAreaInSetThatIntersects(area2, areaSet, action);
+            }
+        }
+        else {
+            for (int x = area2.lowX - 50; x <= area2.highX + 50; x += 50) {
+                for (int z = area2.lowZ - 50; z <= area2.highZ + 50; z += 50) {
+                    forEachAreaInSetThatIntersects(area2, set.sets50.get(PerWorldSet.getIndex(x, z, 50, 0)), action);
+                    forEachAreaInSetThatIntersects(area2, set.sets50_offset.get(PerWorldSet.getIndex(x, z, 50, 25)), action);
+                }
+            }
+        }
+        if (pair.xDistance() * pair.zDistance() / (288 * 200) > (set.sets200.size() + set.sets200_offset.size()) * 10) {
+            for (AreaSet areaSet : set.sets200.values()) {
+                forEachAreaInSetThatIntersects(area2, areaSet, action);
+            }
+            for (AreaSet areaSet : set.sets200_offset.values()) {
+                forEachAreaInSetThatIntersects(area2, areaSet, action);
+            }
+        }
+        else {
+            for (int x = area2.lowX - 200; x <= area2.highX + 200; x += 200) {
+                for (int z = area2.lowZ - 200; z <= area2.highZ + 200; z += 200) {
+                    forEachAreaInSetThatIntersects(area2, set.sets200.get(PerWorldSet.getIndex(x, z, 200, 0)), action);
+                    forEachAreaInSetThatIntersects(area2, set.sets200_offset.get(PerWorldSet.getIndex(x, z, 200, 100)), action);
+                }
+            }
+        }
     }
 }
