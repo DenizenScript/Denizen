@@ -70,7 +70,7 @@ public class FakeInternalDataCommand extends AbstractCommand {
     // - fakeinternaldata entity:<[item_display]> data:[item=iron_ingot;scale=0.6,0.6,0.6]|[item=gold_ingot;scale=0.8,0.8,0.8]|[item=netherite_ingot;scale=1,1,1] speed:0.5s
     //
     // @Usage
-    // Changes an item display's item, then it's scale a second later, then it's item again another second later.
+    // Changes an item display's item, then its scale a second later, then its item again another second later.
     // - fakeinternaldata entity:<[item_display]> data:[item=stone]|[scale=2,2,2]|[item=waxed_weathered_cut_copper_slab] speed:1s
     //
     // @Usage
