@@ -1367,6 +1367,23 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new ElementTag(object.getName(), true);
         });
 
+        // <--[tag]
+        // @attribute <EntityTag.monster_type>
+        // @returns ElementTag
+        // @group data
+        // @description
+        // Returns the entity's monster type, if it is a monster.
+        // This is sometimes called 'mob type' or 'entity category', but it is only applicable to enemy monsters - this is used for enchanted damage bonuses, see <@link tag EnchantmentTag.damage_bonus>.
+        // This can be any of undead/water/illager/arthropod, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityCategory.html>.
+        // -->
+        registerSpawnedOnlyTag(ElementTag.class, "monster_type", (attribute, object) -> {
+            EntityCategory category = object.getLivingEntity().getCategory();
+            if (category == EntityCategory.NONE) {
+                return null;
+            }
+            return new ElementTag(category);
+        });
+
         /////////////////////
         //   INVENTORY ATTRIBUTES
         /////////////////

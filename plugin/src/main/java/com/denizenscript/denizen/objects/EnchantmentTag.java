@@ -428,6 +428,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the damage bonus this enchantment applies against the given monster type.
         // The input is a MapTag with a level value and a monster type specified, where the type can be any of: ARTHROPOD, ILLAGER, WATER, UNDEAD, or UNDEFINED
+        // See also <@link tag EntityTag.monster_type> for getting the category of another mob.
         // @example
         // # Narrates "With Bane of Arthropods 2, you get a damage bonus of 5 on arthropods!"
         // - narrate "With Bane of Arthropods 2, you get a damage bonus of <enchantment[bane_of_arthropods].damage_bonus[level=2;type=arthropod]> on arthropods!"
