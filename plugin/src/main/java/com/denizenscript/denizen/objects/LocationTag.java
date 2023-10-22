@@ -1276,7 +1276,9 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
                 return null;
             }
-            return NMSHandler.entityHelper.getMobSpawnerDisplayEntity(((CreatureSpawner) object.getBlockStateForTag(attribute))).describe(attribute.context);
+            EntityTag fakeEnt = NMSHandler.entityHelper.getMobSpawnerDisplayEntity(((CreatureSpawner) object.getBlockStateForTag(attribute)));
+            fakeEnt.isFake = true;
+            return fakeEnt.describe(attribute.context);
         });
 
         // <--[tag]
