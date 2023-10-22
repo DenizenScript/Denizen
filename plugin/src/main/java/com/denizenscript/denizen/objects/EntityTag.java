@@ -2930,6 +2930,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @returns ElementTag
             // @description
             // Returns the category that the given entity belongs to. Categories may subject this entity to additional effects, benefits or debuffs.
+            // Valid categories can be found at <@link url https://jd.papermc.io/paper/1.20/org/bukkit/entity/EntityCategory.html>
             // -->
             registerSpawnedOnlyTag(ElementTag.class, "category", (attribute, object) -> {
                 return new ElementTag(object.getLivingEntity().getCategory());
