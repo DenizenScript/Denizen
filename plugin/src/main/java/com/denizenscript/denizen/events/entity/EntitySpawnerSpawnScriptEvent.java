@@ -25,7 +25,7 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
     //
     // @Triggers when an entity spawns from a monster spawner.
     //
-    // @Switch spawner:<location> to only process the event if the spawner location matches.
+    // @Switch spawner:<location> to only process the event if the spawner's location matches.
     //
     // @Context
     // <context.entity> returns the EntityTag that spawned.
