@@ -2924,6 +2924,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
                 return MultiVersionHelper1_19.interactionToMap(interaction.getLastInteraction(), interaction.getWorld());
             });
+
+            // <--[tag]
+            // @attribute <EntityTag.category>
+            // @returns ElementTag
+            // @description
+            // Returns the category that the given entity belongs to. Categories may subject this entity to additional effects, benefits or debuffs.
+            // -->
+            registerSpawnedOnlyTag(ElementTag.class, "category", (attribute, object) -> {
+                return new ElementTag(object.getLivingEntity().getCategory());
+            });
         }
 
         // <--[mechanism]
