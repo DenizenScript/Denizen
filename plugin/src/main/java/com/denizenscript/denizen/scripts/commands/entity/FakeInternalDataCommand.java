@@ -22,6 +22,20 @@ import java.util.concurrent.locks.LockSupport;
 
 public class FakeInternalDataCommand extends AbstractCommand {
 
+    // <--[language]
+    // @name Internal Entity Data
+    // @group Minecraft Logic
+    // @description
+    // Each entity in Minecraft has a set of data values that get sent to the client, with each data value being a number id -> value pair.
+    // Denizen allows direct control over that data, as it can be useful for things like setting values that would usually be blocked.
+    // Because this is such a direct control that's meant to impose less restrictions, there's no limitations/verification on the values being set other than basic type checking.
+    // For all possible internal entity data values and their respective ids, see <@link url https://github.com/DenizenScript/Denizen/blob/dev/v1_20/src/main/java/com/denizenscript/denizen/nms/v1_20/helpers/EntityDataNameMapper.java#L50>.
+    // Alternatively, you can use the number id directly instead of the names listed there.
+    // For a list of all entity data ids and their values, see <@link url https://wiki.vg/Entity_metadata>
+    // (note that it documents the values that eventually get sent to the client, so the input this expects might be slightly different in some cases).
+    // You can input the equivalent denizen objects to have them be auto-converted to the internal types.
+    // -->
+
     public FakeInternalDataCommand() {
         setName("fakeinternaldata");
         setSyntax("fakeinternaldata [entity:<entity>] [data:<map>|...] (for:<player>|...) (speed:<duration>)");
@@ -41,7 +55,7 @@ public class FakeInternalDataCommand extends AbstractCommand {
     // Sends fake internal entity data updates, optionally sending multiple over time.
     // This supports sub-tick precision, allowing smooth/high FPS animations.
     //
-    // The input to 'data:' is a list of <@link object MapTag>s, with each map being a frame to send, with each map being formatted like <@link mechanism EntityTag.internal_data>'s input.
+    // The input to 'data:' is a list of <@link object MapTag>s, with each map being a frame to send; see <@link language Internal Entity Data> for more information.
     //
     // Optionally specify a list of players to fake the data for, defaults to the linked player.
     //
