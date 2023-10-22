@@ -13,6 +13,7 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.core.MappedRegistry
     public static String MappedRegistry_frozen = "l";
+    public static String MappedRegistry_unregisteredIntrusiveHolders = "m";
 
     // net.minecraft.world.item.crafting.RecipeManager
     public static String RecipeManager_byName = "d";

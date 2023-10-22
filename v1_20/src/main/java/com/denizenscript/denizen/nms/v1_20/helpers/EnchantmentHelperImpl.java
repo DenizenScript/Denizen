@@ -28,6 +28,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.lang.reflect.Field;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class EnchantmentHelperImpl extends EnchantmentHelper {
@@ -35,10 +36,17 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
     public static final Map<NamespacedKey, Enchantment> ENCHANTMENTS_BY_KEY = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byKey", null);
     public static final Map<String, org.bukkit.enchantments.Enchantment> ENCHANTMENTS_BY_NAME = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byName", null);
     public static final Field REGISTRY_FROZEN = ReflectionHelper.getFields(MappedRegistry.class).get(ReflectionMappingsInfo.MappedRegistry_frozen, boolean.class);
+    public static final Field REGISTRY_INTRUSIVE_HOLDERS = ReflectionHelper.getFields(MappedRegistry.class).get(ReflectionMappingsInfo.MappedRegistry_unregisteredIntrusiveHolders, Map.class);
 
     @Override
     public org.bukkit.enchantments.Enchantment registerFakeEnchantment(EnchantmentScriptContainer.EnchantmentReference script) {
         try {
+            Map holders = (Map) REGISTRY_INTRUSIVE_HOLDERS.get(BuiltInRegistries.ENCHANTMENT);
+            if (holders == null) {
+                REGISTRY_INTRUSIVE_HOLDERS.set(BuiltInRegistries.ENCHANTMENT, new IdentityHashMap());
+            }
+            boolean wasFrozen = REGISTRY_FROZEN.getBoolean(BuiltInRegistries.ENCHANTMENT);
+            REGISTRY_FROZEN.setBoolean(BuiltInRegistries.ENCHANTMENT, false);
             EquipmentSlot[] slots = new EquipmentSlot[script.script.slots.size()];
             for (int i = 0; i < slots.length; i++) {
                 slots[i] = EquipmentSlot.valueOf(CoreUtilities.toUpperCase(script.script.slots.get(i)));
@@ -130,8 +138,6 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
             };
             String enchName = CoreUtilities.toUpperCase(script.script.id);
-            boolean wasFrozen = REGISTRY_FROZEN.getBoolean(BuiltInRegistries.ENCHANTMENT);
-            REGISTRY_FROZEN.setBoolean(BuiltInRegistries.ENCHANTMENT, false);
             Registry.register(BuiltInRegistries.ENCHANTMENT, "denizen:" + script.script.id, nmsEnchant);
             CraftEnchantment ench = new CraftEnchantment(nmsEnchant) {
                 @Override
@@ -139,6 +145,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                     return enchName;
                 }
             };
+            REGISTRY_INTRUSIVE_HOLDERS.set(BuiltInRegistries.ENCHANTMENT, holders);
             if (wasFrozen) {
                 BuiltInRegistries.ENCHANTMENT.freeze();
             }
