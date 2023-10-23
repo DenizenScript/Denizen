@@ -45,6 +45,7 @@ import net.citizensnpcs.npc.ai.NPCHolder;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.ChiseledBookshelf;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -2885,6 +2886,23 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
             return new ElementTag(humanEntity.isHandRaised());
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.bookshelf_slot>
+        // @returns ElementTag(Number)
+        // @description
+        // Returns the Chiseled Bookshelf slot that the entity is looking at.
+        // -->
+        registerSpawnedOnlyTag(ElementTag.class, "bookshelf_slot", (attribute, object) -> {
+            RayTraceResult result = object.getLivingEntity().rayTraceBlocks(4.5);
+            if (result == null || !(result.getHitBlock().getType() == Material.CHISELED_BOOKSHELF)) {
+                attribute.echoError("'EntityTag.bookshelf_slot' requires the entity to look at a Chiseled Bookshelf block.");
+                return null;
+            }
+            org.bukkit.block.ChiseledBookshelf bookshelfState = (org.bukkit.block.ChiseledBookshelf) result.getHitBlock().getState();
+            Vector vector = result.getHitPosition().subtract(result.getHitBlock().getLocation().toVector());
+            return new ElementTag(bookshelfState.getSlot(vector) + 1);
         });
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {

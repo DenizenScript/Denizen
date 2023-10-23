@@ -4086,6 +4086,10 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // Returns the last interacted slot of a Chiseled Bookshelf inventory.
         // -->
         tagProcessor.registerTag(ElementTag.class, "last_interacted_slot", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof ChiseledBookshelf)) {
+                return null;
+            }
             return new ElementTag(((ChiseledBookshelf) object.getBlockState()).getLastInteractedSlot() + 1);
         });
 
@@ -4100,8 +4104,13 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // on player right clicks chiseled_bookshelf:
         // - define slot <player.eye_location.ray_trace.sub[<context.location>]>
         // - narrate <context.location.slot[<[slot]>]>
+        // See also <@link tag EntityTag.bookshelf_slot>
         // -->
         tagProcessor.registerTag(ElementTag.class, "slot", (attribute, object) -> {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof ChiseledBookshelf)) {
+                return null;
+            }
             return new ElementTag(((ChiseledBookshelf) object.getBlockState()).getSlot(attribute.paramAsType(LocationTag.class).toVector()) + 1);
         });
 
