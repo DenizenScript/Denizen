@@ -92,6 +92,7 @@ public class BukkitCommandRegistry {
         registerCommand(CastCommand.class);
         registerCommand(EquipCommand.class);
         registerCommand(FakeEquipCommand.class);
+        registerCommand(FakeInternalDataCommand.class);
         registerCommand(FeedCommand.class);
         registerCommand(FlyCommand.class);
         registerCommand(FollowCommand.class);

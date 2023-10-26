@@ -159,4 +159,8 @@ public interface PacketHelper {
     default void sendRelativeLookPacket(Player player, float yaw, float pitch) {
         throw new UnsupportedOperationException();
     }
+
+    default void sendEntityDataPacket(List<Player> players, Entity entity, List<Object> data) {
+        throw new UnsupportedOperationException();
+    }
 }
