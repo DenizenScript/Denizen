@@ -11,7 +11,6 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -28,7 +27,8 @@ public class FakeInternalDataCommand extends AbstractCommand {
     // @description
     // Each entity in Minecraft has a set of data values that get sent to the client, with each data value being a number id -> value pair.
     // Denizen allows direct control over that data, as it can be useful for things like setting values that would usually be blocked.
-    // Because this is such a direct control that's meant to impose less restrictions, there's no limitations/verification on the values being set other than basic type checking.
+    // Because this is such a direct control that's meant to impose less restriction, there's no limitations/verification on the values being set other than basic type checking.
+    // Note as well that as these are raw internal values, they are liable to change between minecraft version updates, especially the numeric IDs.
     // For all possible internal entity data values and their respective ids, see <@link url https://github.com/DenizenScript/Denizen/blob/dev/v1_20/src/main/java/com/denizenscript/denizen/nms/v1_20/helpers/EntityDataNameMapper.java#L50>.
     // Alternatively, you can use the number id directly instead of the names listed there.
     // For a list of all entity data ids and their values, see <@link url https://wiki.vg/Entity_metadata>
