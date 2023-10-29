@@ -295,6 +295,9 @@ public class BukkitImplDeprecations {
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
+    // Removed upstream 2023/10/29 without warning.
+    public static Warning npcHologramDirection = new StrongWarning("npcHologramDirection", "NPCTag's 'hologram_direction' is deprecated: it was removed from Citizens. Ask in the Citizens channel on the Discord if you need it.");
+
     // Added on 2019/10/13
     public static Warning versionScripts = new StrongWarning("versionScripts", "Version script containers are deprecated due to the old script repo no longer being active.");
 

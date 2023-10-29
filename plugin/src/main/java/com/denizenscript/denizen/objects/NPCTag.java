@@ -742,15 +742,18 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.hologram_direction>
         // @returns ElementTag
         // @mechanism NPCTag.hologram_direction
+        // @deprecated This was removed from Citizens.
         // @description
         // Returns the direction of an NPC's hologram as "BOTTOM_UP" or "TOP_DOWN".
         // -->
         tagProcessor.registerTag(ElementTag.class, "hologram_direction", (attribute, object) -> {
+            BukkitImplDeprecations.npcHologramDirection.warn(attribute.context);
             if (!object.getCitizen().hasTrait(HologramTrait.class)) {
                 return null;
             }
-            HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
-            return new ElementTag(hologram.getDirection());
+            //HologramTrait hologram = object.getCitizen().getTraitNullable(HologramTrait.class);
+            //return new ElementTag(hologram.getDirection());
+            return null;
         });
 
         // <--[tag]
@@ -1546,14 +1549,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @object NPCTag
         // @name hologram_direction
         // @input ElementTag
+        // @deprecated This was removed from Citizens.
         // @description
         // Sets the NPC's hologram direction, as either BOTTOM_UP or TOP_DOWN.
         // @tags
         // <NPCTag.hologram_direction>
         // -->
         if (mechanism.matches("hologram_direction") && mechanism.requireEnum(HologramTrait.HologramDirection.class)) {
-            HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
-            hologram.setDirection(HologramTrait.HologramDirection.valueOf(mechanism.getValue().asString().toUpperCase()));
+            BukkitImplDeprecations.npcHologramDirection.warn(mechanism.context);
+            //HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
+            //hologram.setDirection(HologramTrait.HologramDirection.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
         // <--[mechanism]
