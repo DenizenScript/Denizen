@@ -1555,7 +1555,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.hologram_direction>
         // -->
-        if (mechanism.matches("hologram_direction") && mechanism.requireEnum(HologramTrait.HologramDirection.class)) {
+        if (mechanism.matches("hologram_direction")) { //  && mechanism.requireEnum(HologramTrait.HologramDirection.class)
             BukkitImplDeprecations.npcHologramDirection.warn(mechanism.context);
             //HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
             //hologram.setDirection(HologramTrait.HologramDirection.valueOf(mechanism.getValue().asString().toUpperCase()));
