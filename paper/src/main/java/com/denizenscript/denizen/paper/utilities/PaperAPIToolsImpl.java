@@ -9,6 +9,8 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.entity.TeleportFlag;
@@ -276,12 +278,20 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public <T extends Entity> T spawnEntity(Location location, Class<T> type, Consumer<T> configure, CreatureSpawnEvent.SpawnReason reason) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-            return location.getWorld().spawn(location, type, configure, reason);
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+            // Takes the deprecated bukkit consumer on older versions
+            if (WORLD_SPAWN_BUKKIT_CONSUMER == null) {
+                WORLD_SPAWN_BUKKIT_CONSUMER = ReflectionHelper.getMethodHandle(RegionAccessor.class, "spawn", Location.class, Class.class, Consumer.class, CreatureSpawnEvent.SpawnReason.class);
+            }
+            try {
+                return (T) WORLD_SPAWN_BUKKIT_CONSUMER.invoke(location.getWorld(), location, type, configure, reason);
+            }
+            catch (Throwable e) {
+                Debug.echoError(e);
+                return null;
+            }
         }
-        else {
-            return super.spawnEntity(location, type, configure, reason);
-        }
+        return location.getWorld().spawn(location, type, configure, reason);
     }
 
     @Override
