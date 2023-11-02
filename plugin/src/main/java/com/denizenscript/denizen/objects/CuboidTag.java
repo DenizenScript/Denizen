@@ -26,6 +26,7 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -741,7 +742,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @description
         // Returns the number of cuboids defined in the CuboidTag.
         // @example
-        // # Narrates the amount of cuboids are defined in "my_cuboid".
+        // # Narrates the amount of cuboids that are defined in "my_cuboid".
         // # For example, if there are 3 cuboids defined in "my_cuboid", this will return "3".
         // - narrate "The cuboid, 'my_cuboid', has <cuboid[my_cuboid].members_size> members!"
         // -->
@@ -780,6 +781,22 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         });
 
         // <--[tag]
+        // @attribute <CuboidTag.contains_cuboid[<cuboid>]>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether this cuboid fully contains another cuboid.
+        // @example
+        // # Checks if the cuboid, "my_cuboid", contains "my_second_cuboid".
+        // - if <cuboid[my_cuboid].contains_cuboid[my_second_cuboid]>:
+        //     - narrate "My_Cuboid contains Second!"
+        // - else:
+        //     - narrate "Second is NOT contained!"
+        // -->
+        tagProcessor.registerTag(ElementTag.class, CuboidTag.class, "contains_cuboid", (attribute, cuboid, cub2) -> {
+            return new ElementTag(cuboid.containsCuboid(cub2));
+        });
+
+        // <--[tag]
         // @attribute <CuboidTag.intersects[<cuboid>]>
         // @returns ElementTag(Boolean)
         // @description
@@ -791,15 +808,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // - else:
         //     - narrate "These cuboids do NOT intersect each other!"
         // -->
-        tagProcessor.registerTag(ElementTag.class, "intersects", (attribute, cuboid) -> {
-            if (!attribute.hasParam()) {
-                attribute.echoError("The tag CuboidTag.intersects[...] must have a value.");
-                return null;
-            }
-            CuboidTag cub2 = attribute.paramAsType(CuboidTag.class);
-            if (cub2 == null) {
-                return null;
-            }
+        tagProcessor.registerTag(ElementTag.class, CuboidTag.class, "intersects", (attribute, cuboid, cub2) -> {
             return new ElementTag(cuboid.intersects(cub2));
         });
 
@@ -1571,10 +1580,72 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             return new ElementTag(noteName);
         }, "notable_name");
 
+        // <--[tag]
+        // @attribute <CuboidTag.contained_cuboids>
+        // @returns ListTag(CuboidTag)
+        // @description
+        // Returns a list of all noted cuboid areas that this cuboid fully contains.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "contained_cuboids", (attribute, cuboid) -> {
+            ListTag list = new ListTag();
+            HashSet<String> antidup = new HashSet<>();
+            for (LocationPair pair : cuboid.pairs) {
+                NotedAreaTracker.forEachAreaThatIntersects(pair.low, pair.high, a -> {
+                    if (a instanceof CuboidTag cub2 && cuboid.containsCuboid(cub2) && antidup.add(cub2.noteName)) {
+                        list.addObject(cub2);
+                    }
+                });
+            }
+            return list;
+        });
+
+        // <--[tag]
+        // @attribute <CuboidTag.intersecting_cuboids>
+        // @returns ListTag(CuboidTag)
+        // @description
+        // Returns a list of all noted cuboid areas that this cuboid intersects with.
+        // -->
+        tagProcessor.registerTag(ListTag.class, "intersecting_cuboids", (attribute, cuboid) -> {
+            ListTag list = new ListTag();
+            HashSet<String> antidup = new HashSet<>();
+            for (LocationPair pair : cuboid.pairs) {
+                NotedAreaTracker.forEachAreaThatIntersects(pair.low, pair.high, a -> {
+                    if (a instanceof CuboidTag cub2 && cuboid.intersects(cub2) && antidup.add(cub2.noteName)) {
+                        list.addObject(cub2);
+                    }
+                });
+            }
+            return list;
+        });
+
         tagProcessor.registerTag(ElementTag.class, "full", (attribute, cuboid) -> {
             BukkitImplDeprecations.cuboidFullTag.warn(attribute.context);
             return new ElementTag(cuboid.identifyFull());
         });
+    }
+
+    public boolean containsCuboid(CuboidTag cub2) {
+        for (LocationPair pair2 : cub2.pairs) {
+            boolean containedPair = false;
+            for (LocationPair pair : pairs) {
+                if (!pair.low.getWorldName().equalsIgnoreCase(pair2.low.getWorldName())) {
+                    continue;
+                }
+                if (pair2.low.getX() >= pair.low.getX()
+                        && pair2.low.getY() >= pair.low.getY()
+                        && pair2.low.getZ() >= pair.low.getZ()
+                        && pair2.high.getX() <= pair.high.getX()
+                        && pair2.high.getY() <= pair.high.getY()
+                        && pair2.high.getZ() <= pair.high.getZ()) {
+                    containedPair = true;
+                    break;
+                }
+            }
+            if (!containedPair) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean intersects(CuboidTag cub2) {

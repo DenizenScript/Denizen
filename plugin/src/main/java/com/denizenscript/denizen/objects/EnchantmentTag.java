@@ -40,7 +40,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
     //
     // @description
     // An EnchantmentTag represents an item enchantment abstractly (the enchantment itself, like 'sharpness', which *can be* applied to an item, as opposed to the specific reference to an enchantment on a specific item).
-    // For enchantment names, check <@link url https://minecraft.fandom.com/wiki/Enchanting#Summary_of_enchantments>. Note spaces should swapped to underscores, so for example "Aqua Affinity" becomes "aqua_affinity".
+    // For enchantment names, check <@link url https://minecraft.wiki/w/Enchanting#Summary_of_enchantments>. Note spaces should swapped to underscores, so for example "Aqua Affinity" becomes "aqua_affinity".
     //
     // This object type is flaggable.
     // Flags on this object type will be stored in the server saves file, under special sub-key "__enchantments"
@@ -428,6 +428,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the damage bonus this enchantment applies against the given monster type.
         // The input is a MapTag with a level value and a monster type specified, where the type can be any of: ARTHROPOD, ILLAGER, WATER, UNDEAD, or UNDEFINED
+        // See also <@link tag EntityTag.monster_type> for getting the category of another mob.
         // @example
         // # Narrates "With Bane of Arthropods 2, you get a damage bonus of 5 on arthropods!"
         // - narrate "With Bane of Arthropods 2, you get a damage bonus of <enchantment[bane_of_arthropods].damage_bonus[level=2;type=arthropod]> on arthropods!"

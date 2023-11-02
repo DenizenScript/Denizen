@@ -65,34 +65,35 @@ public class EntityDataNameMapper {
         registerDataName(Interaction.class, 10, "responsive");
 
         // Display
-        registerDataName(Display.class, 8, "interpolation_delay");
-        registerDataName(Display.class, 9, "interpolation_duration");
-        registerDataName(Display.class, 10, "translation");
-        registerDataName(Display.class, 11, "scale");
-        registerDataName(Display.class, 12, "left_rotation");
-        registerDataName(Display.class, 13, "right_rotation");
-        registerDataName(Display.class, 14, "billboard");
-        registerDataName(Display.class, 15, "brightness");
-        registerDataName(Display.class, 16, "view_range");
-        registerDataName(Display.class, 17, "shadow_radius");
-        registerDataName(Display.class, 18, "shadow_strength");
-        registerDataName(Display.class, 19, "width");
-        registerDataName(Display.class, 20, "height");
-        registerDataName(Display.class, 21, "glow_color");
+        registerDataName(Display.class, 8, "transform_interpolation_start");
+        registerDataName(Display.class, 9, "transform_interpolation_duration");
+        registerDataName(Display.class, 10, "movement_interpolation_duration");
+        registerDataName(Display.class, 11, "translation");
+        registerDataName(Display.class, 12, "scale");
+        registerDataName(Display.class, 13, "left_rotation");
+        registerDataName(Display.class, 14, "right_rotation");
+        registerDataName(Display.class, 15, "billboard");
+        registerDataName(Display.class, 16, "brightness");
+        registerDataName(Display.class, 17, "view_range");
+        registerDataName(Display.class, 18, "shadow_radius");
+        registerDataName(Display.class, 19, "shadow_strength");
+        registerDataName(Display.class, 20, "width");
+        registerDataName(Display.class, 21, "height");
+        registerDataName(Display.class, 22, "glow_color");
 
         // Block display
-        registerDataName(Display.BlockDisplay.class, 22, "material");
+        registerDataName(Display.BlockDisplay.class, 23, "material");
 
         // Item display
-        registerDataName(Display.ItemDisplay.class, 22, "item");
-        registerDataName(Display.ItemDisplay.class, 23, "model_transform");
+        registerDataName(Display.ItemDisplay.class, 23, "item");
+        registerDataName(Display.ItemDisplay.class, 24, "model_transform");
 
         // Text display
-        registerDataName(Display.TextDisplay.class, 22, "text");
-        registerDataName(Display.TextDisplay.class, 23, "line_width");
-        registerDataName(Display.TextDisplay.class, 24, "background_color");
-        registerDataName(Display.TextDisplay.class, 25, "text_opacity");
-        registerDataName(Display.TextDisplay.class, 26, "text_display_flags");
+        registerDataName(Display.TextDisplay.class, 23, "text");
+        registerDataName(Display.TextDisplay.class, 24, "line_width");
+        registerDataName(Display.TextDisplay.class, 25, "background_color");
+        registerDataName(Display.TextDisplay.class, 26, "text_opacity");
+        registerDataName(Display.TextDisplay.class, 27, "text_display_flags");
 
         // Thrown item projectile
         registerDataName(ThrowableProjectile.class, 8, "item");

@@ -1276,7 +1276,9 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             if (!(object.getBlockStateForTag(attribute) instanceof CreatureSpawner)) {
                 return null;
             }
-            return NMSHandler.entityHelper.getMobSpawnerDisplayEntity(((CreatureSpawner) object.getBlockStateForTag(attribute))).describe(attribute.context);
+            EntityTag fakeEnt = NMSHandler.entityHelper.getMobSpawnerDisplayEntity(((CreatureSpawner) object.getBlockStateForTag(attribute)));
+            fakeEnt.isFake = true;
+            return fakeEnt.describe(attribute.context);
         });
 
         // <--[tag]
@@ -4179,7 +4181,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // - integrity: ElementTag(Decimal): The integrity of the structure (0-1). Lower integrity values will result in more blocks being removed when loading a structure.
         // used with the seed to determine which blocks are randomly removed to mimic "decay".
         // - metadata: ElementTag: Only applies in DATA mode, sets specific functions that can be applied to the structure,
-        // check the Minecraft wiki (<@link url https://minecraft.gamepedia.com/Structure_Block#Data>) for more information.
+        // check the Minecraft wiki (<@link url https://minecraft.wiki/w/Structure_Block#Data>) for more information.
         // - mirror: ElementTag: How the structure is mirrored; "NONE", "LEFT_RIGHT", or "FRONT_BACK".
         // - box_position: LocationTag: The position of the structure's bounding box, relative to the position of the structure block. Maximum allowed distance is 48 blocks in any direction.
         // - rotation: ElementTag: The rotation of the structure; "NONE", "CLOCKWISE_90", "CLOCKWISE_180", or "COUNTERCLOCKWISE_90".
@@ -5335,7 +5337,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // - integrity: ElementTag(Decimal): The integrity of the structure (0-1). Lower integrity values will result in more blocks being removed when loading a structure.
         // used with the seed to determine which blocks are randomly removed to mimic "decay".
         // - metadata: ElementTag: Can only be set while in DATA mode. sets specific functions that can be applied to the structure,
-        // check the Minecraft wiki (<@link url https://minecraft.gamepedia.com/Structure_Block#Data>) for more information.
+        // check the Minecraft wiki (<@link url https://minecraft.wiki/w/Structure_Block#Data>) for more information.
         // - mirror: ElementTag: How the structure is mirrored; "NONE", "LEFT_RIGHT", or "FRONT_BACK".
         // - box_position: LocationTag: The position of the structure's bounding box, relative to the position of the structure block. Maximum allowed distance is 48 blocks in any direction.
         // - rotation: ElementTag: The rotation of the structure; "NONE", "CLOCKWISE_90", "CLOCKWISE_180", or "COUNTERCLOCKWISE_90".

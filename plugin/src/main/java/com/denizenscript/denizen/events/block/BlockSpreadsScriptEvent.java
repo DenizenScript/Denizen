@@ -73,12 +73,12 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "material": return material;
-            case "source_location": return new LocationTag(event.getBlock().getLocation());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "material" -> material;
+            case "source_location" -> new LocationTag(event.getSource().getLocation());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

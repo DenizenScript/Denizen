@@ -11,9 +11,11 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.commands.core.ReflectionSetCommand;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -80,6 +82,7 @@ import org.bukkit.util.Vector;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class EntityHelperImpl extends EntityHelper {
 
@@ -799,25 +802,47 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftEntity) entity).getHandle().setMaxUpStep(stepHeight);
     }
 
-    @Override
-    public int mapInternalEntityDataName(Entity entity, String name) {
-        return EntityDataNameMapper.getIdForName(((CraftEntity) entity).getHandle().getClass(), name);
+    public static final Field SynchedEntityData_itemsById = ReflectionHelper.getFields(SynchedEntityData.class).get(ReflectionMappingsInfo.SynchedEntityData_itemsById);
+
+    public static Int2ObjectMap<SynchedEntityData.DataItem<Object>> getDataItems(Entity entity) {
+        try {
+            return (Int2ObjectMap<SynchedEntityData.DataItem<Object>>) SynchedEntityData_itemsById.get(((CraftEntity) entity).getHandle().getEntityData());
+        }
+        catch (IllegalAccessException e) {
+            throw new RuntimeException(e); // Stop the code here to avoid NPEs down the road
+        }
     }
 
-    @Override
-    public void modifyInternalEntityData(Entity entity, Map<Integer, ObjectTag> internalData) {
-        SynchedEntityData nmsEntityData = ((CraftEntity) entity).getHandle().getEntityData();
-        Int2ObjectMap<SynchedEntityData.DataItem<Object>> dataItemsById = ReflectionHelper.getFieldValue(SynchedEntityData.class, ReflectionMappingsInfo.SynchedEntityData_itemsById, nmsEntityData);
-        for (Map.Entry<Integer, ObjectTag> entry : internalData.entrySet()) {
-            SynchedEntityData.DataItem<Object> dataItem = dataItemsById.get(entry.getKey().intValue());
+    public static void convertToInternalData(Entity entity, MapTag internalData, BiConsumer<SynchedEntityData.DataItem<Object>, Object> processConverted) {
+        Int2ObjectMap<SynchedEntityData.DataItem<Object>> dataItemsById = getDataItems(entity);
+        for (Map.Entry<StringHolder, ObjectTag> entry : internalData.entrySet()) {
+            int id = EntityDataNameMapper.getIdForName(((CraftEntity) entity).getHandle().getClass(), entry.getKey().low);
+            if (id == -1) {
+                Debug.echoError("Invalid internal data key: " + entry.getKey());
+                return;
+            }
+            SynchedEntityData.DataItem<Object> dataItem = dataItemsById.get(id);
             if (dataItem == null) {
-                Debug.echoError("Invalid internal data id '" + entry.getKey() + "': couldn't be matched to any internal data for entity of type '" + entity.getType() + "'.");
-                continue;
+                Debug.echoError("Invalid internal data id '" + id + "': couldn't be matched to any internal data for entity of type '" + entity.getType() + "'.");
+                return;
             }
             Object converted = ReflectionSetCommand.convertObjectTypeFor(dataItem.getValue().getClass(), entry.getValue());
             if (converted != null) {
-                nmsEntityData.set(dataItem.getAccessor(), converted);
+                processConverted.accept(dataItem, converted);
             }
         }
+    }
+
+    @Override
+    public List<Object> convertInternalEntityDataValues(Entity entity, MapTag internalData) {
+        List<Object> dataValues = new ArrayList<>(internalData.size());
+        convertToInternalData(entity, internalData, (dataItem, converted) -> dataValues.add(PacketHelperImpl.createEntityData(dataItem.getAccessor(), converted)));
+        return dataValues;
+    }
+
+    @Override
+    public void modifyInternalEntityData(Entity entity, MapTag internalData) {
+        SynchedEntityData nmsEntityData = ((CraftEntity) entity).getHandle().getEntityData();
+        convertToInternalData(entity, internalData, (dataItem, converted) -> nmsEntityData.set(dataItem.getAccessor(), converted));
     }
 }

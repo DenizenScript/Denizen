@@ -14,6 +14,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -187,7 +188,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     public class ChunkLoadCommandNPCEvents implements Listener {
         @EventHandler
         public void stopDespawn(NPCDespawnEvent e) {
-            if (e.getNPC() == null || !e.getNPC().isSpawned()) {
+            if (e.getNPC() == null || !e.getNPC().isSpawned() || e.getReason() != DespawnReason.CHUNK_UNLOAD) {
                 return;
             }
             Chunk chnk = e.getNPC().getEntity().getLocation().getChunk();

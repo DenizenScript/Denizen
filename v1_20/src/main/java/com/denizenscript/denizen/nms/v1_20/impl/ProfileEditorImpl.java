@@ -32,6 +32,9 @@ import java.util.UUID;
 
 public class ProfileEditorImpl extends ProfileEditor {
 
+    public static final String EMPTY_NAME = "";
+    public static final UUID NIL_UUID = new UUID(0L, 0L);
+
     @Override
     protected void updatePlayer(final Player player, final boolean isSkinChanging) {
         final ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
@@ -116,8 +119,14 @@ public class ProfileEditorImpl extends ProfileEditor {
         return playerInfoUpdatePacket;
     }
 
-    private static GameProfile getGameProfile(PlayerProfile playerProfile) {
-        GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
+    public static GameProfile getGameProfileNoProperties(PlayerProfile playerProfile) {
+        UUID uuid = playerProfile.getUniqueId();
+        String name = playerProfile.getName();
+        return new GameProfile(uuid != null ? uuid : NIL_UUID, name != null ? name : EMPTY_NAME);
+    }
+
+    public static GameProfile getGameProfile(PlayerProfile playerProfile) {
+        GameProfile gameProfile = getGameProfileNoProperties(playerProfile);
         if (playerProfile.hasTexture()) {
             gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
         }

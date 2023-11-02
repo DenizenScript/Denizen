@@ -1276,7 +1276,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @attribute <EntityTag.vanilla_tags>
         // @returns ListTag
         // @description
-        // Returns a list of vanilla tags that apply to this entity type. See also <@link url https://minecraft.fandom.com/wiki/Tag>.
+        // Returns a list of vanilla tags that apply to this entity type. See also <@link url https://minecraft.wiki/w/Tag>.
         // -->
         tagProcessor.registerTag(ListTag.class, "vanilla_tags", (attribute, object) -> {
             HashSet<String> tags = VanillaTagHelper.tagsByEntity.get(object.getBukkitEntityType());
@@ -1365,6 +1365,23 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "name", (attribute, object) -> {
             return new ElementTag(object.getName(), true);
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.monster_type>
+        // @returns ElementTag
+        // @group data
+        // @description
+        // Returns the entity's monster type, if it is a monster.
+        // This is sometimes called 'mob type' or 'entity category', but it is only applicable to enemy monsters - this is used for enchanted damage bonuses, see <@link tag EnchantmentTag.damage_bonus>.
+        // This can be any of undead/water/illager/arthropod, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityCategory.html>.
+        // -->
+        registerSpawnedOnlyTag(ElementTag.class, "monster_type", (attribute, object) -> {
+            EntityCategory category = object.getLivingEntity().getCategory();
+            if (category == EntityCategory.NONE) {
+                return null;
+            }
+            return new ElementTag(category);
         });
 
         /////////////////////
@@ -2750,7 +2767,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Boolean)
         // @description
         // Returns whether this fish hook is in open water. Fish hooks in open water can catch treasure.
-        // See <@link url https://minecraft.fandom.com/wiki/Fishing> for more info.
+        // See <@link url https://minecraft.wiki/w/Fishing> for more info.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "fish_hook_in_open_water", (attribute, object) -> {
             if (!(object.getBukkitEntity() instanceof FishHook fishHook)) {
@@ -2996,24 +3013,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @input MapTag
             // @description
             // Modifies an entity's internal entity data as a map of data name to value.
-            // The values can be Denizen objects, and will be automatically converted to the relevant internal value.
-            // This is an advanced mechanism that directly controls an entity's data, with no verification/limitations on what's being set (other than basic type checking).
             // You should almost always prefer using the appropriate mechanism/property instead of this, other than very specific special cases.
-            // See <@link url https://github.com/DenizenScript/Denizen/blob/dev/v1_20/src/main/java/com/denizenscript/denizen/nms/v1_20/helpers/EntityDataNameMapper.java#L50> for all the available names (and their respective ids),
-            // And <@link url https://wiki.vg/Entity_metadata> for a documentation of what each id is.
-            // (note that it documents the values that eventually get sent to the client, so the input this expects might be slightly different in some cases).
+            // See <@link language Internal Entity Data> for more information on the input.
             // -->
             tagProcessor.registerMechanism("internal_data", false, MapTag.class, (object, mechanism, input) -> {
-                Map<Integer, ObjectTag> internalData = new HashMap<>(input.size());
-                for (Map.Entry<StringHolder, ObjectTag> entry : input.entrySet()) {
-                    int id = NMSHandler.entityHelper.mapInternalEntityDataName(object.getBukkitEntity(), entry.getKey().low);
-                    if (id == -1) {
-                        mechanism.echoError("Invalid internal data key: " + entry.getKey());
-                        continue;
-                    }
-                    internalData.put(id, entry.getValue());
-                }
-                NMSHandler.entityHelper.modifyInternalEntityData(object.getBukkitEntity(), internalData);
+                NMSHandler.entityHelper.modifyInternalEntityData(object.getBukkitEntity(), input);
             });
         }
     }
