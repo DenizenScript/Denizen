@@ -100,6 +100,10 @@ public class FakeInternalDataCommand extends AbstractCommand {
             throw new InvalidArgumentsRuntimeException("Must specify players to fake the internal data for.");
         }
         Entity entity = inputEntity.getBukkitEntity();
+        if (data.size() == 1) {
+            NMSHandler.packetHelper.sendEntityDataPacket(sendTo, entity, NMSHandler.entityHelper.convertInternalEntityDataValues(entity, data.get(0)));
+            return;
+        }
         List<List<Object>> frames = new ArrayList<>(data.size());
         for (MapTag frame : data) {
             frames.add(NMSHandler.entityHelper.convertInternalEntityDataValues(entity, frame));
