@@ -23,6 +23,7 @@ import com.denizenscript.denizencore.utilities.data.DataAction;
 import com.denizenscript.denizencore.utilities.data.DataActionHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -195,7 +196,13 @@ public class InventoryCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("destination")
                     && arg.matchesPrefix("destination", "dest", "d", "target", "to", "t")
                     && arg.matchesArgumentTypes(InventoryTag.class, EntityTag.class, LocationTag.class)) {
-                scriptEntry.addObject("destination", Conversion.getInventory(arg, scriptEntry));
+                if (arg.matchesArgumentType(EntityTag.class)) {
+                    // MAKES SURE THIS STILL WORKS WITH OTHER ENTITIES
+                    scriptEntry.addObject("destinationEntity", arg.object);
+                }
+                else {
+                    scriptEntry.addObject("destination", Conversion.getInventory(arg, scriptEntry));
+                }
             }
             else if (!scriptEntry.hasObject("slot")
                     && arg.matchesPrefix("slot", "s")) {
@@ -325,6 +332,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
         InventoryTag origin = originentry != null ? originentry.getValue() : null;
         AbstractMap.SimpleEntry<Integer, InventoryTag> destinationentry = (AbstractMap.SimpleEntry<Integer, InventoryTag>) scriptEntry.getObject("destination");
         InventoryTag destination = destinationentry.getValue();
+        EntityTag destinationEntity = scriptEntry.getObjectTag("destinationEntity");
         ElementTag slot = scriptEntry.getElement("slot");
         ElementTag mechanism = scriptEntry.getElement("mechanism");
         ObjectTag mechanismValue = scriptEntry.getObjectTag("mechanism_value");
@@ -355,6 +363,10 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                     // Use special method to make opening workbenches and anvils work properly
                     if ((destination.getInventoryType() == InventoryType.WORKBENCH || (destination.getInventoryType() == InventoryType.ANVIL && Denizen.supportsPaper)) && destination.getInventory().getLocation() == null) {
                         doSpecialOpen(destination.getInventoryType(), player.getPlayerEntity(), destination);
+                    }
+                    else if (destinationEntity.getBukkitEntity() instanceof AbstractHorse) {
+                        Debug.log("horse");
+                        NMSHandler.entityHelper.openHorseInventory(player, destinationEntity);
                     }
                     // Otherwise, open inventory as usual
                     else {

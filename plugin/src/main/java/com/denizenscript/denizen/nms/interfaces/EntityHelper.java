@@ -3,6 +3,7 @@ package com.denizenscript.denizen.nms.interfaces;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import org.bukkit.Bukkit;
@@ -457,4 +458,6 @@ public abstract class EntityHelper {
     public void modifyInternalEntityData(Entity entity, MapTag internalData) {
         throw new UnsupportedOperationException();
     }
+
+    public abstract void openHorseInventory(PlayerTag player, EntityTag horse);
 }
