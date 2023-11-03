@@ -55,7 +55,7 @@ public class FakeInternalDataCommand extends AbstractCommand {
     // Sends fake internal entity data updates, optionally sending multiple over time.
     // This supports sub-tick precision, allowing smooth/high FPS animations.
     //
-    // The input to 'data:' is a list of <@link object MapTag>s, with each map being a frame to send; see <@link language Internal Entity Data> for more information.
+    // The input to 'data:' is a list of <@link ObjectType MapTag>s, with each map being a frame to send; see <@link language Internal Entity Data> for more information.
     //
     // Optionally specify a list of players to fake the data for, defaults to the linked player.
     //
