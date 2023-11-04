@@ -74,6 +74,7 @@ import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R2.util.CraftLocation;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
@@ -844,5 +845,15 @@ public class EntityHelperImpl extends EntityHelper {
     public void modifyInternalEntityData(Entity entity, MapTag internalData) {
         SynchedEntityData nmsEntityData = ((CraftEntity) entity).getHandle().getEntityData();
         convertToInternalData(entity, internalData, (dataItem, converted) -> nmsEntityData.set(dataItem.getAccessor(), converted));
+    }
+
+    @Override
+    public void startUsingItem(LivingEntity entity, EquipmentSlot hand) {
+        ((CraftLivingEntity) entity).getHandle().startUsingItem(hand == EquipmentSlot.HAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
+    }
+
+    @Override
+    public void stopUsingItem(LivingEntity entity) {
+        ((CraftLivingEntity) entity).getHandle().stopUsingItem();
     }
 }
