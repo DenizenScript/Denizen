@@ -48,10 +48,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Merchant;
+import org.bukkit.inventory.*;
 import org.bukkit.loot.LootTable;
 import org.bukkit.loot.Lootable;
 import org.bukkit.potion.PotionEffect;
@@ -2981,6 +2978,51 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+
+            // <--[mechanism]
+            // @object EntityTag
+            // @name start_using_hand
+            // @input None
+            // @description
+            // Forces an entity to start using its main hand.
+            // -->
+            tagProcessor.registerMechanism("start_using_hand", false, (object, mechanism) -> {
+                if (!object.isLivingEntity()) {
+                    mechanism.echoError("The 'start_using_hand' mechanism only works for living entities!");
+                    return;
+                }
+                NMSHandler.entityHelper.startUsingItem(object.getLivingEntity(), EquipmentSlot.HAND);
+            });
+
+            // <--[mechanism]
+            // @object EntityTag
+            // @name start_using_offhand
+            // @input None
+            // @description
+            // Forces an entity to start using its offhand.
+            // -->
+            tagProcessor.registerMechanism("start_using_offhand", false, (object, mechanism) -> {
+                if (!object.isLivingEntity()) {
+                    mechanism.echoError("The 'start_using_offhand' mechanism only works for living entities!");
+                    return;
+                }
+                NMSHandler.entityHelper.startUsingItem(object.getLivingEntity(), EquipmentSlot.OFF_HAND);
+            });
+
+            // <--[mechanism]
+            // @object EntityTag
+            // @name stop_using_hand
+            // @input None
+            // @description
+            // Forces an entity to stop using either hand.
+            // -->
+            tagProcessor.registerMechanism("stop_using_hand", false, (object, mechanism) -> {
+                if (!object.isLivingEntity()) {
+                    mechanism.echoError("The 'stop_using_hand' mechanism only works for living entities!");
+                    return;
+                }
+                NMSHandler.entityHelper.stopUsingItem(object.getLivingEntity());
+            });
 
             // <--[mechanism]
             // @object EntityTag
