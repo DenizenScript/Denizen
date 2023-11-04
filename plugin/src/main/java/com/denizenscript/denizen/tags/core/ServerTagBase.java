@@ -26,7 +26,10 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
 import com.denizenscript.denizencore.scripts.commands.core.SQLCommand;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.tags.*;
+import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.PseudoObjectTagBase;
+import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.tags.core.UtilTagBase;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -277,8 +280,19 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 addChoice.accept(smithingRecipe.getAddition());
             }
             else if (brewingRecipe != null) {
-                addChoice.accept(brewingRecipe.ingredient());
-                addChoice.accept(brewingRecipe.input());
+                if (brewingRecipe.ingredient() != null) {
+                    addChoice.accept(brewingRecipe.ingredient());
+                }
+                else {
+                    recipeItems.addObject(new ElementTag(PaperAPITools.instance.getBrewingRecipeIngredient(recipeKey), true));
+                }
+                if (brewingRecipe.input() != null) {
+                    addChoice.accept(brewingRecipe.input());
+                }
+                else {
+                    recipeItems.addObject(new ElementTag(PaperAPITools.instance.getBrewingRecipeInput(recipeKey), true));
+                }
+
             }
             return recipeItems;
         });
