@@ -38,6 +38,7 @@ public class BanCommand extends AbstractCommand {
     //
     // @Description
     // Add or remove player or ip address bans from the server. Banning a player will also kick them from the server.
+    // You may specify a list of player names instead of <@link ObjectType PlayerTag>s, which should only ever be used for special cases (such as banning players that haven't joined the server yet).
     //
     // You may optionally specify both a list of players and list of addresses.
     //
