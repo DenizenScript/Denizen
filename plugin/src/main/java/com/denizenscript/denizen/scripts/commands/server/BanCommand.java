@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.Date;
 import java.util.List;
@@ -19,7 +20,7 @@ public class BanCommand extends AbstractCommand {
 
     public BanCommand() {
         setName("ban");
-        setSyntax("ban ({add}/remove) [<player>|.../addresses:<address>|...] (reason:<text>) (expire:<time>) (source:<text>)");
+        setSyntax("ban ({add}/remove) [<player>|.../addresses:<address>|.../names:<name>|...] (reason:<text>) (expire:<time>) (source:<text>)");
         setRequiredArguments(1, 5);
         isProcedural = false;
         autoCompile();
@@ -29,7 +30,7 @@ public class BanCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Ban
-    // @Syntax ban ({add}/remove) [<player>|.../addresses:<address>|...] (reason:<text>) (expire:<time>) (source:<text>)
+    // @Syntax ban ({add}/remove) [<player>|.../addresses:<address>|.../names:<name>|...] (reason:<text>) (expire:<time>) (source:<text>)
     // @Required 1
     // @Maximum 5
     // @Short Ban or un-ban players or ip addresses.
@@ -41,9 +42,9 @@ public class BanCommand extends AbstractCommand {
     // You may optionally specify both a list of players and list of addresses.
     //
     // Additional options are:
-    // reason: Sets the ban reason. Defaults to "Banned.".
+    // reason: Sets the ban reason.
     // expire: Sets the expire time of the temporary ban, as a TimeTag or a DurationTag. This will be a permanent ban if not specified.
-    // source: Sets the source of the ban. Defaults to "(Unknown)".
+    // source: Sets the source of the ban.
     //
     // @Tags
     // <PlayerTag.is_banned>
@@ -92,19 +93,18 @@ public class BanCommand extends AbstractCommand {
     // - ban remove addresses:127.0.0.1
     // -->
 
-    public enum Actions {
-        ADD, REMOVE
-    }
+    public enum Actions { ADD, REMOVE }
 
-    public static void execute(ScriptEntry scriptEntry,
+    public static void autoExecute(ScriptEntry scriptEntry,
                                @ArgName("action") @ArgDefaultText("add") Actions action,
                                @ArgName("targets") @ArgLinear @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> targets,
                                @ArgName("addresses") @ArgPrefixed @ArgDefaultNull ListTag addresses,
-                               @ArgName("reason") @ArgPrefixed @ArgDefaultText("Banned.") String reason,
+                               @ArgName("names") @ArgPrefixed @ArgDefaultNull ListTag names,
+                               @ArgName("reason") @ArgPrefixed @ArgDefaultNull String reason,
                                @ArgName("expire") @ArgPrefixed @ArgDefaultNull ObjectTag rawExpire,
-                               @ArgName("source") @ArgPrefixed @ArgDefaultText("(Unknown)") String source) {
-        if ((targets == null || targets.isEmpty()) && (addresses == null || addresses.isEmpty())) {
-            throw new InvalidArgumentsRuntimeException("Must specify valid players or addresses to ban.");
+                               @ArgName("source") @ArgPrefixed @ArgDefaultNull String source) {
+        if ((targets == null || targets.isEmpty()) && (addresses == null || addresses.isEmpty()) && (names == null || names.isEmpty())) {
+            throw new InvalidArgumentsRuntimeException("Must specify valid players, addresses or names to ban.");
         }
         Date expiration = null;
         if (rawExpire != null) {
@@ -139,6 +139,15 @@ public class BanCommand extends AbstractCommand {
                         Bukkit.getBanList(BanList.Type.IP).addBan(address, reason, expiration, source);
                     }
                 }
+                if (names != null) {
+                    for (String name : names) {
+                        Bukkit.getBanList(BanList.Type.NAME).addBan(name, reason, expiration, source);
+                        Player player = Bukkit.getPlayerExact(name);
+                        if (player != null) {
+                            player.kickPlayer(reason);
+                        }
+                    }
+                }
             }
             case REMOVE -> {
                 if (targets != null) {
@@ -151,9 +160,10 @@ public class BanCommand extends AbstractCommand {
                     }
                 }
                 if (addresses != null) {
-                    for (String address : addresses) {
-                        Bukkit.getBanList(BanList.Type.IP).pardon(address);
-                    }
+                    addresses.forEach(Bukkit.getBanList(BanList.Type.IP)::pardon);
+                }
+                if (names != null) {
+                    names.forEach(Bukkit.getBanList(BanList.Type.NAME)::pardon);
                 }
             }
         }
