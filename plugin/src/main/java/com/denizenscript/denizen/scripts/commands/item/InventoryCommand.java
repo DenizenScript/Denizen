@@ -188,10 +188,10 @@ public class InventoryCommand extends AbstractCommand implements Listener {
         }
     }
 
-    static public Player currentAltPlayer;
-    static public Location currentAltLocation;
-    static public String currentAltTitle, currentAltType;
-    static public ObjectTag currentAltHolder;
+    public static Player currentAltPlayer;
+    public static Location currentAltLocation;
+    public static String currentAltTitle, currentAltType;
+    public static ObjectTag currentAltHolder;
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onOpen(InventoryOpenEvent event) {
