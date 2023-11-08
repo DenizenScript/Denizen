@@ -189,6 +189,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //        7:
     //            # Brewing recipes take one base item and one ingredient item.
     //            # | Brewing recipes are only available on Paper versions 1.18 and up.
+    //            # | Brewing recipes also have a special input option on 1.20 and above: "matcher:<item matcher>", to allow advanced matchers on the input/ingredient items.
     //            type: brewing
     //            input: ItemTag
     //            ingredient: ItemTag

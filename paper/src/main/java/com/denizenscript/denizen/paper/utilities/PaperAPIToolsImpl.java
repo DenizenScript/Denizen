@@ -232,14 +232,12 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public String getBrewingRecipeInput(NamespacedKey recipeId) {
-        BrewingRecipeWithMatchers brewing = potionMixes.get(recipeId);
-        return brewing != null ? brewing.inputMatcher() : null;
+        return potionMixes.get(recipeId).inputMatcher();
     }
 
     @Override
     public String getBrewingRecipeIngredient(NamespacedKey recipeId) {
-        BrewingRecipeWithMatchers brewing = potionMixes.get(recipeId);
-        return brewing != null ? brewing.ingredientMatcher() : null;
+        return potionMixes.get(recipeId).ingredientMatcher();
     }
 
     @Override

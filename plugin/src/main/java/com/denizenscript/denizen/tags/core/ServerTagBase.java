@@ -231,6 +231,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // This is formatted equivalently to the item script recipe input, with "material:" for non-exact matches, and a full ItemTag for exact matches.
         // Note that this won't represent all recipes perfectly (primarily those with multiple input choices per slot).
         // Brewing recipes are only supported on Paper, and only custom ones are available.
+        // Also for brewing recipes, currently "matcher:<item matcher>" input options in recipes added by other plugins are not supported.
         // For furnace-style and stonecutting recipes, this will return a list with only 1 item.
         // For shaped recipes, this will include 'air' for slots that are part of the shape but don't require an item.
         // For smithing recipes, this will return a list with the 'base' item and the 'addition'.
