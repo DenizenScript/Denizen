@@ -17,6 +17,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
@@ -456,6 +457,14 @@ public abstract class EntityHelper {
     }
 
     public void modifyInternalEntityData(Entity entity, MapTag internalData) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void startUsingItem(LivingEntity entity, EquipmentSlot hand) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void stopUsingItem(LivingEntity entity) {
         throw new UnsupportedOperationException();
     }
 
