@@ -160,8 +160,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         }
         entity.teleport(loc, cause, teleportFlags.toArray(new TeleportFlag[0]));
     }
-
-
+    
     record BrewingRecipeWithMatchers(PotionMix potionMix, String inputMatcher, String ingredientMatcher) {}
     public static final Map<NamespacedKey, BrewingRecipeWithMatchers> potionMixes = new HashMap<>();
 
