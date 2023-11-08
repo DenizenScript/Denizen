@@ -285,13 +285,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                     addChoice.accept(brewingRecipe.ingredient());
                 }
                 else {
-                    recipeItems.addObject(new ElementTag(PaperAPITools.instance.getBrewingRecipeIngredient(recipeKey), true));
+                    recipeItems.addObject(new ElementTag(PaperAPITools.instance.getBrewingRecipeIngredientMatcher(recipeKey), true));
                 }
                 if (brewingRecipe.input() != null) {
                     addChoice.accept(brewingRecipe.input());
                 }
                 else {
-                    recipeItems.addObject(new ElementTag(PaperAPITools.instance.getBrewingRecipeInput(recipeKey), true));
+                    recipeItems.addObject(new ElementTag(PaperAPITools.instance.getBrewingRecipeInputMatcher(recipeKey), true));
                 }
 
             }
