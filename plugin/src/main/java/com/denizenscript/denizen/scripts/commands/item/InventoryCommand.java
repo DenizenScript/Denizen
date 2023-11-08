@@ -252,28 +252,25 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                                    @ArgName("slot") @ArgPrefixed @ArgDefaultNull String slot,
                                    @ArgName("expiration") @ArgPrefixed @ArgDefaultNull ObjectTag expiration,
                                    @ArgName("data_action") @ArgRaw @ArgLinear @ArgDefaultNull String dataAction) {
-        if (actions.contains(Action.ADJUST) && slot == null) {
-            Debug.echoError("Inventory adjust must have an explicit slot!");
-        }
-        else {
-            slot = "1";
+        if (slot == null) {
+            if (actions.contains(Action.ADJUST)) {
+                Debug.echoError("Inventory adjust must have an explicit slot!");
+            }
+            else {
+                slot = "1";
+            }
         }
         TimeTag expire = null;
-        if (actions.contains(Action.FLAG)) {
-            if (expiration != null) {
-                if (expiration instanceof DurationTag duration) {
-                    TimeTag now = TimeTag.now();
-                    expire = new TimeTag(now.millis() + duration.getMillis(), now.instant.getZone());
-                }
-                else if (expiration instanceof TimeTag time) {
-                    expire = time;
-                }
-                else {
-                    Debug.echoError("Flag expiration is not a DurationTag or TimeTag!");
-                }
+        if (actions.contains(Action.FLAG) && expiration != null) {
+            if (expiration instanceof DurationTag duration) {
+                TimeTag now = TimeTag.now();
+                expire = new TimeTag(now.millis() + duration.getMillis(), now.instant.getZone());
             }
-            if (dataAction == null) {
-                Debug.echoError("Inventory flag must have a flag action!");
+            else if (expiration instanceof TimeTag time) {
+                expire = time;
+            }
+            else {
+                Debug.echoError("Flag expiration is not a DurationTag or TimeTag!");
             }
         }
         AbstractMap.SimpleEntry<Integer, InventoryTag> originEntry = originString != null ? Conversion.getInventory(new Argument(originString), scriptEntry) : null;
@@ -358,7 +355,6 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                     }
                     destination.setSlots(slotId, origin.getContents(), originEntry.getKey());
                     break;
-
                 // Keep only items from the origin's contents in the destination
                 case KEEP: {
                     if (origin == null) {
@@ -439,6 +435,9 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                     NMSHandler.itemHelper.setInventoryItem(destination.getInventory(), toAdjust.getItemStack(), slotId);
                     break;
                 case FLAG:
+                    if (dataAction == null) {
+                        Debug.echoError("Inventory flag must have a flag action!");
+                    }
                     ItemTag toFlag = new ItemTag(destination.getInventory().getItem(slotId));
                     Argument flagArgument = new Argument(dataAction);
                     DataAction flagAction = DataActionHelper.parse(new FlagCommand.FlagActionProvider(), flagArgument, scriptEntry.context);
