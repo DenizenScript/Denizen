@@ -262,12 +262,12 @@ public class InventoryCommand extends AbstractCommand implements Listener {
         }
         TimeTag expire = null;
         if (actions.contains(Action.FLAG) && expiration != null) {
-            if (expiration instanceof DurationTag duration) {
+            if (expiration.canBeType(DurationTag.class)) {
                 TimeTag now = TimeTag.now();
-                expire = new TimeTag(now.millis() + duration.getMillis(), now.instant.getZone());
+                expire = new TimeTag(now.millis() + expiration.asType(DurationTag.class, scriptEntry.context).getMillis(), now.instant.getZone());
             }
-            else if (expiration instanceof TimeTag time) {
-                expire = time;
+            else if (expiration.canBeType(TimeTag.class)) {
+                expire = expiration.asType(TimeTag.class, scriptEntry.context);
             }
             else {
                 Debug.echoError("Flag expiration is not a DurationTag or TimeTag!");
