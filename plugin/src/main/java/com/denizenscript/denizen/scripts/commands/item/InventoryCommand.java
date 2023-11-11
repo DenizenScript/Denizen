@@ -255,7 +255,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                                    @ArgName("data_action") @ArgRaw @ArgLinear @ArgDefaultNull String dataAction) {
         if (slot == null) {
             if (actions.contains(Action.ADJUST)) {
-                Debug.echoError("Inventory adjust must have an explicit slot!");
+                throw new InvalidArgumentsRuntimeException("Inventory adjust must have an explicit slot!");
             }
             else {
                 slot = "1";
@@ -271,7 +271,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                 expire = expiration.asType(TimeTag.class, scriptEntry.context);
             }
             else {
-                Debug.echoError("Flag expiration is not a DurationTag or TimeTag!");
+                throw new InvalidArgumentsRuntimeException("Flag expiration is not a DurationTag or TimeTag!");
             }
         }
         AbstractMap.SimpleEntry<Integer, InventoryTag> originEntry = originString != null ? Conversion.getInventory(new Argument(originString), scriptEntry) : null;
@@ -279,7 +279,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
         if (destinationEntry == null) {
             InventoryTag inv = Utilities.getEntryPlayer(scriptEntry).getInventory();
             if (inv == null) {
-                Debug.echoError("Must specify a Destination Inventory!");
+                throw new InvalidArgumentsRuntimeException("Must specify a Destination Inventory!");
             }
             destinationEntry = new AbstractMap.SimpleEntry<>(0, inv);
         }
@@ -288,12 +288,11 @@ public class InventoryCommand extends AbstractCommand implements Listener {
         int slotId = SlotHelper.nameToIndexFor(slot, destination.getInventory().getHolder());
         if (slotId < 0) {
             if (slotId == -1) {
-                Debug.echoError(scriptEntry, "The input '" + slot + "' is not a valid slot (unrecognized)!");
+                throw new InvalidArgumentsRuntimeException("The input '" + slot + "' is not a valid slot (unrecognized)!");
             }
             else {
-                Debug.echoError(scriptEntry, "The input '" + slot + "' is not a valid slot (negative values are invalid)!");
+                throw new InvalidArgumentsRuntimeException("The input '" + slot + "' is not a valid slot (negative values are invalid)!");
             }
-            return;
         }
         InventoryTag.trackTemporaryInventory(destination);
         if (origin != null) {
@@ -324,16 +323,14 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                 // Turn destination's contents into a copy of origin's
                 case COPY:
                     if (origin == null) {
-                        Debug.echoError(scriptEntry, "Missing origin argument!");
-                        return;
+                        throw new InvalidArgumentsRuntimeException("Missing origin argument!");
                     }
                     replace(origin, destination);
                     break;
                 // Copy origin's contents to destination, then empty origin
                 case MOVE:
                     if (origin == null) {
-                        Debug.echoError(scriptEntry, "Missing origin argument!");
-                        return;
+                        throw new InvalidArgumentsRuntimeException("Missing origin argument!");
                     }
                     replace(origin, destination);
                     origin.clear();
@@ -341,8 +338,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                 // Swap the contents of the two inventories
                 case SWAP:
                     if (origin == null) {
-                        Debug.echoError(scriptEntry, "Missing origin argument!");
-                        return;
+                        throw new InvalidArgumentsRuntimeException("Missing origin argument!");
                     }
                     InventoryTag temp = new InventoryTag(destination.getInventory().getContents());
                     replace(origin, destination);
@@ -351,16 +347,14 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                 // Set items by slot
                 case SET:
                     if (origin == null) {
-                        Debug.echoError(scriptEntry, "Missing origin argument!");
-                        return;
+                        throw new InvalidArgumentsRuntimeException("Missing origin argument!");
                     }
                     destination.setSlots(slotId, origin.getContents(), originEntry.getKey());
                     break;
                 // Keep only items from the origin's contents in the destination
                 case KEEP: {
                     if (origin == null) {
-                        Debug.echoError(scriptEntry, "Missing origin argument!");
-                        return;
+                        throw new InvalidArgumentsRuntimeException("Missing origin argument!");
                     }
                     ItemStack[] items = origin.getContents();
                     for (ItemStack invStack : destination.getInventory()) {
@@ -387,8 +381,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                 // Exclude all items from the origin's contents in the destination
                 case EXCLUDE: {
                     if (origin == null) {
-                        Debug.echoError(scriptEntry, "Missing origin argument!");
-                        return;
+                        throw new InvalidArgumentsRuntimeException("Missing origin argument!");
                     }
                     int oldCount = destination.count(null, false);
                     int newCount = -1;
@@ -402,8 +395,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                 // Add origin's contents over and over to destination until it is full
                 case FILL: {
                     if (origin == null) {
-                        Debug.echoError(scriptEntry, "Missing origin argument!");
-                        return;
+                        throw new InvalidArgumentsRuntimeException("Missing origin argument!");
                     }
                     int oldCount = destination.count(null, false);
                     int newCount = -1;
@@ -423,7 +415,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                         ((PlayerTag) destination.idHolder).getPlayerEntity().updateInventory();
                     }
                     else {
-                        Debug.echoError("Only player inventories can be force-updated!");
+                        throw new InvalidArgumentsRuntimeException("Only player inventories can be force-updated!");
                     }
                     break;
                 case ADJUST:
