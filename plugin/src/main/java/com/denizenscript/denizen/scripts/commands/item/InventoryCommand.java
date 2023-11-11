@@ -8,6 +8,7 @@ import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.inventory.InventoryTrackerSystem;
@@ -308,8 +309,8 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                         doSpecialOpen(destination.getInventoryType(), player.getPlayerEntity(), destination);
                     }
                     // Also check if the holder is a horse to do special NMS inventory open
-                    else if (destination.getIdHolder() instanceof EntityTag entity && entity.getLivingEntity() instanceof AbstractHorse) {
-                        NMSHandler.entityHelper.openHorseInventory(player, entity);
+                    else if (destination.getIdHolder() instanceof EntityTag entity && entity.getLivingEntity() instanceof AbstractHorse horse) {
+                        NMSHandler.entityHelper.openHorseInventory(player.getPlayerEntity(), horse);
                     }
                     // Otherwise, open inventory as usual
                     else {
@@ -427,7 +428,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                     break;
                 case ADJUST:
                     if (dataAction == null) {
-                        Debug.echoError("Inventory adjust must have a mechanism!");
+                        throw new InvalidArgumentsRuntimeException("Inventory adjust must have a mechanism!");
                     }
                     ItemTag toAdjust = new ItemTag(destination.getInventory().getItem(slotId));
                     Argument mechanismArgument = new Argument(dataAction);
@@ -436,7 +437,7 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                     break;
                 case FLAG:
                     if (dataAction == null) {
-                        Debug.echoError("Inventory flag must have a flag action!");
+                        throw new InvalidArgumentsRuntimeException("Inventory flag must have a flag action!");
                     }
                     ItemTag toFlag = new ItemTag(destination.getInventory().getItem(slotId));
                     Argument flagArgument = new Argument(dataAction);

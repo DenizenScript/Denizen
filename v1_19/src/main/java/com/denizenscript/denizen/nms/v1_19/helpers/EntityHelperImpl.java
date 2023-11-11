@@ -8,7 +8,6 @@ import com.denizenscript.denizen.nms.v1_19.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_19.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -40,7 +39,6 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.EnderMan;
@@ -834,8 +832,8 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void openHorseInventory(PlayerTag player, EntityTag horse) {
-        Horse craftHorse = ((CraftHorse) horse.entity).getHandle();
-        ((CraftPlayer) player.getPlayerEntity()).getHandle().openHorseInventory(craftHorse, craftHorse.inventory);
+    public void openHorseInventory(Player player, AbstractHorse horse) {
+        net.minecraft.world.entity.animal.horse.AbstractHorse nmsHorse = ((CraftAbstractHorse) horse).getHandle();
+        ((CraftPlayer) player).getHandle().openHorseInventory(nmsHorse, nmsHorse.inventory);
     }
 }
