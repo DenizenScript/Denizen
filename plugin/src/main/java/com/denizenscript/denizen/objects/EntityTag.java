@@ -2888,24 +2888,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return new ElementTag(humanEntity.isHandRaised());
         });
 
-        // <--[tag]
-        // @attribute <EntityTag.bookshelf_slot>
-        // @returns ElementTag(Number)
-        // @description
-        // Returns the Chiseled Bookshelf slot that the entity is looking at, if any.
-        // See also <@link tag LocationTag.slot>
-        // -->
-        registerSpawnedOnlyTag(ElementTag.class, "bookshelf_slot", (attribute, object) -> {
-            RayTraceResult result = object.getLivingEntity().rayTraceBlocks(4.5);
-            if (result == null || result.getHitBlock().getType() != Material.CHISELED_BOOKSHELF) {
-                attribute.echoError("'EntityTag.bookshelf_slot' requires the entity to look at a Chiseled Bookshelf block.");
-                return null;
-            }
-            ChiseledBookshelf bookshelfState = (ChiseledBookshelf) result.getHitBlock().getState();
-            Vector vector = result.getHitPosition().subtract(result.getHitBlock().getLocation().toVector());
-            return new ElementTag(bookshelfState.getSlot(vector) + 1);
-        });
-
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
 
             // <--[tag]
@@ -3033,6 +3015,24 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     internalData.put(id, entry.getValue());
                 }
                 NMSHandler.entityHelper.modifyInternalEntityData(object.getBukkitEntity(), internalData);
+            });
+
+            // <--[tag]
+            // @attribute <EntityTag.bookshelf_slot>
+            // @returns ElementTag(Number)
+            // @description
+            // Returns the Chiseled Bookshelf slot that the entity is looking at, if any.
+            // See also <@link tag LocationTag.slot>
+            // -->
+            registerSpawnedOnlyTag(ElementTag.class, "bookshelf_slot", (attribute, object) -> {
+                RayTraceResult result = object.getLivingEntity().rayTraceBlocks(4.5);
+                if (result == null || result.getHitBlock().getType() != Material.CHISELED_BOOKSHELF) {
+                    attribute.echoError("'EntityTag.bookshelf_slot' requires the entity to look at a Chiseled Bookshelf block.");
+                    return null;
+                }
+                ChiseledBookshelf bookshelfState = (ChiseledBookshelf) result.getHitBlock().getState();
+                Vector vector = result.getHitPosition().subtract(result.getHitBlock().getLocation().toVector());
+                return new ElementTag(bookshelfState.getSlot(vector) + 1);
             });
         }
     }
