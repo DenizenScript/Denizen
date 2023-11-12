@@ -2892,15 +2892,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @attribute <EntityTag.bookshelf_slot>
         // @returns ElementTag(Number)
         // @description
-        // Returns the Chiseled Bookshelf slot that the entity is looking at.
+        // Returns the Chiseled Bookshelf slot that the entity is looking at, if any.
+        // See also <@link tag LocationTag.slot>
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "bookshelf_slot", (attribute, object) -> {
             RayTraceResult result = object.getLivingEntity().rayTraceBlocks(4.5);
-            if (result == null || !(result.getHitBlock().getType() == Material.CHISELED_BOOKSHELF)) {
+            if (result == null || result.getHitBlock().getType() != Material.CHISELED_BOOKSHELF) {
                 attribute.echoError("'EntityTag.bookshelf_slot' requires the entity to look at a Chiseled Bookshelf block.");
                 return null;
             }
-            org.bukkit.block.ChiseledBookshelf bookshelfState = (org.bukkit.block.ChiseledBookshelf) result.getHitBlock().getState();
+            ChiseledBookshelf bookshelfState = (ChiseledBookshelf) result.getHitBlock().getState();
             Vector vector = result.getHitPosition().subtract(result.getHitBlock().getLocation().toVector());
             return new ElementTag(bookshelfState.getSlot(vector) + 1);
         });

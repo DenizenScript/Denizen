@@ -55,6 +55,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.bukkit.util.*;
 
+import javax.swing.text.Element;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -4086,19 +4087,18 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // Returns the last interacted slot of a Chiseled Bookshelf inventory.
         // -->
         tagProcessor.registerTag(ElementTag.class, "last_interacted_slot", (attribute, object) -> {
-            BlockState state = object.getBlockStateForTag(attribute);
-            if (!(state instanceof ChiseledBookshelf)) {
+            if (!(object.getBlockStateForTag(attribute) instanceof ChiseledBookshelf chiseledBookshelf)) {
                 return null;
             }
-            return new ElementTag(((ChiseledBookshelf) object.getBlockState()).getLastInteractedSlot() + 1);
+            return new ElementTag(chiseledBookshelf.getLastInteractedSlot() + 1);
         });
 
         // <--[tag]
         // @attribute <LocationTag.slot[<vector>]>
         // @returns ElementTag(Number)
         // @description
-        // Returns the appropriate slot based on a vector relative to this block.
-        // It will return -1 if the given vector is not within the bounds of any slot.
+        // Returns the appropriate slot based on a given point along the bookshelves' surface relative to its position.
+        // It will return 0 if the given vector is not within the bounds of any slot.
         // @Example
         // # Obtain and narrate the slot that the player right-clicked.
         // on player right clicks chiseled_bookshelf:
@@ -4106,12 +4106,11 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // - narrate <context.location.slot[<[slot]>]>
         // See also <@link tag EntityTag.bookshelf_slot>
         // -->
-        tagProcessor.registerTag(ElementTag.class, "slot", (attribute, object) -> {
-            BlockState state = object.getBlockStateForTag(attribute);
-            if (!(state instanceof ChiseledBookshelf)) {
+        tagProcessor.registerTag(ElementTag.class, LocationTag.class, "slot", (attribute, object, input) -> {
+            if (!(object.getBlockStateForTag(attribute) instanceof ChiseledBookshelf chiseledBookshelf)) {
                 return null;
             }
-            return new ElementTag(((ChiseledBookshelf) object.getBlockState()).getSlot(attribute.paramAsType(LocationTag.class).toVector()) + 1);
+            return new ElementTag(chiseledBookshelf.getSlot(input.toVector()) + 1);
         });
 
         // <--[tag]
@@ -4456,15 +4455,15 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @description
         // Sets the last interacted slot of a Chiseled Bookshelf inventory.
         // @tags
-        // <LocationTag.last_interacted_slot
+        // <LocationTag.last_interacted_slot>
         // -->
-        tagProcessor.registerMechanism("last_interacted_slot", false, (object, mechanism) -> {
-            if (!(object.getBlockState() instanceof ChiseledBookshelf)) {
+        tagProcessor.registerMechanism("last_interacted_slot", false, ElementTag.class, (object, mechanism, input) -> {
+            if (!(object.getBlockState() instanceof ChiseledBookshelf chiseledBookshelf)) {
                 mechanism.echoError("Mechanism 'LocationTag.last_interacted_slot' is only valid for Chiseled Bookshelves.");
                 return;
             }
             if (mechanism.requireInteger()) {
-                ((ChiseledBookshelf) object.getBlockState()).setLastInteractedSlot(mechanism.getValue().asInt() + 1);
+                chiseledBookshelf.setLastInteractedSlot(input.asInt() - 1);
             }
         });
     }
