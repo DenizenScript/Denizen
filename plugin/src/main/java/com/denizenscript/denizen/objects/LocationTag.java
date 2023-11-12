@@ -55,7 +55,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.bukkit.util.*;
 
-import javax.swing.text.Element;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
