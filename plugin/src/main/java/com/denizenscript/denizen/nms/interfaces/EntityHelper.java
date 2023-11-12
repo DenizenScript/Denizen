@@ -466,4 +466,6 @@ public abstract class EntityHelper {
     public void stopUsingItem(LivingEntity entity) {
         throw new UnsupportedOperationException();
     }
+
+    public abstract void openHorseInventory(Player player, AbstractHorse horse);
 }

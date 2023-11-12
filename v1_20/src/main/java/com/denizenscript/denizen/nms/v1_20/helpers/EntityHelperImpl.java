@@ -856,4 +856,10 @@ public class EntityHelperImpl extends EntityHelper {
     public void stopUsingItem(LivingEntity entity) {
         ((CraftLivingEntity) entity).getHandle().stopUsingItem();
     }
+
+    @Override
+    public void openHorseInventory(Player player, AbstractHorse horse) {
+        net.minecraft.world.entity.animal.horse.AbstractHorse nmsHorse = ((CraftAbstractHorse) horse).getHandle();
+        ((CraftPlayer) player).getHandle().openHorseInventory(nmsHorse, nmsHorse.inventory);
+    }
 }

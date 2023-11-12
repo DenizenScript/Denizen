@@ -777,4 +777,10 @@ public class EntityHelperImpl extends EntityHelper {
     public void setAggressive(org.bukkit.entity.Mob mob, boolean aggressive) {
         ((CraftMob) mob).getHandle().setAggressive(aggressive);
     }
+
+    @Override
+    public void openHorseInventory(Player player, AbstractHorse horse) {
+        net.minecraft.world.entity.animal.horse.AbstractHorse nmsHorse = ((CraftAbstractHorse) horse).getHandle();
+        ((CraftPlayer) player).getHandle().openHorseInventory(nmsHorse, nmsHorse.inventory);
+    }
 }

@@ -830,4 +830,10 @@ public class EntityHelperImpl extends EntityHelper {
     public void setStepHeight(Entity entity, float stepHeight) {
         ((CraftEntity) entity).getHandle().setMaxUpStep(stepHeight);
     }
+
+    @Override
+    public void openHorseInventory(Player player, AbstractHorse horse) {
+        net.minecraft.world.entity.animal.horse.AbstractHorse nmsHorse = ((CraftAbstractHorse) horse).getHandle();
+        ((CraftPlayer) player).getHandle().openHorseInventory(nmsHorse, nmsHorse.inventory);
+    }
 }
