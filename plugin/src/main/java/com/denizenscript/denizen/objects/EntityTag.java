@@ -2982,31 +2982,22 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // <--[mechanism]
             // @object EntityTag
             // @name start_using_hand
-            // @input None
+            // @input ElementTag
             // @description
-            // Forces an entity to start using its main hand.
+            // Forces an entity to start using one of its hands.
+            // Input is either HAND or OFF_HAND, defaults to HAND.
             // -->
             tagProcessor.registerMechanism("start_using_hand", false, (object, mechanism) -> {
                 if (!object.isLivingEntity()) {
                     mechanism.echoError("The 'start_using_hand' mechanism only works for living entities!");
                     return;
                 }
-                NMSHandler.entityHelper.startUsingItem(object.getLivingEntity(), EquipmentSlot.HAND);
-            });
-
-            // <--[mechanism]
-            // @object EntityTag
-            // @name start_using_offhand
-            // @input None
-            // @description
-            // Forces an entity to start using its offhand.
-            // -->
-            tagProcessor.registerMechanism("start_using_offhand", false, (object, mechanism) -> {
-                if (!object.isLivingEntity()) {
-                    mechanism.echoError("The 'start_using_offhand' mechanism only works for living entities!");
+                EquipmentSlot hand = mechanism.hasValue() ? mechanism.getValue().asEnum(EquipmentSlot.class) : EquipmentSlot.HAND;
+                if (hand != EquipmentSlot.HAND && hand != EquipmentSlot.OFF_HAND) {
+                    mechanism.echoError("Invalid equipment slot '" + mechanism.getValue() + "' specified: must be HAND or OFF_HAND.");
                     return;
                 }
-                NMSHandler.entityHelper.startUsingItem(object.getLivingEntity(), EquipmentSlot.OFF_HAND);
+                NMSHandler.entityHelper.startUsingItem(object.getLivingEntity(), hand);
             });
 
             // <--[mechanism]
