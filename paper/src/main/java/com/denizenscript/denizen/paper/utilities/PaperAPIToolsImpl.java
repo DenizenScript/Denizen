@@ -3,8 +3,11 @@ package com.denizenscript.denizen.paper.utilities;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
@@ -158,18 +161,25 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         entity.teleport(loc, cause, teleportFlags.toArray(new TeleportFlag[0]));
     }
 
-    public static HashMap<NamespacedKey, PotionMix> potionMixes = new HashMap<>();
+    record BrewingRecipeWithMatchers(PotionMix potionMix, String inputMatcher, String ingredientMatcher) {}
+    public static final Map<NamespacedKey, BrewingRecipeWithMatchers> potionMixes = new HashMap<>();
 
     @Override
-    public void registerBrewingRecipe(String keyName, ItemStack result, ItemStack[] inputItem, boolean inputExact, ItemStack[] ingredientItem, boolean ingredientExact) {
+    public void registerBrewingRecipe(String keyName, ItemStack result, String input, String ingredient, ItemScriptContainer itemScriptContainer) {
         if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
             throw new UnsupportedOperationException();
         }
+        RecipeChoice inputChoice = parseBrewingRecipeChoice(itemScriptContainer, input);
+        if (inputChoice == null) {
+            return;
+        }
+        RecipeChoice ingredientChoice = parseBrewingRecipeChoice(itemScriptContainer, ingredient);
+        if (ingredientChoice == null) {
+            return;
+        }
         NamespacedKey key = new NamespacedKey(Denizen.getInstance(), keyName);
-        RecipeChoice inputChoice = itemArrayToChoice(inputItem, inputExact);
-        RecipeChoice ingredientChoice = itemArrayToChoice(ingredientItem, ingredientExact);
         PotionMix mix = new PotionMix(key, result, inputChoice, ingredientChoice);
-        potionMixes.put(key, mix);
+        potionMixes.put(key, new BrewingRecipeWithMatchers(mix, input.startsWith("matcher:") ? input : null, ingredient.startsWith("matcher:") ? ingredient : null));
         Bukkit.getPotionBrewer().addPotionMix(mix);
     }
 
@@ -185,25 +195,48 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         }
     }
 
-    public static RecipeChoice itemArrayToChoice(ItemStack[] item, boolean exact) {
-        if (exact) {
-            return new RecipeChoice.ExactChoice(item);
+    public static RecipeChoice parseBrewingRecipeChoice(ItemScriptContainer container, String choice) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && choice.startsWith("matcher:")) {
+            String matcher = choice.substring("matcher:".length());
+            return PotionMix.createPredicateChoice(item -> new ItemTag(item).tryAdvancedMatcher(matcher));
         }
-        Material[] mats = new Material[item.length];
-        for (int i = 0; i < item.length; i++) {
-            mats[i] = item[i].getType();
+        boolean exact = true;
+        if (choice.startsWith("material:")) {
+            choice = choice.substring("material:".length());
+            exact = false;
+        }
+        ItemStack[] items = ItemScriptHelper.textToItemArray(container, choice, exact);
+        if (items == null) {
+            return null;
+        }
+        if (exact) {
+            return new RecipeChoice.ExactChoice(items);
+        }
+        Material[] mats = new Material[items.length];
+        for (int i = 0; i < items.length; i++) {
+            mats[i] = items[i].getType();
         }
         return new RecipeChoice.MaterialChoice(mats);
     }
 
     @Override
     public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient) {
-        for (PotionMix mix : potionMixes.values()) {
-            if (mix.getInput().getItemStack().isSimilar(currInput) && mix.getIngredient().getItemStack().isSimilar(ingredient)) {
+        for (BrewingRecipeWithMatchers brewing : potionMixes.values()) {
+            if (brewing.potionMix().getInput().test(currInput) && brewing.potionMix().getIngredient().test(ingredient)) {
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public String getBrewingRecipeInputMatcher(NamespacedKey recipeId) {
+        return potionMixes.get(recipeId).inputMatcher();
+    }
+
+    @Override
+    public String getBrewingRecipeIngredientMatcher(NamespacedKey recipeId) {
+        return potionMixes.get(recipeId).ingredientMatcher();
     }
 
     @Override

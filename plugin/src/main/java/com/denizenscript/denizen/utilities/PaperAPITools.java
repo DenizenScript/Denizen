@@ -3,13 +3,11 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Nameable;
-import org.bukkit.RegionAccessor;
+import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -116,7 +114,7 @@ public class PaperAPITools {
         entity.teleport(loc, cause);
     }
 
-    public void registerBrewingRecipe(String keyName, ItemStack result, ItemStack[] inputItem, boolean inputExact, ItemStack[] ingredientItem, boolean ingredientExact) {
+    public void registerBrewingRecipe(String keyName, ItemStack result, String input, String ingredient, ItemScriptContainer itemScriptContainer) {
         throw new UnsupportedOperationException();
     }
 
@@ -125,6 +123,14 @@ public class PaperAPITools {
 
     public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient) {
         return false;
+    }
+
+    public String getBrewingRecipeInputMatcher(NamespacedKey recipeId) {
+        return null;
+    }
+
+    public String getBrewingRecipeIngredientMatcher(NamespacedKey recipeId) {
+        return null;
     }
 
     public String getDeathMessage(PlayerDeathEvent event) {

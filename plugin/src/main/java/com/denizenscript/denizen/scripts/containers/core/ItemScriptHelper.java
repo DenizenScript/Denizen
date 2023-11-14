@@ -1,18 +1,18 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -21,10 +21,13 @@ import com.denizenscript.denizencore.scripts.ScriptBuilder;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -274,28 +277,6 @@ public class ItemScriptHelper implements Listener {
         NMSHandler.itemHelper.registerSmithingRecipe(internalId, item, baseItems, baseExact, additionItems, additionExact, template, templateExact);
     }
 
-    public static void registerBrewingRecipe(ItemScriptContainer container, ItemStack item, String inputItemString, String ingredientItemString, String internalId) {
-        boolean inputExact = true;
-        if (inputItemString.startsWith("material:")) {
-            inputExact = false;
-            inputItemString = inputItemString.substring("material:".length());
-        }
-        ItemStack[] inputItems = textToItemArray(container, inputItemString, inputExact);
-        if (inputItems == null) {
-            return;
-        }
-        boolean ingredientExact = true;
-        if (ingredientItemString.startsWith("material:")) {
-            ingredientExact = false;
-            ingredientItemString = ingredientItemString.substring("material:".length());
-        }
-        ItemStack[] ingredientItems = textToItemArray(container, ingredientItemString, ingredientExact);
-        if (ingredientItems == null) {
-            return;
-        }
-        PaperAPITools.instance.registerBrewingRecipe(internalId, item, inputItems, inputExact, ingredientItems, ingredientExact);
-    }
-
     public static void rebuildRecipes() {
         for (ItemScriptContainer container : item_scripts.values()) {
             try {
@@ -347,7 +328,7 @@ public class ItemScriptHelper implements Listener {
                                 }
                                 registerSmithingRecipe(container, item, template, getString.apply("base"), getString.apply("upgrade"), internalId, retain);
                             }
-                            case "brewing" -> registerBrewingRecipe(container, item, getString.apply("input"), getString.apply("ingredient"), internalId);
+                            case "brewing" -> PaperAPITools.instance.registerBrewingRecipe(internalId, item, getString.apply("input"), getString.apply("ingredient"), container);
                         }
                     }
                 }

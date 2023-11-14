@@ -26,7 +26,10 @@ import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.core.AdjustCommand;
 import com.denizenscript.denizencore.scripts.commands.core.SQLCommand;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
-import com.denizenscript.denizencore.tags.*;
+import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.PseudoObjectTagBase;
+import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.tags.core.UtilTagBase;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -228,6 +231,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // This is formatted equivalently to the item script recipe input, with "material:" for non-exact matches, and a full ItemTag for exact matches.
         // Note that this won't represent all recipes perfectly (primarily those with multiple input choices per slot).
         // Brewing recipes are only supported on Paper, and only custom ones are available.
+        // For brewing recipes, currently "matcher:<item matcher>" input options are only supported in recipes added by Denizen.
         // For furnace-style and stonecutting recipes, this will return a list with only 1 item.
         // For shaped recipes, this will include 'air' for slots that are part of the shape but don't require an item.
         // For smithing recipes, this will return a list with the 'base' item and the 'addition'.
@@ -277,8 +281,18 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 addChoice.accept(smithingRecipe.getAddition());
             }
             else if (brewingRecipe != null) {
-                addChoice.accept(brewingRecipe.ingredient());
-                addChoice.accept(brewingRecipe.input());
+                if (brewingRecipe.ingredient() != null) {
+                    addChoice.accept(brewingRecipe.ingredient());
+                }
+                else {
+                    recipeItems.addObject(new ElementTag(PaperAPITools.instance.getBrewingRecipeIngredientMatcher(recipeKey), true));
+                }
+                if (brewingRecipe.input() != null) {
+                    addChoice.accept(brewingRecipe.input());
+                }
+                else {
+                    recipeItems.addObject(new ElementTag(PaperAPITools.instance.getBrewingRecipeInputMatcher(recipeKey), true));
+                }
             }
             return recipeItems;
         });
