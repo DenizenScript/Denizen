@@ -50,9 +50,7 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
             else if (getEntity() instanceof Skeleton skeleton) {
                 skeleton.setShouldBurnInDay(param.asBoolean());
             }
-            else if (getEntity() instanceof Phantom phantom) {
-                phantom.setShouldBurnInDay(param.asBoolean());
-            }
+            as(Phantom.class).setShouldBurnInDay(param.asBoolean());
         }
     }
 
