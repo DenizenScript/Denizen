@@ -10,7 +10,7 @@ public class EntityArrowPierceLevel extends EntityProperty<ElementTag> {
     // <--[property]
     // @object EntityTag
     // @name pierce_level
-    // @input ElementTag(Decimal)
+    // @input ElementTag(Number)
     // @description
     // Controls the number of times this arrow can pierce through an entity. Must be between 0 and 127 times.
     // -->
@@ -26,7 +26,7 @@ public class EntityArrowPierceLevel extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        if (mechanism.requireDouble()) {
+        if (mechanism.requireInteger()) {
             as(AbstractArrow.class).setPierceLevel(value.asInt());
         }
     }
