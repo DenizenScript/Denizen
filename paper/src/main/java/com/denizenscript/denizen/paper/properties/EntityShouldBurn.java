@@ -33,7 +33,9 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
         else if (getEntity() instanceof Skeleton skeleton) {
             return new ElementTag(skeleton.shouldBurnInDay());
         }
-        return new ElementTag(as(Phantom.class).shouldBurnInDay());
+        else { // phantom
+            return new ElementTag(as(Phantom.class).shouldBurnInDay());
+        }
     }
 
     @Override
@@ -50,7 +52,9 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
             else if (getEntity() instanceof Skeleton skeleton) {
                 skeleton.setShouldBurnInDay(param.asBoolean());
             }
-            as(Phantom.class).setShouldBurnInDay(param.asBoolean());
+            else { // phantom
+                as(Phantom.class).setShouldBurnInDay(param.asBoolean());
+            }
         }
     }
 
