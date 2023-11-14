@@ -3,18 +3,18 @@ package com.denizenscript.denizen.paper.properties;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.DurationTag;
 import org.bukkit.entity.Chicken;
 
-public class EntityEggLayTime extends EntityProperty<ElementTag> {
+public class EntityEggLayTime extends EntityProperty<DurationTag> {
 
     // <--[property]
     // @object EntityTag
     // @name egg_lay_time
-    // @input ElementTag(Number)
+    // @input DurationTag
     // @plugin Paper
     // @description
-    // If the entity is a chicken, controls the number of ticks until it lays an egg.
+    // If the entity is a chicken, controls the duration of time until it next lays an egg.
     // -->
 
     public static boolean describes(EntityTag entity) {
@@ -22,8 +22,8 @@ public class EntityEggLayTime extends EntityProperty<ElementTag> {
     }
 
     @Override
-    public ElementTag getPropertyValue() {
-        return new ElementTag(as(Chicken.class).getEggLayTime());
+    public DurationTag getPropertyValue() {
+        return new DurationTag((long) as(Chicken.class).getEggLayTime());
     }
 
     @Override
@@ -32,13 +32,11 @@ public class EntityEggLayTime extends EntityProperty<ElementTag> {
     }
 
     @Override
-    public void setPropertyValue(ElementTag param, Mechanism mechanism) {
-        if (mechanism.requireInteger()) {
-            as(Chicken.class).setEggLayTime(param.asInt());
-        }
+    public void setPropertyValue(DurationTag param, Mechanism mechanism) {
+        as(Chicken.class).setEggLayTime(param.getTicksAsInt());
     }
 
     public static void register() {
-        autoRegister("egg_lay_time", EntityEggLayTime.class, ElementTag.class, false);
+        autoRegister("egg_lay_time", EntityEggLayTime.class, DurationTag.class, false);
     }
 }
