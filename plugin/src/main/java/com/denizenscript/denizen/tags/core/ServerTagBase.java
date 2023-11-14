@@ -293,7 +293,6 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 else {
                     recipeItems.addObject(new ElementTag(PaperAPITools.instance.getBrewingRecipeInputMatcher(recipeKey), true));
                 }
-
             }
             return recipeItems;
         });
