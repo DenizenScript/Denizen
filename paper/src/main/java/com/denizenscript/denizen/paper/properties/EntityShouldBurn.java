@@ -4,6 +4,8 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import org.bukkit.entity.Phantom;
+import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
 
 public class EntityShouldBurn extends EntityProperty<ElementTag> {
@@ -14,16 +16,24 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @plugin Paper
     // @description
-    // If the entity is a Zombie, controls whether it should burn in daylight.
+    // If the entity is a Zombie, Skeleton, or Phantom, controls whether it should burn in daylight.
     // -->
 
     public static boolean describes(EntityTag entity) {
-        return entity.getBukkitEntity() instanceof Zombie;
+        return entity.getBukkitEntity() instanceof Zombie
+                || entity.getBukkitEntity() instanceof Skeleton
+                || entity.getBukkitEntity() instanceof Phantom;
     }
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(as(Zombie.class).shouldBurnInDay());
+        if (getEntity() instanceof Zombie zombie) {
+            return new ElementTag(zombie.shouldBurnInDay());
+        }
+        else if (getEntity() instanceof Skeleton skeleton) {
+            return new ElementTag(skeleton.shouldBurnInDay());
+        }
+        return new ElementTag(as(Phantom.class).shouldBurnInDay());
     }
 
     @Override
@@ -34,7 +44,13 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
     @Override
     public void setPropertyValue(ElementTag param, Mechanism mechanism) {
         if (mechanism.requireBoolean()) {
-            as(Zombie.class).setShouldBurnInDay(param.asBoolean());
+            if (getEntity() instanceof Zombie zombie) {
+                zombie.setShouldBurnInDay(param.asBoolean());
+            }
+            else if (getEntity() instanceof Skeleton skeleton) {
+                skeleton.setShouldBurnInDay(param.asBoolean());
+            }
+            as(Phantom.class).setShouldBurnInDay(param.asBoolean());
         }
     }
 
