@@ -106,6 +106,7 @@ public class PaperModule {
         PropertyParser.registerProperty(EntityReputation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityShouldBurn.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            PropertyParser.registerProperty(EntityEggLayTime.class, EntityTag.class);
             PropertyParser.registerProperty(EntitySneaking.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
