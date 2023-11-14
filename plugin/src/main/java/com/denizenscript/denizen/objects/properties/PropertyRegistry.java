@@ -36,6 +36,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityAreaEffectCloud.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArmorBonus.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArrowDamage.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityArrowPierceLevel.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAttributeBaseValues.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAttributeModifiers.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArmorPose.class, EntityTag.class);
