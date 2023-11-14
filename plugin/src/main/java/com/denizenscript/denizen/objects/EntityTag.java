@@ -2236,13 +2236,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag(Boolean)
         // @group attributes
         // @description
-        // Returns whether or not the arrow/trident entity is in a block.
+        // Returns whether the arrow/trident entity is in a block.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "is_in_block", (attribute, object) -> {
-            if (object.getBukkitEntity() instanceof Arrow) {
-                return new ElementTag(((Arrow) object.getBukkitEntity()).isInBlock());
-            }
-            return null;
+            return object.getBukkitEntity() instanceof AbstractArrow abstractArrow ? new ElementTag(abstractArrow.isInBlock()) : null;
         });
 
         // <--[tag]
@@ -2253,14 +2250,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the location of the block that the arrow/trident or hanging entity is attached to.
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "attached_block", (attribute, object) -> {
-            if (object.getBukkitEntity() instanceof Arrow) {
-                Block attachedBlock = ((Arrow) object.getBukkitEntity()).getAttachedBlock();
+            if (object.getBukkitEntity() instanceof AbstractArrow abstractArrow) {
+                Block attachedBlock = abstractArrow.getAttachedBlock();
                 if (attachedBlock != null) {
                     return new LocationTag(attachedBlock.getLocation());
                 }
             }
-            else if (object.getBukkitEntity() instanceof Hanging) {
-                Vector dir = ((Hanging) object.getBukkitEntity()).getAttachedFace().getDirection();
+            else if (object.getBukkitEntity() instanceof Hanging hanging) {
+                Vector dir = hanging.getAttachedFace().getDirection();
                 return new LocationTag(object.getLocation().clone().add(dir.multiply(0.5))).getBlockLocation();
             }
             return null;
