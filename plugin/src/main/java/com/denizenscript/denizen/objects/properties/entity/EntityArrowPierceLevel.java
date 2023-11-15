@@ -12,7 +12,7 @@ public class EntityArrowPierceLevel extends EntityProperty<ElementTag> {
     // @name pierce_level
     // @input ElementTag(Number)
     // @description
-    // The number of entities an arrow will pierce through while flying. Must be between 0 and 127 times.
+    // The number of entities an arrow will pierce through while flying. Must be between 0 and 127.
     // -->
 
     public static boolean describes(EntityTag entity) {
