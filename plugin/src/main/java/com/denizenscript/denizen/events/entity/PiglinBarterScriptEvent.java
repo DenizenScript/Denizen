@@ -31,11 +31,20 @@ public class PiglinBarterScriptEvent extends BukkitScriptEvent implements Listen
     // <context.input> returns the ItemTag of the input item.
     // <context.outcome> returns a ListTag(ItemTag) of outcome items.
     //
+    // @Determine
+    // "RESULT:<ListTag(ItemTag)>" to determine the items that are outputted.
+    //
     // -->
 
     public PiglinBarterScriptEvent() {
         registerCouldMatcher("piglin barter");
         registerSwitches("input");
+        this.<PiglinBarterScriptEvent, ListTag>registerDetermination("result", ListTag.class, (evt, context, result) -> {
+            evt.event.getOutcome().clear();
+            for (ItemTag item : result.filter(ItemTag.class, context)) {
+                evt.event.getOutcome().add(item.getItemStack());
+            }
+        });
     }
 
     public EntityTag entity;
