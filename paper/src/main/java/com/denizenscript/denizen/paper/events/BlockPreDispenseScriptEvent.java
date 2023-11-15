@@ -64,8 +64,8 @@ public class BlockPreDispenseScriptEvent extends BukkitScriptEvent implements Li
     @EventHandler
     public void onBlockPreDispense(BlockPreDispenseEvent event) {
         this.event = event;
-        location = new LocationTag(event.getBlock().getLocation());
         item = new ItemTag(event.getItemStack());
+        location = new LocationTag(event.getBlock().getLocation());
         fire(event);
     }
 }
