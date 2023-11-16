@@ -13,7 +13,7 @@ public class BlockPreDispenseScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // <block> pre dispenses <item>
+    // <block> tries to dispense <item>
     //
     // @Group Block
     //
@@ -31,7 +31,7 @@ public class BlockPreDispenseScriptEvent extends BukkitScriptEvent implements Li
     // -->
 
     public BlockPreDispenseScriptEvent() {
-        registerCouldMatcher("<block> pre dispenses <item>");
+        registerCouldMatcher("<block> tries to dispense <item>");
     }
 
     public BlockPreDispenseEvent event;
@@ -45,7 +45,7 @@ public class BlockPreDispenseScriptEvent extends BukkitScriptEvent implements Li
         if (!path.tryArgObject(0, location)) {
             return false;
         }
-        if (!path.tryArgObject(3, item)) {
+        if (!path.tryArgObject(4, item)) {
             return false;
         }
         return super.matches(path);
