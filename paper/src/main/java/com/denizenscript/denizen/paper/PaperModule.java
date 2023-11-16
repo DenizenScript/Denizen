@@ -6,7 +6,6 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
@@ -115,10 +114,9 @@ public class PaperModule {
         // Paper object extensions
         PropertyParser.registerProperty(PaperEntityProperties.class, EntityTag.class);
         PropertyParser.registerProperty(PaperItemTagProperties.class, ItemTag.class);
-        PropertyParser.registerProperty(PaperWorldProperties.class, WorldTag.class);
-        PaperPlayerExtensions.register();
         PaperElementExtensions.register();
-
+        PaperPlayerExtensions.register();
+        PaperWorldExtensions.register();
         // Paper Tags
         new PaperTagBase();
 
