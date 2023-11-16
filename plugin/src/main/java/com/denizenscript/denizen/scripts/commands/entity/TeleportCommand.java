@@ -55,7 +55,7 @@ public class TeleportCommand extends AbstractCommand {
     // Optionally specify "relative" to use relative teleportation (Paper only). This is primarily useful only for players, but available for all entities.
     // Relative teleports are smoother for the client when teleporting over short distances.
     // Optionally, you may use "relative_axes:" to specify a set of axes to move relative on (and other axes will be treated as absolute), as any of "X", "Y", "Z", "YAW", "PITCH".
-    // Optionally, you may use "offthread_repeat:" with the relative arg to smooth out the teleport with a specified number of extra async packets sent within a single tick.
+    // Optionally, you may use "offthread_repeat:" with the relative arg when teleporting a player to smooth out the teleport with a specified number of extra async packets sent within a single tick.
     // Optionally, specify "offthread_yaw" or "offthread_pitch" while using offthread_repeat to smooth the player's yaw/pitch to the new location's yaw/pitch.
     //
     // Optionally, specify additional teleport options using the 'entity_options:' arguments (Paper only).

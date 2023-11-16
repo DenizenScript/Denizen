@@ -504,6 +504,12 @@ public class FormattedTextHelper {
             if (str.startsWith(ChatColor.COLOR_CHAR + "[translate=") && str.indexOf(']') == str.length() - 1) {
                 return new BaseComponent[] {parseTranslatable(str.substring("&[translate=".length(), str.length() - 1), baseColor, optimize)};
             }
+            if (str.length() > 3 && str.startsWith((ChatColor.COLOR_CHAR + "")) && hexMatcher.isMatch(str.charAt(1))
+                    && str.startsWith(ChatColor.COLOR_CHAR + "[translate=", 2) && str.indexOf(']') == str.length() - 1) { // eg "&6&[translate=block.minecraft.ominous_banner]"
+                TranslatableComponent component = parseTranslatable(str.substring("&[translate=".length() + 2, str.length() - 1), baseColor, optimize);
+                component.setColor(ChatColor.getByChar(str.charAt(1)));
+                return new BaseComponent[] {component};
+            }
         }
         if (!optimize) {
             optimize = str.contains(ChatColor.COLOR_CHAR + "[optimize=true]");
