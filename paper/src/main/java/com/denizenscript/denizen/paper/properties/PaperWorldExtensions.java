@@ -87,7 +87,7 @@ public class PaperWorldExtensions  {
         // -->
         WorldTag.tagProcessor.registerMechanism("no_tick_view_distance", false, (object, mechanism) -> {
             BukkitImplDeprecations.paperNoTickViewDistance.warn(mechanism.context);
-            if (!mechanism.requireInteger()) {
+            if (!mechanism.hasValue()) {
                 object.getWorld().setNoTickViewDistance(-1);
             }
             else if (mechanism.requireInteger()) {
