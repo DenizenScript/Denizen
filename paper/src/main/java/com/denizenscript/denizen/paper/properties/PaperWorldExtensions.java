@@ -62,13 +62,13 @@ public class PaperWorldExtensions  {
         // <WorldTag.view_distance>
         // <server.view_distance>
         // -->
-//        if (mechanism.matches("simulation_distance") && mechanism.requireInteger())
         WorldTag.tagProcessor.registerMechanism("simulation_distance", false, ElementTag.class, (object, mechanism, input) -> {
             if(mechanism.requireInteger()) {
                 int distance = input.asInt();
                 if (distance < 2 || distance > 32) {
                     Debug.echoError("View distance must be a number from 2 to 32!");
-                } else {
+                }
+                else {
                     object.getWorld().setSimulationDistance(distance);
                 }
             }
