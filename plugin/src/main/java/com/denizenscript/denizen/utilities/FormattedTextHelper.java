@@ -446,11 +446,10 @@ public class FormattedTextHelper {
         return new BaseComponent[]{new TextComponent(str)};
     }
 
-    private static TranslatableComponent parseTranslatable(String str, ChatColor baseColor, boolean optimize) {
-        TranslatableComponent component = new TranslatableComponent();
+    private static BaseComponent parseTranslatable(String str, ChatColor baseColor, boolean optimize) {
         if (!str.startsWith("map@")) {
             List<String> innardParts = CoreUtilities.split(str, ';');
-            component.setTranslate(unescape(innardParts.get(0)));
+            TranslatableComponent component = new TranslatableComponent(unescape(innardParts.get(0)));
             for (int i = 1; i < innardParts.size(); i++) {
                 for (BaseComponent subComponent : parseInternal(unescape(innardParts.get(i)), baseColor, false, optimize)) {
                     component.addWith(subComponent);
@@ -460,13 +459,13 @@ public class FormattedTextHelper {
         }
         MapTag map = MapTag.valueOf(unescape(str), CoreUtilities.noDebugContext);
         if (map == null) {
-            return component;
+            return new TextComponent(str);
         }
         ElementTag translationKey = map.getElement("key");
         if (translationKey == null) {
-            return component;
+            return new TextComponent(str);
         }
-        component.setTranslate(translationKey.asString());
+        TranslatableComponent component = new TranslatableComponent(translationKey.asString());
         ElementTag fallback = map.getElement("fallback");
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && fallback != null) {
             component.setFallback(fallback.asString());
@@ -506,7 +505,7 @@ public class FormattedTextHelper {
             }
             if (str.length() > 3 && str.startsWith((ChatColor.COLOR_CHAR + "")) && hexMatcher.isMatch(str.charAt(1))
                     && str.startsWith(ChatColor.COLOR_CHAR + "[translate=", 2) && str.indexOf(']') == str.length() - 1) { // eg "&6&[translate=block.minecraft.ominous_banner]"
-                TranslatableComponent component = parseTranslatable(str.substring("&[translate=".length() + 2, str.length() - 1), baseColor, optimize);
+                BaseComponent component = parseTranslatable(str.substring("&[translate=".length() + 2, str.length() - 1), baseColor, optimize);
                 component.setColor(ChatColor.getByChar(str.charAt(1)));
                 return new BaseComponent[] {component};
             }

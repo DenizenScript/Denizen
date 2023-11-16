@@ -132,7 +132,13 @@ public class PaperModule {
         if (text == null) {
             return null;
         }
-        return jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(text, baseColor)));
+        try {
+            return jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(text, baseColor)));
+        }
+        catch (Exception ex) {
+            Debug.verboseLog("Failed to parse formatted text: " + text.replace(ChatColor.COLOR_CHAR, '&'));
+            throw ex;
+        }
     }
 
     public static String stringifyComponent(Component component) {
@@ -146,7 +152,13 @@ public class PaperModule {
         if (json == null) {
             return null;
         }
-        return GsonComponentSerializer.gson().deserialize(json);
+        try {
+            return GsonComponentSerializer.gson().deserialize(json);
+        }
+        catch (Exception ex) {
+            Debug.verboseLog("Failed to parse json to component: " + json);
+            throw ex;
+        }
     }
 
     public static String componentToJson(Component component) {
