@@ -41,7 +41,7 @@ public class PaperWorldExtensions  {
             if(mechanism.requireInteger()) {
                 int distance = input.asInt();
                 if (distance < 2 || distance > 32) {
-                    Debug.echoError("View distance must be a number from 2 to 32!");
+                    mechanism.echoError("View distance must be a number from 2 to 32!");
                 }
                 else {
                     object.getWorld().setViewDistance(distance);
@@ -66,7 +66,7 @@ public class PaperWorldExtensions  {
             if(mechanism.requireInteger()) {
                 int distance = input.asInt();
                 if (distance < 2 || distance > 32) {
-                    Debug.echoError("View distance must be a number from 2 to 32!");
+                    mechanism.echoError("View distance must be a number from 2 to 32!");
                 }
                 else {
                     object.getWorld().setSimulationDistance(distance);
@@ -93,7 +93,7 @@ public class PaperWorldExtensions  {
             else if (mechanism.requireInteger()) {
                 int distance = mechanism.getValue().asInt();
                 if (distance < 2 || distance > 32) {
-                    Debug.echoError("View distance must be a number from 2 to 32!");
+                    mechanism.echoError("View distance must be a number from 2 to 32!");
                 }
                 else {
                     object.getWorld().setNoTickViewDistance(distance);
