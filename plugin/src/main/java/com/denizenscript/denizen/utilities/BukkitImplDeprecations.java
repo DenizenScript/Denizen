@@ -223,7 +223,7 @@ public class BukkitImplDeprecations {
 
     // Added 2021/08/30, made very-slow 2022/12/31.
     // 2022-year-end commonality: #23
-    public static Warning giveTakeMoney = new VerySlowWarning("giveTakeMoney", "The 'take' and 'give' commands option for 'money' are deprecated in favor of using the 'money' command.");
+    public static Warning takeMoney = new VerySlowWarning("takeMoney", "Using the 'take' command to take money is deprecated in favor of the 'money' command.");
 
     // Added 2022/01/30, made very-slow 2022/12/31.
     public static Warning entityItemEnderman = new VerySlowWarning("entityItemEnderman", "The property 'entity.item' for endermen has been replaced by 'entity.material' due to usage of block materials.");
@@ -292,6 +292,9 @@ public class BukkitImplDeprecations {
 
     // Added 2023/10/04, deprecate officially by 2027
     public static Warning translateLegacySyntax = new FutureWarning("translateLegacySyntax", "<&translate[...].with[...]> is deprecated in favor of the modern <&translate[key=...;with=...]> syntax.");
+
+    // Added 2023/11/16, deprecate officially by 2027
+    public static Warning takeExperience = new FutureWarning("takeExperience", "Using the 'take' command to take experience is deprecated in favor of the 'experience' command.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
