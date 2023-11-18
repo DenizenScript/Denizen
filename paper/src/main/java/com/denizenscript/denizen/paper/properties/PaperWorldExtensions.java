@@ -3,7 +3,6 @@ package com.denizenscript.denizen.paper.properties;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 
 public class PaperWorldExtensions  {
 
@@ -38,7 +37,7 @@ public class PaperWorldExtensions  {
         // <server.view_distance>
         // -->
         WorldTag.tagProcessor.registerMechanism("view_distance", false, ElementTag.class, (object, mechanism, input) -> {
-            if(mechanism.requireInteger()) {
+            if (mechanism.requireInteger()) {
                 int distance = input.asInt();
                 if (distance < 2 || distance > 32) {
                     mechanism.echoError("View distance must be a number from 2 to 32!");
@@ -63,7 +62,7 @@ public class PaperWorldExtensions  {
         // <server.view_distance>
         // -->
         WorldTag.tagProcessor.registerMechanism("simulation_distance", false, ElementTag.class, (object, mechanism, input) -> {
-            if(mechanism.requireInteger()) {
+            if (mechanism.requireInteger()) {
                 int distance = input.asInt();
                 if (distance < 2 || distance > 32) {
                     mechanism.echoError("View distance must be a number from 2 to 32!");
