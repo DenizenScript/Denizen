@@ -819,7 +819,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns LocationTag
         // @mechanism PlayerTag.bed_spawn_location
         // @description
-        // Returns the location of the player's bed spawn location, null if it doesn't exist.
+        // Returns the location of the player's bed spawn location, or null if it doesn't exist.
         // Works with offline players.
         // -->
         registerOfflineTag(LocationTag.class, "bed_spawn", (attribute, object) -> {
