@@ -112,9 +112,9 @@ public class PaperModule {
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
 
         // Paper object extensions
-        PropertyParser.registerProperty(PaperEntityProperties.class, EntityTag.class);
-        PropertyParser.registerProperty(PaperItemTagProperties.class, ItemTag.class);
         PaperElementExtensions.register();
+        PaperEntityExtensions.register();
+        PaperItemExtensions.register();
         PaperPlayerExtensions.register();
         PaperWorldExtensions.register();
         // Paper Tags

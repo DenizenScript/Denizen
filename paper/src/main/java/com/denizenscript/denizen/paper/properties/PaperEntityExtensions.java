@@ -1,52 +1,21 @@
 package com.denizenscript.denizen.paper.properties;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityFormObject;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Goat;
+import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.UUID;
 
-public class PaperEntityProperties implements Property {
-
-    public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag;
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "goat_ram"
-    };
-
-    public static PaperEntityProperties getFrom(ObjectTag entity) {
-        if (!describes(entity)) {
-            return null;
-        }
-        return new PaperEntityProperties((EntityTag) entity);
-    }
-
-    public PaperEntityProperties(EntityTag entity) {
-        this.entity = entity;
-    }
-
-    EntityTag entity;
-
-    @Override
-    public String getPropertyString() {
-        return null;
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "EntityPaperProperties";
-    }
+public class PaperEntityExtensions {
 
     public static void register() {
 
@@ -59,8 +28,8 @@ public class PaperEntityProperties implements Property {
         // Returns the entity's spawn reason.
         // Valid spawn reasons can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
         // -->
-        PropertyParser.registerTag(PaperEntityProperties.class, ElementTag.class, "spawn_reason", (attribute, entity) -> {
-            return new ElementTag(entity.entity.getBukkitEntity().getEntitySpawnReason());
+        EntityTag.registerSpawnedOnlyTag(ElementTag.class, "spawn_reason", (attribute, entity) -> {
+            return new ElementTag(entity.getBukkitEntity().getEntitySpawnReason());
         });
 
         // <--[tag]
@@ -72,12 +41,12 @@ public class PaperEntityProperties implements Property {
         // If the entity is an experience orb, returns its spawn reason.
         // Valid spawn reasons can be found at <@link url https://papermc.io/javadocs/paper/1.17/org/bukkit/entity/ExperienceOrb.SpawnReason.html>
         // -->
-        PropertyParser.registerTag(PaperEntityProperties.class, ElementTag.class, "xp_spawn_reason", (attribute, entity) -> {
-            if (!(entity.entity.getBukkitEntity() instanceof ExperienceOrb)) {
+        EntityTag.registerSpawnedOnlyTag(ElementTag.class, "xp_spawn_reason", (attribute, entity) -> {
+            if (!(entity.getBukkitEntity() instanceof ExperienceOrb)) {
                 attribute.echoError("Entity " + entity.entity + " is not an experience orb.");
                 return null;
             }
-            return new ElementTag(((ExperienceOrb) entity.entity.getBukkitEntity()).getSpawnReason());
+            return new ElementTag(((ExperienceOrb) entity.getBukkitEntity()).getSpawnReason());
         });
 
         // <--[tag]
@@ -89,12 +58,12 @@ public class PaperEntityProperties implements Property {
         // If the entity is an experience orb, returns the entity that triggered it spawning (if any).
         // For example, if a player killed an entity this would return the player.
         // -->
-        PropertyParser.registerTag(PaperEntityProperties.class, EntityFormObject.class, "xp_trigger", (attribute, entity) -> {
-            if (!(entity.entity.getBukkitEntity() instanceof ExperienceOrb)) {
-                attribute.echoError("Entity " + entity.entity + " is not an experience orb.");
+        EntityTag.registerSpawnedOnlyTag(EntityFormObject.class, "xp_trigger", (attribute, entity) -> {
+            if (!(entity.getBukkitEntity() instanceof ExperienceOrb)) {
+                attribute.echoError("Entity " + entity + " is not an experience orb.");
                 return null;
             }
-            UUID uuid = ((ExperienceOrb) entity.entity.getBukkitEntity()).getTriggerEntityId();
+            UUID uuid = ((ExperienceOrb) entity.getBukkitEntity()).getTriggerEntityId();
             if (uuid == null) {
                 return null;
             }
@@ -114,12 +83,12 @@ public class PaperEntityProperties implements Property {
         // If the entity is an experience orb, returns the entity that it was created from (if any).
         // For example, if the xp orb was spawned from breeding this would return the baby.
         // -->
-        PropertyParser.registerTag(PaperEntityProperties.class, EntityFormObject.class, "xp_source", (attribute, entity) -> {
-            if (!(entity.entity.getBukkitEntity() instanceof ExperienceOrb)) {
-                attribute.echoError("Entity " + entity.entity + " is not an experience orb.");
+        EntityTag.registerSpawnedOnlyTag(EntityFormObject.class, "xp_source", (attribute, entity) -> {
+            if (!(entity.getBukkitEntity() instanceof ExperienceOrb)) {
+                attribute.echoError("Entity " + entity + " is not an experience orb.");
                 return null;
             }
-            UUID uuid = ((ExperienceOrb) entity.entity.getBukkitEntity()).getSourceEntityId();
+            UUID uuid = ((ExperienceOrb) entity.getBukkitEntity()).getSourceEntityId();
             if (uuid == null) {
                 return null;
             }
@@ -138,8 +107,8 @@ public class PaperEntityProperties implements Property {
         // @description
         // Returns the initial spawn location of this entity.
         // -->
-        PropertyParser.registerTag(PaperEntityProperties.class, LocationTag.class, "spawn_location", (attribute, entity) -> {
-            Location loc = entity.entity.getBukkitEntity().getOrigin();
+        EntityTag.registerSpawnedOnlyTag(LocationTag.class, "spawn_location", (attribute, entity) -> {
+            Location loc = entity.getBukkitEntity().getOrigin();
             return loc != null ? new LocationTag(loc) : null;
         });
 
@@ -151,13 +120,9 @@ public class PaperEntityProperties implements Property {
         // @description
         // Returns whether the entity was spawned from a spawner.
         // -->
-        PropertyParser.registerTag(PaperEntityProperties.class, ElementTag.class, "from_spawner", (attribute, entity) -> {
-            return new ElementTag(entity.entity.getBukkitEntity().fromMobSpawner());
+        EntityTag.registerSpawnedOnlyTag(ElementTag.class, "from_spawner", (attribute, entity) -> {
+            return new ElementTag(entity.getBukkitEntity().fromMobSpawner());
         });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
 
         // <--[mechanism]
         // @object EntityTag
@@ -167,9 +132,40 @@ public class PaperEntityProperties implements Property {
         // @description
         // Causes a goat to ram the specified entity.
         // -->
-        if (mechanism.matches("goat_ram") && mechanism.requireObject(EntityTag.class)
-                && entity.getBukkitEntity() instanceof Goat) {
-            ((Goat) entity.getBukkitEntity()).ram(mechanism.valueAsType(EntityTag.class).getLivingEntity());
+        EntityTag.registerSpawnedOnlyMechanism("goat_ram", false, EntityTag.class, (object, mechanism, input) -> {
+            if (object.getBukkitEntity() instanceof Goat) {
+                ((Goat) object.getLivingEntity()).ram(input.getLivingEntity());
+            }
+        });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            // <--[mechanism]
+            // @object EntityTag
+            // @name damage_item
+            // @input MapTag
+            // @Plugin Paper
+            // @description
+            // Damages the given equipment slot for the given amount.
+            // This runs all vanilla logic associated with damaging an item like gamemode and enchantment checks, events, stat changes, advancement triggers, and notifying clients to play break animations.
+            // Valid equipment slot values can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlot.html>.
+            //
+            // @example
+            // # Damages your precious boots! :(
+            // - adjust <player> damage_item:<map[slot=feet;amount=45]>
+            // -->
+            EntityTag.registerSpawnedOnlyMechanism("damage_item", false, MapTag.class, (object, mechanism, input) -> {
+                EquipmentSlot slot = input.getElement("slot").asEnum(EquipmentSlot.class);
+                ElementTag amount = input.getElement("amount");
+                if (slot == null) {
+                    mechanism.echoError("Specify a valid equipment slot to damage.");
+                    return;
+                }
+                else if (amount == null) {
+                    mechanism.echoError("Specify a valid amount to damage this item for.");
+                    return;
+                }
+                object.getLivingEntity().damageItemStack(slot, amount.asInt());
+            });
         }
     }
 }
