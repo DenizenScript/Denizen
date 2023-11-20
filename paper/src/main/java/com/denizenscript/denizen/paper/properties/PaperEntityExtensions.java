@@ -157,11 +157,11 @@ public class PaperEntityExtensions {
             EntityTag.registerSpawnedOnlyMechanism("damage_item", false, MapTag.class, (object, mechanism, input) -> {
                 EquipmentSlot slot = input.getElement("slot").asEnum(EquipmentSlot.class);
                 ElementTag amount = input.getElement("amount");
-                if (slot == null) {
+                if (slot == null || !slot.isArmor() || !slot.isHand()) {
                     mechanism.echoError("Specify a valid equipment slot to damage.");
                     return;
                 }
-                if (amount == null) {
+                if (amount == null || !amount.isInt()) {
                     mechanism.echoError("Specify a valid amount to damage this item for.");
                     return;
                 }

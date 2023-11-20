@@ -42,11 +42,11 @@ public class PaperItemExtensions {
             ItemTag.tagProcessor.registerMechanism("damage_item", false, MapTag.class, (object, mechanism, map) -> {
                 EntityTag entity = map.getElement("entity").asType(EntityTag.class, mechanism.context);
                 ElementTag amount = map.getElement("amount");
-                if (entity == null) {
+                if (entity == null || !entity.isLivingEntity()) {
                     mechanism.echoError("Specify a valid entity.");
                     return;
                 }
-                if (amount == null) {
+                if (amount == null || !amount.isInt()) {
                     mechanism.echoError("Specify a valid amount to damage this item for.");
                     return;
                 }
