@@ -24,6 +24,7 @@ public class PaperItemExtensions {
         });
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
             // <--[mechanism]
             // @object EntityTag
             // @name damage_item
@@ -36,7 +37,7 @@ public class PaperItemExtensions {
             //
             // @example
             // # Damages your precious boots! :(
-            // - inventory adjust damage_item:<map[entity=<player>;amount=45]> slot:37
+            // - inventory adjust damage_item:[entity=<player>;amount=45] slot:37
             // -->
             ItemTag.tagProcessor.registerMechanism("damage_item", false, MapTag.class, (object, mechanism, map) -> {
                 EntityTag entity = map.getElement("entity").asType(EntityTag.class, mechanism.context);
@@ -45,7 +46,7 @@ public class PaperItemExtensions {
                     mechanism.echoError("Specify a valid entity.");
                     return;
                 }
-                else if (amount == null) {
+                if (amount == null) {
                     mechanism.echoError("Specify a valid amount to damage this item for.");
                     return;
                 }

@@ -42,11 +42,11 @@ public class PaperEntityExtensions {
         // Valid spawn reasons can be found at <@link url https://papermc.io/javadocs/paper/1.17/org/bukkit/entity/ExperienceOrb.SpawnReason.html>
         // -->
         EntityTag.registerSpawnedOnlyTag(ElementTag.class, "xp_spawn_reason", (attribute, entity) -> {
-            if (!(entity.getBukkitEntity() instanceof ExperienceOrb)) {
-                attribute.echoError("Entity " + entity.entity + " is not an experience orb.");
+            if (!(entity.getBukkitEntity() instanceof ExperienceOrb experienceOrb)) {
+                attribute.echoError("Entity " + entity + " is not an experience orb.");
                 return null;
             }
-            return new ElementTag(((ExperienceOrb) entity.getBukkitEntity()).getSpawnReason());
+            return new ElementTag(experienceOrb.getSpawnReason());
         });
 
         // <--[tag]
@@ -59,11 +59,11 @@ public class PaperEntityExtensions {
         // For example, if a player killed an entity this would return the player.
         // -->
         EntityTag.registerSpawnedOnlyTag(EntityFormObject.class, "xp_trigger", (attribute, entity) -> {
-            if (!(entity.getBukkitEntity() instanceof ExperienceOrb)) {
+            if (!(entity.getBukkitEntity() instanceof ExperienceOrb experienceOrb)) {
                 attribute.echoError("Entity " + entity + " is not an experience orb.");
                 return null;
             }
-            UUID uuid = ((ExperienceOrb) entity.getBukkitEntity()).getTriggerEntityId();
+            UUID uuid = experienceOrb.getTriggerEntityId();
             if (uuid == null) {
                 return null;
             }
@@ -84,11 +84,11 @@ public class PaperEntityExtensions {
         // For example, if the xp orb was spawned from breeding this would return the baby.
         // -->
         EntityTag.registerSpawnedOnlyTag(EntityFormObject.class, "xp_source", (attribute, entity) -> {
-            if (!(entity.getBukkitEntity() instanceof ExperienceOrb)) {
+            if (!(entity.getBukkitEntity() instanceof ExperienceOrb experienceOrb)) {
                 attribute.echoError("Entity " + entity + " is not an experience orb.");
                 return null;
             }
-            UUID uuid = ((ExperienceOrb) entity.getBukkitEntity()).getSourceEntityId();
+            UUID uuid = experienceOrb.getSourceEntityId();
             if (uuid == null) {
                 return null;
             }
@@ -139,6 +139,7 @@ public class PaperEntityExtensions {
         });
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
             // <--[mechanism]
             // @object EntityTag
             // @name damage_item
@@ -151,7 +152,7 @@ public class PaperEntityExtensions {
             //
             // @example
             // # Damages your precious boots! :(
-            // - adjust <player> damage_item:<map[slot=feet;amount=45]>
+            // - adjust <player> damage_item:[slot=feet;amount=45]
             // -->
             EntityTag.registerSpawnedOnlyMechanism("damage_item", false, MapTag.class, (object, mechanism, input) -> {
                 EquipmentSlot slot = input.getElement("slot").asEnum(EquipmentSlot.class);
@@ -160,7 +161,7 @@ public class PaperEntityExtensions {
                     mechanism.echoError("Specify a valid equipment slot to damage.");
                     return;
                 }
-                else if (amount == null) {
+                if (amount == null) {
                     mechanism.echoError("Specify a valid amount to damage this item for.");
                     return;
                 }
