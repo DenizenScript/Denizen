@@ -4255,6 +4255,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // <--[tag]
             // @attribute <LocationTag.last_interacted_slot>
             // @returns ElementTag(Number)
+            // @mechanism LocationTag.last_interacted_slot
             // @description
             // Returns the last interacted slot of a Chiseled Bookshelf inventory.
             // -->
