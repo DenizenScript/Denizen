@@ -50,7 +50,7 @@ public abstract class PlayerHelper {
 
     public abstract void resendRecipeDetails(Player player);
 
-    public abstract String getPlayerBrand(Player player);
+    public abstract String getClientBrand(Player player);
 
     public enum SkinLayer {
         CAPE(0),

@@ -376,4 +376,10 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     public void kickPlayer(Player player, String message) {
         player.kick(PaperModule.parseFormattedText(message, ChatColor.WHITE));
     }
+
+    @Override
+    public String getClientBrand(Player player) {
+        String clientBrand = player.getClientBrandName();
+        return clientBrand != null ? clientBrand : "unknown";
+    }
 }

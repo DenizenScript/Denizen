@@ -348,7 +348,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public String getPlayerBrand(Player player) {
+    public String getClientBrand(Player player) {
         return ((DenizenNetworkManagerImpl) ((CraftPlayer) player).getHandle().connection.connection).packetListener.brand;
     }
 
