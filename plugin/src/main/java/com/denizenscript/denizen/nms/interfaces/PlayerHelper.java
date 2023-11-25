@@ -50,7 +50,10 @@ public abstract class PlayerHelper {
 
     public abstract void resendRecipeDetails(Player player);
 
-    public abstract String getClientBrand(Player player);
+    // TODO: once 1.20 is the minimum supported version, remove from NMS in favor of Paper API
+    public String getClientBrand(Player player) {
+        throw new UnsupportedOperationException();
+    }
 
     public enum SkinLayer {
         CAPE(0),

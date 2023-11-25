@@ -1485,8 +1485,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the brand of the client, as sent via the "minecraft:brand" packet.
         // On normal clients, will say "vanilla". On broken clients, will say "unknown". Modded clients will identify themselves (though not guaranteed!).
-        // On Spigot servers, it may be ideal to change setting "Packets.Auto init" in the Denizen config to "true" to guarantee this tag functions as expected.
-        // This is not needed on Paper servers.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "client_brand", (attribute, object) -> {
             return new ElementTag(PaperAPITools.instance.getClientBrand(object.getPlayerEntity()), true);
