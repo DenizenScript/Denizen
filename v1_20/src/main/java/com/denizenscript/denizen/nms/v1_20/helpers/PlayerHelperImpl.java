@@ -164,7 +164,8 @@ public class PlayerHelperImpl extends PlayerHelper {
             }
         }
         else {
-            nmsEntity = world.createEntity(location, entityType.getBukkitEntityType().getEntityClass());
+            org.bukkit.entity.Entity entity = world.createEntity(location, entityType.getBukkitEntityType().getEntityClass());
+            nmsEntity = ((CraftEntity) entity).getHandle();
         }
         if (customUUID != null) {
             nmsEntity.setId(customId);

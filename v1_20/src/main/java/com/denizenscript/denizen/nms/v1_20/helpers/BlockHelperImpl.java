@@ -44,6 +44,7 @@ import org.bukkit.craftbukkit.v1_20_R2.CraftChunk;
 import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R2.block.*;
+import org.bukkit.craftbukkit.v1_20_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R2.tag.CraftBlockTag;
 import org.bukkit.craftbukkit.v1_20_R2.util.CraftLocation;
@@ -238,8 +239,9 @@ public class BlockHelperImpl implements BlockHelper {
         }
         try {
             // Wrangle a fake entity
-            Entity nmsEntity = ((CraftWorld) spawner.getWorld()).createEntity(spawner.getLocation(), entity.getBukkitEntityType().getEntityClass());
-            EntityTag entityTag = new EntityTag(nmsEntity.getBukkitEntity());
+            org.bukkit.entity.Entity bukkitEntity = ((CraftWorld) spawner.getWorld()).createEntity(spawner.getLocation(), entity.getBukkitEntityType().getEntityClass());
+            Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+            EntityTag entityTag = new EntityTag(bukkitEntity);
             entityTag.isFake = true;
             entityTag.isFakeValid = true;
             for (Mechanism mechanism : entity.getWaitingMechanisms()) {
