@@ -468,4 +468,12 @@ public abstract class EntityHelper {
     }
 
     public abstract void openHorseInventory(Player player, AbstractHorse horse);
+
+    public CompoundTag getRawNBT(Entity entity) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void modifyRawNBT(Entity entity, CompoundTag tag) {
+        throw new UnsupportedOperationException();
+    }
 }
