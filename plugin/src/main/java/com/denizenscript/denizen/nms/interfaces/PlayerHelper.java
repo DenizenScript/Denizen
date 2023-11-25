@@ -77,6 +77,8 @@ public abstract class PlayerHelper {
 
     public abstract void setSpawnForced(Player player, boolean forced);
 
+    public abstract Location getBedSpawnLocation(Player player);
+
     public abstract long getLastActionTime(Player player);
 
     public enum ProfileEditMode { ADD, UPDATE_DISPLAY, UPDATE_LATENCY, UPDATE_GAME_MODE, UPDATE_LISTED }

@@ -26,6 +26,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -46,6 +47,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
@@ -380,6 +382,20 @@ public class PlayerHelperImpl extends PlayerHelper {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
+    }
+
+    @Override
+    public Location getBedSpawnLocation(Player player) {
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        BlockPos spawnPosition = nmsPlayer.getRespawnPosition();
+        if (spawnPosition == null) {
+            return null;
+        }
+        Level nmsWorld = MinecraftServer.getServer().getLevel(nmsPlayer.getRespawnDimension());
+        if (nmsWorld == null) {
+            return null;
+        }
+        return new Location(nmsWorld.getWorld(), spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ(), nmsPlayer.getRespawnAngle(), 0);
     }
 
     @Override
