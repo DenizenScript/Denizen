@@ -355,11 +355,6 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public String getPlayerBrand(Player player) {
-        return DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.brand;
-    }
-
-    @Override
     public byte getSkinLayers(Player player) {
         return ((CraftPlayer) player).getHandle().getEntityData().get(PLAYER_DATA_ACCESSOR_SKINLAYERS);
     }

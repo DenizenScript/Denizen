@@ -353,7 +353,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public String getPlayerBrand(Player player) {
+    public String getClientBrand(Player player) {
         return DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.brand;
     }
 
