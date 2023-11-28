@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ColorTag;
+import org.bukkit.Color;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -15,7 +16,7 @@ public class ItemColor extends ItemProperty<ColorTag> {
     // @name color
     // @input ColorTag
     // @description
-    // Controls the color of the leather armor item, potion item, filled map item, or tipped arrow item.
+    // The color of a leather armor item, potion item, filled map item, or tipped arrow item.
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -30,14 +31,14 @@ public class ItemColor extends ItemProperty<ColorTag> {
             return BukkitColorExtensions.fromColor(leatherArmorMeta.getColor());
         }
         if (getItemMeta() instanceof MapMeta mapMeta) {
-            if (!mapMeta.hasColor() || mapMeta.getColor() == null) {
+            if (!mapMeta.hasColor()) {
                 return null;
             }
             return BukkitColorExtensions.fromColor(mapMeta.getColor());
         }
         if (getItemMeta() instanceof PotionMeta potionMeta) {
-            if (!potionMeta.hasColor() || potionMeta.getColor() == null) {
-                return null;
+            if (!potionMeta.hasColor()) {
+                return BukkitColorExtensions.fromColor(Color.WHITE);
             }
             return BukkitColorExtensions.fromColor(potionMeta.getColor());
         }
@@ -48,18 +49,15 @@ public class ItemColor extends ItemProperty<ColorTag> {
     public void setPropertyValue(ColorTag color, Mechanism mechanism) {
         if (getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta) {
             leatherArmorMeta.setColor(BukkitColorExtensions.getColor(color));
-            getItemStack().setItemMeta(leatherArmorMeta);
+            setItemMeta(leatherArmorMeta);
             return;
         }
         if (getItemMeta() instanceof MapMeta mapMeta) {
             mapMeta.setColor(BukkitColorExtensions.getColor(color));
-            getItemStack().setItemMeta(mapMeta);
+            setItemMeta(mapMeta);
             return;
         }
-        if (getItemMeta() instanceof PotionMeta potionMeta) {
-            potionMeta.setColor(BukkitColorExtensions.getColor(color));
-            getItemStack().setItemMeta(potionMeta);
-        }
+        editMeta(PotionMeta.class, meta -> meta.setColor(BukkitColorExtensions.getColor(color)));
     }
 
     @Override
