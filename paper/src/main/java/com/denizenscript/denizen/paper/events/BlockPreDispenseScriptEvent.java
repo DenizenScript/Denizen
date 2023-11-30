@@ -21,7 +21,8 @@ public class BlockPreDispenseScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Cancellable true
     //
-    // @Triggers before a block dispenses an item. This event fires before the dispenser finishes processing its drop, allowing access to the slot trying to be dispensed and full cancellation of the dispenser's sounds.
+    // @Triggers before a block dispenses an item.
+    // This event fires before the dispenser finishes processing its drop, allowing access to the slot trying to be dispensed and full cancellation of the dispenser's sounds.
     //
     // @Context
     // <context.location> returns the LocationTag of the dispenser.
