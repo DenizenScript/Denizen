@@ -16,7 +16,7 @@ public class ItemColor extends ItemProperty<ColorTag> {
     // @name color
     // @input ColorTag
     // @description
-    // The color of a leather armor item, potion item, filled map item, or tipped arrow item.
+    // The color of a leather armor, potion, filled map, or tipped arrow item.
     // -->
 
     public static boolean describes(ItemTag item) {
