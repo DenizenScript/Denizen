@@ -1,11 +1,13 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import net.citizensnpcs.trait.versioned.SpellcasterTrait;
 import org.bukkit.entity.Spellcaster;
 
 public class EntitySpell implements Property {
@@ -84,7 +86,15 @@ public class EntitySpell implements Property {
         // <EntityTag.spell>
         // -->
         if (mechanism.matches("spell") && mechanism.requireEnum(Spellcaster.Spell.class)) {
-            ((Spellcaster) dentity.getBukkitEntity()).setSpell(Spellcaster.Spell.valueOf(mechanism.getValue().asString().toUpperCase()));
+            Spellcaster.Spell spell = mechanism.value.asElement().asEnum(Spellcaster.Spell.class);
+            Spellcaster ent = (Spellcaster) dentity.getBukkitEntity();
+            if (EntityTag.isCitizensNPC(ent)) {
+                NPCTag npc = NPCTag.fromEntity(ent);
+                npc.getCitizen().getOrAddTrait(SpellcasterTrait.class).setSpell(spell);
+            }
+            else {
+                ent.setSpell(spell);
+            }
         }
     }
 }
