@@ -28,7 +28,7 @@ public class PaperEntityExtensions {
         // Returns the entity's spawn reason.
         // Valid spawn reasons can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
         // -->
-        EntityTag.registerSpawnedOnlyTag(ElementTag.class, "spawn_reason", (attribute, entity) -> {
+        EntityTag.tagProcessor.registerTag(ElementTag.class, "spawn_reason", (attribute, entity) -> {
             return new ElementTag(entity.getBukkitEntity().getEntitySpawnReason());
         });
 
@@ -41,7 +41,7 @@ public class PaperEntityExtensions {
         // If the entity is an experience orb, returns its spawn reason.
         // Valid spawn reasons can be found at <@link url https://papermc.io/javadocs/paper/1.17/org/bukkit/entity/ExperienceOrb.SpawnReason.html>
         // -->
-        EntityTag.registerSpawnedOnlyTag(ElementTag.class, "xp_spawn_reason", (attribute, entity) -> {
+        EntityTag.tagProcessor.registerTag(ElementTag.class, "xp_spawn_reason", (attribute, entity) -> {
             if (!(entity.getBukkitEntity() instanceof ExperienceOrb experienceOrb)) {
                 attribute.echoError("Entity " + entity + " is not an experience orb.");
                 return null;
@@ -58,7 +58,7 @@ public class PaperEntityExtensions {
         // If the entity is an experience orb, returns the entity that triggered it spawning (if any).
         // For example, if a player killed an entity this would return the player.
         // -->
-        EntityTag.registerSpawnedOnlyTag(EntityFormObject.class, "xp_trigger", (attribute, entity) -> {
+        EntityTag.tagProcessor.registerTag(EntityFormObject.class, "xp_trigger", (attribute, entity) -> {
             if (!(entity.getBukkitEntity() instanceof ExperienceOrb experienceOrb)) {
                 attribute.echoError("Entity " + entity + " is not an experience orb.");
                 return null;
@@ -107,7 +107,7 @@ public class PaperEntityExtensions {
         // @description
         // Returns the initial spawn location of this entity.
         // -->
-        EntityTag.registerSpawnedOnlyTag(LocationTag.class, "spawn_location", (attribute, entity) -> {
+        EntityTag.tagProcessor.registerTag(LocationTag.class, "spawn_location", (attribute, entity) -> {
             Location loc = entity.getBukkitEntity().getOrigin();
             return loc != null ? new LocationTag(loc) : null;
         });
@@ -120,7 +120,7 @@ public class PaperEntityExtensions {
         // @description
         // Returns whether the entity was spawned from a spawner.
         // -->
-        EntityTag.registerSpawnedOnlyTag(ElementTag.class, "from_spawner", (attribute, entity) -> {
+        EntityTag.tagProcessor.registerTag(ElementTag.class, "from_spawner", (attribute, entity) -> {
             return new ElementTag(entity.getBukkitEntity().fromMobSpawner());
         });
 
@@ -158,11 +158,11 @@ public class PaperEntityExtensions {
                 EquipmentSlot slot = input.getElement("slot").asEnum(EquipmentSlot.class);
                 ElementTag amount = input.getElement("amount");
                 if (slot == null || !slot.isArmor() || !slot.isHand()) {
-                    mechanism.echoError("Specify a valid equipment slot to damage.");
+                    mechanism.echoError("Must specify a valid equipment slot to damage.");
                     return;
                 }
                 if (amount == null || !amount.isInt()) {
-                    mechanism.echoError("Specify a valid amount to damage this item for.");
+                    mechanism.echoError("Must specify a valid amount to damage this item for.");
                     return;
                 }
                 object.getLivingEntity().damageItemStack(slot, amount.asInt());
