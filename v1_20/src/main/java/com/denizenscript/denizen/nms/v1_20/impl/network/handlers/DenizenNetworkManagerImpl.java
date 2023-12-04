@@ -356,6 +356,9 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public Packet<ClientGamePacketListener> processPacketHandlersFor(Packet<ClientGamePacketListener> packet) {
+        if (packet == null) {
+            return null;
+        }
         List<PacketHandler<?>> packetHandlers = DenizenNetworkManagerImpl.packetHandlers.get(packet.getClass());
         if (packetHandlers != null) {
             for (PacketHandler<?> _packetHandler : packetHandlers) {

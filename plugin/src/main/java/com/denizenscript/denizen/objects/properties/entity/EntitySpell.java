@@ -28,6 +28,9 @@ public class EntitySpell extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag param, Mechanism mechanism) {
+        if (!mechanism.requireEnum(Spellcaster.Spell.class)) {
+            return;
+        }
         Spellcaster.Spell spell = param.asEnum(Spellcaster.Spell.class);
         if (object.isCitizensNPC()) {
             object.getDenizenNPC().getCitizen().getOrAddTrait(SpellcasterTrait.class).setSpell(spell);
