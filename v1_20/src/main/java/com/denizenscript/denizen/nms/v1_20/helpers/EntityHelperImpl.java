@@ -56,6 +56,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -479,7 +480,7 @@ public class EntityHelperImpl extends EntityHelper {
             NMSHandler.chunkHelper.changeChunkServerThread(world);
             return ((CraftWorld) world).getHandle().clip(new ClipContext(new Vec3(start.getX(), start.getY(), start.getZ()),
                     new Vec3(end.getX(), end.getY(), end.getZ()),
-                    ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, null));
+                    ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CollisionContext.empty()));
         }
         finally {
             NMSHandler.chunkHelper.restoreServerThread(world);
@@ -709,7 +710,7 @@ public class EntityHelperImpl extends EntityHelper {
     public EntityTag getMobSpawnerDisplayEntity(CreatureSpawner spawner) {
         SpawnerBlockEntity nmsSpawner = BlockHelperImpl.getTE((CraftCreatureSpawner) spawner);
         ServerLevel level = ((CraftWorld) spawner.getWorld()).getHandle();
-        net.minecraft.world.entity.Entity nmsEntity = nmsSpawner.getSpawner().getOrCreateDisplayEntity(level, level.random, nmsSpawner.getBlockPos());
+        net.minecraft.world.entity.Entity nmsEntity = nmsSpawner.getSpawner().getOrCreateDisplayEntity(level, nmsSpawner.getBlockPos());
         return new EntityTag(nmsEntity.getBukkitEntity());
     }
 
