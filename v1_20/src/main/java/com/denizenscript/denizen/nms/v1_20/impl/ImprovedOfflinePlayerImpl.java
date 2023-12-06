@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.v1_20.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -12,8 +13,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -124,7 +125,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
             for (org.bukkit.World w : Bukkit.getWorlds()) {
                 this.file = new File(w.getWorldFolder(), "playerdata" + File.separator + this.player + ".dat");
                 if (this.file.exists()) {
-                    this.compound = CompoundTagImpl.fromNMSTag(NbtIo.readCompressed(new FileInputStream(this.file)));
+                    this.compound = CompoundTagImpl.fromNMSTag(NbtIo.readCompressed(new FileInputStream(this.file), NbtAccounter.unlimitedHeap()));
                     return true;
                 }
             }

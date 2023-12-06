@@ -31,8 +31,8 @@ import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.util.SampleLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;

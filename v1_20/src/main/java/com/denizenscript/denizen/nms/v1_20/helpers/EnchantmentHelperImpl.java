@@ -1,13 +1,14 @@
 package com.denizenscript.denizen.nms.v1_20.helpers;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.interfaces.EnchantmentHelper;
 import com.denizenscript.denizen.nms.v1_20.Handler;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
 import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContainer;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,10 +21,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R2.enchantments.CraftEnchantment;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -32,9 +33,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class EnchantmentHelperImpl extends EnchantmentHelper {
-
-    public static final Map<NamespacedKey, Enchantment> ENCHANTMENTS_BY_KEY = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byKey", null);
-    public static final Map<String, org.bukkit.enchantments.Enchantment> ENCHANTMENTS_BY_NAME = ReflectionHelper.getFieldValue(org.bukkit.enchantments.Enchantment.class, "byName", null);
     public static final Field REGISTRY_FROZEN = ReflectionHelper.getFields(MappedRegistry.class).get(ReflectionMappingsInfo.MappedRegistry_frozen, boolean.class);
     public static final Field REGISTRY_INTRUSIVE_HOLDERS = ReflectionHelper.getFields(MappedRegistry.class).get(ReflectionMappingsInfo.MappedRegistry_unregisteredIntrusiveHolders, Map.class);
 
@@ -137,9 +135,10 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                     return script.script.isDiscoverable;
                 }
             };
+            NamespacedKey enchantmentKey = new NamespacedKey(Denizen.getInstance(), script.script.id);
+            Registry.register(BuiltInRegistries.ENCHANTMENT, enchantmentKey.toString(), nmsEnchant);
             String enchName = CoreUtilities.toUpperCase(script.script.id);
-            Registry.register(BuiltInRegistries.ENCHANTMENT, "denizen:" + script.script.id, nmsEnchant);
-            CraftEnchantment ench = new CraftEnchantment(nmsEnchant) {
+            CraftEnchantment ench = new CraftEnchantment(enchantmentKey, nmsEnchant) {
                 @Override
                 public String getName() {
                     return enchName;
@@ -149,8 +148,6 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
             if (wasFrozen) {
                 BuiltInRegistries.ENCHANTMENT.freeze();
             }
-            ENCHANTMENTS_BY_KEY.put(ench.getKey(), ench);
-            ENCHANTMENTS_BY_NAME.put(enchName, ench);
             return ench;
         }
         catch (Throwable ex) {
