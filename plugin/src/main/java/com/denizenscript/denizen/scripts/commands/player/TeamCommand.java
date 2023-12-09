@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Scoreboard;
@@ -91,33 +92,29 @@ public class TeamCommand extends AbstractCommand {
         if ((option == null) != (status == null)) {
             throw new InvalidArgumentsRuntimeException("Option and Status arguments must go together!");
         }
-        Scoreboard scoreboard;
+        Scoreboard board;
         if (id.asString().equalsIgnoreCase("main")) {
-            scoreboard = ScoreboardHelper.getMain();
+            board = ScoreboardHelper.getMain();
         }
         else {
-            scoreboard = ScoreboardHelper.hasScoreboard(id.asString()) ? ScoreboardHelper.getScoreboard(id.asString()) : ScoreboardHelper.createScoreboard(id.asString());
+            if (ScoreboardHelper.hasScoreboard(id.asString())) {
+                board = ScoreboardHelper.getScoreboard(id.asString());
+            }
+            else {
+                board = ScoreboardHelper.createScoreboard(id.asString());
+            }
         }
-        Team team = scoreboard.getTeam(name.asString());
+        Team team = board.getTeam(name.asString());
         if (team == null) {
             String low = name.asLowerString();
-            team = scoreboard.getTeams().stream().filter(t -> CoreUtilities.toLowerCase(t.getName()).equals(low)).findFirst().orElse(null);
+            team = board.getTeams().stream().filter(t -> CoreUtilities.toLowerCase(t.getName()).equals(low)).findFirst().orElse(null);
             if (team == null) {
-                team = scoreboard.registerNewTeam(name.asString());
+                team = board.registerNewTeam(name.asString());
             }
         }
         if (removeEntities != null) {
             for (ObjectTag obj : removeEntities.objectForms) {
-                String remove;
-                if (obj.shouldBeType(PlayerTag.class)) {
-                    remove = obj.asType(PlayerTag.class, scriptEntry.context).getName();
-                }
-                else if (obj.shouldBeType(EntityTag.class)) {
-                    remove = obj.asType(EntityTag.class, scriptEntry.context).getUUID().toString();
-                }
-                else {
-                    remove = obj.toString();
-                }
+                String remove = translateEntry(obj, scriptEntry.context);
                 if (remove != null) {
                     team.removeEntry(remove);
                 }
@@ -125,16 +122,7 @@ public class TeamCommand extends AbstractCommand {
         }
         if (addEntities != null) {
             for (ObjectTag obj : addEntities.objectForms) {
-                String add;
-                if (obj.shouldBeType(PlayerTag.class)) {
-                    add = obj.asType(PlayerTag.class, scriptEntry.context).getName();
-                }
-                else if (obj.shouldBeType(EntityTag.class)) {
-                    add = obj.asType(EntityTag.class, scriptEntry.context).getUUID().toString();
-                }
-                else {
-                    add = obj.toString();
-                }
+                String add = translateEntry(obj, scriptEntry.context);
                 if (add != null) {
                     team.addEntry(add);
                 }
@@ -150,7 +138,7 @@ public class TeamCommand extends AbstractCommand {
                 }
                 default -> {
                     if (option.matchesEnum(Team.Option.class)) {
-                        team.setOption(Team.Option.valueOf(option.asString().toUpperCase()), status);
+                        team.setOption(option.asEnum(Team.Option.class), status);
                     }
                     else {
                         throw new InvalidArgumentsRuntimeException("Option doesn't exist!");
@@ -171,4 +159,17 @@ public class TeamCommand extends AbstractCommand {
             team.unregister();
         }
     }
+
+    public static String translateEntry(ObjectTag obj, TagContext context) {
+        if (obj.shouldBeType(PlayerTag.class)) {
+            return obj.asType(PlayerTag.class, context).getName();
+        }
+        else if (obj.shouldBeType(EntityTag.class)) {
+            return obj.asType(EntityTag.class, context).getUUID().toString();
+        }
+        else {
+            return obj.toString();
+        }
+    }
+
 }
