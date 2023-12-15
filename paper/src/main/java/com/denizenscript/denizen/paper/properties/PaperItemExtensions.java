@@ -27,7 +27,7 @@ public class PaperItemExtensions {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
 
             // <--[mechanism]
-            // @object EntityTag
+            // @object ItemTag
             // @name damage_item
             // @input MapTag
             // @Plugin Paper
