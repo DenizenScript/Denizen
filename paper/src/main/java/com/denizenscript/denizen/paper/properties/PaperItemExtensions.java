@@ -6,6 +6,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
+import org.bukkit.inventory.ItemStack;
 
 public class PaperItemExtensions {
 
@@ -40,7 +41,7 @@ public class PaperItemExtensions {
             // - inventory adjust damage_item:[entity=<player>;amount=45] slot:37
             // -->
             ItemTag.tagProcessor.registerMechanism("damage_item", false, MapTag.class, (object, mechanism, map) -> {
-                EntityTag entity = map.getElement("entity").asType(EntityTag.class, mechanism.context);
+                EntityTag entity = map.getObjectAs("entity", EntityTag.class, mechanism.context);
                 ElementTag amount = map.getElement("amount");
                 if (entity == null || !entity.isLivingEntity()) {
                     mechanism.echoError("Specify a valid entity.");
@@ -50,7 +51,8 @@ public class PaperItemExtensions {
                     mechanism.echoError("Specify a valid amount to damage this item for.");
                     return;
                 }
-                entity.getLivingEntity().damageItemStack(object.getItemStack(), amount.asInt());
+                ItemStack item = entity.getLivingEntity().damageItemStack(object.getItemStack(), amount.asInt());
+                object.setItemStack(item);
             });
         }
     }

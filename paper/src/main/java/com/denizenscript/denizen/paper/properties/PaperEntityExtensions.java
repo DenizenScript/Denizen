@@ -155,9 +155,9 @@ public class PaperEntityExtensions {
             // - adjust <player> damage_item:[slot=feet;amount=45]
             // -->
             EntityTag.registerSpawnedOnlyMechanism("damage_item", false, MapTag.class, (object, mechanism, input) -> {
-                EquipmentSlot slot = input.getElement("slot").asEnum(EquipmentSlot.class);
+                ElementTag slot = input.getElement("slot");
                 ElementTag amount = input.getElement("amount");
-                if (slot == null || !slot.isArmor() || !slot.isHand()) {
+                if (slot == null || !slot.matchesEnum(EquipmentSlot.class)) {
                     mechanism.echoError("Must specify a valid equipment slot to damage.");
                     return;
                 }
@@ -165,7 +165,7 @@ public class PaperEntityExtensions {
                     mechanism.echoError("Must specify a valid amount to damage this item for.");
                     return;
                 }
-                object.getLivingEntity().damageItemStack(slot, amount.asInt());
+                object.getLivingEntity().damageItemStack(slot.asEnum(EquipmentSlot.class), amount.asInt());
             });
         }
     }
