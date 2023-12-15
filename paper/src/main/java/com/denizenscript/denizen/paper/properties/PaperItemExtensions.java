@@ -32,7 +32,7 @@ public class PaperItemExtensions {
             // @input MapTag
             // @Plugin Paper
             // @description
-            // Damages the ItemTag based on the given entity for the given amount.
+            // Damages the ItemTag in the specified slot based on the given entity for the given amount.
             // This runs all vanilla logic associated with damaging an item, like gamemode and enchantment checks, events, stat changes, and advancement triggers.
             // It does not notify the client to play the break animation.
             //
