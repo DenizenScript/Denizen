@@ -22,9 +22,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.PalettedContainer;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlockStates;
-import org.bukkit.craftbukkit.v1_20_R2.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlockStates;
+import org.bukkit.craftbukkit.v1_20_R3.block.data.CraftBlockData;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;

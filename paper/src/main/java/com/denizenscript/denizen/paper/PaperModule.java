@@ -31,6 +31,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(AnvilBlockDamagedScriptEvent.class);
         ScriptEvent.registerScriptEvent(AreaEnterExitScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(BellRingScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockPreDispenseScriptEvent.class);
         ScriptEvent.registerScriptEvent(CreeperIgnitesScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityAddToWorldScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityKnocksbackEntityScriptEvent.class);

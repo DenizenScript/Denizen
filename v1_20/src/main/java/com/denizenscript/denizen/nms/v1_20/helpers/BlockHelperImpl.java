@@ -40,14 +40,15 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Skull;
-import org.bukkit.craftbukkit.v1_20_R2.CraftChunk;
-import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.block.*;
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R2.tag.CraftBlockTag;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_20_R3.CraftChunk;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.block.*;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.tag.CraftBlockTag;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 
 import java.lang.invoke.MethodHandle;
@@ -238,8 +239,9 @@ public class BlockHelperImpl implements BlockHelper {
         }
         try {
             // Wrangle a fake entity
-            Entity nmsEntity = ((CraftWorld) spawner.getWorld()).createEntity(spawner.getLocation(), entity.getBukkitEntityType().getEntityClass());
-            EntityTag entityTag = new EntityTag(nmsEntity.getBukkitEntity());
+            org.bukkit.entity.Entity bukkitEntity = ((CraftWorld) spawner.getWorld()).createEntity(spawner.getLocation(), entity.getBukkitEntityType().getEntityClass());
+            Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+            EntityTag entityTag = new EntityTag(bukkitEntity);
             entityTag.isFake = true;
             entityTag.isFakeValid = true;
             for (Mechanism mechanism : entity.getWaitingMechanisms()) {

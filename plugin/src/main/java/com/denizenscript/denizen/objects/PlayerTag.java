@@ -468,7 +468,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             getPlayerEntity().setBedSpawnLocation(location);
         }
         else {
-            getNBTEditor().setBedSpawnLocation(location, getNBTEditor().isSpawnForced());
+            getNBTEditor().setBedSpawnLocation(location);
         }
     }
 
@@ -819,24 +819,27 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns LocationTag
         // @mechanism PlayerTag.bed_spawn_location
         // @description
-        // Returns the location of the player's bed spawn location, null if
-        // it doesn't exist.
+        // Returns the location of the player's bed spawn location, or null if it doesn't exist.
         // Works with offline players.
         // -->
         registerOfflineTag(LocationTag.class, "bed_spawn", (attribute, object) -> {
+            Location bedSpawn = object.isOnline() ? NMSHandler.playerHelper.getBedSpawnLocation(object.getPlayerEntity()) : object.getOfflinePlayer().getBedSpawnLocation();
+            return bedSpawn != null ? new LocationTag(bedSpawn) : null;
+        });
+
+        // <--[tag]
+        // @attribute <PlayerTag.calculated_bed_spawn>
+        // @returns LocationTag
+        // @description
+        // Returns the player's calculated bed spawn location.
+        // This is a location around their set spawn where they could actually spawn, such as a safe block next to a bed.
+        // See <@link tag PlayerTag.bed_spawn> for the actual spawn location they have set.
+        // -->
+        registerOnlineOnlyTag(LocationTag.class, "calculated_bed_spawn", (attribute, object) -> {
             try {
                 NMSHandler.chunkHelper.changeChunkServerThread(object.getWorld());
-                Location loc;
-                if (object.isOnline()) {
-                    loc = object.getPlayerEntity().getBedSpawnLocation();
-                }
-                else {
-                    loc = object.getNBTEditor().getBedSpawnLocation();
-                }
-                if (loc == null) {
-                    return null;
-                }
-                return new LocationTag(loc);
+                Location calculatedBedSpawn = object.getPlayerEntity().getBedSpawnLocation();
+                return calculatedBedSpawn != null ? new LocationTag(calculatedBedSpawn) : null;
             }
             finally {
                 NMSHandler.chunkHelper.restoreServerThread(object.getWorld());
@@ -1482,11 +1485,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the brand of the client, as sent via the "minecraft:brand" packet.
         // On normal clients, will say "vanilla". On broken clients, will say "unknown". Modded clients will identify themselves (though not guaranteed!).
-        // It may be ideal to change setting "Packets.Auto init" in the Denizen config to "true" to guarantee this tag functions as expected.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "client_brand", (attribute, object) -> {
-            NetworkInterceptHelper.enable();
-            return new ElementTag(NMSHandler.playerHelper.getPlayerBrand(object.getPlayerEntity()), true);
+            return new ElementTag(PaperAPITools.instance.getClientBrand(object.getPlayerEntity()), true);
         });
 
         // <--[tag]
@@ -2618,6 +2619,48 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 object.getOfflinePlayer().setWhitelisted(input.asBoolean());
             }
         }, "is_whitelisted");
+
+
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name bed_spawn_location
+        // @input LocationTag
+        // @description
+        // Sets the bed location that the player respawns at.
+        // Provide no input to unset.
+        // @tags
+        // <PlayerTag.bed_spawn>
+        // -->
+        registerOfflineMechanism("bed_spawn_location", (object, mechanism) -> {
+            if (!mechanism.hasValue()) {
+                object.setBedSpawnLocation(null);
+            }
+            else if (mechanism.requireObject(LocationTag.class)) {
+                object.setBedSpawnLocation(mechanism.valueAsType(LocationTag.class));
+            }
+        });
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name spawn_forced
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the player's bed spawn location is forced (ie still valid even if a bed is missing).
+        // @tags
+        // <PlayerTag.spawn_forced>
+        // -->
+        registerOfflineMechanism("spawn_forced", ElementTag.class, (object, mechanism, input) -> {
+            if (!mechanism.requireBoolean()) {
+                return;
+            }
+            if (object.isOnline()) {
+                NMSHandler.playerHelper.setSpawnForced(object.getPlayerEntity(), input.asBoolean());
+            }
+            else {
+                object.getNBTEditor().setSpawnForced(input.asBoolean());
+            }
+        });
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
@@ -2659,6 +2702,16 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
     }
 
+    public static <P extends ObjectTag> void registerOnlineOnlyMechanism(String name, Class<P> paramType, Mechanism.ObjectInputMechRunnerInterface<PlayerTag, P> runnable) {
+        tagProcessor.registerMechanism(name, false, paramType, (object, mechanism, input) -> {
+            if (!object.isOnline()) {
+                mechanism.echoError("Player is not online, but mechanism '" + name + "' requires the player be online, for player: " + object.debuggable());
+                return;
+            }
+            runnable.run(object, mechanism, input);
+        });
+    }
+
     public static <P extends ObjectTag> void registerOfflineMechanism(String name, Class<P> paramType, Mechanism.ObjectInputMechRunnerInterface<PlayerTag, P> runnable, String... deprecatedVariants) {
         tagProcessor.registerMechanism(name, false, paramType, (object, mechanism, input) -> {
             if (!object.isValid()) {
@@ -2669,14 +2722,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }, deprecatedVariants);
     }
 
-    public static <P extends ObjectTag> void registerOnlineOnlyMechanism(String name, Class<P> paramType, Mechanism.ObjectInputMechRunnerInterface<PlayerTag, P> runnable) {
-        tagProcessor.registerMechanism(name, false, paramType, (object, mechanism, input) -> {
-            if (!object.isOnline()) {
-                mechanism.echoError("Player is not online, but mechanism '" + name + "' requires the player be online, for player: " + object.debuggable());
+    public static void registerOfflineMechanism(String name, Mechanism.GenericMechRunnerInterface<PlayerTag> runnable, String... deprecatedVariants) {
+        tagProcessor.registerMechanism(name, false, (object, mechanism) -> {
+            if (!object.isValid()) {
+                mechanism.echoError("Player is not considered valid in mechanism '" + name + "' for player: " + object.debuggable());
                 return;
             }
-            runnable.run(object, mechanism, input);
-        });
+            runnable.run(object, mechanism);
+        }, deprecatedVariants);
     }
 
     @Override
@@ -3028,38 +3081,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("food_level") && mechanism.requireInteger()) {
             setFoodLevel(mechanism.getValue().asInt());
-        }
-
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name bed_spawn_location
-        // @input LocationTag
-        // @description
-        // Sets the bed location that the player respawns at.
-        // @tags
-        // <PlayerTag.bed_spawn>
-        // -->
-        if (mechanism.matches("bed_spawn_location") && mechanism.requireObject(LocationTag.class)) {
-            setBedSpawnLocation(mechanism.valueAsType(LocationTag.class));
-        }
-
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name spawn_forced
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether the player's bed spawn location is forced (ie still valid even if a bed is missing).
-        // @tags
-        // <PlayerTag.spawn_forced>
-        // -->
-        if (mechanism.matches("spawn_forced") && mechanism.requireBoolean()) {
-            if (isOnline()) {
-                NMSHandler.playerHelper.setSpawnForced(getPlayerEntity(), mechanism.getValue().asBoolean());
-            }
-            else {
-                ImprovedOfflinePlayer editor = getNBTEditor();
-                editor.setBedSpawnLocation(editor.getBedSpawnLocation(), mechanism.getValue().asBoolean());
-            }
         }
 
         // <--[mechanism]

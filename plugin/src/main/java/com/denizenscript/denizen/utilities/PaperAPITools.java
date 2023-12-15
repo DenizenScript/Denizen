@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
+import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -204,5 +205,10 @@ public class PaperAPITools {
 
     public void kickPlayer(Player player, String message) {
         player.kickPlayer(message);
+    }
+
+    public String getClientBrand(Player player) {
+        NetworkInterceptHelper.enable();
+        return NMSHandler.playerHelper.getClientBrand(player);
     }
 }

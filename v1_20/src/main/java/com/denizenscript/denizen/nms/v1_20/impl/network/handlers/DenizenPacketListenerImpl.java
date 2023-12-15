@@ -10,9 +10,7 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.ServerboundResourcePackPacket;
@@ -20,10 +18,8 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.event.block.SignChangeEvent;
-
-import java.nio.charset.StandardCharsets;
 
 public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
@@ -93,12 +89,6 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     public void handleCustomPayload(ServerboundCustomPayloadPacket packet) {
         if (NMSHandler.debugPackets) {
             Debug.log("Custom packet payload: " + packet.payload().id().toString() + " sent from " + player.getScoreboardName());
-        }
-        if (packet.payload().id().getNamespace().equals("minecraft") && packet.payload().id().getPath().equals("brand")) {
-            FriendlyByteBuf newData = new FriendlyByteBuf(Unpooled.buffer());
-            packet.payload().write(newData);
-            int i = newData.readVarInt(); // read off the varInt of length to get rid of it
-            brand = StandardCharsets.UTF_8.decode(newData.nioBuffer()).toString();
         }
         super.handleCustomPayload(packet);
     }
