@@ -2344,7 +2344,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag
         // @description
         // Returns the player's skin model, either CLASSIC or SLIM.
-        // Requires the player to be online.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "skin_model", (attribute, object) -> {
             return new ElementTag(object.getPlayerEntity().getPlayerProfile().getTextures().getSkinModel());
