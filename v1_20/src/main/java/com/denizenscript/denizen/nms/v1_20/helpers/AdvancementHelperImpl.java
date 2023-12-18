@@ -44,7 +44,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         mapBuilder.put(nmsKey, nmsAdvancementHolder);
         getNMSAdvancementManager().advancements = mapBuilder.build();
 
-        net.minecraft.advancements.AdvancementTree tree = getNMSAdvancementManager().tree();
+        AdvancementTree tree = getNMSAdvancementManager().tree();
         tree.addAll(List.of(nmsAdvancementHolder));
         // recalculate advancement position
         AdvancementNode node = tree.get(nmsKey);
