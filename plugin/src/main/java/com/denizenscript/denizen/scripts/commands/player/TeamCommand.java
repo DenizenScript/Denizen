@@ -129,12 +129,12 @@ public class TeamCommand extends AbstractCommand {
             }
         }
         if (option != null) {
-            switch (option.asString().toLowerCase()) {
+            switch (option.asLowerString()) {
                 case "friendly_fire" -> {
-                    team.setAllowFriendlyFire(status.toString().equalsIgnoreCase("always"));
+                    team.setAllowFriendlyFire(status == Team.OptionStatus.ALWAYS);
                 }
                 case "see_invisible" -> {
-                    team.setCanSeeFriendlyInvisibles(status.toString().equalsIgnoreCase("always"));
+                    team.setCanSeeFriendlyInvisibles(status == Team.OptionStatus.ALWAYS);
                 }
                 default -> {
                     if (option.matchesEnum(Team.Option.class)) {
