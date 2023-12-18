@@ -46,7 +46,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
 
         AdvancementTree tree = getNMSAdvancementManager().tree();
         tree.addAll(List.of(nmsAdvancementHolder));
-        // recalculate advancement position
+        // recalculate advancement tree from this advancement's root
         AdvancementNode node = tree.get(nmsKey);
         if (node != null) {
             AdvancementNode root = node.root();
