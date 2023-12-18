@@ -37,17 +37,16 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             return;
         }
         AdvancementHolder nmsAdvancementHolder = asNMSCopy(advancement);
-        ResourceLocation nmsKey = CraftNamespacedKey.toMinecraft(advancement.key);
         Map<ResourceLocation, AdvancementHolder> nmsAdvancements = getNMSAdvancementManager().advancements;
         ImmutableMap.Builder<ResourceLocation, AdvancementHolder> mapBuilder = ImmutableMap.builderWithExpectedSize(nmsAdvancements.size() + 1);
         mapBuilder.putAll(nmsAdvancements);
-        mapBuilder.put(nmsKey, nmsAdvancementHolder);
+        mapBuilder.put(nmsAdvancementHolder.id(), nmsAdvancementHolder);
         getNMSAdvancementManager().advancements = mapBuilder.build();
 
         AdvancementTree tree = getNMSAdvancementManager().tree();
         tree.addAll(List.of(nmsAdvancementHolder));
         // recalculate advancement tree from this advancement's root
-        AdvancementNode node = tree.get(nmsKey);
+        AdvancementNode node = tree.get(nmsAdvancementHolder.id());
         if (node != null) {
             AdvancementNode root = node.root();
             if (root.holder().value().display().isPresent()) {
