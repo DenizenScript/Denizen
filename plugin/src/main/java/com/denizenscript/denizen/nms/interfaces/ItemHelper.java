@@ -8,10 +8,12 @@ import com.denizenscript.denizen.objects.ItemTag;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.map.MapView;
 
 import java.util.List;
 import java.util.Map;
@@ -79,4 +81,7 @@ public abstract class ItemHelper {
         throw new UnsupportedOperationException();
     }
 
+    public byte[] renderMap(MapView mapView, Player player) {
+        throw new UnsupportedOperationException();
+    }
 }

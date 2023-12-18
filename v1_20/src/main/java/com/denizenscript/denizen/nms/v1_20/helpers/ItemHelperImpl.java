@@ -49,15 +49,19 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftRecipe;
+import org.bukkit.craftbukkit.v1_20_R3.map.CraftMapView;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -514,5 +518,10 @@ public class ItemHelperImpl extends ItemHelper {
             });
         }
         return customBrewingRecipes;
+    }
+
+    @Override
+    public byte[] renderMap(MapView mapView, Player player) {
+        return ((CraftMapView) mapView).render((CraftPlayer) player).buffer;
     }
 }

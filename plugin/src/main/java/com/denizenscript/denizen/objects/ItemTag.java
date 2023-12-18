@@ -19,6 +19,7 @@ import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.MapTagFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ImageTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
@@ -42,7 +43,11 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapPalette;
+import org.bukkit.map.MapView;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -745,6 +750,36 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         tagProcessor.registerMechanism("material", true, MaterialTag.class, (object, mechanism, material) -> {
             object.item.setType(material.getMaterial());
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+
+            // <--[tag]
+            // @attribute <ItemTag.map_to_image[<player>]>
+            // @returns ImageTag
+            // @description
+            // Returns an image of a filled map item's contents.
+            // Must specify a player for the map to render for, as if that player is holding the map.
+            // Note that this does not include cursors, as their rendering is entirely client-side.
+            // -->
+            tagProcessor.registerTag(ImageTag.class, PlayerTag.class, "map_to_image", (attribute, object, input) -> {
+                if (!(object.getItemMeta() instanceof MapMeta mapMeta)) {
+                    return null;
+                }
+                MapView mapView = mapMeta.getMapView();
+                if (mapView == null) {
+                    attribute.echoError("Invalid map item: must have contents.");
+                    return null;
+                }
+                byte[] data = NMSHandler.itemHelper.renderMap(mapView, input.getPlayerEntity());
+                BufferedImage image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+                for (int x = 0; x < 128; x++) {
+                    for (int y = 0; y < 128; y++) {
+                        image.setRGB(x, y, MapPalette.getColor(data[y * 128 + x]).getRGB());
+                    }
+                }
+                return new ImageTag(image);
+            });
+        }
     }
 
     public String formattedName() {
