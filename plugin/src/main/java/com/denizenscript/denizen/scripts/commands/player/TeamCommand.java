@@ -171,5 +171,4 @@ public class TeamCommand extends AbstractCommand {
             return obj.toString();
         }
     }
-
 }
