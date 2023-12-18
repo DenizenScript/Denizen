@@ -46,6 +46,8 @@ Debug:
     Warning rate: 10000
     # If set true, core systems will check what thread is performing certain critical actions, and give a warning if the wrong one is used.
     Verify thread: false
+    # Optionally you can set an alternate URL here to any valid instance of https://github.com/DenizenScript/DenizenPastingWebsite - 'default' corresponds to https://paste.denizenscript.com/New/Log
+    Paste URL: default
 
 Scripts:
     World:

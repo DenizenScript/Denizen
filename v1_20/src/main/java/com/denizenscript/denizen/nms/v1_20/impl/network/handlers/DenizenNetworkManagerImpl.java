@@ -31,8 +31,8 @@ import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.util.SampleLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -356,6 +356,9 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public Packet<ClientGamePacketListener> processPacketHandlersFor(Packet<ClientGamePacketListener> packet) {
+        if (packet == null) {
+            return null;
+        }
         List<PacketHandler<?>> packetHandlers = DenizenNetworkManagerImpl.packetHandlers.get(packet.getClass());
         if (packetHandlers != null) {
             for (PacketHandler<?> _packetHandler : packetHandlers) {

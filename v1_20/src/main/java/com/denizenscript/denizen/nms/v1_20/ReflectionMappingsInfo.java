@@ -9,7 +9,7 @@ public class ReflectionMappingsInfo {
     public static String AdvancementList_tasks = "(MISSING)"; // TODO: 1.20.2
 
     // net.minecraft.world.level.block.state.BlockBehaviour
-    public static String BlockBehaviour_explosionResistance = "aF";
+    public static String BlockBehaviour_explosionResistance = "aH";
 
     // net.minecraft.core.MappedRegistry
     public static String MappedRegistry_frozen = "l";
@@ -30,11 +30,11 @@ public class ReflectionMappingsInfo {
     public static String LivingEntity_setLivingEntityFlag_method = "c";
 
     // net.minecraft.world.entity.player.Player
-    public static String Player_DATA_PLAYER_ABSORPTION_ID = "e";
+    public static String Player_DATA_PLAYER_ABSORPTION_ID = "d";
     public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bM";
 
     // net.minecraft.server.level.ServerPlayer
-    public static String ServerPlayer_respawnForced = "cU";
+    public static String ServerPlayer_respawnForced = "cW";
 
     // net.minecraft.world.entity.monster.EnderMan
     public static String EnderMan_DATA_CREEPY = "bV";
@@ -77,7 +77,6 @@ public class ReflectionMappingsInfo {
     public static String ServerGamePacketListenerImpl_awaitingPositionFromClient = "B";
     public static String ServerGamePacketListenerImpl_awaitingTeleport = "C";
     public static String ServerGamePacketListenerImpl_chunkSender = "f";
-
 
     // net.minecraft.server.network.ServerCommonPacketListenerImpl
     public static String ServerCommonPacketListenerImpl_connection = "c";
@@ -143,5 +142,4 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.server.level.ServerLevel
     public static String ServerLevel_sleepStatus = "O";
-
 }

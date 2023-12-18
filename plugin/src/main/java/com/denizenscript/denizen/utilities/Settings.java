@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionRefuse;
+import com.denizenscript.denizencore.utilities.debugging.DebugSubmitter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -63,6 +64,10 @@ public class Settings {
         CoreConfiguration.debugTrimLength = config.getInt("Debug.Trim length limit", 1024);
         CoreConfiguration.debugPrefix = config.getString("Debug.Prefix", "");
         CoreConfiguration.debugLineLength = config.getInt("Debug.Line length", 300);
+        DebugSubmitter.pasteURL = config.getString("Debug.Paste URL", DebugSubmitter.corePasteURL);
+        if (DebugSubmitter.pasteURL.equals("default")) {
+            DebugSubmitter.pasteURL = DebugSubmitter.corePasteURL;
+        }
         String scriptEncoding = config.getString("Scripts.Encoding", "default");
         if (scriptEncoding.equalsIgnoreCase("default")) {
             CoreConfiguration.scriptEncoding = null;
