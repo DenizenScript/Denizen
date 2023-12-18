@@ -27,7 +27,10 @@ import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
-import net.minecraft.server.level.*;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.server.players.PlayerList;
@@ -862,5 +865,24 @@ public class EntityHelperImpl extends EntityHelper {
     public void openHorseInventory(Player player, AbstractHorse horse) {
         net.minecraft.world.entity.animal.horse.AbstractHorse nmsHorse = ((CraftAbstractHorse) horse).getHandle();
         ((CraftPlayer) player).getHandle().openHorseInventory(nmsHorse, nmsHorse.inventory);
+    }
+
+    private net.minecraft.nbt.CompoundTag getRawEntityNBT(net.minecraft.world.entity.Entity entity) {
+        return entity.saveWithoutId(new net.minecraft.nbt.CompoundTag());
+    }
+
+    @Override
+    public CompoundTag getRawNBT(Entity entity) {
+        return CompoundTagImpl.fromNMSTag(getRawEntityNBT(((CraftEntity) entity).getHandle()));
+    }
+
+    @Override
+    public void modifyRawNBT(Entity entity, CompoundTag tag) {
+        net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.nbt.CompoundTag nmsTag = ((CompoundTagImpl) tag).toNMSTag();
+        net.minecraft.nbt.CompoundTag nmsMergedTag = getRawEntityNBT(nmsEntity).merge(nmsTag);
+        UUID uuid = nmsEntity.getUUID();
+        nmsEntity.load(nmsMergedTag);
+        nmsEntity.setUUID(uuid);
     }
 }

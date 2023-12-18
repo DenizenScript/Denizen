@@ -31,6 +31,7 @@ import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.ProfileResult;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -157,6 +158,16 @@ public class Handler extends NMSHandler {
     @Override
     public CompoundTag createCompoundTag(Map<String, Tag> value) {
         return new CompoundTagImpl(value);
+    }
+
+    @Override
+    public CompoundTag parseSNBT(String snbt) {
+        try {
+            return CompoundTagImpl.fromNMSTag(TagParser.parseTag(snbt));
+        }
+        catch (CommandSyntaxException e) {
+            return null;
+        }
     }
 
     @Override
