@@ -325,9 +325,6 @@ public class BlockHelperImpl implements BlockHelper {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
-        ClientboundUpdateTagsPacket tagsPacket = new ClientboundUpdateTagsPacket(TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registries()));
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            PacketHelperImpl.send(player, tagsPacket);
-        }
+        PacketHelperImpl.broadcast(new ClientboundUpdateTagsPacket(TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registries())));
     }
 }
