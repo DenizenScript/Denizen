@@ -48,10 +48,12 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
 
     public WardenChangesAngerLevelScriptEvent() {
         registerCouldMatcher("warden changes anger level");
-        this.<WardenChangesAngerLevelScriptEvent, ElementTag>registerDetermination("anger", ElementTag.class, (evt, context, anger) -> {
+        this.<WardenChangesAngerLevelScriptEvent, ElementTag>registerOptionalDetermination("anger", ElementTag.class, (evt, context, anger) -> {
             if (anger.isInt()) {
                 evt.event.setNewAnger(anger.asInt());
+                return true;
             }
+            return false;
         });
     }
 

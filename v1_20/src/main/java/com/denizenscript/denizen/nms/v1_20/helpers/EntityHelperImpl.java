@@ -124,7 +124,7 @@ public class EntityHelperImpl extends EntityHelper {
         if (attrib != null) {
             damage = attrib.getValue();
         }
-        if (attacker.getEquipment() != null && attacker.getEquipment().getItemInMainHand() != null) {
+        if (attacker.getEquipment() != null) {
             damage += EnchantmentHelper.getDamageBonus(CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), monsterType);
         }
         if (damage <= 0) {
@@ -175,12 +175,6 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftBlock) location.getBlock()).getNMS().use(((CraftWorld) location.getWorld()).getHandle(),
                 craftPlayer != null ? craftPlayer.getHandle() : null, InteractionHand.MAIN_HAND,
                 new BlockHitResult(new Vec3(0, 0, 0), null, CraftLocation.toBlockPosition(location), false));
-    }
-
-    @Override
-    public Entity getEntity(World world, UUID uuid) {
-        net.minecraft.world.entity.Entity entity = ((CraftWorld) world).getHandle().getEntity(uuid);
-        return entity == null ? null : entity.getBukkitEntity();
     }
 
     @Override
@@ -352,20 +346,6 @@ public class EntityHelperImpl extends EntityHelper {
         else {
             entity.teleport(location);
         }
-    }
-
-    @Override
-    public List<Player> getPlayersThatSee(Entity entity) {
-        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level()).getChunkSource().chunkMap;
-        ChunkMap.TrackedEntity entityTracker = tracker.entityMap.get(entity.getEntityId());
-        ArrayList<Player> output = new ArrayList<>();
-        if (entityTracker == null) {
-            return output;
-        }
-        for (ServerPlayerConnection player : entityTracker.seenBy) {
-            output.add(player.getPlayer().getBukkitEntity());
-        }
-        return output;
     }
 
     @Override

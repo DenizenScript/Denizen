@@ -335,13 +335,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (rememberedEntities.containsKey(id)) {
             return rememberedEntities.get(id);
         }
-        for (World world : Bukkit.getWorlds()) {
-            Entity entity = NMSHandler.entityHelper.getEntity(world, id);
-            if (entity != null) {
-                return entity;
-            }
-        }
-        return null;
+        return Bukkit.getEntity(id);
     }
 
     public static boolean matches(String arg) {

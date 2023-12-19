@@ -395,8 +395,8 @@ public class DenizenNetworkManagerImpl extends Connection {
         AttachPacketHandlers.registerHandlers();
         BlockLightPacketHandlers.registerHandlers();
         DenizenPacketHandlerPacketHandlers.registerHandlers();
-        DisguisePacketHandlers.registerHandlers();
         EntityMetadataPacketHandlers.registerHandlers();
+        DisguisePacketHandlers.registerHandlers();
         FakeBlocksPacketHandlers.registerHandlers();
         FakeEquipmentPacketHandlers.registerHandlers();
         FakePlayerPacketHandlers.registerHandlers();

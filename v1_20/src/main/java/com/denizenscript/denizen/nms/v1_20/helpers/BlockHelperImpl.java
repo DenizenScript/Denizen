@@ -277,12 +277,6 @@ public class BlockHelperImpl implements BlockHelper {
         }
     }
 
-    @Override
-    public Color getMapColor(Block block) {
-        CraftBlock craftBlock = (CraftBlock) block;
-        return Color.fromRGB(craftBlock.getNMS().getMapColor(craftBlock.getHandle(), craftBlock.getPosition()).col);
-    }
-
     public static final MethodHandle HOLDERSET_NAMED_BIND = ReflectionHelper.getMethodHandle(HolderSet.Named.class, ReflectionMappingsInfo.HolderSetNamed_bind_method, List.class);
     public static final MethodHandle HOLDER_REFERENCE_BINDTAGS = ReflectionHelper.getMethodHandle(Holder.Reference.class, ReflectionMappingsInfo.HolderReference_bindTags_method, Collection.class);
 
