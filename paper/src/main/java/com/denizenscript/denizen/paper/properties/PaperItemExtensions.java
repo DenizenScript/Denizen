@@ -44,11 +44,11 @@ public class PaperItemExtensions {
                 EntityTag entity = map.getObjectAs("entity", EntityTag.class, mechanism.context);
                 ElementTag amount = map.getElement("amount");
                 if (entity == null || !entity.isLivingEntity()) {
-                    mechanism.echoError("Specify a valid entity.");
+                    mechanism.echoError("Must specify a valid entity.");
                     return;
                 }
                 if (amount == null || !amount.isInt()) {
-                    mechanism.echoError("Specify a valid amount to damage this item for.");
+                    mechanism.echoError("Must specify a valid amount to damage this item for.");
                     return;
                 }
                 ItemStack item = entity.getLivingEntity().damageItemStack(object.getItemStack(), amount.asInt());
