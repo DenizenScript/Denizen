@@ -133,8 +133,8 @@ public class PaperEntityExtensions {
         // Causes a goat to ram the specified entity.
         // -->
         EntityTag.registerSpawnedOnlyMechanism("goat_ram", false, EntityTag.class, (object, mechanism, input) -> {
-            if (object.getBukkitEntity() instanceof Goat) {
-                ((Goat) object.getLivingEntity()).ram(input.getLivingEntity());
+            if (object.getBukkitEntity() instanceof Goat goat) {
+                goat.ram(input.getLivingEntity());
             }
         });
 
