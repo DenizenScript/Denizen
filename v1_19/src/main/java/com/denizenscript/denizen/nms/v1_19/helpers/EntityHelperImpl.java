@@ -169,12 +169,6 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public Entity getEntity(World world, UUID uuid) {
-        net.minecraft.world.entity.Entity entity = ((CraftWorld) world).getHandle().getEntity(uuid);
-        return entity == null ? null : entity.getBukkitEntity();
-    }
-
-    @Override
     public CompoundTag getNbtData(Entity entity) {
         net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
         ((CraftEntity) entity).getHandle().saveAsPassenger(compound);

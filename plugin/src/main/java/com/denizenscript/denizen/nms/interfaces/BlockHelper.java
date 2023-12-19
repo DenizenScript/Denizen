@@ -90,7 +90,9 @@ public interface BlockHelper {
         spawner.setSpawnedType(entity.getBukkitEntityType());
     }
 
-    Color getMapColor(Block block);
+    default Color getMapColor(Block block) { // TODO: once 1.20 is the minimum supported version, remove from NMS
+        return block.getBlockData().getMapColor();
+    }
 
     default void setVanillaTags(Material material, Set<String> tags) {
         throw new UnsupportedOperationException();

@@ -446,18 +446,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void refreshPlayer(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         ServerLevel nmsWorld = (ServerLevel) nmsPlayer.level();
-        CommonPlayerSpawnInfo spawnInfo = new CommonPlayerSpawnInfo(
-                nmsWorld.dimensionTypeId(),
-                nmsWorld.dimension(),
-                BiomeManager.obfuscateSeed(nmsWorld.getSeed()),
-                nmsPlayer.gameMode.getGameModeForPlayer(),
-                nmsPlayer.gameMode.getPreviousGameModeForPlayer(),
-                nmsWorld.isDebug(),
-                nmsWorld.isFlat(),
-                nmsPlayer.getLastDeathLocation(),
-                nmsPlayer.getPortalCooldown()
-        );
-        nmsPlayer.connection.send(new ClientboundRespawnPacket(spawnInfo, ClientboundRespawnPacket.KEEP_ALL_DATA));
+        nmsPlayer.connection.send(new ClientboundRespawnPacket(nmsPlayer.createCommonSpawnInfo(nmsWorld), ClientboundRespawnPacket.KEEP_ALL_DATA));
         nmsPlayer.connection.teleport(player.getLocation());
         if (nmsPlayer.isPassenger()) {
            nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer.getVehicle()));
