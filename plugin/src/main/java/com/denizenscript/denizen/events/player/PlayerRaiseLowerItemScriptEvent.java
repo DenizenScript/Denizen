@@ -88,8 +88,6 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
         return super.matches(path);
     }
 
-    public boolean enabled = false;
-
     @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(player, null);
@@ -109,14 +107,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     @Override
     public void init() {
         NetworkInterceptHelper.enable();
-        enabled = true;
         super.init();
-    }
-
-    @Override
-    public void destroy() {
-        enabled = false;
-        super.destroy();
     }
 
     public void run(Player pl, String reason) {

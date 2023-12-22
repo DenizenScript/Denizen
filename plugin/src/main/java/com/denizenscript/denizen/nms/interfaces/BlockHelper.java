@@ -97,5 +97,4 @@ public interface BlockHelper {
     default void setVanillaTags(Material material, Set<String> tags) {
         throw new UnsupportedOperationException();
     }
-
 }

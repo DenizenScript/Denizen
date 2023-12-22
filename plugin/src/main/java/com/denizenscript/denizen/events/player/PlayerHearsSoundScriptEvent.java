@@ -52,7 +52,6 @@ public class PlayerHearsSoundScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public static PlayerHearsSoundScriptEvent instance;
-    public static boolean enabled;
 
     public Player player;
     public String soundName;
@@ -81,15 +80,15 @@ public class PlayerHearsSoundScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public void init() {
         NetworkInterceptHelper.enable();
-        enabled = true;
+        super.init();
     }
 
     @Override
     public void destroy() {
-        enabled = false;
         entity = null;
         player = null;
         location = null;
+        super.destroy();
     }
 
     @Override

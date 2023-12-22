@@ -17,7 +17,7 @@ public class PlayerHearsSoundEventPacketHandlers {
     }
 
     public static Packet<ClientGamePacketListener> processSoundPacket(DenizenNetworkManagerImpl networkManager, Packet<ClientGamePacketListener> packet) {
-        if (!PlayerHearsSoundScriptEvent.enabled) {
+        if (!PlayerHearsSoundScriptEvent.instance.eventData.isEnabled) {
             return packet;
         }
         if (packet instanceof ClientboundSoundPacket) {

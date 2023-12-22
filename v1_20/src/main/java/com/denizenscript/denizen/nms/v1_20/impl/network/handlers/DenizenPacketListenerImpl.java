@@ -33,7 +33,7 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     @Override
     public void handlePlayerInput(final ServerboundPlayerInputPacket packet) {
-        if (!PlayerSteersEntityScriptEvent.instance.enabled) {
+        if (!PlayerSteersEntityScriptEvent.instance.eventData.isEnabled) {
             super.handlePlayerInput(packet);
             return;
         }

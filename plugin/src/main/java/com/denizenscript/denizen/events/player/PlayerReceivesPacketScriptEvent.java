@@ -55,17 +55,10 @@ public class PlayerReceivesPacketScriptEvent extends BukkitScriptEvent {
         return super.matches(path);
     }
 
-    public static boolean enabled;
-
     @Override
     public void init() {
         NetworkInterceptHelper.enable();
-        enabled = true;
-    }
-
-    @Override
-    public void destroy() {
-        enabled = false;
+        super.destroy();
     }
 
     @Override

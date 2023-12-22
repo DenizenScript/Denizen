@@ -381,7 +381,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 packet = processed;
             }
         }
-        if (PlayerReceivesPacketScriptEvent.enabled & PlayerReceivesPacketScriptEvent.fireFor(player.getBukkitEntity(), packet)) {
+        if (PlayerReceivesPacketScriptEvent.instance.eventData.isEnabled & PlayerReceivesPacketScriptEvent.fireFor(player.getBukkitEntity(), packet)) {
             if (NMSHandler.debugPackets) {
                 doPacketOutput("DENIED PACKET - " + packet.getClass().getCanonicalName() + " DENIED FROM SEND TO " + player.getScoreboardName() + " due to event");
             }

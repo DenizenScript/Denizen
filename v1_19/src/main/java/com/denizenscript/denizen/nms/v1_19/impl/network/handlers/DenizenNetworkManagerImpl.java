@@ -346,7 +346,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             return true;
         }
-        if (PlayerReceivesPacketScriptEvent.enabled) {
+        if (PlayerReceivesPacketScriptEvent.instance.eventData.isEnabled) {
             if (PlayerReceivesPacketScriptEvent.fireFor(player.getBukkitEntity(), packet)) {
                 if (NMSHandler.debugPackets) {
                     doPacketOutput("DENIED PACKET " + packet.getClass().getCanonicalName() + " DENIED FROM SEND TO " + player.getScoreboardName() + " due to event");
@@ -362,7 +362,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     public static boolean tablistBreakOnlyOnce = false;
 
     public boolean processTablistPacket(Packet<?> packet, PacketSendListener genericfuturelistener) {
-        if (!PlayerReceivesTablistUpdateScriptEvent.enabled) {
+        if (!PlayerReceivesTablistUpdateScriptEvent.instance.eventData.isEnabled) {
             return false;
         }
         if (packet instanceof ClientboundPlayerInfoUpdatePacket) {
@@ -485,7 +485,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public boolean processSoundPacket(Packet<?> packet) {
-        if (!PlayerHearsSoundScriptEvent.enabled) {
+        if (!PlayerHearsSoundScriptEvent.instance.eventData.isEnabled) {
             return false;
         }
         if (packet instanceof ClientboundSoundPacket) {
