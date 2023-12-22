@@ -58,7 +58,7 @@ public class PlayerReceivesPacketScriptEvent extends BukkitScriptEvent {
     @Override
     public void init() {
         NetworkInterceptHelper.enable();
-        super.destroy();
+        super.init();
     }
 
     @Override
