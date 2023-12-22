@@ -82,11 +82,10 @@ public class ItemPotion implements Property {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
                 base.putObject("base_type", new ElementTag(meta.getBasePotionType()));
             }
-            else {
-                base.putObject("type", new ElementTag(meta.getBasePotionData().getType()));
-                base.putObject("upgraded", new ElementTag(meta.getBasePotionData().isUpgraded()));
-                base.putObject("extended", new ElementTag(meta.getBasePotionData().isExtended()));
-            }
+            // TODO: Eventually remove these 3.
+            base.putObject("type", new ElementTag(meta.getBasePotionData().getType()));
+            base.putObject("upgraded", new ElementTag(meta.getBasePotionData().isUpgraded()));
+            base.putObject("extended", new ElementTag(meta.getBasePotionData().isExtended()));
             if (meta.hasColor()) {
                 base.putObject("color", BukkitColorExtensions.fromColor(meta.getColor()));
             }
@@ -423,7 +422,7 @@ public class ItemPotion implements Property {
         // "base_type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>
         // "color" - ColorTag (optional, default none)
         //
-        // For example: [type=SPEED;upgraded=true;extended=false;color=RED]
+        // For example: [base_type=strong_swiftness;color=red]
         // This example produces an item labeled as "Potion of Swiftness - Speed II (1:30)"
         //
         // Each following item in the list are potion effects, which must be a MapTag with keys:
