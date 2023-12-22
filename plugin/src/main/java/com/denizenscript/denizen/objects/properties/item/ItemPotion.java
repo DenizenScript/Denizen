@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizencore.objects.core.*;
@@ -77,9 +79,14 @@ public class ItemPotion implements Property {
         MapTag base = new MapTag();
         if (isPotion()) {
             PotionMeta meta = getPotionMeta();
-            base.putObject("type", new ElementTag(meta.getBasePotionData().getType()));
-            base.putObject("upgraded", new ElementTag(meta.getBasePotionData().isUpgraded()));
-            base.putObject("extended", new ElementTag(meta.getBasePotionData().isExtended()));
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                base.putObject("base_type", new ElementTag(meta.getBasePotionType()));
+            }
+            else {
+                base.putObject("type", new ElementTag(meta.getBasePotionData().getType()));
+                base.putObject("upgraded", new ElementTag(meta.getBasePotionData().isUpgraded()));
+                base.putObject("extended", new ElementTag(meta.getBasePotionData().isExtended()));
+            }
             if (meta.hasColor()) {
                 base.putObject("color", BukkitColorExtensions.fromColor(meta.getColor()));
             }
@@ -252,15 +259,16 @@ public class ItemPotion implements Property {
         // @returns ElementTag
         // @mechanism ItemTag.potion_effects
         // @group properties
+        // @deprecated use 'effects_data.first.get[base_type]' instead
         // @description
-        // Returns the base potion type name for this potion item.
-        // The type will be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
+        // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
         PropertyParser.registerTag(ItemPotion.class, ElementTag.class, "potion_base_type", (attribute, object) -> {
             if (!object.hasBase()) {
                 attribute.echoError("This item does not have a base potion type.");
                 return null;
             }
+            BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             return new ElementTag(object.getPotionMeta().getBasePotionData().getType());
         });
 
@@ -412,9 +420,7 @@ public class ItemPotion implements Property {
         // This applies to Potion items, Tipped Arrow items, and Suspicious Stews.
         //
         // For potions or tipped arrows (not suspicious stew), the first item in the list must be a MapTag with keys:
-        // "type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>
-        // "upgraded" - boolean, true means level 2 and false means level 1 (optional, default false)
-        // "extended" - true means longer, false means shorter (optional, default false)
+        // "base_type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>
         // "color" - ColorTag (optional, default none)
         //
         // For example: [type=SPEED;upgraded=true;extended=false;color=RED]
@@ -444,40 +450,50 @@ public class ItemPotion implements Property {
             if (isPotion()) {
                 ObjectTag firstObj = data.remove(0);
                 PotionType type;
+                boolean isModern = false;
                 boolean upgraded = false;
                 boolean extended = false;
                 ColorTag color = null;
                 if (firstObj.canBeType(MapTag.class)) {
                     MapTag baseEffect = firstObj.asType(MapTag.class, mechanism.context);
-                    if (baseEffect.getObject("type") != null) {
+                    if (baseEffect.getObject("base_type") != null) {
+                        ElementTag baseTypeElement = baseEffect.getElement("base_type");
+                        if (!baseTypeElement.matchesEnum(PotionType.class)) {
+                            mechanism.echoError("Invalid base potion type '" + baseTypeElement + "': valid base potion_type is required");
+                            return;
+                        }
+                        type = baseTypeElement.asEnum(PotionType.class);
+                        isModern = true;
+                    }
+                    else if (baseEffect.getObject("type") != null) {
                         ElementTag typeElement = baseEffect.getElement("type");
                         if (!typeElement.matchesEnum(PotionType.class)) {
                             mechanism.echoError("Invalid base potion type '" + typeElement + "': type is required");
                             return;
                         }
                         type = PotionType.valueOf(typeElement.asString().toUpperCase());
+                        if (baseEffect.getObject("upgraded") != null) {
+                            ElementTag upgradedElement = baseEffect.getElement("upgraded");
+                            if (upgradedElement.isBoolean()) {
+                                upgraded = upgradedElement.asBoolean();
+                            }
+                            else {
+                                mechanism.echoError("Invalid upgraded state '" + upgradedElement + "': must be a boolean");
+                            }
+                        }
+                        if (baseEffect.getObject("extended") != null) {
+                            ElementTag extendedElement = baseEffect.getElement("extended");
+                            if (extendedElement.isBoolean()) {
+                                extended = extendedElement.asBoolean();
+                            }
+                            else {
+                                mechanism.echoError("Invalid extended state '" + extendedElement + "': must be a boolean");
+                            }
+                        }
                     }
                     else {
                         mechanism.echoError("No base potion type specified: type is required");
                         return;
-                    }
-                    if (baseEffect.getObject("upgraded") != null) {
-                        ElementTag upgradedElement = baseEffect.getElement("upgraded");
-                        if (upgradedElement.isBoolean()) {
-                            upgraded = upgradedElement.asBoolean();
-                        }
-                        else {
-                            mechanism.echoError("Invalid upgraded state '" + upgradedElement + "': must be a boolean");
-                        }
-                    }
-                    if (baseEffect.getObject("extended") != null) {
-                        ElementTag extendedElement = baseEffect.getElement("extended");
-                        if (extendedElement.isBoolean()) {
-                            extended = extendedElement.asBoolean();
-                        }
-                        else {
-                            mechanism.echoError("Invalid extended state '" + extendedElement + "': must be a boolean");
-                        }
                     }
                     if (baseEffect.getObject("color") != null) {
                         ObjectTag colorObj = baseEffect.getObject("color");
@@ -510,22 +526,27 @@ public class ItemPotion implements Property {
                         }
                     }
                 }
-                if (upgraded && !type.isUpgradeable()) {
-                    mechanism.echoError("Cannot upgrade potion of type '" + type.name() + "'");
-                    upgraded = false;
+                if (isModern) {
+                    ((PotionMeta) meta).setBasePotionType(type);
                 }
-                if (extended && !type.isExtendable()) {
-                    mechanism.echoError("Cannot extend potion of type '" + type.name() + "'");
-                    extended = false;
+                else {
+                    if (upgraded && !type.isUpgradeable()) {
+                        mechanism.echoError("Cannot upgrade potion of type '" + type.name() + "'");
+                        upgraded = false;
+                    }
+                    if (extended && !type.isExtendable()) {
+                        mechanism.echoError("Cannot extend potion of type '" + type.name() + "'");
+                        extended = false;
+                    }
+                    if (upgraded && extended) {
+                        mechanism.echoError("Cannot both upgrade and extend a potion");
+                        extended = false;
+                    }
+                    if (color != null) {
+                        ((PotionMeta) meta).setColor(BukkitColorExtensions.getColor(color));
+                    }
+                    ((PotionMeta) meta).setBasePotionData(new PotionData(type, extended, upgraded));
                 }
-                if (upgraded && extended) {
-                    mechanism.echoError("Cannot both upgrade and extend a potion");
-                    extended = false;
-                }
-                if (color != null) {
-                    ((PotionMeta) meta).setColor(BukkitColorExtensions.getColor(color));
-                }
-                ((PotionMeta) meta).setBasePotionData(new PotionData(type, extended, upgraded));
                 ((PotionMeta) meta).clearCustomEffects();
             }
             for (ObjectTag effectObj : data) {
