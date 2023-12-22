@@ -14,6 +14,8 @@ import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SuspiciousStewMeta;
@@ -74,18 +76,19 @@ public class ItemPotion implements Property {
         return map;
     }
 
-    public ListTag getMapTagData() {
+    public ListTag getMapTagData(boolean includeExtras) {
         ListTag result = new ListTag();
         MapTag base = new MapTag();
         if (isPotion()) {
             PotionMeta meta = getPotionMeta();
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                base.putObject("base_type", new ElementTag(meta.getBasePotionType()));
+                base.putObject("base_type", new ElementTag(meta.getBasePotionType().getKey().getKey()));
             }
-            // TODO: Eventually remove these 3.
-            base.putObject("type", new ElementTag(meta.getBasePotionData().getType()));
-            base.putObject("upgraded", new ElementTag(meta.getBasePotionData().isUpgraded()));
-            base.putObject("extended", new ElementTag(meta.getBasePotionData().isExtended()));
+            if (includeExtras) { // TODO: Eventually remove these 3.
+                base.putObject("type", new ElementTag(meta.getBasePotionData().getType()));
+                base.putObject("upgraded", new ElementTag(meta.getBasePotionData().isUpgraded()));
+                base.putObject("extended", new ElementTag(meta.getBasePotionData().isExtended()));
+            }
             if (meta.hasColor()) {
                 base.putObject("color", BukkitColorExtensions.fromColor(meta.getColor()));
             }
@@ -243,7 +246,7 @@ public class ItemPotion implements Property {
 
     @Override
     public String getPropertyString() {
-        return getMapTagData().identify();
+        return getMapTagData(false).identify();
     }
 
     @Override
@@ -403,7 +406,7 @@ public class ItemPotion implements Property {
         // All subsequent entries are effect data.
         // -->
         PropertyParser.registerTag(ItemPotion.class, ListTag.class, "effects_data", (attribute, object) -> {
-            return object.getMapTagData();
+            return object.getMapTagData(true);
         });
     }
 
@@ -419,7 +422,7 @@ public class ItemPotion implements Property {
         // This applies to Potion items, Tipped Arrow items, and Suspicious Stews.
         //
         // For potions or tipped arrows (not suspicious stew), the first item in the list must be a MapTag with keys:
-        // "base_type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>
+        // "base_type" - from <@link url https://minecraft.wiki/w/Potion#Item_data>
         // "color" - ColorTag (optional, default none)
         //
         // For example: [base_type=strong_swiftness;color=red]
@@ -457,11 +460,14 @@ public class ItemPotion implements Property {
                     MapTag baseEffect = firstObj.asType(MapTag.class, mechanism.context);
                     if (baseEffect.getObject("base_type") != null) {
                         ElementTag baseTypeElement = baseEffect.getElement("base_type");
-                        if (!baseTypeElement.matchesEnum(PotionType.class)) {
+                        type = Registry.POTION.get(NamespacedKey.minecraft(baseTypeElement.asLowerString()));
+                        if (type == null && baseTypeElement.matchesEnum(PotionType.class)) {
+                            type = baseTypeElement.asEnum(PotionType.class);
+                        }
+                        if (type == null) {
                             mechanism.echoError("Invalid base potion type '" + baseTypeElement + "': valid base potion_type is required");
                             return;
                         }
-                        type = baseTypeElement.asEnum(PotionType.class);
                         isModern = true;
                     }
                     else if (baseEffect.getObject("type") != null) {
