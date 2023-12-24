@@ -184,13 +184,6 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         return as(PotionMeta.class).getCustomEffects();
     }
 
-    public boolean hasCustomEffects() {
-        if (getItemMeta() instanceof SuspiciousStewMeta suspiciousStewMeta) {
-            return suspiciousStewMeta.hasCustomEffects();
-        }
-        return as(PotionMeta.class).hasCustomEffects();
-    }
-
     @Override
     public ListTag getPropertyValue() {
         return getMapTagData(false);
@@ -451,7 +444,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         // Returns whether the item (potion, tipped arrow, or suspicious stew) has a potion effect.
         // -->
         PropertyParser.registerTag(ItemPotion.class, ElementTag.class, "has_potion_effect", (attribute, object) -> {
-            return new ElementTag(object.hasCustomEffects());
+            return new ElementTag(object.getItemMeta() instanceof SuspiciousStewMeta suspiciousStewMeta ? suspiciousStewMeta.hasCustomEffects() : object.as(PotionMeta.class).hasCustomEffects());
         });
 
         // <--[tag]
