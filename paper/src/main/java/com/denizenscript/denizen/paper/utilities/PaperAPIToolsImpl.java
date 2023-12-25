@@ -24,6 +24,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -136,6 +137,17 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             components.add(PaperModule.parseFormattedText(line, ChatColor.BLACK));
         }
         player.sendSignChange(loc, components);
+    }
+
+    @Override
+    public void sendSignUpdate(Player player, Location loc, String[] text, Side side) {
+        Sign sign = (Sign)loc.getBlock().getState();
+        SignSide signSide = sign.getSide(side);
+        signSide.lines().clear();
+        for (String s : text) {
+            signSide.lines().add(PaperModule.parseFormattedText((s == null ? "" : s), ChatColor.BLACK));
+        }
+        player.sendBlockUpdate(loc, sign);
     }
 
     @Override

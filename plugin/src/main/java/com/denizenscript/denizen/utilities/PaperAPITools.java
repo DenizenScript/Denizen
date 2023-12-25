@@ -11,6 +11,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -100,6 +101,18 @@ public class PaperAPITools {
 
     public void sendSignUpdate(Player player, Location loc, String[] text) {
         player.sendSignChange(loc, text);
+    }
+
+    public void sendSignUpdate(Player player, Location loc, String[] text, Side side) {
+        Sign sign = (Sign)loc.getBlock().getState();
+        SignSide signSide = sign.getSide(side);
+        for (int line = 0; line < 4; line++) {
+            signSide.setLine(line, "");
+        }
+        for (int line = 0; line < text.length; line++) {
+            signSide.setLine(line, text[line]);
+        }
+        player.sendBlockUpdate(loc, sign);
     }
 
     public String getCustomName(Nameable object) {
