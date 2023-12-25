@@ -32,15 +32,6 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         return item.getItemMeta() instanceof PotionMeta || item.getItemMeta() instanceof SuspiciousStewMeta;
     }
 
-    public static String stringifyEffect(PotionEffect effect) {
-        return effect.getType().getName() + "," +
-                effect.getAmplifier() + "," +
-                effect.getDuration() + "," +
-                effect.isAmbient() + "," +
-                effect.hasParticles() + "," +
-                effect.hasIcon();
-    }
-
     public static MapTag effectToMap(PotionEffect effect) {
         MapTag map = new MapTag();
         map.putObject("type", new ElementTag(effect.getType().getName()));
@@ -67,43 +58,9 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             if (potionMeta.hasColor()) {
                 base.putObject("color", BukkitColorExtensions.fromColor(potionMeta.getColor()));
             }
+            result.addObject(base);
         }
         return result;
-    }
-
-    public static PotionEffect parseEffect(String str, TagContext context) {
-        String[] d2 = str.split(",");
-        PotionEffectType type;
-        try {
-            type = PotionEffectType.getByName(d2[0].toUpperCase());
-        }
-        catch (IllegalArgumentException ex) {
-            if (context.showErrors()) {
-                Debug.echoError("Invalid potion effect type '" + d2[0] + "'");
-            }
-            return null;
-        }
-        if (d2.length < 3) {
-            return null;
-        }
-        // NOTE: amplifier and duration are swapped around in the input format
-        // as compared to the PotionEffect constructor!
-        int duration = new ElementTag(d2[2]).asInt();
-        int amplifier = new ElementTag(d2[1]).asInt();
-        boolean ambient = true;
-        boolean particles = true;
-        if (d2.length > 3) {
-            ambient = new ElementTag(d2[3]).asBoolean();
-            particles = new ElementTag(d2[4]).asBoolean();
-        }
-        boolean icon = false;
-        if (d2.length > 5) {
-            ElementTag check = new ElementTag(d2[5]);
-            if (check.isBoolean()) {
-                icon = check.asBoolean();
-            }
-        }
-        return new PotionEffect(type, duration, amplifier, ambient, particles, icon);
     }
 
     public static PotionEffect parseEffect(MapTag effectMap, TagContext context) {
@@ -195,16 +152,11 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         ItemMeta meta = getItemMeta();
         if (meta instanceof PotionMeta potionMeta) {
             ObjectTag firstObj = data.remove(0);
-            PotionType type;
-            boolean isModern = false;
-            boolean upgraded = false;
-            boolean extended = false;
-            ColorTag color = null;
             if (firstObj.canBeType(MapTag.class)) {
                 MapTag baseEffect = firstObj.asType(MapTag.class, mechanism.context);
                 if (baseEffect.containsKey("base_type")) {
                     ElementTag baseTypeElement = baseEffect.getElement("base_type");
-                    type = Registry.POTION.get(Utilities.parseNamespacedKey(baseTypeElement.asString()));
+                    PotionType type = Registry.POTION.get(Utilities.parseNamespacedKey(baseTypeElement.asString()));
                     if (type == null && baseTypeElement.matchesEnum(PotionType.class)) {
                         type = baseTypeElement.asEnum(PotionType.class);
                     }
@@ -212,89 +164,14 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                         mechanism.echoError("Invalid base potion type '" + baseTypeElement + "': valid base potion_type is required");
                         return;
                     }
-                    isModern = true;
-                }
-                else if (baseEffect.containsKey("type")) {
-                    ElementTag typeElement = baseEffect.getElement("type");
-                    if (!typeElement.matchesEnum(PotionType.class)) {
-                        mechanism.echoError("Invalid base potion type '" + typeElement + "': type is required");
-                        return;
-                    }
-                    type = PotionType.valueOf(typeElement.asString().toUpperCase());
-                    if (baseEffect.containsKey("upgraded")) {
-                        ElementTag upgradedElement = baseEffect.getElement("upgraded");
-                        if (upgradedElement.isBoolean()) {
-                            upgraded = upgradedElement.asBoolean();
-                        }
-                        else {
-                            mechanism.echoError("Invalid upgraded state '" + upgradedElement + "': must be a boolean");
-                        }
-                    }
-                    if (baseEffect.containsKey("extended")) {
-                        ElementTag extendedElement = baseEffect.getElement("extended");
-                        if (extendedElement.isBoolean()) {
-                            extended = extendedElement.asBoolean();
-                        }
-                        else {
-                            mechanism.echoError("Invalid extended state '" + extendedElement + "': must be a boolean");
-                        }
-                    }
+                    potionMeta.setBasePotionType(type);
                 }
                 else {
-                    mechanism.echoError("No base potion type specified: type is required");
-                    return;
-                }
-                if (baseEffect.getObject("color") != null) {
-                    ObjectTag colorObj = baseEffect.getObject("color");
-                    if (colorObj.canBeType(ColorTag.class)) {
-                        color = colorObj.asType(ColorTag.class, mechanism.context);
-                    }
-                    else {
-                        mechanism.echoError("Invalid color '" + colorObj + "': must be a valid ColorTag");
-                    }
+                    applyLegacyMapBasePotionData(baseEffect, potionMeta, mechanism);
                 }
             }
             else {
-                String[] d1 = firstObj.toString().split(",");
-                try {
-                    type = PotionType.valueOf(d1[0].toUpperCase());
-                }
-                catch (IllegalArgumentException ex) {
-                    mechanism.echoError("Invalid base potion type '" + d1[0] + "': type is required");
-                    return;
-                }
-                upgraded = CoreUtilities.equalsIgnoreCase(d1[1], "true");
-                extended = CoreUtilities.equalsIgnoreCase(d1[2], "true");
-                if (d1.length > 3) {
-                    ColorTag temp = ColorTag.valueOf(d1[3].replace("&comma", ","), mechanism.context);
-                    if (temp == null) {
-                        mechanism.echoError("Invalid color '" + d1[3] + "': must be a valid ColorTag");
-                    }
-                    else {
-                        color = temp;
-                    }
-                }
-            }
-            if (isModern) {
-                potionMeta.setBasePotionType(type);
-            }
-            else {
-                if (upgraded && !type.isUpgradeable()) {
-                    mechanism.echoError("Cannot upgrade potion of type '" + type.name() + "'");
-                    upgraded = false;
-                }
-                if (extended && !type.isExtendable()) {
-                    mechanism.echoError("Cannot extend potion of type '" + type.name() + "'");
-                    extended = false;
-                }
-                if (upgraded && extended) {
-                    mechanism.echoError("Cannot both upgrade and extend a potion");
-                    extended = false;
-                }
-                if (color != null) {
-                    potionMeta.setColor(BukkitColorExtensions.getColor(color));
-                }
-                potionMeta.setBasePotionData(new PotionData(type, extended, upgraded));
+                applyLegacyStringBasePotionData(firstObj.toString(), potionMeta, mechanism);
             }
             potionMeta.clearCustomEffects();
         }
@@ -304,7 +181,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 effect = parseEffect(effectObj.asType(MapTag.class, mechanism.context), mechanism.context);
             }
             else {
-                effect = parseEffect(effectObj.toString(), mechanism.context);
+                effect = parseLegacyEffectString(effectObj.toString(), mechanism.context);
             }
             if (effect != null) {
                 if (meta instanceof PotionMeta potionMeta) {
@@ -381,6 +258,23 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         });
 
         // <--[tag]
+        // @attribute <ItemTag.has_potion_effect>
+        // @returns ElementTag(Boolean)
+        // @mechanism ItemTag.potion_effects
+        // @description
+        // Returns whether the item (potion, tipped arrow, or suspicious stew) has a potion effect.
+        // -->
+        PropertyParser.registerTag(ItemPotion.class, ElementTag.class, "has_potion_effect", (attribute, object) -> {
+            return new ElementTag(object.getItemMeta() instanceof SuspiciousStewMeta suspiciousStewMeta ? suspiciousStewMeta.hasCustomEffects() : object.as(PotionMeta.class).hasCustomEffects());
+        });
+
+        /*
+        ==============================
+        = Deprecated/legacy features =
+        ==============================
+        */
+
+        // <--[tag]
         // @attribute <ItemTag.potion_base_type>
         // @returns ElementTag
         // @mechanism ItemTag.potion_effects
@@ -431,20 +325,9 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             ListTag result = new ListTag();
             for (PotionEffect pot : object.getCustomEffects()) {
-                result.add(stringifyEffect(pot));
+                result.add(effectToLegacyString(pot));
             }
             return result;
-        });
-
-        // <--[tag]
-        // @attribute <ItemTag.has_potion_effect>
-        // @returns ElementTag(Boolean)
-        // @mechanism ItemTag.potion_effects
-        // @description
-        // Returns whether the item (potion, tipped arrow, or suspicious stew) has a potion effect.
-        // -->
-        PropertyParser.registerTag(ItemPotion.class, ElementTag.class, "has_potion_effect", (attribute, object) -> {
-            return new ElementTag(object.getItemMeta() instanceof SuspiciousStewMeta suspiciousStewMeta ? suspiciousStewMeta.hasCustomEffects() : object.as(PotionMeta.class).hasCustomEffects());
         });
 
         // <--[tag]
@@ -516,5 +399,137 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                     + "," + data.isExtended() + "," + (object.object.getBukkitMaterial() == Material.SPLASH_POTION));
 
         });
+    }
+
+    private static void applyLegacyMapBasePotionData(MapTag input, PotionMeta potionMeta, Mechanism mechanism) {
+        if (!input.containsKey("type")) {
+            mechanism.echoError("Must specify a base potion type.");
+            return;
+        }
+        ElementTag typeElement = input.getElement("type");
+        if (!typeElement.matchesEnum(PotionType.class)) {
+            mechanism.echoError("Invalid base potion type '" + typeElement + "': type is required");
+            return;
+        }
+        PotionType type = PotionType.valueOf(typeElement.asString().toUpperCase());
+        boolean upgraded = false;
+        boolean extended = false;
+        if (input.containsKey("upgraded")) {
+            ElementTag upgradedElement = input.getElement("upgraded");
+            if (upgradedElement.isBoolean()) {
+                upgraded = upgradedElement.asBoolean();
+            }
+            else {
+                mechanism.echoError("Invalid upgraded state '" + upgradedElement + "': must be a boolean");
+            }
+        }
+        if (input.containsKey("extended")) {
+            ElementTag extendedElement = input.getElement("extended");
+            if (extendedElement.isBoolean()) {
+                extended = extendedElement.asBoolean();
+            }
+            else {
+                mechanism.echoError("Invalid extended state '" + extendedElement + "': must be a boolean");
+            }
+        }
+        ColorTag color = null;
+        if (input.getObject("color") != null) {
+            ObjectTag colorObj = input.getObject("color");
+            if (colorObj.canBeType(ColorTag.class)) {
+                color = colorObj.asType(ColorTag.class, mechanism.context);
+            }
+            else {
+                mechanism.echoError("Invalid color '" + colorObj + "': must be a valid ColorTag");
+            }
+        }
+        applyLegacyBasePotionData(potionMeta, type, upgraded, extended, color, mechanism);
+    }
+
+    private static void applyLegacyStringBasePotionData(String input, PotionMeta potionMeta, Mechanism mechanism) {
+        String[] d1 = input.split(",");
+        PotionType type;
+        try {
+            type = PotionType.valueOf(d1[0].toUpperCase());
+        }
+        catch (IllegalArgumentException ex) {
+            mechanism.echoError("Invalid base potion type '" + d1[0] + "': type is required");
+            return;
+        }
+        boolean upgraded = CoreUtilities.equalsIgnoreCase(d1[1], "true");
+        boolean extended = CoreUtilities.equalsIgnoreCase(d1[2], "true");
+        ColorTag color = null;
+        if (d1.length > 3) {
+            ColorTag temp = ColorTag.valueOf(d1[3].replace("&comma", ","), mechanism.context);
+            if (temp == null) {
+                mechanism.echoError("Invalid color '" + d1[3] + "': must be a valid ColorTag");
+            }
+            else {
+                color = temp;
+            }
+        }
+        applyLegacyBasePotionData(potionMeta, type, upgraded, extended, color, mechanism);
+    }
+
+    private static void applyLegacyBasePotionData(PotionMeta potionMeta, PotionType type, boolean upgraded, boolean extended, ColorTag color, Mechanism mechanism) {
+        if (upgraded && !type.isUpgradeable()) {
+            mechanism.echoError("Cannot upgrade potion of type '" + type.name() + "'");
+            upgraded = false;
+        }
+        if (extended && !type.isExtendable()) {
+            mechanism.echoError("Cannot extend potion of type '" + type.name() + "'");
+            extended = false;
+        }
+        if (upgraded && extended) {
+            mechanism.echoError("Cannot both upgrade and extend a potion");
+            extended = false;
+        }
+        potionMeta.setBasePotionData(new PotionData(type, extended, upgraded));
+        if (color != null) {
+            potionMeta.setColor(BukkitColorExtensions.getColor(color));
+        }
+    }
+
+    public static String effectToLegacyString(PotionEffect effect) {
+        return effect.getType().getName() + "," +
+                effect.getAmplifier() + "," +
+                effect.getDuration() + "," +
+                effect.isAmbient() + "," +
+                effect.hasParticles() + "," +
+                effect.hasIcon();
+    }
+
+    public static PotionEffect parseLegacyEffectString(String str, TagContext context) {
+        String[] d2 = str.split(",");
+        PotionEffectType type;
+        try {
+            type = PotionEffectType.getByName(d2[0].toUpperCase());
+        }
+        catch (IllegalArgumentException ex) {
+            if (context.showErrors()) {
+                Debug.echoError("Invalid potion effect type '" + d2[0] + "'");
+            }
+            return null;
+        }
+        if (d2.length < 3) {
+            return null;
+        }
+        // NOTE: amplifier and duration are swapped around in the input format
+        // as compared to the PotionEffect constructor!
+        int duration = new ElementTag(d2[2]).asInt();
+        int amplifier = new ElementTag(d2[1]).asInt();
+        boolean ambient = true;
+        boolean particles = true;
+        if (d2.length > 3) {
+            ambient = new ElementTag(d2[3]).asBoolean();
+            particles = new ElementTag(d2[4]).asBoolean();
+        }
+        boolean icon = false;
+        if (d2.length > 5) {
+            ElementTag check = new ElementTag(d2[5]);
+            if (check.isBoolean()) {
+                icon = check.asBoolean();
+            }
+        }
+        return new PotionEffect(type, duration, amplifier, ambient, particles, icon);
     }
 }

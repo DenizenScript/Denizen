@@ -126,10 +126,10 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
             return new ElementTag(event.isOverride());
         }
         else if (name.equals("new_effect") && event.getNewEffect() != null) {
-            return new ElementTag(ItemPotion.stringifyEffect(event.getNewEffect()));
+            return new ElementTag(ItemPotion.effectToLegacyString(event.getNewEffect()));
         }
         else if (name.equals("old_effect") && event.getOldEffect() != null) {
-            return new ElementTag(ItemPotion.stringifyEffect(event.getOldEffect()));
+            return new ElementTag(ItemPotion.effectToLegacyString(event.getOldEffect()));
         }
         return super.getContext(name);
     }

@@ -60,7 +60,7 @@ public class EntityPotionEffects implements Property {
     public ListTag getEffectsListTag() {
         ListTag result = new ListTag();
         for (PotionEffect effect : getEffectsList()) {
-            result.add(ItemPotion.stringifyEffect(effect));
+            result.add(ItemPotion.effectToLegacyString(effect));
         }
         return result;
     }
@@ -180,7 +180,7 @@ public class EntityPotionEffects implements Property {
                 }
                 else {
                     String effectStr = effectObj.toString();
-                    effect = ItemPotion.parseEffect(effectStr, mechanism.context);
+                    effect = ItemPotion.parseLegacyEffectString(effectStr, mechanism.context);
                 }
                 if (effect == null) {
                     mechanism.echoError("Invalid potion effect '" + effectObj + "'");
