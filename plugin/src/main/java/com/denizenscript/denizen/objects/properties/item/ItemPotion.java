@@ -186,16 +186,15 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             else {
                 effect = parseLegacyEffectString(effectObj.toString(), mechanism.context);
             }
-            if (effect != null) {
-                if (meta instanceof PotionMeta potionMeta) {
-                    potionMeta.addCustomEffect(effect, false);
-                }
-                else {
-                    ((SuspiciousStewMeta) meta).addCustomEffect(effect, false);
-                }
+            if (effect == null) {
+                mechanism.echoError("Invalid potion effect '" + effectObj + "'");
+                continue;
+            }
+            if (meta instanceof PotionMeta potionMeta) {
+                potionMeta.addCustomEffect(effect, false);
             }
             else {
-                mechanism.echoError("Invalid potion effect '" + effectObj + "'");
+                ((SuspiciousStewMeta) meta).addCustomEffect(effect, false);
             }
         }
         setItemMeta(meta);
