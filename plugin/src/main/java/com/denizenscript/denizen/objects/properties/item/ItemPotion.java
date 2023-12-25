@@ -175,6 +175,9 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
             potionMeta.clearCustomEffects();
         }
+        else {
+            ((SuspiciousStewMeta) meta).clearCustomEffects();
+        }
         for (ObjectTag effectObj : data) {
             PotionEffect effect;
             if (effectObj.canBeType(MapTag.class)) {
