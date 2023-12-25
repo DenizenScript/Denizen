@@ -1237,7 +1237,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
 
         // <--[tag]
         // @attribute <LocationTag.sign_contents>
-        // @returns ObjectTag
+        // @returns ListTag
         // @mechanism LocationTag.sign_contents
         // @group world
         // @description
@@ -1252,15 +1252,11 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 attribute.echoError("Location is not a valid Sign block.");
                 return null;
             }
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                String[][] contents = MultiVersionHelper1_20.getSignLines((Sign) state);
-                MapTag content = new MapTag();
-                content.putObject("front", new ListTag(Arrays.asList(contents[0])));
-                content.putObject("back", new ListTag(Arrays.asList(contents[1])));
-                return content;
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines(((Sign) state))));
             }
-            return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines(((Sign) state))));
-
+            String side = attribute.hasParam() ? attribute.getParam() : "front";
+            return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines(((Sign) state), Side.valueOf(side.toUpperCase()))));
         });
 
         // <--[tag]
@@ -4136,55 +4132,48 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
 
         // <--[tag]
         // @attribute <LocationTag.sign_glowing>
-        // @returns ObjectTag
+        // @returns ElementTag(Boolean)
         // @mechanism LocationTag.sign_glowing
         // @group world
         // @description
-        // Pre 1.20
         // Returns whether the location is a Sign block that is glowing.
-        // 1.20+
-        // Returns a map of each side and whether the side is glowing.
+        // Optionally provide a side (defaults to "front")
         // -->
-        tagProcessor.registerTag(ObjectTag.class, "sign_glowing", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "sign_glowing", (attribute, object) -> {
             BlockState state = object.getBlockStateForTag(attribute);
             if (!(state instanceof Sign)) {
                 attribute.echoError("Location is not a valid Sign block.");
                 return null;
             }
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                MapTag glowMap = new MapTag();
-                glowMap.putObject("front", new ElementTag(((Sign) state).getSide(Side.FRONT).isGlowingText()));
-                glowMap.putObject("back", new ElementTag(((Sign) state).getSide(Side.BACK).isGlowingText()));
-                return glowMap;
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                return new ElementTag(((Sign) state).isGlowingText());
             }
-            return new ElementTag(((Sign) state).isGlowingText());
+            String side = attribute.hasParam() ? attribute.getParam() : "front";
+            return new ElementTag(((Sign) state).getSide(Side.valueOf(side.toUpperCase())).isGlowingText());
         });
 
         // <--[tag]
         // @attribute <LocationTag.sign_glow_color>
-        // @returns ObjectTag
+        // @returns ElementTag
         // @mechanism LocationTag.sign_glow_color
         // @group world
         // @description
         // Pre 1.20
         // Returns the name of the glow-color of the sign at the location.
-        // 1.20+
-        // Returns a map of each side and the name of the color.
+        // Optionally provide a side (defaults to "front")
         // See also <@link tag LocationTag.sign_glowing>
         // -->
-        tagProcessor.registerTag(ObjectTag.class, "sign_glow_color", (attribute, object) -> {
+        tagProcessor.registerTag(ElementTag.class, "sign_glow_color", (attribute, object) -> {
             BlockState state = object.getBlockStateForTag(attribute);
             if (!(state instanceof Sign)) {
                 attribute.echoError("Location is not a valid Sign block.");
                 return null;
             }
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                MapTag glowMap = new MapTag();
-                glowMap.putObject("front", new ElementTag(((Sign) state).getSide(Side.FRONT).getColor()));
-                glowMap.putObject("back", new ElementTag(((Sign) state).getSide(Side.BACK).getColor()));
-                return glowMap;
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                return new ElementTag(((Sign) state).getColor());
             }
-            return new ElementTag(((Sign) state).getColor());
+            String side = attribute.hasParam() ? attribute.getParam() : "front";
+            return new ElementTag(((Sign) state).getSide(Side.valueOf(side.toUpperCase())).getColor());
         });
 
         // <--[tag]
@@ -4197,7 +4186,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // See also <@link tag LocationTag.sign_glowing>
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            tagProcessor.registerTag(ObjectTag.class, "sign_waxed", (attribute, object) -> {
+            tagProcessor.registerTag(ElementTag.class, "sign_waxed", (attribute, object) -> {
                 BlockState state = object.getBlockStateForTag(attribute);
                 if (!(state instanceof Sign)) {
                     attribute.echoError("Location is not a valid Sign block.");
@@ -4761,12 +4750,12 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             if (!(state instanceof Sign sign)) {
                 mechanism.echoError("'sign_sides_contents' mechanism can only be called on Sign blocks.");
             } else {
-                MapTag glowMap = mechanism.valueAsType(MapTag.class);
-                for (Map.Entry<StringHolder, ObjectTag> entry : glowMap.map.entrySet()) {
+                MapTag contentMap = mechanism.valueAsType(MapTag.class);
+                for (Map.Entry<StringHolder, ObjectTag> entry : contentMap.map.entrySet()) {
                     if (EnumHelper.get(Side.class).valuesMapLower.containsKey(entry.getKey().str)) {
                         Side side = Side.valueOf(entry.getKey().toString().toUpperCase());
                         for (int i = 0; i < 4; i++) {
-                            sign.getSide(side).setLine(i, "");
+                            PaperAPITools.instance.setSignLine(sign, side, i, "");
                         }
                         ListTag list = entry.getValue().asType(ListTag.class, mechanism.context);
                         CoreUtilities.fixNewLinesToListSeparation(list);
@@ -4774,10 +4763,9 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                             mechanism.echoError("Sign can only hold four lines!");
                         } else {
                             for (int i = 0; i < list.size(); i++) {
-                                sign.getSide(side).setLine(i, list.get(i));
+                                PaperAPITools.instance.setSignLine(sign, side, i, list.get(i));
                             }
                         }
-                        sign.getSide(side).setGlowingText(entry.getValue().asElement().asBoolean());
                     } else {
                         mechanism.echoError("Unknown sign side " + entry.getKey());
                     }

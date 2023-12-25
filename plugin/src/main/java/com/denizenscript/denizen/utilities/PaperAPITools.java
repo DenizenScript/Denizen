@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -79,10 +80,16 @@ public class PaperAPITools {
         return sign.getLines();
     }
 
+    public String[] getSignLines(Sign sign, Side side) {
+        return sign.getSide(side).getLines();
+    }
+
     public void setSignLine(Sign sign, int line, String text) {
         sign.setLine(line, text == null ? "" : text);
     }
-
+    public void setSignLine(Sign sign, Side side, int line, String text) {
+        sign.getSide(side).setLine(line, text == null ? "" : text);
+    }
     public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt) {
         byte[] hashData = new byte[20];
         for (int i = 0; i < 20; i++) {

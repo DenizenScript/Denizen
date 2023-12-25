@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
+import com.denizenscript.denizen.utilities.MultiVersionHelper1_19;
 import com.denizenscript.denizen.utilities.MultiVersionHelper1_20;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -25,7 +26,7 @@ public class SignCommand extends AbstractCommand {
 
     public SignCommand() {
         setName("sign");
-        setSyntax("sign (type:{automatic}/sign_post/wall_sign) (material:<material>) (side:{front}/back) [<line>|...] [<location>] (direction:north/east/south/west)");
+        setSyntax("sign (type:{automatic}/sign_post/wall_sign/hanging_sign) (material:<material>) (side:{front}/back) [<line>|...] [<location>] (direction:north/east/south/west)");
         setRequiredArguments(1, 5);
         isProcedural = false;
     }
@@ -73,7 +74,7 @@ public class SignCommand extends AbstractCommand {
         tab.addNotesOfType(LocationTag.class);
     }
 
-    private enum Type {AUTOMATIC, SIGN_POST, WALL_SIGN}
+    private enum Type {AUTOMATIC, SIGN_POST, WALL_SIGN, HANGING_SIGN}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -95,13 +96,13 @@ public class SignCommand extends AbstractCommand {
                     && arg.matchesArgumentType(MaterialTag.class)) {
                 scriptEntry.addObject("material", arg.asType(MaterialTag.class));
             }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)
+                    && !scriptEntry.hasObject("side")
+                    && arg.matchesEnum(Side.class)) {
+                scriptEntry.addObject("side", arg.asElement());
+            }
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", arg.asType(ListTag.class));
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)
-                        && !scriptEntry.hasObject("side")
-                        && arg.matchesEnum(Side.class)) {
-                scriptEntry.addObject("side", arg.asElement());
             }
             else {
                 arg.reportUnhandled();
@@ -161,6 +162,9 @@ public class SignCommand extends AbstractCommand {
 
     public static boolean isAnySign(Material material) {
         boolean isSign = isStandingSign(material) || isWallSign(material);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            isSign = isSign || MultiVersionHelper1_19.isAnySign(material);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             isSign = isSign || MultiVersionHelper1_20.isAnySign(material);
         }
@@ -190,6 +194,12 @@ public class SignCommand extends AbstractCommand {
                 }
                 setWallSign(sign, bf, material);
             }
+            else if (type == Type.HANGING_SIGN && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                sign.setType(material == null ? Material.OAK_HANGING_SIGN : material.getMaterial(), false);
+                if (direction != null) {
+                    Utilities.setSignRotation(sign.getState(), direction);
+                }
+            }
             else {
                 sign.setType(material == null ? Material.OAK_SIGN : material.getMaterial(), false);
                 if (direction != null) {
@@ -210,10 +220,8 @@ public class SignCommand extends AbstractCommand {
         String[] textArr = text.toArray(new String[4]);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             ElementTag sideElement = scriptEntry.getObjectTag("side");
-            for (int n = 0; n < 4; n++) {
-                ((Sign) signState).getSide(Side.valueOf(sideElement.asLowerString().toUpperCase())).setLine(n, textArr[n]);
-            }
-            signState.update();
+            Side side = Side.valueOf(sideElement.asLowerString().toUpperCase());
+            Utilities.setSignLines((Sign) signState, side, textArr);
         } else {
             Utilities.setSignLines((Sign) signState, textArr);
         }

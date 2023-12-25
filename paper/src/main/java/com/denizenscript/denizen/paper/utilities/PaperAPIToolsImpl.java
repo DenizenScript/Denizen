@@ -23,6 +23,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -99,8 +100,23 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
+    public String[] getSignLines(Sign sign, Side side) {
+        String[] output = new String[4];
+        int i = 0;
+        for (Component component : sign.getSide(side).lines()) {
+            output[i++] = PaperModule.stringifyComponent(component);
+        }
+        return output;
+    }
+
+    @Override
     public void setSignLine(Sign sign, int line, String text) {
         sign.line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
+    }
+
+    @Override
+    public void setSignLine(Sign sign, Side side, int line, String text) {
+        sign.getSide(side).line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
     }
 
     @Override

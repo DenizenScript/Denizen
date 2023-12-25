@@ -24,13 +24,17 @@ public class MultiVersionHelper1_20 {
             case JUNGLE_HANGING_SIGN:
             case OAK_HANGING_SIGN:
             case SPRUCE_HANGING_SIGN:
+            case MANGROVE_HANGING_SIGN:
             case CHERRY_HANGING_SIGN:
+            case BAMBOO_HANGING_SIGN:
                 return true;
             default:
                 return false;
         }
     }
     public static boolean isAnySign(Material material) {
-        return material == Material.CHERRY_SIGN || material == Material.CHERRY_WALL_SIGN || isAnyHangingSign(material);
+        return material == Material.CHERRY_SIGN || material == Material.CHERRY_WALL_SIGN
+            || material == Material.BAMBOO_SIGN || material == Material.BAMBOO_WALL_SIGN
+            || isAnyHangingSign(material);
     }
 }
