@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.entity.Arrow;
@@ -57,10 +58,10 @@ public class EntityPotionEffects implements Property {
         return new ArrayList<>();
     }
 
-    public ListTag getEffectsListTag() {
+    public ListTag getEffectsListTag(TagContext context) {
         ListTag result = new ListTag();
         for (PotionEffect effect : getEffectsList()) {
-            result.add(ItemPotion.effectToLegacyString(effect));
+            result.add(ItemPotion.effectToLegacyString(effect, context));
         }
         return result;
     }
@@ -103,7 +104,7 @@ public class EntityPotionEffects implements Property {
         // -->
         PropertyParser.registerTag(EntityPotionEffects.class, ListTag.class, "list_effects", (attribute, object) -> {
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
-            return object.getEffectsListTag();
+            return object.getEffectsListTag(attribute.context);
         });
 
         // <--[tag]
