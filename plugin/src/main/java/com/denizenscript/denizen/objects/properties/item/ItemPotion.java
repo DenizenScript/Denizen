@@ -58,7 +58,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             if (potionMeta.hasColor()) {
                 base.putObject("color", BukkitColorExtensions.fromColor(potionMeta.getColor()));
             }
-            result.addObject(base);
+            result.addObject(0, base);
         }
         return result;
     }
