@@ -135,7 +135,7 @@ public class EntityShootsBowScriptEvent extends BukkitScriptEvent implements Lis
             case "bow" -> bow;
             case "projectile" -> projectile;
             case "item" -> new ItemTag(event.getConsumable());
-            case "hand" -> new ElementTag(event.getHand().name());
+            case "hand" -> new ElementTag(event.getHand());
             default -> super.getContext(name);
         };
     }
