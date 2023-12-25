@@ -20,7 +20,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.block.sign.Side;
+//import org.bukkit.block.sign.Side;
 
 public class SignCommand extends AbstractCommand {
 
@@ -97,8 +97,8 @@ public class SignCommand extends AbstractCommand {
                 scriptEntry.addObject("material", arg.asType(MaterialTag.class));
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)
-                    && !scriptEntry.hasObject("side")
-                    && arg.matchesEnum(Side.class)) {
+                    && MultiVersionHelper1_20.isSide(arg.getValue())
+                    && !scriptEntry.hasObject("side")) {
                 scriptEntry.addObject("side", arg.asElement());
             }
             else if (!scriptEntry.hasObject("text")) {
@@ -117,7 +117,7 @@ public class SignCommand extends AbstractCommand {
         scriptEntry.defaultObject("type", new ElementTag(Type.AUTOMATIC));
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            scriptEntry.defaultObject("side", new ElementTag(Side.FRONT));
+            scriptEntry.defaultObject("side", MultiVersionHelper1_20.sideString("FRONT"));
         }
     }
 
@@ -220,8 +220,7 @@ public class SignCommand extends AbstractCommand {
         String[] textArr = text.toArray(new String[4]);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             ElementTag sideElement = scriptEntry.getObjectTag("side");
-            Side side = Side.valueOf(sideElement.asLowerString().toUpperCase());
-            Utilities.setSignLines((Sign) signState, side, textArr);
+            Utilities.setSignLines((Sign) signState, sideElement.asLowerString().toUpperCase(), textArr);
         } else {
             Utilities.setSignLines((Sign) signState, textArr);
         }

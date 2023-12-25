@@ -364,6 +364,13 @@ public class Utilities {
         sign.update();
     }
 
+    public static void setSignLines(Sign sign, String side, String[] lines) {
+        for (int n = 0; n < 4; n++) {
+            PaperAPITools.instance.setSignLine(sign, Side.valueOf(side), n, lines[n]);
+        }
+        sign.update();
+    }
+
     public static void setSignLines(Sign sign, Side side, String[] lines) {
         for (int n = 0; n < 4; n++) {
             PaperAPITools.instance.setSignLine(sign, side, n, lines[n]);
