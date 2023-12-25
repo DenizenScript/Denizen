@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -82,7 +83,7 @@ public class ItemPotion implements Property {
         if (isPotion()) {
             PotionMeta meta = getPotionMeta();
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                base.putObject("base_type", new ElementTag(meta.getBasePotionType().getKey().getKey()));
+                base.putObject("base_type", new ElementTag(Utilities.namespacedKeyToString(meta.getBasePotionType().getKey())));
             }
             if (includeExtras) { // TODO: Eventually remove these 3.
                 base.putObject("type", new ElementTag(meta.getBasePotionData().getType()));
@@ -460,7 +461,7 @@ public class ItemPotion implements Property {
                     MapTag baseEffect = firstObj.asType(MapTag.class, mechanism.context);
                     if (baseEffect.getObject("base_type") != null) {
                         ElementTag baseTypeElement = baseEffect.getElement("base_type");
-                        type = Registry.POTION.get(NamespacedKey.minecraft(baseTypeElement.asLowerString()));
+                        type = Registry.POTION.get(Utilities.parseNamespacedKey(baseTypeElement.asLowerString()));
                         if (type == null && baseTypeElement.matchesEnum(PotionType.class)) {
                             type = baseTypeElement.asEnum(PotionType.class);
                         }
