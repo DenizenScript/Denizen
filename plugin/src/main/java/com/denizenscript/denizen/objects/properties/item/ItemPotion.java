@@ -232,9 +232,8 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         //
         // For potions or tipped arrows (not suspicious stew), the first item in the list must be a MapTag with keys:
         // "base_type" - from <@link url https://minecraft.wiki/w/Potion#Item_data>
-        // "color" - ColorTag (optional, default none)
         //
-        // For example: [base_type=strong_swiftness;color=red]
+        // For example: [base_type=strong_swiftness]
         // This example produces an item labeled as "Potion of Swiftness - Speed II (1:30)"
         //
         // Each following item in the list are potion effects, which must be a MapTag with keys:
@@ -246,8 +245,8 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         // For example: [type=SPEED;amplifier=2;duration=10s;ambient=false;particles=true;icon=true]
         // This example would be a level 3 swiftness potion that lasts 10 seconds.
         //
-        // A very short full default potion item would be: potion[potion_effects=[type=regen]
-        // A (relatively) short full potion item would be: potion[potion_effects=<list[[type=regen]|[type=speed;duration=10s]]>]
+        // A very short full default potion item would be: potion[potion_effects=[base_type=regeneration]
+        // A (relatively) short full potion item would be: potion[potion_effects=<list[[base_type=regeneration]|[type=speed;duration=10s]]>]
         // (Note the list constructor to force data format interpretation, as potion formats can be given multiple ways and the system will get confused without a constructor)
         //
         // @tags
