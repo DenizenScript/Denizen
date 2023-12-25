@@ -1246,7 +1246,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // 1.20+
         // Returns a map of each side and lines on that side.
         // -->
-        tagProcessor.registerTag(ObjectTag.class, "sign_contents", (attribute, object) -> {
+        tagProcessor.registerTag(ListTag.class, "sign_contents", (attribute, object) -> {
             BlockState state = object.getBlockStateForTag(attribute);
             if (!(state instanceof Sign)) {
                 attribute.echoError("Location is not a valid Sign block.");
