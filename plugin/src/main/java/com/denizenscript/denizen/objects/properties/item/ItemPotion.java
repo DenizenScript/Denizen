@@ -325,10 +325,9 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
         PropertyParser.registerTag(ItemPotion.class, ListTag.class, "potion_effects", (attribute, object) -> {
-            BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             ListTag result = new ListTag();
             for (PotionEffect pot : object.getCustomEffects()) {
-                result.add(effectToLegacyString(pot));
+                result.add(effectToLegacyString(pot, attribute.context));
             }
             return result;
         });
@@ -492,7 +491,8 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         }
     }
 
-    public static String effectToLegacyString(PotionEffect effect) {
+    public static String effectToLegacyString(PotionEffect effect, TagContext context) {
+        BukkitImplDeprecations.oldPotionEffects.warn(context);
         return effect.getType().getName() + "," +
                 effect.getAmplifier() + "," +
                 effect.getDuration() + "," +
