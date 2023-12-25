@@ -345,8 +345,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         return false;
     }
 
-    @Override
-    public ListTag getShell() {
+    public ListTag getWalls() {
         int max = Settings.blockTagsMaxBlocks();
         int index = 0;
         ListTag list = new ListTag();
@@ -356,8 +355,8 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             int y_distance = pair.yDistance();
             int z_distance = pair.zDistance();
             int x_distance = pair.xDistance();
-            for (int x = 0; x <= x_distance; x++) {
-                for (int y = 0; y <= y_distance; y++) {
+            for (int y = 0; y <= y_distance; y++) {
+                for (int x = 0; x <= x_distance; x++) {
                     list.addObject(new LocationTag(low.getWorld(), low.getBlockX() + x, low.getBlockY() + y, low.getBlockZ()));
                     list.addObject(new LocationTag(low.getWorld(), low.getBlockX() + x, low.getBlockY() + y, high.getBlockZ()));
                     index++;
@@ -365,16 +364,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                         return list;
                     }
                 }
-                for (int z = 1; z < z_distance; z++) {
-                    list.addObject(new LocationTag(low.getWorld(), low.getBlockX() + x, low.getBlockY(), low.getBlockZ() + z));
-                    list.addObject(new LocationTag(low.getWorld(), low.getBlockX() + x, high.getBlockY(), low.getBlockZ() + z));
-                    index++;
-                    if (index > max) {
-                        return list;
-                    }
-                }
-            }
-            for (int y = 1; y < y_distance; y++) {
                 for (int z = 1; z < z_distance; z++) {
                     list.addObject(new LocationTag(low.getWorld(), low.getBlockX(), low.getBlockY() + y, low.getBlockZ() + z));
                     list.addObject(new LocationTag(low.getWorld(), high.getBlockX(), low.getBlockY() + y, low.getBlockZ() + z));
@@ -385,7 +374,30 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
                 }
             }
         }
+        return list;
+    }
 
+    @Override
+    public ListTag getShell() {
+        int max = Settings.blockTagsMaxBlocks();
+        ListTag list = getWalls();
+        int index = list.size();
+        for (LocationPair pair : pairs) {
+            LocationTag low = pair.low;
+            LocationTag high = pair.high;
+            int z_distance = pair.zDistance();
+            int x_distance = pair.xDistance();
+            for (int x = 1; x < x_distance; x++) {
+                for (int z = 1; z < z_distance; z++) {
+                    list.addObject(new LocationTag(low.getWorld(), low.getBlockX() + x, low.getBlockY(), low.getBlockZ() + z));
+                    list.addObject(new LocationTag(low.getWorld(), low.getBlockX() + x, high.getBlockY(), low.getBlockZ() + z));
+                    index++;
+                    if (index > max) {
+                        return list;
+                    }
+                }
+            }
+        }
         return list;
     }
 
@@ -778,6 +790,19 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             }
             double y = attribute.getDoubleParam();
             return cuboid.getOutline2D(y);
+        });
+
+        // <--[tag]
+        // @attribute <CuboidTag.walls>
+        // @returns ListTag(LocationTag)
+        // @description
+        // Returns each block location on the walls of the CuboidTag - that is, the shell minus top and bottom.
+        // @example
+        // # Plays the "flame" effect at the walls of the cuboid.
+        // - playeffect effect:flame at:<cuboid[my_cuboid].walls> offset:0.0
+        // -->
+        tagProcessor.registerTag(ListTag.class, "walls", (attribute, cuboid) -> {
+            return cuboid.getWalls();
         });
 
         // <--[tag]
