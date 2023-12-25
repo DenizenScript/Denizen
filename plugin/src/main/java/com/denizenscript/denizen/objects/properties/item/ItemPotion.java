@@ -57,7 +57,8 @@ public class ItemPotion implements Property {
 
     ItemTag item;
 
-    public static String stringifyEffect(PotionEffect effect) {
+    public static String stringifyEffect(PotionEffect effect, TagContext context) {
+        BukkitImplDeprecations.oldPotionEffects.warn(context);
         return effect.getType().getName() + "," +
                 effect.getAmplifier() + "," +
                 effect.getDuration() + "," +
@@ -306,10 +307,9 @@ public class ItemPotion implements Property {
         // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
         PropertyParser.registerTag(ItemPotion.class, ListTag.class, "potion_effects", (attribute, object) -> {
-            BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             ListTag result = new ListTag();
             for (PotionEffect pot : object.getCustomEffects()) {
-                result.add(stringifyEffect(pot));
+                result.add(stringifyEffect(pot, attribute.context));
             }
             return result;
         });
