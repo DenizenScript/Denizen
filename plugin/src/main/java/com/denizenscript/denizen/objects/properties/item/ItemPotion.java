@@ -50,13 +50,13 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
                 base.putObject("base_type", new ElementTag(Utilities.namespacedKeyToString(potionMeta.getBasePotionType().getKey()), true));
             }
-            if (includeExtras) { // TODO: Eventually remove these 3.
+            if (includeExtras) { // TODO: Eventually remove these 4
                 base.putObject("type", new ElementTag(potionMeta.getBasePotionData().getType()));
                 base.putObject("upgraded", new ElementTag(potionMeta.getBasePotionData().isUpgraded()));
                 base.putObject("extended", new ElementTag(potionMeta.getBasePotionData().isExtended()));
-            }
-            if (potionMeta.hasColor()) {
-                base.putObject("color", BukkitColorExtensions.fromColor(potionMeta.getColor()));
+                if (potionMeta.hasColor()) {
+                    base.putObject("color", BukkitColorExtensions.fromColor(potionMeta.getColor()));
+                }
             }
             result.addObject(0, base);
         }
@@ -433,7 +433,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
         }
         ColorTag color = null;
-        if (input.getObject("color") != null) {
+        if (input.containsKey("color")) {
             ObjectTag colorObj = input.getObject("color");
             if (colorObj.canBeType(ColorTag.class)) {
                 color = colorObj.asType(ColorTag.class, mechanism.context);
