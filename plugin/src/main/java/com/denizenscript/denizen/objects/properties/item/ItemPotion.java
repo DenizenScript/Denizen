@@ -44,7 +44,8 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
     }
 
     public ListTag getMapTagData(boolean includeExtras) {
-        ListTag result = new ListTag(getCustomEffects(), ItemPotion::effectToMap);
+        List<PotionEffect> potionEffects = getCustomEffects();
+        ListTag result = new ListTag(potionEffects.size() + 1);
         if (getItemMeta() instanceof PotionMeta potionMeta) {
             MapTag base = new MapTag();
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
@@ -58,7 +59,10 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                     base.putObject("color", BukkitColorExtensions.fromColor(potionMeta.getColor()));
                 }
             }
-            result.addObject(0, base);
+            result.addObject(base);
+        }
+        for (PotionEffect potionEffect : potionEffects) {
+            result.addObject(effectToMap(potionEffect));
         }
         return result;
     }
