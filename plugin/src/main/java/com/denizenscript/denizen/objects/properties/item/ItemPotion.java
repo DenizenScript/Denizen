@@ -309,7 +309,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
             return new ElementTag(potionMeta.getBasePotionData().getType().name() + "," + (potionMeta.getBasePotionData().isUpgraded() ? 2 : 1)
-                    + "," + potionMeta.getBasePotionData().isExtended() + "," + (object.object.getBukkitMaterial() == Material.SPLASH_POTION)
+                    + "," + potionMeta.getBasePotionData().isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION)
                     + (potionMeta.hasColor() ? "," + BukkitColorExtensions.fromColor(potionMeta.getColor()).identify() : ""));
         });
 
@@ -347,7 +347,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
             if (attribute.startsWith("is_splash", 2)) {
                 attribute.fulfill(1);
-                return new ElementTag(object.object.getBukkitMaterial() == Material.SPLASH_POTION);
+                return new ElementTag(object.getMaterial() == Material.SPLASH_POTION);
             }
             if (attribute.startsWith("is_extended", 2)) {
                 attribute.fulfill(1);
@@ -396,7 +396,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
             PotionData data = potionMeta.getBasePotionData();
             return new ElementTag(data.getType().name() + "," + (data.isUpgraded() ? 2 : 1)
-                    + "," + data.isExtended() + "," + (object.object.getBukkitMaterial() == Material.SPLASH_POTION));
+                    + "," + data.isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION));
 
         });
     }
