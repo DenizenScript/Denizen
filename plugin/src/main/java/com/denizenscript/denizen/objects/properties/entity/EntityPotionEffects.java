@@ -61,7 +61,7 @@ public class EntityPotionEffects implements Property {
     public ListTag getEffectsListTag(TagContext context) {
         ListTag result = new ListTag();
         for (PotionEffect effect : getEffectsList()) {
-            result.add(ItemPotion.stringifyEffect(effect, context));
+            result.add(ItemPotion.effectToLegacyString(effect, context));
         }
         return result;
     }
@@ -181,7 +181,7 @@ public class EntityPotionEffects implements Property {
                 }
                 else {
                     String effectStr = effectObj.toString();
-                    effect = ItemPotion.parseEffect(effectStr, mechanism.context);
+                    effect = ItemPotion.parseLegacyEffectString(effectStr, mechanism.context);
                 }
                 if (effect == null) {
                     mechanism.echoError("Invalid potion effect '" + effectObj + "'");

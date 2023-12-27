@@ -59,7 +59,7 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         try {
-            event.setEffect(ItemPotion.parseEffect(determinationObj.toString(), getTagContext(path)));
+            event.setEffect(ItemPotion.parseLegacyEffectString(determinationObj.toString(), getTagContext(path)));
             return true;
         }
         catch (Exception e) {
@@ -77,7 +77,7 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "location" -> new LocationTag(event.getBlock().getLocation());
-            case "effect" -> new ElementTag(ItemPotion.stringifyEffect(event.getEffect(), null));
+            case "effect" -> new ElementTag(ItemPotion.effectToLegacyString(event.getEffect(), null));
             case "effect_data" -> ItemPotion.effectToMap(event.getEffect());
             case "effect_type" -> new ElementTag(event.getEffect().getType().getName());
             case "is_primary" -> new ElementTag(event.isPrimary());
