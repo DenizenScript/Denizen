@@ -67,7 +67,8 @@ public class ScoreboardHelper {
                 if (displaySlot == null) {
                     displaySlot = "NONE";
                 }
-                Objective o = board.registerNewObjective(obj, Bukkit.getScoreboardCriteria(criteria), obj);
+                // TODO: When 1.19 is minimum version: Objective o = board.registerNewObjective(obj, Bukkit.getScoreboardCriteria(criteria), obj);
+                Objective o = board.registerNewObjective(obj, criteria);
                 if (Argument.valueOf(displaySlot).matchesEnum(DisplaySlot.class)) {
                     o.setDisplaySlot(DisplaySlot.valueOf(displaySlot.toUpperCase()));
                 }
