@@ -1,16 +1,16 @@
 package com.denizenscript.denizen.nms.v1_17.helpers;
 
+import com.denizenscript.denizen.nms.interfaces.BlockHelper;
+import com.denizenscript.denizen.nms.util.PlayerProfile;
+import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.denizenscript.denizen.nms.interfaces.BlockHelper;
-import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -26,10 +26,16 @@ import org.bukkit.Color;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.*;
+import org.bukkit.block.Bell;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_17_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.block.*;
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlockEntityState;
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlockState;
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftSkull;
 import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
@@ -139,19 +145,6 @@ public class BlockHelperImpl implements BlockHelper {
             return 0;
         }
         return ReflectionHelper.getFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, ReflectionMappingsInfo.BlockBehaviour_explosionResistance, block);
-    }
-
-    @Override
-    public org.bukkit.block.BlockState generateBlockState(Block block, Material mat) {
-        try {
-            CraftBlockState state = (CraftBlockState) CRAFTBLOCKSTATE_CONSTRUCTOR.invoke(block);
-            state.setData(CraftMagicNumbers.getBlock(mat).defaultBlockState());
-            return state;
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-            return null;
-        }
     }
 
     public static final MethodHandle CRAFTBLOCKSTATE_CONSTRUCTOR = ReflectionHelper.getConstructor(CraftBlockState.class, Block.class);

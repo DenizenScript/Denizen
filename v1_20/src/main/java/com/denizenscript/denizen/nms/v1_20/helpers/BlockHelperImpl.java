@@ -35,7 +35,10 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Instrument;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
@@ -49,7 +52,6 @@ import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R3.tag.CraftBlockTag;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftMagicNumbers;
-import org.bukkit.entity.Player;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -150,19 +152,6 @@ public class BlockHelperImpl implements BlockHelper {
             return 0;
         }
         return ReflectionHelper.getFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, ReflectionMappingsInfo.BlockBehaviour_explosionResistance, block);
-    }
-
-    @Override
-    public org.bukkit.block.BlockState generateBlockState(Block block, Material mat) {
-        try {
-            CraftBlockState state = (CraftBlockState) CRAFTBLOCKSTATE_CONSTRUCTOR.invoke(block);
-            state.setData(getMaterialBlockState(mat));
-            return state;
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-            return null;
-        }
     }
 
     public static final MethodHandle CRAFTBLOCKSTATE_CONSTRUCTOR = ReflectionHelper.getConstructor(CraftBlockState.class, Block.class);
