@@ -438,6 +438,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 setBlock(location, material, doPhysics, natural);
                 if (callEvent(new BlockPlaceEvent(block, originalState, block, new ItemStack(material.getMaterial()), source, true, EquipmentSlot.HAND), entry)) {
                     originalState.update(true, doPhysics);
+                    return;
                 }
             }
         }
