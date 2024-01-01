@@ -30,8 +30,6 @@ public interface BlockHelper {
 
     float getBlockResistance(Material material);
 
-    BlockState generateBlockState(Block block, Material mat);
-
     enum PistonPushReaction {
         NORMAL, DESTROY, BLOCK, IGNORE, PUSH_ONLY;
         public static final PistonPushReaction[] VALUES = values();
