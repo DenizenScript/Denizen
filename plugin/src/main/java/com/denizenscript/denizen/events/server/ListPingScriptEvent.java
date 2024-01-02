@@ -54,7 +54,6 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
         registerCouldMatcher("server list ping");
     }
 
-
     public ServerListPingEvent event;
 
     // Despite the 'cached' class name, there's no actual internal cache.
