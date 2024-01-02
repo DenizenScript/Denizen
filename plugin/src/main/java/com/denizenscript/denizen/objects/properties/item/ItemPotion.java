@@ -51,6 +51,9 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
                 base.putObject("base_type", new ElementTag(Utilities.namespacedKeyToString(potionMeta.getBasePotionType().getKey()), true));
             }
+            else {
+                includeExtras = true;
+            }
             if (includeExtras) { // TODO: Eventually remove these 4
                 base.putObject("type", new ElementTag(potionMeta.getBasePotionData().getType()));
                 base.putObject("upgraded", new ElementTag(potionMeta.getBasePotionData().isUpgraded()));
