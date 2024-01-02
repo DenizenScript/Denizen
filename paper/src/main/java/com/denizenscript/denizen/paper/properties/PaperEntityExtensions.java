@@ -148,6 +148,7 @@ public class PaperEntityExtensions {
             // @description
             // Damages the given equipment slot for the given amount.
             // This runs all vanilla logic associated with damaging an item like gamemode and enchantment checks, events, stat changes, advancement triggers, and notifying clients to play break animations.
+            // Input is a map with "slot" as a valid equipment slot, and "amount" as the damage amount to be dealt.
             // Valid equipment slot values can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlot.html>.
             //
             // @example
