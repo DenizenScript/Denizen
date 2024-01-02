@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
@@ -46,30 +47,27 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // "VERSION_NAME:<ElementTag>" to change the server's version name (only on Paper).
     // "EXCLUDE_PLAYERS:<ListTag(PlayerTag)>" to exclude a set of players from showing in the player count or preview of online players (only on Paper).
     // "ALTERNATE_PLAYER_TEXT:<ListTag>" to set custom text for the player list section of the server status (only on Paper). (Requires "Allow restricted actions" in Denizen/config.yml). Usage of this to present lines that look like player names (but aren't) is forbidden.
+    // "NUM_PLAYERS:<ElementTag(Number)>" to change the number of online players that is displayed (only on Paper).
     // ElementTag to change the MOTD that will show.
     //
     // -->
 
     public ListPingScriptEvent() {
         registerCouldMatcher("server list ping");
-    }
-
-
-    public ServerListPingEvent event;
-
-    // Despite the 'cached' class name, there's no actual internal cache.
-    public static HashMap<String, CachedServerIcon> iconCache = new HashMap<>();
-
-    public void setMotd(String text) {
-        event.setMotd(text);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        String determineLow = CoreUtilities.toLowerCase(determination);
-        if (determineLow.startsWith("icon:")) {
-            String iconFile = determination.substring("icon:".length());
+        this.<ListPingScriptEvent, ListTag>registerOptionalDetermination(null, ListTag.class, (evt, context, list) -> {
+            if (ArgumentHelper.matchesInteger(list.get(0))) {
+                evt.event.setMaxPlayers(Integer.parseInt(list.get(0)));
+                if (list.size() == 2) {
+                    setMotd(list.get(1));
+                }
+            }
+            else {
+                setMotd(list.get(0));
+            }
+            return true;
+        });
+        this.<ListPingScriptEvent, ElementTag>registerOptionalDetermination("icon", ElementTag.class, (evt, context, iconPath) -> {
+            String iconFile = iconPath.toString();
             CachedServerIcon icon = iconCache.get(iconFile);
             if (icon != null) {
                 event.setServerIcon(icon);
@@ -89,40 +87,31 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
             if (icon != null) {
                 iconCache.put(iconFile, icon);
                 event.setServerIcon(icon);
+                return true;
             }
-            return true;
-        }
-        if (determination.length() > 0 && !determineLow.equalsIgnoreCase("none")) {
-            List<String> values = CoreUtilities.split(determination, '|', 2);
-            if (ArgumentHelper.matchesInteger(values.get(0))) {
-                event.setMaxPlayers(Integer.parseInt(values.get(0)));
-                if (values.size() == 2) {
-                    setMotd(values.get(1));
-                }
-            }
-            else {
-                setMotd(determination);
-            }
-            return true;
-        }
-        else {
-            return super.applyDetermination(path, determinationObj);
-        }
+            return false;
+        });
+    }
+
+
+    public ServerListPingEvent event;
+
+    // Despite the 'cached' class name, there's no actual internal cache.
+    public static HashMap<String, CachedServerIcon> iconCache = new HashMap<>();
+
+    public void setMotd(String text) {
+        event.setMotd(text);
     }
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "motd":
-                return new ElementTag(event.getMotd());
-            case "max_players":
-                return new ElementTag(event.getMaxPlayers());
-            case "num_players":
-                return new ElementTag(event.getNumPlayers());
-            case "address":
-                return new ElementTag(event.getAddress().toString());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "motd" -> new ElementTag(event.getMotd());
+            case "max_players" -> new ElementTag(event.getMaxPlayers());
+            case "num_players" -> new ElementTag(event.getNumPlayers());
+            case "address" -> new ElementTag(event.getAddress().toString());
+            default -> super.getContext(name);
+        };
     }
 
     public void syncFire(ServerListPingEvent event) {
