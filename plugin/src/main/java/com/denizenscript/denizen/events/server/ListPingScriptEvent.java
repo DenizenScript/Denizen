@@ -47,7 +47,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // "VERSION_NAME:<ElementTag>" to change the server's version name (only on Paper).
     // "EXCLUDE_PLAYERS:<ListTag(PlayerTag)>" to exclude a set of players from showing in the player count or preview of online players (only on Paper).
     // "ALTERNATE_PLAYER_TEXT:<ListTag>" to set custom text for the player list section of the server status (only on Paper). (Requires "Allow restricted actions" in Denizen/config.yml). Usage of this to present lines that look like player names (but aren't) is forbidden.
-    // "NUM_PLAYERS:<ElementTag(Number)>" to change the number of online players that is displayed (only on Paper).
+    // "NUM_PLAYERS:<ElementTag(Number)>" to change the number of online players that are displayed (only on Paper).
     // ElementTag to change the MOTD that will show.
     //
     // -->
