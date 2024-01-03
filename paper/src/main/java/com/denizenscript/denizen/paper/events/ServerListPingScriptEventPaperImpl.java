@@ -106,8 +106,7 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
             case "motd" -> new ElementTag(PaperModule.stringifyComponent(event.motd()));
             case "protocol_version" -> new ElementTag(((PaperServerListPingEvent) event).getProtocolVersion());
             case "version_name" -> new ElementTag(((PaperServerListPingEvent) event).getVersion());
-            case "client_protocol_version" ->
-                    new ElementTag(((PaperServerListPingEvent) event).getClient().getProtocolVersion());
+            case "client_protocol_version" -> new ElementTag(((PaperServerListPingEvent) event).getClient().getProtocolVersion());
             default -> super.getContext(name);
         };
     }
