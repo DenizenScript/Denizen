@@ -39,13 +39,13 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.client_protocol_version> returns the client's protocol version ID (only on Paper).
     //
     // @Determine
-    // ElementTag(Number) to change the max player amount that will show.
+    // "MAX_PLAYERS:<ElementTag(Number)>" to change the max player amount that will show.
     // "ICON:<ElementTag>" of a file path to an icon image, to change the icon that will display.
     // "PROTOCOL_VERSION:<ElementTag(Number)>" to change the protocol ID number of the server's version (only on Paper).
     // "VERSION_NAME:<ElementTag>" to change the server's version name (only on Paper).
     // "EXCLUDE_PLAYERS:<ListTag(PlayerTag)>" to exclude a set of players from showing in the player count or preview of online players (only on Paper).
     // "ALTERNATE_PLAYER_TEXT:<ListTag>" to set custom text for the player list section of the server status (only on Paper). (Requires "Allow restricted actions" in Denizen/config.yml). Usage of this to present lines that look like player names (but aren't) is forbidden.
-    // ElementTag to change the MOTD that will show.
+    // "MOTD:<ElementTag>" to change the MOTD that will show.
     //
     // -->
 
@@ -61,6 +61,17 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
             else {
                 setMotd(list.get(0));
             }
+            return true;
+        });
+        this.<ListPingScriptEvent, ElementTag>registerOptionalDetermination("max_players", ElementTag.class, (evt, context, max) -> {
+            if (max.isInt()) {
+                evt.event.setMaxPlayers(max.asInt());
+                return true;
+            }
+            return false;
+        });
+        this.<ListPingScriptEvent, ElementTag>registerOptionalDetermination("motd", ElementTag.class, (evt, context, motd) -> {
+            setMotd(motd.toString());
             return true;
         });
         this.<ListPingScriptEvent, ElementTag>registerOptionalDetermination("icon", ElementTag.class, (evt, context, iconPath) -> {
