@@ -140,6 +140,20 @@ public class PaperEntityExtensions {
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
 
+            // <--[tag]
+            // @attribute <EntityTag.collides_at[<location>]>
+            // @returns ElementTag(Boolean)
+            // @group properties
+            // @Plugin Paper
+            // @description
+            // Returns whether the entity's bounding box would collide at the given LocationTag.
+            // This checks for any colliding entities (like boats and shulkers), the world border and regular blocks.
+            // It will not load chunks that are within the entity's bounding box at the given location.
+            // -->
+            EntityTag.tagProcessor.registerTag(ElementTag.class, LocationTag.class, "collides_at", (attribute, entity, location) -> {
+                return new ElementTag(entity.getBukkitEntity().collidesAt(location));
+            });
+
             // <--[mechanism]
             // @object EntityTag
             // @name damage_item
