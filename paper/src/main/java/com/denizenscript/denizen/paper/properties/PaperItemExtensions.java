@@ -10,7 +10,7 @@ public class PaperItemExtensions {
         // <--[tag]
         // @attribute <ItemTag.rarity>
         // @returns ElementTag
-        // @group properties
+        // @group paper
         // @Plugin Paper
         // @description
         // Returns the rarity of an item, as "common", "uncommon", "rare", or "epic".

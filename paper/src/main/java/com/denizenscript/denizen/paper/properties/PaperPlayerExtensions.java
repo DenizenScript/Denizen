@@ -17,7 +17,7 @@ public class PaperPlayerExtensions {
         // @attribute <PlayerTag.affects_monster_spawning>
         // @returns ElementTag(Boolean)
         // @mechanism PlayerTag.affects_monster_spawning
-        // @group properties
+        // @group paper
         // @Plugin Paper
         // @description
         // Returns whether the player affects monster spawning. When false, no monsters will spawn naturally because of this player.
@@ -31,6 +31,7 @@ public class PaperPlayerExtensions {
         // @name affects_monster_spawning
         // @input ElementTag(Boolean)
         // @Plugin Paper
+        // @group paper
         // @description
         // Sets whether this player affects monster spawning. When false, no monsters will spawn naturally because of this player.
         // @tags
@@ -47,6 +48,7 @@ public class PaperPlayerExtensions {
         // @name firework_boost
         // @input ItemTag
         // @Plugin Paper
+        // @group paper
         // @description
         // Firework boosts the player with the specified firework rocket.
         // The player must be gliding.
@@ -68,6 +70,7 @@ public class PaperPlayerExtensions {
         // @name fake_op_level
         // @input ElementTag(Number)
         // @Plugin Paper
+        // @group paper
         // @description
         // Sends a fake operator level to the client, enabling clientside op-required features like the debug gamemode hotkey (F3+F4).
         // Input should be a number from 0 to 4, 0 indicating not op and 4 indicating maximum level op.
@@ -86,7 +89,7 @@ public class PaperPlayerExtensions {
             // @attribute <PlayerTag.flying_fall_damage>
             // @returns ElementTag(Boolean)
             // @mechanism PlayerTag.flying_fall_damage
-            // @group properties
+            // @group paper
             // @Plugin Paper
             // @description
             // Returns whether the player will take fall damage while <@link tag PlayerTag.can_fly> is true.
@@ -100,6 +103,7 @@ public class PaperPlayerExtensions {
             // @name add_tab_completions
             // @input ListTag
             // @Plugin Paper
+            // @group paper
             // @description
             // Adds custom tab completions that will be suggested to the player when typing in chat.
             // Tab completions added by this mechanism can be removed using <@link mechanism PlayerTag.remove_tab_completions>.
@@ -113,6 +117,7 @@ public class PaperPlayerExtensions {
             // @name remove_tab_completions
             // @input ListTag
             // @Plugin Paper
+            // @group paper
             // @description
             // Removes custom tab completions added by <@link mechanism PlayerTag.add_tab_completions>.
             // -->
@@ -125,6 +130,7 @@ public class PaperPlayerExtensions {
             // @name flying_fall_damage
             // @input ElementTag(Boolean)
             // @Plugin Paper
+            // @group paper
             // @description
             // Sets whether the player will take fall damage while <@link mechanism PlayerTag.can_fly> is true.
             // @tags

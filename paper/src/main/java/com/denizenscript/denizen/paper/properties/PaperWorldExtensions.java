@@ -12,7 +12,7 @@ public class PaperWorldExtensions  {
         // @attribute <WorldTag.no_tick_view_distance>
         // @returns ElementTag(Number)
         // @mechanism WorldTag.no_tick_view_distance
-        // @group properties
+        // @group paper
         // @deprecated replaced by Minecraft's simulation_distance and view_distance config pairing
         // @Plugin Paper
         // @description
@@ -28,6 +28,7 @@ public class PaperWorldExtensions  {
         // @name view_distance
         // @input ElementTag(Number)
         // @Plugin Paper
+        // @group paper
         // @description
         // Sets this world's view distance. All chunks within this radius of a player will be visible to that player.
         // Input should be a number from 2 to 32.
@@ -53,6 +54,7 @@ public class PaperWorldExtensions  {
         // @name simulation_distance
         // @input ElementTag(Number)
         // @Plugin Paper
+        // @group paper
         // @description
         // Sets this world's view distance. All chunks within this radius will be tracked by the server.
         // Input should be a number from 2 to 32.
@@ -78,6 +80,7 @@ public class PaperWorldExtensions  {
         // @name no_tick_view_distance
         // @input ElementTag(Number)
         // @Plugin Paper
+        // @group paper
         // @deprecated replaced by Minecraft's simulation_distance and view_distance config pairing
         // @description
         // Deprecated: replaced by Minecraft's simulation_distance and view_distance config pairing

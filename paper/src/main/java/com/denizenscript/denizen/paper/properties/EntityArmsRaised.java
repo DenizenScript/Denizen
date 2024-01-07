@@ -63,6 +63,7 @@ public class EntityArmsRaised implements Property {
         // @name arms_raised
         // @input ElementTag(Boolean)
         // @Plugin Paper
+        // @group properties
         // @deprecated use 'aggressive'
         // @description
         // Deprecated in favor of <@link mechanism EntityTag.aggressive>.

@@ -22,7 +22,7 @@ public class PaperEntityExtensions {
         // <--[tag]
         // @attribute <EntityTag.spawn_reason>
         // @returns ElementTag
-        // @group properties
+        // @group paper
         // @Plugin Paper
         // @description
         // Returns the entity's spawn reason.
@@ -35,7 +35,7 @@ public class PaperEntityExtensions {
         // <--[tag]
         // @attribute <EntityTag.xp_spawn_reason>
         // @returns ElementTag
-        // @group properties
+        // @group paper
         // @Plugin Paper
         // @description
         // If the entity is an experience orb, returns its spawn reason.
@@ -52,7 +52,7 @@ public class PaperEntityExtensions {
         // <--[tag]
         // @attribute <EntityTag.xp_trigger>
         // @returns EntityTag
-        // @group properties
+        // @group paper
         // @Plugin Paper
         // @description
         // If the entity is an experience orb, returns the entity that triggered it spawning (if any).
@@ -77,7 +77,7 @@ public class PaperEntityExtensions {
         // <--[tag]
         // @attribute <EntityTag.xp_source>
         // @returns EntityTag
-        // @group properties
+        // @group paper
         // @Plugin Paper
         // @description
         // If the entity is an experience orb, returns the entity that it was created from (if any).
@@ -102,7 +102,7 @@ public class PaperEntityExtensions {
         // <--[tag]
         // @attribute <EntityTag.spawn_location>
         // @returns LocationTag
-        // @group properties
+        // @group paper
         // @Plugin Paper
         // @description
         // Returns the initial spawn location of this entity.
@@ -115,7 +115,7 @@ public class PaperEntityExtensions {
         // <--[tag]
         // @attribute <EntityTag.from_spawner>
         // @returns ElementTag(Boolean)
-        // @group properties
+        // @group paper
         // @Plugin Paper
         // @description
         // Returns whether the entity was spawned from a spawner.
@@ -129,6 +129,7 @@ public class PaperEntityExtensions {
         // @name goat_ram
         // @input EntityTag
         // @Plugin Paper
+        // @group paper
         // @description
         // Causes a goat to ram the specified entity.
         // -->
@@ -143,12 +144,12 @@ public class PaperEntityExtensions {
             // <--[tag]
             // @attribute <EntityTag.collides_at[<location>]>
             // @returns ElementTag(Boolean)
-            // @group properties
+            // @group paper
             // @Plugin Paper
             // @description
-            // Returns whether the entity's bounding box would collide at the given LocationTag.
+            // Returns whether the entity's bounding box would collide if the entity was moved to the given location.
             // This checks for any colliding entities (like boats and shulkers), the world border and regular blocks.
-            // It will not load chunks that are within the entity's bounding box at the given location.
+            // (Note that this won't load chunks at the location.)
             // -->
             EntityTag.tagProcessor.registerTag(ElementTag.class, LocationTag.class, "collides_at", (attribute, entity, location) -> {
                 return new ElementTag(entity.getBukkitEntity().collidesAt(location));
@@ -159,6 +160,7 @@ public class PaperEntityExtensions {
             // @name damage_item
             // @input MapTag
             // @Plugin Paper
+            // @group paper
             // @description
             // Damages the given equipment slot for the given amount.
             // This runs all vanilla logic associated with damaging an item like gamemode and enchantment checks, events, stat changes, advancement triggers, and notifying clients to play break animations.

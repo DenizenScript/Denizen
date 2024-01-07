@@ -68,6 +68,7 @@ public class EntityCarryingEgg implements Property {
         // @name carrying_egg
         // @input ElementTag(Boolean)
         // @Plugin Paper
+        // @group properties
         // @description
         // If the entity is a turtle, sets whether it is carrying an egg.
         // @tags
