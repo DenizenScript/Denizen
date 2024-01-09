@@ -37,7 +37,7 @@ public class EntitySpellCastScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!path.tryArgObject(0, new EntityTag(event.getEntity()))) {
+        if (!path.tryArgObject(0, entity)) {
             return false;
         }
         if (!path.eventArgLowerAt(2).equals("spell") && !runGenericCheck(path.eventArgLowerAt(2), event.getSpell().toString())) {
