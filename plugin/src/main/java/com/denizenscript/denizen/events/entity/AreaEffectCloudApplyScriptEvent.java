@@ -4,7 +4,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
@@ -38,13 +37,7 @@ public class AreaEffectCloudApplyScriptEvent extends BukkitScriptEvent implement
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "entity" -> entity;
-            case "affected_entities" -> {
-                ListTag list = new ListTag();
-                for (Entity entity : event.getAffectedEntities()) {
-                    list.addObject(new EntityTag(entity));
-                }
-                yield list;
-            }
+            case "affected_entities" -> new ListTag(event.getAffectedEntities(), EntityTag::new);
             default -> super.getContext(name);
         };
     }
