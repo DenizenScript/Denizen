@@ -129,6 +129,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(EntityShootsBowScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySpawnerSpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySpawnScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntitySpellCastScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySwimScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityTamesScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityTargetsScriptEvent.class);
