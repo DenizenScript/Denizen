@@ -94,6 +94,7 @@ public class ScriptEventRegistry {
         }
 
         // Entity events
+        ScriptEvent.registerScriptEvent(AreaEffectCloudApplyScriptEvent.class);
         if (!Denizen.supportsPaper) {
             ScriptEvent.registerScriptEvent(AreaEnterExitScriptEvent.class);
         }
