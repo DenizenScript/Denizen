@@ -26,13 +26,13 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
     public ServerListPingScriptEventPaperImpl() {
         this.<ServerListPingScriptEventPaperImpl, ElementTag>registerOptionalDetermination("protocol_version", ElementTag.class, (evt, context, version) -> {
             if (version.isInt()) {
-                ((PaperServerListPingEvent) event).setProtocolVersion(version.asInt());
+                ((PaperServerListPingEvent) evt.event).setProtocolVersion(version.asInt());
                 return true;
             }
             return false;
         });
         this.<ServerListPingScriptEventPaperImpl, ElementTag>registerOptionalDetermination("version_name", ElementTag.class, (evt, context, name) -> {
-            ((PaperServerListPingEvent) event).setVersion(name.toString());
+            ((PaperServerListPingEvent) evt.event).setVersion(name.toString());
             return true;
         });
         this.<ServerListPingScriptEventPaperImpl, ListTag>registerOptionalDetermination("exclude_players", ListTag.class, (evt, context, list) -> {
@@ -40,7 +40,7 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
             for (PlayerTag player : list.filter(PlayerTag.class, context)) {
                 exclusions.add(player.getUUID());
             }
-            Iterator<Player> players = ((PaperServerListPingEvent) event).iterator();
+            Iterator<Player> players = ((PaperServerListPingEvent) evt.event).iterator();
             while (players.hasNext()) {
                 if (exclusions.contains(players.next().getUniqueId())) {
                     players.remove();
@@ -53,11 +53,11 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
                 Debug.echoError("Cannot use 'alternate_player_text' in list ping event: 'Allow restricted actions' is disabled in Denizen config.yml.");
                 return false;
             }
-            ((PaperServerListPingEvent) event).getPlayerSample().clear();
+            ((PaperServerListPingEvent) evt.event).getPlayerSample().clear();
             for (String line : text) {
                 FakeProfile lineProf = new FakeProfile();
                 lineProf.setName(line);
-                ((PaperServerListPingEvent) event).getPlayerSample().add(lineProf);
+                ((PaperServerListPingEvent) evt.event).getPlayerSample().add(lineProf);
             }
             return true;
         });
