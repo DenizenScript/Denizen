@@ -12,22 +12,34 @@ public class AreaEffectCloudApplyScriptEvent extends BukkitScriptEvent implement
 
     // <--[event]
     // @Events
-    // area cloud applies effects
+    // area effect cloud applies
     //
     // @Group Entity
     //
     // @Cancellable true
     //
-    // @Triggers when a lingering potion's area cloud applies its effect to an entity, and every five ticks after.
+    // @Triggers when an area_effect_cloud tries to apply its effect(s) to entities within range.
+    //
+    // @Warning
+    // This runs every 5 ticks if there are any entities in the area effect cloud's bounding box. Prefer <@link event entity potion effects modified> for listening to normal potion effect changes.
     //
     // @Context
-    // <context.entity> returns the EntityTag of the area cloud.
-    // <context.affected_entities> returns a ListTag(EntityTag) of entities affected by the lingering potion's area cloud.
+    // <context.entity> returns the EntityTag of the area effect cloud.
+    // <context.affected_entities> returns a ListTag of EntityTags affected by the area effect cloud. Note that this can be empty, and only lists which entities are currently being refreshed.
+    //
+    // @Determine
+    // "AFFECTED_ENTITIES:<ListTag(EntityTag)>" to determine the entities that will be affected by the area effect cloud.
     //
     // -->
 
     public AreaEffectCloudApplyScriptEvent() {
-        registerCouldMatcher("area cloud applies effects");
+        registerCouldMatcher("area effect cloud applies");
+        this.<AreaEffectCloudApplyScriptEvent, ListTag>registerDetermination("affected_entities", ListTag.class, (evt, context, list) -> {
+            evt.event.getAffectedEntities().clear();
+            for (EntityTag entity : list.filter(EntityTag.class, context)) {
+                evt.event.getAffectedEntities().add(entity.getLivingEntity());
+            }
+        });
     }
 
     public AreaEffectCloudApplyEvent event;
