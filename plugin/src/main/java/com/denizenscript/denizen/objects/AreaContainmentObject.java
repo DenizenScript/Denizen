@@ -374,14 +374,12 @@ public interface AreaContainmentObject extends ObjectTag {
     }
 
     default boolean areaBaseAdvancedMatches(String matcher) {
-        String matcherLow = CoreUtilities.toLowerCase(matcher);
-        if (matcherLow.startsWith("area_flagged:")) {
-            AbstractFlagTracker tracker = ((FlaggableObject) this).getFlagTracker();
-            return tracker != null && tracker.hasFlag(matcher.substring("area_flagged:".length()));
-        }
-        if (getNoteName() != null && BukkitScriptEvent.runGenericCheck(matcher, getNoteName())) {
-            return true;
-        }
-        return false;
+        return getNoteName() != null && BukkitScriptEvent.createMatcher(matcher).doesMatch(getNoteName(), text -> {
+            if (text.startsWith("area_flagged:")) {
+                AbstractFlagTracker tracker = ((FlaggableObject) this).getFlagTracker();
+                return tracker != null && tracker.hasFlag(text.substring("area_flagged:".length()));
+            }
+            return false;
+        });
     }
 }
