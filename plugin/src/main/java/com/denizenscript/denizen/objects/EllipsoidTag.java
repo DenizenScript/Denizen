@@ -1,22 +1,21 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
-import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
-import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.notable.NoteManager;
-import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
+import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainmentObject, FlaggableObject, Adjustable {
+public class EllipsoidTag implements AreaContainmentObject, Notable, Cloneable, Adjustable {
 
     // <--[ObjectType]
     // @name EllipsoidTag
@@ -402,8 +401,6 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     }
 
     public static void register() {
-
-        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         AreaContainmentObject.register(EllipsoidTag.class, tagProcessor);
 
         // <--[tag]

@@ -4,7 +4,6 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
-import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, AreaContainmentObject, FlaggableObject {
+public class PolygonTag implements AreaContainmentObject, Notable, Cloneable, Adjustable {
 
     // <--[ObjectType]
     // @name PolygonTag
@@ -612,8 +611,6 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     }
 
     public static void register() {
-
-        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         AreaContainmentObject.register(PolygonTag.class, tagProcessor);
 
         // <--[tag]
