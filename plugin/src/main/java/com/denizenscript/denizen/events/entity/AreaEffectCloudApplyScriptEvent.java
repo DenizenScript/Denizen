@@ -18,7 +18,7 @@ public class AreaEffectCloudApplyScriptEvent extends BukkitScriptEvent implement
     //
     // @Cancellable true
     //
-    // @Triggers when an area_effect_cloud tries to apply its effect(s) to entities within range.
+    // @Triggers when an area effect cloud tries to apply its effect(s) to entities within range.
     //
     // @Warning
     // This runs every 5 ticks if there are any entities in the area effect cloud's bounding box. Prefer <@link event entity potion effects modified> for listening to normal potion effect changes.
