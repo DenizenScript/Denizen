@@ -1913,7 +1913,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Immediately saves the Denizen saves files.
         // -->
         tagProcessor.registerMechanism("save", false, (object, mechanism) -> {
-            DenizenCore.saveAll();
+            DenizenCore.saveAll(false);
             Denizen.getInstance().saveSaves(false);
         });
 

@@ -549,7 +549,7 @@ public class Denizen extends JavaPlugin {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + scoreboardsConfigFile, ex);
         }
         PlayerFlagHandler.saveAllNow(lockUntilDone);
-        worldFlags.saveAll();
+        worldFlags.saveAll(lockUntilDone);
         RunLaterCommand.saveToFile(!lockUntilDone);
     }
 
