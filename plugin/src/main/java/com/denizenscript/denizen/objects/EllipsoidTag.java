@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class EllipsoidTag implements AreaContainmentObject, Notable, Cloneable, Adjustable {
+public class EllipsoidTag implements AreaContainmentObject, Notable, Cloneable, Adjustable, FlaggableObject {
 
     // <--[ObjectType]
     // @name EllipsoidTag
@@ -401,6 +402,7 @@ public class EllipsoidTag implements AreaContainmentObject, Notable, Cloneable, 
     }
 
     public static void register() {
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         AreaContainmentObject.register(EllipsoidTag.class, tagProcessor);
 
         // <--[tag]

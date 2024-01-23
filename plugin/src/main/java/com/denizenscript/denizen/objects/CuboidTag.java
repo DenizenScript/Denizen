@@ -4,6 +4,7 @@ import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
+import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -29,7 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class CuboidTag implements AreaContainmentObject, Notable, Cloneable, Adjustable {
+public class CuboidTag implements AreaContainmentObject, Notable, Cloneable, Adjustable, FlaggableObject {
 
     // <--[ObjectType]
     // @name CuboidTag
@@ -722,6 +723,7 @@ public class CuboidTag implements AreaContainmentObject, Notable, Cloneable, Adj
     }
 
     public static void register() {
+        AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         AreaContainmentObject.register(CuboidTag.class, tagProcessor);
 
         // <--[tag]

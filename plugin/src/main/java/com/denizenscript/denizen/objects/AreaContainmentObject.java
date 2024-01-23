@@ -8,6 +8,7 @@ import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.Attribute;
@@ -22,7 +23,7 @@ import org.bukkit.entity.LivingEntity;
 
 import java.util.function.Predicate;
 
-public interface AreaContainmentObject extends FlaggableObject {
+public interface AreaContainmentObject extends ObjectTag {
 
     // <--[ObjectType]
     // @name AreaObject
@@ -87,8 +88,7 @@ public interface AreaContainmentObject extends FlaggableObject {
         return blocks;
     }
 
-    static <T extends AreaContainmentObject> void register(Class<T> type,  ObjectTagProcessor<T> processor) {
-        AbstractFlagTracker.registerFlagHandlers(processor);
+    static <T extends AreaContainmentObject> void register(Class<T> type, ObjectTagProcessor<T> processor) {
 
         // <--[tag]
         // @attribute <AreaObject.bounding_box>
@@ -363,8 +363,8 @@ public interface AreaContainmentObject extends FlaggableObject {
 
     default boolean areaBaseAdvancedMatches(String matcher) {
         return getNoteName() != null && BukkitScriptEvent.createMatcher(matcher).doesMatch(getNoteName(), text -> {
-            if (text.startsWith("area_flagged:")) {
-                AbstractFlagTracker tracker = getFlagTracker();
+            if (this instanceof FlaggableObject flaggableObject && text.startsWith("area_flagged:")) {
+                AbstractFlagTracker tracker = flaggableObject.getFlagTracker();
                 return tracker != null && tracker.hasFlag(text.substring("area_flagged:".length()));
             }
             return false;
