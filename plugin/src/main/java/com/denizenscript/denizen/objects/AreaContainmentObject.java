@@ -192,7 +192,7 @@ public interface AreaContainmentObject extends ObjectTag {
         processor.registerTag(ListTag.class, "living_entities", (attribute, area) -> {
             return new ListTag(area.getCuboidBoundary().getEntitiesPossiblyWithinForTag(),
                     entity -> entity instanceof LivingEntity && !EntityTag.isCitizensNPC(entity) && area.doesContainLocation(entity.getLocation()),
-                    entity -> new EntityTag(entity).getDenizenObject());
+                    EntityTag::mirrorBukkitEntity);
         });
 
         // <--[tag]

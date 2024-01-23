@@ -145,6 +145,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         rememberedEntities.remove(entity.getUniqueId());
     }
 
+    public static EntityFormObject mirrorBukkitEntity(Entity entity) {
+        return new EntityTag(entity).getDenizenObject();
+    }
+
     public static boolean isNPC(Entity entity) {
         return entity != null && entity.hasMetadata("NPC") && entity.getMetadata("NPC").get(0).asBoolean();
     }
