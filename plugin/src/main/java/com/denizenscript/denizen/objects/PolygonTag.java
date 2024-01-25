@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class PolygonTag implements AreaContainmentObject, Notable, Cloneable, Adjustable, FlaggableObject {
+public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, AreaContainmentObject, FlaggableObject {
 
     // <--[ObjectType]
     // @name PolygonTag
@@ -612,6 +612,7 @@ public class PolygonTag implements AreaContainmentObject, Notable, Cloneable, Ad
     }
 
     public static void register() {
+
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         AreaContainmentObject.register(PolygonTag.class, tagProcessor);
 

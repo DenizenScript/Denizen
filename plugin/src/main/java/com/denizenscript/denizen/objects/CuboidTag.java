@@ -1,12 +1,13 @@
 package com.denizenscript.denizen.objects;
 
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
-import com.denizenscript.denizen.utilities.Settings;
+import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.flags.SavableMapFlagTracker;
 import com.denizenscript.denizencore.objects.*;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
@@ -15,10 +16,9 @@ import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
-import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.BoundingBox;
@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class CuboidTag implements AreaContainmentObject, Notable, Cloneable, Adjustable, FlaggableObject {
+public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, AreaContainmentObject, FlaggableObject {
 
     // <--[ObjectType]
     // @name CuboidTag
@@ -723,6 +723,7 @@ public class CuboidTag implements AreaContainmentObject, Notable, Cloneable, Adj
     }
 
     public static void register() {
+
         AbstractFlagTracker.registerFlagHandlers(tagProcessor);
         AreaContainmentObject.register(CuboidTag.class, tagProcessor);
 
