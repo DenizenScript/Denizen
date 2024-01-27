@@ -173,6 +173,7 @@ public class BukkitCommandRegistry {
         registerCommand(SignCommand.class);
         registerCommand(StrikeCommand.class);
         registerCommand(SwitchCommand.class);
+        registerCommand(TickCommand.class);
         registerCommand(TimeCommand.class);
         registerCommand(WeatherCommand.class);
         registerCommand(WorldBorderCommand.class);
