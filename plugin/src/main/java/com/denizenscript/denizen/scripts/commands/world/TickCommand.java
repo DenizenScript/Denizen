@@ -101,8 +101,6 @@ public class TickCommand extends AbstractCommand {
         }
         if (reset) {
             tickManager.setTickRate(20);
-            return;
         }
-        throw new InvalidArgumentsRuntimeException("Must specify a tick action!");
     }
 }
