@@ -47,7 +47,6 @@ public class TickCommand extends AbstractCommand {
     // - tick step:cancel
     // -->
 
-    // maybe change the reset to also automatically reset the step or sprint or freeze? or figure out how to do 'step cancel' and have it work with no input
     public TickCommand() {
         setName("tick");
         setSyntax("tick [rate:<rate>/step:<amount>/sprint:<amount>/freeze (cancel)/reset]");
