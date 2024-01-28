@@ -60,7 +60,7 @@ public class TickCommand extends AbstractCommand {
         ServerTickManager tickManager = Bukkit.getServerTickManager();
         switch (action) {
             case RATE -> {
-                if (amount == null) {
+                if (amount == null || !amount.isFloat()) {
                     throw new InvalidArgumentsRuntimeException("The rate action must have a decimal input!");
                 }
                 if (amount.isFloat()) {
