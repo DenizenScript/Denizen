@@ -21,7 +21,7 @@ public class TickCommand extends AbstractCommand {
     // @Description
     // Controls the server's tick rate. Versions 1.20+ only.
     //
-    // To change the tick rate, use the 'rate' argument and input the amount using 'amount'. The tick rate must be a number between 1.0 and 10000.0.
+    // To change the tick rate, use the 'rate' argument and input the amount using 'amount'. The tick rate must be a number between 1.0 and 10000.0 (inclusive).
     // To reset the tick rate to the normal value (20.0), use the 'reset' argument.
     //
     // To freeze the tick rate, use the 'freeze' argument. To unfreeze, add the 'cancel' argument.
