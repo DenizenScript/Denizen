@@ -63,42 +63,30 @@ public class TickCommand extends AbstractCommand {
                 if (amount == null || !amount.isFloat()) {
                     throw new InvalidArgumentsRuntimeException("The rate action must have a decimal input!");
                 }
-                if (amount.isFloat()) {
-                    if (amount.asFloat() < 1 || amount.asFloat() > 10000) {
-                        throw new InvalidArgumentsRuntimeException("Invalid input! Tick rate must be a decimal between 1.0 and 10000.0 (inclusive)!");
-                    }
-                    tickManager.setTickRate(amount.asFloat());
+                if (amount.asFloat() < 1 || amount.asFloat() > 10000) {
+                    throw new InvalidArgumentsRuntimeException("Invalid input! Tick rate must be a decimal between 1.0 and 10000.0 (inclusive)!");
                 }
+                tickManager.setTickRate(amount.asFloat());
             }
             case STEP -> {
                 if (cancel) {
                     tickManager.stopStepping();
                     return;
                 }
-                if (amount == null) {
+                if (amount == null || !amount.isInt()) {
                     throw new InvalidArgumentsRuntimeException("The step action must have an integer input!");
                 }
-                if (amount.isInt()) {
-                    tickManager.stepGameIfFrozen(amount.asInt());
-                }
-                else {
-                    throw new InvalidArgumentsRuntimeException("Invalid input! Step amount must be an integer!");
-                }
+                tickManager.stepGameIfFrozen(amount.asInt());
             }
             case SPRINT -> {
                 if (cancel) {
                     tickManager.stopSprinting();
                     return;
                 }
-                if (amount == null) {
+                if (amount == null || !amount.isInt()) {
                     throw new InvalidArgumentsRuntimeException("The sprint action must have an integer input!");
                 }
-                if (amount.isInt()) {
-                    tickManager.requestGameToSprint(amount.asInt());
-                }
-                else {
-                    throw new InvalidArgumentsRuntimeException("Invalid input! Sprint amount must be an integer!");
-                }
+                tickManager.requestGameToSprint(amount.asInt());
             }
             case FREEZE -> tickManager.setFrozen(!cancel);
             case RESET -> tickManager.setTickRate(20);
