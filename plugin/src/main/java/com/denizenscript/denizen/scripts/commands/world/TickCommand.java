@@ -38,11 +38,7 @@ public class TickCommand extends AbstractCommand {
     // - tick rate amount:30
     //
     // @Usage
-    // Use to step the tick rate for 1000 ticks.
-    // - tick step amount:1000
-    //
-    // @Usage
-    // Use to stop stepping early.
+    // Use to stop stepping early if the server is currently stepping.
     // - tick step cancel
     // -->
 
