@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.scripts.commands;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.scripts.commands.core.CooldownCommand;
 import com.denizenscript.denizen.scripts.commands.core.ResetCommand;
 import com.denizenscript.denizen.scripts.commands.core.ZapCommand;
@@ -173,7 +175,9 @@ public class BukkitCommandRegistry {
         registerCommand(SignCommand.class);
         registerCommand(StrikeCommand.class);
         registerCommand(SwitchCommand.class);
-        registerCommand(TickCommand.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            registerCommand(TickCommand.class);
+        }
         registerCommand(TimeCommand.class);
         registerCommand(WeatherCommand.class);
         registerCommand(WorldBorderCommand.class);
