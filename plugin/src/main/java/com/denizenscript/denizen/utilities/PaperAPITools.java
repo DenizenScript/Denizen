@@ -123,10 +123,6 @@ public class PaperAPITools {
     public void clearBrewingRecipes() {
     }
 
-    public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient) {
-        return false;
-    }
-
     public String getBrewingRecipeInputMatcher(NamespacedKey recipeId) {
         return null;
     }
