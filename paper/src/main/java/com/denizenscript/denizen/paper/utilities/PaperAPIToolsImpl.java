@@ -37,6 +37,7 @@ import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PaperAPIToolsImpl extends PaperAPITools {
@@ -237,6 +238,11 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     @Override
     public String getBrewingRecipeIngredientMatcher(NamespacedKey recipeId) {
         return potionMixes.get(recipeId).ingredientMatcher();
+    }
+
+    @Override
+    public RecipeChoice createPredicateRecipeChoice(Predicate<ItemStack> predicate) {
+        return PotionMix.createPredicateChoice(predicate);
     }
 
     @Override

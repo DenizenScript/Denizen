@@ -24,6 +24,7 @@ import org.bukkit.util.Consumer;
 
 import java.lang.invoke.MethodHandle;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class PaperAPITools {
 
@@ -132,6 +133,10 @@ public class PaperAPITools {
 
     public String getBrewingRecipeIngredientMatcher(NamespacedKey recipeId) {
         return null;
+    }
+
+    public RecipeChoice createPredicateRecipeChoice(Predicate<ItemStack> predicate) {
+        throw new UnsupportedOperationException();
     }
 
     public String getDeathMessage(PlayerDeathEvent event) {

@@ -281,13 +281,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 addChoice.accept(smithingRecipe.getAddition());
             }
             else if (brewingRecipe != null) {
-                if (brewingRecipe.ingredient() != null) {
+                if (brewingRecipe.ingredient() instanceof RecipeChoice.ExactChoice || brewingRecipe.ingredient() instanceof RecipeChoice.MaterialChoice) {
                     addChoice.accept(brewingRecipe.ingredient());
                 }
                 else {
                     recipeItems.addObject(new ElementTag(PaperAPITools.instance.getBrewingRecipeIngredientMatcher(recipeKey), true));
                 }
-                if (brewingRecipe.input() != null) {
+                if (brewingRecipe.input() instanceof RecipeChoice.ExactChoice || brewingRecipe.input() instanceof RecipeChoice.MaterialChoice) {
                     addChoice.accept(brewingRecipe.input());
                 }
                 else {

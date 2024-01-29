@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_20.helpers;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
@@ -10,6 +11,7 @@ import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -508,16 +510,21 @@ public class ItemHelperImpl extends ItemHelper {
                 if (PaperPotionMix_CLASS == null) {
                     PaperPotionMix_CLASS = paperMix.getClass();
                 }
-                Predicate<net.minecraft.world.item.ItemStack> ingredient = ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "ingredient", paperMix);
-                Predicate<net.minecraft.world.item.ItemStack> input = ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "input", paperMix);
-                // Not an instance of net.minecraft.world.item.crafting.Ingredient = a predicate recipe choice
-                RecipeChoice ingredientChoice = ingredient instanceof Ingredient nmsRecipeChoice ? CraftRecipe.toBukkit(nmsRecipeChoice) : null;
-                RecipeChoice inputChoice = input instanceof Ingredient nmsRecipeChoice ? CraftRecipe.toBukkit(nmsRecipeChoice) : null;
+                RecipeChoice ingredientChoice = convertChoice(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "ingredient", paperMix));
+                RecipeChoice inputChoice = convertChoice(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "input", paperMix));
                 ItemStack result = CraftItemStack.asBukkitCopy(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "result", paperMix));
                 return new BrewingRecipe(inputChoice, ingredientChoice, result);
             });
         }
         return customBrewingRecipes;
+    }
+
+    private RecipeChoice convertChoice(Predicate<net.minecraft.world.item.ItemStack> nmsPredicate) {
+        // Not an instance of net.minecraft.world.item.crafting.Ingredient = a predicate recipe choice
+        if (nmsPredicate instanceof Ingredient ingredient) {
+            return CraftRecipe.toBukkit(ingredient);
+        }
+        return PaperAPITools.instance.createPredicateRecipeChoice(item -> nmsPredicate.test(CraftItemStack.asNMSCopy(item)));
     }
 
     @Override
