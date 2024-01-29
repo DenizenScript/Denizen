@@ -626,7 +626,7 @@ public class ItemScriptHelper implements Listener {
                 event.getResults().set(i, currInput);
                 continue;
             }
-            // If it's a custom recipe, and either the input or ingredient are material choices and should be blocked
+            // If it's a custom recipe and either the input or ingredient are material choices and should be blocked
             if (customRecipe != null && (shouldBlockChoice(customRecipe.ingredient(), ingredientBlockCraft) || shouldBlockChoice(customRecipe.input(), inputBlockCraft))) {
                 event.getResults().set(i, currInput);
             }
