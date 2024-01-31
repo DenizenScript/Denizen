@@ -47,7 +47,7 @@ public class TickCommand extends AbstractCommand {
     // For information about tick rate arguments, see <@link url https://minecraft.wiki/w/Commands/tick>
     //
     // @Warning Be careful, this command will affect plugins that depend on tick rate and may cause them to break.
-    // @Warning For example, setting the tick rate to 1 will cause the <@event tick> event to fire once per second.
+    // @Warning For example, setting the tick rate to 1 will cause the <@link event tick> event to fire once per second.
     //
     // @Usage
     // Use to set the tick rate to 30 ticks per second.
