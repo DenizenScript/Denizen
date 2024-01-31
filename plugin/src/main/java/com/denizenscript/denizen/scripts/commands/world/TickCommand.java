@@ -2,7 +2,6 @@ package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
 import org.bukkit.Bukkit;
@@ -12,26 +11,43 @@ public class TickCommand extends AbstractCommand {
 
     // <--[command]
     // @Name tick
-    // @Syntax tick [rate/step/sprint/freeze/reset] (amount:<amount>) (cancel)
+    // @Syntax tick [rate/step/sprint/freeze/reset] (amount:<amount>/cancel)
     // @Required 1
     // @Maximum 2
     // @Short Controls the server's tick rate.
     // @Group world
     //
     // @Description
-    // Controls the server's tick rate. Versions 1.20+ only.
+    // Controls the server's tick rate. MC versions 1.20+ only.
+    //
+    // The tick rate affects things such as entity movement (including player movement), entity animations, plant growth, etc.
+    // Be careful when setting the tick rate, as a high tick rate can overload the server.
+    // If tick rate is high, crops will grow faster, animations will speed up, and so forth.
+    // Conversely, if the tick rate is low, crops will grow slower, animations will slow down, and entity movement (including player movement) will slow down and appear to be in slow motion.
+    // For a list of all the things that the tick rate affects, see <@link url https://minecraft.wiki/w/Tick>
     //
     // To change the tick rate, use the 'rate' argument and input the amount using 'amount'. The tick rate must be a number between 1.0 and 10000.0 (inclusive).
     // To reset the tick rate to the normal value (20.0), use the 'reset' argument.
     //
     // To freeze the tick rate, use the 'freeze' argument. To unfreeze, add the 'cancel' argument.
+    // Freezing the tick rate will cause all entities (except for players and entities that a player is riding) to stop ticking.
+    // This means that entity movement and animations will stop, as well as stop things like crop growth, daylight cycle, etc.
+    //
     // To step the tick rate while the server is frozen for a specific amount of time, use the 'step' argument and input the amount of ticks using 'amount'.
+    // Tick rate stepping is allowing the tick rate to resume for a specific amount of ticks while the server is frozen.
+    // After the amount of specified ticks have passed, the tick rate will refreeze.
     // If the server is not frozen when trying to use the 'step' argument, nothing will happen.
     //
-    // To make the tick rate as fast as possible for a specific amount of time, use the 'sprint' argument and input the amount of ticks using 'amount'
+    // To make the tick rate as fast as possible for a specific amount of time, use the 'sprint' argument and input the amount of ticks using 'amount'.
+    // The tick rate will increase as much as possible without overloading the server for the amount of specified ticks.
+    // For example, if you want to sprint 200 ticks, the tick rate will run 200 ticks as fast as possible and then return to the previous tick rate.
     // To stop stepping or sprinting early, use the 'cancel' argument.
     //
+    // The tick rate resets to 20.0 on server restart.
     // For information about tick rate arguments, see <@link url https://minecraft.wiki/w/Commands/tick>
+    //
+    // @Warning Be careful, this command will affect plugins that depend on tick rate and may cause them to break.
+    // @Warning For example, setting the tick rate to 1 will cause the <@event tick> event to fire once per second.
     //
     // @Usage
     // Use to set the tick rate to 30 ticks per second.
@@ -40,31 +56,41 @@ public class TickCommand extends AbstractCommand {
     // @Usage
     // Use to stop stepping early if the server is currently stepping.
     // - tick step cancel
+    //
+    // @Usage
+    // Use to reset tick rate.
+    // - tick reset
+    //
+    // @Usage
+    // Use to freeze the server.
+    // - tick freeze
+    //
+    // @Usage
+    // Use to unfreeze the server.
+    // - tick freeze cancel
     // -->
 
     public TickCommand() {
         setName("tick");
-        setSyntax("tick [rate/step/sprint/freeze/reset] (amount:<amount>) (cancel)");
+        setSyntax("tick [rate/step/sprint/freeze/reset] (amount:<amount>/cancel)");
         setRequiredArguments(1, 2);
         isProcedural = false;
         autoCompile();
-        addRemappedPrefixes("amount", "a");
     }
 
     public enum TickActions { RATE, STEP, SPRINT, FREEZE, RESET }
 
-    public static void autoExecute(ScriptEntry scriptEntry,
-                                   @ArgName("action") @ArgLinear TickActions action,
+    public static void autoExecute(@ArgName("action") @ArgLinear TickActions action,
                                    @ArgName("amount") @ArgPrefixed @ArgDefaultNull ElementTag amount,
                                    @ArgName("cancel") boolean cancel) {
         ServerTickManager tickManager = Bukkit.getServerTickManager();
         switch (action) {
             case RATE -> {
                 if (amount == null || !amount.isFloat()) {
-                    throw new InvalidArgumentsRuntimeException("The rate action must have a decimal input!");
+                    throw new InvalidArgumentsRuntimeException("The rate action must have a decimal number input!");
                 }
                 if (amount.asFloat() < 1 || amount.asFloat() > 10000) {
-                    throw new InvalidArgumentsRuntimeException("Invalid input! Tick rate must be a decimal between 1.0 and 10000.0 (inclusive)!");
+                    throw new InvalidArgumentsRuntimeException("Invalid input! Tick rate must be a decimal number between 1.0 and 10000.0 (inclusive)!");
                 }
                 tickManager.setTickRate(amount.asFloat());
             }
