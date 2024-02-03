@@ -944,18 +944,31 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // <--[tag]
         // @attribute <server.structure_types>
         // @returns ListTag
+        // @deprecated use 'server.structures'
         // @description
-        // Returns a list of all structure types known to the server.
-        // Generally used with <@link tag LocationTag.find.structure.within>.
-        // This is NOT their Bukkit names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/StructureType.html>.
-        // Instead these are the internal names tracked by Spigot and presumably matching Minecraft internals.
-        // These are all lowercase, as the internal names are lowercase and supposedly are case-sensitive.
-        // It is unclear why the "StructureType" class in Bukkit is not simply an enum as most similar listings are.
+        // Deprecated in favor of <@link tag server.structures>.
         // -->
         tagProcessor.registerTag(ListTag.class, "structure_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                BukkitImplDeprecations.oldStructureTypes.warn(attribute.context);
+            }
             return new ListTag(StructureType.getStructureTypes().keySet());
         }, "list_structure_types");
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
+            // <--[tag]
+            // @attribute <server.structures>
+            // @returns ListTag
+            // @description
+            // Returns a list of all structures known to the server, including custom ones added by datapacks.
+            // See <@link url https://minecraft.wiki/w/Structure> for more information.
+            // -->
+            tagProcessor.registerTag(ListTag.class, "structures", (attribute, object) -> {
+                return new ListTag(Registry.STRUCTURE.stream().toList(), structure -> new ElementTag(Utilities.namespacedKeyToString(structure.getKey()), true));
+            });
+        }
 
         // <--[tag]
         // @attribute <server.statistic_type[<statistic>]>

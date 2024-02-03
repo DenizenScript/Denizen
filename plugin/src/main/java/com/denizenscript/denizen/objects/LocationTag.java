@@ -3065,13 +3065,14 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // <--[tag]
             // @attribute <LocationTag.find.structure[<type>].within[<#.#>]>
             // @returns LocationTag
-            // @group finding
+            // @deprecated Use 'LocationTag.find_structure'.
             // @description
-            // Returns the location of the nearest structure of the given type, within a maximum radius.
-            // To get a list of valid structure types, use <@link tag server.structure_types>.
-            // Note that structure type names are case sensitive, and likely to be all-lowercase in most cases.
+            // Deprecated in favor of <@link tag LocationTag.find_structure>.
             // -->
             else if (attribute.startsWith("structure", 2) && attribute.hasContext(2)) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                    BukkitImplDeprecations.findStructureTags.warn(attribute.context);
+                }
                 String typeName = attribute.getContext(2);
                 StructureType type = StructureType.getStructureTypes().get(typeName);
                 if (type == null) {
@@ -3089,13 +3090,14 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // <--[tag]
             // @attribute <LocationTag.find.unexplored_structure[<type>].within[<#.#>]>
             // @returns LocationTag
-            // @group finding
+            // @deprecated Use 'LocationTag.find_structure' with 'unexplored=true'.
             // @description
-            // Returns the location of the nearest unexplored structure of the given type, within a maximum radius.
-            // To get a list of valid structure types, use <@link tag server.structure_types>.
-            // Note that structure type names are case sensitive, and likely to be all-lowercase in most cases.
+            // Deprecated in favor of <@link tag LocationTag.find_structure> with 'unexplored=true'.
             // -->
             else if (attribute.startsWith("unexplored_structure", 2) && attribute.hasContext(2)) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                    BukkitImplDeprecations.findStructureTags.warn(attribute.context);
+                }
                 String typeName = attribute.getContext(2);
                 StructureType type = StructureType.getStructureTypes().get(typeName);
                 if (type == null) {
@@ -4264,6 +4266,98 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                     return null;
                 }
                 return new ElementTag(chiseledBookshelf.getLastInteractedSlot() + 1);
+            });
+
+            // <--[language]
+            // @name Structure lookups
+            // @description
+            // There are several tags to locate structures, such as <@link tag LocationTag.find_structure> and <@link tag LocationTag.find_structure_type>.
+            // These tags work similarly to the '/locate' command, but can have several side effects/edge cases:
+            // - The radius is in chunks, but isn't always a set square radius around the origin; certain structures may modify the amounts of chunks checked.
+            //   For example, woodland mansions can potentially check up to 20,000 blocks away (or more) regardless of the radius used.
+            // - Lookups can take a long amount of time (several seconds, over 10 in some cases), especially when looking for unexplored structures,
+            //   which will cause the server to freeze while searching.
+            // - They will not load/generate chunks.
+            // - They can lead to situations where the server hangs and crashes when trying to find unexplored structures (if there aren't any/any nearby),
+            //   as it keeps looking further and further out.
+            // - The returned location only contains the X and Z values, and will always have a Y value of 0.
+            //   Tags like <@link tag LocationTag.highest> are available, but note that they require the chunk to be loaded.
+            // -->
+
+            // <--[tag]
+            // @attribute <LocationTag.find_structure[structure=<structure>;radius=<number>(;unexplored=<true/{false}>)]>
+            // @returns LocationTag
+            // @warning See <@link language Structure lookups> for potential issues/edge cases in structure lookups.
+            // @group finding
+            // @description
+            // Finds the closet structure of the given type within the specified chunk radius, optionally only searching for unexplored ones.
+            // For a list of default structures, see <@link url https://minecraft.wiki/w/Structure#ID>.
+            // Alternatively, you can specify a custom structure from a datapack, plugin, etc. as a namespaced key.
+            // See also <@link tag LocationTag.find_structure_type> to find structures by type,
+            // and <@link tag server.structures> for all structures currently available on the server.
+            // -->
+            tagProcessor.registerTag(LocationTag.class, MapTag.class, "find_structure", (attribute, object, input) -> {
+                ElementTag structureName = input.getRequiredObjectAs("structure", ElementTag.class, attribute);
+                ElementTag radius = input.getRequiredObjectAs("radius", ElementTag.class, attribute);
+                if (structureName == null || radius == null) {
+                    return null;
+                }
+                org.bukkit.generator.structure.Structure structure = Registry.STRUCTURE.get(Utilities.parseNamespacedKey(structureName.asString()));
+                if (structure == null) {
+                    attribute.echoError("Invalid structure specified: " + structureName + '.');
+                    return null;
+                }
+                if (!radius.isInt()) {
+                    attribute.echoError("Invalid radius '" + radius + " specified': must be a number.");
+                    return null;
+                }
+                ElementTag unexplored = input.getElement("unexplored", "false");
+                if (!unexplored.isBoolean()) {
+                    attribute.echoError("Invalid 'unexplored' value '" + unexplored + "' specified: must be a boolean.");
+                    return null;
+                }
+                StructureSearchResult searchResult = object.getWorld().locateNearestStructure(object, structure, radius.asInt(), unexplored.asBoolean());
+                return searchResult != null ? new LocationTag(searchResult.getLocation()) : null;
+            });
+
+            // <--[tag]
+            // @attribute <LocationTag.find_structure_type[type=<type>;radius=<number>(;unexplored=<true/{false}>)]>
+            // @returns MapTag
+            // @warning See <@link language Structure lookups> for potential issues/edge cases in structure lookups.
+            // @group finding
+            // @description
+            // Finds the closet structure of the given structure type within the specified chunk radius, optionally only searching for unexplored ones.
+            // See <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/generator/structure/StructureType.html> for all available structure types.
+            // See also <@link tag LocationTag.find_structure> to find specific structures instead of looking them up by type.
+            // -->
+            tagProcessor.registerTag(MapTag.class, MapTag.class, "find_structure_type", (attribute, object, input) -> {
+                ElementTag structureTypeName = input.getRequiredObjectAs("type", ElementTag.class, attribute);
+                ElementTag radius = input.getRequiredObjectAs("radius", ElementTag.class, attribute);
+                if (structureTypeName == null || radius == null) {
+                    return null;
+                }
+                org.bukkit.generator.structure.StructureType structureType = Registry.STRUCTURE_TYPE.get(Utilities.parseNamespacedKey(structureTypeName.asString()));
+                if (structureType == null) {
+                    attribute.echoError("Invalid structure type specified: " + structureTypeName + '.');
+                    return null;
+                }
+                if (!radius.isInt()) {
+                    attribute.echoError("Invalid radius specified '" + radius + "': must be a number.");
+                    return null;
+                }
+                ElementTag unexplored = input.getElement("unexplored", "false");
+                if (!unexplored.isBoolean()) {
+                    attribute.echoError("Invalid 'unexplored' value '" + unexplored + "': must be a boolean.");
+                    return null;
+                }
+                StructureSearchResult searchResult = object.getWorld().locateNearestStructure(object, structureType, radius.asInt(), unexplored.asBoolean());
+                if (searchResult == null) {
+                    return null;
+                }
+                MapTag result = new MapTag();
+                result.putObject("location", new LocationTag(searchResult.getLocation()));
+                result.putObject("structure", new ElementTag(Utilities.namespacedKeyToString(searchResult.getStructure().getKey()), true));
+                return result;
             });
         }
 
