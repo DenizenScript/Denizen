@@ -79,7 +79,7 @@ public class TickCommand extends AbstractCommand {
 
     public enum TickActions { RATE, STEP, SPRINT, FREEZE, RESET }
 
-    public static void autoExecute(@ArgName("action") @ArgLinear TickActions action,
+    public static void autoExecute(@ArgName("action") TickActions action,
                                    @ArgName("amount") @ArgPrefixed @ArgDefaultNull ElementTag amount,
                                    @ArgName("cancel") boolean cancel) {
         ServerTickManager tickManager = Bukkit.getServerTickManager();
@@ -99,7 +99,7 @@ public class TickCommand extends AbstractCommand {
                     return;
                 }
                 if (amount == null || !amount.isInt()) {
-                    throw new InvalidArgumentsRuntimeException("The step action must have an integer input!");
+                    throw new InvalidArgumentsRuntimeException("The step action must have a number input!");
                 }
                 tickManager.stepGameIfFrozen(amount.asInt());
             }
@@ -109,7 +109,7 @@ public class TickCommand extends AbstractCommand {
                     return;
                 }
                 if (amount == null || !amount.isInt()) {
-                    throw new InvalidArgumentsRuntimeException("The sprint action must have an integer input!");
+                    throw new InvalidArgumentsRuntimeException("The sprint action must have a number input!");
                 }
                 tickManager.requestGameToSprint(amount.asInt());
             }
