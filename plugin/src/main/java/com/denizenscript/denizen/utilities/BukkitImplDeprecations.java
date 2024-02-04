@@ -217,7 +217,7 @@ public class BukkitImplDeprecations {
     public static Warning assignmentRemove = new SlowWarning("assignmentRemove", "'assignment remove' without a script is deprecated: use 'clear' to clear all scripts, or 'remove' to remove one at a time.");
     public static Warning npcScriptSingle = new SlowWarning("npcScriptSingle", "'npc.script' is deprecated in favor of 'npc.scripts' (plural).");
 
-    // Added 2024/02/03
+    // Added 2024/02/04
     public static Warning oldStructureTypes = new SlowWarning("oldStructureTypes", "'server.structure_types' is based on outdated API and doesn't support modern datapack features. Use 'server.structures' instead.");
     public static Warning findStructureTags = new SlowWarning("findStructureTags", "'LocationTag.find.structure' and related tags are deprecated in favor of 'LocationTag.find_structure' and 'find_structure_type'.");
 
