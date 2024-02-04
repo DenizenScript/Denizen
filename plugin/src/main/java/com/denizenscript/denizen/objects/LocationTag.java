@@ -4272,12 +4272,12 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @name Structure lookups
             // @description
             // There are several tags to locate structures, such as <@link tag LocationTag.find_structure> and <@link tag LocationTag.find_structure_type>.
-            // These tags work similarly to the '/locate' command, but can have several side effects/edge cases:
+            // These tags work similarly to the '/locate' command, and have several side effects/edge cases:
             // - The radius is in chunks, but isn't always a set square radius around the origin; certain structures may modify the amounts of chunks checked.
             //   For example, woodland mansions can potentially check up to 20,000 blocks away (or more) regardless of the radius used.
             // - Lookups can take a long amount of time (several seconds, over 10 in some cases), especially when looking for unexplored structures,
             //   which will cause the server to freeze while searching.
-            // - They will not load/generate chunks.
+            // - They will not load/generate chunks (but can search not-yet-generated chunks and return a location in them).
             // - They can lead to situations where the server hangs and crashes when trying to find unexplored structures (if there aren't any/any nearby),
             //   as it keeps looking further and further out.
             // - The returned location only contains the X and Z values, and will always have a Y value of 0.
@@ -4290,7 +4290,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @warning See <@link language Structure lookups> for potential issues/edge cases in structure lookups.
             // @group finding
             // @description
-            // Finds the closet structure of the given type within the specified chunk radius, optionally only searching for unexplored ones.
+            // Finds the closet structure of the given type within the specified chunk radius (if any), optionally only searching for unexplored ones.
             // For a list of default structures, see <@link url https://minecraft.wiki/w/Structure#ID>.
             // Alternatively, you can specify a custom structure from a datapack, plugin, etc. as a namespaced key.
             // See also <@link tag LocationTag.find_structure_type> to find structures by type,
@@ -4328,6 +4328,9 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @description
             // Finds the closet structure of the given structure type within the specified chunk radius, optionally only searching for unexplored ones.
             // See <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/generator/structure/StructureType.html> for all available structure types.
+            // The returned map, if any, has 2 keys:
+            // - "location", <@link ObjectType LocationTag> of the structure found.
+            // - "structure", <@link ObjectType ElementTag> of the type of structure found.
             // See also <@link tag LocationTag.find_structure> to find specific structures instead of looking them up by type.
             // -->
             tagProcessor.registerTag(MapTag.class, MapTag.class, "find_structure_type", (attribute, object, input) -> {
