@@ -83,6 +83,10 @@ public class MapCommand extends AbstractCommand {
     // @Usage
     // Reset map to have the center at the player's location
     // - map 3 reset:<player.location>
+    //
+    // @Usage
+    // Sets the map characteristics for Map 1 to match the Map Script Container my_map_script
+    // - map 1 script:my_map_script
     // -->
 
     @Override
