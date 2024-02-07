@@ -963,7 +963,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             // @returns ListTag
             // @description
             // Returns a list of all structures known to the server, including custom ones added by datapacks.
-            // See <@link url https://minecraft.wiki/w/Structure> for more information.
+            // See <@link url https://minecraft.wiki/w/Structure> for more information and a list of default structures.
+            // For information on locating specific structures, see <@link language Structure lookups>.
             // -->
             tagProcessor.registerTag(ListTag.class, "structures", (attribute, object) -> {
                 return new ListTag(Registry.STRUCTURE.stream().toList(), structure -> new ElementTag(Utilities.namespacedKeyToString(structure.getKey()), true));
