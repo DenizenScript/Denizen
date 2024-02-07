@@ -4273,15 +4273,11 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @description
             // There are several tags to locate structures, such as <@link tag LocationTag.find_structure> and <@link tag LocationTag.find_structure_type>.
             // These tags work similarly to the '/locate' command, and have several side effects/edge cases:
-            // - The radius is in chunks, but isn't always a set square radius around the origin; certain structures may modify the amounts of chunks checked.
-            //   For example, woodland mansions can potentially check up to 20,000 blocks away (or more) regardless of the radius used.
-            // - Lookups can take a long amount of time (several seconds, over 10 in some cases), especially when looking for unexplored structures,
-            //   which will cause the server to freeze while searching.
+            // - The radius is in chunks, but isn't always a set square radius around the origin; certain structures may modify the amounts of chunks checked. For example, woodland mansions can potentially check up to 20,000 blocks away (or more) regardless of the radius used.
+            // - Lookups can take a long amount of time (several seconds, over 10 in some cases), especially when looking for unexplored structures, which will cause the server to freeze while searching.
             // - They will not load/generate chunks (but can search not-yet-generated chunks and return a location in them).
-            // - They can lead to situations where the server hangs and crashes when trying to find unexplored structures (if there aren't any/any nearby),
-            //   as it keeps looking further and further out.
-            // - The returned location only contains the X and Z values, and will always have a Y value of 0.
-            //   Tags like <@link tag LocationTag.highest> are available, but note that they require the chunk to be loaded.
+            // - They can lead to situations where the server hangs and crashes when trying to find unexplored structures (if there aren't any/any nearby), as it keeps looking further and further out.
+            // - The returned location only contains the X and Z values, and will always have a Y value of 0. Tags like <@link tag LocationTag.highest> are available, but note that they require the chunk to be loaded.
             // -->
 
             // <--[tag]
