@@ -4281,7 +4281,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // -->
 
             // <--[tag]
-            // @attribute <LocationTag.find_structure[structure=<structure>;radius=<number>(;unexplored=<true/{false}>)]>
+            // @attribute <LocationTag.find_structure[structure=<structure>;radius=<#>(;unexplored=<true/{false}>)]>
             // @returns LocationTag
             // @warning See <@link language Structure lookups> for potential issues/edge cases in structure lookups.
             // @group finding
@@ -4317,7 +4317,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             });
 
             // <--[tag]
-            // @attribute <LocationTag.find_structure_type[type=<type>;radius=<number>(;unexplored=<true/{false}>)]>
+            // @attribute <LocationTag.find_structure_type[type=<type>;radius=<#>(;unexplored=<true/{false}>)]>
             // @returns MapTag
             // @warning See <@link language Structure lookups> for potential issues/edge cases in structure lookups.
             // @group finding
