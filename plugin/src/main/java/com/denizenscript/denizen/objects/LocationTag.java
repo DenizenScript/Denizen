@@ -3065,9 +3065,9 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // <--[tag]
             // @attribute <LocationTag.find.structure[<type>].within[<#.#>]>
             // @returns LocationTag
-            // @deprecated Use 'LocationTag.find_structure'.
+            // @deprecated Use 'LocationTag.find_structure' on 1.19+.
             // @description
-            // Deprecated in favor of <@link tag LocationTag.find_structure>.
+            // Deprecated in favor of <@link tag LocationTag.find_structure> on 1.19+.
             // -->
             else if (attribute.startsWith("structure", 2) && attribute.hasContext(2)) {
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
@@ -3090,9 +3090,9 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // <--[tag]
             // @attribute <LocationTag.find.unexplored_structure[<type>].within[<#.#>]>
             // @returns LocationTag
-            // @deprecated Use 'LocationTag.find_structure' with 'unexplored=true'.
+            // @deprecated Use 'LocationTag.find_structure' with 'unexplored=true' on 1.19+.
             // @description
-            // Deprecated in favor of <@link tag LocationTag.find_structure> with 'unexplored=true'.
+            // Deprecated in favor of <@link tag LocationTag.find_structure> with 'unexplored=true' on 1.19+.
             // -->
             else if (attribute.startsWith("unexplored_structure", 2) && attribute.hasContext(2)) {
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {

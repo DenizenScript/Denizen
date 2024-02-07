@@ -944,9 +944,9 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // <--[tag]
         // @attribute <server.structure_types>
         // @returns ListTag
-        // @deprecated use 'server.structures'
+        // @deprecated use 'server.structures' on 1.19+.
         // @description
-        // Deprecated in favor of <@link tag server.structures>.
+        // Deprecated in favor of <@link tag server.structures> on 1.19+.
         // -->
         tagProcessor.registerTag(ListTag.class, "structure_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
