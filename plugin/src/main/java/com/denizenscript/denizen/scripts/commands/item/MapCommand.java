@@ -85,7 +85,7 @@ public class MapCommand extends AbstractCommand {
     // - map 3 reset:<player.location>
     //
     // @Usage
-    // Sets the map characteristics for Map 1 to match the Map Script Container my_map_script
+    // Sets the map's visuals to the given <@link language Map Script Containers> 
     // - map 1 script:my_map_script
     // -->
 
