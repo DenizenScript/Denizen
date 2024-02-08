@@ -11,7 +11,7 @@ public class TickCommand extends AbstractCommand {
 
     // <--[command]
     // @Name tick
-    // @Syntax tick [rate/step/sprint/freeze/reset] (amount:<amount>/cancel)
+    // @Syntax tick [rate/step/sprint/freeze/reset] (amount:<#.#>/cancel)
     // @Required 1
     // @Maximum 2
     // @Short Controls the server's tick rate.
@@ -71,7 +71,7 @@ public class TickCommand extends AbstractCommand {
 
     public TickCommand() {
         setName("tick");
-        setSyntax("tick [rate/step/sprint/freeze/reset] (amount:<amount>/cancel)");
+        setSyntax("tick [rate/step/sprint/freeze/reset] (amount:<#.#>/cancel)");
         setRequiredArguments(1, 2);
         isProcedural = false;
         autoCompile();
@@ -88,10 +88,11 @@ public class TickCommand extends AbstractCommand {
                 if (amount == null || !amount.isFloat()) {
                     throw new InvalidArgumentsRuntimeException("The rate action must have a decimal number input!");
                 }
-                if (amount.asFloat() < 1 || amount.asFloat() > 10000) {
+                float rate = amount.asFloat();
+                if (rate < 1 || rate > 10000) {
                     throw new InvalidArgumentsRuntimeException("Invalid input! Tick rate must be a decimal number between 1.0 and 10000.0 (inclusive)!");
                 }
-                tickManager.setTickRate(amount.asFloat());
+                tickManager.setTickRate(rate);
             }
             case STEP -> {
                 if (cancel) {
