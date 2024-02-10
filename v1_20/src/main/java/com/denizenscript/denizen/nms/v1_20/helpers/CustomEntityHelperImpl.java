@@ -11,6 +11,7 @@ import com.denizenscript.denizen.nms.v1_20.impl.entities.CraftFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.entities.EntityFakeArrowImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.entities.EntityItemProjectileImpl;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
@@ -47,6 +48,7 @@ public class CustomEntityHelperImpl implements CustomEntityHelper {
     }
 
     public FakePlayer spawnFakePlayer(Location location, String name, String skin, String blob, boolean doAdd) throws IllegalArgumentException {
+        BukkitImplDeprecations.fakePlayer.warn();
         String fullName = name;
         String prefix = null;
         String suffix = null;

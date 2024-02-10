@@ -117,6 +117,9 @@ public class BukkitImplDeprecations {
     // Added 2021/05/05, made current 2022/12/31, made strong 2024/01/02.
     public static Warning locationDistanceTag = new StrongWarning("locationDistanceTag", "locationtag.tree_distance is deprecated in favor of location.material.distance");
 
+    // Added 2024/02/10.
+    public static Warning fakePlayer = new StrongWarning("fakePlayer", "The 'fake_player' entity was an experiment that was always redundant due to the availability of Citizens NPCs. If you use 'fake_player' please let us know on Discord ASAP.");
+
     // ==================== Normal deprecations ====================
     // These show up every time, and should get the server owner's attention quickly if they check their logs.
 
