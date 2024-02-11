@@ -36,10 +36,12 @@ public class TickCommand extends AbstractCommand {
     // To step the tick rate while the server is frozen for a specific amount of time, use the 'step' argument and input the amount of ticks using 'amount'.
     // Tick rate stepping is allowing the tick rate to resume for a specific amount of ticks while the server is frozen.
     // After the amount of specified ticks have passed, the tick rate will refreeze.
+    // Step input should not be a number less than one.
     // If the server is not frozen when trying to use the 'step' argument, nothing will happen.
     //
     // To make the tick rate as fast as possible for a specific amount of time, use the 'sprint' argument and input the amount of ticks using 'amount'.
     // The tick rate will increase as much as possible without overloading the server for the amount of specified ticks.
+    // Sprint input should be not be a number less than one.
     // For example, if you want to sprint 200 ticks, the tick rate will run 200 ticks as fast as possible and then return to the previous tick rate.
     // To stop stepping or sprinting early, use the 'cancel' argument.
     //
@@ -80,39 +82,35 @@ public class TickCommand extends AbstractCommand {
     public enum TickActions { RATE, STEP, SPRINT, FREEZE, RESET }
 
     public static void autoExecute(@ArgName("action") TickActions action,
-                                   @ArgName("amount") @ArgPrefixed @ArgDefaultNull ElementTag amount,
+                                   @ArgName("amount") @ArgPrefixed @ArgDefaultText("0") float amount,
                                    @ArgName("cancel") boolean cancel) {
         ServerTickManager tickManager = Bukkit.getServerTickManager();
         switch (action) {
             case RATE -> {
-                if (amount == null || !amount.isFloat()) {
-                    throw new InvalidArgumentsRuntimeException("The rate action must have a decimal number input!");
-                }
-                float rate = amount.asFloat();
-                if (rate < 1 || rate > 10000) {
+                if (amount < 1 || amount > 10000) {
                     throw new InvalidArgumentsRuntimeException("Invalid input! Tick rate must be a decimal number between 1.0 and 10000.0 (inclusive)!");
                 }
-                tickManager.setTickRate(rate);
+                tickManager.setTickRate(amount);
             }
             case STEP -> {
                 if (cancel) {
                     tickManager.stopStepping();
                     return;
                 }
-                if (amount == null || !amount.isInt()) {
-                    throw new InvalidArgumentsRuntimeException("The step action must have a number input!");
+                if (amount < 1) {
+                    throw new InvalidArgumentsRuntimeException("The step action must have a number input not less than 1!");
                 }
-                tickManager.stepGameIfFrozen(amount.asInt());
+                tickManager.stepGameIfFrozen((int)amount);
             }
             case SPRINT -> {
                 if (cancel) {
                     tickManager.stopSprinting();
                     return;
                 }
-                if (amount == null || !amount.isInt()) {
-                    throw new InvalidArgumentsRuntimeException("The sprint action must have a number input!");
+                if (amount < 1) {
+                    throw new InvalidArgumentsRuntimeException("The sprint action must have a number input not less than one!");
                 }
-                tickManager.requestGameToSprint(amount.asInt());
+                tickManager.requestGameToSprint((int)amount);
             }
             case FREEZE -> tickManager.setFrozen(!cancel);
             case RESET -> tickManager.setTickRate(20);
