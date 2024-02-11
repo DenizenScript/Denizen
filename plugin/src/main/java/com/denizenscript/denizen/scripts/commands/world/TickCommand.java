@@ -108,7 +108,7 @@ public class TickCommand extends AbstractCommand {
                     return;
                 }
                 if (amount < 1) {
-                    throw new InvalidArgumentsRuntimeException("The sprint action must have a number input not less than one!");
+                    throw new InvalidArgumentsRuntimeException("The sprint action must have a number input not less than 1!");
                 }
                 tickManager.requestGameToSprint((int)amount);
             }
