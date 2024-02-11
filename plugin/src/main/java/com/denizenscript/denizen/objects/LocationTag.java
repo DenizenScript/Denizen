@@ -4286,11 +4286,18 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @warning See <@link language Structure lookups> for potential issues/edge cases in structure lookups.
             // @group finding
             // @description
-            // Finds the closet structure of the given type within the specified chunk radius (if any), optionally only searching for unexplored ones.
+            // Finds the closest structure of the given type within the specified chunk radius (if any), optionally only searching for unexplored ones.
             // For a list of default structures, see <@link url https://minecraft.wiki/w/Structure#ID>.
             // Alternatively, you can specify a custom structure from a datapack, plugin, etc. as a namespaced key.
             // See also <@link tag LocationTag.find_structure_type> to find structures by type,
             // and <@link tag server.structures> for all structures currently available on the server.
+            // @example
+            // # Use to find the desert temple closest to the player, and tell them what direction it's in.
+            // - define found <player.location.find_structure[structure=desert_pyramid;radius=200].if_null[null]>
+            // - if <[found]> != null:
+            //   - narrate "The closet desert temple is <player.location.direction[<[found]>]> of you!"
+            // - else:
+            //   - narrate "No desert temple found."
             // -->
             tagProcessor.registerTag(LocationTag.class, MapTag.class, "find_structure", (attribute, object, input) -> {
                 ElementTag structureName = input.getRequiredObjectAs("structure", ElementTag.class, attribute);
@@ -4322,12 +4329,19 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @warning See <@link language Structure lookups> for potential issues/edge cases in structure lookups.
             // @group finding
             // @description
-            // Finds the closet structure of the given structure type within the specified chunk radius, optionally only searching for unexplored ones.
+            // Finds the closest structure of the given structure type within the specified chunk radius, optionally only searching for unexplored ones.
             // See <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/generator/structure/StructureType.html> for all available structure types.
             // The returned map, if any, has 2 keys:
             // - "location", <@link ObjectType LocationTag> of the structure found.
             // - "structure", <@link ObjectType ElementTag> of the type of structure found.
             // See also <@link tag LocationTag.find_structure> to find specific structures instead of looking them up by type.
+            // @example
+            // # Use to find the closest structure of the "jigsaw" structure type (ancient cities, for example), and tell the player what direction it's in.
+            // - define found <player.location.find_structure_type[type=jigsaw;radius=200].if_null[null]>
+            // - if <[found]> != null:
+            //   - narrate "The <[found.structure]> structure is <player.location.direction[<[found.location]>]> of you!"
+            // - else:
+            //   - narrate "No structure found."
             // -->
             tagProcessor.registerTag(MapTag.class, MapTag.class, "find_structure_type", (attribute, object, input) -> {
                 ElementTag structureTypeName = input.getRequiredObjectAs("type", ElementTag.class, attribute);
