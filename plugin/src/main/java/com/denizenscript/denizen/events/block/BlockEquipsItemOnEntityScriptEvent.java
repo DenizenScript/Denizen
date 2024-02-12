@@ -35,6 +35,11 @@ public class BlockEquipsItemOnEntityScriptEvent extends BukkitScriptEvent implem
     // @Player when the equipped entity is a player.
     //
     // @NPC when the equipped entity is an NPC.
+    //
+    // @Example
+    // # Will cause leather armor to be dispensed like a normal item and not be equipped on an armor stand.
+    // on dispenser equips leather* on armor_stand:
+    // - determined cancelled
     // -->
 
     public BlockEquipsItemOnEntityScriptEvent() {
