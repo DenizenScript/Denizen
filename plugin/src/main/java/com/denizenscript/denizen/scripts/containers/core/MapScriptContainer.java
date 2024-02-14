@@ -60,6 +60,9 @@ public class MapScriptContainer extends ScriptContainer {
     //             # Optionally add width/height numbers.
     //             width: 128
     //             height: 128
+    //             # Specify a tag to show or hide custom content! Valid for all objects.
+    //             # Note that all inputs other than 'type' for all objects support tags that will be dynamically reparsed per-player each time the map updates.
+    //             visible: <player.name.contains[bob].not>
     //
     //         2:
     //             type: text
@@ -67,10 +70,13 @@ public class MapScriptContainer extends ScriptContainer {
     //             text: Hello <player.name>
     //             # Specify the color of the text as any valid ColorTag.
     //             color: red
-    //             # Specify a tag to show or hide custom content! Valid for all objects.
-    //             # Note that all inputs other than 'type' for all objects support tags that will be dynamically reparsed per-player each time the map updates.
-    //             visible: <player.name.contains[bob].not>
-    //
+    //             # | Optionally, specify the following additional options:
+    //             # Specify a font to use, which allows using special characters/other languages the default font may not support.
+    //             font: arial
+    //             # Specify a size to use (only available with a custom font)
+    //             size: 18
+    //             # Specify a style, as a list that contains either "bold", "italic", or both (only available with a custom font).
+    //             style: bold|italic
     //         3:
     //             type: cursor
     //             # Specify a cursor type
@@ -142,8 +148,8 @@ public class MapScriptContainer extends ScriptContainer {
                                     + "' has no specified text!");
                             return;
                         }
-                        String text = objectSection.getString("text");
-                        added = new MapText(x, y, visible, shouldDebug(), text, objectSection.getString("color", "black"));
+                        added = new MapText(x, y, visible, shouldDebug(), objectSection.getString("text"), objectSection.getString("color", "black"),
+                                objectSection.getString("font"), objectSection.getString("size"), objectSection.getString("style"));
                         break;
                     case "cursor":
                         if (!objectSection.contains("cursor")) {

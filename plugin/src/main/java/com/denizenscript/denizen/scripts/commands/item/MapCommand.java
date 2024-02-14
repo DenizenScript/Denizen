@@ -177,7 +177,7 @@ public class MapCommand extends AbstractCommand {
         }
         if (text != null) {
             DenizenMapRenderer dmr = DenizenMapManager.getDenizenRenderer(map);
-            dmr.addObject(new MapText(x.asString(), y.asString(), "true", false, text.asString(), null));
+            dmr.addObject(new MapText(x.asString(), y.asString(), "true", false, text.asString(), null, null, null, null));
             dmr.hasChanged = true;
         }
     }
