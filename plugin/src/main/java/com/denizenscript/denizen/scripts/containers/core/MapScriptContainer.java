@@ -73,7 +73,7 @@ public class MapScriptContainer extends ScriptContainer {
     //             # | Optionally, specify the following additional options:
     //             # Specify a font to use, which allows using special characters/other languages the default font may not support.
     //             font: arial
-    //             # Specify a size to use (only available with a custom font)
+    //             # Specify a text size (only available with a custom font).
     //             size: 18
     //             # Specify a style, as a list that contains either "bold", "italic", or both (only available with a custom font).
     //             style: bold|italic
