@@ -62,7 +62,7 @@ public class MapScriptContainer extends ScriptContainer {
     //             height: 128
     //             # Specify a tag to show or hide custom content! Valid for all objects.
     //             # Note that all inputs other than 'type' for all objects support tags that will be dynamically reparsed per-player each time the map updates.
-    //             visible: <player.name.contains[bob].not>
+    //             visible: <player.name.contains_text[bob].not>
     //
     //         2:
     //             type: text
