@@ -4,6 +4,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
@@ -28,7 +29,7 @@ public class AreaEffectCloudApplyScriptEvent extends BukkitScriptEvent implement
     // <context.affected_entities> returns a ListTag of EntityTags affected by the area effect cloud. Note that this can be empty, and only lists which entities are currently being refreshed.
     //
     // @Determine
-    // "AFFECTED_ENTITIES:<ListTag(EntityTag)>" to determine the entities that will be affected by the area effect cloud.
+    // "AFFECTED_ENTITIES:<ListTag(EntityTag)>" to determine the entities that will be affected by the area effect cloud. The list should not contain non-living entities.
     //
     // -->
 
@@ -37,7 +38,12 @@ public class AreaEffectCloudApplyScriptEvent extends BukkitScriptEvent implement
         this.<AreaEffectCloudApplyScriptEvent, ListTag>registerDetermination("affected_entities", ListTag.class, (evt, context, list) -> {
             evt.event.getAffectedEntities().clear();
             for (EntityTag entity : list.filter(EntityTag.class, context)) {
-                evt.event.getAffectedEntities().add(entity.getLivingEntity());
+                if (entity.isLivingEntity()) {
+                    evt.event.getAffectedEntities().add(entity.getLivingEntity());
+                }
+                else {
+                    Debug.echoError(entity + " is not a living entity!");
+                }
             }
         });
     }
