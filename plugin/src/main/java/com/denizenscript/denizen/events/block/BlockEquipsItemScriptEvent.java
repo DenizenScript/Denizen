@@ -12,11 +12,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseArmorEvent;
 
-public class BlockEquipsItemOnEntityScriptEvent extends BukkitScriptEvent implements Listener {
+public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // <block> equips <item> (on <entity>)
+    // <block> equips <item>
     //
     // @Group Block
     //
@@ -25,6 +25,8 @@ public class BlockEquipsItemOnEntityScriptEvent extends BukkitScriptEvent implem
     // @Cancellable true
     //
     // @Triggers when a block dispenses armor and is equipped to an entity.
+    //
+    // @Switch on:<entity> to only process the event if the entity having the armor equipped matches the entity input.
     //
     // @Context
     // <context.block> returns the MaterialTag of the dispenser.
@@ -38,12 +40,13 @@ public class BlockEquipsItemOnEntityScriptEvent extends BukkitScriptEvent implem
     //
     // @Example
     // # Will cause leather armor to be dispensed like a normal item and not be equipped on an armor stand.
-    // on dispenser equips leather* on armor_stand:
+    // on dispenser equips leather* on:armor_stand:
     // - determined cancelled
     // -->
 
-    public BlockEquipsItemOnEntityScriptEvent() {
-        registerCouldMatcher("<block> equips <item> (on <entity>)");
+    public BlockEquipsItemScriptEvent() {
+        registerCouldMatcher("<block> equips <item>");
+        registerSwitches("on");
     }
 
     MaterialTag block;
@@ -59,7 +62,7 @@ public class BlockEquipsItemOnEntityScriptEvent extends BukkitScriptEvent implem
         if (!path.tryArgObject(2, item)) {
             return false;
         }
-        if (path.eventArgLowerAt(3).equals("on") && !path.tryArgObject(4, entity)) {
+        if (!path.tryObjectSwitch("on", entity)) {
             return false;
         }
         if (!runInCheck(path, location)) {
