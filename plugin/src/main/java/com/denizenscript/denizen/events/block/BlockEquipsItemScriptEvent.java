@@ -16,7 +16,7 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     // <--[event]
     // @Events
-    // <block> equips <item>
+    // block equips <item>
     //
     // @Group Block
     //
@@ -40,25 +40,22 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Example
     // # Will cause leather armor to be dispensed like a normal item and not be equipped on an armor stand.
-    // on dispenser equips leather* on:armor_stand:
+    // on block equips leather* on:armor_stand:
     // - determined cancelled
     // -->
 
     public BlockEquipsItemScriptEvent() {
-        registerCouldMatcher("<block> equips <item>");
+        registerCouldMatcher("block equips <item>");
         registerSwitches("on");
     }
 
-    MaterialTag block;
     ItemTag item;
     EntityTag entity;
     LocationTag location;
+    BlockDispenseArmorEvent event;
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!path.tryArgObject(0, block)) {
-            return false;
-        }
         if (!path.tryArgObject(2, item)) {
             return false;
         }
@@ -74,7 +71,7 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "block" -> block;
+            case "block" -> new MaterialTag(event.getBlock());
             case "item" -> item;
             case "entity" -> entity;
             case "location" -> location;
@@ -89,10 +86,10 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onBlockEquipsItemOntoEntity(BlockDispenseArmorEvent event) {
-        block = new MaterialTag(event.getBlock());
         item = new ItemTag(event.getItem());
         entity = new EntityTag(event.getTargetEntity());
         location = new LocationTag(event.getBlock().getLocation());
+        this.event = event;
         fire(event);
     }
 }
