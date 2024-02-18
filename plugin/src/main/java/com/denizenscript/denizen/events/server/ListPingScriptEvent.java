@@ -36,7 +36,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.max_players> returns the number of max players that will show.
     // <context.num_players> returns the number of online players that will show.
     // <context.address> returns the IP address requesting the list.
-    // <context.hostname> returns an ElementTag of the server address that is being pinged. Available only on servers that are 1.19+.
+    // <context.hostname> returns an ElementTag of the server address that is being pinged. Available only on MC 1.19+.
     // <context.protocol_version> returns the protocol ID of the server's version (only on Paper).
     // <context.version_name> returns the name of the server's version (only on Paper).
     // <context.client_protocol_version> returns the client's protocol version ID (only on Paper).
