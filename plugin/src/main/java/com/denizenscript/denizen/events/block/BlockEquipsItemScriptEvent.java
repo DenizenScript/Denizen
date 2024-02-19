@@ -49,15 +49,14 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
     // @Example
     // # Will equip a golden helmet if a leather helmet is originally being equipped.
     // on block equips leather_helmet:
-    // - determine golden_helmet
+    // - determine item:golden_helmet
     // -->
 
     public BlockEquipsItemScriptEvent() {
         registerCouldMatcher("block equips <item>");
         registerSwitches("on");
-        this.<BlockEquipsItemScriptEvent, ItemTag>registerOptionalDetermination(null, ItemTag.class, (evt, context, item) -> {
+        this.<BlockEquipsItemScriptEvent, ItemTag>registerDetermination("item", ItemTag.class, (evt, context, item) -> {
             evt.event.setItem(item.getItemStack());
-            return true;
         });
     }
 
