@@ -2,6 +2,8 @@ package com.denizenscript.denizen.events.server;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -34,6 +36,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.max_players> returns the number of max players that will show.
     // <context.num_players> returns the number of online players that will show.
     // <context.address> returns the IP address requesting the list.
+    // <context.hostname> returns an ElementTag of the server address that is being pinged. Available only on MC 1.19+.
     // <context.protocol_version> returns the protocol ID of the server's version (only on Paper).
     // <context.version_name> returns the name of the server's version (only on Paper).
     // <context.client_protocol_version> returns the client's protocol version ID (only on Paper).
@@ -118,6 +121,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
             case "max_players" -> new ElementTag(event.getMaxPlayers());
             case "num_players" -> new ElementTag(event.getNumPlayers());
             case "address" -> new ElementTag(event.getAddress().toString());
+            case "hostname" -> NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) ? new ElementTag(event.getHostname(), true) : null;
             default -> super.getContext(name);
         };
     }
