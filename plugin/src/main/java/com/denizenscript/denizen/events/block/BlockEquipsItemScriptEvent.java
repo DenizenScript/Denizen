@@ -45,6 +45,11 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
     // # Will cause leather armor to be dispensed like a normal item and not be equipped on an armor stand.
     // on block equips leather* on:armor_stand:
     // - determined cancelled
+    //
+    // @Example
+    // # Will equip a golden helmet if a leather helmet is originally being equipped.
+    // on block equips leather_helmet:
+    // - determine golden_helmet
     // -->
 
     public BlockEquipsItemScriptEvent() {
