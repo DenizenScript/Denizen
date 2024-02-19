@@ -4,7 +4,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -29,7 +28,6 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
     // @Switch on:<entity> to only process the event if the entity having the armor equipped matches the entity input.
     //
     // @Context
-    // <context.block> returns the MaterialTag of the dispenser.
     // <context.item> returns the ItemTag of the armor being dispensed.
     // <context.entity> returns the EntityTag of the entity having the armor equipped.
     // <context.location> returns the LocationTag of the dispenser.
@@ -37,6 +35,11 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
     // @Player when the equipped entity is a player.
     //
     // @NPC when the equipped entity is an NPC.
+    //
+    // @Determine
+    // ItemTag to set the armor being equipped.
+    //
+    // @Warning Determined armor types must match or armor will be assigned incorrect slots (for example, if the original item was a helmet but the new item is boots, the boots will be assigned to the helmet slot and will not display properly). Determining a non-armor item will be dispensed normally.
     //
     // @Example
     // # Will cause leather armor to be dispensed like a normal item and not be equipped on an armor stand.
@@ -47,16 +50,19 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
     public BlockEquipsItemScriptEvent() {
         registerCouldMatcher("block equips <item>");
         registerSwitches("on");
+        this.<BlockEquipsItemScriptEvent, ItemTag>registerOptionalDetermination(null, ItemTag.class, (evt, context, item) -> {
+            evt.event.setItem(item.getItemStack());
+            return true;
+        });
     }
 
-    ItemTag item;
     EntityTag entity;
     LocationTag location;
     BlockDispenseArmorEvent event;
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!path.tryArgObject(2, item)) {
+        if (!path.tryArgObject(2, new ItemTag(event.getItem()))) {
             return false;
         }
         if (!path.tryObjectSwitch("on", entity)) {
@@ -71,8 +77,7 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "block" -> new MaterialTag(event.getBlock());
-            case "item" -> item;
+            case "item" -> new ItemTag(event.getItem());
             case "entity" -> entity;
             case "location" -> location;
             default -> super.getContext(name);
@@ -86,7 +91,6 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onBlockEquipsItemOntoEntity(BlockDispenseArmorEvent event) {
-        item = new ItemTag(event.getItem());
         entity = new EntityTag(event.getTargetEntity());
         location = new LocationTag(event.getBlock().getLocation());
         this.event = event;
