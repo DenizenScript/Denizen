@@ -37,7 +37,7 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
     // @NPC when the equipped entity is an NPC.
     //
     // @Determine
-    // ItemTag to set the armor being equipped.
+    // "ITEM:<ItemTag>" to set the armor being equipped.
     //
     // @Warning Determined armor types must match or armor will be assigned incorrect slots (for example, if the original item was a helmet but the new item is boots, the boots will be assigned to the helmet slot and will not display properly). Determining a non-armor item will be dispensed normally.
     //
