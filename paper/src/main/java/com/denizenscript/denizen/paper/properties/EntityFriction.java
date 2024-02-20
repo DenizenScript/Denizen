@@ -69,6 +69,7 @@ public class EntityFriction implements Property {
         // @name has_friction
         // @input ElementTag(Boolean)
         // @Plugin Paper
+        // @group properties
         // @description
         // Forces an entity into a friction state, so it either always or never experiences friction.
         // An entity with no friction will move in a direction forever until its velocity is changed or it impacts a block.

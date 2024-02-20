@@ -67,6 +67,7 @@ public class EntityReputation implements Property {
         // @name reputation
         // @input MapTag
         // @Plugin Paper
+        // @group properties
         // @description
         // Sets a villager's reputations as a map of player UUIDs to reputation maps.
         // Reputation maps are maps of reputation types to integer values, a full list of all valid reputation types can be found at <@link url https://jd.papermc.io/paper/1.19/com/destroystokyo/paper/entity/villager/ReputationType.html>.

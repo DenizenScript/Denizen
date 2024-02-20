@@ -10,6 +10,7 @@ import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -46,18 +47,22 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftInventoryPlayer;
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftRecipe;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftRecipe;
+import org.bukkit.craftbukkit.v1_20_R3.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -504,15 +509,25 @@ public class ItemHelperImpl extends ItemHelper {
                 if (PaperPotionMix_CLASS == null) {
                     PaperPotionMix_CLASS = paperMix.getClass();
                 }
-                Predicate<net.minecraft.world.item.ItemStack> ingredient = ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "ingredient", paperMix);
-                Predicate<net.minecraft.world.item.ItemStack> input = ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "input", paperMix);
-                // Not an instance of net.minecraft.world.item.crafting.Ingredient = a predicate recipe choice
-                RecipeChoice ingredientChoice = ingredient instanceof Ingredient nmsRecipeChoice ? CraftRecipe.toBukkit(nmsRecipeChoice) : null;
-                RecipeChoice inputChoice = input instanceof Ingredient nmsRecipeChoice ? CraftRecipe.toBukkit(nmsRecipeChoice) : null;
+                RecipeChoice ingredient = convertChoice(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "ingredient", paperMix));
+                RecipeChoice input = convertChoice(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "input", paperMix));
                 ItemStack result = CraftItemStack.asBukkitCopy(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "result", paperMix));
-                return new BrewingRecipe(inputChoice, ingredientChoice, result);
+                return new BrewingRecipe(input, ingredient, result);
             });
         }
         return customBrewingRecipes;
+    }
+
+    private RecipeChoice convertChoice(Predicate<net.minecraft.world.item.ItemStack> nmsPredicate) {
+        // Not an instance of net.minecraft.world.item.crafting.Ingredient = a predicate recipe choice
+        if (nmsPredicate instanceof Ingredient ingredient) {
+            return CraftRecipe.toBukkit(ingredient);
+        }
+        return PaperAPITools.instance.createPredicateRecipeChoice(item -> nmsPredicate.test(CraftItemStack.asNMSCopy(item)));
+    }
+
+    @Override
+    public byte[] renderMap(MapView mapView, Player player) {
+        return ((CraftMapView) mapView).render((CraftPlayer) player).buffer;
     }
 }

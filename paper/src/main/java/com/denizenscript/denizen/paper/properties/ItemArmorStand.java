@@ -87,6 +87,7 @@ public class ItemArmorStand implements Property {
         // @name armor_stand_data
         // @input MapTag
         // @Plugin Paper
+        // @group properties
         // @description
         // Sets a map of basic armor stand data, with keys matching EntityTag property names.
         // Allowed keys: base_plate, visible, marker, is_small, arms

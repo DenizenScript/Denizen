@@ -33,7 +33,7 @@ public class TablistUpdateEventPacketHandlers {
 
     // TODO: properly rebundle the packet instead of splitting it up
     public static Packet<ClientGamePacketListener> processTablistPacket(DenizenNetworkManagerImpl networkManager, Packet<ClientGamePacketListener> packet) {
-        if (!PlayerReceivesTablistUpdateScriptEvent.enabled) {
+        if (!PlayerReceivesTablistUpdateScriptEvent.instance.eventData.isEnabled) {
             return packet;
         }
         if (packet instanceof ClientboundPlayerInfoUpdatePacket) {

@@ -48,11 +48,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class ImprovedOfflinePlayer {
 
@@ -190,26 +186,33 @@ public abstract class ImprovedOfflinePlayer {
         markModified();
     }
 
-    public Location getBedSpawnLocation() {
-        return new Location(
-                Bukkit.getWorld(this.compound.getString("SpawnWorld")),
-                this.compound.getInt("SpawnX"),
-                this.compound.getInt("SpawnY"),
-                this.compound.getInt("SpawnZ")
-        );
+    public void setBedSpawnLocation(Location location) {
+        if (location == null && !compound.containsKey("SpawnDimension")) {
+            return;
+        }
+        CompoundTagBuilder builder = compound.createBuilder();
+        if (location != null) {
+            builder.putInt("SpawnX", location.getBlockX())
+                    .putInt("SpawnY", location.getBlockY())
+                    .putInt("SpawnZ", location.getBlockZ())
+                    .putFloat("SpawnAngle", location.getYaw())
+                    .putString("SpawnDimension", location.getWorld().getKey().toString());
+        }
+        else {
+            builder.remove("SpawnX").remove("SpawnY").remove("SpawnZ").remove("SpawnAngle").remove("SpawnDimension");
+        }
+        this.compound = builder.build();
+        markModified();
+        // Must save to file immediately to work with normal Spigot OfflinePlayer API
+        saveToFile();
     }
 
     public boolean isSpawnForced() {
         return this.compound.getBoolean("SpawnForced");
     }
 
-    public void setBedSpawnLocation(Location location, boolean override) {
-        this.compound = compound.createBuilder()
-                .putInt("SpawnX", (int) location.getX())
-                .putInt("SpawnY", (int) location.getY())
-                .putInt("SpawnZ", (int) location.getZ())
-                .putString("SpawnWorld", location.getWorld().getName())
-                .putBoolean("SpawnForced", override).build();
+    public void setSpawnForced(boolean spawnForced) {
+        this.compound = compound.createBuilder().putBoolean("SpawnForced", spawnForced).build();
         markModified();
     }
 

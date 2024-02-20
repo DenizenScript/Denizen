@@ -78,6 +78,7 @@ public class EntityAutoExpire implements Property {
         // @name auto_expire
         // @input ElementTag(Boolean)
         // @Plugin Paper
+        // @group properties
         // @description
         // Sets whether a falling_block will auto-expire (after 30 seconds, or 5 when outside the world).
         // See also <@link mechanism EntityTag.time_lived>

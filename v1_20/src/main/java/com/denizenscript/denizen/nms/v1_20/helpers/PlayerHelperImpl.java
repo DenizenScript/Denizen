@@ -27,6 +27,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.ClientboundUpdateTagsPacket;
@@ -52,17 +53,18 @@ import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.phys.AABB;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftMagicNumbers;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -162,7 +164,8 @@ public class PlayerHelperImpl extends PlayerHelper {
             }
         }
         else {
-            nmsEntity = world.createEntity(location, entityType.getBukkitEntityType().getEntityClass());
+            org.bukkit.entity.Entity entity = world.createEntity(location, entityType.getBukkitEntityType().getEntityClass());
+            nmsEntity = ((CraftEntity) entity).getHandle();
         }
         if (customUUID != null) {
             nmsEntity.setId(customId);
@@ -352,11 +355,6 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public String getPlayerBrand(Player player) {
-        return DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.brand;
-    }
-
-    @Override
     public byte getSkinLayers(Player player) {
         return ((CraftPlayer) player).getHandle().getEntityData().get(PLAYER_DATA_ACCESSOR_SKINLAYERS);
     }
@@ -386,6 +384,20 @@ public class PlayerHelperImpl extends PlayerHelper {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
+    }
+
+    @Override
+    public Location getBedSpawnLocation(Player player) {
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        BlockPos spawnPosition = nmsPlayer.getRespawnPosition();
+        if (spawnPosition == null) {
+            return null;
+        }
+        Level nmsWorld = MinecraftServer.getServer().getLevel(nmsPlayer.getRespawnDimension());
+        if (nmsWorld == null) {
+            return null;
+        }
+        return new Location(nmsWorld.getWorld(), spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ(), nmsPlayer.getRespawnAngle(), 0);
     }
 
     @Override
@@ -434,18 +446,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     public void refreshPlayer(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         ServerLevel nmsWorld = (ServerLevel) nmsPlayer.level();
-        CommonPlayerSpawnInfo spawnInfo = new CommonPlayerSpawnInfo(
-                nmsWorld.dimensionTypeId(),
-                nmsWorld.dimension(),
-                BiomeManager.obfuscateSeed(nmsWorld.getSeed()),
-                nmsPlayer.gameMode.getGameModeForPlayer(),
-                nmsPlayer.gameMode.getPreviousGameModeForPlayer(),
-                nmsWorld.isDebug(),
-                nmsWorld.isFlat(),
-                nmsPlayer.getLastDeathLocation(),
-                nmsPlayer.getPortalCooldown()
-        );
-        nmsPlayer.connection.send(new ClientboundRespawnPacket(spawnInfo, ClientboundRespawnPacket.KEEP_ALL_DATA));
+        nmsPlayer.connection.send(new ClientboundRespawnPacket(nmsPlayer.createCommonSpawnInfo(nmsWorld), ClientboundRespawnPacket.KEEP_ALL_DATA));
         nmsPlayer.connection.teleport(player.getLocation());
         if (nmsPlayer.isPassenger()) {
            nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer.getVehicle()));

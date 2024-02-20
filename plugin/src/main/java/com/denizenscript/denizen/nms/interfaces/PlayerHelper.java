@@ -50,7 +50,10 @@ public abstract class PlayerHelper {
 
     public abstract void resendRecipeDetails(Player player);
 
-    public abstract String getPlayerBrand(Player player);
+    // TODO: once 1.20 is the minimum supported version, remove from NMS in favor of Paper API
+    public String getClientBrand(Player player) {
+        throw new UnsupportedOperationException();
+    }
 
     public enum SkinLayer {
         CAPE(0),
@@ -76,6 +79,8 @@ public abstract class PlayerHelper {
     public abstract boolean getSpawnForced(Player player);
 
     public abstract void setSpawnForced(Player player, boolean forced);
+
+    public abstract Location getBedSpawnLocation(Player player);
 
     public abstract long getLastActionTime(Player player);
 

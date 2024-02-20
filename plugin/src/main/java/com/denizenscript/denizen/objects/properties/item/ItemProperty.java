@@ -36,6 +36,12 @@ public abstract class ItemProperty<TData extends ObjectTag> extends ObjectProper
         object.setItemMeta(meta);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends ItemMeta> T as(Class<T> metaType) {
+        return (T) getItemMeta();
+    }
+
+    @SuppressWarnings("unchecked")
     public <T extends ItemMeta> void editMeta(Class<T> metaType, Consumer<T> editor) {
         T meta = (T) getItemMeta();
         editor.accept(meta);

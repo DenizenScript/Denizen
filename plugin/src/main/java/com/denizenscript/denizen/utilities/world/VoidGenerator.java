@@ -5,14 +5,19 @@ import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 
-import java.util.Collections;
 import java.util.List;
 
-public class VoidGenerator1_17 extends ChunkGenerator {
+public class VoidGenerator extends ChunkGenerator {
+
+    final boolean setVoidBiome;
+
+    public VoidGenerator(boolean setVoidBiome) {
+        this.setVoidBiome = setVoidBiome;
+    }
 
     public static class VoidBiomeProvider extends BiomeProvider {
 
-        public static List<Biome> biomes = Collections.singletonList(Biome.THE_VOID);
+        public static final List<Biome> VOID_BIOME_LIST = List.of(Biome.THE_VOID);
 
         @Override
         public Biome getBiome(WorldInfo worldInfo, int i, int i1, int i2) {
@@ -21,14 +26,14 @@ public class VoidGenerator1_17 extends ChunkGenerator {
 
         @Override
         public List<Biome> getBiomes(WorldInfo worldInfo) {
-            return biomes;
+            return VOID_BIOME_LIST;
         }
     }
 
-    public static VoidBiomeProvider biomeProviderInstance = new VoidBiomeProvider();
+    public static final VoidBiomeProvider VOID_BIOME_PROVIDER = new VoidBiomeProvider();
 
     @Override
     public BiomeProvider getDefaultBiomeProvider(WorldInfo worldInfo) {
-        return biomeProviderInstance;
+        return setVoidBiome ? VOID_BIOME_PROVIDER : null;
     }
 }

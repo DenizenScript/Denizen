@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -595,15 +596,45 @@ public class ItemScriptHelper implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onBrewingStandBrews(BrewEvent event) {
         ItemStack ingredient = event.getContents().getIngredient();
-        ItemStack currInput;
+        boolean ingredientBlockCraft = !isAllowedToCraftWith(ingredient);
+        List<ItemHelper.BrewingRecipe> potentialRecipes = null;
         for (int i = 0; i < 3; i++) {
-            currInput = event.getContents().getItem(i);
-            if(!NMSHandler.itemHelper.isValidMix(currInput, ingredient) || !PaperAPITools.instance.isDenizenMix(currInput, ingredient)) {
-                if (!isAllowedToCraftWith(currInput)) {
-                    event.setCancelled(true);
+            ItemStack currInput = event.getContents().getItem(i);
+            boolean inputBlockCraft = !isAllowedToCraftWith(currInput);
+            if (!inputBlockCraft && !ingredientBlockCraft) {
+                continue;
+            }
+            ItemHelper.BrewingRecipe customRecipe = null;
+            if (Denizen.supportsPaper && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+                if (potentialRecipes == null) {
+                    potentialRecipes = new ArrayList<>();
+                    for (ItemHelper.BrewingRecipe recipe : NMSHandler.itemHelper.getCustomBrewingRecipes().values()) {
+                        if (recipe.ingredient().test(ingredient)) {
+                            potentialRecipes.add(recipe);
+                        }
+                    }
+                }
+                for (ItemHelper.BrewingRecipe recipe : potentialRecipes) {
+                    if (currInput != null && recipe.input().test(currInput)) {
+                        customRecipe = recipe;
+                        break;
+                    }
                 }
             }
+            // If it's a vanilla mix and either the ingredient or input should be blocked (checked above)
+            if (customRecipe == null && NMSHandler.itemHelper.isValidMix(currInput, ingredient)) {
+                event.getResults().set(i, currInput);
+                continue;
+            }
+            // If it's a custom recipe and either the input or ingredient are material choices and should be blocked
+            if (customRecipe != null && (shouldBlockChoice(customRecipe.ingredient(), ingredientBlockCraft) || shouldBlockChoice(customRecipe.input(), inputBlockCraft))) {
+                event.getResults().set(i, currInput);
+            }
         }
+    }
+
+    private boolean shouldBlockChoice(RecipeChoice choice, boolean blockCraft) {
+        return blockCraft && choice instanceof RecipeChoice.MaterialChoice;
     }
 
     @EventHandler(priority = EventPriority.LOW)

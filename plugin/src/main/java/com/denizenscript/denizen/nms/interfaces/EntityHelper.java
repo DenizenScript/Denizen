@@ -46,8 +46,6 @@ public abstract class EntityHelper {
 
     public abstract void forceInteraction(Player player, Location location);
 
-    public abstract Entity getEntity(World world, UUID uuid);
-
     public abstract CompoundTag getNbtData(Entity entity);
 
     public abstract void setNbtData(Entity entity, CompoundTag compoundTag);
@@ -382,7 +380,9 @@ public abstract class EntityHelper {
 
     public abstract void setBoundingBox(Entity entity, BoundingBox box);
 
-    public abstract List<Player> getPlayersThatSee(Entity entity);
+    public List<Player> getPlayersThatSee(Entity entity) { // TODO: once the minimum supported version is 1.20, remove from NMS
+        return List.copyOf(entity.getTrackedBy());
+    }
 
     public void sendAllUpdatePackets(Entity entity) {
         throw new UnsupportedOperationException();
@@ -468,4 +468,12 @@ public abstract class EntityHelper {
     }
 
     public abstract void openHorseInventory(Player player, AbstractHorse horse);
+
+    public CompoundTag getRawNBT(Entity entity) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void modifyRawNBT(Entity entity, CompoundTag tag) {
+        throw new UnsupportedOperationException();
+    }
 }

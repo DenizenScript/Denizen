@@ -23,7 +23,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.lang.reflect.Field;
@@ -166,7 +166,7 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
         if (NMSHandler.debugPackets) {
             debugPacketOutput(packet);
         }
-        if (PlayerSendPacketScriptEvent.enabled) {
+        if (PlayerSendPacketScriptEvent.instance.eventData.isEnabled) {
             if (PlayerSendPacketScriptEvent.fireFor(player.getBukkitEntity(), packet)) {
                 if (NMSHandler.debugPackets) {
                     DenizenNetworkManagerImpl.doPacketOutput("Denied packet-in " + packet.getClass().getCanonicalName() + " from " + player.getScoreboardName() + " due to event");

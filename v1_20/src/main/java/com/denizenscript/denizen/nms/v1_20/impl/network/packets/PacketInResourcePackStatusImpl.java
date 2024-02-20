@@ -13,6 +13,6 @@ public class PacketInResourcePackStatusImpl implements PacketInResourcePackStatu
 
     @Override
     public String getStatus() {
-        return internal.getAction().name();
+        return internal.action().name();
     }
 }

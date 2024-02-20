@@ -5,6 +5,7 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
 
@@ -22,7 +23,7 @@ public class PacketOutChatImpl extends PacketOutChat {
 
     public PacketOutChatImpl(ClientboundSystemChatPacket internal) {
         systemPacket = internal;
-        rawJson = internal.content();
+        rawJson = Component.Serializer.toJson(internal.content());
         if (rawJson == null && convertComponentToJsonString != null) {
             try {
                 if (paperTextField == null) {

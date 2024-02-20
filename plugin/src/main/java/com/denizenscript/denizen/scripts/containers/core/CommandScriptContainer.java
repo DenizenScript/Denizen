@@ -187,15 +187,15 @@ public class CommandScriptContainer extends ScriptContainer {
         // Replace new lines with a space and a new line, to allow full brief descriptions in /help.
         // Without this, "line<n>line"s brief description would be "lin", because who doesn't like
         // random cutoff-
-        return TagManager.tag((getString("description", "")).replace("\n", " \n"), new BukkitTagContext(null, null, new ScriptTag(this)));
+        return getString("description", "", true).replace("\n", " \n");
     }
 
     public String getUsage() {
-        return TagManager.tag((getString("usage", "")), new BukkitTagContext(null, null, new ScriptTag(this)));
+        return getString("usage", "", true);
     }
 
     public List<String> getAliases() {
-        List<String> aliases = getStringList("aliases");
+        List<String> aliases = getStringList("aliases", true);
         return aliases != null ? aliases : new ArrayList<>();
     }
 

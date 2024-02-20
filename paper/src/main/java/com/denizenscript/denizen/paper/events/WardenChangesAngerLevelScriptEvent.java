@@ -6,7 +6,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import io.papermc.paper.event.entity.WardenAngerChangeEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,6 +48,13 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
 
     public WardenChangesAngerLevelScriptEvent() {
         registerCouldMatcher("warden changes anger level");
+        this.<WardenChangesAngerLevelScriptEvent, ElementTag>registerOptionalDetermination("anger", ElementTag.class, (evt, context, anger) -> {
+            if (anger.isInt()) {
+                evt.event.setNewAnger(anger.asInt());
+                return true;
+            }
+            return false;
+        });
     }
 
     public WardenAngerChangeEvent event;
@@ -67,24 +73,9 @@ public class WardenChangesAngerLevelScriptEvent extends BukkitScriptEvent implem
             case "entity" -> new EntityTag(event.getEntity());
             case "new_anger" -> new ElementTag(event.getNewAnger());
             case "old_anger" -> new ElementTag(event.getOldAnger());
-            case "target" -> event.getTarget() != null ? new EntityTag(event.getTarget()) : null;
+            case "target" -> event.getTarget() != null ? new EntityTag(event.getTarget()).getDenizenObject() : null;
             default -> super.getContext(name);
         };
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String lower = CoreUtilities.toLowerCase((determinationObj.toString()));
-            if (lower.startsWith("anger:")) {
-                ElementTag value = new ElementTag(lower.substring("anger:".length()));
-                if (value.isInt()) {
-                    event.setNewAnger(value.asInt());
-                    return true;
-                }
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

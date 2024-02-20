@@ -142,7 +142,7 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
         if (NMSHandler.debugPackets) {
             debugPacketOutput(packet);
         }
-        if (PlayerSendPacketScriptEvent.enabled) {
+        if (PlayerSendPacketScriptEvent.instance.eventData.isEnabled) {
             if (PlayerSendPacketScriptEvent.fireFor(player.getBukkitEntity(), packet)) {
                 if (NMSHandler.debugPackets) {
                     DenizenNetworkManagerImpl.doPacketOutput("Denied packet-in " + packet.getClass().getCanonicalName() + " from " + player.getScoreboardName() + " due to event");

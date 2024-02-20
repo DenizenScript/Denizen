@@ -48,15 +48,15 @@ public class NPCBossBarCommand extends AbstractCommand {
     // Valid options: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/boss/BarFlag.html>.
     //
     // @Usage
-    // # Makes the linked NPC's bossbar green, and changes its title.
+    // Makes the linked NPC's bossbar green, and changes its title.
     // - npcbossbar color:green "title:This bossbar is green!"
     //
     // @Usage
-    // # Makes it so the linked NPC's bossbar can only be visible 5 blocks away from it.
+    // Makes it so the linked NPC's bossbar can only be visible 5 blocks away from it.
     // - npcbossbar range:5
     //
     // @Usage
-    // # Removes a specific NPC's bossbar.
+    // Removes a specific NPC's bossbar.
     // - npcbossbar remove npc:<[theNPC]>
     // -->
 
