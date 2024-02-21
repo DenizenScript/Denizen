@@ -23,7 +23,7 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Cancellable true
     //
-    // @Triggers when a block dispenses armor and is equipped to an entity.
+    // @Triggers when armor is equipped to an entity by a dispenser.
     //
     // @Switch on:<entity> to only process the event if the entity having the armor equipped matches the entity input.
     //
@@ -37,9 +37,9 @@ public class BlockEquipsItemScriptEvent extends BukkitScriptEvent implements Lis
     // @NPC when the equipped entity is an NPC.
     //
     // @Determine
-    // "ITEM:<ItemTag>" to set the armor being equipped.
+    // "ITEM:<ItemTag>" to set the item being dispensed.
     //
-    // @Warning Determined armor types must match or armor will be assigned incorrect slots (for example, if the original item was a helmet but the new item is boots, the boots will be assigned to the helmet slot and will not display properly). Determining a non-armor item will be dispensed normally.
+    // @Warning Determined armor types must match or armor will be assigned incorrect slots (for example, if the original item was a helmet but the new item is boots, the boots will be assigned to the helmet slot and will not display properly). If you determine a non-armor item, it will be dispensed normally.
     //
     // @Example
     // # Will cause leather armor to be dispensed like a normal item and not be equipped on an armor stand.
