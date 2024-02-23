@@ -530,4 +530,9 @@ public class ItemHelperImpl extends ItemHelper {
     public byte[] renderMap(MapView mapView, Player player) {
         return ((CraftMapView) mapView).render((CraftPlayer) player).buffer;
     }
+
+    @Override
+    public int getFoodPoints(Material itemType) {
+        return CraftMagicNumbers.getItem(itemType).getFoodProperties().getNutrition();
+    }
 }
