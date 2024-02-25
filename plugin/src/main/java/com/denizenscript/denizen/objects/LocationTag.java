@@ -3684,7 +3684,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // Deprecated in favor of <@link tag LocationTag.page>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "lectern_page", (attribute, object) -> {
-            BukkitImplDeprecations.lecternPageTag.warn(attribute.context);
+            BukkitImplDeprecations.lecternPage.warn(attribute.context);
             BlockState state = object.getBlockStateForTag(attribute);
             if (state instanceof Lectern lectern) {
                 return new ElementTag(lectern.getPage());
@@ -5112,7 +5112,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // <LocationTag.lectern_page>
         // -->
         if (mechanism.matches("lectern_page") && mechanism.requireInteger()) {
-            BukkitImplDeprecations.lecternPageMech.warn(mechanism.context);
+            BukkitImplDeprecations.lecternPage.warn(mechanism.context);
             BlockState state = getBlockState();
             if (state instanceof Lectern lectern) {
                 lectern.setPage(mechanism.getValue().asInt());
