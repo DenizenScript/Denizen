@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities.flags;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -274,8 +275,20 @@ public class PlayerFlagHandler implements Listener {
                         Debug.echoError(ex);
                     }
                 }
+                flags.savingNow.set(true);
                 flags.tracker.modified = false;
-                saveFlags(entry.getKey(), flags.tracker.toString());
+                final UUID id = entry.getKey();
+                final String data = flags.tracker.toString();
+                Runnable doSave = () -> {
+                    saveFlags(id, data);
+                    flags.savingNow.set(false);
+                };
+                if (lockUntilDone) {
+                    doSave.run();
+                }
+                else {
+                    DenizenCore.runAsync(doSave);
+                }
             }
         }
     }

@@ -31,8 +31,8 @@ import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.util.SampleLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -356,6 +356,9 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public Packet<ClientGamePacketListener> processPacketHandlersFor(Packet<ClientGamePacketListener> packet) {
+        if (packet == null) {
+            return null;
+        }
         List<PacketHandler<?>> packetHandlers = DenizenNetworkManagerImpl.packetHandlers.get(packet.getClass());
         if (packetHandlers != null) {
             for (PacketHandler<?> _packetHandler : packetHandlers) {
@@ -378,7 +381,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 packet = processed;
             }
         }
-        if (PlayerReceivesPacketScriptEvent.enabled & PlayerReceivesPacketScriptEvent.fireFor(player.getBukkitEntity(), packet)) {
+        if (PlayerReceivesPacketScriptEvent.instance.eventData.isEnabled & PlayerReceivesPacketScriptEvent.fireFor(player.getBukkitEntity(), packet)) {
             if (NMSHandler.debugPackets) {
                 doPacketOutput("DENIED PACKET - " + packet.getClass().getCanonicalName() + " DENIED FROM SEND TO " + player.getScoreboardName() + " due to event");
             }
@@ -392,8 +395,8 @@ public class DenizenNetworkManagerImpl extends Connection {
         AttachPacketHandlers.registerHandlers();
         BlockLightPacketHandlers.registerHandlers();
         DenizenPacketHandlerPacketHandlers.registerHandlers();
-        DisguisePacketHandlers.registerHandlers();
         EntityMetadataPacketHandlers.registerHandlers();
+        DisguisePacketHandlers.registerHandlers();
         FakeBlocksPacketHandlers.registerHandlers();
         FakeEquipmentPacketHandlers.registerHandlers();
         FakePlayerPacketHandlers.registerHandlers();

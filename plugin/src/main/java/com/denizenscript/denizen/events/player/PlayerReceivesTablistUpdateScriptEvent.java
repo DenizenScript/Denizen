@@ -89,17 +89,10 @@ public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
 
     public TabPacketData data;
 
-    public static boolean enabled = false;
-
     @Override
     public void init() {
         NetworkInterceptHelper.enable();
-        enabled = true;
-    }
-
-    @Override
-    public void destroy() {
-        enabled = false;
+        super.init();
     }
 
     @Override

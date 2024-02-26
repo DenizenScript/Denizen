@@ -6,10 +6,12 @@ import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
+import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.npc.traits.MirrorTrait;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizen.objects.properties.entity.EntityTame;
+import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
@@ -141,6 +143,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return;
         }
         rememberedEntities.remove(entity.getUniqueId());
+    }
+
+    public static EntityFormObject mirrorBukkitEntity(Entity entity) {
+        return new EntityTag(entity).getDenizenObject();
     }
 
     public static boolean isNPC(Entity entity) {
@@ -333,13 +339,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (rememberedEntities.containsKey(id)) {
             return rememberedEntities.get(id);
         }
-        for (World world : Bukkit.getWorlds()) {
-            Entity entity = NMSHandler.entityHelper.getEntity(world, id);
-            if (entity != null) {
-                return entity;
-            }
-        }
-        return null;
+        return Bukkit.getEntity(id);
     }
 
     public static boolean matches(String arg) {
@@ -3067,6 +3067,37 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 ChiseledBookshelf bookshelfState = (ChiseledBookshelf) result.getHitBlock().getState();
                 Vector vector = result.getHitPosition().subtract(result.getHitBlock().getLocation().toVector());
                 return new ElementTag(bookshelfState.getSlot(vector) + 1);
+            });
+
+            // <--[tag]
+            // @attribute <EntityTag.all_raw_nbt>
+            // @returns MapTag
+            // @mechanism EntityTag.raw_nbt
+            // @description
+            // Returns the entity's entire raw NBT data as a MapTag.
+            // See <@link language Raw NBT Encoding> for more information.
+            // -->
+            tagProcessor.registerTag(MapTag.class, "all_raw_nbt", (attribute, object) -> {
+                CompoundTag tag = NMSHandler.entityHelper.getRawNBT(object.getBukkitEntity());
+                return (MapTag) ItemRawNBT.jnbtTagToObject(tag);
+            });
+
+            // <--[mechanism]
+            // @object EntityTag
+            // @name raw_nbt
+            // @input MapTag
+            // @description
+            // Modifies an entity's raw NBT data based on the input MapTag.
+            // The input MapTag must be in MapTag NBT format (<@link language Raw NBT Encoding>), and needs to be strictly perfect.
+            // This doesn't override all the entity's data, only the values specified in the input map are set.
+            // @tags
+            // <EntityTag.all_raw_nbt>
+            // -->
+            tagProcessor.registerMechanism("raw_nbt", false, MapTag.class, (object, mechanism, input) -> {
+                CompoundTag tag = (CompoundTag) ItemRawNBT.convertObjectToNbt(input.identify(), mechanism.context, "(entity).");
+                if (tag != null) {
+                    NMSHandler.entityHelper.modifyRawNBT(object.getBukkitEntity(), tag);
+                }
             });
         }
     }

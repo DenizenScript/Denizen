@@ -88,6 +88,7 @@ public class EntityDrinkingPotion implements Property {
         // @name drinking_potion
         // @input ItemTag
         // @Plugin Paper
+        // @group properties
         // @description
         // Sets the potion item a witch is drinking.
         // @tags
@@ -107,6 +108,7 @@ public class EntityDrinkingPotion implements Property {
         // @name potion_drink_duration
         // @input DurationTag
         // @Plugin Paper
+        // @group properties
         // @description
         // Sets the duration remaining until a witch is done drinking a potion.
         // @tags

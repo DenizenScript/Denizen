@@ -1773,6 +1773,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("range") && mechanism.requireFloat()) {
             getCitizen().getNavigator().getDefaultParameters().range(mechanism.getValue().asFloat());
+            getCitizen().getNavigator().getLocalParameters().range(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -1786,6 +1787,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("attack_range") && mechanism.requireFloat()) {
             getCitizen().getNavigator().getDefaultParameters().attackRange(mechanism.getValue().asFloat());
+            getCitizen().getNavigator().getLocalParameters().attackRange(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -1799,6 +1801,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("speed") && mechanism.requireFloat()) {
             getCitizen().getNavigator().getDefaultParameters().speedModifier(mechanism.getValue().asFloat());
+            getCitizen().getNavigator().getLocalParameters().speedModifier(mechanism.getValue().asFloat());
         }
 
         if (mechanism.matches("despawn")) {
@@ -1909,6 +1912,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if ((mechanism.matches("distance_margin") || mechanism.matches("set_distance")) && mechanism.requireDouble()) {
             getNavigator().getDefaultParameters().distanceMargin(mechanism.getValue().asDouble());
+            getNavigator().getLocalParameters().distanceMargin(mechanism.getValue().asDouble());
         }
 
         // <--[mechanism]
@@ -1922,6 +1926,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         if (mechanism.matches("path_distance_margin") && mechanism.requireDouble()) {
             getNavigator().getDefaultParameters().pathDistanceMargin(mechanism.getValue().asDouble());
+            getNavigator().getLocalParameters().pathDistanceMargin(mechanism.getValue().asDouble());
         }
 
         // <--[mechanism]

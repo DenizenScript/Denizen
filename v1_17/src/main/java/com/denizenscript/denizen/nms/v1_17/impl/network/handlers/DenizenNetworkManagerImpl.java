@@ -292,7 +292,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public boolean processSoundPacket(Packet<?> packet) {
-        if (!PlayerHearsSoundScriptEvent.enabled) {
+        if (!PlayerHearsSoundScriptEvent.instance.eventData.isEnabled) {
             return false;
         }
         // (Player player, String name, String category, boolean isCustom, Entity entity, Location location, float volume, float pitch)

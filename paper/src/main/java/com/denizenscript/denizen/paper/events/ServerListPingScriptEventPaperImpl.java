@@ -4,12 +4,10 @@ import com.denizenscript.denizen.events.server.ListPingScriptEvent;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
@@ -24,6 +22,46 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
+
+    public ServerListPingScriptEventPaperImpl() {
+        this.<ServerListPingScriptEventPaperImpl, ElementTag>registerOptionalDetermination("protocol_version", ElementTag.class, (evt, context, version) -> {
+            if (version.isInt()) {
+                ((PaperServerListPingEvent) evt.event).setProtocolVersion(version.asInt());
+                return true;
+            }
+            return false;
+        });
+        this.<ServerListPingScriptEventPaperImpl, ElementTag>registerOptionalDetermination("version_name", ElementTag.class, (evt, context, name) -> {
+            ((PaperServerListPingEvent) evt.event).setVersion(name.toString());
+            return true;
+        });
+        this.<ServerListPingScriptEventPaperImpl, ListTag>registerOptionalDetermination("exclude_players", ListTag.class, (evt, context, list) -> {
+            HashSet<UUID> exclusions = new HashSet<>();
+            for (PlayerTag player : list.filter(PlayerTag.class, context)) {
+                exclusions.add(player.getUUID());
+            }
+            Iterator<Player> players = ((PaperServerListPingEvent) evt.event).iterator();
+            while (players.hasNext()) {
+                if (exclusions.contains(players.next().getUniqueId())) {
+                    players.remove();
+                }
+            }
+            return true;
+        });
+        this.<ServerListPingScriptEventPaperImpl, ListTag>registerOptionalDetermination("alternate_player_text", ListTag.class, (evt, context, text) -> {
+            if (!CoreConfiguration.allowRestrictedActions) {
+                Debug.echoError("Cannot use 'alternate_player_text' in list ping event: 'Allow restricted actions' is disabled in Denizen config.yml.");
+                return false;
+            }
+            ((PaperServerListPingEvent) evt.event).getPlayerSample().clear();
+            for (String line : text) {
+                FakeProfile lineProf = new FakeProfile();
+                lineProf.setName(line);
+                ((PaperServerListPingEvent) evt.event).getPlayerSample().add(lineProf);
+            }
+            return true;
+        });
+    }
 
     public static class FakeProfile implements PlayerProfile {
         public String name;
@@ -58,64 +96,19 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        String lower = CoreUtilities.toLowerCase(determination);
-        if (lower.startsWith("protocol_version:") && ArgumentHelper.matchesInteger(determination.substring("protocol_version:".length()))) {
-            ((PaperServerListPingEvent) event).setProtocolVersion(Integer.parseInt(determination.substring("protocol_version:".length())));
-            return true;
-        }
-        else if (lower.startsWith("version_name:")) {
-            ((PaperServerListPingEvent) event).setVersion(determination.substring("version_name:".length()));
-            return true;
-        }
-        else if (lower.startsWith("exclude_players:")) {
-            HashSet<UUID> exclusions = new HashSet<>();
-            for (PlayerTag player : ListTag.valueOf(determination.substring("exclude_players:".length()), getTagContext(path)).filter(PlayerTag.class, getTagContext(path))) {
-                exclusions.add(player.getUUID());
-            }
-            Iterator<Player> players = ((PaperServerListPingEvent) event).iterator();
-            while (players.hasNext()) {
-                if (exclusions.contains(players.next().getUniqueId())) {
-                    players.remove();
-                }
-            }
-            return true;
-        }
-        else if (lower.startsWith("alternate_player_text:")) {
-            if (!CoreConfiguration.allowRestrictedActions) {
-                Debug.echoError("Cannot use 'alternate_player_text' in list ping event: 'Allow restricted actions' is disabled in Denizen config.yml.");
-                return true;
-            }
-            ((PaperServerListPingEvent) event).getPlayerSample().clear();
-            for (String line : ListTag.valueOf(determination.substring("alternate_player_text:".length()), getTagContext(path))) {
-                FakeProfile lineProf = new FakeProfile();
-                lineProf.setName(line);
-                ((PaperServerListPingEvent) event).getPlayerSample().add(lineProf);
-            }
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public void setMotd(String text) {
         event.motd(PaperModule.parseFormattedText(text, ChatColor.WHITE));
     }
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "motd":
-                return new ElementTag(PaperModule.stringifyComponent(event.motd()));
-            case "protocol_version":
-                return new ElementTag(((PaperServerListPingEvent) event).getProtocolVersion());
-            case "version_name":
-                return new ElementTag(((PaperServerListPingEvent) event).getVersion());
-            case "client_protocol_version":
-                return new ElementTag(((PaperServerListPingEvent) event).getClient().getProtocolVersion());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "motd" -> new ElementTag(PaperModule.stringifyComponent(event.motd()));
+            case "protocol_version" -> new ElementTag(((PaperServerListPingEvent) event).getProtocolVersion());
+            case "version_name" -> new ElementTag(((PaperServerListPingEvent) event).getVersion());
+            case "client_protocol_version" -> new ElementTag(((PaperServerListPingEvent) event).getClient().getProtocolVersion());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

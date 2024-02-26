@@ -314,7 +314,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public boolean processTablistPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
-        if (!PlayerReceivesTablistUpdateScriptEvent.enabled) {
+        if (!PlayerReceivesTablistUpdateScriptEvent.instance.eventData.isEnabled) {
             return false;
         }
         if (packet instanceof ClientboundPlayerInfoPacket) {
@@ -416,7 +416,7 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     public boolean processSoundPacket(Packet<?> packet) {
-        if (!PlayerHearsSoundScriptEvent.enabled) {
+        if (!PlayerHearsSoundScriptEvent.instance.eventData.isEnabled) {
             return false;
         }
         if (packet instanceof ClientboundSoundPacket) {

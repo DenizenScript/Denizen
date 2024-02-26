@@ -4,8 +4,8 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.TreeSpecies;
 import org.bukkit.entity.Boat;
@@ -38,10 +38,9 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag type, Mechanism mechanism) {
-        if (!mechanism.requireEnum(TreeSpecies.class)) {
-            return;
+        if (mechanism.requireEnum(TreeSpecies.class)) {
+            as(Boat.class).setWoodType(type.asEnum(TreeSpecies.class));
         }
-        as(Boat.class).setWoodType(type.asEnum(TreeSpecies.class));
     }
 
     public static void register() {

@@ -20,7 +20,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.function.Predicate;
 
@@ -89,7 +88,7 @@ public interface AreaContainmentObject extends ObjectTag {
         return blocks;
     }
 
-    static <T extends AreaContainmentObject> void register(Class<T> type,  ObjectTagProcessor<T> processor) {
+    static <T extends AreaContainmentObject> void register(Class<T> type, ObjectTagProcessor<T> processor) {
 
         // <--[tag]
         // @attribute <AreaObject.bounding_box>
@@ -129,13 +128,7 @@ public interface AreaContainmentObject extends ObjectTag {
         // - narrate "List of players in 'my_cuboid': <cuboid[my_cuboid].players.formatted>"
         // -->
         processor.registerTag(ListTag.class, "players", (attribute, area) -> {
-            ListTag result = new ListTag();
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (area.doesContainLocation(player.getLocation())) {
-                    result.addObject(PlayerTag.mirrorBukkitPlayer(player));
-                }
-            }
-            return result;
+            return new ListTag(Bukkit.getOnlinePlayers(), player -> area.doesContainLocation(player.getLocation()), PlayerTag::new);
         });
 
         // <--[tag]
@@ -197,13 +190,9 @@ public interface AreaContainmentObject extends ObjectTag {
         //      - narrate <[entity].name>
         // -->
         processor.registerTag(ListTag.class, "living_entities", (attribute, area) -> {
-            ListTag result = new ListTag();
-            for (Entity ent : area.getCuboidBoundary().getEntitiesPossiblyWithinForTag()) {
-                if (ent instanceof LivingEntity && area.doesContainLocation(ent.getLocation()) && !EntityTag.isCitizensNPC(ent)) {
-                    result.addObject(new EntityTag(ent).getDenizenObject());
-                }
-            }
-            return result;
+            return new ListTag(area.getCuboidBoundary().getEntitiesPossiblyWithinForTag(),
+                    entity -> entity instanceof LivingEntity && !EntityTag.isCitizensNPC(entity) && area.doesContainLocation(entity.getLocation()),
+                    EntityTag::mirrorBukkitEntity);
         });
 
         // <--[tag]
@@ -314,13 +303,13 @@ public interface AreaContainmentObject extends ObjectTag {
         //      - narrate "It is not fully within 'my_bigger_cuboid'!"
         // -->
         processor.registerTag(ElementTag.class, CuboidTag.class, "is_within", (attribute, area, cub2) -> {
-            CuboidTag cuboid = area instanceof CuboidTag ? (CuboidTag) area : area.getCuboidBoundary();
+            CuboidTag cuboid = area instanceof CuboidTag cuboidTag ? cuboidTag : area.getCuboidBoundary();
             if (cub2 != null) {
                 boolean contains = true;
                 for (CuboidTag.LocationPair pair2 : cuboid.pairs) {
                     boolean contained = false;
                     for (CuboidTag.LocationPair pair : cub2.pairs) {
-                        if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
+                        if (!pair.low.getWorld().equals(pair2.low.getWorld())) {
                             return new ElementTag(false);
                         }
                         if (pair2.low.getX() >= pair.low.getX()
@@ -366,22 +355,19 @@ public interface AreaContainmentObject extends ObjectTag {
         // -->
         processor.registerTag(ListTag.class, "approximate_overlap_areas", (attribute, area) -> {
             ListTag list = new ListTag();
-            CuboidTag boundary = area.getCuboidBoundary();
-            CuboidTag.LocationPair pair = boundary.pairs.get(0);
+            CuboidTag.LocationPair pair = area.getCuboidBoundary().pairs.get(0);
             NotedAreaTracker.forEachAreaThatIntersects(pair.low, pair.high, list::addObject);
             return list;
         });
     }
 
     default boolean areaBaseAdvancedMatches(String matcher) {
-        String matcherLow = CoreUtilities.toLowerCase(matcher);
-        if (matcherLow.startsWith("area_flagged:")) {
-            AbstractFlagTracker tracker = ((FlaggableObject) this).getFlagTracker();
-            return tracker != null && tracker.hasFlag(matcher.substring("area_flagged:".length()));
-        }
-        if (getNoteName() != null && BukkitScriptEvent.runGenericCheck(matcher, getNoteName())) {
-            return true;
-        }
-        return false;
+        return getNoteName() != null && BukkitScriptEvent.createMatcher(matcher).doesMatch(getNoteName(), text -> {
+            if (this instanceof FlaggableObject flaggableObject && text.startsWith("area_flagged:")) {
+                AbstractFlagTracker tracker = flaggableObject.getFlagTracker();
+                return tracker != null && tracker.hasFlag(text.substring("area_flagged:".length()));
+            }
+            return false;
+        });
     }
 }

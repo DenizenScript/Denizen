@@ -19,8 +19,9 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntityType;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.EntityType;
 
 import java.lang.invoke.MethodHandle;
@@ -167,17 +168,7 @@ public class BiomeNMSImpl extends BiomeNMS {
             return entityTypes;
         }
         for (MobSpawnSettings.SpawnerData meta : typeSettingList.unwrap()) {
-            try {
-                String n = net.minecraft.world.entity.EntityType.getKey(meta.type).getPath();
-                EntityType et = EntityType.fromName(n);
-                if (et == null) {
-                    et = EntityType.valueOf(n.toUpperCase(Locale.ENGLISH));
-                }
-                entityTypes.add(et);
-            }
-            catch (Throwable e) {
-                // Ignore the error. Likely from invalid entity type name output.
-            }
+            entityTypes.add(CraftEntityType.minecraftToBukkit(meta.type));
         }
         return entityTypes;
     }

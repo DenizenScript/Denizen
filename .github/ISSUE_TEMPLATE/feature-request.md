@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: Suggest something new to add
+about: Suggest something new to add. DO NOT POST HERE UNLESS SOMEONE TOLD YOU TO ON DISCORD.
 
 ---
 

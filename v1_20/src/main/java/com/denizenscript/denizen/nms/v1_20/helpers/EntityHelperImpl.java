@@ -27,9 +27,11 @@ import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
-import net.minecraft.server.level.*;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
-import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -56,6 +58,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -63,15 +66,14 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_20_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_20_R2.block.CraftCreatureSpawner;
-import org.bukkit.craftbukkit.v1_20_R2.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_20_R2.entity.*;
-import org.bukkit.craftbukkit.v1_20_R2.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R3.block.CraftCreatureSpawner;
+import org.bukkit.craftbukkit.v1_20_R3.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_20_R3.entity.*;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -120,7 +122,7 @@ public class EntityHelperImpl extends EntityHelper {
         if (attrib != null) {
             damage = attrib.getValue();
         }
-        if (attacker.getEquipment() != null && attacker.getEquipment().getItemInMainHand() != null) {
+        if (attacker.getEquipment() != null) {
             damage += EnchantmentHelper.getDamageBonus(CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), monsterType);
         }
         if (damage <= 0) {
@@ -171,12 +173,6 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftBlock) location.getBlock()).getNMS().use(((CraftWorld) location.getWorld()).getHandle(),
                 craftPlayer != null ? craftPlayer.getHandle() : null, InteractionHand.MAIN_HAND,
                 new BlockHitResult(new Vec3(0, 0, 0), null, CraftLocation.toBlockPosition(location), false));
-    }
-
-    @Override
-    public Entity getEntity(World world, UUID uuid) {
-        net.minecraft.world.entity.Entity entity = ((CraftWorld) world).getHandle().getEntity(uuid);
-        return entity == null ? null : entity.getBukkitEntity();
     }
 
     @Override
@@ -351,20 +347,6 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public List<Player> getPlayersThatSee(Entity entity) {
-        ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level()).getChunkSource().chunkMap;
-        ChunkMap.TrackedEntity entityTracker = tracker.entityMap.get(entity.getEntityId());
-        ArrayList<Player> output = new ArrayList<>();
-        if (entityTracker == null) {
-            return output;
-        }
-        for (ServerPlayerConnection player : entityTracker.seenBy) {
-            output.add(player.getPlayer().getBukkitEntity());
-        }
-        return output;
-    }
-
-    @Override
     public void sendAllUpdatePackets(Entity entity) {
         ChunkMap tracker = ((ServerLevel) ((CraftEntity) entity).getHandle().level()).getChunkSource().chunkMap;
         ChunkMap.TrackedEntity entityTracker = tracker.entityMap.get(entity.getEntityId());
@@ -479,7 +461,7 @@ public class EntityHelperImpl extends EntityHelper {
             NMSHandler.chunkHelper.changeChunkServerThread(world);
             return ((CraftWorld) world).getHandle().clip(new ClipContext(new Vec3(start.getX(), start.getY(), start.getZ()),
                     new Vec3(end.getX(), end.getY(), end.getZ()),
-                    ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, null));
+                    ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CollisionContext.empty()));
         }
         finally {
             NMSHandler.chunkHelper.restoreServerThread(world);
@@ -634,7 +616,7 @@ public class EntityHelperImpl extends EntityHelper {
             case FALL -> sources.fall();
             case FIRE -> sources.inFire();
             case FIRE_TICK -> sources.onFire();
-            case MELTING -> sources.melting;
+            case MELTING -> sources.melting();
             case LAVA -> sources.lava();
             case DROWNING -> sources.drown();
             case BLOCK_EXPLOSION -> nmsSource instanceof PrimedTnt primedTnt ? sources.explosion(primedTnt, primedTnt.getOwner()) : sources.explosion(null);
@@ -642,7 +624,7 @@ public class EntityHelperImpl extends EntityHelper {
             case VOID -> sources.fellOutOfWorld();
             case LIGHTNING -> sources.lightningBolt();
             case STARVATION -> sources.starve();
-            case POISON -> sources.poison;
+            case POISON -> sources.poison();
             case MAGIC -> sources.magic();
             case WITHER -> sources.wither();
             case FALLING_BLOCK -> sources.fallingBlock(nmsSource);
@@ -668,22 +650,14 @@ public class EntityHelperImpl extends EntityHelper {
         }
         net.minecraft.world.entity.LivingEntity nmsTarget = ((CraftLivingEntity) target).getHandle();
         net.minecraft.world.entity.Entity nmsSource = source == null ? null : ((CraftEntity) source.getBukkitEntity()).getHandle();
-        CraftEventFactory.entityDamage = nmsSource;
-        CraftEventFactory.blockDamage = sourceLoc == null ? null : sourceLoc.getBlock();
-        try {
-            DamageSource src = getSourceFor(nmsSource, cause, nmsTarget);
-            if (src instanceof FakeDamageSrc fakeDamageSrc) {
-                src = fakeDamageSrc.real;
-                if (fireFakeDamageEvent(target, source, sourceLoc, cause, amount).isCancelled()) {
-                    return;
-                }
+        DamageSource src = getSourceFor(nmsSource, cause, nmsTarget);
+        if (src instanceof FakeDamageSrc fakeDamageSrc) {
+            src = fakeDamageSrc.real;
+            if (fireFakeDamageEvent(target, source, sourceLoc, cause, amount).isCancelled()) {
+                return;
             }
-            nmsTarget.hurt(src, amount);
         }
-        finally {
-            CraftEventFactory.entityDamage = null;
-            CraftEventFactory.blockDamage = null;
-        }
+        nmsTarget.hurt(src, amount);
     }
 
     @Override
@@ -709,7 +683,7 @@ public class EntityHelperImpl extends EntityHelper {
     public EntityTag getMobSpawnerDisplayEntity(CreatureSpawner spawner) {
         SpawnerBlockEntity nmsSpawner = BlockHelperImpl.getTE((CraftCreatureSpawner) spawner);
         ServerLevel level = ((CraftWorld) spawner.getWorld()).getHandle();
-        net.minecraft.world.entity.Entity nmsEntity = nmsSpawner.getSpawner().getOrCreateDisplayEntity(level, level.random, nmsSpawner.getBlockPos());
+        net.minecraft.world.entity.Entity nmsEntity = nmsSpawner.getSpawner().getOrCreateDisplayEntity(level, nmsSpawner.getBlockPos());
         return new EntityTag(nmsEntity.getBukkitEntity());
     }
 
@@ -861,5 +835,24 @@ public class EntityHelperImpl extends EntityHelper {
     public void openHorseInventory(Player player, AbstractHorse horse) {
         net.minecraft.world.entity.animal.horse.AbstractHorse nmsHorse = ((CraftAbstractHorse) horse).getHandle();
         ((CraftPlayer) player).getHandle().openHorseInventory(nmsHorse, nmsHorse.inventory);
+    }
+
+    private net.minecraft.nbt.CompoundTag getRawEntityNBT(net.minecraft.world.entity.Entity entity) {
+        return entity.saveWithoutId(new net.minecraft.nbt.CompoundTag());
+    }
+
+    @Override
+    public CompoundTag getRawNBT(Entity entity) {
+        return CompoundTagImpl.fromNMSTag(getRawEntityNBT(((CraftEntity) entity).getHandle()));
+    }
+
+    @Override
+    public void modifyRawNBT(Entity entity, CompoundTag tag) {
+        net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.nbt.CompoundTag nmsTag = ((CompoundTagImpl) tag).toNMSTag();
+        net.minecraft.nbt.CompoundTag nmsMergedTag = getRawEntityNBT(nmsEntity).merge(nmsTag);
+        UUID uuid = nmsEntity.getUUID();
+        nmsEntity.load(nmsMergedTag);
+        nmsEntity.setUUID(uuid);
     }
 }

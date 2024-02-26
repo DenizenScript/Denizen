@@ -4,6 +4,12 @@ import com.denizenscript.denizen.events.ScriptEventRegistry;
 import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
 import com.denizenscript.denizen.events.server.ServerPrestartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStartScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.interfaces.FakeArrow;
+import com.denizenscript.denizen.nms.interfaces.FakePlayer;
+import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
+import com.denizenscript.denizen.npc.DenizenNPCHelper;
+import com.denizenscript.denizen.npc.TraitRegistry;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
@@ -25,22 +31,15 @@ import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizen.utilities.debugging.BStatsMetricsLite;
 import com.denizenscript.denizen.utilities.debugging.DebugSubmit;
 import com.denizenscript.denizen.utilities.debugging.StatsRecord;
-import com.denizenscript.denizen.utilities.world.WorldListChangeTracker;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizen.utilities.implementation.DenizenCoreImplementation;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.interfaces.FakeArrow;
-import com.denizenscript.denizen.nms.interfaces.FakePlayer;
-import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
-import com.denizenscript.denizen.npc.TraitRegistry;
-import com.denizenscript.denizen.npc.DenizenNPCHelper;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
-import com.denizenscript.denizen.utilities.world.VoidGenerator1_17;
+import com.denizenscript.denizen.utilities.world.VoidGenerator;
+import com.denizenscript.denizen.utilities.world.WorldListChangeTracker;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.core.SecretTag;
@@ -50,10 +49,13 @@ import com.denizenscript.denizencore.scripts.ScriptHelper;
 import com.denizenscript.denizencore.scripts.commands.queue.RunLaterCommand;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import com.denizenscript.denizencore.utilities.debugging.StrongWarning;
 import com.denizenscript.denizencore.utilities.text.ConfigUpdater;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -547,7 +549,7 @@ public class Denizen extends JavaPlugin {
             Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, "Could not save to " + scoreboardsConfigFile, ex);
         }
         PlayerFlagHandler.saveAllNow(lockUntilDone);
-        worldFlags.saveAll();
+        worldFlags.saveAll(lockUntilDone);
         RunLaterCommand.saveToFile(!lockUntilDone);
     }
 
@@ -603,9 +605,10 @@ public class Denizen extends JavaPlugin {
 
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
-        if (CoreUtilities.toLowerCase(id).equals("void")) {
-            return new VoidGenerator1_17();
-        }
-        return null;
+        return switch (CoreUtilities.toLowerCase(id)) {
+            case "void" -> new VoidGenerator(true);
+            case "void_biomes" -> new VoidGenerator(false);
+            default -> null;
+        };
     }
 }

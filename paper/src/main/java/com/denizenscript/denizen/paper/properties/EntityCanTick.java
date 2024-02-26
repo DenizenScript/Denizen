@@ -66,6 +66,7 @@ public class EntityCanTick implements Property {
         // @name can_tick
         // @input ElementTag(Boolean)
         // @Plugin Paper
+        // @group properties
         // @description
         // Changes whether an armor stand can tick.
         // @tags

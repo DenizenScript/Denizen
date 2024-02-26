@@ -26,7 +26,7 @@ public class DenizenPacketHandler {
     public static HashSet<UUID> forceNoclip = new HashSet<>();
 
     public void receivePacket(final Player player, final PacketInResourcePackStatus resourcePackStatus) {
-        if (!ResourcePackStatusScriptEvent.instance.enabled) {
+        if (!ResourcePackStatusScriptEvent.instance.eventData.isEnabled) {
             return;
         }
         Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
@@ -38,7 +38,7 @@ public class DenizenPacketHandler {
     }
 
     public boolean receivePacket(final Player player, final PacketInSteerVehicle steerVehicle, Runnable allow) {
-        if (PlayerSteersEntityScriptEvent.instance.enabled) {
+        if (PlayerSteersEntityScriptEvent.instance.eventData.isEnabled) {
             Runnable process = () -> {
                 if (!player.isInsideVehicle()) {
                     return;
@@ -73,7 +73,7 @@ public class DenizenPacketHandler {
     }
 
     public void receivePlacePacket(final Player player) {
-        if (!PlayerRaiseLowerItemScriptEvent.instance.enabled) {
+        if (!PlayerRaiseLowerItemScriptEvent.instance.eventData.isEnabled) {
             return;
         }
         if (isHoldingRaisable(player)) {
@@ -84,7 +84,7 @@ public class DenizenPacketHandler {
     }
 
     public void receiveDigPacket(final Player player) {
-        if (Denizen.supportsPaper || !PlayerRaiseLowerItemScriptEvent.instance.enabled) {
+        if (Denizen.supportsPaper || !PlayerRaiseLowerItemScriptEvent.instance.eventData.isEnabled) {
             return;
         }
         if (isHoldingRaisable(player)) {

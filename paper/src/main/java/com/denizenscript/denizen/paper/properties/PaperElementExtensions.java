@@ -17,6 +17,7 @@ public class PaperElementExtensions {
             // @attribute <ElementTag.parse_minimessage>
             // @returns ElementTag
             // @Plugin Paper
+            // @group paper
             // @description
             // Returns the element with all MiniMessage tags parsed, see <@link url https://docs.adventure.kyori.net/minimessage/format.html> for more information.
             // This may be useful for reading data from external plugins, but should not be used in normal scripts.
@@ -29,6 +30,7 @@ public class PaperElementExtensions {
             // @attribute <ElementTag.to_minimessage>
             // @returns ElementTag
             // @Plugin Paper
+            // @group paper
             // @description
             // Returns the element with all text formatting parsed into MiniMessage format.
             // This may be useful for sending data to external plugins, but should not be used in normal scripts.

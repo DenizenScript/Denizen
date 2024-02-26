@@ -1,7 +1,6 @@
 ---
 name: I'm Having Trouble
-about: Make an issue post that seems to be trouble on your end (not a bug in Denizen
-  itself)
+about: Make an issue post that seems to be trouble on your end (not a bug in Denizen itself) - ASK ON DISCORD https://discord.gg/Q6pZGSR
 
 ---
 

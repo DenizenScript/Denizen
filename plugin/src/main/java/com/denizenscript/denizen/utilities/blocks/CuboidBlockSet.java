@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.scripts.commands.world.SchematicCommand;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -196,6 +198,14 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public static HashSet<EntityType> copyTypes = new HashSet<>(Arrays.asList(EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.ARMOR_STAND));
+
+    static {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            copyTypes.add(EntityType.BLOCK_DISPLAY);
+            copyTypes.add(EntityType.ITEM_DISPLAY);
+            copyTypes.add(EntityType.TEXT_DISPLAY);
+        }
+    }
 
     public void buildEntities(AreaContainmentObject area, Location center) {
         entities = new ListTag();

@@ -72,17 +72,22 @@ public class MapCommand extends AbstractCommand {
     // <entry[saveName].created_map> returns the map created by the 'new:' argument if used.
     //
     // @Usage
-    // Use to add an auto-resized background image to map 3
+    // Use to add an auto-resized background image to map 3.
     // - map 3 image:my_map_images/my_background.png resize
     //
     // @Usage
-    // Use to add an image with the top-left corner at the center of a new map
+    // Use to add an image with the top-left corner at the center of a new map.
     // - map new:WorldTag image:my_map_images/my_center_image.png x:64 y:64 save:map
     // - give filled_map[map=<entry[map].created_map>]
     //
     // @Usage
-    // Reset map to have the center at the player's location
+    // Use to reset map 3 to be centered at the player's location.
     // - map 3 reset:<player.location>
+    //
+    // @Usage
+    // Use to remove any custom renderers on map 3 and then apply the contents of the named <@link language Map Script Containers> to map 3.
+    // - map 3 script:Map_Script_Name
+    //
     // -->
 
     @Override
@@ -177,7 +182,7 @@ public class MapCommand extends AbstractCommand {
         }
         if (text != null) {
             DenizenMapRenderer dmr = DenizenMapManager.getDenizenRenderer(map);
-            dmr.addObject(new MapText(x.asString(), y.asString(), "true", false, text.asString(), null));
+            dmr.addObject(new MapText(x.asString(), y.asString(), "true", false, text.asString(), null, null, null, null));
             dmr.hasChanged = true;
         }
     }

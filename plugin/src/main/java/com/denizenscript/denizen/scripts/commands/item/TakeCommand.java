@@ -1,15 +1,15 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
-import com.denizenscript.denizen.objects.InventoryTag;
-import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -17,7 +17,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -33,14 +33,14 @@ public class TakeCommand extends AbstractCommand {
 
     public TakeCommand() {
         setName("take");
-        setSyntax("take [xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)");
+        setSyntax("take [iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)");
         setRequiredArguments(1, 3);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Take
-    // @Syntax take [xp/iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)
+    // @Syntax take [iteminhand/cursoritem/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/flagged:<flag>/item:<matcher>] (quantity:<#>) (from:<inventory>)
     // @Required 1
     // @Maximum 3
     // @Short Takes an item from the player.
@@ -67,8 +67,6 @@ public class TakeCommand extends AbstractCommand {
     //
     // Using 'item:' will take items that match an advanced item matcher, using the system behind <@link language Advanced Object Matching>.
     //
-    // Using 'xp' will take experience from the player.
-    //
     // Flagged, Slot, ByDisplay, and Raw_Exact, all take a list as input to take multiple different item types at once.
     //
     // If no quantity is specified, exactly 1 item will be taken.
@@ -77,9 +75,10 @@ public class TakeCommand extends AbstractCommand {
     //
     // Optionally using 'from:' to specify a specific inventory to take from. If not specified, the linked player's inventory will be used.
     //
-    // The options 'iteminhand', 'cursoritem', and 'xp' require a linked player and will ignore the 'from:' inventory.
+    // The options 'iteminhand' and 'cursoritem' require a linked player and will ignore the 'from:' inventory.
     //
-    // To give money to a player, use <@link command money>.
+    // To take xp from a player, use <@link command experience>.
+    // To take money from a player, use <@link command money>.
     //
     // @Tags
     // <PlayerTag.item_in_hand>
@@ -126,7 +125,7 @@ public class TakeCommand extends AbstractCommand {
         for (Argument arg : scriptEntry) {
             if (!scriptEntry.hasObject("type")
                     && arg.matches("money", "coins")) {
-                BukkitImplDeprecations.giveTakeMoney.warn(scriptEntry);
+                BukkitImplDeprecations.takeMoney.warn(scriptEntry);
                 scriptEntry.addObject("type", Type.MONEY);
             }
             else if (!scriptEntry.hasObject("type")
@@ -309,6 +308,7 @@ public class TakeCommand extends AbstractCommand {
                 break;
             }
             case XP: {
+                BukkitImplDeprecations.takeExperience.warn(scriptEntry);
                 Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().giveExp(-quantity.asInt());
                 break;
             }
