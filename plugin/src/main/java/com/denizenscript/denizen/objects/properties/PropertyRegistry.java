@@ -72,6 +72,7 @@ public class PropertyRegistry {
             PropertyParser.registerProperty(EntityDisplay.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityEquipment.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityEquipmentDropChance.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExplosionFire.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExplosionRadius.class, EntityTag.class);
         PropertyParser.registerProperty(EntityEyeTargetLocation.class, EntityTag.class);
