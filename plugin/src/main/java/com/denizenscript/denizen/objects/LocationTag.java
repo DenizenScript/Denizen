@@ -4271,8 +4271,8 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // <--[language]
             // @name Structure lookups
             // @description
-            // There are several tags to locate structures, such as <@link tag LocationTag.find_structure> and <@link tag LocationTag.find_structure_type>.
-            // These tags work similarly to the '/locate' command, and have several side effects/edge cases:
+            // Structures can be located using <@link tag LocationTag.find_structure>.
+            // It works similarly to the '/locate' command, and has several side effects/edge cases:
             // - The radius is in chunks, but isn't always a set square radius around the origin; certain structures may modify the amounts of chunks checked. For example, woodland mansions can potentially check up to 20,000 blocks away (or more) regardless of the radius used.
             // - Lookups can take a long amount of time (several seconds, over 10 in some cases), especially when looking for unexplored structures, which will cause the server to freeze while searching.
             // - They will not load/generate chunks (but can search not-yet-generated chunks and return a location in them).
@@ -4289,8 +4289,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // Finds the closest structure of the given type within the specified chunk radius (if any), optionally only searching for unexplored ones.
             // For a list of default structures, see <@link url https://minecraft.wiki/w/Structure#ID>.
             // Alternatively, you can specify a custom structure from a datapack, plugin, etc. as a namespaced key.
-            // See also <@link tag LocationTag.find_structure_type> to find structures by type,
-            // and <@link tag server.structures> for all structures currently available on the server.
+            // See also <@link tag server.structures> for all structures currently available on the server.
             // @example
             // # Use to find the desert temple closest to the player, and tell them what direction it's in.
             // - define found <player.location.find_structure[structure=desert_pyramid;radius=200].if_null[null]>
@@ -4321,56 +4320,6 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 }
                 StructureSearchResult searchResult = object.getWorld().locateNearestStructure(object, structure, radius.asInt(), unexplored.asBoolean());
                 return searchResult != null ? new LocationTag(searchResult.getLocation()) : null;
-            });
-
-            // <--[tag]
-            // @attribute <LocationTag.find_structure_type[type=<type>;radius=<#>(;unexplored=<true/{false}>)]>
-            // @returns MapTag
-            // @warning See <@link language Structure lookups> for potential issues/edge cases in structure lookups.
-            // @group finding
-            // @description
-            // Finds the closest structure of the given structure type within the specified chunk radius, optionally only searching for unexplored ones.
-            // See <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/generator/structure/StructureType.html> for all available structure types.
-            // The returned map, if any, has 2 keys:
-            // - "location", <@link ObjectType LocationTag> of the structure found.
-            // - "structure", <@link ObjectType ElementTag> of the type of structure found.
-            // See also <@link tag LocationTag.find_structure> to find specific structures instead of looking them up by type.
-            // @example
-            // # Use to find the closest structure of the "jigsaw" structure type (ancient cities, for example), and tell the player what direction it's in.
-            // - define found <player.location.find_structure_type[type=jigsaw;radius=200].if_null[null]>
-            // - if <[found]> != null:
-            //   - narrate "The <[found.structure]> structure is <player.location.direction[<[found.location]>]> of you!"
-            // - else:
-            //   - narrate "No structure found."
-            // -->
-            tagProcessor.registerTag(MapTag.class, MapTag.class, "find_structure_type", (attribute, object, input) -> {
-                ElementTag structureTypeName = input.getRequiredObjectAs("type", ElementTag.class, attribute);
-                ElementTag radius = input.getRequiredObjectAs("radius", ElementTag.class, attribute);
-                if (structureTypeName == null || radius == null) {
-                    return null;
-                }
-                org.bukkit.generator.structure.StructureType structureType = Registry.STRUCTURE_TYPE.get(Utilities.parseNamespacedKey(structureTypeName.asString()));
-                if (structureType == null) {
-                    attribute.echoError("Invalid structure type specified: " + structureTypeName + '.');
-                    return null;
-                }
-                if (!radius.isInt()) {
-                    attribute.echoError("Invalid radius specified '" + radius + "': must be a number.");
-                    return null;
-                }
-                ElementTag unexplored = input.getElement("unexplored", "false");
-                if (!unexplored.isBoolean()) {
-                    attribute.echoError("Invalid 'unexplored' value '" + unexplored + "': must be a boolean.");
-                    return null;
-                }
-                StructureSearchResult searchResult = object.getWorld().locateNearestStructure(object, structureType, radius.asInt(), unexplored.asBoolean());
-                if (searchResult == null) {
-                    return null;
-                }
-                MapTag result = new MapTag();
-                result.putObject("location", new LocationTag(searchResult.getLocation()));
-                result.putObject("structure", new ElementTag(Utilities.namespacedKeyToString(searchResult.getStructure().getKey()), true));
-                return result;
             });
         }
 
