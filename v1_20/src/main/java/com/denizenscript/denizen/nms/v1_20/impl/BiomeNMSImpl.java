@@ -27,7 +27,6 @@ import org.bukkit.entity.EntityType;
 import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 public class BiomeNMSImpl extends BiomeNMS {

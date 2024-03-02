@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
 import org.bukkit.Bukkit;
