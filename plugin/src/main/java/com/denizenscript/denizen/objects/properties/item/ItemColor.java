@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ColorTag;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.Color;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.MapMeta;
@@ -68,7 +69,7 @@ public class ItemColor extends ItemProperty<ColorTag> {
     }
 
     public static void register() {
-        ItemTag.tagProcessor.registerTag(ColorTag.class, "color", (attribute, item) -> {
+        PropertyParser.registerTag(ItemColor.class, ColorTag.class, "color", (attribute, item) -> {
             if (item.getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta) {
                 return BukkitColorExtensions.fromColor(leatherArmorMeta.getColor());
             }
@@ -87,22 +88,9 @@ public class ItemColor extends ItemProperty<ColorTag> {
             return null;
         }, "dye_color");
 
-        ItemTag.tagProcessor.registerMechanism("color", true, ColorTag.class, (item, mechanism, color) -> {
-            if (item.getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta) {
-                leatherArmorMeta.setColor(BukkitColorExtensions.getColor(color));
-                item.setItemMeta(leatherArmorMeta);
-                return;
-            }
-            if (item.getItemMeta() instanceof MapMeta mapMeta) {
-                mapMeta.setColor(BukkitColorExtensions.getColor(color));
-                item.setItemMeta(mapMeta);
-                return;
-            }
-            if (item.getItemMeta() instanceof PotionMeta potionMeta) {
-                potionMeta.setColor(BukkitColorExtensions.getColor(color));
-                item.setItemMeta(potionMeta);
-                return;
-            }
+        PropertyParser.registerMechanism(ItemColor.class, ColorTag.class, "color", (item, mechanism, color) -> {
+            ItemColor itemColor = new ItemColor();
+            itemColor.setPropertyValue(color, mechanism);
         }, "dye", "dye_color");
     }
 }
