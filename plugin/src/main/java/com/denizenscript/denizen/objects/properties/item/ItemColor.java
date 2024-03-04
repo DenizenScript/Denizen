@@ -89,8 +89,7 @@ public class ItemColor extends ItemProperty<ColorTag> {
         }, "dye_color");
 
         PropertyParser.registerMechanism(ItemColor.class, ColorTag.class, "color", (item, mechanism, color) -> {
-            ItemColor itemColor = new ItemColor();
-            itemColor.setPropertyValue(color, mechanism);
+            item.setPropertyValue(color, mechanism);
         }, "dye", "dye_color");
     }
 }
