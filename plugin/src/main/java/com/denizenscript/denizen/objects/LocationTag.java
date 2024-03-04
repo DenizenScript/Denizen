@@ -4496,12 +4496,15 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // <LocationTag.page>
         // -->
         tagProcessor.registerMechanism("page", false, ElementTag.class, (object, mechanism, input) -> {
+            if (!mechanism.requireInteger()) {
+                return;
+            }
             if (object.getBlockState() instanceof Lectern lectern) {
                 lectern.setPage(input.asInt() - 1);
-                object.getBlockState().update();
+                lectern.update();
             }
             else {
-                Debug.echoError("The 'LocationTag.page' mechanism can only be called on a lectern block.");
+                mechanism.echoError("The 'LocationTag.page' mechanism can only be called on a lectern block.");
             }
         });
     }
