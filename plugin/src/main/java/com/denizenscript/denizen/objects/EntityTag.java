@@ -3053,7 +3053,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
             // <--[mechanism]
             // @object EntityTag
-            // @name anger
+            // @name increase_anger
             // @input MapTag
             // @description
             // Increases a warden's anger towards a specific entity.
