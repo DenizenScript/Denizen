@@ -2936,6 +2936,171 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 }
                 return MultiVersionHelper1_19.interactionToMap(interaction.getLastInteraction(), interaction.getWorld());
             });
+
+            // <--[tag]
+            // @attribute <EntityTag.highest_anger>
+            // @returns ElementTag(Number)
+            // @description
+            // Returns a warden's anger level at its current target, or its highest anger level.
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "highest_anger", (attribute, object) -> {
+                if (!(object.getBukkitEntity() instanceof Warden warden)) {
+                    return null;
+                }
+                return new ElementTag(warden.getAnger());
+            });
+
+            // <--[tag]
+            // @attribute <EntityTag.anger_at[<entity>]>
+            // @returns ElementTag(Number)
+            // @description
+            // Returns a warden's anger level at a specific entity.
+            // -->
+            tagProcessor.registerTag(ElementTag.class, EntityTag.class, "anger_at", (attribute, object, param) -> {
+                if (!(object.getBukkitEntity() instanceof Warden warden)) {
+                    return null;
+                }
+                Entity entity = param.getBukkitEntity();
+                if (entity == null) {
+                    attribute.echoError("Invalid entity '" + param.debuggable() + "<W>' specified: must be spawned.");
+                    return null;
+                }
+                return new ElementTag(warden.getAnger(entity));
+            });
+
+            // <--[tag]
+            // @attribute <EntityTag.anger_level>
+            // @returns ElementTag
+            // @description
+            // Returns a warden's current anger level, which will be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Warden.AngerLevel.html>.
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "anger_level", (attribute, object) -> {
+                if (!(object.getBukkitEntity() instanceof Warden warden)) {
+                    return null;
+                }
+                return new ElementTag(warden.getAngerLevel());
+            });
+
+            // <--[tag]
+            // @attribute <EntityTag.angry_at>
+            // @returns EntityTag
+            // @description
+            // Returns the entity the warden is the most angry at, if any.
+            // -->
+            tagProcessor.registerTag(EntityFormObject.class, "angry_at", (attribute, object) -> {
+                if (!(object.getBukkitEntity() instanceof Warden warden)) {
+                    return null;
+                }
+                Entity angryAt = warden.getEntityAngryAt();
+                return angryAt != null ? new EntityTag(angryAt).getDenizenObject() : null;
+            });
+
+            // <--[mechanism]
+            // @object EntityTag
+            // @name clear_anger
+            // @input EntityTag
+            // @description
+            // Clears a warden's anger towards the input entity.
+            // -->
+            tagProcessor.registerMechanism("clear_anger", false, EntityTag.class, (object, mechanism, input) -> {
+                if (!(object.getBukkitEntity() instanceof Warden warden)) {
+                    mechanism.echoError("Cannot adjust '" + object.debuggable() + "<W>': must be a warden.");
+                    return;
+                }
+                Entity entity = input.getBukkitEntity();
+                if (entity == null) {
+                    mechanism.echoError("Invalid entity '" + input.debuggable() + "<W>' specified: must be spawned.");
+                    return;
+                }
+                warden.clearAnger(entity);
+            });
+
+            // <--[mechanism]
+            // @object EntityTag
+            // @name anger
+            // @input MapTag
+            // @description
+            // Sets a warden's anger towards a specific entity.
+            // The input map needs to have the following keys:
+            // - "entity", the entity to set anger for.
+            // - "anger", the amount of anger.
+            // See <@link mechanism EntityTag.clear_anger> for clearing anger.
+            // @tags
+            // <EntityTag.anger_at[<entity>]>
+            // -->
+            tagProcessor.registerMechanism("anger", false, MapTag.class, (object, mechanism, input) -> {
+                if (!(object.getBukkitEntity() instanceof Warden warden)) {
+                    mechanism.echoError("Cannot adjust '" + object.debuggable() + "<W>': must be a warden.");
+                    return;
+                }
+                ElementTag anger = input.getElement("anger");
+                EntityTag inputEntity = input.getObjectAs("entity", EntityTag.class, mechanism.context);
+                if (anger == null || inputEntity == null) {
+                    mechanism.echoError("Invalid map input '" + input.debuggable() + "<W>' specified: must have 'anger' and 'entity' keys.");
+                    return;
+                }
+                if (!anger.isInt()) {
+                    mechanism.echoError("Invalid anger '" + anger + "' specified: must be a number.");
+                    return;
+                }
+                Entity entity = inputEntity.getBukkitEntity();
+                if (entity == null) {
+                    mechanism.echoError("Invalid entity '" + inputEntity.debuggable() + "<W>' specified: must be spawned.");
+                    return;
+                }
+                warden.setAnger(entity, anger.asInt());
+            });
+
+            // <--[mechanism]
+            // @object EntityTag
+            // @name anger
+            // @input MapTag
+            // @description
+            // Increases a warden's anger towards a specific entity.
+            // The input map needs to have the following keys:
+            // - "entity", the entity to increase anger for.
+            // - "anger", the amount of anger to add.
+            // See <@link mechanism EntityTag.anger> for setting anger.
+            // @tags
+            // <EntityTag.anger_at[<entity>]>
+            // -->
+            tagProcessor.registerMechanism("increase_anger", false, MapTag.class, (object, mechanism, input) -> {
+                if (!(object.getBukkitEntity() instanceof Warden warden)) {
+                    mechanism.echoError("Cannot adjust '" + object.debuggable() + "<W>': must be a warden.");
+                    return;
+                }
+                ElementTag anger = input.getElement("anger");
+                EntityTag inputEntity = input.getObjectAs("entity", EntityTag.class, mechanism.context);
+                if (anger == null || inputEntity == null) {
+                    mechanism.echoError("Invalid map input '" + input.debuggable() + "<W>' specified: must have 'anger' and 'entity' keys.");
+                    return;
+                }
+                if (!anger.isInt()) {
+                    mechanism.echoError("Invalid anger '" + anger + "' specified: must be a number.");
+                    return;
+                }
+                Entity entity = inputEntity.getBukkitEntity();
+                if (entity == null) {
+                    mechanism.echoError("Invalid entity '" + inputEntity.debuggable() + "<W>' specified: must be spawned.");
+                    return;
+                }
+                warden.increaseAnger(entity, anger.asInt());
+            });
+
+            // <--[mechanism]
+            // @object EntityTag
+            // @name sense_disturbance
+            // @input LocationTag
+            // @description
+            // Makes the warden sense a disturbance at the input location.
+            // -->
+            registerSpawnedOnlyMechanism("sense_disturbance", false, LocationTag.class, (object, mechanism, input) -> {
+                if (!(object.getBukkitEntity() instanceof Warden warden)) {
+                    mechanism.echoError("Cannot adjust '" + object.debuggable() + "<W>': must be a warden.");
+                    return;
+                }
+                warden.setDisturbanceLocation(input);
+            });
         }
 
         // <--[mechanism]
