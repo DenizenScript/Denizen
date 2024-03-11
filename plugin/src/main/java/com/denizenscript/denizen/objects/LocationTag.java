@@ -4491,7 +4491,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @name page
         // @input ElementTag(Number)
         // @description
-        // Changes the page currently displayed on the book in a lectern block.
+        // Sets the page currently displayed on the book in a lectern block.
         // @tags
         // <LocationTag.page>
         // -->
