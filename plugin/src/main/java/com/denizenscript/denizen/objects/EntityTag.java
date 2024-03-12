@@ -2953,6 +2953,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // <--[tag]
             // @attribute <EntityTag.anger_at[<entity>]>
             // @returns ElementTag(Number)
+            // @mechanism EntityTag.anger
             // @description
             // Returns a warden's anger level at a specific entity.
             // -->
@@ -3001,6 +3002,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @input EntityTag
             // @description
             // Clears a warden's anger towards the input entity.
+            // @tags
+            // <EntityTag.anger_at[<entity>]>
             // -->
             tagProcessor.registerMechanism("clear_anger", false, EntityTag.class, (object, mechanism, input) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
