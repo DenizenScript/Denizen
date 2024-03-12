@@ -2986,7 +2986,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @attribute <EntityTag.angry_at>
             // @returns EntityTag
             // @description
-            // Returns the entity the warden is the most angry at, if any.
+            // Returns the entity a warden is the most angry at, if any.
             // -->
             tagProcessor.registerTag(EntityFormObject.class, "angry_at", (attribute, object) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
@@ -3028,6 +3028,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // - "entity", the entity to set anger for.
             // - "anger", the amount of anger.
             // See <@link mechanism EntityTag.clear_anger> for clearing anger.
+            // See <@link mechanism EntityTag.increase_anger> for increasing it.
             // @tags
             // <EntityTag.anger_at[<entity>]>
             // -->
@@ -3063,7 +3064,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // The input map needs to have the following keys:
             // - "entity", the entity to increase anger for.
             // - "anger", the amount of anger to add.
-            // See <@link mechanism EntityTag.anger> for setting anger.
+            // See <@link mechanism EntityTag.clear_anger> for clearing anger.
+            // See <@link mechanism EntityTag.anger> for setting it.
             // @tags
             // <EntityTag.anger_at[<entity>]>
             // -->
@@ -3095,7 +3097,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @name sense_disturbance
             // @input LocationTag
             // @description
-            // Makes the warden sense a disturbance at the input location.
+            // Makes a warden sense a disturbance at the input location.
             // -->
             registerSpawnedOnlyMechanism("sense_disturbance", false, LocationTag.class, (object, mechanism, input) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
