@@ -2953,7 +2953,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // <--[tag]
             // @attribute <EntityTag.anger_at[<entity>]>
             // @returns ElementTag(Number)
-            // @mechanism EntityTag.anger
+            // @mechanism EntityTag.anger_at
             // @description
             // Returns a warden's anger level at a specific entity.
             // -->
@@ -3020,7 +3020,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
             // <--[mechanism]
             // @object EntityTag
-            // @name anger
+            // @name anger_at
             // @input MapTag
             // @description
             // Sets a warden's anger towards a specific entity.
@@ -3032,7 +3032,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @tags
             // <EntityTag.anger_at[<entity>]>
             // -->
-            tagProcessor.registerMechanism("anger", false, MapTag.class, (object, mechanism, input) -> {
+            tagProcessor.registerMechanism("anger_at", false, MapTag.class, (object, mechanism, input) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
                     mechanism.echoError("Cannot adjust '" + object.debuggable() + "<W>': must be a warden.");
                     return;
@@ -3065,7 +3065,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // - "entity", the entity to increase anger for.
             // - "anger", the amount of anger to add.
             // See <@link mechanism EntityTag.clear_anger> for clearing anger.
-            // See <@link mechanism EntityTag.anger> for setting it.
+            // See <@link mechanism EntityTag.anger_at> for setting it.
             // @tags
             // <EntityTag.anger_at[<entity>]>
             // -->
