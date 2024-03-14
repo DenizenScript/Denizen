@@ -324,6 +324,9 @@ public class BukkitImplDeprecations {
     // Added 2023/11/16, deprecate officially by 2027
     public static Warning takeExperience = new FutureWarning("takeExperience", "Using the 'take' command to take experience is deprecated in favor of the 'experience' command.");
 
+    // Added 2024/02/19, deprecate officially by 2027.
+    public static Warning lecternPage = new FutureWarning("lecternPage", "'LocationTag.lectern_page' is deprecated in favor of 'LocationTag.page'.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2023/10/29 without warning.
