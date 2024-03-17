@@ -83,7 +83,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(ServerListPingScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(ServerResourcesReloadedScriptEvent.class);
         ScriptEvent.registerScriptEvent(SkeletonHorseTrapScriptEvent.class);
-        ScriptEvent.registerScriptEvent(TargetHitScriptEvent.class);
+        ScriptEvent.registerScriptEvent(TargetBlockHitScriptEvent.class);
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
