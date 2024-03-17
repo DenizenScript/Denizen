@@ -70,22 +70,12 @@ public class ItemColor extends ItemProperty<ColorTag> {
 
     public static void register() {
         PropertyParser.registerTag(ItemColor.class, ColorTag.class, "color", (attribute, item) -> {
-            if (item.getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta) {
-                return BukkitColorExtensions.fromColor(leatherArmorMeta.getColor());
+            if (item.getItemMeta() instanceof PotionMeta potionMeta && !potionMeta.hasColor()) {
+                return BukkitColorExtensions.fromColor(Color.WHITE);
             }
-            if (item.getItemMeta() instanceof MapMeta mapMeta) {
-                if (!mapMeta.hasColor()) {
-                    return null;
-                }
-                return BukkitColorExtensions.fromColor(mapMeta.getColor());
+            else {
+                return item.getPropertyValue();
             }
-            if (item.getItemMeta() instanceof PotionMeta potionMeta) {
-                if (!potionMeta.hasColor()) {
-                    return BukkitColorExtensions.fromColor(Color.WHITE);
-                }
-                return BukkitColorExtensions.fromColor(potionMeta.getColor());
-            }
-            return null;
         }, "dye_color");
 
         PropertyParser.registerMechanism(ItemColor.class, ColorTag.class, "color", (item, mechanism, color) -> {
