@@ -27,6 +27,11 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
     //
     // @Triggers when a player manipulates an armor stand entity.
     //
+    // @Switch armor_stand_item:<item> to only process the event if the armor stand is holding a specific item.
+    // @Switch hand:<hand> to only process the event if the player is using a specific hand to interact with the armor stand. Available only on MC versions 1.19+.
+    // @Switch player_item:<item> to only process the event if the player is holding a specific item.
+    // @Switch slot:<slot> to only process the event if the armor stand's item slot that was interacted with is the specified slot.
+    //
     // @Context
     // <context.armor_stand_item> returns the ItemTag held by the armor stand.
     // <context.entity> returns an EntityTag of the armor stand.
@@ -39,6 +44,7 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
 
     public PlayerArmorStandManipulateScriptEvent() {
         registerCouldMatcher("player edits armor stand");
+        registerSwitches("armor_stand_item", "hand", "player_item", "slot");
     }
 
     public PlayerArmorStandManipulateEvent event;
@@ -49,6 +55,18 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
     @Override
     public boolean matches(ScriptPath path) {
         if (!runInCheck(path, event.getPlayer().getLocation())) {
+            return false;
+        }
+        if (!path.tryObjectSwitch("armor_stand_item", armorStandItem)) {
+            return false;
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && !path.tryObjectSwitch("hand", new ElementTag(event.getHand()))) {
+            return false;
+        }
+        if (!path.tryObjectSwitch("player_item", playerItem)) {
+            return false;
+        }
+        if (!path.tryObjectSwitch("slot", new ElementTag(event.getSlot()))) {
             return false;
         }
         return super.matches(path);
