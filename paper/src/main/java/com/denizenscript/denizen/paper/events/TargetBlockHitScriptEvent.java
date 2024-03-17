@@ -12,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 
-public class TargetHitScriptEvent extends BukkitScriptEvent implements Listener {
+public class TargetBlockHitScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -38,7 +38,7 @@ public class TargetHitScriptEvent extends BukkitScriptEvent implements Listener 
     // @NPC when the shooter is a npc.
     // -->
 
-    public TargetHitScriptEvent() {
+    public TargetBlockHitScriptEvent() {
     }
 
     public TargetHitEvent event;
@@ -81,15 +81,6 @@ public class TargetHitScriptEvent extends BukkitScriptEvent implements Listener 
     public void onProjectileHit(TargetHitEvent event) {
         this.event = event;
         projectile = new EntityTag(event.getEntity());
-
-        // Additional checks for some rare edge-cases
-        if (projectile.getLocation() == null) {
-            return;
-        }
-        if (Double.isNaN(projectile.getLocation().getDirection().normalize().getX())) {
-            return;
-        }
-
         hitBlock = new LocationTag(event.getHitBlock().getLocation());
         shooter = projectile.getShooter();
         strength = new ElementTag(event.getSignalStrength());
