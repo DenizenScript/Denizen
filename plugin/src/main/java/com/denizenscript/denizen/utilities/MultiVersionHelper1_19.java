@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 
@@ -54,5 +55,9 @@ public class MultiVersionHelper1_19 {
         result.putObject("duration", new DurationTag((world.getGameTime() - interaction.getTimestamp()) / 20d));
         result.putObject("raw_game_time", new ElementTag(interaction.getTimestamp()));
         return result;
+    }
+
+    public static boolean isAnySign(Material material) {
+        return material == Material.MANGROVE_SIGN || material == Material.MANGROVE_WALL_SIGN;
     }
 }

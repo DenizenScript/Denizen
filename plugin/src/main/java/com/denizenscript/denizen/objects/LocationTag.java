@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects;
 
+import com.denizenscript.denizen.utilities.MultiVersionHelper1_20;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
@@ -18,10 +19,11 @@ import com.denizenscript.denizen.utilities.flags.DataPersistenceFlagTracker;
 import com.denizenscript.denizen.utilities.flags.LocationFlagSearchHelper;
 import com.denizenscript.denizen.utilities.world.PathFinder;
 import com.denizenscript.denizen.utilities.world.WorldListChangeTracker;
+import com.denizenscript.denizencore.objects.core.*;
+import com.denizenscript.denizencore.utilities.EnumHelper;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
-import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
@@ -40,6 +42,7 @@ import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.sign.Side;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.block.structure.UsageMode;
@@ -1238,15 +1241,22 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @mechanism LocationTag.sign_contents
         // @group world
         // @description
+        // Pre 1.20
         // Returns a list of lines on a sign.
+        // 1.20+
+        // Returns a map of each side and lines on that side.
         // -->
         tagProcessor.registerTag(ListTag.class, "sign_contents", (attribute, object) -> {
-            if (object.getBlockStateForTag(attribute) instanceof Sign) {
-                return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines(((Sign) object.getBlockStateForTag(attribute)))));
-            }
-            else {
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (!(state instanceof Sign)) {
+                attribute.echoError("Location is not a valid Sign block.");
                 return null;
             }
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines(((Sign) state))));
+            }
+            String side = attribute.hasParam() ? attribute.getParam() : "front";
+            return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines(((Sign) state), Side.valueOf(side.toUpperCase()))));
         });
 
         // <--[tag]
@@ -4146,6 +4156,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @group world
         // @description
         // Returns whether the location is a Sign block that is glowing.
+        // Optionally provide a side (defaults to "front")
         // -->
         tagProcessor.registerTag(ElementTag.class, "sign_glowing", (attribute, object) -> {
             BlockState state = object.getBlockStateForTag(attribute);
@@ -4153,7 +4164,11 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 attribute.echoError("Location is not a valid Sign block.");
                 return null;
             }
-            return new ElementTag(((Sign) state).isGlowingText());
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                return new ElementTag(((Sign) state).isGlowingText());
+            }
+            String side = attribute.hasParam() ? attribute.getParam() : "front";
+            return new ElementTag(((Sign) state).getSide(Side.valueOf(side.toUpperCase())).isGlowingText());
         });
 
         // <--[tag]
@@ -4162,7 +4177,9 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @mechanism LocationTag.sign_glow_color
         // @group world
         // @description
+        // Pre 1.20
         // Returns the name of the glow-color of the sign at the location.
+        // Optionally provide a side (defaults to "front")
         // See also <@link tag LocationTag.sign_glowing>
         // -->
         tagProcessor.registerTag(ElementTag.class, "sign_glow_color", (attribute, object) -> {
@@ -4171,8 +4188,33 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 attribute.echoError("Location is not a valid Sign block.");
                 return null;
             }
-            return new ElementTag(((Sign) state).getColor());
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                return new ElementTag(((Sign) state).getColor());
+            }
+            String side = attribute.hasParam() ? attribute.getParam() : "front";
+            return new ElementTag(((Sign) state).getSide(Side.valueOf(side.toUpperCase())).getColor());
         });
+
+        // <--[tag]
+        // @attribute <LocationTag.sign_waxed>
+        // @returns ElementTag(Boolean)
+        // @mechanism LocationTag.sign_waxed
+        // @group world
+        // @description
+        // Returns whether the location is a Sign block that is waxed.
+        // See also <@link tag LocationTag.sign_glowing>
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            tagProcessor.registerTag(ElementTag.class, "sign_waxed", (attribute, object) -> {
+                BlockState state = object.getBlockStateForTag(attribute);
+                if (!(state instanceof Sign)) {
+                    attribute.echoError("Location is not a valid Sign block.");
+                    return null;
+                }
+                return new ElementTag(((Sign) state).isWaxed());
+            });
+        }
+
 
         // <--[tag]
         // @attribute <LocationTag.map_color>
@@ -4767,22 +4809,64 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @tags
         // <LocationTag.sign_contents>
         // -->
-        if (mechanism.matches("sign_contents") && getBlockState() instanceof Sign) {
-            Sign state = (Sign) getBlockState();
-            for (int i = 0; i < 4; i++) {
-                PaperAPITools.instance.setSignLine(state, i, "");
-            }
-            ListTag list = mechanism.valueAsType(ListTag.class);
-            CoreUtilities.fixNewLinesToListSeparation(list);
-            if (list.size() > 4) {
-                mechanism.echoError("Sign can only hold four lines!");
-            }
-            else {
-                for (int i = 0; i < list.size(); i++) {
-                    PaperAPITools.instance.setSignLine(state, i, list.get(i));
+        if (mechanism.matches("sign_contents")) {
+            BlockState state = getBlockState();
+            if (!(state instanceof Sign sign)) {
+                mechanism.echoError("'sign_contents' mechanism can only be called on Sign blocks.");
+            } else {
+                for (int i = 0; i < 4; i++) {
+                    PaperAPITools.instance.setSignLine(sign, i, "");
                 }
+                ListTag list = mechanism.valueAsType(ListTag.class);
+                CoreUtilities.fixNewLinesToListSeparation(list);
+                if (list.size() > 4) {
+                    mechanism.echoError("Sign can only hold four lines!");
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        PaperAPITools.instance.setSignLine(sign, i, list.get(i));
+                    }
+                }
+                state.update();
             }
-            state.update();
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name sign_sides_contents
+        // @input MapTag
+        // @description
+        // Sets the contents of each side for a sign block.
+        // The input map keys are either 'Front' or 'Back'
+        // @tags
+        // <LocationTag.sign_contents>
+        // -->
+        if (mechanism.matches("sign_sides_contents") && mechanism.requireObject(MapTag.class)) {
+            BlockState state = getBlockState();
+            if (!(state instanceof Sign sign)) {
+                mechanism.echoError("'sign_sides_contents' mechanism can only be called on Sign blocks.");
+            } else {
+                MapTag contentMap = mechanism.valueAsType(MapTag.class);
+                for (Map.Entry<StringHolder, ObjectTag> entry : contentMap.map.entrySet()) {
+                    if (EnumHelper.get(Side.class).valuesMapLower.containsKey(entry.getKey().str)) {
+                        Side side = Side.valueOf(entry.getKey().toString().toUpperCase());
+                        for (int i = 0; i < 4; i++) {
+                            PaperAPITools.instance.setSignLine(sign, side, i, "");
+                        }
+                        ListTag list = entry.getValue().asType(ListTag.class, mechanism.context);
+                        CoreUtilities.fixNewLinesToListSeparation(list);
+                        if (list.size() > 4) {
+                            mechanism.echoError("Sign can only hold four lines!");
+                        } else {
+                            for (int i = 0; i < list.size(); i++) {
+                                PaperAPITools.instance.setSignLine(sign, side, i, list.get(i));
+                            }
+                        }
+                    } else {
+                        mechanism.echoError("Unknown sign side " + entry.getKey());
+                    }
+                }
+                state.update();
+            }
         }
 
         // <--[mechanism]
@@ -5442,13 +5526,43 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // -->
         if (mechanism.matches("sign_glowing") && mechanism.requireBoolean()) {
             BlockState state = getBlockState();
-            if (!(state instanceof Sign)) {
+            if (!(state instanceof Sign sign)) {
                 mechanism.echoError("'sign_glowing' mechanism can only be called on Sign blocks.");
             }
             else {
-                Sign sign = (Sign) state;
                 sign.setGlowingText(mechanism.getValue().asBoolean());
                 sign.update();
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name sign_sides_glowing
+        // @input MapTag
+        // @description
+        // Changes whether each side for a sign block is glowing.
+        // The input map keys are either 'Front' or 'Back'
+        // @tags
+        // <LocationTag.sign_glow_color>
+        // <LocationTag.sign_glowing>
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            if (mechanism.matches("sign_sides_glowing") && mechanism.requireObject(MapTag.class)) {
+                BlockState state = getBlockState();
+                if (!(state instanceof Sign sign)) {
+                    mechanism.echoError("'sign_sides_glowing' mechanism can only be called on Sign blocks.");
+                } else {
+                    MapTag glowMap = mechanism.valueAsType(MapTag.class);
+                    for (Map.Entry<StringHolder, ObjectTag> entry : glowMap.map.entrySet()) {
+                        if (EnumHelper.get(Side.class).valuesMapLower.containsKey(entry.getKey().str)) {
+                            Side side = Side.valueOf(entry.getKey().toString().toUpperCase());
+                            sign.getSide(side).setGlowingText(entry.getValue().asElement().asBoolean());
+                        } else {
+                            mechanism.echoError("Unknown sign side " + entry.getKey());
+                        }
+                    }
+                    sign.update();
+                }
             }
         }
 
@@ -5467,13 +5581,72 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // -->
         if (mechanism.matches("sign_glow_color") && mechanism.requireEnum(DyeColor.class)) {
             BlockState state = getBlockState();
-            if (!(state instanceof Sign)) {
+            if (!(state instanceof Sign sign)) {
                 mechanism.echoError("'sign_glow_color' mechanism can only be called on Sign blocks.");
             }
             else {
-                Sign sign = (Sign) state;
                 sign.setColor(mechanism.getValue().asEnum(DyeColor.class));
                 sign.update();
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name sign_sides_glow_color
+        // @input MapTag
+        // @description
+        // Changes the glow color of each side of the sign.
+        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
+        // If a sign is not glowing, this is equivalent to applying a chat color to the sign.
+        // The input map keys are either 'Front' or 'Back'
+        // Use <@link mechanism LocationTag.sign_glowing> to toggle whether the sign is glowing.
+        // @tags
+        // <LocationTag.sign_glow_color>
+        // <LocationTag.sign_glowing>
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            if (mechanism.matches("sign_sides_glow_color") && mechanism.requireObject(MapTag.class)) {
+                BlockState state = getBlockState();
+                if (!(state instanceof Sign sign)) {
+                    mechanism.echoError("'sign_sides_glow_color' mechanism can only be called on Sign blocks.");
+                } else {
+                    MapTag glowMap = mechanism.valueAsType(MapTag.class);
+                    for (Map.Entry<StringHolder, ObjectTag> entry : glowMap.map.entrySet()) {
+                        if (EnumHelper.get(Side.class).valuesMapLower.containsKey(entry.getKey().str)) {
+                            Side side = Side.valueOf(entry.getKey().toString().toUpperCase());
+                            if (EnumHelper.get(DyeColor.class).valuesMapLower.containsKey(entry.getValue().asElement().asLowerString())) {
+                                DyeColor color = DyeColor.valueOf(entry.getValue().asElement().asLowerString().toUpperCase());
+                                sign.getSide(side).setColor(color);
+                            } else {
+                                mechanism.echoError("Unknown dye color " + entry.getValue());
+                            }
+                        } else {
+                            mechanism.echoError("Unknown sign side " + entry.getKey());
+                        }
+                    }
+                    sign.update();
+                }
+            }
+        }
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name sign_waxed
+        // @input ElementTag(Boolean)
+        // @description
+        // Changes whether the sign at the location is waxed.
+        // @tags
+        // <LocationTag.sign_waxed>
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            if (mechanism.matches("sign_waxed") && mechanism.requireBoolean()) {
+                BlockState state = getBlockState();
+                if (!(state instanceof Sign sign)) {
+                    mechanism.echoError("'sign_waxed' mechanism can only be called on Sign blocks.");
+                } else {
+                    sign.setWaxed(mechanism.getValue().asBoolean());
+                    sign.update();
+                }
             }
         }
 

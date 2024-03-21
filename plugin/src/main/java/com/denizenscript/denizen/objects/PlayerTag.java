@@ -35,6 +35,7 @@ import com.denizenscript.denizencore.tags.TagRunnable;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.NPCSelector;
@@ -45,6 +46,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.*;
@@ -3847,6 +3850,52 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object PlayerTag
+        // @name edit_sign_front
+        // @input LocationTag
+        // @description
+        // Allows the player to edit the front of an existing sign. To create a sign, see <@link command Sign>.
+        // Give no input to make a fake edit interface.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            if (mechanism.matches("edit_sign_front")) {
+                if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
+                    BlockState state = mechanism.valueAsType(LocationTag.class).getBlockState();
+                    if (!(state instanceof Sign)) {
+                        mechanism.echoError("Invalid location specified: must be a sign.");
+                        return;
+                    }
+                    getPlayerEntity().openSign((Sign) state, Side.FRONT);
+                } else {
+                    NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), null);
+                }
+            }
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
+        // @name edit_sign_back
+        // @input LocationTag
+        // @description
+        // Allows the player to edit the back of an existing sign. To create a sign, see <@link command Sign>.
+        // Give no input to make a fake edit interface.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            if (mechanism.matches("edit_sign_back")) {
+                if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
+                    BlockState state = mechanism.valueAsType(LocationTag.class).getBlockState();
+                    if (!(state instanceof Sign)) {
+                        mechanism.echoError("Invalid location specified: must be a sign.");
+                        return;
+                    }
+                    getPlayerEntity().openSign((Sign) state, Side.BACK);
+                } else {
+                    NMSHandler.packetHelper.showSignEditor(getPlayerEntity(), null);
+                }
+            }
+        }
+
+        // <--[mechanism]
+        // @object PlayerTag
         // @name tab_list_info
         // @input ElementTag
         // @description
@@ -3875,14 +3924,30 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @name sign_update
         // @input ElementTag
         // @description
-        // Shows the player fake lines on a sign, with input in the format of LocationTag|ListTag.
+        // Shows the player fake lines on a sign, with input in the format of LocationTag|ListTag
+        // or LocationTag|MapTag, with keys front and/or back.
         // -->
         if (mechanism.matches("sign_update")) {
             if (!mechanism.getValue().asString().isEmpty()) {
                 String[] split = mechanism.getValue().asString().split("\\|", 2);
                 if (LocationTag.matches(split[0]) && split.length > 1) {
-                    ListTag lines = ListTag.valueOf(split[1], mechanism.context);
                     LocationTag location = LocationTag.valueOf(split[0], mechanism.context);
+                    if (!(location.getBlockState() instanceof Sign sign)) {
+                        Debug.echoError("'sign_update' mechanism must specify a location with a Sign.");
+                        return;
+                    }
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                        MapTag linesMap = MapTag.valueOf(split[1], mechanism.context);
+                        if (linesMap != null) {
+                            for (Map.Entry<StringHolder, ObjectTag> entry: linesMap.entrySet() ) {
+                                Side side = Side.valueOf(entry.getKey().str.toUpperCase());
+                                List<String> lines = entry.getValue().asType(ListTag.class, mechanism.context).stream().toList();
+                                PaperAPITools.instance.sendSignUpdate(getPlayerEntity(), location, lines.toArray(new String[4]), side);
+                            }
+                            return;
+                        }
+                    }
+                    ListTag lines = ListTag.valueOf(split[1], mechanism.context);
                     PaperAPITools.instance.sendSignUpdate(getPlayerEntity(), location, lines.toArray(new String[4]));
                 }
                 else {

@@ -10,6 +10,8 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -80,10 +82,16 @@ public class PaperAPITools {
         return sign.getLines();
     }
 
+    public String[] getSignLines(Sign sign, Side side) {
+        return sign.getSide(side).getLines();
+    }
+
     public void setSignLine(Sign sign, int line, String text) {
         sign.setLine(line, text == null ? "" : text);
     }
-
+    public void setSignLine(Sign sign, Side side, int line, String text) {
+        sign.getSide(side).setLine(line, text == null ? "" : text);
+    }
     public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt) {
         byte[] hashData = new byte[20];
         for (int i = 0; i < 20; i++) {
@@ -94,6 +102,18 @@ public class PaperAPITools {
 
     public void sendSignUpdate(Player player, Location loc, String[] text) {
         player.sendSignChange(loc, text);
+    }
+
+    public void sendSignUpdate(Player player, Location loc, String[] text, Side side) {
+        Sign sign = (Sign)loc.getBlock().getState();
+        SignSide signSide = sign.getSide(side);
+        for (int line = 0; line < 4; line++) {
+            signSide.setLine(line, "");
+        }
+        for (int line = 0; line < text.length; line++) {
+            signSide.setLine(line, text[line]);
+        }
+        player.sendBlockUpdate(loc, sign);
     }
 
     public String getCustomName(Nameable object) {

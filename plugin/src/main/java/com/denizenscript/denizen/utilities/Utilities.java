@@ -23,6 +23,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -359,6 +360,20 @@ public class Utilities {
     public static void setSignLines(Sign sign, String[] lines) {
         for (int n = 0; n < 4; n++) {
             PaperAPITools.instance.setSignLine(sign, n, lines[n]);
+        }
+        sign.update();
+    }
+
+    public static void setSignLines(Sign sign, String side, String[] lines) {
+        for (int n = 0; n < 4; n++) {
+            PaperAPITools.instance.setSignLine(sign, Side.valueOf(side), n, lines[n]);
+        }
+        sign.update();
+    }
+
+    public static void setSignLines(Sign sign, Side side, String[] lines) {
+        for (int n = 0; n < 4; n++) {
+            PaperAPITools.instance.setSignLine(sign, side, n, lines[n]);
         }
         sign.update();
     }
