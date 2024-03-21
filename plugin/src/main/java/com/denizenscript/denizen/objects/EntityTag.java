@@ -2942,6 +2942,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @returns ElementTag(Number)
             // @description
             // Returns a warden's anger level at its current target, or its highest anger level.
+            // @example
+            // # Use to heal a warden if its highest anger level is above 80.
+            // - if <[warden].highest_anger> > 80:
+            //   - heal <[warden]>
             // -->
             tagProcessor.registerTag(ElementTag.class, "highest_anger", (attribute, object) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
@@ -2956,6 +2960,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @mechanism EntityTag.anger_at
             // @description
             // Returns a warden's anger level at a specific entity.
+            // @example
+            // # Use to tell the linked player if a warden's anger at them is above 100.
+            // - if <[warden].anger_at[<player>]> > 100:
+            //   - narrate "The warden is angry!"
             // -->
             tagProcessor.registerTag(ElementTag.class, EntityTag.class, "anger_at", (attribute, object, param) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
@@ -2974,6 +2982,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @returns ElementTag
             // @description
             // Returns a warden's current anger level, which will be any of <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Warden.AngerLevel.html>.
+            // @example
+            // # Use to get a warden's anger level and narrate it.
+            // - narrate "The warden is <[warden].anger_level.to_lowercase>!"
             // -->
             tagProcessor.registerTag(ElementTag.class, "anger_level", (attribute, object) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
@@ -2987,6 +2998,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @returns EntityTag
             // @description
             // Returns the entity a warden is the most angry at, if any.
+            // @example
+            // # Use to kill the entity a warden is the most angry at.
+            // - kill <[warden].angry_at>
             // -->
             tagProcessor.registerTag(EntityFormObject.class, "angry_at", (attribute, object) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
@@ -3004,6 +3018,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // Clears a warden's anger towards the input entity.
             // @tags
             // <EntityTag.anger_at[<entity>]>
+            // @example
+            // # Use to clear a warden's anger towards a specific entity.
+            // - adjust <[warden]> clear_anger:<[entity]>
             // -->
             tagProcessor.registerMechanism("clear_anger", false, EntityTag.class, (object, mechanism, input) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
@@ -3031,6 +3048,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // See <@link mechanism EntityTag.increase_anger> for increasing it.
             // @tags
             // <EntityTag.anger_at[<entity>]>
+            // @example
+            // # Use to set a warden's anger at a specific entity to 20.
+            // - adjust <[warden]> anger_at:[entity=<[entity]>;anger=20]
             // -->
             tagProcessor.registerMechanism("anger_at", false, MapTag.class, (object, mechanism, input) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
@@ -3068,6 +3088,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // See <@link mechanism EntityTag.anger_at> for setting it.
             // @tags
             // <EntityTag.anger_at[<entity>]>
+            // @example
+            // # Use to increase a warden's anger at a specific entity by 20.
+            // - adjust <[warden]> increase_anger:[entity=<[entity]>;anger=20]
             // -->
             tagProcessor.registerMechanism("increase_anger", false, MapTag.class, (object, mechanism, input) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
@@ -3098,6 +3121,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @input LocationTag
             // @description
             // Makes a warden sense a disturbance at the input location.
+            // @example
+            // # Use to make a warden sense a disturbance at the linked player's location.
+            // - adjust <[warden]> sense_disturbance:<player.location>
             // -->
             registerSpawnedOnlyMechanism("sense_disturbance", false, LocationTag.class, (object, mechanism, input) -> {
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
