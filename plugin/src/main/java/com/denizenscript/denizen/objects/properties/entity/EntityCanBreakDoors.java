@@ -12,7 +12,7 @@ public class EntityCanBreakDoors extends EntityProperty<ElementTag> {
     // @name can_break_doors
     // @input ElementTag(Boolean)
     // @description
-    // If the entity is a Zombie, controls whether it can break doors.
+    // Whether a Zombie can break doors.
     // -->
 
     public static boolean describes(EntityTag entity) {
