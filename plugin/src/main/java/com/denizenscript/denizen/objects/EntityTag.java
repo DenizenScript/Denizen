@@ -2990,7 +2990,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 if (!(object.getBukkitEntity() instanceof Warden warden)) {
                     return null;
                 }
-                return new ElementTag(warden.getAngerLevel());
+                return MultiVersionHelper1_19.getWardenAngerLevel(warden);
             });
 
             // <--[tag]
