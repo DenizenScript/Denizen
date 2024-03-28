@@ -106,10 +106,6 @@ public class ReflectionMappingsInfo {
     public static String ClientboundTeleportEntityPacket_yRot = "e";
     public static String ClientboundTeleportEntityPacket_xRot = "f";
 
-    // net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData$BlockEntityInfo
-    public static String ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ = "a";
-    public static String ClientboundLevelChunkPacketDataBlockEntityInfo_y = "b";
-
     // net.minecraft.network.syncher.SynchedEntityData
     public static String SynchedEntityData_itemsById = "e";
 
