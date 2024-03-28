@@ -84,4 +84,8 @@ public abstract class ItemHelper {
     public byte[] renderMap(MapView mapView, Player player) {
         throw new UnsupportedOperationException();
     }
+
+    public int getFoodPoints(Material itemType) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_20.impl.network.handlers.packet;
 
+/*
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_20.impl.entities.EntityFakePlayerImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
@@ -8,6 +9,7 @@ import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import org.bukkit.Bukkit;
 
 import java.util.List;
+*/
 
 public class FakePlayerPacketHandlers {
 

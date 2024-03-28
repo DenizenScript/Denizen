@@ -344,17 +344,16 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     scriptEntry.setFinished(true);
                     return;
                 }
-                String directory = URLDecoder.decode(System.getProperty("user.dir"));
-                File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schem");
+                File f = new File(Denizen.getInstance().getDataFolder(), "schematics/" + fname + ".schem");
                 if (!Utilities.canReadFile(f)) {
                     Debug.echoError("Cannot read from that file path due to security settings in Denizen/config.yml.");
                     scriptEntry.setFinished(true);
                     return;
                 }
                 if (!f.exists()) {
-                    f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
+                    f = new File(Denizen.getInstance().getDataFolder(), "schematics/" + fname + ".schematic");
                     if (!f.exists()) {
-                        Debug.echoError("Schematic file " + fname + " does not exist. Are you sure it's in " + directory + "/plugins/Denizen/schematics/?");
+                        Debug.echoError("Schematic file " + fname + " does not exist. Are you sure it's in plugins/Denizen/schematics/?");
                         scriptEntry.setFinished(true);
                         return;
                     }

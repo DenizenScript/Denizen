@@ -220,6 +220,10 @@ public class BukkitImplDeprecations {
     public static Warning assignmentRemove = new SlowWarning("assignmentRemove", "'assignment remove' without a script is deprecated: use 'clear' to clear all scripts, or 'remove' to remove one at a time.");
     public static Warning npcScriptSingle = new SlowWarning("npcScriptSingle", "'npc.script' is deprecated in favor of 'npc.scripts' (plural).");
 
+    // Added 2024/02/04
+    public static Warning oldStructureTypes = new SlowWarning("oldStructureTypes", "'server.structure_types' is based on outdated API and doesn't support modern datapack features. Use 'server.structures' instead.");
+    public static Warning findStructureTags = new SlowWarning("findStructureTags", "'LocationTag.find.structure' and related tags are deprecated in favor of 'LocationTag.find_structure'.");
+
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
 
@@ -319,6 +323,9 @@ public class BukkitImplDeprecations {
 
     // Added 2023/11/16, deprecate officially by 2027
     public static Warning takeExperience = new FutureWarning("takeExperience", "Using the 'take' command to take experience is deprecated in favor of the 'experience' command.");
+
+    // Added 2024/02/19, deprecate officially by 2027.
+    public static Warning lecternPage = new FutureWarning("lecternPage", "'LocationTag.lectern_page' is deprecated in favor of 'LocationTag.page'.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 

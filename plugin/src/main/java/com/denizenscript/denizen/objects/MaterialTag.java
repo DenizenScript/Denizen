@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
@@ -655,6 +656,21 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             result.putObject("fall_sound", new ElementTag(group.getFallSound().name()));
             return result;
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+
+            // <--[tag]
+            // @attribute <MaterialTag.food_points>
+            // @returns ElementTag(Number)
+            // @description
+            // If the material is an item, returns the amount of hunger it restores when eaten.
+            // See <@link url https://minecraft.wiki/w/Food> for more information on food mechanics.
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "food_points", (attribute, object) -> {
+                Material itemType = object.getMaterial();
+                return itemType.isEdible() ? new ElementTag(NMSHandler.itemHelper.getFoodPoints(itemType)) : null;
+            });
+        }
     }
 
     public static ObjectTagProcessor<MaterialTag> tagProcessor = new ObjectTagProcessor<>();
