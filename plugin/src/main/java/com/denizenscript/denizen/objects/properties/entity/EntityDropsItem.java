@@ -5,11 +5,11 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.EnderSignal;
 
-public class EntityDropItem extends EntityProperty<ElementTag> {
+public class EntityDropsItem extends EntityProperty<ElementTag> {
 
     // <--[property]
     // @object EntityTag
-    // @name drop_item
+    // @name drops_item
     // @input ElementTag(Boolean)
     // @description
     // Whether an eye of ender drops an item when breaking or shatters.
@@ -34,10 +34,10 @@ public class EntityDropItem extends EntityProperty<ElementTag> {
 
     @Override
     public String getPropertyId() {
-        return "drop_item";
+        return "drops_item";
     }
 
     public static void register() {
-        autoRegister("drop_item", EntityDropItem.class, ElementTag.class, false);
+        autoRegister("drops_item", EntityDropsItem.class, ElementTag.class, false);
     }
 }
