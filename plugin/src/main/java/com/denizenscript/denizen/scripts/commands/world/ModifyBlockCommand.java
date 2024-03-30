@@ -253,6 +253,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         for (MaterialTag mat : materialList) {
             if (!mat.getMaterial().isBlock()) {
                 Debug.echoError("Material '" + mat.getMaterial().name() + "' is not a block material");
+                scriptEntry.setFinished(true);
                 return;
             }
         }
@@ -275,13 +276,16 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         final List<Float> percs = percentages;
         if (locations == null && location_list == null) {
             Debug.echoError("Must specify a valid location!");
+            scriptEntry.setFinished(true);
             return;
         }
         if ((location_list != null && location_list.isEmpty()) || (locations != null && locations.isEmpty())) {
+            scriptEntry.setFinished(true);
             return;
         }
         if (materialList.isEmpty()) {
             Debug.echoError("Must specify a valid material!");
+            scriptEntry.setFinished(true);
             return;
         }
         no_physics = !doPhysics;
@@ -349,6 +353,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 loc = getLocAt(location_list, 0, scriptEntry);
             }
             if (isLocationBad(scriptEntry, loc)) {
+                scriptEntry.setFinished(true);
                 return;
             }
             boolean was_static = preSetup(loc);
@@ -356,6 +361,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             if (locations != null) {
                 for (LocationTag obj : locations) {
                     if (isLocationBad(scriptEntry, obj)) {
+                        scriptEntry.setFinished(true);
                         return;
                     }
                     handleLocation(obj, index, materialList, doPhysics, natural, radius, height, depth, percentages, sourcePlayer, scriptEntry);
@@ -366,6 +372,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 for (int i = 0; i < location_list.size(); i++) {
                     LocationTag obj = getLocAt(location_list, i, scriptEntry);
                     if (isLocationBad(scriptEntry, obj)) {
+                        scriptEntry.setFinished(true);
                         return;
                     }
                     handleLocation(obj, index, materialList, doPhysics, natural, radius, height, depth, percentages, sourcePlayer, scriptEntry);
