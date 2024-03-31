@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ItemInventory extends ItemProperty<ListTag> {
+public class ItemInventoryContents extends ItemProperty<ListTag> {
 
     // <--[property]
     // @object ItemTag
@@ -87,21 +87,21 @@ public class ItemInventory extends ItemProperty<ListTag> {
     }
 
     public static void register() {
-        PropertyParser.registerTag(ItemInventory.class, ListTag.class, "inventory_contents", (attribute, prop) -> {
+        PropertyParser.registerTag(ItemInventoryContents.class, ListTag.class, "inventory_contents", (attribute, prop) -> {
             if (prop.getItemMeta() instanceof BlockStateMeta blockStateMeta && !blockStateMeta.hasBlockState()) {
                 return new ListTag();
             }
             return prop.getPropertyValue();
         });
-        PropertyParser.registerMechanism(ItemInventory.class, ListTag.class, "inventory_contents", (prop, mechanism, input) -> {
+        PropertyParser.registerMechanism(ItemInventoryContents.class, ListTag.class, "inventory_contents", (prop, mechanism, input) -> {
             prop.setPropertyValue(input, mechanism);
         });
 
-        PropertyParser.registerTag(ItemInventory.class, InventoryTag.class, "inventory", (attribute, prop) -> {
+        PropertyParser.registerTag(ItemInventoryContents.class, InventoryTag.class, "inventory", (attribute, prop) -> {
             BukkitImplDeprecations.itemInventoryTag.warn(attribute.context);
             return prop.getItemInventory();
         });
-        PropertyParser.registerMechanism(ItemInventory.class, InventoryTag.class, "inventory", (prop, mechanism, input) -> {
+        PropertyParser.registerMechanism(ItemInventoryContents.class, InventoryTag.class, "inventory", (prop, mechanism, input) -> {
             BukkitImplDeprecations.itemInventoryTag.warn(mechanism.context);
             Argument argument = new Argument("");
             argument.unsetValue();
