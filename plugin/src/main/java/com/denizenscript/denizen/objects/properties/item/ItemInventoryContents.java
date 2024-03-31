@@ -34,7 +34,7 @@ public class ItemInventoryContents extends ItemProperty<ListTag> {
     // -->
 
     public static boolean describes(ItemTag item) {
-        return (item.getItemMeta() instanceof BlockStateMeta stateMeta && stateMeta.getBlockState() instanceof InventoryHolder)
+        return (item.getItemMeta() instanceof BlockStateMeta blockStateMeta && blockStateMeta.getBlockState() instanceof InventoryHolder)
                 || item.getItemMeta() instanceof BundleMeta;
     }
 
