@@ -1,16 +1,14 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.objects.properties.inventory.InventoryContents;
-import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.properties.inventory.InventoryContents;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.Conversion;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
@@ -19,115 +17,68 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.BundleMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ItemInventory implements Property {
+public class ItemInventory extends ItemProperty<ListTag> {
 
-    public static boolean describes(ObjectTag item) {
-        if (!(item instanceof ItemTag)) {
-            return false;
-        }
-        ItemMeta meta = ((ItemTag) item).getItemMeta();
-        if (meta instanceof BlockStateMeta
-                && ((BlockStateMeta) meta).getBlockState() instanceof InventoryHolder) {
-            return true;
-        }
-        else if (meta instanceof BundleMeta) {
-            return true;
-        }
-        return false;
+    // <--[property]
+    // @object ItemTag
+    // @name inventory_contents
+    // @input ListTag(ItemTag)
+    // @description
+    // A container item's inventory contents.
+    // -->
+
+    public static boolean describes(ItemTag item) {
+        return (item.getItemMeta() instanceof BlockStateMeta stateMeta && stateMeta.getBlockState() instanceof InventoryHolder)
+                || item.getItemMeta() instanceof BundleMeta;
     }
-
-    public static ItemInventory getFrom(ObjectTag _item) {
-        if (!describes(_item)) {
-            return null;
-        }
-        else {
-            return new ItemInventory((ItemTag) _item);
-        }
-    }
-
-    public static final String[] handledTags = new String[] {
-            "inventory", "inventory_contents"
-    };
-
-    public static final String[] handledMechs = new String[] {
-            "inventory", "inventory_contents"
-    };
 
     public InventoryTag getItemInventory() {
-        InventoryHolder holder = ((InventoryHolder) ((BlockStateMeta) item.getItemMeta()).getBlockState());
+        InventoryHolder holder = (InventoryHolder) as(BlockStateMeta.class).getBlockState();
         Inventory inv = getInventoryFor(holder);
         return InventoryTag.mirrorBukkitInventory(inv);
     }
 
     public static Inventory getInventoryFor(InventoryHolder holder) {
-        if (holder instanceof Chest) {
-            return ((Chest) holder).getBlockInventory();
-        }
-        else {
-            return holder.getInventory();
-        }
+        return holder instanceof Chest chest ? chest.getBlockInventory() : holder.getInventory();
     }
-
-    public ItemInventory(ItemTag _item) {
-        item = _item;
-    }
-
-    ItemTag item;
 
     @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
-
-        // <--[tag]
-        // @attribute <ItemTag.inventory_contents>
-        // @returns ListTag(ItemTag)
-        // @mechanism ItemTag.inventory_contents
-        // @group properties
-        // @description
-        // Returns a list of the contents of the inventory of a container item.
-        // -->
-        if (attribute.startsWith("inventory_contents")) {
-            return getInventoryContents().getObjectAttribute(attribute.fulfill(1));
-        }
-        if (attribute.startsWith("inventory")) {
-            BukkitImplDeprecations.itemInventoryTag.warn(attribute.context);
-            return getItemInventory().getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
-    }
-
-    public ListTag getInventoryContents() {
-        if (item.getItemMeta() instanceof BlockStateMeta) {
-            InventoryTag inventory = getItemInventory();
-            if (inventory == null) {
+    public ListTag getPropertyValue() {
+        if (getItemMeta() instanceof BlockStateMeta blockStateMeta) {
+            if (!blockStateMeta.hasBlockState()) {
                 return null;
             }
-            return new InventoryContents(inventory).getContents(false);
+            return new InventoryContents(getItemInventory()).getContents(false);
         }
-        ListTag result = new ListTag();
-        for (ItemStack item : ((BundleMeta) item.getItemMeta()).getItems()) {
-            if (item != null && item.getType() != Material.AIR) {
-                result.addObject(new ItemTag(item));
-            }
-        }
-        return result;
+        return new ListTag(as(BundleMeta.class).getItems(), item -> item != null && item.getType() != Material.AIR, ItemTag::new);
     }
 
     @Override
-    public String getPropertyString() {
-        ListTag items = getInventoryContents();
-        return items != null ? items.identify() : null;
+    public void setPropertyValue(ListTag value, Mechanism mechanism) {
+        List<ItemStack> items = new ArrayList<>(value.size());
+        for (ItemTag item : value.filter(ItemTag.class, mechanism.context)) {
+            items.add(item.getItemStack());
+        }
+        if (getItemMeta() instanceof BlockStateMeta blockStateMeta) {
+            BlockState state = blockStateMeta.getBlockState();
+            Inventory inventory = getInventoryFor((InventoryHolder) state);
+            if (items.size() > inventory.getSize()) {
+                mechanism.echoError("Input list is too large: expected " + inventory.getSize() + " or less.");
+                return;
+            }
+            inventory.setContents(items.toArray(new ItemStack[0]));
+            blockStateMeta.setBlockState(state);
+            setItemMeta(blockStateMeta);
+        }
+        else {
+            editMeta(BundleMeta.class, bundleMeta -> bundleMeta.setItems(items));
+        }
     }
 
     @Override
@@ -135,42 +86,22 @@ public class ItemInventory implements Property {
         return "inventory_contents";
     }
 
-    @Override
-    public void adjust(Mechanism mechanism) {
+    public static void register() {
+        PropertyParser.registerTag(ItemInventory.class, ListTag.class, "inventory_contents", (attribute, prop) -> {
+            if (prop.getItemMeta() instanceof BlockStateMeta blockStateMeta && !blockStateMeta.hasBlockState()) {
+                return new ListTag();
+            }
+            return prop.getPropertyValue();
+        });
+        PropertyParser.registerMechanism(ItemInventory.class, ListTag.class, "inventory_contents", (prop, mechanism, input) -> {
+            prop.setPropertyValue(input, mechanism);
+        });
 
-        // <--[mechanism]
-        // @object ItemTag
-        // @name inventory_contents
-        // @input ListTag(ItemTag)
-        // @description
-        // Sets the item's inventory contents.
-        // @tags
-        // <ItemTag.inventory_contents>
-        // -->
-        if (mechanism.matches("inventory_contents") && mechanism.hasValue()) {
-            List<ItemStack> items = new ArrayList<>();
-            for (ItemTag item : mechanism.valueAsType(ListTag.class).filter(ItemTag.class, mechanism.context)) {
-                items.add(item.getItemStack());
-            }
-            if (item.getItemMeta() instanceof BlockStateMeta) {
-                BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
-                InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
-                if (items.size() > getInventoryFor(invHolder).getSize()) {
-                    mechanism.echoError("Invalid inventory_contents input size; expected " + getInventoryFor(invHolder).getSize() + " or less.");
-                    return;
-                }
-                getInventoryFor(invHolder).setContents(items.toArray(new ItemStack[0]));
-                bsm.setBlockState((BlockState) invHolder);
-                item.setItemMeta(bsm);
-            }
-            else {
-                BundleMeta bundle = (BundleMeta) item.getItemMeta();
-                bundle.setItems(items);
-                item.setItemMeta(bundle);
-            }
-        }
-
-        if (mechanism.matches("inventory") && mechanism.hasValue()) {
+        PropertyParser.registerTag(ItemInventory.class, InventoryTag.class, "inventory", (attribute, prop) -> {
+            BukkitImplDeprecations.itemInventoryTag.warn(attribute.context);
+            return prop.getItemInventory();
+        });
+        PropertyParser.registerMechanism(ItemInventory.class, InventoryTag.class, "inventory", (prop, mechanism, input) -> {
             BukkitImplDeprecations.itemInventoryTag.warn(mechanism.context);
             Argument argument = new Argument("");
             argument.unsetValue();
@@ -184,22 +115,19 @@ public class ItemInventory implements Property {
             for (int i = 0; i < itemArray.length; i++) {
                 itemArray[i] = ((ItemTag) items.objectForms.get(i)).getItemStack().clone();
             }
-            if (item.getItemMeta() instanceof BlockStateMeta) {
-                BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
-                InventoryHolder invHolder = (InventoryHolder) bsm.getBlockState();
+            if (prop.getItemMeta() instanceof BlockStateMeta blockStateMeta) {
+                InventoryHolder invHolder = (InventoryHolder) blockStateMeta.getBlockState();
                 if (items.size() > getInventoryFor(invHolder).getSize()) {
                     mechanism.echoError("Invalid inventory mechanism input size; expected " + getInventoryFor(invHolder).getSize() + " or less.");
                     return;
                 }
                 getInventoryFor(invHolder).setContents(itemArray);
-                bsm.setBlockState((BlockState) invHolder);
-                item.setItemMeta(bsm);
+                blockStateMeta.setBlockState((BlockState) invHolder);
+                prop.setItemMeta(blockStateMeta);
             }
             else {
-                BundleMeta bundle = (BundleMeta) item.getItemMeta();
-                bundle.setItems(Arrays.asList(itemArray));
-                item.setItemMeta(bundle);
+                prop.editMeta(BundleMeta.class, bundleMeta -> bundleMeta.setItems(Arrays.asList(itemArray)));
             }
-        }
+        });
     }
 }
