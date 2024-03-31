@@ -69,7 +69,7 @@ public class ItemInventoryContents extends ItemProperty<ListTag> {
             BlockState state = blockStateMeta.getBlockState();
             Inventory inventory = getInventoryFor((InventoryHolder) state);
             if (items.size() > inventory.getSize()) {
-                mechanism.echoError("Input list is too large: expected " + inventory.getSize() + " or less.");
+                mechanism.echoError("Input list is too large: must be " + inventory.getSize() + " or less.");
                 return;
             }
             inventory.setContents(items.toArray(new ItemStack[0]));
