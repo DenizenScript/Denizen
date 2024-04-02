@@ -164,6 +164,9 @@ public class BukkitImplDeprecations {
     public static Warning materialHasDataPackTag = new Warning("materialHasDataPackTag", "The tag 'MaterialTag.has_vanilla_data_tag[...]' is deprecated in favor of MaterialTag.vanilla_tags.contains[<name>]");
     public static Warning materialPropertyTags = new Warning("materialPropertyTags", "Old MaterialTag.is_x property tags are deprecated in favor of PropertyHolderObject.supports[property-name]");
 
+    // Added 2024-04-02, is for a feature that was broken from the start in 2022.
+    public static Warning forcedNoPersist = new Warning("forcedNoPersist", "The 'forced_no_persist' was misspelled and inverted, use 'force_no_persist' instead.");
+
     // ==================== SLOW deprecations ====================
     // These aren't spammed, but will show up repeatedly until fixed. Server owners will probably notice them.
 

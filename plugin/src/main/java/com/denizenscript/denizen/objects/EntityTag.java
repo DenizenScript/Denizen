@@ -1959,12 +1959,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism EntityTag.force_no_persist
         // @description
         // Returns 'true' if the entity is forced to not save to file when chunks unload.
-        // Returns 'false' if not forced to not-save. May return 'false' even for entities that don't save for other reasons.
+        // Returns 'false' if not forced to not-save (ie is allowed to save). May return 'false' even for entities that don't save for other reasons.
         // This is a custom value added in Bukkit to block saving, which is not the same as Mojang's similar option under <@link tag EntityTag.is_persistent>.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "force_no_persist", (attribute, object) -> {
+            return new ElementTag(!object.getBukkitEntity().isPersistent());
+        });
+        registerSpawnedOnlyTag(ElementTag.class, "forced_no_persist", (attribute, object) -> {
+            BukkitImplDeprecations.forcedNoPersist.warn(attribute.context);
             return new ElementTag(object.getBukkitEntity().isPersistent());
-        }, "forced_no_persist");
+        });
 
         // <--[tag]
         // @attribute <EntityTag.is_collidable>
