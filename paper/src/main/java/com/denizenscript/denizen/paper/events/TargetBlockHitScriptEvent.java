@@ -39,18 +39,13 @@ public class TargetBlockHitScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public TargetBlockHitScriptEvent() {
+        registerCouldMatcher("targetblock hit");
     }
 
     public TargetHitEvent event;
     public LocationTag hitBlock;
     public EntityTag projectile;
     public EntityTag shooter;
-    public ElementTag strength;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.matches("targetblock hit");
-    }
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -67,7 +62,7 @@ public class TargetBlockHitScriptEvent extends BukkitScriptEvent implements List
             case "hit_block" -> hitBlock;
             case "hit_face" -> event.getHitBlockFace() != null ? new LocationTag(event.getHitBlockFace().getDirection()) : null;
             case "shooter" -> shooter != null ? shooter.getDenizenObject() : null;
-            case "strength" -> strength;
+            case "strength" ->  new ElementTag(event.getSignalStrength());
             default -> super.getContext(name);
         };
     }
@@ -83,7 +78,6 @@ public class TargetBlockHitScriptEvent extends BukkitScriptEvent implements List
         projectile = new EntityTag(event.getEntity());
         hitBlock = new LocationTag(event.getHitBlock().getLocation());
         shooter = projectile.getShooter();
-        strength = new ElementTag(event.getSignalStrength());
         fire(event);
     }
 }
