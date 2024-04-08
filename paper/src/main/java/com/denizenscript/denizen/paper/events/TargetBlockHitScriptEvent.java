@@ -28,7 +28,6 @@ public class TargetBlockHitScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.projectile> returns an EntityTag of the projectile.
-    // <context.hit_entity> returns an EntityTag of the entity that was hit, if any.
     // <context.hit_block> returns a LocationTag of the block that was hit, if any.
     // <context.hit_face> returns a LocationTag vector of the hit normal (like '0,1,0' if the projectile hit the top of a block).
     // <context.shooter> returns an EntityTag of the entity that shot the projectile, if any.
