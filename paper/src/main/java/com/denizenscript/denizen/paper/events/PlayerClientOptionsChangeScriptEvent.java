@@ -32,7 +32,7 @@ public class PlayerClientOptionsChangeScriptEvent extends BukkitScriptEvent impl
     // <context.chat_visibility> returns the player's chat visibility.
     // <context.locale> returns the player's locale.
     // <context.main_hand> returns an ElementTag(Boolean) of whether the player's main hand has changed.
-    // <context.skin_parts> returns a MapTag of whether the player's skin parts are enabled or not.
+    // <context.skin_parts> returns a MapTag of whether the player's skin parts are enabled or not. For example: [cape=true;jacket=false;left_sleeve=true;right_sleeve=false;left_pants=true;right_pants=false;hat=true]
     // <context.view_distance> returns the player's view distance.
     // <context.server_listings_changed> returns whether the player's server listings have changed. Available only on MC 1.19+.
     // <context.chat_colors> returns whether the player has chat colors enabled.
