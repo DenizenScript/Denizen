@@ -6,8 +6,8 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
@@ -54,17 +54,16 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
 
     public ListPingScriptEvent() {
         registerCouldMatcher("server list ping");
-        this.<ListPingScriptEvent, ListTag>registerOptionalDetermination(null, ListTag.class, (evt, context, list) -> {
+        this.<ListPingScriptEvent, ListTag>registerDetermination(null, ListTag.class, (evt, context, list) -> {
             if (ArgumentHelper.matchesInteger(list.get(0))) {
                 evt.event.setMaxPlayers(Integer.parseInt(list.get(0)));
                 if (list.size() == 2) {
-                    setMotd(list.get(1));
+                    evt.setMotd(list.get(1));
                 }
             }
             else {
-                setMotd(list.get(0));
+                evt.setMotd(list.get(0));
             }
-            return true;
         });
         this.<ListPingScriptEvent, ElementTag>registerOptionalDetermination("max_players", ElementTag.class, (evt, context, max) -> {
             if (max.isInt()) {
@@ -73,15 +72,14 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
             }
             return false;
         });
-        this.<ListPingScriptEvent, ElementTag>registerOptionalDetermination("motd", ElementTag.class, (evt, context, motd) -> {
-            setMotd(motd.toString());
-            return true;
+        this.<ListPingScriptEvent, ElementTag>registerDetermination("motd", ElementTag.class, (evt, context, motd) -> {
+            evt.setMotd(motd.asString());
         });
         this.<ListPingScriptEvent, ElementTag>registerOptionalDetermination("icon", ElementTag.class, (evt, context, iconPath) -> {
             String iconFile = iconPath.toString();
             CachedServerIcon icon = iconCache.get(iconFile);
             if (icon != null) {
-                event.setServerIcon(icon);
+                evt.event.setServerIcon(icon);
                 return true;
             }
             File file = new File(iconFile);
@@ -97,7 +95,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
             }
             if (icon != null) {
                 iconCache.put(iconFile, icon);
-                event.setServerIcon(icon);
+                evt.event.setServerIcon(icon);
                 return true;
             }
             return false;
