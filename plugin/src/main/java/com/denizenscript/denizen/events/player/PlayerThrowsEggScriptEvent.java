@@ -24,7 +24,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Cancellable true
     //
-    // @Triggers when a player throws an egg.
+    // @Triggers when a player throws an egg - this event specifically fires when the egg hits, for the initial throw event use <@link event projectile launched>.
     //
     // @Context
     // <context.egg> returns the EntityTag of the egg.
