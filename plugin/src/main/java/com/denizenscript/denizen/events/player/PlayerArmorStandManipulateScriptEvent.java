@@ -54,7 +54,7 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runInCheck(path, event.getPlayer().getLocation())) {
+        if (!runInCheck(path, event.getRightClicked().getLocation())) {
             return false;
         }
         if (!path.tryObjectSwitch("armor_stand_item", armorStandItem)) {
@@ -74,7 +74,7 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(event.getRightClicked());
+        return new BukkitScriptEntryData(event.getPlayer());
     }
 
     @Override
