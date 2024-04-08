@@ -27,21 +27,21 @@ public class PlayerClientOptionsChangeScriptEvent extends BukkitScriptEvent impl
     // @Triggers when a player changes their client options.
     //
     // @Context
-    // <context.server_listings_enabled> returns an ElementTag(Boolean) of whether the player has server listings enabled.
+    // <context.server_listings_enabled> returns an ElementTag(Boolean) of whether the player has server listings enabled. Available only on MC 1.19+.
     // <context.chat_visibility> returns the player's chat visibility.
     // <context.locale> returns the player's locale.
     // <context.main_hand> returns an ElementTag(Boolean) of whether the player's main hand has changed.
     // <context.skin_parts> returns a MapTag of whether the player's skin parts are enabled or not.
     // <context.view_distance> returns the player's view distance.
-    // <context.server_listings_changed> returns whether the player's server listings have changed.
+    // <context.server_listings_changed> returns whether the player's server listings have changed. Available only on MC 1.19+.
     // <context.chat_colors> returns whether the player has chat colors enabled.
     // <context.chat_colors_changed> returns whether the player's chat colors have changed.
-    // <context.chat_visibility_changed> returns the player's chat visibility.
+    // <context.chat_visibility_changed> returns the player's chat visibility. Available only on MC 1.19+.
     // <context.locale_changed> returns whether the player's locale has changed.
     // <context.main_hand_changed> returns whether the player's main hand has changed.
     // <context.skin_parts_changed> returns whether the player's skin parts have changed.
-    // <context.text_filtering_changed> returns whether the player's text filtering has changed.
-    // <context.text_filtering_enabled> returns whether the player has text filtering enabled.
+    // <context.text_filtering_changed> returns whether the player's text filtering has changed. Available only on MC 1.19+.
+    // <context.text_filtering_enabled> returns whether the player has text filtering enabled. Available only on MC 1.19+.
     // <context.view_distance_changed> returns whether the player's view distance has changed.
     //
     // @Player Always.
