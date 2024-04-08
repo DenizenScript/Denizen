@@ -53,6 +53,7 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityBrightness.class, EntityTag.class);
         }
+        PropertyParser.registerProperty(EntityCanBreakDoors.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCanJoinRaid.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCharged.class, EntityTag.class);
         PropertyParser.registerProperty(EntityChestCarrier.class, EntityTag.class);
