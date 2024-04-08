@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.destroystokyo.paper.SkinParts;
 import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -68,13 +69,14 @@ public class PlayerClientOptionsChangeScriptEvent extends BukkitScriptEvent impl
             case "main_hand" -> new ElementTag(event.getMainHand());
             case "skin_parts" -> {
                 MapTag map = new MapTag();
-                map.putObject("cape", new ElementTag(event.getSkinParts().hasCapeEnabled()));
-                map.putObject("jacket", new ElementTag(event.getSkinParts().hasJacketEnabled()));
-                map.putObject("left_sleeve", new ElementTag(event.getSkinParts().hasLeftSleeveEnabled()));
-                map.putObject("right_sleeve", new ElementTag(event.getSkinParts().hasRightSleeveEnabled()));
-                map.putObject("left_pants", new ElementTag(event.getSkinParts().hasLeftPantsEnabled()));
-                map.putObject("right_pants", new ElementTag(event.getSkinParts().hasRightPantsEnabled()));
-                map.putObject("hat", new ElementTag(event.getSkinParts().hasHatsEnabled()));
+                SkinParts skinParts = event.getSkinParts();
+                map.putObject("cape", new ElementTag(skinParts.hasCapeEnabled()));
+                map.putObject("jacket", new ElementTag(skinParts.hasJacketEnabled()));
+                map.putObject("left_sleeve", new ElementTag(skinParts.hasLeftSleeveEnabled()));
+                map.putObject("right_sleeve", new ElementTag(skinParts.hasRightSleeveEnabled()));
+                map.putObject("left_pants", new ElementTag(skinParts.hasLeftPantsEnabled()));
+                map.putObject("right_pants", new ElementTag(skinParts.hasRightPantsEnabled()));
+                map.putObject("hat", new ElementTag(skinParts.hasHatsEnabled()));
                 yield map;
             }
             case "view_distance" -> new ElementTag(event.getViewDistance());
