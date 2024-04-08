@@ -33,7 +33,7 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
     // @Switch slot:<slot> to only process the event if the armor stand's item slot that was interacted with is the specified slot.
     //
     // @Context
-    // <context.armor_stand_item> returns the ItemTag held by the armor stand.
+    // <context.armor_stand_item> returns the ItemTag being interacted with on the armor stand.
     // <context.entity> returns an EntityTag of the armor stand.
     // <context.hand> returns an ElementTag of the hand used by the player to interact with the armor stand, can be either HAND or OFF_HAND. Available only on MC versions 1.19+.
     // <context.player_item> returns the ItemTag held by the player.
