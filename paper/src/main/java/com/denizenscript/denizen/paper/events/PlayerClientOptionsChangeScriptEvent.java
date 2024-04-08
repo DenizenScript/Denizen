@@ -70,10 +70,10 @@ public class PlayerClientOptionsChangeScriptEvent extends BukkitScriptEvent impl
                 MapTag map = new MapTag();
                 map.putObject("cape", new ElementTag(event.getSkinParts().hasCapeEnabled()));
                 map.putObject("jacket", new ElementTag(event.getSkinParts().hasJacketEnabled()));
-                map.putObject("leftSleeve", new ElementTag(event.getSkinParts().hasLeftSleeveEnabled()));
-                map.putObject("rightSleeve", new ElementTag(event.getSkinParts().hasRightSleeveEnabled()));
-                map.putObject("leftPants", new ElementTag(event.getSkinParts().hasLeftPantsEnabled()));
-                map.putObject("rightPants", new ElementTag(event.getSkinParts().hasRightPantsEnabled()));
+                map.putObject("left_sleeve", new ElementTag(event.getSkinParts().hasLeftSleeveEnabled()));
+                map.putObject("right_sleeve", new ElementTag(event.getSkinParts().hasRightSleeveEnabled()));
+                map.putObject("left_pants", new ElementTag(event.getSkinParts().hasLeftPantsEnabled()));
+                map.putObject("right_pants", new ElementTag(event.getSkinParts().hasRightPantsEnabled()));
                 map.putObject("hat", new ElementTag(event.getSkinParts().hasHatsEnabled()));
                 yield map;
             }
