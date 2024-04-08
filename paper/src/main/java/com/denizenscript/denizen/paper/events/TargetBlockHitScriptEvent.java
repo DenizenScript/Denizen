@@ -29,9 +29,9 @@ public class TargetBlockHitScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.projectile> returns an EntityTag of the projectile.
     // <context.shooter> returns a EntityTag of the shooter of the projectile.
-    // <context.hit_block> returns a LocationTag of the block
-    // <context.hit_face> returns a LocationTag of the face
-    // <context.strength> returns a ElementTag of the emitted redstone strength
+    // <context.hit_block> returns a LocationTag of the block.
+    // <context.hit_face> returns a LocationTag of the face.
+    // <context.strength> returns a ElementTag of the emitted redstone strength.
     //
     // @Player when the shooter is a player.
     //
