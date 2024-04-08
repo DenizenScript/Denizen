@@ -281,13 +281,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 addChoice.accept(smithingRecipe.getAddition());
             }
             else if (brewingRecipe != null) {
-                if (brewingRecipe.ingredient() != null) {
+                if (brewingRecipe.ingredient() instanceof RecipeChoice.ExactChoice || brewingRecipe.ingredient() instanceof RecipeChoice.MaterialChoice) {
                     addChoice.accept(brewingRecipe.ingredient());
                 }
                 else {
                     recipeItems.addObject(new ElementTag(PaperAPITools.instance.getBrewingRecipeIngredientMatcher(recipeKey), true));
                 }
-                if (brewingRecipe.input() != null) {
+                if (brewingRecipe.input() instanceof RecipeChoice.ExactChoice || brewingRecipe.input() instanceof RecipeChoice.MaterialChoice) {
                     addChoice.accept(brewingRecipe.input());
                 }
                 else {
@@ -944,18 +944,32 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // <--[tag]
         // @attribute <server.structure_types>
         // @returns ListTag
+        // @deprecated use 'server.structures' on 1.19+.
         // @description
-        // Returns a list of all structure types known to the server.
-        // Generally used with <@link tag LocationTag.find.structure.within>.
-        // This is NOT their Bukkit names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/StructureType.html>.
-        // Instead these are the internal names tracked by Spigot and presumably matching Minecraft internals.
-        // These are all lowercase, as the internal names are lowercase and supposedly are case-sensitive.
-        // It is unclear why the "StructureType" class in Bukkit is not simply an enum as most similar listings are.
+        // Deprecated in favor of <@link tag server.structures> on 1.19+.
         // -->
         tagProcessor.registerTag(ListTag.class, "structure_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                BukkitImplDeprecations.oldStructureTypes.warn(attribute.context);
+            }
             return new ListTag(StructureType.getStructureTypes().keySet());
         }, "list_structure_types");
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
+            // <--[tag]
+            // @attribute <server.structures>
+            // @returns ListTag
+            // @description
+            // Returns a list of all structures known to the server, including custom ones added by datapacks.
+            // For more information and a list of default structures, see <@link url https://minecraft.wiki/w/Structure>.
+            // For locating specific structures, see <@link language Structure lookups>.
+            // -->
+            tagProcessor.registerTag(ListTag.class, "structures", (attribute, object) -> {
+                return new ListTag(Registry.STRUCTURE.stream().toList(), structure -> new ElementTag(Utilities.namespacedKeyToString(structure.getKey()), true));
+            });
+        }
 
         // <--[tag]
         // @attribute <server.statistic_type[<statistic>]>
@@ -1913,7 +1927,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Immediately saves the Denizen saves files.
         // -->
         tagProcessor.registerMechanism("save", false, (object, mechanism) -> {
-            DenizenCore.saveAll();
+            DenizenCore.saveAll(false);
             Denizen.getInstance().saveSaves(false);
         });
 

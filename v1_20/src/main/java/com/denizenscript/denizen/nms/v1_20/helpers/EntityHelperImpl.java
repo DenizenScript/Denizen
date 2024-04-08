@@ -32,7 +32,6 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
-import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -73,7 +72,6 @@ import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_20_R3.block.CraftCreatureSpawner;
 import org.bukkit.craftbukkit.v1_20_R3.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_20_R3.entity.*;
-import org.bukkit.craftbukkit.v1_20_R3.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
 import org.bukkit.entity.*;
@@ -618,7 +616,7 @@ public class EntityHelperImpl extends EntityHelper {
             case FALL -> sources.fall();
             case FIRE -> sources.inFire();
             case FIRE_TICK -> sources.onFire();
-            case MELTING -> sources.melting;
+            case MELTING -> sources.melting();
             case LAVA -> sources.lava();
             case DROWNING -> sources.drown();
             case BLOCK_EXPLOSION -> nmsSource instanceof PrimedTnt primedTnt ? sources.explosion(primedTnt, primedTnt.getOwner()) : sources.explosion(null);
@@ -626,7 +624,7 @@ public class EntityHelperImpl extends EntityHelper {
             case VOID -> sources.fellOutOfWorld();
             case LIGHTNING -> sources.lightningBolt();
             case STARVATION -> sources.starve();
-            case POISON -> sources.poison;
+            case POISON -> sources.poison();
             case MAGIC -> sources.magic();
             case WITHER -> sources.wither();
             case FALLING_BLOCK -> sources.fallingBlock(nmsSource);
@@ -652,22 +650,14 @@ public class EntityHelperImpl extends EntityHelper {
         }
         net.minecraft.world.entity.LivingEntity nmsTarget = ((CraftLivingEntity) target).getHandle();
         net.minecraft.world.entity.Entity nmsSource = source == null ? null : ((CraftEntity) source.getBukkitEntity()).getHandle();
-        CraftEventFactory.entityDamage = nmsSource;
-        CraftEventFactory.blockDamage = sourceLoc == null ? null : sourceLoc.getBlock();
-        try {
-            DamageSource src = getSourceFor(nmsSource, cause, nmsTarget);
-            if (src instanceof FakeDamageSrc fakeDamageSrc) {
-                src = fakeDamageSrc.real;
-                if (fireFakeDamageEvent(target, source, sourceLoc, cause, amount).isCancelled()) {
-                    return;
-                }
+        DamageSource src = getSourceFor(nmsSource, cause, nmsTarget);
+        if (src instanceof FakeDamageSrc fakeDamageSrc) {
+            src = fakeDamageSrc.real;
+            if (fireFakeDamageEvent(target, source, sourceLoc, cause, amount).isCancelled()) {
+                return;
             }
-            nmsTarget.hurt(src, amount);
         }
-        finally {
-            CraftEventFactory.entityDamage = null;
-            CraftEventFactory.blockDamage = null;
-        }
+        nmsTarget.hurt(src, amount);
     }
 
     @Override

@@ -37,6 +37,7 @@ import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PaperAPIToolsImpl extends PaperAPITools {
@@ -161,8 +162,8 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         entity.teleport(loc, cause, teleportFlags.toArray(new TeleportFlag[0]));
     }
 
-    record BrewingRecipeWithMatchers(PotionMix potionMix, String inputMatcher, String ingredientMatcher) {}
-    public static final Map<NamespacedKey, BrewingRecipeWithMatchers> potionMixes = new HashMap<>();
+    record BrewingRecipeMatchers(String inputMatcher, String ingredientMatcher) {}
+    public static final Map<NamespacedKey, BrewingRecipeMatchers> potionMixes = new HashMap<>();
 
     @Override
     public void registerBrewingRecipe(String keyName, ItemStack result, String input, String ingredient, ItemScriptContainer itemScriptContainer) {
@@ -178,9 +179,8 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             return;
         }
         NamespacedKey key = new NamespacedKey(Denizen.getInstance(), keyName);
-        PotionMix mix = new PotionMix(key, result, inputChoice, ingredientChoice);
-        potionMixes.put(key, new BrewingRecipeWithMatchers(mix, input.startsWith("matcher:") ? input : null, ingredient.startsWith("matcher:") ? ingredient : null));
-        Bukkit.getPotionBrewer().addPotionMix(mix);
+        potionMixes.put(key, new BrewingRecipeMatchers(input.startsWith("matcher:") ? input : null, ingredient.startsWith("matcher:") ? ingredient : null));
+        Bukkit.getPotionBrewer().addPotionMix(new PotionMix(key, result, inputChoice, ingredientChoice));
     }
 
     @Override
@@ -220,16 +220,6 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
-    public boolean isDenizenMix(ItemStack currInput, ItemStack ingredient) {
-        for (BrewingRecipeWithMatchers brewing : potionMixes.values()) {
-            if (brewing.potionMix().getInput().test(currInput) && brewing.potionMix().getIngredient().test(ingredient)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public String getBrewingRecipeInputMatcher(NamespacedKey recipeId) {
         return potionMixes.get(recipeId).inputMatcher();
     }
@@ -237,6 +227,11 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     @Override
     public String getBrewingRecipeIngredientMatcher(NamespacedKey recipeId) {
         return potionMixes.get(recipeId).ingredientMatcher();
+    }
+
+    @Override
+    public RecipeChoice createPredicateRecipeChoice(Predicate<ItemStack> predicate) {
+        return PotionMix.createPredicateChoice(predicate);
     }
 
     @Override

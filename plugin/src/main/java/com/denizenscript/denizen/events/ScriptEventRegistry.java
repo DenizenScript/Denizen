@@ -66,6 +66,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BlockCooksSmeltsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockDestroyedByExplosionEvent.class);
         ScriptEvent.registerScriptEvent(BlockDispensesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(BlockEquipsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockExplodesScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockFadesScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockFallsScriptEvent.class);
@@ -94,6 +95,7 @@ public class ScriptEventRegistry {
         }
 
         // Entity events
+        ScriptEvent.registerScriptEvent(AreaEffectCloudApplyScriptEvent.class);
         if (!Denizen.supportsPaper) {
             ScriptEvent.registerScriptEvent(AreaEnterExitScriptEvent.class);
         }
@@ -129,6 +131,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(EntityShootsBowScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySpawnerSpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySpawnScriptEvent.class);
+        ScriptEvent.registerScriptEvent(EntitySpellCastScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntitySwimScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityTamesScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityTargetsScriptEvent.class);

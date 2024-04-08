@@ -574,7 +574,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
         // <@link mechanism ItemTag.inventory_contents>, and <@link tag ItemTag.inventory_contents>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "has_inventory", (attribute, object) -> {
-            return new ElementTag(ItemInventory.describes(object));
+            return new ElementTag(ItemInventoryContents.describes(object));
         });
 
         // <--[tag]

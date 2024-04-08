@@ -55,4 +55,8 @@ public class MultiVersionHelper1_19 {
         result.putObject("raw_game_time", new ElementTag(interaction.getTimestamp()));
         return result;
     }
+
+    public static ElementTag getWardenAngerLevel(Warden warden) {
+        return new ElementTag(warden.getAngerLevel());
+    }
 }

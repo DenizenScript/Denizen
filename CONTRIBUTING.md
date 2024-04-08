@@ -20,6 +20,7 @@ For pull requests:
 	- If issues or threads for it have been closed with a refusal statement, ensure you want to be making a PR at all before bothering with it. Generally, refused requests means PRs are also refused.
 		- The exception to this is when an issue is only partially related to what you're doing, or you believe in good faith that the issue was refused on grounds made irrelevant by your adaptation of it.
 			- In these cases, please open a new issue or thread.
+- Do NOT click the `Resolve conversation` button on any PR comments. Ever.
 
 ## Code Style / Formatting
 

@@ -305,7 +305,16 @@ public class EntityAttributeModifiers implements Property {
                         continue;
                     }
                     for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
-                        instance.addModifier(modiferForMap(attr, listValue.asType(MapTag.class, mechanism.context)));
+                        AttributeModifier modifier = modiferForMap(attr, listValue.asType(MapTag.class, mechanism.context));
+                        try {
+                            instance.addModifier(modifier);
+                        }
+                        catch (IllegalArgumentException ex) {
+                            if (!ex.getMessage().equals("Modifier is already applied on this attribute!")) {
+                                throw ex;
+                            }
+                            Debug.echoError("Cannot add attribute with ID '" + modifier.getUniqueId() + "' as the entity already has a modifier with the same ID.");
+                        }
                     }
                 }
             }

@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Describe an issue with Denizen not working as expected.
+about: Describe an issue with Denizen not working as expected. DO NOT POST HERE UNLESS SOMEONE TOLD YOU TO ON DISCORD.
 
 ---
 

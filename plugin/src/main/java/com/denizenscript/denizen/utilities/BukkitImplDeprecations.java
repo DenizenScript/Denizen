@@ -117,6 +117,9 @@ public class BukkitImplDeprecations {
     // Added 2021/05/05, made current 2022/12/31, made strong 2024/01/02.
     public static Warning locationDistanceTag = new StrongWarning("locationDistanceTag", "locationtag.tree_distance is deprecated in favor of location.material.distance");
 
+    // Added 2024/02/10.
+    public static Warning fakePlayer = new StrongWarning("fakePlayer", "The 'fake_player' entity was an experiment that was always redundant due to the availability of Citizens NPCs. If you use 'fake_player' please let us know on Discord ASAP.");
+
     // ==================== Normal deprecations ====================
     // These show up every time, and should get the server owner's attention quickly if they check their logs.
 
@@ -160,6 +163,9 @@ public class BukkitImplDeprecations {
     // Added 2021/04/13, made slow 2022/12/31, made normal 2024/01/02.
     public static Warning materialHasDataPackTag = new Warning("materialHasDataPackTag", "The tag 'MaterialTag.has_vanilla_data_tag[...]' is deprecated in favor of MaterialTag.vanilla_tags.contains[<name>]");
     public static Warning materialPropertyTags = new Warning("materialPropertyTags", "Old MaterialTag.is_x property tags are deprecated in favor of PropertyHolderObject.supports[property-name]");
+
+    // Added 2024-04-02, is for a feature that was broken from the start in 2022.
+    public static Warning forcedNoPersist = new Warning("forcedNoPersist", "The 'forced_no_persist' was misspelled and inverted, use 'force_no_persist' instead.");
 
     // ==================== SLOW deprecations ====================
     // These aren't spammed, but will show up repeatedly until fixed. Server owners will probably notice them.
@@ -216,6 +222,10 @@ public class BukkitImplDeprecations {
     // Added 2021/11/07, made very-slow 2022/12/31, made slow 2024/01/02.
     public static Warning assignmentRemove = new SlowWarning("assignmentRemove", "'assignment remove' without a script is deprecated: use 'clear' to clear all scripts, or 'remove' to remove one at a time.");
     public static Warning npcScriptSingle = new SlowWarning("npcScriptSingle", "'npc.script' is deprecated in favor of 'npc.scripts' (plural).");
+
+    // Added 2024/02/04
+    public static Warning oldStructureTypes = new SlowWarning("oldStructureTypes", "'server.structure_types' is based on outdated API and doesn't support modern datapack features. Use 'server.structures' instead.");
+    public static Warning findStructureTags = new SlowWarning("findStructureTags", "'LocationTag.find.structure' and related tags are deprecated in favor of 'LocationTag.find_structure'.");
 
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
@@ -316,6 +326,9 @@ public class BukkitImplDeprecations {
 
     // Added 2023/11/16, deprecate officially by 2027
     public static Warning takeExperience = new FutureWarning("takeExperience", "Using the 'take' command to take experience is deprecated in favor of the 'experience' command.");
+
+    // Added 2024/02/19, deprecate officially by 2027.
+    public static Warning lecternPage = new FutureWarning("lecternPage", "'LocationTag.lectern_page' is deprecated in favor of 'LocationTag.page'.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
