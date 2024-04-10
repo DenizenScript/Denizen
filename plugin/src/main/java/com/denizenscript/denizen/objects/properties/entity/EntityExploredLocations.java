@@ -24,11 +24,7 @@ public class EntityExploredLocations extends EntityProperty<ListTag> {
 
     @Override
     public ListTag getPropertyValue() {
-        ListTag locations = new ListTag();
-        for (Location location : as(Sniffer.class).getExploredLocations()) {
-            locations.addObject(new LocationTag(location));
-        }
-        return locations;
+        return new ListTag(as(Sniffer.class).getExploredLocations(), LocationTag::new);
     }
 
     @Override
