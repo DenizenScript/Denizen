@@ -6,7 +6,6 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.properties.entity.EntityExploredLocations;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
@@ -102,7 +101,6 @@ public class PaperModule {
         PropertyParser.registerProperty(EntityDrinkingPotion.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityEggLayTime.class, EntityTag.class);
-            PropertyParser.registerProperty(EntityExploredLocations.class, EntityTag.class);
             PropertyParser.registerProperty(EntityFriction.class, EntityTag.class);
         }
         PropertyParser.registerProperty(EntityLeftHanded.class, EntityTag.class);
