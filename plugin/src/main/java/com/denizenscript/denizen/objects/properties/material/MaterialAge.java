@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.material;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.exceptions.Unreachable;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -27,7 +29,7 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
         return data instanceof Ageable
                 || data instanceof TurtleEgg
                 || data instanceof Sapling
-                || data instanceof Hatchable;
+                || NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && data instanceof Hatchable;
     }
 
     public MaterialAge(MaterialTag material) { // NOTE: BlockGrowsScriptEvent needs this available
@@ -59,7 +61,7 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
         else if (data instanceof Ageable ageable) {
             ageable.setAge(age);
         }
-        else if (data instanceof Hatchable hatchable) {
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && data instanceof Hatchable hatchable) {
             hatchable.setHatch(age);
         }
     }
@@ -96,7 +98,7 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
         else if (data instanceof Ageable age) {
             return age.getAge();
         }
-        else if (data instanceof Hatchable hatchable) {
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && data instanceof Hatchable hatchable) {
             return hatchable.getHatch();
         }
         throw new Unreachable();
@@ -113,7 +115,7 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
         else if (data instanceof Ageable age) {
             return age.getMaximumAge();
         }
-        else if (data instanceof Hatchable hatchable) {
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && data instanceof Hatchable hatchable) {
             return hatchable.getMaximumHatch();
         }
         throw new Unreachable();
