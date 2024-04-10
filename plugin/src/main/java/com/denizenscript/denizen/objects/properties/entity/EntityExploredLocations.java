@@ -1,13 +1,10 @@
-package com.denizenscript.denizen.paper.properties;
+package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import org.bukkit.Location;
-import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Sniffer;
 
 public class EntityExploredLocations extends EntityProperty<ListTag> {
@@ -16,9 +13,8 @@ public class EntityExploredLocations extends EntityProperty<ListTag> {
     // @object EntityTag
     // @name explored_locations
     // @input ListTag(LocationTag)
-    // @plugin Paper
     // @description
-    // If the entity is a sniffer, controls the locations that this sniffer has explored.
+    // If the entity is a sniffer, controls the locations that it has explored. Note that if the sniffer is not in the same world as the inputted LocationTag(s), then the LocationTag(s) will not be added to the list of explored locations.
     // -->
 
     public static boolean describes(EntityTag entity) {
@@ -35,8 +31,10 @@ public class EntityExploredLocations extends EntityProperty<ListTag> {
     }
 
     @Override
-    public void setPropertyValue(LocationTag param, Mechanism mechanism) {
-        as(Sniffer.class).addExploredLocation(param);
+    public void setPropertyValue(ListTag param, Mechanism mechanism) {
+        for (Location location : param.filter(LocationTag.class, mechanism.context)) {
+            as(Sniffer.class).addExploredLocation(location);
+        }
     }
 
     @Override
@@ -45,6 +43,6 @@ public class EntityExploredLocations extends EntityProperty<ListTag> {
     }
 
     public static void register() {
-        autoRegister("egg_lay_time", EntityExploredLocations.class, ListTag.class, false);
+        autoRegister("explored_locations", EntityExploredLocations.class, ListTag.class, false);
     }
 }
