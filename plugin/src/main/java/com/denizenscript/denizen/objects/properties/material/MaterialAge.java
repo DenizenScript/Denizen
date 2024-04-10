@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Hatchable;
 import org.bukkit.block.data.type.Sapling;
 import org.bukkit.block.data.type.TurtleEgg;
 
@@ -23,7 +24,10 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
 
     public static boolean describes(MaterialTag material) {
         BlockData data = material.getModernData();
-        return data instanceof Ageable || data instanceof TurtleEgg || data instanceof Sapling;
+        return data instanceof Ageable
+                || data instanceof TurtleEgg
+                || data instanceof Sapling
+                || data instanceof Hatchable;
     }
 
     public MaterialAge(MaterialTag material) { // NOTE: BlockGrowsScriptEvent needs this available
@@ -54,6 +58,9 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
         }
         else if (data instanceof Ageable ageable) {
             ageable.setAge(age);
+        }
+        else if (data instanceof Hatchable hatchable) {
+            hatchable.setHatch(age);
         }
     }
 
@@ -89,6 +96,9 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
         else if (data instanceof Ageable age) {
             return age.getAge();
         }
+        else if (data instanceof Hatchable hatchable) {
+            return hatchable.getHatch();
+        }
         throw new Unreachable();
     }
 
@@ -102,6 +112,9 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
         }
         else if (data instanceof Ageable age) {
             return age.getMaximumAge();
+        }
+        else if (data instanceof Hatchable hatchable) {
+            return hatchable.getMaximumHatch();
         }
         throw new Unreachable();
     }
