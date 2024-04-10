@@ -3065,13 +3065,14 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // <--[tag]
             // @attribute <LocationTag.find.structure[<type>].within[<#.#>]>
             // @returns LocationTag
-            // @group finding
+            // @deprecated Use 'LocationTag.find_structure' on 1.19+.
             // @description
-            // Returns the location of the nearest structure of the given type, within a maximum radius.
-            // To get a list of valid structure types, use <@link tag server.structure_types>.
-            // Note that structure type names are case sensitive, and likely to be all-lowercase in most cases.
+            // Deprecated in favor of <@link tag LocationTag.find_structure> on 1.19+.
             // -->
             else if (attribute.startsWith("structure", 2) && attribute.hasContext(2)) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                    BukkitImplDeprecations.findStructureTags.warn(attribute.context);
+                }
                 String typeName = attribute.getContext(2);
                 StructureType type = StructureType.getStructureTypes().get(typeName);
                 if (type == null) {
@@ -3089,13 +3090,14 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // <--[tag]
             // @attribute <LocationTag.find.unexplored_structure[<type>].within[<#.#>]>
             // @returns LocationTag
-            // @group finding
+            // @deprecated Use 'LocationTag.find_structure' with 'unexplored=true' on 1.19+.
             // @description
-            // Returns the location of the nearest unexplored structure of the given type, within a maximum radius.
-            // To get a list of valid structure types, use <@link tag server.structure_types>.
-            // Note that structure type names are case sensitive, and likely to be all-lowercase in most cases.
+            // Deprecated in favor of <@link tag LocationTag.find_structure> with 'unexplored=true' on 1.19+.
             // -->
             else if (attribute.startsWith("unexplored_structure", 2) && attribute.hasContext(2)) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                    BukkitImplDeprecations.findStructureTags.warn(attribute.context);
+                }
                 String typeName = attribute.getContext(2);
                 StructureType type = StructureType.getStructureTypes().get(typeName);
                 if (type == null) {
@@ -3679,13 +3681,30 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @returns ElementTag(Number)
         // @mechanism LocationTag.lectern_page
         // @group world
+        // @deprecated Use 'LocationTag.page'
+        // @description
+        // Deprecated in favor of <@link tag LocationTag.page>.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "lectern_page", (attribute, object) -> {
+            BukkitImplDeprecations.lecternPage.warn(attribute.context);
+            BlockState state = object.getBlockStateForTag(attribute);
+            if (state instanceof Lectern lectern) {
+                return new ElementTag(lectern.getPage());
+            }
+            return null;
+        });
+
+        // <--[tag]
+        // @attribute <LocationTag.page>
+        // @returns ElementTag(Number)
+        // @mechanism LocationTag.page
+        // @group world
         // @description
         // Returns the current page on display in the book on this Lectern block.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "lectern_page", (attribute, object) -> {
-            BlockState state = object.getBlockStateForTag(attribute);
-            if (state instanceof Lectern) {
-                return new ElementTag(((Lectern) state).getPage());
+        tagProcessor.registerTag(ElementTag.class, "page", (attribute, object) -> {
+            if (object.getBlockState() instanceof Lectern lectern) {
+                return new ElementTag(lectern.getPage() + 1);
             }
             return null;
         });
@@ -4265,6 +4284,60 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 }
                 return new ElementTag(chiseledBookshelf.getLastInteractedSlot() + 1);
             });
+
+            // <--[language]
+            // @name Structure lookups
+            // @description
+            // Structures can be located using <@link tag LocationTag.find_structure>.
+            // It works similarly to the '/locate' command, and has several side effects/edge cases:
+            // - The radius is in chunks, but isn't always a set square radius around the origin; certain structures may modify the amounts of chunks checked. For example, woodland mansions can potentially check up to 20,000 blocks away (or more) regardless of the radius used.
+            // - Lookups can take a long amount of time (several seconds, over 10 in some cases), especially when looking for unexplored structures, which will cause the server to freeze while searching.
+            // - They will not load/generate chunks (but can search not-yet-generated chunks and return a location in them).
+            // - They can lead to situations where the server hangs and crashes when trying to find unexplored structures (if there aren't any/any nearby), as it keeps looking further and further out.
+            // - The returned location only contains the X and Z values, and will always have a Y value of 0. Tags like <@link tag LocationTag.highest> are available, but note that they require the chunk to be loaded.
+            // -->
+
+            // <--[tag]
+            // @attribute <LocationTag.find_structure[structure=<structure>;radius=<#>(;unexplored=<true/{false}>)]>
+            // @returns LocationTag
+            // @warning See <@link language Structure lookups> for potential issues/edge cases in structure lookups.
+            // @group finding
+            // @description
+            // Finds the closest structure of the given type within the specified chunk radius (if any), optionally only searching for unexplored ones.
+            // For a list of default structures, see <@link url https://minecraft.wiki/w/Structure#ID>.
+            // Alternatively, you can specify a custom structure from a datapack, plugin, etc. as a namespaced key.
+            // See also <@link tag server.structures> for all structures currently available on the server.
+            // @example
+            // # Use to find the desert temple closest to the player, and tell them what direction it's in.
+            // - define found <player.location.find_structure[structure=desert_pyramid;radius=200].if_null[null]>
+            // - if <[found]> != null:
+            //   - narrate "The closet desert temple is <player.location.direction[<[found]>]> of you!"
+            // - else:
+            //   - narrate "No desert temple found."
+            // -->
+            tagProcessor.registerTag(LocationTag.class, MapTag.class, "find_structure", (attribute, object, input) -> {
+                ElementTag structureName = input.getRequiredObjectAs("structure", ElementTag.class, attribute);
+                ElementTag radius = input.getRequiredObjectAs("radius", ElementTag.class, attribute);
+                if (structureName == null || radius == null) {
+                    return null;
+                }
+                org.bukkit.generator.structure.Structure structure = Registry.STRUCTURE.get(Utilities.parseNamespacedKey(structureName.asString()));
+                if (structure == null) {
+                    attribute.echoError("Invalid structure specified: " + structureName + '.');
+                    return null;
+                }
+                if (!radius.isInt()) {
+                    attribute.echoError("Invalid radius '" + radius + " specified': must be a number.");
+                    return null;
+                }
+                ElementTag unexplored = input.getElement("unexplored", "false");
+                if (!unexplored.isBoolean()) {
+                    attribute.echoError("Invalid 'unexplored' value '" + unexplored + "' specified: must be a boolean.");
+                    return null;
+                }
+                StructureSearchResult searchResult = object.getWorld().locateNearestStructure(object, structure, radius.asInt(), unexplored.asBoolean());
+                return searchResult != null ? new LocationTag(searchResult.getLocation()) : null;
+            });
         }
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
@@ -4466,6 +4539,28 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             }
             if (mechanism.requireInteger()) {
                 chiseledBookshelf.setLastInteractedSlot(input.asInt() - 1);
+            }
+        });
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name page
+        // @input ElementTag(Number)
+        // @description
+        // Sets the page currently displayed on the book in a lectern block.
+        // @tags
+        // <LocationTag.page>
+        // -->
+        tagProcessor.registerMechanism("page", false, ElementTag.class, (object, mechanism, input) -> {
+            if (!mechanism.requireInteger()) {
+                return;
+            }
+            if (object.getBlockState() instanceof Lectern lectern) {
+                lectern.setPage(input.asInt() - 1);
+                lectern.update();
+            }
+            else {
+                mechanism.echoError("The 'LocationTag.page' mechanism can only be called on a lectern block.");
             }
         });
     }
@@ -5067,15 +5162,17 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @object LocationTag
         // @name lectern_page
         // @input ElementTag(Number)
+        // @deprecated Use LocationTag.page
         // @description
-        // Changes the page currently displayed on the book in a lectern block.
+        // Deprecated in favor of <@link tag LocationTag.page>.
         // @tags
         // <LocationTag.lectern_page>
         // -->
         if (mechanism.matches("lectern_page") && mechanism.requireInteger()) {
+            BukkitImplDeprecations.lecternPage.warn(mechanism.context);
             BlockState state = getBlockState();
-            if (state instanceof Lectern) {
-                ((Lectern) state).setPage(mechanism.getValue().asInt());
+            if (state instanceof Lectern lectern) {
+                lectern.setPage(mechanism.getValue().asInt());
                 state.update();
             }
             else {

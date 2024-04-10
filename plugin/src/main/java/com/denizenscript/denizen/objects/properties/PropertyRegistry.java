@@ -53,6 +53,7 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityBrightness.class, EntityTag.class);
         }
+        PropertyParser.registerProperty(EntityCanBreakDoors.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCanJoinRaid.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCharged.class, EntityTag.class);
         PropertyParser.registerProperty(EntityChestCarrier.class, EntityTag.class);
@@ -71,6 +72,7 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityDisplay.class, EntityTag.class);
         }
+        PropertyParser.registerProperty(EntityDropsItem.class, EntityTag.class);
         PropertyParser.registerProperty(EntityEquipment.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExplosionFire.class, EntityTag.class);
         PropertyParser.registerProperty(EntityExplosionRadius.class, EntityTag.class);
@@ -217,7 +219,7 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(ItemInstrument.class, ItemTag.class);
         }
-        PropertyParser.registerProperty(ItemInventory.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemInventoryContents.class, ItemTag.class);
         PropertyParser.registerProperty(ItemKnowledgeBookRecipes.class, ItemTag.class);
         PropertyParser.registerProperty(ItemLock.class, ItemTag.class);
         PropertyParser.registerProperty(ItemLodestoneLocation.class, ItemTag.class);
