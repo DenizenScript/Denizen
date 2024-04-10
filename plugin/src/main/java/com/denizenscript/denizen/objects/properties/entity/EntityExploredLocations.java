@@ -4,7 +4,6 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import org.bukkit.Location;
 import org.bukkit.entity.Sniffer;
 
 public class EntityExploredLocations extends EntityProperty<ListTag> {
@@ -14,7 +13,7 @@ public class EntityExploredLocations extends EntityProperty<ListTag> {
     // @name explored_locations
     // @input ListTag(LocationTag)
     // @description
-    // If the entity is a sniffer, controls the locations that it has explored. 
+    // Controls a sniffer's explored locations.
     // Note that if the sniffer is not in the same world as the inputted LocationTag(s), then the LocationTag(s) will not be added to the list of explored locations.
     // -->
 
@@ -29,9 +28,8 @@ public class EntityExploredLocations extends EntityProperty<ListTag> {
 
     @Override
     public void setPropertyValue(ListTag param, Mechanism mechanism) {
-        for (Location location : param.filter(LocationTag.class, mechanism.context)) {
-            as(Sniffer.class).addExploredLocation(location);
-        }
+        as(Sniffer.class).getExploredLocations().forEach(as(Sniffer.class)::removeExploredLocation);
+        param.filter(LocationTag.class, mechanism.context).forEach(as(Sniffer.class)::addExploredLocation);
     }
 
     @Override
