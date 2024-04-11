@@ -11,7 +11,7 @@ public class TradeHasXp extends TradeProperty<ElementTag> {
     // @name has_xp
     // @input ElementTag(Boolean)
     // @description
-    // Sets whether this trade will reward XP upon successful trading.
+    // Controls whether this trade will reward XP upon successful trading.
     // -->
 
     public static boolean describes(TradeTag recipe) {
