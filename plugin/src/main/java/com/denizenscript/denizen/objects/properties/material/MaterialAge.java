@@ -29,7 +29,7 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
         return data instanceof Ageable
                 || data instanceof TurtleEgg
                 || data instanceof Sapling
-                || NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && data instanceof Hatchable;
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) && data instanceof Hatchable;
     }
 
     public MaterialAge(MaterialTag material) { // NOTE: BlockGrowsScriptEvent needs this available
