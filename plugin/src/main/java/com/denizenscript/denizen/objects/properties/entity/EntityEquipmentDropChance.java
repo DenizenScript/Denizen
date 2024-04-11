@@ -13,11 +13,17 @@ public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
     // @name equipment_drop_chance
     // @input MapTag
     // @description
-    // Controls the chance of each
+    // Controls the chance of each piece of equipment dropping when the entity dies.
+    // Specifying a drop chance of 0 will prevent the item from dropping, a drop chance of 1 will always drop the item if killed by a player, and a drop chance of higher than 1 will always drop the item no matter what the entity was killed by.
+    //
+    // @Usage
+    // Use to prevent a zombie from dropping any of its equipped items, no matter what:
+    // - adjust <[zombie]> equipment_drop_chance:[helmet=0;chestplate=0;leggings=0;boots=0;main_hand=0;off_hand=0]
+    //
     // -->
 
     public static boolean describes(EntityTag entity) {
-        return entity.getLivingEntity() instanceof EntityTag;
+        return true;
     }
 
     @Override
@@ -46,16 +52,19 @@ public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
 
     @Override
     public void setPropertyValue(MapTag map, Mechanism mechanism) {
-        ElementTag helmet = map.getObject("helmet").asElement();
-        ElementTag chestplate = map.getObject("chestplate").asElement();
-        ElementTag leggings = map.getObject("leggings").asElement();
-        ElementTag boots = map.getObject("boots").asElement();
-        ElementTag main_hand = map.getObject("main_hand").asElement();
-        ElementTag off_hand = map.getObject("off_hand").asElement();
+        if(!mechanism.hasValue()) {
+            return;
+        }
         EntityEquipment equipment = getLivingEntity().getEquipment();
         if (equipment == null) {
             return;
         }
+        ElementTag helmet = map.getElement("helmet");
+        ElementTag chestplate = map.getElement("chestplate");
+        ElementTag leggings = map.getElement("leggings");
+        ElementTag boots = map.getElement("boots");
+        ElementTag main_hand = map.getElement("main_hand");
+        ElementTag off_hand = map.getElement("off_hand");
         if (helmet != null) {
             equipment.setHelmetDropChance(helmet.asFloat());
         }
