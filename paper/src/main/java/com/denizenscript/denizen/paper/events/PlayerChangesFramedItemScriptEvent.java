@@ -57,7 +57,7 @@ public class PlayerChangesFramedItemScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!path.tryArgObject(3, new ItemTag(event.getItemStack()))) {
+        if (!path.tryArgObject(3, item)) {
             return false;
         }
         if (!path.tryObjectSwitch("frame", frame)) {
