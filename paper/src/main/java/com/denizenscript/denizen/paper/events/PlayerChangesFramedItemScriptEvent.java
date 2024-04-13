@@ -64,7 +64,7 @@ public class PlayerChangesFramedItemScriptEvent extends BukkitScriptEvent implem
         if (!path.tryObjectSwitch("action", action)) {
             return false;
         }
-        if (!runInCheck(path, event.getItemFrame().getLocation())) {
+        if (!runInCheck(path, frame.getLocation())) {
             return false;
         }
         return super.matches(path);
