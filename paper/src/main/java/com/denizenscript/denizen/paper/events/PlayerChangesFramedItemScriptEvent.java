@@ -36,7 +36,7 @@ public class PlayerChangesFramedItemScriptEvent extends BukkitScriptEvent implem
     // <context.action> returns the ElementTag of the action being preformed, based on <@link url https://jd.papermc.io/paper/1.20/io/papermc/paper/event/player/PlayerItemFrameChangeEvent.ItemFrameChangeAction.html>
     //
     // @Determine
-    // "ITEM:<ItemTag>" to change the item held by the item frame. To remove the item, set it to air.
+    // "ITEM:<ItemTag>" to change the item held by the item frame. If there is an item already in the frame, it will be replaced. To remove the item, set it to air.
     //
     // @Player Always.
     // -->
