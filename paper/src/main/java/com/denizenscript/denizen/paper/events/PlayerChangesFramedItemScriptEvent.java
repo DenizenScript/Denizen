@@ -46,12 +46,14 @@ public class PlayerChangesFramedItemScriptEvent extends BukkitScriptEvent implem
         registerSwitches("frame", "action");
         this.<PlayerChangesFramedItemScriptEvent, ItemTag>registerDetermination("item", ItemTag.class, (evt, context, item) -> {
             evt.event.setItemStack(item.getItemStack());
+            evt.item = item;
         });
     }
 
-    EntityTag frame;
-    ElementTag action;
-    PlayerItemFrameChangeEvent event;
+    public ItemTag item;
+    public EntityTag frame;
+    public ElementTag action;
+    public PlayerItemFrameChangeEvent event;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -74,7 +76,7 @@ public class PlayerChangesFramedItemScriptEvent extends BukkitScriptEvent implem
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "frame" -> frame;
-            case "item" -> new ItemTag(event.getItemStack());
+            case "item" -> item;
             case "action" -> action;
             default -> super.getContext(name);
         };
@@ -87,6 +89,7 @@ public class PlayerChangesFramedItemScriptEvent extends BukkitScriptEvent implem
 
     @EventHandler
     public void onPlayerChangesFramedItem(PlayerItemFrameChangeEvent event) {
+        item = new ItemTag(event.getItemStack());
         frame = new EntityTag(event.getItemFrame());
         action = new ElementTag(event.getAction().name());
         this.event = event;
