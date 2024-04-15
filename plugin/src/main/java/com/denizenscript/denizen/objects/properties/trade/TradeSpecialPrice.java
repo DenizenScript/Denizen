@@ -11,7 +11,7 @@ public class TradeSpecialPrice extends TradeProperty<ElementTag> {
     // @name special_price
     // @input ElementTag(Number)
     // @description
-    // Sets the special price for this trade.
+    // Controls the special price for this trade.
     // -->
 
     public static boolean describes(TradeTag recipe) {

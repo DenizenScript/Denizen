@@ -11,7 +11,7 @@ public class TradeMaxUses extends TradeProperty<ElementTag> {
     // @name max_uses
     // @input ElementTag(Number)
     // @description
-    // Sets the maximum amount of times that the trade can be used.
+    // Controls the maximum amount of times that the trade can be used.
     // -->
 
     public static boolean describes(TradeTag recipe) {
