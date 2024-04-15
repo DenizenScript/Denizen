@@ -48,6 +48,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerChoosesArrowScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksFakeEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksInRecipeBookScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerClientOptionsChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerCompletesAdvancementScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerDeepSleepScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerElytraBoostScriptEvent.class);
