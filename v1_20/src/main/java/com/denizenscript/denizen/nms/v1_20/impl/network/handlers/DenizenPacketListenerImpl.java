@@ -18,7 +18,7 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R4.block.CraftBlock;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {

@@ -11,7 +11,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R4.entity.CraftEntity;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
