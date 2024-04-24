@@ -52,7 +52,8 @@ public class EntityPotion implements Property {
         else { // Tipped arrow
             ItemStack refItem = new ItemStack(Material.POTION);
             PotionMeta meta = (PotionMeta) refItem.getItemMeta();
-            meta.setBasePotionData(((Arrow) entity.getBukkitEntity()).getBasePotionData());
+            // TODO: 1.20.5: PotionData API
+//            meta.setBasePotionData(((Arrow) entity.getBukkitEntity()).getBasePotionData());
             refItem.setItemMeta(meta);
             return refItem;
         }
@@ -63,7 +64,8 @@ public class EntityPotion implements Property {
             ((ThrownPotion) entity.getBukkitEntity()).setItem(item);
         }
         else { // Tipped arrow
-            ((Arrow) entity.getBukkitEntity()).setBasePotionData(((PotionMeta) item.getItemMeta()).getBasePotionData());
+            // TODO: 1.20.5: PotionData API
+//            ((Arrow) entity.getBukkitEntity()).setBasePotionData(((PotionMeta) item.getItemMeta()).getBasePotionData());
         }
     }
 

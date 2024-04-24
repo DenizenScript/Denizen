@@ -60,7 +60,7 @@ public class FakeBlocksPacketHandlers {
                 if (!map.byChunk.containsKey(coordinateDenizen)) {
                     return packet;
                 }
-                ClientboundSectionBlocksUpdatePacket newPacket = new ClientboundSectionBlocksUpdatePacket(DenizenNetworkManagerImpl.copyPacket(packet));
+                ClientboundSectionBlocksUpdatePacket newPacket = ClientboundSectionBlocksUpdatePacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket((ClientboundSectionBlocksUpdatePacket) packet, ClientboundSectionBlocksUpdatePacket.STREAM_CODEC));
                 LocationTag location = new LocationTag(networkManager.player.level().getWorld(), 0, 0, 0);
                 short[] originalOffsetArray = (short[])OFFSETARRAY_MULTIBLOCKCHANGE.get(newPacket);
                 BlockState[] originalDataArray = (BlockState[])BLOCKARRAY_MULTIBLOCKCHANGE.get(newPacket);

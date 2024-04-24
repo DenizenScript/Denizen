@@ -15,11 +15,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import net.minecraft.network.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.network.protocol.handshake.ClientIntent;
 import net.minecraft.network.protocol.login.ClientLoginPacketListener;
 import net.minecraft.network.protocol.status.ClientStatusPacketListener;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -28,9 +28,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.network.ServerPlayerConnection;
-import net.minecraft.util.SampleLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_20_R4.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -49,11 +49,13 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class DenizenNetworkManagerImpl extends Connection {
+    // TODO: 1.20.5: there are some new methods that should potentially be overriden
 
-    public static FriendlyByteBuf copyPacket(Packet<?> original) {
+    // TODO: 1.20.5: this can be cleaned up by decoding with the codec and returning the new packet
+    public static <T extends Packet<?>, B extends FriendlyByteBuf> RegistryFriendlyByteBuf copyPacket(T original, StreamCodec<B, T> packetCodec) {
         try {
-            FriendlyByteBuf copier = new FriendlyByteBuf(Unpooled.buffer());
-            original.write(copier);
+            RegistryFriendlyByteBuf copier = new RegistryFriendlyByteBuf(Unpooled.buffer(), CraftRegistry.getMinecraftRegistry());
+            packetCodec.encode((B) copier, original);
             return copier;
         }
         catch (Throwable ex) {
@@ -96,9 +98,14 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
     }
 
-    @Override
     public void setListener(PacketListener listener) {
-        oldManager.setListener(listener instanceof ServerConfigurationPacketListener || packetListener == null ? listener : packetListener);
+        try {
+            Connection_packetListener.set(oldManager, listener);
+        }
+        catch (IllegalAccessException e) {
+            Debug.echoError(e);
+            throw new RuntimeException("Failed to set packet listener due to reflection error", e);
+        }
     }
 
     public static Connection getConnection(ServerPlayer player) {
@@ -192,16 +199,6 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
-    public void suspendInboundAfterProtocolChange() {
-        oldManager.suspendInboundAfterProtocolChange();
-    }
-
-    @Override
-    public void resumeInboundAfterProtocolChange() {
-        oldManager.resumeInboundAfterProtocolChange();
-    }
-
-    @Override
     protected void channelRead0(ChannelHandlerContext channelhandlercontext, Packet packet) {
         if (oldManager.channel.isOpen()) {
             try {
@@ -226,11 +223,6 @@ public class DenizenNetworkManagerImpl extends Connection {
     @Override
     public void initiateServerboundPlayConnection(String s, int i, ClientLoginPacketListener packetloginoutlistener) {
         oldManager.initiateServerboundPlayConnection(s, i, packetloginoutlistener);
-    }
-
-    @Override
-    public void setClientboundProtocolAfterHandshake(ClientIntent clientintent) {
-        oldManager.setClientboundProtocolAfterHandshake(clientintent);
     }
 
     @Override
@@ -274,7 +266,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         else if (packet instanceof ClientboundMapItemDataPacket) {
             ClientboundMapItemDataPacket mapPacket = (ClientboundMapItemDataPacket) packet;
-            doPacketOutput("Packet: ClientboundMapItemDataPacket sent to " + player.getScoreboardName() + " for map ID: " + mapPacket.getMapId() + ", scale: " + mapPacket.getScale() + ", locked: " + mapPacket.isLocked());
+            doPacketOutput("Packet: ClientboundMapItemDataPacket sent to " + player.getScoreboardName() + " for map ID: " + mapPacket.mapId() + ", scale: " + mapPacket.scale() + ", locked: " + mapPacket.locked());
         }
         else if (packet instanceof ClientboundRemoveEntitiesPacket) {
             ClientboundRemoveEntitiesPacket removePacket = (ClientboundRemoveEntitiesPacket) packet;
@@ -319,9 +311,11 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         packetsSent++;
         if (packet instanceof ClientboundBundlePacket bundlePacket) {
-            List<Packet<ClientGamePacketListener>> processedPackets = new ArrayList<>();
+            List<Packet<? super ClientGamePacketListener>> processedPackets = new ArrayList<>();
             boolean anyChange = false;
-            for (Packet<ClientGamePacketListener> subPacket : bundlePacket.subPackets()) {
+            for (Packet<? super ClientGamePacketListener> _subPacket : bundlePacket.subPackets()) {
+                // Bundle packets with non-game packets shouldn't ever be sent while the Denizen interceptor is active
+                Packet<ClientGamePacketListener> subPacket = (Packet<ClientGamePacketListener>) _subPacket;
                 Packet<ClientGamePacketListener> processed = processPacketHandlersFor(subPacket);
                 anyChange = anyChange || processed != subPacket;
                 if (processed != null) {
@@ -505,16 +499,12 @@ public class DenizenNetworkManagerImpl extends Connection {
         return oldManager.getAverageSentPackets();
     }
 
-    @Override
-    public void setBandwidthLogger(SampleLogger samplelogger) {
-        oldManager.setBandwidthLogger(samplelogger);
-    }
-
     //////////////////////////////////
     //// Reflection Methods/Fields
     ///////////
 
     private static final Field protocolDirectionField = ReflectionHelper.getFields(Connection.class).get(ReflectionMappingsInfo.Connection_receiving, PacketFlow.class);
+    public static final Field Connection_packetListener = ReflectionHelper.getFields(Connection.class).get(ReflectionMappingsInfo.Connection_packetListener, PacketListener.class);
     private static final Field ServerGamePacketListener_ConnectionField = ReflectionHelper.getFields(ServerCommonPacketListenerImpl.class).get(ReflectionMappingsInfo.ServerCommonPacketListenerImpl_connection);
     private static final MethodHandle ServerGamePacketListener_ConnectionSetter = ReflectionHelper.getFinalSetter(ServerCommonPacketListenerImpl.class, ReflectionMappingsInfo.ServerCommonPacketListenerImpl_connection);
 

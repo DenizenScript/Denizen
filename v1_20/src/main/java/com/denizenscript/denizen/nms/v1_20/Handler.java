@@ -65,6 +65,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_20_R4.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R4.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R4.block.data.CraftBlockData;
@@ -356,8 +357,9 @@ public class Handler extends NMSHandler {
                 if (item.getTag() != null && item.getTag().getNbt() != null) {
                     tag.put("tag", TagParser.parseTag(item.getTag().getNbt()));
                 }
-                ItemStack itemStack = ItemStack.of(tag);
-                return new ItemTag(CraftItemStack.asBukkitCopy(itemStack)).identify();
+                // TODO: 1.20.5: use components and fallback to creating item from tag when custom NBT is specified
+                ItemStack nmsStack = ItemStack.parseOptional(CraftRegistry.getMinecraftRegistry(), tag);
+                return new ItemTag(CraftItemStack.asBukkitCopy(nmsStack)).identify();
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
@@ -424,15 +426,13 @@ public class Handler extends NMSHandler {
         if (nms == null) {
             return null;
         }
-        String json = Component.Serializer.toJson(nms);
-        return ComponentSerializer.parse(json);
+        return ComponentSerializer.parse(CraftChatMessage.toJSON(nms));
     }
 
-    public static MutableComponent componentToNMS(BaseComponent[] spigot) {
+    public static Component componentToNMS(BaseComponent[] spigot) {
         if (spigot == null) {
             return null;
         }
-        String json = FormattedTextHelper.componentToJson(spigot);
-        return Component.Serializer.fromJson(json);
+        return CraftChatMessage.fromJSONOrNull(FormattedTextHelper.componentToJson(spigot));
     }
 }

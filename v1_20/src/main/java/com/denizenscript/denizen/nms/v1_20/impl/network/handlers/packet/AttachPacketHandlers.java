@@ -181,7 +181,7 @@ public class AttachPacketHandlers {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
                 EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    ClientboundSetEntityMotionPacket pNew = new ClientboundSetEntityMotionPacket(DenizenNetworkManagerImpl.copyPacket(packet));
+                    ClientboundSetEntityMotionPacket pNew = ClientboundSetEntityMotionPacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket(packet, ClientboundSetEntityMotionPacket.STREAM_CODEC));
                     ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     if (NMSHandler.debugPackets) {
                         DenizenNetworkManagerImpl.doPacketOutput("Attach Velocity Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName());
@@ -203,7 +203,7 @@ public class AttachPacketHandlers {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
                 EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    ClientboundTeleportEntityPacket pNew = new ClientboundTeleportEntityPacket(DenizenNetworkManagerImpl.copyPacket(packet));
+                    ClientboundTeleportEntityPacket pNew = ClientboundTeleportEntityPacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket(packet, ClientboundTeleportEntityPacket.STREAM_CODEC));
                     ENTITY_ID_PACKTELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew)).add(relative);
                     if (att.positionalOffset != null) {

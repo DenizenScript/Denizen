@@ -5,6 +5,7 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.base.Preconditions;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_20_R4.CraftRegistry;
 
 import java.lang.invoke.MethodHandle;
 
@@ -47,8 +49,8 @@ public class EntityItemProjectileImpl extends ThrowableProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.getEntityData().define(ITEM, ItemStack.EMPTY);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(ITEM, ItemStack.EMPTY);
     }
 
     public ItemStack getItemStack() {
@@ -78,7 +80,7 @@ public class EntityItemProjectileImpl extends ThrowableProjectile {
     @Override
     public boolean save(net.minecraft.nbt.CompoundTag nbttagcompound) {
         if (!this.getItemStack().isEmpty()) {
-            nbttagcompound.put("Item", this.getItemStack().save(new net.minecraft.nbt.CompoundTag()));
+            nbttagcompound.put("Item", this.getItemStack().save(CraftRegistry.getMinecraftRegistry()));
         }
         super.save(nbttagcompound);
         return true;
@@ -87,7 +89,7 @@ public class EntityItemProjectileImpl extends ThrowableProjectile {
     @Override
     public void load(net.minecraft.nbt.CompoundTag nbttagcompound) {
         net.minecraft.nbt.CompoundTag nbttagcompound1 = nbttagcompound.getCompound("Item");
-        this.setItemStack(ItemStack.of(nbttagcompound1));
+        this.setItemStack(ItemStack.parseOptional(CraftRegistry.getMinecraftRegistry(), nbttagcompound1));
         if (this.getItemStack().isEmpty()) {
             this.remove(RemovalReason.KILLED);
         }

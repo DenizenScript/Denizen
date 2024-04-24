@@ -721,6 +721,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             NMSHandler.blockHelper.setVanillaTags(material, tags);
         }
 
+        // TODO: 1.20.5: need an ItemTag variant providing the proper functionality, and then deprecate this
         // <--[mechanism]
         // @object MaterialTag
         // @name max_stack_size

@@ -26,13 +26,14 @@ import net.minecraft.tags.TagNetworkSerialization;
 import net.minecraft.util.InclusiveRange;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import org.bukkit.Bukkit;
@@ -44,6 +45,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_20_R4.CraftChunk;
+import org.bukkit.craftbukkit.v1_20_R4.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R4.CraftServer;
 import org.bukkit.craftbukkit.v1_20_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R4.block.CraftBlock;
@@ -94,14 +96,13 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public PlayerProfile getPlayerProfile(Skull skull) {
-        GameProfile profile = getTE(((CraftSkull) skull)).owner;
+        // TODO: 1.20.5: Seems to be a holder for data that can make the request to complete it later - do we want to do that here?
+        ResolvableProfile profile = getTE(((CraftSkull) skull)).owner;
         if (profile == null) {
             return null;
         }
-        String name = profile.getName();
-        UUID id = profile.getId();
-        com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.getProperties().get("textures"), null);
-        return new PlayerProfile(name, id, property != null ? property.value() : null);
+        com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.properties().get("textures"), null);
+        return new PlayerProfile(profile.name().orElse(null), profile.id().orElse(null), property != null ? property.value() : null);
     }
 
     @Override
@@ -120,7 +121,7 @@ public class BlockHelperImpl implements BlockHelper {
     public CompoundTag getNbtData(Block block) {
         BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(new BlockPos(block.getX(), block.getY(), block.getZ()), true);
         if (te != null) {
-            net.minecraft.nbt.CompoundTag compound = te.saveWithFullMetadata();
+            net.minecraft.nbt.CompoundTag compound = te.saveWithFullMetadata(CraftRegistry.getMinecraftRegistry());
             return CompoundTagImpl.fromNMSTag(compound);
         }
         return null;
@@ -135,7 +136,7 @@ public class BlockHelperImpl implements BlockHelper {
         ctag = builder.build();
         BlockPos blockPos = new BlockPos(block.getX(), block.getY(), block.getZ());
         BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(blockPos, true);
-        te.load(((CompoundTagImpl) ctag).toNMSTag());
+        te.loadWithComponents(((CompoundTagImpl) ctag).toNMSTag(), CraftRegistry.getMinecraftRegistry());
     }
 
     @Override
@@ -259,7 +260,7 @@ public class BlockHelperImpl implements BlockHelper {
             BaseSpawner nmsSpawner = nmsSnapshot.getSpawner();
             SpawnData toSpawn = nmsSpawner.nextSpawnData;
             SpawnData.CustomSpawnRules rules = skyMin == -1 ? null : new SpawnData.CustomSpawnRules(new InclusiveRange<>(skyMin, skyMax), new InclusiveRange<>(blockMin, blockMax));
-            nmsSpawner.nextSpawnData = new SpawnData(toSpawn.entityToSpawn(), Optional.ofNullable(rules));
+            nmsSpawner.nextSpawnData = new SpawnData(toSpawn.entityToSpawn(), Optional.ofNullable(rules), toSpawn.equipment());
             nmsSpawner.spawnPotentials = SimpleWeightedRandomList.empty();
         }
         catch (Throwable ex) {

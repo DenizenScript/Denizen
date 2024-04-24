@@ -17,8 +17,10 @@ public class Particle {
     }
 
     public boolean isVisible() {
-        return particle != org.bukkit.Particle.SUSPENDED && particle != org.bukkit.Particle.SUSPENDED_DEPTH
-                && particle != org.bukkit.Particle.WATER_BUBBLE;
+        // TODO: 1.20.5: enum names have changed, need to move this to ParticleHelper and make it per-version/see if this is still needed
+//        return particle != org.bukkit.Particle.SUSPENDED && particle != org.bukkit.Particle.SUSPENDED_DEPTH
+//                && particle != org.bukkit.Particle.WATER_BUBBLE;
+        return true;
     }
 
     public String getName() {

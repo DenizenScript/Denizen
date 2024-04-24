@@ -12,7 +12,7 @@ import org.bukkit.entity.Snowman;
 public class EntityPumpkinHead implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.SNOWMAN;
+        return entity instanceof EntityTag entityTag && entityTag.getBukkitEntity() instanceof Snowman;
     }
 
     public static EntityPumpkinHead getFrom(ObjectTag entity) {

@@ -28,7 +28,8 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     public BlockPos fakeSignExpected;
 
     public DenizenPacketListenerImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer) {
-        super(networkManager, entityPlayer, entityPlayer.connection, new CommonListenerCookie(entityPlayer.getGameProfile(), entityPlayer.connection.latency(), entityPlayer.clientInformation()));
+        // TODO: 1.20.5: should "transferred" ever be true?
+        super(networkManager, entityPlayer, entityPlayer.connection, new CommonListenerCookie(entityPlayer.getGameProfile(), entityPlayer.connection.latency(), entityPlayer.clientInformation(), false));
     }
 
     @Override
@@ -88,7 +89,7 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void handleCustomPayload(ServerboundCustomPayloadPacket packet) {
         if (NMSHandler.debugPackets) {
-            Debug.log("Custom packet payload: " + packet.payload().id().toString() + " sent from " + player.getScoreboardName());
+            Debug.log("Custom packet payload: " + packet.payload().type().id().toString() + " sent from " + player.getScoreboardName());
         }
         super.handleCustomPayload(packet);
     }

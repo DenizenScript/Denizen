@@ -11,6 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.world.level.biome.Biome;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.PalettedContainer;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_20_R4.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R4.block.CraftBlockStates;
 import org.bukkit.craftbukkit.v1_20_R4.block.data.CraftBlockData;
@@ -88,9 +90,9 @@ public class FakeBlockHelper {
 
     public static ClientboundLevelChunkWithLightPacket handleMapChunkPacket(World world, ClientboundLevelChunkWithLightPacket originalPacket, int chunkX, int chunkZ, List<FakeBlock> blocks) {
         try {
-            ClientboundLevelChunkWithLightPacket duplicateCorePacket = new ClientboundLevelChunkWithLightPacket(DenizenNetworkManagerImpl.copyPacket(originalPacket));
+            ClientboundLevelChunkWithLightPacket duplicateCorePacket = ClientboundLevelChunkWithLightPacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket(originalPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC));
             copyPacketPaperPatch(duplicateCorePacket, originalPacket);
-            FriendlyByteBuf copier = new FriendlyByteBuf(Unpooled.buffer());
+            RegistryFriendlyByteBuf copier = new RegistryFriendlyByteBuf(Unpooled.buffer(), CraftRegistry.getMinecraftRegistry());
             originalPacket.getChunkData().write(copier);
             ClientboundLevelChunkPacketData packet = new ClientboundLevelChunkPacketData(copier, chunkX, chunkZ);
             FriendlyByteBuf serial = originalPacket.getChunkData().getReadBuffer();
@@ -107,7 +109,7 @@ public class FakeBlockHelper {
                     LocationTag loc = block.location;
                     if (loc.getBlockX() == x && loc.getBlockY() == y && loc.getBlockZ() == z && block.material != null) {
                         BlockEntity newBlockEnt = CraftBlockStates.createNewTileEntity(block.material.getMaterial());
-                        Object newData = CHUNKDATA_BLOCK_ENTITY_CONSTRUCTOR.invoke(xz, y, newBlockEnt.getType(), newBlockEnt.getUpdateTag());
+                        Object newData = CHUNKDATA_BLOCK_ENTITY_CONSTRUCTOR.invoke(xz, y, newBlockEnt.getType(), newBlockEnt.getUpdateTag(CraftRegistry.getMinecraftRegistry()));
                         blockEntities.set(i, newData);
                         break;
                     }

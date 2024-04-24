@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 
 public class EntityStepHeight extends EntityProperty<ElementTag> {
 
+    // TODO: 1.20.5: this can be controlled by an attribute now, can deprecate in favor of that & backsupport
     // <--[property]
     // @object EntityTag
     // @name step_height

@@ -114,7 +114,7 @@ public class DisguisePacketHandlers {
 
     public static ClientboundTeleportEntityPacket processTeleportPacket(DenizenNetworkManagerImpl networkManager, ClientboundTeleportEntityPacket teleportEntityPacket, DisguiseCommand.TrackedDisguise disguise) throws IllegalAccessException {
         if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
-            ClientboundTeleportEntityPacket pNew = new ClientboundTeleportEntityPacket(DenizenNetworkManagerImpl.copyPacket(teleportEntityPacket));
+            ClientboundTeleportEntityPacket pNew = ClientboundTeleportEntityPacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket(teleportEntityPacket, ClientboundTeleportEntityPacket.STREAM_CODEC));
             TELEPORT_PACKET_YAW.setByte(pNew, EntityAttachmentHelper.adaptedCompressedAngle(teleportEntityPacket.getyRot(), 180));
             return pNew;
         }

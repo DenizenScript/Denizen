@@ -82,6 +82,7 @@ public class EntityAreaEffectCloud implements Property {
         if (attribute.startsWith("base_potion")) {
             attribute = attribute.fulfill(1);
 
+            // TODO: 1.20.5: PotionData API
             // <--[tag]
             // @attribute <EntityTag.base_potion.type>
             // @returns ElementTag
@@ -89,10 +90,10 @@ public class EntityAreaEffectCloud implements Property {
             // @description
             // Returns the Area Effect Cloud's base potion type.
             // -->
-            if (attribute.startsWith("type")) {
-                return new ElementTag(getHelper().getBPName())
-                        .getObjectAttribute(attribute.fulfill(1));
-            }
+//            if (attribute.startsWith("type")) {
+//                return new ElementTag(getHelper().getBPName())
+//                        .getObjectAttribute(attribute.fulfill(1));
+//            }
 
             // <--[tag]
             // @attribute <EntityTag.base_potion.is_upgraded>
@@ -101,10 +102,10 @@ public class EntityAreaEffectCloud implements Property {
             // @description
             // Returns whether the Area Effect Cloud's base potion is upgraded.
             // -->
-            if (attribute.startsWith("is_upgraded")) {
-                return new ElementTag(getHelper().getBPUpgraded())
-                        .getObjectAttribute(attribute.fulfill(1));
-            }
+//            if (attribute.startsWith("is_upgraded")) {
+//                return new ElementTag(getHelper().getBPUpgraded())
+//                        .getObjectAttribute(attribute.fulfill(1));
+//            }
 
             // <--[tag]
             // @attribute <EntityTag.base_potion.is_extended>
@@ -113,12 +114,12 @@ public class EntityAreaEffectCloud implements Property {
             // @description
             // Returns whether the Area Effect Cloud's base potion is extended.
             // -->
-            if (attribute.startsWith("is_extended")) {
-                return new ElementTag(getHelper().getBPExtended())
-                        .getObjectAttribute(attribute.fulfill(1));
-            }
-            return new ElementTag(getHelper().getBPName() + "," + getHelper().getBPUpgraded() + "," + getHelper().getBPExtended())
-                    .getObjectAttribute(attribute);
+//            if (attribute.startsWith("is_extended")) {
+//                return new ElementTag(getHelper().getBPExtended())
+//                        .getObjectAttribute(attribute.fulfill(1));
+//            }
+//            return new ElementTag(getHelper().getBPName() + "," + getHelper().getBPUpgraded() + "," + getHelper().getBPExtended())
+//                    .getObjectAttribute(attribute);
         }
 
         // <--[tag]
@@ -495,7 +496,8 @@ public class EntityAreaEffectCloud implements Property {
                         mechanism.echoError("Potion cannot be both upgraded and extended");
                     }
                     else {
-                        getHelper().setBP(type, extended, upgraded);
+                        // TODO: 1.20.5: PotionData API
+//                        getHelper().setBP(type, extended, upgraded);
                     }
                 }
                 catch (Exception e) {

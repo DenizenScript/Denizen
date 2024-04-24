@@ -13,6 +13,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_20_R4.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.HumanEntity;
@@ -77,7 +78,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     public Inventory getEnderChest() {
         if (enderchest == null) {
             PlayerEnderChestContainer endchest = new PlayerEnderChestContainer(null);
-            endchest.fromTag(((CompoundTagImpl) this.compound).toNMSTag().getList("EnderItems", 10));
+            endchest.fromTag(((CompoundTagImpl) this.compound).toNMSTag().getList("EnderItems", 10), CraftRegistry.getMinecraftRegistry());
             enderchest = new CraftInventory(endchest);
         }
         return enderchest;
@@ -86,7 +87,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     @Override
     public void setEnderChest(Inventory inventory) {
         net.minecraft.nbt.CompoundTag nbtTagCompound = ((CompoundTagImpl) compound).toNMSTag();
-        nbtTagCompound.put("EnderItems", ((PlayerEnderChestContainer) ((CraftInventory) inventory).getInventory()).createTag());
+        nbtTagCompound.put("EnderItems", ((PlayerEnderChestContainer) ((CraftInventory) inventory).getInventory()).createTag(CraftRegistry.getMinecraftRegistry()));
         this.compound = CompoundTagImpl.fromNMSTag(nbtTagCompound);
         markModified();
     }
@@ -94,7 +95,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     @Override
     public double getMaxHealth() {
         AttributeInstance maxHealth = getAttributes().getInstance(Attributes.MAX_HEALTH);
-        return maxHealth == null ? Attributes.MAX_HEALTH.getDefaultValue() : maxHealth.getValue();
+        return maxHealth == null ? Attributes.MAX_HEALTH.value().getDefaultValue() : maxHealth.getValue();
     }
 
     @Override

@@ -22,7 +22,7 @@ public class CraftItemProjectileImpl extends CraftEntity implements ItemProjecti
         MethodHandle handle = ReflectionHelper.getFinalSetterForFirstOfType(CraftEntity.class, EntityType.class);
         if (handle != null) {
             try {
-                handle.invoke(this, EntityType.DROPPED_ITEM);
+                handle.invoke(this, EntityType.ITEM);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);

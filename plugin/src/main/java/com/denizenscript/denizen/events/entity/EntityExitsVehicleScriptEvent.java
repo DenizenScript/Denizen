@@ -7,7 +7,6 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.spigotmc.event.entity.EntityDismountEvent;
 
 public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -40,7 +39,8 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
 
     public EntityTag vehicle;
     public EntityTag entity;
-    public EntityDismountEvent event;
+    // TODO: 1.20.5: EntityDismountEvent changed packages, might need to register in version-specific modules? or reflection?
+//    public EntityDismountEvent event;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -73,11 +73,11 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
         return super.getContext(name);
     }
 
-    @EventHandler
-    public void onEntityExitsVehicle(EntityDismountEvent event) {
-        vehicle = new EntityTag(event.getDismounted());
-        entity = new EntityTag(event.getEntity());
-        this.event = event;
-        fire(event);
-    }
+//    @EventHandler
+//    public void onEntityExitsVehicle(EntityDismountEvent event) {
+//        vehicle = new EntityTag(event.getDismounted());
+//        entity = new EntityTag(event.getEntity());
+//        this.event = event;
+//        fire(event);
+//    }
 }

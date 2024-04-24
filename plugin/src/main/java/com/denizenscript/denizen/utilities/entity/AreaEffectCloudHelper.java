@@ -4,7 +4,6 @@ import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.Entity;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
@@ -23,25 +22,26 @@ public class AreaEffectCloudHelper {
     // Base Potion Data
     /////////
 
-    private PotionData getBPData() {
-        return entity.getBasePotionData();
-    }
-
-    public String getBPName() {
-        return getBPData().getType().name();
-    }
-
-    public boolean getBPUpgraded() {
-        return getBPData().isUpgraded();
-    }
-
-    public boolean getBPExtended() {
-        return getBPData().isExtended();
-    }
-
-    public void setBP(PotionType type, boolean extended, boolean upgraded) {
-        entity.setBasePotionData(new PotionData(type, extended, upgraded));
-    }
+    // TODO: 1.20.5: PotionData API
+//    private PotionData getBPData() {
+//        return entity.getBasePotionData();
+//    }
+//
+//    public String getBPName() {
+//        return getBPData().getType().name();
+//    }
+//
+//    public boolean getBPUpgraded() {
+//        return getBPData().isUpgraded();
+//    }
+//
+//    public boolean getBPExtended() {
+//        return getBPData().isExtended();
+//    }
+//
+//    public void setBP(PotionType type, boolean extended, boolean upgraded) {
+//        entity.setBasePotionData(new PotionData(type, extended, upgraded));
+//    }
 
     ////////////////
     // Particles

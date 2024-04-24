@@ -426,6 +426,6 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     public static <T> SynchedEntityData.DataValue<T> createEntityData(EntityDataAccessor<T> accessor, T value) {
-        return new SynchedEntityData.DataValue<>(accessor.getId(), accessor.getSerializer(), value);
+        return new SynchedEntityData.DataValue<>(accessor.id(), accessor.serializer(), value);
     }
 }
