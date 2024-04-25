@@ -28,8 +28,7 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     public BlockPos fakeSignExpected;
 
     public DenizenPacketListenerImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer) {
-        // TODO: 1.20.5: should "transferred" ever be true?
-        super(networkManager, entityPlayer, entityPlayer.connection, new CommonListenerCookie(entityPlayer.getGameProfile(), entityPlayer.connection.latency(), entityPlayer.clientInformation(), false));
+        super(networkManager, entityPlayer, entityPlayer.connection, new CommonListenerCookie(entityPlayer.getGameProfile(), entityPlayer.connection.latency(), entityPlayer.clientInformation(), entityPlayer.connection.isTransferred()));
     }
 
     @Override

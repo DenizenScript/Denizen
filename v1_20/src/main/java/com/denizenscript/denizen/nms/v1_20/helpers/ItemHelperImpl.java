@@ -237,7 +237,6 @@ public class ItemHelperImpl extends ItemHelper {
     public CompoundTag getNbtData(ItemStack itemStack) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         if (nmsItemStack != null && !nmsItemStack.isEmpty()) {
-            // TODO: 1.20.5: item NBT is now returned as Tag instead of CompoundTag in some places, NBT conversion logic should be updated to run on that
             return CompoundTagImpl.fromNMSTag((net.minecraft.nbt.CompoundTag) nmsItemStack.save(CraftRegistry.getMinecraftRegistry()));
         }
         return new CompoundTagImpl(new HashMap<>());

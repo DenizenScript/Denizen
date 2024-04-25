@@ -749,7 +749,7 @@ public class EntityHelperImpl extends EntityHelper {
             nmsEntity.unsetRemoved();
             nmsEntity.setUUID(id);
             if (nmsEntity instanceof ServerPlayer nmsPlayer) {
-                playerList.placeNewPlayer(DenizenNetworkManagerImpl.getConnection(nmsPlayer), nmsPlayer, new CommonListenerCookie(nmsPlayer.getGameProfile(), nmsPlayer.connection.latency(), nmsPlayer.clientInformation(), false));
+                playerList.placeNewPlayer(DenizenNetworkManagerImpl.getConnection(nmsPlayer), nmsPlayer, new CommonListenerCookie(nmsPlayer.getGameProfile(), nmsPlayer.connection.latency(), nmsPlayer.clientInformation(), nmsPlayer.connection.isTransferred()));
             }
             else {
                 level.addFreshEntity(nmsEntity);

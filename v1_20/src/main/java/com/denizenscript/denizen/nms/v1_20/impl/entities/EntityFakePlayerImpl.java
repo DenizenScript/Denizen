@@ -27,13 +27,13 @@ public class EntityFakePlayerImpl extends ServerPlayer {
             Connection networkManager = new FakeNetworkManagerImpl(PacketFlow.CLIENTBOUND);
             connection = new FakePlayerConnectionImpl(minecraftserver, networkManager, this, new CommonListenerCookie(gameprofile, 0, clientInfo, false));
             DenizenNetworkManagerImpl.Connection_packetListener.set(networkManager, connection);
-            getEntityData().set(Player.DATA_PLAYER_MODE_CUSTOMISATION, (byte) 127);
-            if (doAdd) {
-                worldserver.addFreshEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
-            }
         }
         catch (Exception ex) {
             Debug.echoError(ex);
+        }
+        getEntityData().set(Player.DATA_PLAYER_MODE_CUSTOMISATION, (byte) 127);
+        if (doAdd) {
+            worldserver.addFreshEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
         }
     }
 
