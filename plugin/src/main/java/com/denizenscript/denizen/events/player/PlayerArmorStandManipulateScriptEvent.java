@@ -17,7 +17,7 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
 
     // <--[event]
     // @Events
-    // player edits armor stand
+    // player edits <'armor_stand'>
     //
     // @Group Player
     //
@@ -43,7 +43,7 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
     // -->
 
     public PlayerArmorStandManipulateScriptEvent() {
-        registerCouldMatcher("player edits armor stand");
+        registerCouldMatcher("player edits <'armor_stand'>");
         registerSwitches("armor_stand_item", "hand", "player_item", "slot");
     }
 
@@ -57,16 +57,19 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
         if (!runInCheck(path, event.getRightClicked().getLocation())) {
             return false;
         }
+        if (!path.tryArgObject(2, entity)) {
+            return false;
+        }
         if (!path.tryObjectSwitch("armor_stand_item", armorStandItem)) {
             return false;
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && !runGenericSwitchCheck(path,"hand", event.getHand().name())) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && !runGenericSwitchCheck(path, "hand", event.getHand().name())) {
             return false;
         }
         if (!path.tryObjectSwitch("player_item", playerItem)) {
             return false;
         }
-        if (!runGenericSwitchCheck(path,"slot", event.getSlot().name())) {
+        if (!runGenericSwitchCheck(path, "slot", event.getSlot().name())) {
             return false;
         }
         return super.matches(path);
