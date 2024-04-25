@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
+import org.bukkit.entity.Mob;
 import org.bukkit.inventory.EntityEquipment;
 
 public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
@@ -17,34 +18,23 @@ public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
     // Specifying a drop chance of 0 will prevent the item from dropping, a drop chance of 1 will always drop the item if killed by a player, and a drop chance of higher than 1 will always drop the item no matter what the entity was killed by.
     //
     // @Example
-    // Use to prevent a zombie from dropping any of its equipped items, no matter what:
+    // # Use to prevent a zombie from dropping any of its equipped items, no matter what:
     // - adjust <[zombie]> equipment_drop_chance:[helmet=0;chestplate=0;leggings=0;boots=0;main_hand=0;off_hand=0]
     //
     // -->
 
     public static boolean describes(EntityTag entity) {
-        return true;
+        return entity.getBukkitEntity() instanceof Mob;
     }
 
     @Override
     public MapTag getPropertyValue() {
         EntityEquipment equipment = getLivingEntity().getEquipment();
-        if (equipment == null) {
-            return null;
-        }
         MapTag map = new MapTag();
-        if (equipment.getHelmet() != null) {
-            map.putObject("helmet", new ElementTag(equipment.getHelmetDropChance()));
-        }
-        if (equipment.getChestplate() != null) {
-            map.putObject("chestplate", new ElementTag(equipment.getChestplateDropChance()));
-        }
-        if (equipment.getLeggings() != null) {
-            map.putObject("leggings", new ElementTag(equipment.getLeggingsDropChance()));
-        }
-        if (equipment.getBoots() != null) {
-            map.putObject("boots", new ElementTag(equipment.getBootsDropChance()));
-        }
+        map.putObject("helmet", new ElementTag(equipment.getHelmetDropChance()));
+        map.putObject("chestplate", new ElementTag(equipment.getChestplateDropChance()));
+        map.putObject("leggings", new ElementTag(equipment.getLeggingsDropChance()));
+        map.putObject("boots", new ElementTag(equipment.getBootsDropChance()));
         map.putObject("main_hand", new ElementTag(equipment.getItemInMainHandDropChance()));
         map.putObject("off_hand", new ElementTag(equipment.getItemInOffHandDropChance()));
         return map;
