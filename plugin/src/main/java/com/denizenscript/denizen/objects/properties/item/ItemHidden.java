@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -16,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class ItemHidden implements Property {
 
     // TODO once 1.20 is the minimum supported version, can directly reference the enum
-    public static final ItemFlag HIDE_ITEM_DATA_FLAG = ItemFlag.valueOf(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? "HIDE_ADDITIONAL_TOOLTIP" : "HIDE_POTION_EFFECTS");
+    public static final ItemFlag HIDE_ITEM_DATA_FLAG = ItemFlag.valueOf("HIDE_POTION_EFFECTS");
 
     public static boolean describes(ObjectTag item) {
         // All items can have hides
