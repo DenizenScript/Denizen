@@ -96,7 +96,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public PlayerProfile getPlayerProfile(Skull skull) {
-        // TODO: 1.20.5: Seems to be a holder for data that can make the request to complete it later - do we want to do that here?
+        // TODO: 1.20.6: Seems to be a holder for data that can make the request to complete it later - do we want to do that here?
         ResolvableProfile profile = getTE(((CraftSkull) skull)).owner;
         if (profile == null) {
             return null;

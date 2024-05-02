@@ -60,7 +60,7 @@ public class ItemBaseColor extends ItemProperty<ElementTag> {
             return color;
         }
         else {
-            // TODO: 1.20.5: Banner color has been part of the item type for a while, and Spigot removed this API
+            // TODO: 1.20.6: Banner color has been part of the item type for a while, and Spigot removed this API
 //            return ((BannerMeta) itemMeta).getBaseColor();
         }
         return null;

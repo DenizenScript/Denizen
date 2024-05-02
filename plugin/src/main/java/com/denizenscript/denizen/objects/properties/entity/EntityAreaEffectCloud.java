@@ -82,7 +82,7 @@ public class EntityAreaEffectCloud implements Property {
         if (attribute.startsWith("base_potion")) {
             attribute = attribute.fulfill(1);
 
-            // TODO: 1.20.5: PotionData API
+            // TODO: 1.20.6: PotionData API
             // <--[tag]
             // @attribute <EntityTag.base_potion.type>
             // @returns ElementTag
@@ -496,7 +496,7 @@ public class EntityAreaEffectCloud implements Property {
                         mechanism.echoError("Potion cannot be both upgraded and extended");
                     }
                     else {
-                        // TODO: 1.20.5: PotionData API
+                        // TODO: 1.20.6: PotionData API
 //                        getHelper().setBP(type, extended, upgraded);
                     }
                 }

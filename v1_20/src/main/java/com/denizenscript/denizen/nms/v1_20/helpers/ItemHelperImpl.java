@@ -191,7 +191,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public String getRawHoverText(ItemStack itemStack) {
-        // TODO: 1.20.5: this is relatively hot code, ideally should have some early returns before serializing the item
+        // TODO: 1.20.6: this is relatively hot code, ideally should have some early returns before serializing the item
         net.minecraft.nbt.Tag tag = CraftItemStack.asNMSCopy(itemStack).saveOptional(CraftRegistry.getMinecraftRegistry());
         if (tag == null) {
             return null;
@@ -202,7 +202,7 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public PlayerProfile getSkullSkin(ItemStack is) {
         net.minecraft.world.item.ItemStack itemStack = CraftItemStack.asNMSCopy(is);
-        // TODO: 1.20.5: Seems to be a holder for data that can make the request to complete it later - do we want to do that here?
+        // TODO: 1.20.6: Seems to be a holder for data that can make the request to complete it later - do we want to do that here?
         ResolvableProfile profile = itemStack.get(DataComponents.PROFILE);
         if (profile != null) {
             Property property = Iterables.getFirst(profile.properties().get("textures"), null);
@@ -231,8 +231,8 @@ public class ItemHelperImpl extends ItemHelper {
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 
-    // TODO: 1.20.5: this now needs to serialize components into NBT every single time, should probably only return custom NBT data with specialized methods for other usages
-    // TODO: 1.20.5: NBT structure is different basically everywhere, usages of this will need an update
+    // TODO: 1.20.6: this now needs to serialize components into NBT every single time, should probably only return custom NBT data with specialized methods for other usages
+    // TODO: 1.20.6: NBT structure is different basically everywhere, usages of this will need an update
     @Override
     public CompoundTag getNbtData(ItemStack itemStack) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
@@ -242,7 +242,7 @@ public class ItemHelperImpl extends ItemHelper {
         return new CompoundTagImpl(new HashMap<>());
     }
 
-    // TODO: 1.20.5: same as getNbtData, ideally needs to only set custom NBT data and have specialized methods for other usages
+    // TODO: 1.20.6: same as getNbtData, ideally needs to only set custom NBT data and have specialized methods for other usages
     @Override
     public ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag) {
         net.minecraft.world.item.ItemStack nmsItemStack = net.minecraft.world.item.ItemStack.parseOptional(CraftRegistry.getMinecraftRegistry(), ((CompoundTagImpl) compoundTag).toNMSTag());

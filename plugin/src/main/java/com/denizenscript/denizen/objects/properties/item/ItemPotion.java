@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemPotion extends ItemProperty<ObjectTag> {
-    // TODO: 1.20.5: Spigot removed the PotionData API, can either remove relevant features on 1.20.5, or try and backsupport somehow (probably either hard-coding our own data or hacking it based on the name)
+    // TODO: 1.20.6: Spigot removed the PotionData API, can either remove relevant features on 1.20.6, or try and backsupport somehow (probably either hard-coding our own data or hacking it based on the name)
 
     public static boolean describes(ItemTag item) {
         return item.getItemMeta() instanceof PotionMeta || item.getItemMeta() instanceof SuspiciousStewMeta;
@@ -55,7 +55,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 includeExtras = true;
             }
             if (includeExtras) { // TODO: Eventually remove these 4
-                // TODO: 1.20.5: PotionData API
+                // TODO: 1.20.6: PotionData API
 //                base.putObject("type", new ElementTag(potionMeta.getBasePotionData().getType()));
 //                base.putObject("upgraded", new ElementTag(potionMeta.getBasePotionData().isUpgraded()));
 //                base.putObject("extended", new ElementTag(potionMeta.getBasePotionData().isExtended()));
@@ -298,7 +298,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 return null;
             }
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
-            // TODO: 1.20.5: PotionData API
+            // TODO: 1.20.6: PotionData API
 //            return new ElementTag(potionMeta.getBasePotionData().getType());
             return null;
         });
@@ -318,7 +318,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 return null;
             }
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
-            // TODO: 1.20.5: PotionData API
+            // TODO: 1.20.6: PotionData API
 //            return new ElementTag(potionMeta.getBasePotionData().getType().name() + "," + (potionMeta.getBasePotionData().isUpgraded() ? 2 : 1)
 //                    + "," + potionMeta.getBasePotionData().isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION)
 //                    + (potionMeta.hasColor() ? "," + BukkitColorExtensions.fromColor(potionMeta.getColor()).identify() : ""));
@@ -366,7 +366,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
                     return null;
                 }
-                // TODO: 1.20.5: PotionData API
+                // TODO: 1.20.6: PotionData API
 //                return new ElementTag(potionMeta.getBasePotionData().isExtended());
                 return null;
             }
@@ -375,7 +375,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
                     return null;
                 }
-                // TODO: 1.20.5: PotionData API
+                // TODO: 1.20.6: PotionData API
 //                return new ElementTag(potionMeta.getBasePotionData().isUpgraded() ? 2 : 1);
                 return null;
             }
@@ -411,7 +411,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 return null;
             }
 
-            // TODO: 1.20.5: PotionData API
+            // TODO: 1.20.6: PotionData API
 //            PotionData data = potionMeta.getBasePotionData();
 //            return new ElementTag(data.getType().name() + "," + (data.isUpgraded() ? 2 : 1)
 //                    + "," + data.isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION));
@@ -501,7 +501,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             mechanism.echoError("Cannot both upgrade and extend a potion");
             extended = false;
         }
-        // TODO: 1.20.5: PotionData API
+        // TODO: 1.20.6: PotionData API
 //        potionMeta.setBasePotionData(new PotionData(type, extended, upgraded));
         if (color != null) {
             potionMeta.setColor(BukkitColorExtensions.getColor(color));

@@ -357,7 +357,7 @@ public class Handler extends NMSHandler {
                 if (item.getTag() != null && item.getTag().getNbt() != null) {
                     tag.put("tag", TagParser.parseTag(item.getTag().getNbt()));
                 }
-                // TODO: 1.20.5: use components and fallback to creating item from tag when custom NBT is specified
+                // TODO: 1.20.6: use components and fallback to creating item from tag when custom NBT is specified
                 ItemStack nmsStack = ItemStack.parseOptional(CraftRegistry.getMinecraftRegistry(), tag);
                 return new ItemTag(CraftItemStack.asBukkitCopy(nmsStack)).identify();
             }

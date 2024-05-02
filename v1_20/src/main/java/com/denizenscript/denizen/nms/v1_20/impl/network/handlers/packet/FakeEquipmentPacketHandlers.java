@@ -48,7 +48,7 @@ public class FakeEquipmentPacketHandlers {
                 case HEAD -> override.head == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.head.getItemStack());
                 case LEGS -> override.legs == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.legs.getItemStack());
                 case FEET -> override.boots == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.boots.getItemStack());
-                case BODY -> pair.getSecond(); // TODO: 1.20.5: is this actually used here? do we want to allow overriding it?
+                case BODY -> pair.getSecond(); // TODO: 1.20.6: is this actually used here? do we want to allow overriding it?
             };
             equipment.set(i, new Pair<>(pair.getFirst(), use));
         }

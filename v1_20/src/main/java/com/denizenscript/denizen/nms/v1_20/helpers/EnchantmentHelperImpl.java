@@ -49,10 +49,10 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
             for (int i = 0; i < slots.length; i++) {
                 slots[i] = EquipmentSlot.valueOf(CoreUtilities.toUpperCase(script.script.slots.get(i)));
             }
-            // TODO: 1.20.5: rarity is provided as an int, can make our own mirror enum; categories seemed to only over control #canEnchant(ItemStack), so can probably safely phase them out?
+            // TODO: 1.20.6: rarity is provided as an int, can make our own mirror enum; categories seemed to only over control #canEnchant(ItemStack), so can probably safely phase them out?
             // net.minecraft.world.item.enchantment.Enchantment.Rarity.valueOf(script.script.rarity), EnchantmentCategory.valueOf(script.script.category), slots
             net.minecraft.world.item.enchantment.Enchantment nmsEnchant = new net.minecraft.world.item.enchantment.Enchantment(null) {
-                // TODO: 1.20.5: methods are final now and the values are provided by EnchantmentDefinition - would probably need to create a new one on reload and modify the existing enchantment
+                // TODO: 1.20.6: methods are final now and the values are provided by EnchantmentDefinition - would probably need to create a new one on reload and modify the existing enchantment
 //                @Override
 //                public int getMinLevel() {
 //                    return script.script.minLevel;
@@ -73,7 +73,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 public int getDamageProtection(int level, DamageSource src) {
                     return script.script.getDamageProtection(level, src.getMsgId(), src.getEntity() == null ? null : src.getEntity().getBukkitEntity());
                 }
-                // TODO: 1.20.5: Takes an EntityType now, and MobType seems to have been removed in favor of vanilla tags - can probably use these to backsupport & properly pass the entity type
+                // TODO: 1.20.6: Takes an EntityType now, and MobType seems to have been removed in favor of vanilla tags - can probably use these to backsupport & properly pass the entity type
 //                @Override
 //                public float getDamageBonus(int level, EntityType type) {
 //                    String typeName = "UNDEFINED";
@@ -161,7 +161,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
         }
     }
 
-    // TODO: 1.20.5: rarity is just an int now (weight), can deprecate & backsupport by estimating it based on the weight
+    // TODO: 1.20.6: rarity is just an int now (weight), can deprecate & backsupport by estimating it based on the weight
 //    @Override
 //    public String getRarity(Enchantment enchantment) {
 //        return ((CraftEnchantment) enchantment).getHandle().getRarity().name();
@@ -197,7 +197,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
         return FormattedTextHelper.stringify(Handler.componentToSpigot(((CraftEnchantment) enchantment).getHandle().getFullname(level)));
     }
 
-    // TODO: 1.20.5: MobType was removed in favor of using the entity type directly - deprecate + potentially backsupport with vanilla tags
+    // TODO: 1.20.6: MobType was removed in favor of using the entity type directly - deprecate + potentially backsupport with vanilla tags
 //    @Override
 //    public float getDamageBonus(Enchantment enchantment, int level, String type) {
 //        MobType mobType = switch (type) {

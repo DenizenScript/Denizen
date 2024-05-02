@@ -15,7 +15,7 @@ public class ParticleHelper {
         for (org.bukkit.Particle particle : org.bukkit.Particle.values()) {
             register(particle.name(), new Particle(particle));
         }
-        // TODO: 1.20.5: enum names are different now, can change to valueOf and let Spigot's runtime updating handle it
+        // TODO: 1.20.6: enum names are different now, can change to valueOf and let Spigot's runtime updating handle it
         register("SMOKE", new Particle(org.bukkit.Particle.SMOKE_NORMAL));
         register("HUGE_EXPLOSION", new Particle(org.bukkit.Particle.EXPLOSION_HUGE));
         register("LARGE_EXPLODE", new Particle(org.bukkit.Particle.EXPLOSION_LARGE));
@@ -25,7 +25,7 @@ public class ParticleHelper {
         register("CRIT", new Particle(org.bukkit.Particle.CRIT));
         register("MAGIC_CRIT", new Particle(org.bukkit.Particle.CRIT_MAGIC));
         register("MOB_SPELL", new Particle(org.bukkit.Particle.SPELL_MOB));
-        // TODO: 1.20.5: this particle type was removed in favor of entity_effect now having a color option
+        // TODO: 1.20.6: this particle type was removed in favor of entity_effect now having a color option
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
             register("MOB_SPELL_AMBIENT", new Particle(org.bukkit.Particle.SPELL_MOB_AMBIENT));
         }

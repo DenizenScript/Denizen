@@ -49,9 +49,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class DenizenNetworkManagerImpl extends Connection {
-    // TODO: 1.20.5: there are some new methods that should potentially be overriden
+    // TODO: 1.20.6: there are some new methods that should potentially be overriden
 
-    // TODO: 1.20.5: this can be cleaned up by decoding with the codec and returning the new packet
+    // TODO: 1.20.6: this can be cleaned up by decoding with the codec and returning the new packet
     public static <T extends Packet<?>, B extends FriendlyByteBuf> RegistryFriendlyByteBuf copyPacket(T original, StreamCodec<B, T> packetCodec) {
         try {
             RegistryFriendlyByteBuf copier = new RegistryFriendlyByteBuf(Unpooled.buffer(), CraftRegistry.getMinecraftRegistry());

@@ -13,7 +13,7 @@
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
-        <!--TODO: 1.20.5: Paper 1.20.5 uses a snapshot build of adventure currently, can remove this once that's no longer the case-->
+        <!--TODO: 1.20.6: Paper 1.20.6 uses a snapshot build of adventure currently, can remove this once that's no longer the case-->
         <repository>
             <id>sonatype-oss-snapshots1</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>

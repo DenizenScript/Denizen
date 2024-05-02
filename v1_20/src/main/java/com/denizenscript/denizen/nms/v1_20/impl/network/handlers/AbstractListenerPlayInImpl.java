@@ -30,7 +30,7 @@ import java.net.SocketAddress;
 import java.util.Set;
 
 public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
-    // TODO: 1.20.5: there are some new methods that should potentially be overriden
+    // TODO: 1.20.6: there are some new methods that should potentially be overriden
 
     public static final Field ServerGamePacketListenerImpl_chunkSender = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_chunkSender);
 
