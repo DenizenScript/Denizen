@@ -46,9 +46,6 @@ public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
             return;
         }
         EntityEquipment equipment = getLivingEntity().getEquipment();
-        if (equipment == null) {
-            return;
-        }
         ElementTag helmet = map.getElement("helmet");
         ElementTag chestplate = map.getElement("chestplate");
         ElementTag leggings = map.getElement("leggings");
