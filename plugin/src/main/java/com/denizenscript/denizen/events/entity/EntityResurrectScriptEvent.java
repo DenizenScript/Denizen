@@ -28,7 +28,7 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Context
     // <context.entity> returns the EntityTag being resurrected.
-    // <context.hand> returns a ElementTag of which hand the totem was in during resurrection, if any. Available only on MC 1.19+.
+    // <context.hand> returns a ElementTag of which hand the totem was in during resurrection, if any. Can be either HAND or OFF_HAND. Available only on MC 1.19+.
     //
     // @Player when the entity being resurrected is a player.
     //
