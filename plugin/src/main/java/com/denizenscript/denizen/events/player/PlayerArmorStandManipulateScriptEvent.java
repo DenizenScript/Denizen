@@ -17,7 +17,7 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
 
     // <--[event]
     // @Events
-    // player edits <'armor_stand'>
+    // player manipulates armor stand
     //
     // @Group Player
     //
@@ -31,6 +31,7 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
     // @Switch hand:<hand> to only process the event if the player is using a specific hand to interact with the armor stand. Available only on MC versions 1.19+.
     // @Switch player_item:<item> to only process the event if the item held by the player matches the specified item matcher.
     // @Switch slot:<slot> to only process the event if the armor stand's item slot that was interacted with is the specified slot.
+    // @Switch armor_stand:<entity> to only process the event if the armor stand being interacted with matches the specified entity matcher.
     //
     // @Context
     // <context.armor_stand_item> returns the ItemTag being interacted with on the armor stand.
@@ -43,8 +44,8 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
     // -->
 
     public PlayerArmorStandManipulateScriptEvent() {
-        registerCouldMatcher("player edits <'armor_stand'>");
-        registerSwitches("armor_stand_item", "hand", "player_item", "slot");
+        registerCouldMatcher("player manipulates armor stand");
+        registerSwitches("armor_stand_item", "hand", "player_item", "slot", "armor_stand");
     }
 
     public PlayerArmorStandManipulateEvent event;
@@ -57,10 +58,10 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
         if (!runInCheck(path, event.getRightClicked().getLocation())) {
             return false;
         }
-        if (!path.tryArgObject(2, entity)) {
+        if (!path.tryObjectSwitch("armor_stand_item", armorStandItem)) {
             return false;
         }
-        if (!path.tryObjectSwitch("armor_stand_item", armorStandItem)) {
+        if (!path.tryObjectSwitch("armor_stand", entity)) {
             return false;
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && !runGenericSwitchCheck(path, "hand", event.getHand().name())) {
