@@ -202,7 +202,6 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public PlayerProfile getSkullSkin(ItemStack is) {
         net.minecraft.world.item.ItemStack itemStack = CraftItemStack.asNMSCopy(is);
-        // TODO: 1.20.6: Seems to be a holder for data that can make the request to complete it later - do we want to do that here?
         ResolvableProfile profile = itemStack.get(DataComponents.PROFILE);
         if (profile != null) {
             Property property = Iterables.getFirst(profile.properties().get("textures"), null);
