@@ -34,13 +34,13 @@ public abstract class NMSHandler {
     public static boolean initialize(JavaPlugin plugin) {
         javaPlugin = plugin;
         String bukkitVersion = Bukkit.getBukkitVersion();
-        int secondDot = bukkitVersion.indexOf('.', bukkitVersion.indexOf('.') + 1);
-        String formattedVersion = 'v' + bukkitVersion.substring(0, secondDot).replace('.', '_');
-        try {
-            // Check if we support this MC version
-            version = NMSVersion.valueOf(formattedVersion);
+        for (NMSVersion potentialVersion : NMSVersion.values()) {
+            if (bukkitVersion.startsWith(potentialVersion.minecraftVersion)) {
+                version = potentialVersion;
+                break;
+            }
         }
-        catch (Exception e) {
+        if (version == null) {
             version = NMSVersion.NOT_SUPPORTED;
             instance = null;
             return false;
