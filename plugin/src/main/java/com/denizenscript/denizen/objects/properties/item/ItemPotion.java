@@ -18,6 +18,7 @@ import org.bukkit.Registry;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SuspiciousStewMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
@@ -25,8 +26,8 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: 1.20.6: Spigot removed the PotionData API, can either remove relevant features on 1.20.6, or try and backsupport somehow (probably either hard-coding our own data or hacking it based on the name)
 public class ItemPotion extends ItemProperty<ObjectTag> {
-    // TODO: 1.20.6: Spigot removed the PotionData API, can either remove relevant features on 1.20.6, or try and backsupport somehow (probably either hard-coding our own data or hacking it based on the name)
 
     public static boolean describes(ItemTag item) {
         return item.getItemMeta() instanceof PotionMeta || item.getItemMeta() instanceof SuspiciousStewMeta;
@@ -55,10 +56,9 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 includeExtras = true;
             }
             if (includeExtras) { // TODO: Eventually remove these 4
-                // TODO: 1.20.6: PotionData API
-//                base.putObject("type", new ElementTag(potionMeta.getBasePotionData().getType()));
-//                base.putObject("upgraded", new ElementTag(potionMeta.getBasePotionData().isUpgraded()));
-//                base.putObject("extended", new ElementTag(potionMeta.getBasePotionData().isExtended()));
+                base.putObject("type", new ElementTag(potionMeta.getBasePotionData().getType()));
+                base.putObject("upgraded", new ElementTag(potionMeta.getBasePotionData().isUpgraded()));
+                base.putObject("extended", new ElementTag(potionMeta.getBasePotionData().isExtended()));
                 if (potionMeta.hasColor()) {
                     base.putObject("color", BukkitColorExtensions.fromColor(potionMeta.getColor()));
                 }
@@ -298,9 +298,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 return null;
             }
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
-            // TODO: 1.20.6: PotionData API
-//            return new ElementTag(potionMeta.getBasePotionData().getType());
-            return null;
+            return new ElementTag(potionMeta.getBasePotionData().getType());
         });
 
         // <--[tag]
@@ -318,11 +316,9 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 return null;
             }
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
-            // TODO: 1.20.6: PotionData API
-//            return new ElementTag(potionMeta.getBasePotionData().getType().name() + "," + (potionMeta.getBasePotionData().isUpgraded() ? 2 : 1)
-//                    + "," + potionMeta.getBasePotionData().isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION)
-//                    + (potionMeta.hasColor() ? "," + BukkitColorExtensions.fromColor(potionMeta.getColor()).identify() : ""));
-            return null;
+            return new ElementTag(potionMeta.getBasePotionData().getType().name() + "," + (potionMeta.getBasePotionData().isUpgraded() ? 2 : 1)
+                    + "," + potionMeta.getBasePotionData().isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION)
+                    + (potionMeta.hasColor() ? "," + BukkitColorExtensions.fromColor(potionMeta.getColor()).identify() : ""));
         });
 
         // <--[tag]
@@ -366,18 +362,14 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
                     return null;
                 }
-                // TODO: 1.20.6: PotionData API
-//                return new ElementTag(potionMeta.getBasePotionData().isExtended());
-                return null;
+                return new ElementTag(potionMeta.getBasePotionData().isExtended());
             }
             if (attribute.startsWith("level", 2)) {
                 attribute.fulfill(1);
                 if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
                     return null;
                 }
-                // TODO: 1.20.6: PotionData API
-//                return new ElementTag(potionMeta.getBasePotionData().isUpgraded() ? 2 : 1);
-                return null;
+                return new ElementTag(potionMeta.getBasePotionData().isUpgraded() ? 2 : 1);
             }
             if (attribute.startsWith("is_ambient", 2)) {
                 attribute.fulfill(1);
@@ -410,12 +402,10 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
                 return null;
             }
+            PotionData data = potionMeta.getBasePotionData();
+            return new ElementTag(data.getType().name() + "," + (data.isUpgraded() ? 2 : 1)
+                    + "," + data.isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION));
 
-            // TODO: 1.20.6: PotionData API
-//            PotionData data = potionMeta.getBasePotionData();
-//            return new ElementTag(data.getType().name() + "," + (data.isUpgraded() ? 2 : 1)
-//                    + "," + data.isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION));
-            return null;
         });
     }
 
@@ -501,8 +491,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             mechanism.echoError("Cannot both upgrade and extend a potion");
             extended = false;
         }
-        // TODO: 1.20.6: PotionData API
-//        potionMeta.setBasePotionData(new PotionData(type, extended, upgraded));
+        potionMeta.setBasePotionData(new PotionData(type, extended, upgraded));
         if (color != null) {
             potionMeta.setColor(BukkitColorExtensions.getColor(color));
         }

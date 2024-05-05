@@ -17,10 +17,9 @@ public class Particle {
     }
 
     public boolean isVisible() {
-        // TODO: 1.20.6: enum names have changed, need to move this to ParticleHelper and make it per-version/see if this is still needed
-//        return particle != org.bukkit.Particle.SUSPENDED && particle != org.bukkit.Particle.SUSPENDED_DEPTH
-//                && particle != org.bukkit.Particle.WATER_BUBBLE;
-        return true;
+        // TODO: 1.20.6: enum names are different now, can change to valueOf and let Spigot's runtime updating handle it
+        return particle != org.bukkit.Particle.SUSPENDED && particle != org.bukkit.Particle.SUSPENDED_DEPTH
+                && particle != org.bukkit.Particle.WATER_BUBBLE;
     }
 
     public String getName() {

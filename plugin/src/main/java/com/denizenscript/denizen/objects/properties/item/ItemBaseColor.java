@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -59,9 +61,9 @@ public class ItemBaseColor extends ItemProperty<ElementTag> {
             }
             return color;
         }
-        else {
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             // TODO: 1.20.6: Banner color has been part of the item type for a while, and Spigot removed this API
-//            return ((BannerMeta) itemMeta).getBaseColor();
+            return ((BannerMeta) itemMeta).getBaseColor();
         }
         return null;
     }
@@ -81,8 +83,9 @@ public class ItemBaseColor extends ItemProperty<ElementTag> {
             banner.update();
             ((BlockStateMeta) itemMeta).setBlockState(banner);
         }
-        else {
-//            ((BannerMeta) itemMeta).setBaseColor(color);
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            // TODO: 1.20.6: Banner color has been part of the item type for a while, and Spigot removed this API
+            ((BannerMeta) itemMeta).setBaseColor(color);
         }
         setItemMeta(itemMeta);
     }
