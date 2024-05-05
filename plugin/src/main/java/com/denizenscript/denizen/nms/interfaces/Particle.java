@@ -17,6 +17,7 @@ public class Particle {
     }
 
     public boolean isVisible() {
+        // TODO: 1.20.6: enum names are different now, can change to valueOf and let Spigot's runtime updating handle it
         return particle != org.bukkit.Particle.SUSPENDED && particle != org.bukkit.Particle.SUSPENDED_DEPTH
                 && particle != org.bukkit.Particle.WATER_BUBBLE;
     }

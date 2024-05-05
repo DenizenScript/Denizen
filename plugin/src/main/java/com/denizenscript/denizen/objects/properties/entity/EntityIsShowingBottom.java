@@ -12,7 +12,7 @@ import org.bukkit.entity.EntityType;
 public class EntityIsShowingBottom implements Property {
 
     public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag && ((EntityTag) entity).getBukkitEntityType() == EntityType.ENDER_CRYSTAL;
+        return entity instanceof EntityTag entityTag && entityTag.getBukkitEntity() instanceof EnderCrystal;
     }
 
     public static EntityIsShowingBottom getFrom(ObjectTag entity) {

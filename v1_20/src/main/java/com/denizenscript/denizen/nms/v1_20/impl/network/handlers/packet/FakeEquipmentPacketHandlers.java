@@ -12,7 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +48,7 @@ public class FakeEquipmentPacketHandlers {
                 case HEAD -> override.head == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.head.getItemStack());
                 case LEGS -> override.legs == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.legs.getItemStack());
                 case FEET -> override.boots == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.boots.getItemStack());
+                case BODY -> pair.getSecond(); // TODO: 1.20.6: is this actually used here? do we want to allow overriding it?
             };
             equipment.set(i, new Pair<>(pair.getFirst(), use));
         }

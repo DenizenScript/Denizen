@@ -39,7 +39,6 @@ import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -66,14 +65,14 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftCreatureSpawner;
-import org.bukkit.craftbukkit.v1_20_R3.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_20_R3.entity.*;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_20_R4.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R4.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R4.block.CraftCreatureSpawner;
+import org.bukkit.craftbukkit.v1_20_R4.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_20_R4.entity.*;
+import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R4.util.CraftLocation;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -110,20 +109,13 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public double getDamageTo(LivingEntity attacker, Entity target) {
-        MobType monsterType;
-        if (target instanceof LivingEntity) {
-            monsterType = ((CraftLivingEntity) target).getHandle().getMobType();
-        }
-        else {
-            monsterType = MobType.UNDEFINED;
-        }
         double damage = 0;
         AttributeInstance attrib = attacker.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
         if (attrib != null) {
             damage = attrib.getValue();
         }
         if (attacker.getEquipment() != null) {
-            damage += EnchantmentHelper.getDamageBonus(CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), monsterType);
+            damage += EnchantmentHelper.getDamageBonus(CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), CraftEntityType.bukkitToMinecraft(target.getType()));
         }
         if (damage <= 0) {
             return 0;
@@ -143,7 +135,7 @@ public class EntityHelperImpl extends EntityHelper {
             if (!(nmsTarget instanceof net.minecraft.world.entity.LivingEntity livingTarget)) {
                 return damage;
             }
-            damage = CombatRules.getDamageAfterAbsorb((float) damage, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+            damage = CombatRules.getDamageAfterAbsorb((float) damage, source, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
             int enchantDamageModifier = EnchantmentHelper.getDamageProtection(livingTarget.getArmorSlots(), source);
             if (enchantDamageModifier > 0) {
                 damage = CombatRules.getDamageAfterMagicAbsorb((float) damage, (float) enchantDamageModifier);
@@ -170,8 +162,9 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void forceInteraction(Player player, Location location) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
-        ((CraftBlock) location.getBlock()).getNMS().use(((CraftWorld) location.getWorld()).getHandle(),
-                craftPlayer != null ? craftPlayer.getHandle() : null, InteractionHand.MAIN_HAND,
+        // TODO: 1.20.6: passing a null player isn't valid (and seemingly never was) - need to require HumanEntity in the mechanism
+        ((CraftBlock) location.getBlock()).getNMS().useItemOn(craftPlayer.getHandle().getMainHandItem(), ((CraftWorld) location.getWorld()).getHandle(),
+                craftPlayer.getHandle(), InteractionHand.MAIN_HAND,
                 new BlockHitResult(new Vec3(0, 0, 0), null, CraftLocation.toBlockPosition(location), false));
     }
 
@@ -519,7 +512,7 @@ public class EntityHelperImpl extends EntityHelper {
         packetData.writeByte((byte)((int)(location.getYaw() * 256.0F / 360.0F)));
         packetData.writeByte((byte)((int)(location.getPitch() * 256.0F / 360.0F)));
         packetData.writeBoolean(entity.isOnGround());
-        ClientboundTeleportEntityPacket packet = new ClientboundTeleportEntityPacket(packetData);
+        ClientboundTeleportEntityPacket packet = ClientboundTeleportEntityPacket.STREAM_CODEC.decode(packetData);
         for (Player player : getPlayersThatSee(entity)) {
             PacketHelperImpl.send(player, packet);
         }
@@ -756,7 +749,7 @@ public class EntityHelperImpl extends EntityHelper {
             nmsEntity.unsetRemoved();
             nmsEntity.setUUID(id);
             if (nmsEntity instanceof ServerPlayer nmsPlayer) {
-                playerList.placeNewPlayer(DenizenNetworkManagerImpl.getConnection(nmsPlayer), nmsPlayer, new CommonListenerCookie(nmsPlayer.getGameProfile(), nmsPlayer.connection.latency(), nmsPlayer.clientInformation()));
+                playerList.placeNewPlayer(DenizenNetworkManagerImpl.getConnection(nmsPlayer), nmsPlayer, new CommonListenerCookie(nmsPlayer.getGameProfile(), nmsPlayer.connection.latency(), nmsPlayer.clientInformation(), nmsPlayer.connection.isTransferred()));
             }
             else {
                 level.addFreshEntity(nmsEntity);
@@ -765,16 +758,6 @@ public class EntityHelperImpl extends EntityHelper {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
-    }
-
-    @Override
-    public float getStepHeight(Entity entity) {
-        return ((CraftEntity) entity).getHandle().maxUpStep();
-    }
-
-    @Override
-    public void setStepHeight(Entity entity, float stepHeight) {
-        ((CraftEntity) entity).getHandle().setMaxUpStep(stepHeight);
     }
 
     public static final Field SynchedEntityData_itemsById = ReflectionHelper.getFields(SynchedEntityData.class).get(ReflectionMappingsInfo.SynchedEntityData_itemsById);

@@ -12,34 +12,34 @@ public class ReflectionMappingsInfo {
     public static String MappedRegistry_unregisteredIntrusiveHolders = "m";
 
     // net.minecraft.world.item.crafting.RecipeManager
-    public static String RecipeManager_byName = "d";
+    public static String RecipeManager_byName = "e";
 
     // net.minecraft.world.entity.Entity
-    public static String Entity_onGround = "aJ";
-    public static String Entity_DATA_SHARED_FLAGS_ID = "ao";
-    public static String Entity_DATA_CUSTOM_NAME = "aU";
-    public static String Entity_DATA_CUSTOM_NAME_VISIBLE = "aV";
+    public static String Entity_onGround = "aI";
+    public static String Entity_DATA_SHARED_FLAGS_ID = "ap";
+    public static String Entity_DATA_CUSTOM_NAME = "aS";
+    public static String Entity_DATA_CUSTOM_NAME_VISIBLE = "aT";
 
     // net.minecraft.world.entity.LivingEntity
-    public static String LivingEntity_attackStrengthTicker = "aP";
-    public static String LivingEntity_autoSpinAttackTicks = "by";
+    public static String LivingEntity_attackStrengthTicker = "aT";
+    public static String LivingEntity_autoSpinAttackTicks = "bC";
     public static String LivingEntity_setLivingEntityFlag_method = "c";
 
     // net.minecraft.world.entity.player.Player
     public static String Player_DATA_PLAYER_ABSORPTION_ID = "d";
-    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bM";
+    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bV";
 
     // net.minecraft.server.level.ServerPlayer
-    public static String ServerPlayer_respawnForced = "cW";
+    public static String ServerPlayer_respawnForced = "dl";
 
     // net.minecraft.world.entity.monster.EnderMan
-    public static String EnderMan_DATA_CREEPY = "bV";
+    public static String EnderMan_DATA_CREEPY = "ca";
 
     // net.minecraft.world.entity.monster.Zombie
-    public static String Zombie_inWaterTime = "cd";
+    public static String Zombie_inWaterTime = "ci";
 
     // net.minecraft.world.item.Item
-    public static String Item_maxStackSize = "d";
+    public static String Item_components = "c";
 
     // net.minecraft.world.level.Level
     public static String Level_isClientSide = "B";
@@ -54,7 +54,7 @@ public class ReflectionMappingsInfo {
     public static String ExperienceOrb_age = "g";
 
     // net.minecraft.world.entity.item.ItemEntity
-    public static String ItemEntity_DATA_ITEM = "c";
+    public static String ItemEntity_DATA_ITEM = "d";
 
     // net.minecraft.world.level.biome.Biome
     public static String Biome_climateSettings = "i";
@@ -65,25 +65,26 @@ public class ReflectionMappingsInfo {
     public static String BiomeSpecialEffects_waterFogColor = "d";
 
     // net.minecraft.network.Connection
-    public static String Connection_receiving = "l";
+    public static String Connection_receiving = "k";
+    public static String Connection_packetListener = "q";
 
     // net.minecraft.server.network.ServerGamePacketListenerImpl
-    public static String ServerGamePacketListenerImpl_aboveGroundTickCount = "F";
-    public static String ServerGamePacketListenerImpl_aboveGroundVehicleTickCount = "H";
-    public static String ServerGamePacketListenerImpl_awaitingPositionFromClient = "B";
-    public static String ServerGamePacketListenerImpl_awaitingTeleport = "C";
-    public static String ServerGamePacketListenerImpl_chunkSender = "f";
+    public static String ServerGamePacketListenerImpl_aboveGroundTickCount = "J";
+    public static String ServerGamePacketListenerImpl_aboveGroundVehicleTickCount = "L";
+    public static String ServerGamePacketListenerImpl_awaitingPositionFromClient = "F";
+    public static String ServerGamePacketListenerImpl_awaitingTeleport = "G";
+    public static String ServerGamePacketListenerImpl_chunkSender = "g";
 
     // net.minecraft.server.network.ServerCommonPacketListenerImpl
-    public static String ServerCommonPacketListenerImpl_connection = "c";
+    public static String ServerCommonPacketListenerImpl_connection = "e";
 
     // net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket
-    public static String ClientboundPlayerAbilitiesPacket_walkingSpeed = "j";
+    public static String ClientboundPlayerAbilitiesPacket_walkingSpeed = "k";
 
     // net.minecraft.network.protocol.game.ClientboundSectionBlocksUpdatePacket
-    public static String ClientboundSectionBlocksUpdatePacket_sectionPos = "b";
-    public static String ClientboundSectionBlocksUpdatePacket_positions = "c";
-    public static String ClientboundSectionBlocksUpdatePacket_states = "d";
+    public static String ClientboundSectionBlocksUpdatePacket_sectionPos = "c";
+    public static String ClientboundSectionBlocksUpdatePacket_positions = "d";
+    public static String ClientboundSectionBlocksUpdatePacket_states = "e";
 
     // net.minecraft.network.protocol.game.ClientboundMoveEntityPacket
     public static String ClientboundMoveEntityPacket_xa = "b";
@@ -93,22 +94,22 @@ public class ReflectionMappingsInfo {
     public static String ClientboundMoveEntityPacket_xRot = "f";
 
     // net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
-    public static String ClientboundSetEntityMotionPacket_id = "a";
+    public static String ClientboundSetEntityMotionPacket_id = "b";
 
     // net.minecraft.network.protocol.game.ClientboundSetPassengersPacket
-    public static String ClientboundSetPassengersPacket_passengers = "b";
+    public static String ClientboundSetPassengersPacket_passengers = "c";
 
     // net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket
-    public static String ClientboundTeleportEntityPacket_id = "a";
-    public static String ClientboundTeleportEntityPacket_x = "b";
-    public static String ClientboundTeleportEntityPacket_y = "c";
-    public static String ClientboundTeleportEntityPacket_z = "d";
-    public static String ClientboundTeleportEntityPacket_yRot = "e";
-    public static String ClientboundTeleportEntityPacket_xRot = "f";
+    public static String ClientboundTeleportEntityPacket_id = "b";
+    public static String ClientboundTeleportEntityPacket_x = "c";
+    public static String ClientboundTeleportEntityPacket_y = "d";
+    public static String ClientboundTeleportEntityPacket_z = "e";
+    public static String ClientboundTeleportEntityPacket_yRot = "f";
+    public static String ClientboundTeleportEntityPacket_xRot = "g";
 
     // net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData$BlockEntityInfo
-    public static String ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ = "a";
-    public static String ClientboundLevelChunkPacketDataBlockEntityInfo_y = "b";
+    public static String ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ = "c";
+    public static String ClientboundLevelChunkPacketDataBlockEntityInfo_y = "d";
 
     // net.minecraft.network.syncher.SynchedEntityData
     public static String SynchedEntityData_itemsById = "e";
@@ -128,5 +129,5 @@ public class ReflectionMappingsInfo {
     public static String HolderReference_bindTags_method = "a";
 
     // net.minecraft.server.level.ServerLevel
-    public static String ServerLevel_sleepStatus = "O";
+    public static String ServerLevel_sleepStatus = "P";
 }

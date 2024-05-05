@@ -40,6 +40,7 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
 
     public EntityTag vehicle;
     public EntityTag entity;
+    // TODO: 1.20.6: EntityDismountEvent changed packages, might need to register in version-specific modules? or reflection?
     public EntityDismountEvent event;
 
     @Override

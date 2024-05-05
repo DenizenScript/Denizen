@@ -1731,20 +1731,19 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         if (mechanism.matches("item_type") && mechanism.requireObject(ItemTag.class)) {
             ItemTag item = mechanism.valueAsType(ItemTag.class);
             Material mat = item.getMaterial().getMaterial();
-            switch (getEntity().getType()) {
-                case DROPPED_ITEM:
-                    ((org.bukkit.entity.Item) getEntity()).getItemStack().setType(mat);
-                    break;
-                case ITEM_FRAME:
-                    ((ItemFrame) getEntity()).getItem().setType(mat);
-                    break;
-                case FALLING_BLOCK:
-                    getCitizen().data().setPersistent(NPC.Metadata.ITEM_ID, mat.name());
-                    getCitizen().data().setPersistent(NPC.Metadata.ITEM_DATA, 0);
-                    break;
-                default:
-                    Debug.echoError("NPC is the not an item type!");
-                    break;
+            Entity npcEntity = getEntity();
+            if (npcEntity instanceof Item droppedItem) {
+                droppedItem.getItemStack().setType(mat);
+            }
+            else if (npcEntity instanceof ItemFrame itemFrame) {
+                itemFrame.getItem().setType(mat);
+            }
+            else if (npcEntity instanceof FallingBlock) {
+                getCitizen().data().setPersistent(NPC.Metadata.ITEM_ID, mat.name());
+                getCitizen().data().setPersistent(NPC.Metadata.ITEM_DATA, 0);
+            }
+            else {
+                Debug.echoError("NPC is the not an item type!");
             }
             if (getCitizen().isSpawned()) {
                 getCitizen().despawn();
