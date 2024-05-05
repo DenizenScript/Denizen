@@ -45,6 +45,9 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(ExperienceOrbMergeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerAbsorbsExperienceScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBeaconEffectScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            ScriptEvent.registerScriptEvent(PlayerChangesFramedItemScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(PlayerChoosesArrowScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksFakeEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksInRecipeBookScriptEvent.class);
