@@ -44,7 +44,6 @@ public class PacketOutSetSlotImpl implements PacketOutSetSlot {
     private static final Field ITEM_STACK;
 
     static {
-        Map<String, Field> fields = ReflectionHelper.getFields(ClientboundContainerSetSlotPacket.class);
-        ITEM_STACK = fields.get("c");
+        ITEM_STACK = ReflectionHelper.getFields(ClientboundContainerSetSlotPacket.class).get("c");
     }
 }
