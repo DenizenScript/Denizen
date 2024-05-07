@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -31,15 +32,11 @@ public class ItemArmorPose extends ItemProperty<MapTag> {
 
     @Override
     public MapTag getPropertyValue() {
-        CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(getItemStack());
-        if (compoundTag == null) {
+        CompoundTag entityNbt = NMSHandler.itemHelper.getEntityTagNBT(getItemStack());
+        if (entityNbt == null) {
             return null;
         }
-        Tag entPart = compoundTag.getValue().get("EntityTag");
-        if (!(entPart instanceof CompoundTag)) {
-            return null;
-        }
-        Tag posePart = ((CompoundTag) entPart).getValue().get("Pose");
+        Tag posePart = entityNbt.getValue().get("Pose");
         if (!(posePart instanceof CompoundTag)) {
             return null;
         }
@@ -56,15 +53,10 @@ public class ItemArmorPose extends ItemProperty<MapTag> {
 
     @Override
     public void setPropertyValue(MapTag param, Mechanism mechanism) {
-        CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(getItemStack());
-        Tag entPart, posePart;
+        CompoundTag entityNbt = NMSHandler.itemHelper.getEntityTagNBT(getItemStack());
         if (mechanism.hasValue()) {
-            if (compoundTag == null) {
-                compoundTag = new CompoundTagBuilder().build();
-            }
-            entPart = compoundTag.getValue().get("EntityTag");
-            if (!(entPart instanceof CompoundTag)) {
-                entPart = new CompoundTagBuilder().build();
+            if (entityNbt == null) {
+                entityNbt = new CompoundTagBuilder().build();
             }
             CompoundTagBuilder poseBuilder = new CompoundTagBuilder();
             procMechKey(mechanism, poseBuilder, "Head", "head", param);
@@ -75,33 +67,22 @@ public class ItemArmorPose extends ItemProperty<MapTag> {
             procMechKey(mechanism, poseBuilder, "RightLeg", "right_leg", param);
             CompoundTag pose = poseBuilder.build();
             if (pose.getValue().isEmpty()) {
-                entPart = ((CompoundTag) entPart).createBuilder().remove("Pose").build();
+                entityNbt = entityNbt.createBuilder().remove("Pose").build();
             }
             else {
-                entPart = ((CompoundTag) entPart).createBuilder().put("Pose", pose).build();
+                entityNbt = entityNbt.createBuilder().put("Pose", pose).build();
             }
         }
         else {
-            if (compoundTag == null) {
+            if (entityNbt == null) {
                 return;
             }
-            entPart = compoundTag.getValue().get("EntityTag");
-            if (!(entPart instanceof CompoundTag)) {
+            if (!(entityNbt.getValue().get("Pose") instanceof CompoundTag)) {
                 return;
             }
-            posePart = ((CompoundTag) entPart).getValue().get("Pose");
-            if (!(posePart instanceof CompoundTag)) {
-                return;
-            }
-            entPart = ((CompoundTag) entPart).createBuilder().remove("Pose").build();
+            entityNbt = entityNbt.createBuilder().remove("Pose").build();
         }
-        if (((CompoundTag) entPart).getValue().isEmpty()) {
-            compoundTag = compoundTag.createBuilder().remove("EntityTag").build();
-        }
-        else {
-            compoundTag = compoundTag.createBuilder().put("EntityTag", entPart).build();
-        }
-        ItemStack result = NMSHandler.itemHelper.setNbtData(getItemStack(), compoundTag);
+        ItemStack result = NMSHandler.itemHelper.setEntityTagNBT(getItemStack(), entityNbt, EntityType.ARMOR_STAND);
         setItemStack(result);
     }
 
