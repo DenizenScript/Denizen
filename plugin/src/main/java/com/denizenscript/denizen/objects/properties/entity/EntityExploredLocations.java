@@ -14,6 +14,7 @@ public class EntityExploredLocations extends EntityProperty<ListTag> {
     // @input ListTag(LocationTag)
     // @description
     // Controls a sniffer's explored locations.
+    // @mechanism
     // Note that if the sniffer is not in the same world as the input LocationTag(s), then the LocationTag(s) will not be added to the list of explored locations.
     // -->
 
