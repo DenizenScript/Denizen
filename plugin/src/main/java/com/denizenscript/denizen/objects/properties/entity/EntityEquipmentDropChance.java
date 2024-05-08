@@ -15,9 +15,9 @@ public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
     // @input MapTag
     // @description
     // Controls the chance of each piece of equipment dropping when the entity dies.
-    // Specifying a drop chance of 0 will prevent the item from dropping, a drop chance of 1 will always drop the item if killed by a player, and a drop chance of higher than 1 will always drop the item no matter what the entity was killed by.
+    // A drop chance of 0 will prevent the item from dropping, a drop chance of 1 will always drop the item if killed by a player, and a drop chance of higher than 1 will always drop the item no matter what the entity was killed by.
     //
-    // @Example
+    // @Mechanism-example
     // # Use to prevent a zombie from dropping any of its equipped items, no matter what:
     // - adjust <[zombie]> equipment_drop_chance:[helmet=0;chestplate=0;leggings=0;boots=0;main_hand=0;off_hand=0]
     //
@@ -42,16 +42,13 @@ public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
 
     @Override
     public void setPropertyValue(MapTag map, Mechanism mechanism) {
-        if(!mechanism.hasValue()) {
-            return;
-        }
         EntityEquipment equipment = getLivingEntity().getEquipment();
         ElementTag helmet = map.getElement("helmet");
         ElementTag chestplate = map.getElement("chestplate");
         ElementTag leggings = map.getElement("leggings");
         ElementTag boots = map.getElement("boots");
-        ElementTag main_hand = map.getElement("main_hand");
-        ElementTag off_hand = map.getElement("off_hand");
+        ElementTag mainHand = map.getElement("main_hand");
+        ElementTag offHand = map.getElement("off_hand");
         if (helmet != null) {
             equipment.setHelmetDropChance(helmet.asFloat());
         }
@@ -64,11 +61,11 @@ public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
         if (boots != null) {
             equipment.setBootsDropChance(boots.asFloat());
         }
-        if (main_hand != null) {
-            equipment.setItemInMainHandDropChance(main_hand.asFloat());
+        if (mainHand != null) {
+            equipment.setItemInMainHandDropChance(mainHand.asFloat());
         }
-        if (off_hand != null) {
-            equipment.setItemInOffHandDropChance(off_hand.asFloat());
+        if (offHand != null) {
+            equipment.setItemInOffHandDropChance(offHand.asFloat());
         }
     }
 
