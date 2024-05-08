@@ -63,7 +63,7 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
             case "entity" -> entity;
             case "hand" -> {
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-                    yield event.getHand() != null ? new ElementTag(event.getHand().name(), true) : null;
+                    yield event.getHand() != null ? new ElementTag(event.getHand()) : null;
                 }
                 yield null;
             }
