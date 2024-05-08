@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -1006,6 +1007,102 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         registerTag(ElementTag.class, "is_night", (attribute, world) -> {
             return new ElementTag(NMSHandler.worldHelper.isNight(world.getWorld()));
         });
+
+        // <--[tag]
+        // @attribute <WorldTag.first_dragon_killed>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether the ender dragon has been killed in this world before.
+        // Only works in end worlds.
+        // -->
+        registerTag(ElementTag.class, "first_dragon_killed", (attribute, object) -> {
+            DragonBattle battle = object.getWorld().getEnderDragonBattle();
+            if (battle == null) {
+                return null;
+            }
+            return new ElementTag(battle.hasBeenPreviouslyKilled());
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name respawn_dragon
+        // @description
+        // Initiates the respawn sequence of the ender dragon as if a player placed 4 end crystals on the portal.
+        // Only works in end worlds.
+        // -->
+        tagProcessor.registerMechanism("respawn_dragon", false, (object, mechanism) -> {
+            if (object.getWorld() == null) {
+                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot process mechanism.");
+                return;
+            }
+            DragonBattle battle = object.getWorld().getEnderDragonBattle();
+            if (battle == null) {
+                return;
+            }
+            battle.initiateRespawn();
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name reset_crystals
+        // @description
+        // Resets the end crystals located on the obsidian pillars in this world.
+        // Only works in end worlds.
+        // -->
+        tagProcessor.registerMechanism("reset_crystals", false, (object, mechanism) -> {
+            if (object.getWorld() == null) {
+                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot process mechanism.");
+                return;
+            }
+            DragonBattle battle = object.getWorld().getEnderDragonBattle();
+            if (battle == null) {
+                return;
+            }
+            battle.resetCrystals();
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name respawn_phase
+        // @input ElementTag(String)
+        // @description
+        // Set the current respawn phase of the ender dragon. Valid phases can be found at <@link url https://jd.papermc.io/paper/1.20/org/bukkit/boss/DragonBattle.RespawnPhase.html>
+        // Only works in end worlds.
+        // -->
+        tagProcessor.registerMechanism("respawn_phase",false, ElementTag.class, (object, mechanism, input) -> {
+            if (object.getWorld() == null) {
+                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot process mechanism.");
+                return;
+            }
+            DragonBattle battle = object.getWorld().getEnderDragonBattle();
+            if (battle == null) {
+                return;
+            }
+            battle.setRespawnPhase(input.asEnum(DragonBattle.RespawnPhase.class));
+        });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            // <--[mechanism]
+            // @object WorldTag
+            // @name respawn_phase
+            // @input ElementTag(Boolean)
+            // @description
+            // Set whether the first ender dragon was killed already.
+            // Only works in end worlds.
+            // -->
+            tagProcessor.registerMechanism("first_dragon_killed", false, ElementTag.class, (object, mechanism, input) -> {
+                if (object.getWorld() == null) {
+                    mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot process mechanism.");
+                    return;
+                }
+                DragonBattle battle = object.getWorld().getEnderDragonBattle();
+                if (battle == null) {
+                    return;
+                }
+                battle.setPreviouslyKilled(input.asBoolean());
+            });
+        }
+
     }
 
     public static ObjectTagProcessor<WorldTag> tagProcessor = new ObjectTagProcessor<>();
