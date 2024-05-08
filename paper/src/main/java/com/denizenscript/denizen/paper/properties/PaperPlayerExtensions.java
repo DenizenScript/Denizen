@@ -36,7 +36,7 @@ public class PaperPlayerExtensions {
         // @group paper
         // @Plugin Paper
         // @description
-        // Returns the player's client options as a MapTag.
+        // Returns the player's client options.
         // The allow_server_listings & text_filtering_enabled options are only available in MC 1.19+.
         // -->
         PlayerTag.registerOnlineOnlyTag(MapTag.class, "client_options", (attribute, object) -> {
