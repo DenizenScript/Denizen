@@ -1032,7 +1032,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         tagProcessor.registerMechanism("respawn_dragon", false, (object, mechanism) -> {
             if (object.getWorld() == null) {
-                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot process mechanism.");
+                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot set respawn phase.");
                 return;
             }
             DragonBattle battle = object.getWorld().getEnderDragonBattle();
@@ -1051,7 +1051,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         tagProcessor.registerMechanism("reset_crystals", false, (object, mechanism) -> {
             if (object.getWorld() == null) {
-                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot process mechanism.");
+                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot reset crystals.");
                 return;
             }
             DragonBattle battle = object.getWorld().getEnderDragonBattle();
@@ -1071,7 +1071,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         tagProcessor.registerMechanism("respawn_phase", false, ElementTag.class, (object, mechanism, input) -> {
             if (object.getWorld() == null) {
-                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot process mechanism.");
+                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot set respawn phase.");
                 return;
             }
             DragonBattle battle = object.getWorld().getEnderDragonBattle();
@@ -1092,7 +1092,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // -->
             tagProcessor.registerMechanism("first_dragon_killed", false, ElementTag.class, (object, mechanism, input) -> {
                 if (object.getWorld() == null) {
-                    mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot process mechanism.");
+                    mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot set respawn phase.");
                     return;
                 }
                 DragonBattle battle = object.getWorld().getEnderDragonBattle();
