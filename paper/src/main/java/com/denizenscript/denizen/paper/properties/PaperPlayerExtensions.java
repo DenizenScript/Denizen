@@ -37,7 +37,22 @@ public class PaperPlayerExtensions {
         // @Plugin Paper
         // @description
         // Returns the player's client options.
-        // The allow_server_listings & text_filtering_enabled options are only available in MC 1.19+.
+        // The output map contains the following keys:
+        // - 'allow_server_listings' (ElementTag(Boolean)): whether the player allows server listings. Available only on MC 1.19+.
+        // - 'chat_colors_enabled' (ElementTag(Boolean)): whether the player has chat colors enabled.
+        // - 'chat_visibility' (ElementTag(String)): the player's current chat visibility option. Possible output values are: FULL, SYSTEM, HIDDEN, and UNKNOWN.
+        // - 'locale' (ElementTag(String)): the player's current locale.
+        // - 'main_hand' (ElementTag(String)): the player's main hand, either LEFT or RIGHT.
+        // - 'skin_parts' (MapTag): which skin parts the player has enabled. The output map contains the following keys:
+        //   - 'cape' (ElementTag(Boolean)): whether the player's cape is enabled.
+        //   - 'hat' (ElementTag(Boolean)): whether the player's hat is enabled.
+        //   - 'jacket' (ElementTag(Boolean)): whether the player's jacket is enabled.
+        //   - 'left_sleeve' (ElementTag(Boolean)): whether the player's left sleeve is enabled.
+        //   - 'right_sleeve' (ElementTag(Boolean)): whether the player's right sleeve is enabled.
+        //   - 'left_pants' (ElementTag(Boolean)): whether the player's left pants is enabled.
+        //   - 'right_pants' (ElementTag(Boolean)): whether the player's right pants is enabled.
+        // - 'text_filtering_enabled' (ElementTag(Boolean)): whether the player has text filtering enabled. Available only on MC 1.19+.
+        // - 'view_distance' (ElementTag(Number)): the player's current view distance.
         // -->
         PlayerTag.registerOnlineOnlyTag(MapTag.class, "client_options", (attribute, object) -> {
             MapTag map = new MapTag();
