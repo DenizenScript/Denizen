@@ -671,6 +671,19 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
                 return itemType.isEdible() ? new ElementTag(NMSHandler.itemHelper.getFoodPoints(itemType)) : null;
             });
         }
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
+            // <--[tag]
+            // @attribute <MaterialTag.is_enabled[<world>]>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the material is enabled in the specified world.
+            // -->
+            tagProcessor.registerTag(ElementTag.class, WorldTag.class, "is_enabled", (attribute, object, world) -> {
+                return new ElementTag(object.getMaterial().isEnabledByFeature(world.getWorld()));
+            });
+        }
     }
 
     public static ObjectTagProcessor<MaterialTag> tagProcessor = new ObjectTagProcessor<>();
