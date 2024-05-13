@@ -17,7 +17,7 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
 
     // <--[event]
     // @Events
-    // player manipulates armor stand
+    // player changes armor stand item
     //
     // @Group Player
     //
@@ -25,11 +25,11 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
     //
     // @Cancellable true
     //
-    // @Triggers when a player manipulates an armor stand entity.
+    // @Triggers when a player modifies an armor stand entity.
     //
-    // @Switch armor_stand_item:<item> to only process the event if the item on the armor stand being interacted with matches the specified item matcher.
+    // @Switch from:<item> to only process the event if the item on the armor stand being interacted with matches the specified item matcher.
     // @Switch hand:<hand> to only process the event if the player is using a specific hand to interact with the armor stand. Available only on MC versions 1.19+.
-    // @Switch player_item:<item> to only process the event if the item held by the player matches the specified item matcher.
+    // @Switch to:<item> to only process the event if the item held by the player matches the specified item matcher.
     // @Switch slot:<slot> to only process the event if the armor stand's item slot that was interacted with is the specified slot.
     // @Switch armor_stand:<entity> to only process the event if the armor stand being interacted with matches the specified entity matcher.
     //
@@ -44,8 +44,8 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
     // -->
 
     public PlayerArmorStandManipulateScriptEvent() {
-        registerCouldMatcher("player manipulates armor stand");
-        registerSwitches("armor_stand_item", "hand", "player_item", "slot", "armor_stand");
+        registerCouldMatcher("player changes armor stand item");
+        registerSwitches("from", "to", "hand", "slot", "armor_stand");
     }
 
     public PlayerArmorStandManipulateEvent event;
@@ -58,7 +58,7 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
         if (!runInCheck(path, event.getRightClicked().getLocation())) {
             return false;
         }
-        if (!path.tryObjectSwitch("armor_stand_item", armorStandItem)) {
+        if (!path.tryObjectSwitch("from", armorStandItem)) {
             return false;
         }
         if (!path.tryObjectSwitch("armor_stand", entity)) {
@@ -67,7 +67,7 @@ public class PlayerArmorStandManipulateScriptEvent extends BukkitScriptEvent imp
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && !runGenericSwitchCheck(path, "hand", event.getHand().name())) {
             return false;
         }
-        if (!path.tryObjectSwitch("player_item", playerItem)) {
+        if (!path.tryObjectSwitch("to", playerItem)) {
             return false;
         }
         if (!runGenericSwitchCheck(path, "slot", event.getSlot().name())) {
