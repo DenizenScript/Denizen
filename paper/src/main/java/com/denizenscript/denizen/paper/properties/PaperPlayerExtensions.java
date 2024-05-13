@@ -40,9 +40,9 @@ public class PaperPlayerExtensions {
         // The output map contains the following keys:
         // - 'allow_server_listings' (ElementTag(Boolean)): whether the player allows server listings. Available only on MC 1.19+.
         // - 'chat_colors_enabled' (ElementTag(Boolean)): whether the player has chat colors enabled.
-        // - 'chat_visibility' (ElementTag(String)): the player's current chat visibility option. Possible output values are: FULL, SYSTEM, HIDDEN, and UNKNOWN.
-        // - 'locale' (ElementTag(String)): the player's current locale.
-        // - 'main_hand' (ElementTag(String)): the player's main hand, either LEFT or RIGHT.
+        // - 'chat_visibility' (ElementTag): the player's current chat visibility option. Possible output values are: FULL, SYSTEM, HIDDEN, and UNKNOWN.
+        // - 'locale' (ElementTag): the player's current locale.
+        // - 'main_hand' (ElementTag): the player's main hand, either LEFT or RIGHT.
         // - 'skin_parts' (MapTag): which skin parts the player has enabled. The output map contains the following keys:
         //   - 'cape' (ElementTag(Boolean)): whether the player's cape is enabled.
         //   - 'hat' (ElementTag(Boolean)): whether the player's hat is enabled.
