@@ -4287,6 +4287,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
 
             // <--[language]
             // @name Structure lookups
+            // @group Useful Lists
             // @description
             // Structures can be located using <@link tag LocationTag.find_structure>.
             // It works similarly to the '/locate' command, and has several side effects/edge cases:

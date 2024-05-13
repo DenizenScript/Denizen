@@ -20,6 +20,7 @@ import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.List;
 
+// TODO: 1.20.6: PotionData API
 public class EntityAreaEffectCloud implements Property {
 
     public static boolean describes(ObjectTag entity) {

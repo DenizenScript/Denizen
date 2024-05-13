@@ -16,17 +16,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.enchantments.CraftEnchantment;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R4.enchantments.CraftEnchantment;
+import org.bukkit.craftbukkit.v1_20_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R4.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.entity.EntityDamageEvent;
+import net.minecraft.world.item.enchantment.Enchantment.EnchantmentDefinition;
 
 import java.lang.reflect.Field;
 import java.util.IdentityHashMap;
@@ -49,44 +49,48 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
             for (int i = 0; i < slots.length; i++) {
                 slots[i] = EquipmentSlot.valueOf(CoreUtilities.toUpperCase(script.script.slots.get(i)));
             }
-            net.minecraft.world.item.enchantment.Enchantment nmsEnchant = new net.minecraft.world.item.enchantment.Enchantment(net.minecraft.world.item.enchantment.Enchantment.Rarity.valueOf(script.script.rarity), EnchantmentCategory.valueOf(script.script.category), slots) {
-                @Override
-                public int getMinLevel() {
-                    return script.script.minLevel;
-                }
-                @Override
-                public int getMaxLevel() {
-                    return script.script.maxLevel;
-                }
-                @Override
-                public int getMinCost(int level) {
-                    return script.script.getMinCost(level);
-                }
-                @Override
-                public int getMaxCost(int level) {
-                    return script.script.getMaxCost(level);
-                }
+            // TODO: 1.20.6: rarity is provided as an int, can make our own mirror enum; categories seemed to only over control #canEnchant(ItemStack), so can probably safely phase them out?
+            // net.minecraft.world.item.enchantment.Enchantment.Rarity.valueOf(script.script.rarity), EnchantmentCategory.valueOf(script.script.category), slots
+            net.minecraft.world.item.enchantment.Enchantment nmsEnchant = new net.minecraft.world.item.enchantment.Enchantment(null) {
+                // TODO: 1.20.6: methods are final now and the values are provided by EnchantmentDefinition - would probably need to create a new one on reload and modify the existing enchantment
+//                @Override
+//                public int getMinLevel() {
+//                    return script.script.minLevel;
+//                }
+//                @Override
+//                public int getMaxLevel() {
+//                    return script.script.maxLevel;
+//                }
+//                @Override
+//                public int getMinCost(int level) {
+//                    return script.script.getMinCost(level);
+//                }
+//                @Override
+//                public int getMaxCost(int level) {
+//                    return script.script.getMaxCost(level);
+//                }
                 @Override
                 public int getDamageProtection(int level, DamageSource src) {
                     return script.script.getDamageProtection(level, src.getMsgId(), src.getEntity() == null ? null : src.getEntity().getBukkitEntity());
                 }
-                @Override
-                public float getDamageBonus(int level, MobType type) {
-                    String typeName = "UNDEFINED";
-                    if (type == MobType.ARTHROPOD) {
-                        typeName = "ARTHROPOD";
-                    }
-                    else if (type == MobType.ILLAGER) {
-                        typeName = "ILLAGER";
-                    }
-                    else if (type == MobType.UNDEAD) {
-                        typeName = "UNDEAD";
-                    }
-                    else if (type == MobType.WATER) {
-                        typeName = "WATER";
-                    }
-                    return script.script.getDamageBonus(level, typeName);
-                }
+                // TODO: 1.20.6: Takes an EntityType now, and MobType seems to have been removed in favor of vanilla tags - can probably use these to backsupport & properly pass the entity type
+//                @Override
+//                public float getDamageBonus(int level, EntityType type) {
+//                    String typeName = "UNDEFINED";
+//                    if (type == MobType.ARTHROPOD) {
+//                        typeName = "ARTHROPOD";
+//                    }
+//                    else if (type == MobType.ILLAGER) {
+//                        typeName = "ILLAGER";
+//                    }
+//                    else if (type == MobType.UNDEAD) {
+//                        typeName = "UNDEAD";
+//                    }
+//                    else if (type == MobType.WATER) {
+//                        typeName = "WATER";
+//                    }
+//                    return script.script.getDamageBonus(level, typeName);
+//                }
                 @Override
                 protected boolean checkCompatibility(net.minecraft.world.item.enchantment.Enchantment nmsEnchantment) {
                     ResourceLocation nmsKey = BuiltInRegistries.ENCHANTMENT.getKey(nmsEnchantment);
@@ -157,10 +161,11 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
         }
     }
 
-    @Override
-    public String getRarity(Enchantment enchantment) {
-        return ((CraftEnchantment) enchantment).getHandle().getRarity().name();
-    }
+    // TODO: 1.20.6: rarity is just an int now (weight), can deprecate & backsupport by estimating it based on the weight
+//    @Override
+//    public String getRarity(Enchantment enchantment) {
+//        return ((CraftEnchantment) enchantment).getHandle().getRarity().name();
+//    }
 
     @Override
     public boolean isDiscoverable(Enchantment enchantment) {
@@ -192,17 +197,18 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
         return FormattedTextHelper.stringify(Handler.componentToSpigot(((CraftEnchantment) enchantment).getHandle().getFullname(level)));
     }
 
-    @Override
-    public float getDamageBonus(Enchantment enchantment, int level, String type) {
-        MobType mobType = switch (type) {
-            case "illager" -> MobType.ILLAGER;
-            case "undead" -> MobType.UNDEAD;
-            case "water" -> MobType.WATER;
-            case "arthropod" -> MobType.ARTHROPOD;
-            default -> MobType.UNDEFINED;
-        };
-        return ((CraftEnchantment) enchantment).getHandle().getDamageBonus(level, mobType);
-    }
+    // TODO: 1.20.6: MobType was removed in favor of using the entity type directly - deprecate + potentially backsupport with vanilla tags
+//    @Override
+//    public float getDamageBonus(Enchantment enchantment, int level, String type) {
+//        MobType mobType = switch (type) {
+//            case "illager" -> MobType.ILLAGER;
+//            case "undead" -> MobType.UNDEAD;
+//            case "water" -> MobType.WATER;
+//            case "arthropod" -> MobType.ARTHROPOD;
+//            default -> MobType.UNDEFINED;
+//        };
+//        return ((CraftEnchantment) enchantment).getHandle().getDamageBonus(level, mobType);
+//    }
 
     @Override
     public int getDamageProtection(Enchantment enchantment, int level, EntityDamageEvent.DamageCause type, org.bukkit.entity.Entity attacker) {

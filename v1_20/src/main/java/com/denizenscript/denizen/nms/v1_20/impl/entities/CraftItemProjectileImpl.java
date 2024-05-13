@@ -3,9 +3,9 @@ package com.denizenscript.denizen.nms.v1_20.impl.entities;
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R4.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
@@ -22,7 +22,7 @@ public class CraftItemProjectileImpl extends CraftEntity implements ItemProjecti
         MethodHandle handle = ReflectionHelper.getFinalSetterForFirstOfType(CraftEntity.class, EntityType.class);
         if (handle != null) {
             try {
-                handle.invoke(this, EntityType.DROPPED_ITEM);
+                handle.invoke(this, EntityType.ITEM);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);

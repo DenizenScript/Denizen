@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -52,7 +54,10 @@ public class EntityPotion implements Property {
         else { // Tipped arrow
             ItemStack refItem = new ItemStack(Material.POTION);
             PotionMeta meta = (PotionMeta) refItem.getItemMeta();
-            meta.setBasePotionData(((Arrow) entity.getBukkitEntity()).getBasePotionData());
+            // TODO: 1.20.6: PotionData API
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                meta.setBasePotionData(((Arrow) entity.getBukkitEntity()).getBasePotionData());
+            }
             refItem.setItemMeta(meta);
             return refItem;
         }
@@ -63,7 +68,10 @@ public class EntityPotion implements Property {
             ((ThrownPotion) entity.getBukkitEntity()).setItem(item);
         }
         else { // Tipped arrow
-            ((Arrow) entity.getBukkitEntity()).setBasePotionData(((PotionMeta) item.getItemMeta()).getBasePotionData());
+            // TODO: 1.20.6: PotionData API
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                ((Arrow) entity.getBukkitEntity()).setBasePotionData(((PotionMeta) item.getItemMeta()).getBasePotionData());
+            }
         }
     }
 

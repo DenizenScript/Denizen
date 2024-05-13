@@ -84,17 +84,6 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public void clearDenizenRecipes() {
-        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().recipes.values()) {
-            for (ResourceLocation key : new ArrayList<>(recipeMap.keySet())) {
-                if (key.getNamespace().equalsIgnoreCase("denizen")) {
-                    recipeMap.remove(key);
-                }
-            }
-        }
-    }
-
-    @Override
     public void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack[] item, boolean exact) {
         if (item.length == 1 && item[0].getType() == Material.AIR) {
             recipe.setIngredient(c, new RecipeChoice.MaterialChoice(Material.AIR));

@@ -12,6 +12,7 @@ import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.List;
 
+// TODO: 1.20.6: PotionData API
 public class AreaEffectCloudHelper {
     private AreaEffectCloud entity;
 
@@ -23,6 +24,7 @@ public class AreaEffectCloudHelper {
     // Base Potion Data
     /////////
 
+    // TODO: 1.20.6: PotionData API
     private PotionData getBPData() {
         return entity.getBasePotionData();
     }

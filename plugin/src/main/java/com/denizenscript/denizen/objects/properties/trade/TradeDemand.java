@@ -11,7 +11,7 @@ public class TradeDemand extends TradeProperty<ElementTag> {
     // @name demand
     // @input ElementTag(Number)
     // @description
-    // Sets the demand level of the trade.
+    // Controls the demand level of the trade.
     // -->
 
     public static boolean describes(TradeTag recipe) {

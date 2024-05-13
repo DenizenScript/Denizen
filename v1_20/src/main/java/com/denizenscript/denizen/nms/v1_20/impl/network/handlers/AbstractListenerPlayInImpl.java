@@ -15,7 +15,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.*;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.network.protocol.status.ServerboundPingRequestPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
@@ -23,7 +22,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R4.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.lang.reflect.Field;
@@ -31,6 +30,7 @@ import java.net.SocketAddress;
 import java.util.Set;
 
 public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
+    // TODO: 1.20.6: there are some new methods that should potentially be overriden
 
     public static final Field ServerGamePacketListenerImpl_chunkSender = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_chunkSender);
 
@@ -285,18 +285,6 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void handleEntityTagQuery(ServerboundEntityTagQuery packet) {
-        if (handlePacketIn(packet)) { return; }
-        oldListener.handleEntityTagQuery(packet);
-    }
-
-    @Override
-    public void handleBlockEntityTagQuery(ServerboundBlockEntityTagQuery packet) {
-        if (handlePacketIn(packet)) { return; }
-        oldListener.handleBlockEntityTagQuery(packet);
-    }
-
-    @Override
     public void handleMovePlayer(ServerboundMovePlayerPacket packet) {
         if (handlePacketIn(packet)) { return; }
         oldListener.handleMovePlayer(packet);
@@ -425,12 +413,6 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void handlePingRequest(ServerboundPingRequestPacket packet) {
-        if (handlePacketIn(packet)) { return; }
-        oldListener.handlePingRequest(packet);
-    }
-
-    @Override
     public void handleInteract(ServerboundInteractPacket packet) {
         if (handlePacketIn(packet)) { return; }
         oldListener.handleInteract(packet);
@@ -535,11 +517,6 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public ServerPlayer getPlayer() {
         return oldListener.getPlayer();
-    }
-
-    @Override
-    public boolean shouldPropagateHandlingExceptions() {
-        return oldListener.shouldPropagateHandlingExceptions();
     }
 
     @Override

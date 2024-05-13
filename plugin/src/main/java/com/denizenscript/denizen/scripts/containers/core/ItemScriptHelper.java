@@ -25,10 +25,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -59,7 +56,12 @@ public class ItemScriptHelper implements Listener {
         smithingRetain.clear();
         recipeCache.clear();
         recipeIdToItemScript.clear();
-        NMSHandler.itemHelper.clearDenizenRecipes();
+        Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
+        while (recipeIterator.hasNext()) {
+            if (recipeIterator.next() instanceof Keyed keyed && keyed.getKey().equals("denizen")) {
+                recipeIterator.remove();
+            }
+        }
         PaperAPITools.instance.clearBrewingRecipes();
     }
 
