@@ -679,6 +679,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
             // @returns ElementTag(Boolean)
             // @description
             // Returns whether the material is enabled in the specified world.
+            // If experimental features are disabled in the given world, and the MaterialTag is an item or block that is only enabled by experimental features, this will return false.
             // -->
             tagProcessor.registerTag(ElementTag.class, WorldTag.class, "is_enabled", (attribute, object, world) -> {
                 return new ElementTag(object.getMaterial().isEnabledByFeature(world.getWorld()));
