@@ -48,12 +48,12 @@ public abstract class ItemHelper {
 
     public abstract ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag);
 
-    public CompoundTag getEntityTagNBT(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
+    public CompoundTag getEntityTagNbt(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
         CompoundTag nbt = getNbtData(item);
-        return nbt != null && nbt.getValue().get("EntityTag") instanceof CompoundTag entityTag ? entityTag : null;
+        return nbt != null && nbt.getValue().get("EntityTag") instanceof CompoundTag entityNbt ? entityNbt : null;
     }
 
-    public ItemStack setEntityTagNBT(ItemStack item, CompoundTag entityNbt, EntityType entityType) { // TODO: once 1.20 is the minimum supported version, remove default impl
+    public ItemStack setEntityTagNbt(ItemStack item, CompoundTag entityNbt, EntityType entityType) { // TODO: once 1.20 is the minimum supported version, remove default impl
         boolean shouldRemove = entityNbt == null || entityNbt.isEmpty();
         CompoundTag nbt = getNbtData(item);
         if (shouldRemove && !nbt.containsKey("EntityTag")) {

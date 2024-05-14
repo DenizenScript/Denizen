@@ -42,7 +42,7 @@ public class ItemFrameInvisible implements Property {
     ItemTag item;
 
     public boolean isInvisible() {
-        CompoundTag entityNbt = NMSHandler.itemHelper.getEntityTagNBT(item.getItemStack());
+        CompoundTag entityNbt = NMSHandler.itemHelper.getEntityTagNbt(item.getItemStack());
         if (entityNbt == null) {
             return false;
         }
@@ -94,7 +94,7 @@ public class ItemFrameInvisible implements Property {
         // <ItemTag.invisible>
         // -->
         if (mechanism.matches("invisible") && mechanism.requireBoolean()) {
-            CompoundTag entityNbt = NMSHandler.itemHelper.getEntityTagNBT(item.getItemStack());
+            CompoundTag entityNbt = NMSHandler.itemHelper.getEntityTagNbt(item.getItemStack());
             boolean invisible = mechanism.getValue().asBoolean();
             if (!invisible && entityNbt == null) {
                 return;
@@ -106,7 +106,7 @@ public class ItemFrameInvisible implements Property {
             else {
                 entityNbt = entityNbt.createBuilder().remove("Invisible").build();
             }
-            item.setItemStack(NMSHandler.itemHelper.setEntityTagNBT(item.getItemStack(), entityNbt, item.getBukkitMaterial() == Material.ITEM_FRAME ? EntityType.ITEM_FRAME : EntityType.GLOW_ITEM_FRAME));
+            item.setItemStack(NMSHandler.itemHelper.setEntityTagNbt(item.getItemStack(), entityNbt, item.getBukkitMaterial() == Material.ITEM_FRAME ? EntityType.ITEM_FRAME : EntityType.GLOW_ITEM_FRAME));
         }
     }
 }

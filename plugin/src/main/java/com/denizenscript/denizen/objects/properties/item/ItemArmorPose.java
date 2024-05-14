@@ -32,7 +32,7 @@ public class ItemArmorPose extends ItemProperty<MapTag> {
 
     @Override
     public MapTag getPropertyValue() {
-        CompoundTag entityNbt = NMSHandler.itemHelper.getEntityTagNBT(getItemStack());
+        CompoundTag entityNbt = NMSHandler.itemHelper.getEntityTagNbt(getItemStack());
         if (entityNbt == null) {
             return null;
         }
@@ -53,7 +53,7 @@ public class ItemArmorPose extends ItemProperty<MapTag> {
 
     @Override
     public void setPropertyValue(MapTag param, Mechanism mechanism) {
-        CompoundTag entityNbt = NMSHandler.itemHelper.getEntityTagNBT(getItemStack());
+        CompoundTag entityNbt = NMSHandler.itemHelper.getEntityTagNbt(getItemStack());
         if (mechanism.hasValue()) {
             if (entityNbt == null) {
                 entityNbt = new CompoundTagBuilder().build();
@@ -82,7 +82,7 @@ public class ItemArmorPose extends ItemProperty<MapTag> {
             }
             entityNbt = entityNbt.createBuilder().remove("Pose").build();
         }
-        ItemStack result = NMSHandler.itemHelper.setEntityTagNBT(getItemStack(), entityNbt, EntityType.ARMOR_STAND);
+        ItemStack result = NMSHandler.itemHelper.setEntityTagNbt(getItemStack(), entityNbt, EntityType.ARMOR_STAND);
         setItemStack(result);
     }
 
