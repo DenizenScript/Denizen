@@ -250,7 +250,7 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public CompoundTag getEntityTagNbt(ItemStack item) {
+    public CompoundTag getEntityData(ItemStack item) {
         CustomData entityData = CraftItemStack.asNMSCopy(item).get(DataComponents.ENTITY_DATA);
         return entityData != null ? CompoundTagImpl.fromNMSTag(entityData.getUnsafe()) : null;
     }
@@ -258,7 +258,7 @@ public class ItemHelperImpl extends ItemHelper {
     public static final net.minecraft.nbt.CompoundTag EMPTY_TAG = new net.minecraft.nbt.CompoundTag();
 
     @Override
-    public ItemStack setEntityTagNbt(ItemStack item, CompoundTag entityNbt, EntityType entityType) {
+    public ItemStack setEntityData(ItemStack item, CompoundTag entityNbt, EntityType entityType) {
         net.minecraft.nbt.CompoundTag nmsEntityNbt = EMPTY_TAG;
         if (entityNbt != null && !entityNbt.isEmpty() && (!entityNbt.containsKey("id") || entityNbt.size() > 1)) {
             nmsEntityNbt = ((CompoundTagImpl) entityNbt).toNMSTag();
