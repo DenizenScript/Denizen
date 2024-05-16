@@ -31,11 +31,11 @@ public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
     public MapTag getPropertyValue() {
         EntityEquipment equipment = getLivingEntity().getEquipment();
         MapTag map = new MapTag();
-        map.putObject("helmet", new ElementTag(equipment.getHelmetDropChance()));
-        map.putObject("chestplate", new ElementTag(equipment.getChestplateDropChance()));
-        map.putObject("leggings", new ElementTag(equipment.getLeggingsDropChance()));
-        map.putObject("boots", new ElementTag(equipment.getBootsDropChance()));
-        map.putObject("main_hand", new ElementTag(equipment.getItemInMainHandDropChance()));
+        map.putObject("head", new ElementTag(equipment.getHelmetDropChance()));
+        map.putObject("chest", new ElementTag(equipment.getChestplateDropChance()));
+        map.putObject("legs", new ElementTag(equipment.getLeggingsDropChance()));
+        map.putObject("feet", new ElementTag(equipment.getBootsDropChance()));
+        map.putObject("hand", new ElementTag(equipment.getItemInMainHandDropChance()));
         map.putObject("off_hand", new ElementTag(equipment.getItemInOffHandDropChance()));
         return map;
     }
