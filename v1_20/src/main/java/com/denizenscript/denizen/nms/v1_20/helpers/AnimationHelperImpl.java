@@ -2,9 +2,9 @@ package com.denizenscript.denizen.nms.v1_20.helpers;
 
 import com.denizenscript.denizen.nms.abstracts.AnimationHelper;
 import net.minecraft.world.entity.Entity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftHorse;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPolarBear;
+import org.bukkit.craftbukkit.v1_20_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R4.entity.CraftHorse;
+import org.bukkit.craftbukkit.v1_20_R4.entity.CraftPolarBear;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.IronGolem;

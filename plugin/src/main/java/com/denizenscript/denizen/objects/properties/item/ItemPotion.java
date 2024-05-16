@@ -26,6 +26,7 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: 1.20.6: Spigot removed the PotionData API, can either remove relevant features on 1.20.6, or try and backsupport somehow (probably either hard-coding our own data or hacking it based on the name)
 public class ItemPotion extends ItemProperty<ObjectTag> {
 
     public static boolean describes(ItemTag item) {

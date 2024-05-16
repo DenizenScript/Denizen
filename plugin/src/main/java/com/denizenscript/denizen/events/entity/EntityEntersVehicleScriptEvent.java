@@ -43,6 +43,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
 
     public EntityTag vehicle;
     public EntityTag entity;
+    // TODO: 1.20.6: EntityMountEvent changed packages, might need to register in version-specific modules? or reflection?
     public EntityMountEvent event;
 
     public static HashSet<String> notRelevantEnterables = new HashSet<>(Arrays.asList("notable", "cuboid", "biome", "bed", "portal"));

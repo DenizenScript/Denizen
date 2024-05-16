@@ -72,9 +72,9 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
                 ListTag result = new ListTag();
                 Class c = currentEvent.getClass();
                 while (c != null && c != Object.class) {
-                    for (Map.Entry<String, Field> field : ReflectionHelper.getFields(c).entrySet()) {
-                        if (!Modifier.isStatic(field.getValue().getModifiers())) {
-                            result.addObject(new ElementTag(field.getKey(), true));
+                    for (Field field : ReflectionHelper.getFields(c).getAllFields()) {
+                        if (!Modifier.isStatic(field.getModifiers())) {
+                            result.addObject(new ElementTag(field.getName(), true));
                         }
                     }
                     c = c.getSuperclass();
@@ -89,12 +89,12 @@ public class InternalEventScriptEvent extends BukkitScriptEvent implements Liste
             String fName = CoreUtilities.toLowerCase(name.substring("field_".length()));
             Class c = currentEvent.getClass();
             while (c != null && c != Object.class) {
-                ReflectionHelper.CheckingFieldMap fields = ReflectionHelper.getFields(c);
-                for (Map.Entry<String, Field> field : fields.entrySet()) {
-                    if (!Modifier.isStatic(field.getValue().getModifiers()) && CoreUtilities.toLowerCase(field.getKey()).equals(fName)) {
+                ReflectionHelper.FieldCache fields = ReflectionHelper.getFields(c);
+                for (Field field : fields.getAllFields()) {
+                    if (!Modifier.isStatic(field.getModifiers()) && CoreUtilities.toLowerCase(field.getName()).equals(fName)) {
                         Object val = null;
                         try {
-                            val = field.getValue().get(currentEvent);
+                            val = field.get(currentEvent);
                         }
                         catch (Throwable ex) {
                             Debug.echoError(ex);

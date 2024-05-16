@@ -91,27 +91,6 @@ public class ItemHelperImpl extends ItemHelper {
     public static Field RECIPE_MANAGER_BY_NAME = ReflectionHelper.getFields(RecipeManager.class).get(ReflectionMappingsInfo.RecipeManager_byName, Map.class);
 
     @Override
-    public void clearDenizenRecipes() {
-        RecipeManager recipeManager = ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager();
-        Map<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> byName;
-        try {
-            byName = (Map) RECIPE_MANAGER_BY_NAME.get(recipeManager);
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-            return;
-        }
-        for (Object2ObjectLinkedOpenHashMap<ResourceLocation, net.minecraft.world.item.crafting.Recipe<?>> recipeMap : recipeManager.recipes.values()) {
-            for (ResourceLocation key : new ArrayList<>(recipeMap.keySet())) {
-                if (key.getNamespace().equalsIgnoreCase("denizen")) {
-                    recipeMap.remove(key);
-                    byName.remove(key);
-                }
-            }
-        }
-    }
-
-    @Override
     public void setShapedRecipeIngredient(ShapedRecipe recipe, char c, ItemStack[] item, boolean exact) {
         if (item.length == 1 && item[0].getType() == Material.AIR) {
             recipe.setIngredient(c, new RecipeChoice.MaterialChoice(Material.AIR));

@@ -25,8 +25,6 @@ public abstract class ItemHelper {
 
     public abstract Integer burnTime(Material material);
 
-    public abstract void clearDenizenRecipes();
-
     public abstract void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact);
 
     public abstract void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact, String category);

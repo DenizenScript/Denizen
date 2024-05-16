@@ -14,15 +14,15 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.DataLayer;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.lighting.LayerLightEventListener;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_20_R3.CraftChunk;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R4.CraftChunk;
+import org.bukkit.craftbukkit.v1_20_R4.block.CraftBlock;
 import org.bukkit.util.Vector;
 
 import java.lang.invoke.MethodHandle;

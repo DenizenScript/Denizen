@@ -11,7 +11,10 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Color;
 import org.bukkit.DyeColor;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.entity.*;
 
 import java.util.Arrays;
@@ -27,6 +30,9 @@ public class EntityColor extends EntityProperty<ElementTag> {
     // For the available color options, refer to <@link language Entity Color Types>.
     // -->
 
+    // TODO once 1.20 is the minimum supported version, can reference the enum directly
+    public static final EntityType MOOSHROOM_ENTITY_TYPE = Registry.ENTITY_TYPE.get(NamespacedKey.minecraft("mooshroom"));
+
     public static boolean describes(EntityTag entity) {
         EntityType type = entity.getBukkitEntityType();
         return type == EntityType.SHEEP ||
@@ -37,7 +43,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 type == EntityType.LLAMA ||
                 type == EntityType.PARROT ||
                 type == EntityType.SHULKER ||
-                type == EntityType.MUSHROOM_COW ||
+                type == MOOSHROOM_ENTITY_TYPE ||
                 type == EntityType.CAT ||
                 type == EntityType.FOX ||
                 type == EntityType.PANDA ||
@@ -106,7 +112,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
         else if (type == EntityType.SHULKER && mechanism.requireEnum(DyeColor.class)) {
             as(Shulker.class).setColor(color.asEnum(DyeColor.class));
         }
-        else if (type == EntityType.MUSHROOM_COW && mechanism.requireEnum(MushroomCow.Variant.class)) {
+        else if (type == MOOSHROOM_ENTITY_TYPE && mechanism.requireEnum(MushroomCow.Variant.class)) {
             as(MushroomCow.class).setVariant(color.asEnum(MushroomCow.Variant.class));
         }
         else if (type == EntityType.TROPICAL_FISH && mechanism.requireObject(ListTag.class)) {
@@ -206,6 +212,9 @@ public class EntityColor extends EntityProperty<ElementTag> {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
             return MultiVersionHelper1_19.getColor(getEntity());
         }
+        if (getEntity() instanceof MushroomCow mushroomCow) {
+            return mushroomCow.getVariant().name();
+        }
         return switch (type) {
             case HORSE -> {
                 Horse horse = as(Horse.class);
@@ -226,7 +235,6 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 DyeColor color = as(Shulker.class).getColor();
                 yield  color == null ? null : color.name();
             }
-            case MUSHROOM_COW -> as(MushroomCow.class).getVariant().name();
             case TROPICAL_FISH -> {
                 TropicalFish fish = as(TropicalFish.class);
                 yield new ListTag(Arrays.asList(fish.getPattern().name(), fish.getBodyColor().name(), fish.getPatternColor().name())).identify();
@@ -269,6 +277,9 @@ public class EntityColor extends EntityProperty<ElementTag> {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
             return MultiVersionHelper1_19.getAllowedColors(type);
         }
+        if (type == MOOSHROOM_ENTITY_TYPE) {
+            return listForEnum(MushroomCow.Variant.values());
+        }
         return switch (type) {
             case HORSE -> {
                 ListTag horseColors = listForEnum(Horse.Color.values());
@@ -279,7 +290,6 @@ public class EntityColor extends EntityProperty<ElementTag> {
             case RABBIT -> listForEnum(Rabbit.Type.values());
             case LLAMA, TRADER_LLAMA -> listForEnum(Llama.Color.values());
             case PARROT -> listForEnum(Parrot.Variant.values());
-            case MUSHROOM_COW -> listForEnum(MushroomCow.Variant.values());
             case TROPICAL_FISH -> {
                 ListTag patterns = listForEnum(TropicalFish.Pattern.values());
                 patterns.addAll(listForEnum(DyeColor.values()));

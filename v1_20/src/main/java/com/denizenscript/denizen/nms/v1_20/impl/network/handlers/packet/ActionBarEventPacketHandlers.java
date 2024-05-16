@@ -8,6 +8,7 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
+import org.bukkit.craftbukkit.v1_20_R4.util.CraftChatMessage;
 
 public class ActionBarEventPacketHandlers {
 
@@ -21,9 +22,9 @@ public class ActionBarEventPacketHandlers {
             return actionbarPacket;
         }
         event.reset();
-        Component actionbarText = actionbarPacket.getText();
+        Component actionbarText = actionbarPacket.text();
         event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(actionbarText)), true);
-        event.rawJson = new ElementTag(Component.Serializer.toJson(actionbarText), true);
+        event.rawJson = new ElementTag(CraftChatMessage.toJSON(actionbarText), true);
         event.system = new ElementTag(false);
         event.player = PlayerTag.mirrorBukkitPlayer(networkManager.player.getBukkitEntity());
         event = (PlayerReceivesActionbarScriptEvent) event.triggerNow();

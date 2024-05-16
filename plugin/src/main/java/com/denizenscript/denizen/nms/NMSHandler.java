@@ -5,8 +5,8 @@ import com.denizenscript.denizen.nms.interfaces.*;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.md_5.bungee.api.chat.HoverEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -33,19 +33,14 @@ public abstract class NMSHandler {
 
     public static boolean initialize(JavaPlugin plugin) {
         javaPlugin = plugin;
-        Class<?> serverClass = javaPlugin.getServer().getClass();
-        ReflectionHelper.giveReflectiveAccess(serverClass, ReflectionHelper.class);
-        String packageName = serverClass.getPackage().getName();
-        int indexOfSubRevision = packageName.indexOf('R');
-        if (indexOfSubRevision > 0) {
-            // "v1_14_R1" should become "v1_14"
-            packageName = packageName.substring(0, indexOfSubRevision - 1);
+        String bukkitVersion = Bukkit.getBukkitVersion();
+        for (NMSVersion potentialVersion : NMSVersion.values()) {
+            if (bukkitVersion.startsWith(potentialVersion.minecraftVersion)) {
+                version = potentialVersion;
+                break;
+            }
         }
-        try {
-            // Check if we support this MC version
-            version = NMSVersion.valueOf(packageName.substring(packageName.lastIndexOf('.') + 1));
-        }
-        catch (Exception e) {
+        if (version == null) {
             version = NMSVersion.NOT_SUPPORTED;
             instance = null;
             return false;
@@ -55,7 +50,7 @@ public abstract class NMSHandler {
             final Class<?> clazz = Class.forName("com.denizenscript.denizen.nms." + version.name() + ".Handler");
             if (NMSHandler.class.isAssignableFrom(clazz)) {
                 // Found and loaded - good to go!
-                instance = (NMSHandler) clazz.newInstance();
+                instance = (NMSHandler) clazz.getDeclaredConstructor().newInstance();
                 return true;
             }
         }

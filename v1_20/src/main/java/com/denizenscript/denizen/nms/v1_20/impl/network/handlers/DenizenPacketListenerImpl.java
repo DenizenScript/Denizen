@@ -18,7 +18,7 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_20_R4.block.CraftBlock;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
@@ -28,7 +28,7 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     public BlockPos fakeSignExpected;
 
     public DenizenPacketListenerImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer) {
-        super(networkManager, entityPlayer, entityPlayer.connection, new CommonListenerCookie(entityPlayer.getGameProfile(), entityPlayer.connection.latency(), entityPlayer.clientInformation()));
+        super(networkManager, entityPlayer, entityPlayer.connection, new CommonListenerCookie(entityPlayer.getGameProfile(), entityPlayer.connection.latency(), entityPlayer.clientInformation(), entityPlayer.connection.isTransferred()));
     }
 
     @Override
@@ -88,7 +88,7 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void handleCustomPayload(ServerboundCustomPayloadPacket packet) {
         if (NMSHandler.debugPackets) {
-            Debug.log("Custom packet payload: " + packet.payload().id().toString() + " sent from " + player.getScoreboardName());
+            Debug.log("Custom packet payload: " + packet.payload().type().id().toString() + " sent from " + player.getScoreboardName());
         }
         super.handleCustomPayload(packet);
     }
