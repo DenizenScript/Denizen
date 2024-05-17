@@ -63,6 +63,7 @@ import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftRecipe;
 import org.bukkit.craftbukkit.v1_20_R4.map.CraftMapView;
 import org.bukkit.craftbukkit.v1_20_R4.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_20_R4.util.CraftNamespacedKey;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -245,6 +246,26 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag) {
         net.minecraft.world.item.ItemStack nmsItemStack = net.minecraft.world.item.ItemStack.parseOptional(CraftRegistry.getMinecraftRegistry(), ((CompoundTagImpl) compoundTag).toNMSTag());
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public CompoundTag getEntityData(ItemStack item) {
+        CustomData entityData = CraftItemStack.asNMSCopy(item).get(DataComponents.ENTITY_DATA);
+        return entityData != null ? CompoundTagImpl.fromNMSTag(entityData.getUnsafe()) : null;
+    }
+
+    public static final net.minecraft.nbt.CompoundTag EMPTY_TAG = new net.minecraft.nbt.CompoundTag();
+
+    @Override
+    public ItemStack setEntityData(ItemStack item, CompoundTag entityNbt, EntityType entityType) {
+        net.minecraft.nbt.CompoundTag nmsEntityNbt = EMPTY_TAG;
+        if (entityNbt != null && !entityNbt.isEmpty() && (!entityNbt.containsKey("id") || entityNbt.size() > 1)) {
+            nmsEntityNbt = ((CompoundTagImpl) entityNbt).toNMSTag();
+            nmsEntityNbt.putString("id", entityType.getKey().toString());
+        }
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        CustomData.set(DataComponents.ENTITY_DATA, nmsItemStack, nmsEntityNbt);
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 
