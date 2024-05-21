@@ -197,7 +197,7 @@ public class CuboidBlockSet implements BlockSet {
         }
     }
 
-    public static HashSet<EntityType> copyTypes = new HashSet<>(Arrays.asList(EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.ARMOR_STAND));
+    public static HashSet<EntityType> copyTypes = new HashSet<>(Arrays.asList(EntityType.PAINTING, EntityType.ITEM_FRAME, EntityType.ARMOR_STAND, EntityType.GLOW_ITEM_FRAME));
 
     static {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
