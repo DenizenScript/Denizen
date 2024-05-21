@@ -383,7 +383,7 @@ public class CuboidBlockSet implements BlockSet {
         blocks = bd;
     }
 
-    public void flipEntities(int offsetMultiplier_X, int offsetMultiplier_Z) {
+    public void flipEntitiesX() {
         if (entities == null) {
             return;
         }
@@ -391,21 +391,10 @@ public class CuboidBlockSet implements BlockSet {
         for (MapTag data : entities.filter(MapTag.class, CoreUtilities.noDebugContext)) {
             int rotation = data.getElement("rotation").asInt();
             LocationTag offset = data.getObjectAs("offset", LocationTag.class, CoreUtilities.noDebugContext);
-            float newYaw = offset.getYaw();
-            if (offsetMultiplier_X == -1) {
-                newYaw = -1 * (offset.getYaw() - 90) + 270;
-            } else if (offsetMultiplier_Z == -1) {
-                newYaw = 180 - offset.getYaw();
-            }
-            while (newYaw < 0 || newYaw >= 360) {
-                if (newYaw >= 360) {
-                    newYaw -= 360;
-                } else {
-                    newYaw += 360;
-                }
-            }
-            rotation += (offset.getYaw() - newYaw);
-            offset = new LocationTag((String) null, offset.getX() * offsetMultiplier_X, offset.getY(), offset.getZ() * offsetMultiplier_Z, newYaw, offset.getPitch());
+            int newYaw = normalizeAngle((int)offset.getYaw() - rotation);
+            newYaw = -(newYaw - 90) + 270;
+            rotation = normalizeAngle((int)(newYaw - offset.getYaw()));
+            offset.setX(-offset.getX() + 1);
             data = data.duplicate();
             data.putObject("offset", offset);
             data.putObject("rotation", new ElementTag(rotation));
@@ -414,8 +403,39 @@ public class CuboidBlockSet implements BlockSet {
         entities = outEntities;
     }
 
+    public void flipEntitiesZ() {
+        if (entities == null) {
+            return;
+        }
+        ListTag outEntities = new ListTag();
+        for (MapTag data : entities.filter(MapTag.class, CoreUtilities.noDebugContext)) {
+            int rotation = data.getElement("rotation").asInt();
+            LocationTag offset = data.getObjectAs("offset", LocationTag.class, CoreUtilities.noDebugContext);
+            int newYaw = normalizeAngle((int)offset.getYaw() - rotation);
+            newYaw = 180 - newYaw;
+            rotation = normalizeAngle((int)(newYaw - offset.getYaw()));
+            offset.setZ(-offset.getZ() + 1);
+            data = data.duplicate();
+            data.putObject("offset", offset);
+            data.putObject("rotation", new ElementTag(rotation));
+            outEntities.addObject(data);
+        }
+        entities = outEntities;
+    }
+
+    public int normalizeAngle(int angle){
+        while (angle < 0 || angle >= 360) {
+            if (angle >= 360) {
+                angle -= 360;
+            } else {
+                angle += 360;
+            }
+        }
+        return angle;
+    }
+
     public void flipX() {
-        flipEntities(-1, 1);
+        flipEntitiesX();
         FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
         center_x = x_width - center_x - 1;
@@ -444,7 +464,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void flipZ() {
-        flipEntities(1, -1);
+        flipEntitiesZ();
         FullBlockData[] bd = new FullBlockData[blocks.length];
         int index = 0;
         center_z = z_height - center_z - 1;
