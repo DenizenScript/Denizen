@@ -193,7 +193,7 @@ public class CuboidBlockSet implements BlockSet {
             case SOUTH_EAST:
                 return BlockFace.NORTH_EAST;
             default:
-                return BlockFace.SELF;
+                return face;
         }
     }
 
