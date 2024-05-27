@@ -332,6 +332,7 @@ public class ItemHelperImpl extends ItemHelper {
         nmsItemStack.set(component, new AdventureModePredicate(List.of(nmsPredicate), nmsAdventurePredicate == null || nmsAdventurePredicate.showInTooltip()));
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
+
     @Override
     public void setInventoryItem(Inventory inventory, ItemStack item, int slot) {
         if (inventory instanceof CraftInventoryPlayer && ((CraftInventoryPlayer) inventory).getInventory().player == null) {
