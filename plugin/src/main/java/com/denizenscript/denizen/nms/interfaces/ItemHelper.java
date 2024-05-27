@@ -90,6 +90,7 @@ public abstract class ItemHelper {
         }
         return CustomNBT.setNBTMaterials(item, CustomNBT.KEY_CAN_DESTROY, canBreak);
     }
+    
     public abstract void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact, ItemStack[] templateItem, boolean templateExact);
 
     public abstract void setInventoryItem(Inventory inventory, ItemStack item, int slot);
