@@ -130,4 +130,7 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.server.level.ServerLevel
     public static String ServerLevel_sleepStatus = "P";
+
+    // net.minecraft.world.item.AdventureModePredicate
+    public static String AdventureModePredicate_predicates = "h";
 }
