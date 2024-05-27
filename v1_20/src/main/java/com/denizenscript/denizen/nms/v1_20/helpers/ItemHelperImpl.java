@@ -292,8 +292,8 @@ public class ItemHelperImpl extends ItemHelper {
         return setAdventureModePredicateMaterials(item, DataComponents.CAN_BREAK, canBreak);
     }
 
-    private List<Material> getAdventureModePredicateMaterials(ItemStack item, DataComponentType<AdventureModePredicate> component) {
-        AdventureModePredicate nmsAdventurePredicate = CraftItemStack.asNMSCopy(item).get(component);
+    private List<Material> getAdventureModePredicateMaterials(ItemStack item, DataComponentType<AdventureModePredicate> nmsComponent) {
+        AdventureModePredicate nmsAdventurePredicate = CraftItemStack.asNMSCopy(item).get(nmsComponent);
         if (nmsAdventurePredicate == null) {
             return null;
         }
@@ -316,20 +316,20 @@ public class ItemHelperImpl extends ItemHelper {
         return materials;
     }
 
-    private ItemStack setAdventureModePredicateMaterials(ItemStack item, DataComponentType<AdventureModePredicate> component, List<Material> materials) {
+    private ItemStack setAdventureModePredicateMaterials(ItemStack item, DataComponentType<AdventureModePredicate> nmsComponent, List<Material> materials) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
-        AdventureModePredicate nmsAdventurePredicate = nmsItemStack.get(component);
+        AdventureModePredicate nmsAdventurePredicate = nmsItemStack.get(nmsComponent);
         if (materials == null) {
             if (nmsAdventurePredicate == null) {
                 return item;
             }
-            nmsItemStack.remove(component);
+            nmsItemStack.remove(nmsComponent);
             return CraftItemStack.asBukkitCopy(nmsItemStack);
         }
         BlockPredicate nmsPredicate = new BlockPredicate(Optional.of(
                 HolderSet.direct(material -> BuiltInRegistries.BLOCK.getHolder(CraftNamespacedKey.toMinecraft(material.getKey())).orElseThrow(), materials)
         ), Optional.empty(), Optional.empty());
-        nmsItemStack.set(component, new AdventureModePredicate(List.of(nmsPredicate), nmsAdventurePredicate == null || nmsAdventurePredicate.showInTooltip()));
+        nmsItemStack.set(nmsComponent, new AdventureModePredicate(List.of(nmsPredicate), nmsAdventurePredicate == null || nmsAdventurePredicate.showInTooltip()));
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 
