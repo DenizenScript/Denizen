@@ -251,6 +251,24 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
+    public CompoundTag getCustomData(ItemStack item) {
+        CustomData customData = CraftItemStack.asNMSCopy(item).get(DataComponents.CUSTOM_DATA);
+        return customData != null ? CompoundTagImpl.fromNMSTag(customData.getUnsafe()) : null;
+    }
+
+    @Override
+    public ItemStack setCustomData(ItemStack item, CompoundTag data) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        if (data == null) {
+            nmsItemStack.remove(DataComponents.CUSTOM_DATA);
+        }
+        else {
+            nmsItemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(((CompoundTagImpl) data).toNMSTag()));
+        }
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
     public CompoundTag getEntityData(ItemStack item) {
         CustomData entityData = CraftItemStack.asNMSCopy(item).get(DataComponents.ENTITY_DATA);
         return entityData != null ? CompoundTagImpl.fromNMSTag(entityData.getUnsafe()) : null;
