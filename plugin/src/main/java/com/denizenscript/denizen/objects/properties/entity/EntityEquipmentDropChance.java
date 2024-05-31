@@ -43,26 +43,26 @@ public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
     @Override
     public void setPropertyValue(MapTag map, Mechanism mechanism) {
         EntityEquipment equipment = getLivingEntity().getEquipment();
-        ElementTag helmet = map.getElement("head");
-        ElementTag chestplate = map.getElement("chest");
-        ElementTag leggings = map.getElement("legs");
-        ElementTag boots = map.getElement("feet");
-        ElementTag mainHand = map.getElement("hand");
+        ElementTag head = map.getElement("head");
+        ElementTag chest = map.getElement("chest");
+        ElementTag legs = map.getElement("legs");
+        ElementTag feet = map.getElement("feet");
+        ElementTag hand = map.getElement("hand");
         ElementTag offHand = map.getElement("off_hand");
-        if (helmet != null) {
-            equipment.setHelmetDropChance(helmet.asFloat());
+        if (head != null) {
+            equipment.setHelmetDropChance(head.asFloat());
         }
-        if (chestplate != null) {
-            equipment.setChestplateDropChance(chestplate.asFloat());
+        if (chest != null) {
+            equipment.setChestplateDropChance(chest.asFloat());
         }
-        if (leggings != null) {
-            equipment.setLeggingsDropChance(leggings.asFloat());
+        if (legs != null) {
+            equipment.setLeggingsDropChance(legs.asFloat());
         }
-        if (boots != null) {
-            equipment.setBootsDropChance(boots.asFloat());
+        if (feet != null) {
+            equipment.setBootsDropChance(feet.asFloat());
         }
-        if (mainHand != null) {
-            equipment.setItemInMainHandDropChance(mainHand.asFloat());
+        if (hand != null) {
+            equipment.setItemInMainHandDropChance(hand.asFloat());
         }
         if (offHand != null) {
             equipment.setItemInOffHandDropChance(offHand.asFloat());
