@@ -59,6 +59,7 @@ public class PaperPlayerExtensions {
             Player player = object.getPlayerEntity();
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
                 map.putObject("allow_server_listings", new ElementTag(player.getClientOption(ClientOption.ALLOW_SERVER_LISTINGS)));
+                map.putObject("text_filtering_enabled", new ElementTag(player.getClientOption(ClientOption.TEXT_FILTERING_ENABLED)));
             }
             map.putObject("chat_colors_enabled", new ElementTag(player.getClientOption(ClientOption.CHAT_COLORS_ENABLED)));
             map.putObject("chat_visibility", new ElementTag(player.getClientOption(ClientOption.CHAT_VISIBILITY)));
@@ -74,9 +75,6 @@ public class PaperPlayerExtensions {
             skinParts.putObject("left_pants", new ElementTag(parts.hasLeftPantsEnabled()));
             skinParts.putObject("right_pants", new ElementTag(parts.hasRightPantsEnabled()));
             map.putObject("skin_parts", skinParts);
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-                map.putObject("text_filtering_enabled", new ElementTag(player.getClientOption(ClientOption.TEXT_FILTERING_ENABLED)));
-            }
             map.putObject("view_distance", new ElementTag(player.getClientOption(ClientOption.VIEW_DISTANCE)));
             return map;
         });
