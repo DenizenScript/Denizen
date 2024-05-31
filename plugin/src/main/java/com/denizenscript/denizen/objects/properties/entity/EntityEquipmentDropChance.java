@@ -43,11 +43,11 @@ public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
     @Override
     public void setPropertyValue(MapTag map, Mechanism mechanism) {
         EntityEquipment equipment = getLivingEntity().getEquipment();
-        ElementTag helmet = map.getElement("helmet");
-        ElementTag chestplate = map.getElement("chestplate");
-        ElementTag leggings = map.getElement("leggings");
-        ElementTag boots = map.getElement("boots");
-        ElementTag mainHand = map.getElement("main_hand");
+        ElementTag helmet = map.getElement("head");
+        ElementTag chestplate = map.getElement("chest");
+        ElementTag leggings = map.getElement("legs");
+        ElementTag boots = map.getElement("feet");
+        ElementTag mainHand = map.getElement("hand");
         ElementTag offHand = map.getElement("off_hand");
         if (helmet != null) {
             equipment.setHelmetDropChance(helmet.asFloat());
