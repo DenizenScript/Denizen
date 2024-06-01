@@ -19,16 +19,17 @@ import com.google.common.collect.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
+import net.minecraft.advancements.critereon.BlockPredicate;
+import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.item.AdventureModePredicate;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.PotionBrewing;
@@ -63,6 +64,7 @@ import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftRecipe;
 import org.bukkit.craftbukkit.v1_20_R4.map.CraftMapView;
 import org.bukkit.craftbukkit.v1_20_R4.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_20_R4.util.CraftNamespacedKey;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -245,6 +247,89 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag) {
         net.minecraft.world.item.ItemStack nmsItemStack = net.minecraft.world.item.ItemStack.parseOptional(CraftRegistry.getMinecraftRegistry(), ((CompoundTagImpl) compoundTag).toNMSTag());
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public CompoundTag getEntityData(ItemStack item) {
+        CustomData entityData = CraftItemStack.asNMSCopy(item).get(DataComponents.ENTITY_DATA);
+        return entityData != null ? CompoundTagImpl.fromNMSTag(entityData.getUnsafe()) : null;
+    }
+
+    public static final net.minecraft.nbt.CompoundTag EMPTY_TAG = new net.minecraft.nbt.CompoundTag();
+
+    @Override
+    public ItemStack setEntityData(ItemStack item, CompoundTag entityNbt, EntityType entityType) {
+        net.minecraft.nbt.CompoundTag nmsEntityNbt = EMPTY_TAG;
+        if (entityNbt != null && !entityNbt.isEmpty() && (!entityNbt.containsKey("id") || entityNbt.size() > 1)) {
+            nmsEntityNbt = ((CompoundTagImpl) entityNbt).toNMSTag();
+            nmsEntityNbt.putString("id", entityType.getKey().toString());
+        }
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        CustomData.set(DataComponents.ENTITY_DATA, nmsItemStack, nmsEntityNbt);
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    public static final Field AdventureModePredicate_predicates = ReflectionHelper.getFields(AdventureModePredicate.class).get(ReflectionMappingsInfo.AdventureModePredicate_predicates);
+
+    @Override
+    public List<Material> getCanPlaceOn(ItemStack item) {
+        return getAdventureModePredicateMaterials(item, DataComponents.CAN_PLACE_ON);
+    }
+
+    @Override
+    public ItemStack setCanPlaceOn(ItemStack item, List<Material> canPlaceOn) {
+        return setAdventureModePredicateMaterials(item, DataComponents.CAN_PLACE_ON, canPlaceOn);
+    }
+
+    @Override
+    public List<Material> getCanBreak(ItemStack item) {
+        return getAdventureModePredicateMaterials(item, DataComponents.CAN_BREAK);
+    }
+
+    @Override
+    public ItemStack setCanBreak(ItemStack item, List<Material> canBreak) {
+        return setAdventureModePredicateMaterials(item, DataComponents.CAN_BREAK, canBreak);
+    }
+
+    private List<Material> getAdventureModePredicateMaterials(ItemStack item, DataComponentType<AdventureModePredicate> nmsComponent) {
+        AdventureModePredicate nmsAdventurePredicate = CraftItemStack.asNMSCopy(item).get(nmsComponent);
+        if (nmsAdventurePredicate == null) {
+            return null;
+        }
+        List<BlockPredicate> nmsPredicates;
+        try {
+            nmsPredicates = (List<BlockPredicate>) AdventureModePredicate_predicates.get(nmsAdventurePredicate);
+        }
+        catch (Throwable e) {
+            Debug.echoError(e);
+            return null;
+        }
+        List<Material> materials = new ArrayList<>();
+        for (BlockPredicate nmsPredicate : nmsPredicates) {
+            nmsPredicate.blocks().ifPresent(nmsHolderSet -> {
+                for (Holder<Block> nmsHolder : nmsHolderSet) {
+                    materials.add(CraftMagicNumbers.getMaterial(nmsHolder.value()));
+                }
+            });
+        }
+        return materials;
+    }
+
+    private ItemStack setAdventureModePredicateMaterials(ItemStack item, DataComponentType<AdventureModePredicate> nmsComponent, List<Material> materials) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        AdventureModePredicate nmsAdventurePredicate = nmsItemStack.get(nmsComponent);
+        if (materials == null) {
+            if (nmsAdventurePredicate == null) {
+                return item;
+            }
+            nmsItemStack.remove(nmsComponent);
+            return CraftItemStack.asBukkitCopy(nmsItemStack);
+        }
+        BlockPredicate nmsPredicate = new BlockPredicate(Optional.of(
+                HolderSet.direct(material -> BuiltInRegistries.BLOCK.getHolder(CraftNamespacedKey.toMinecraft(material.getKey())).orElseThrow(), materials)
+        ), Optional.empty(), Optional.empty());
+        nmsItemStack.set(nmsComponent, new AdventureModePredicate(List.of(nmsPredicate), nmsAdventurePredicate == null || nmsAdventurePredicate.showInTooltip()));
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 

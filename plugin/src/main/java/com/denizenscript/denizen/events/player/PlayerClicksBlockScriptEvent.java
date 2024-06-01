@@ -28,6 +28,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // @Group Player
     //
     // @Warning this event may in some cases double-fire, requiring usage of the 'ratelimit' command (like 'ratelimit <player> 1t') to prevent doubling actions.
+    // @Warning this sometimes fires at unexpected times, eg when dropping an item.
     //
     // @Switch with:<item> to only process the event if a specified item was held.
     // @Switch using:hand/off_hand/either_hand to only process the event if the specified hand was used to click.
