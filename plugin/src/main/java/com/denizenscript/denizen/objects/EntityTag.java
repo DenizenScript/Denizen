@@ -1568,7 +1568,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the location of the block the entity is looking at.
         // Optionally, specify a maximum range to find the location from (defaults to 200).
-        // This uses logic equivalent to <@link tag LocationTag.precise_cursor_on_block[(range)]>.
+        // This uses logic equivalent to <@link tag LocationTag.precise_cursor_on_block>.
         // Note that this will return null if there is no block in range.
         // This uses all blocks, ie it includes passable blocks like tall-grass and water. Use <@link tag EntityTag.cursor_on_solid> to exclude passable blocks.
         // Equivalent to <EntityTag.eye_location.ray_trace[return=block;fluids=true;nonsolids=true]>
