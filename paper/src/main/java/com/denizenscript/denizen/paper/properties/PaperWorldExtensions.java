@@ -2,14 +2,13 @@ package com.denizenscript.denizen.paper.properties;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import org.bukkit.boss.DragonBattle;
-
-import java.util.Collections;
 
 public class PaperWorldExtensions  {
 
@@ -58,7 +57,7 @@ public class PaperWorldExtensions  {
                 if (battle == null) {
                     return null;
                 }
-                return new ListTag(Collections.singleton(battle.getHealingCrystals()));
+                return new ListTag(battle.getHealingCrystals(), EntityTag::new);
             });
 
             // <--[tag]
@@ -73,7 +72,7 @@ public class PaperWorldExtensions  {
                 if (battle == null) {
                     return null;
                 }
-                return new ListTag(Collections.singleton(battle.getRespawnCrystals()));
+                return new ListTag(battle.getRespawnCrystals(), EntityTag::new);
             });
 
             // <--[mechanism]

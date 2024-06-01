@@ -1082,6 +1082,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+
             // <--[mechanism]
             // @object WorldTag
             // @name respawn_phase
