@@ -173,6 +173,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(HotbarScrollScriptEvent.class);
         ScriptEvent.registerScriptEvent(ExperienceBottleBreaksScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerAnimatesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerArmorStandManipulateScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBreaksBlockScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBreaksItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesMainHandScriptEvent.class);
