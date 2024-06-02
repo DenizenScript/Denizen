@@ -2,7 +2,9 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,7 +16,7 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     // @Events
     // pig zapped
     //
-    // @Regex ^on pig zapped$
+    // @Synonyms pig struck by lightning, pig electrocuted, pig lightning strike, pig turns into pig zombie, pig turns into zombie pigman
     //
     // @Group Entity
     //
@@ -32,20 +34,13 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     // -->
 
     public PigZappedScriptEvent() {
+        registerCouldMatcher("pig zapped");
     }
 
     public EntityTag pig;
     public EntityTag pig_zombie;
     private EntityTag lightning;
     public PigZapEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventLower.equals("pig zapped")) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -57,15 +52,17 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "pig":
-                return pig;
-            case "pig_zombie":
-                return pig_zombie;
-            case "lightning":
-                return lightning;
-        }
-        return super.getContext(name);
+        return  switch (name) {
+            case "pig" -> pig;
+            case "pig_zombie" -> pig_zombie;
+            case "lightning" -> lightning;
+            default -> super.getContext(name);
+        };
+    }
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(pig);
     }
 
     @EventHandler
