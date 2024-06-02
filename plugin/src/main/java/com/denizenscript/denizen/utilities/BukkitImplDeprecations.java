@@ -232,6 +232,9 @@ public class BukkitImplDeprecations {
     // 2023-year-end commonality: #31
     public static Warning legacyAttributeProperties = new SlowWarning("legacyAttributeProperties", "The 'attribute' properties are deprecated in favor of the 'attribute_modifiers' properties which more fully implement the attribute system.");
 
+    // Added 2024/05/31
+    public static Warning oldNbtProperty = new SlowWarning("oldNbtProperty", "'ItemTag.raw_nbt' is deprecated in favor of 'ItemTag.custom_data', as item NBT was removed by Mojang in favor of item components.");
+
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
 

@@ -1,8 +1,10 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -273,40 +275,75 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
         }
     }
 
-    // <--[tag]
-    // @attribute <ItemTag.raw_nbt>
-    // @returns MapTag
-    // @mechanism ItemTag.raw_nbt
-    // @group properties
-    // @description
-    // Returns a map of all non-default raw NBT on this item.
-    // Refer to format details at <@link language Raw NBT Encoding>.
-    // -->
     @Override
     public MapTag getPropertyValue() {
-        MapTag nonDefaultNBT = getNonDefaultNBTMap();
-        return nonDefaultNBT.isEmpty() ? null : nonDefaultNBT;
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+            MapTag nonDefaultNBT = getNonDefaultNBTMap();
+            return nonDefaultNBT.isEmpty() ? null : nonDefaultNBT;
+        }
+        return null;
     }
 
-    // <--[mechanism]
-    // @object ItemTag
-    // @name raw_nbt
-    // @input MapTag
-    // @description
-    // Sets the given map of raw NBT keys onto this item.
-    // Note that the input format must be strictly perfect.
-    // Refer to <@link language Raw NBT Encoding> for explanation of the input format.
-    // @tags
-    // <ItemTag.raw_nbt>
-    // <ItemTag.all_raw_nbt>
-    // -->
     @Override
     public void setPropertyValue(MapTag value, Mechanism mechanism) {
-        setFullNBT(object, value, mechanism.context, true);
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+            setFullNBT(object, value, mechanism.context, true);
+            return;
+        }
+        BukkitImplDeprecations.oldNbtProperty.warn(mechanism.context);
+        CompoundTag customData;
+        try {
+            customData = (CompoundTag) ItemRawNBT.convertObjectToNbt(value.identify(), mechanism.context, "(item)");
+        }
+        catch (Exception ex) {
+            mechanism.echoError("Invalid custom data specified:");
+            Debug.echoError(ex);
+            return;
+        }
+        if (customData == null) {
+            mechanism.echoError("Invalid custom data specified.");
+            return;
+        }
+        setItemStack(NMSHandler.itemHelper.setPartialOldNbt(getItemStack(), customData));
     }
 
     public static void register() {
-        autoRegister("raw_nbt", ItemRawNBT.class, MapTag.class, false);
+
+        // <--[tag]
+        // @attribute <ItemTag.raw_nbt>
+        // @returns MapTag
+        // @mechanism ItemTag.raw_nbt
+        // @deprecated use 'ItemTag.custom_data'
+        // @description
+        // Returns a map of all non-default raw NBT on this item.
+        // Refer to format details at <@link language Raw NBT Encoding>.
+        // Deprecated in favor of <@link tag ItemTag.custom_data> on MC 1.20+.
+        // -->
+        PropertyParser.registerTag(ItemRawNBT.class, MapTag.class, "raw_nbt", (attribute, prop) -> {
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                return prop.getPropertyValue();
+            }
+            BukkitImplDeprecations.oldNbtProperty.warn(attribute.context);
+            return new ItemCustomData(prop.object).getPropertyValue();
+        });
+
+        // <--[mechanism]
+        // @object ItemTag
+        // @name raw_nbt
+        // @input MapTag
+        // @deprecated use 'ItemTag.custom_data'
+        // @description
+        // Sets the given map of raw NBT keys onto this item.
+        // Note that the input format must be strictly perfect.
+        // Refer to <@link language Raw NBT Encoding> for explanation of the input format.
+        // Deprecated in favor of <@link property ItemTag.custom_data> on MC 1.20+.
+        // @tags
+        // <ItemTag.raw_nbt>
+        // <ItemTag.all_raw_nbt>
+        // -->
+        PropertyParser.registerMechanism(ItemRawNBT.class, MapTag.class, "raw_nbt", (prop, mechanism, value) -> {
+            prop.setPropertyValue(value, mechanism);
+        });
 
         // <--[tag]
         // @attribute <ItemTag.all_raw_nbt>
@@ -317,6 +354,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
         // Returns a map of all raw NBT on this item, including default values.
         // Refer to format details at <@link language Raw NBT Encoding>.
         // -->
+        // TODO: deprecate when raw properties property is added
         PropertyParser.registerTag(ItemRawNBT.class, MapTag.class, "all_raw_nbt", (attribute, prop) -> {
             return prop.getFullNBTMap();
         });

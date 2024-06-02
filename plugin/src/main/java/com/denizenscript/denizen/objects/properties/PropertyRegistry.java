@@ -214,6 +214,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemCanDestroy.class, ItemTag.class);
         PropertyParser.registerProperty(ItemCanPlaceOn.class, ItemTag.class);
         PropertyParser.registerProperty(ItemColor.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(ItemCustomData.class, ItemTag.class);
+        }
         PropertyParser.registerProperty(ItemCustomModel.class, ItemTag.class);
         PropertyParser.registerProperty(ItemChargedProjectile.class, ItemTag.class);
         PropertyParser.registerProperty(ItemEnchantments.class, ItemTag.class);

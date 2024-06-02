@@ -57,6 +57,10 @@ public abstract class ItemHelper {
         throw new UnsupportedOperationException();
     }
 
+    public ItemStack setPartialOldNbt(ItemStack item, CompoundTag oldTag) {
+        throw new UnsupportedOperationException();
+    }
+
     public CompoundTag getEntityData(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
         CompoundTag nbt = getNbtData(item);
         return nbt != null && nbt.getValue().get("EntityTag") instanceof CompoundTag entityNbt ? entityNbt : null;
