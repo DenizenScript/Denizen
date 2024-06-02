@@ -16,6 +16,14 @@
         <BUILD_CLASS>CUSTOM</BUILD_CLASS>
     </properties>
 
+    <!-- Repositories -->
+    <repositories>
+        <repository>
+            <id>everything</id>
+            <url>https://maven.citizensnpcs.co/repo</url>
+        </repository>
+    </repositories>
+
     <!-- Dependencies -->
     <dependencies>
         <!-- Required APIs -->
@@ -36,7 +44,7 @@
         <dependency>
             <groupId>net.citizensnpcs</groupId>
             <artifactId>citizens-main</artifactId>
-            <version>2.0.33-SNAPSHOT</version>
+            <version>2.0.34-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
             <exclusions>
