@@ -62,7 +62,7 @@ public class TargetBlockHitScriptEvent extends BukkitScriptEvent implements List
             case "hit_block" -> hitBlock;
             case "hit_face" -> event.getHitBlockFace() != null ? new LocationTag(event.getHitBlockFace().getDirection()) : null;
             case "shooter" -> shooter != null ? shooter.getDenizenObject() : null;
-            case "strength" ->  new ElementTag(event.getSignalStrength());
+            case "strength" -> new ElementTag(event.getSignalStrength());
             default -> super.getContext(name);
         };
     }
