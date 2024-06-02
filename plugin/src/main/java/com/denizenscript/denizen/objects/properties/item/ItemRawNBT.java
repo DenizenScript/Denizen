@@ -291,20 +291,20 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
             return;
         }
         BukkitImplDeprecations.oldNbtProperty.warn(mechanism.context);
-        CompoundTag customData;
+        CompoundTag oldNbtData;
         try {
-            customData = (CompoundTag) ItemRawNBT.convertObjectToNbt(value.identify(), mechanism.context, "(item)");
+            oldNbtData = (CompoundTag) ItemRawNBT.convertObjectToNbt(value.identify(), mechanism.context, "(item)");
         }
         catch (Exception ex) {
-            mechanism.echoError("Invalid custom data specified:");
+            mechanism.echoError("Invalid NBT data specified:");
             Debug.echoError(ex);
             return;
         }
-        if (customData == null) {
-            mechanism.echoError("Invalid custom data specified.");
+        if (oldNbtData == null) {
+            mechanism.echoError("Invalid NBT data specified.");
             return;
         }
-        setItemStack(NMSHandler.itemHelper.setPartialOldNbt(getItemStack(), customData));
+        setItemStack(NMSHandler.itemHelper.setPartialOldNbt(getItemStack(), oldNbtData));
     }
 
     public static void register() {

@@ -24,8 +24,8 @@ public class ItemCustomData extends ItemProperty<MapTag> {
     // Provide no input to clear custom data.
     // @tag-example
     // # Use to check if an item has custom data from another plugin.
-    // - if <[item].custom_data.get[custom_plugin_data].if_null[null]> == external_custom_item:
-    //   - narrate "You are using an item from an external custom plugin!"
+    // - if <[item].custom_data.get[external_plugin_data].if_null[null]> == external_custom_item:
+    //   - narrate "You are using an item from an external plugin!"
     // -->
 
     // Custom data added by Denizen
@@ -79,7 +79,7 @@ public class ItemCustomData extends ItemProperty<MapTag> {
 
     private CompoundTag addDenizenKeys(CompoundTag tag) {
         CompoundTag currentData = NMSHandler.itemHelper.getCustomData(getItemStack());
-        if (currentData == null) {
+        if (currentData == null || currentData.isEmpty()) {
             return tag;
         }
         CompoundTagBuilder tagBuilder = null;
