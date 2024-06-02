@@ -16,7 +16,7 @@ public class TargetBlockHitScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // targetblock hit
+    // target block hit
     //
     // @Location true
     //
@@ -39,7 +39,7 @@ public class TargetBlockHitScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public TargetBlockHitScriptEvent() {
-        registerCouldMatcher("targetblock hit");
+        registerCouldMatcher("target block hit");
     }
 
     public TargetHitEvent event;
