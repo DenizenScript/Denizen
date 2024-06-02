@@ -370,6 +370,9 @@ public class ItemScriptHelper implements Listener {
             return null;
         }
         CompoundTag tag = NMSHandler.itemHelper.getCustomData(item);
+        if (tag == null) {
+            return null;
+        }
         String scriptName = tag.getString("DenizenItemScript");
         if (scriptName != null && !scriptName.equals("")) {
             return scriptName;
@@ -390,6 +393,9 @@ public class ItemScriptHelper implements Listener {
             return null;
         }
         CompoundTag tag = NMSHandler.itemHelper.getCustomData(item);
+        if (tag == null) {
+            return null;
+        }
         String scriptName = tag.getString("DenizenItemScript");
         if (scriptName != null && !scriptName.equals("")) {
             return item_scripts.get(scriptName);
