@@ -16,6 +16,11 @@ public class EntityEquipmentDropChance extends EntityProperty<MapTag> {
     // @description
     // Controls the chance of each piece of equipment dropping when the entity dies.
     // A drop chance of 0 will prevent the item from dropping, a drop chance of 1 will always drop the item if killed by a player, and a drop chance of higher than 1 will always drop the item no matter what the entity was killed by.
+    // A map of equipment slots to drop chances, with keys "head", "chest", "legs", "feet", "hand", and "off_hand".
+    //
+    // @tag-example
+    // # Use to narrate the drop chances of a zombie's equipment:
+    // - narrate <[zombie].equipment_drop_chance>
     //
     // @mechanism-example
     // # Use to prevent a zombie from dropping any of its equipped items, no matter what:
