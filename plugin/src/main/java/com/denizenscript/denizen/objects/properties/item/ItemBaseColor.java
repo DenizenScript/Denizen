@@ -70,7 +70,7 @@ public class ItemBaseColor extends ItemProperty<ElementTag> {
 
     public void setBaseColor(DyeColor color, TagContext context) {
         if (color == null && getMaterial() == Material.SHIELD) {
-            ItemRawNBT property = ItemRawNBT.getFrom(object);
+            ItemRawNBT property = new ItemRawNBT(object);
             MapTag nbt = property.getFullNBTMap();
             nbt.putObject("BlockEntityTag", null);
             property.setFullNBT(object, nbt, context, false);

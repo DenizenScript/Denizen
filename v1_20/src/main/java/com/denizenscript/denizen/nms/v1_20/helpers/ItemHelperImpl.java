@@ -18,6 +18,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.serialization.Dynamic;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.*;
@@ -25,10 +26,12 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.world.item.AdventureModePredicate;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -248,6 +251,39 @@ public class ItemHelperImpl extends ItemHelper {
     public ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag) {
         net.minecraft.world.item.ItemStack nmsItemStack = net.minecraft.world.item.ItemStack.parseOptional(CraftRegistry.getMinecraftRegistry(), ((CompoundTagImpl) compoundTag).toNMSTag());
         return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public CompoundTag getCustomData(ItemStack item) {
+        CustomData customData = CraftItemStack.asNMSCopy(item).get(DataComponents.CUSTOM_DATA);
+        return customData != null ? CompoundTagImpl.fromNMSTag(customData.getUnsafe()) : null;
+    }
+
+    @Override
+    public ItemStack setCustomData(ItemStack item, CompoundTag data) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        if (data == null) {
+            nmsItemStack.remove(DataComponents.CUSTOM_DATA);
+        }
+        else {
+            nmsItemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(((CompoundTagImpl) data).toNMSTag()));
+        }
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    public static final int DATA_VERSION_1_20_4 = 3700;
+
+    @Override
+    public ItemStack setPartialOldNbt(ItemStack item, CompoundTag oldTag) {
+        int currentDataVersion = CraftMagicNumbers.INSTANCE.getDataVersion();
+        net.minecraft.nbt.CompoundTag nmsOldTag = new net.minecraft.nbt.CompoundTag();
+        nmsOldTag.putString("id", item.getType().getKey().toString());
+        nmsOldTag.putByte("Count", (byte) item.getAmount());
+        nmsOldTag.put("tag", ((CompoundTagImpl) oldTag).toNMSTag());
+        net.minecraft.nbt.CompoundTag nmsUpdatedTag = (net.minecraft.nbt.CompoundTag) MinecraftServer.getServer().fixerUpper.update(References.ITEM_STACK, new Dynamic<>(NbtOps.INSTANCE, nmsOldTag), DATA_VERSION_1_20_4, currentDataVersion).getValue();
+        net.minecraft.nbt.CompoundTag nmsCurrentTag = (net.minecraft.nbt.CompoundTag) CraftItemStack.asNMSCopy(item).save(CraftRegistry.getMinecraftRegistry());
+        net.minecraft.nbt.CompoundTag nmsMergedTag = nmsCurrentTag.merge(nmsUpdatedTag);
+        return CraftItemStack.asBukkitCopy(net.minecraft.world.item.ItemStack.parse(CraftRegistry.getMinecraftRegistry(), nmsMergedTag).orElseThrow());
     }
 
     @Override

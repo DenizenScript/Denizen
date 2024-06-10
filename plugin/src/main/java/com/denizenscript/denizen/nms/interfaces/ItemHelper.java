@@ -49,6 +49,18 @@ public abstract class ItemHelper {
 
     public abstract ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag);
 
+    public CompoundTag getCustomData(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        return getNbtData(item);
+    }
+
+    public ItemStack setCustomData(ItemStack item, CompoundTag data) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        throw new UnsupportedOperationException();
+    }
+
+    public ItemStack setPartialOldNbt(ItemStack item, CompoundTag oldTag) {
+        throw new UnsupportedOperationException();
+    }
+
     public CompoundTag getEntityData(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
         CompoundTag nbt = getNbtData(item);
         return nbt != null && nbt.getValue().get("EntityTag") instanceof CompoundTag entityNbt ? entityNbt : null;
