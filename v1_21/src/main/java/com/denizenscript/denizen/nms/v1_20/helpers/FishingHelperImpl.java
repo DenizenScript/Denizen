@@ -41,11 +41,13 @@ public class FishingHelperImpl implements FishingHelper {
         FishingHook nmsHook = ((CraftFishHook) fishHook).getHandle();
         ItemStack result = switch (catchType) {
             case DEFAULT -> {
-                float f = ((CraftWorld) fishHook.getWorld()).getHandle().random.nextFloat();
-                int i = EnchantmentHelper.getMobLooting(nmsHook.getPlayerOwner());
-                int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.LUCK_OF_THE_SEA, nmsHook.getPlayerOwner());
-                float f1 = 0.1F - (float) i * 0.025F - (float) j * 0.01F;
-                float f2 = 0.05F + (float) i * 0.01F - (float) j * 0.01F;
+                ServerLevel nmsWorld = ((CraftWorld) fishHook.getWorld()).getHandle();
+                ItemStack nmsFishingRod = nmsHook.getPlayerOwner().getMainHandItem();
+                float f = nmsWorld.random.nextFloat();
+                float i = EnchantmentHelper.getFishingTimeReduction(nmsWorld, nmsFishingRod, nmsHook.getPlayerOwner());
+                int j = EnchantmentHelper.getFishingLuckBonus(nmsWorld, nmsFishingRod, nmsHook.getPlayerOwner());
+                float f1 = 0.1F - i * 0.025F - (float) j * 0.01F;
+                float f2 = 0.05F + i * 0.01F - (float) j * 0.01F;
 
                 f1 = Mth.clamp(f1, 0.0F, 1.0F);
                 f2 = Mth.clamp(f2, 0.0F, 1.0F);

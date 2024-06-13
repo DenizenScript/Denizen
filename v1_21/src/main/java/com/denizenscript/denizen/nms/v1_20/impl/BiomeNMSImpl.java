@@ -39,7 +39,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     public BiomeNMSImpl(ServerLevel world, String name) {
         super(world.getWorld(), name);
         this.world = world;
-        biomeHolder = world.registryAccess().registryOrThrow(Registries.BIOME).getHolder(ResourceKey.create(Registries.BIOME, new ResourceLocation(name))).orElse(null);
+        biomeHolder = world.registryAccess().registryOrThrow(Registries.BIOME).getHolder(ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace(name))).orElse(null);
     }
 
     @Override

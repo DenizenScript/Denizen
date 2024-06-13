@@ -114,31 +114,36 @@ public class EntityHelperImpl extends EntityHelper {
         if (attrib != null) {
             damage = attrib.getValue();
         }
-        if (attacker.getEquipment() != null) {
-            damage += EnchantmentHelper.getDamageBonus(CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), CraftEntityType.bukkitToMinecraft(target.getType()));
+        net.minecraft.world.entity.Entity nmsTarget = target != null ? ((CraftEntity) target).getHandle() : null;
+        ServerLevel nmsWorld = ((CraftWorld) attacker.getWorld()).getHandle();
+        DamageSource nmsSource = null;
+        if (nmsTarget != null) {
+            if (attacker instanceof CraftPlayer playerAttacker) {
+                nmsSource = nmsTarget.level().damageSources().playerAttack(playerAttacker.getHandle());
+            }
+            else {
+                nmsSource = nmsTarget.level().damageSources().mobAttack(((CraftLivingEntity) attacker).getHandle());
+            }
+        }
+        // TODO: 1.21: Target entity is required now, might need to change how the tag works?
+        if (nmsTarget != null && attacker.getEquipment() != null) {
+            damage = EnchantmentHelper.modifyDamage(nmsWorld, CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()),
+                    ((CraftEntity) target).getHandle(), nmsSource, (float) damage);
         }
         if (damage <= 0) {
             return 0;
         }
         if (target != null) {
-            DamageSource source;
-            net.minecraft.world.entity.Entity nmsTarget = ((CraftEntity) target).getHandle();
-            if (attacker instanceof CraftPlayer playerAttacker) {
-                source = nmsTarget.level().damageSources().playerAttack(playerAttacker.getHandle());
-            }
-            else {
-                source = nmsTarget.level().damageSources().mobAttack(((CraftLivingEntity) attacker).getHandle());
-            }
-            if (nmsTarget.isInvulnerableTo(source)) {
+            if (nmsTarget.isInvulnerableTo(nmsSource)) {
                 return 0;
             }
             if (!(nmsTarget instanceof net.minecraft.world.entity.LivingEntity livingTarget)) {
                 return damage;
             }
-            damage = CombatRules.getDamageAfterAbsorb((float) damage, source, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
-            int enchantDamageModifier = EnchantmentHelper.getDamageProtection(livingTarget.getArmorSlots(), source);
+            damage = CombatRules.getDamageAfterAbsorb(livingTarget, (float) damage, nmsSource, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+            float enchantDamageModifier = EnchantmentHelper.getDamageProtection(nmsWorld, livingTarget, nmsSource);
             if (enchantDamageModifier > 0) {
-                damage = CombatRules.getDamageAfterMagicAbsorb((float) damage, (float) enchantDamageModifier);
+                damage = CombatRules.getDamageAfterMagicAbsorb((float) damage, enchantDamageModifier);
             }
         }
         return damage;

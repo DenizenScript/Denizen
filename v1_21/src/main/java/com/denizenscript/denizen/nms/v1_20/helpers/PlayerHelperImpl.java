@@ -86,7 +86,7 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public void stopSound(Player player, String sound, SoundCategory category) {
-        ((CraftPlayer) player).getHandle().connection.send(new ClientboundStopSoundPacket(sound == null ? null : new ResourceLocation(sound), null));
+        ((CraftPlayer) player).getHandle().connection.send(new ClientboundStopSoundPacket(sound == null ? null : ResourceLocation.withDefaultNamespace(sound), null));
     }
 
     @Override

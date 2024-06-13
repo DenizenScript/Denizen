@@ -470,8 +470,8 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
-    public Component getDisconnectedReason() {
-        return oldManager.getDisconnectedReason();
+    public DisconnectionDetails getDisconnectionDetails() {
+        return oldManager.getDisconnectionDetails();
     }
 
     @Override

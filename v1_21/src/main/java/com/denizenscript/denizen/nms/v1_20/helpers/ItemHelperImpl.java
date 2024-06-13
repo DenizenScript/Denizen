@@ -134,7 +134,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact, String category) {
-        ResourceLocation key = new ResourceLocation("denizen", keyName);
+        ResourceLocation key = ResourceLocation.fromNamespaceAndPath("denizen", keyName);
         Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
         AbstractCookingRecipe recipe;
         CookingBookCategory categoryValue = category == null ? CookingBookCategory.MISC : CookingBookCategory.valueOf(CoreUtilities.toUpperCase(category));
@@ -156,7 +156,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {
-        ResourceLocation key = new ResourceLocation("denizen", keyName);
+        ResourceLocation key = ResourceLocation.fromNamespaceAndPath("denizen", keyName);
         Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
         StonecutterRecipe recipe = new StonecutterRecipe(group, itemRecipe, CraftItemStack.asNMSCopy(result));
         RecipeHolder<StonecutterRecipe> holder = new RecipeHolder<>(key, recipe);
@@ -165,7 +165,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact, ItemStack[] templateItem, boolean templateExact) {
-        ResourceLocation key = new ResourceLocation("denizen", keyName);
+        ResourceLocation key = ResourceLocation.fromNamespaceAndPath("denizen", keyName);
         Ingredient templateItemRecipe = itemArrayToRecipe(templateItem, templateExact);
         Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
         Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
@@ -176,7 +176,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact, String category) {
-        ResourceLocation key = new ResourceLocation("denizen", keyName);
+        ResourceLocation key = ResourceLocation.fromNamespaceAndPath("denizen", keyName);
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
         CraftingBookCategory categoryValue = category == null ? CraftingBookCategory.MISC : CraftingBookCategory.valueOf(CoreUtilities.toUpperCase(category));
         for (int i = 0; i < ingredients.size(); i++) {

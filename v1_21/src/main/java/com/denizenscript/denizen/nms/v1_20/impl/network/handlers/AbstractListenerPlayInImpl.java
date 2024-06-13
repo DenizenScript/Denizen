@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.ConnectionProtocol;
+import net.minecraft.network.DisconnectionDetails;
 import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
@@ -55,18 +56,13 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void disconnect(String s) {
-        oldListener.disconnect(s);
-    }
-
-    @Override
     public void teleport(double d0, double d1, double d2, float f, float f1) {
         oldListener.teleport(d0, d1, d2, f, f1);
     }
 
     @Override
-    public void teleport(double d0, double d1, double d2, float f, float f1, PlayerTeleportEvent.TeleportCause cause) {
-        oldListener.teleport(d0, d1, d2, f, f1, cause);
+    public boolean teleport(double d0, double d1, double d2, float f, float f1, PlayerTeleportEvent.TeleportCause cause) {
+        return oldListener.teleport(d0, d1, d2, f, f1, cause);
     }
 
     @Override
@@ -115,8 +111,8 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void onDisconnect(Component ichatbasecomponent) {
-        oldListener.onDisconnect(ichatbasecomponent);
+    public void onDisconnect(DisconnectionDetails disconnectionDetails) {
+        oldListener.onDisconnect(disconnectionDetails);
     }
 
     @Override

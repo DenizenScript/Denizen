@@ -18,6 +18,7 @@ import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_21_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
@@ -51,7 +52,7 @@ public class ProfileEditorImpl extends ProfileEditor {
             }
         }
         if (isSkinChanging) {
-            ((CraftServer) Bukkit.getServer()).getHandle().respawn(nmsPlayer, (ServerLevel) nmsPlayer.level(), true, player.getLocation(), false, PlayerRespawnEvent.RespawnReason.PLUGIN);
+            ((CraftServer) Bukkit.getServer()).getHandle().respawn(nmsPlayer, true, Entity.RemovalReason.CHANGED_DIMENSION, PlayerRespawnEvent.RespawnReason.PLUGIN);
         }
         player.updateInventory();
     }
