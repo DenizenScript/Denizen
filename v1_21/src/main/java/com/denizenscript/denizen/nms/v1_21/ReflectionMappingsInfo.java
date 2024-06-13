@@ -15,10 +15,10 @@ public class ReflectionMappingsInfo {
     public static String RecipeManager_byName = "e";
 
     // net.minecraft.world.entity.Entity
-    public static String Entity_onGround = "aI";
+    public static String Entity_onGround = "aG";
     public static String Entity_DATA_SHARED_FLAGS_ID = "ap";
-    public static String Entity_DATA_CUSTOM_NAME = "aS";
-    public static String Entity_DATA_CUSTOM_NAME_VISIBLE = "aT";
+    public static String Entity_DATA_CUSTOM_NAME = "aQ";
+    public static String Entity_DATA_CUSTOM_NAME_VISIBLE = "aR";
 
     // net.minecraft.world.entity.LivingEntity
     public static String LivingEntity_attackStrengthTicker = "aT";
@@ -26,17 +26,17 @@ public class ReflectionMappingsInfo {
     public static String LivingEntity_setLivingEntityFlag_method = "c";
 
     // net.minecraft.world.entity.player.Player
-    public static String Player_DATA_PLAYER_ABSORPTION_ID = "d";
-    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bV";
+    public static String Player_DATA_PLAYER_ABSORPTION_ID = "e";
+    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bX";
 
     // net.minecraft.server.level.ServerPlayer
     public static String ServerPlayer_respawnForced = "dl";
 
     // net.minecraft.world.entity.monster.EnderMan
-    public static String EnderMan_DATA_CREEPY = "ca";
+    public static String EnderMan_DATA_CREEPY = "ce";
 
     // net.minecraft.world.entity.monster.Zombie
-    public static String Zombie_inWaterTime = "ci";
+    public static String Zombie_inWaterTime = "cq";
 
     // net.minecraft.world.item.Item
     public static String Item_components = "c";
