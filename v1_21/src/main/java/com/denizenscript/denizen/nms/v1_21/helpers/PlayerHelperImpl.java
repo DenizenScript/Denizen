@@ -464,7 +464,8 @@ public class PlayerHelperImpl extends PlayerHelper {
             }
         }
         nmsPlayer.onUpdateAbilities();
-        nmsPlayer.server.getPlayerList().sendAllPlayerInfo(nmsPlayer);
         nmsPlayer.server.getPlayerList().sendPlayerPermissionLevel(nmsPlayer);
+        nmsPlayer.server.getPlayerList().sendLevelInfo(nmsPlayer, nmsWorld);
+        nmsPlayer.server.getPlayerList().sendAllPlayerInfo(nmsPlayer);
     }
 }
