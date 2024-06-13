@@ -4,7 +4,7 @@ import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkM
 import com.denizenscript.denizen.utilities.packets.HideParticles;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import org.bukkit.Particle;
-import org.bukkit.craftbukkit.v1_20_R4.CraftParticle;
+import org.bukkit.craftbukkit.v1_21_R1.CraftParticle;
 
 import java.util.Set;
 

@@ -8,7 +8,7 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
-import org.bukkit.craftbukkit.v1_20_R4.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_21_R1.util.CraftChatMessage;
 
 public class ActionBarEventPacketHandlers {
 
