@@ -114,34 +114,31 @@ public class EntityHelperImpl extends EntityHelper {
         if (attrib != null) {
             damage = attrib.getValue();
         }
-        net.minecraft.world.entity.Entity nmsTarget = target != null ? ((CraftEntity) target).getHandle() : null;
-        ServerLevel nmsWorld = ((CraftWorld) attacker.getWorld()).getHandle();
-        DamageSource nmsSource = null;
-        if (nmsTarget != null) {
-            if (attacker instanceof CraftPlayer playerAttacker) {
-                nmsSource = nmsTarget.level().damageSources().playerAttack(playerAttacker.getHandle());
-            }
-            else {
-                nmsSource = nmsTarget.level().damageSources().mobAttack(((CraftLivingEntity) attacker).getHandle());
-            }
-        }
-        // TODO: 1.21: Target entity is required now, might need to change how the tag works?
-        if (nmsTarget != null && attacker.getEquipment() != null) {
-            damage = EnchantmentHelper.modifyDamage(nmsWorld, CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()),
-                    ((CraftEntity) target).getHandle(), nmsSource, (float) damage);
-        }
         if (damage <= 0) {
             return 0;
         }
         if (target != null) {
-            if (nmsTarget.isInvulnerableTo(nmsSource)) {
+            DamageSource source;
+            net.minecraft.world.entity.Entity nmsTarget = ((CraftEntity) target).getHandle();
+            ServerLevel nmsWorld = ((CraftWorld) attacker.getWorld()).getHandle();
+            if (attacker instanceof CraftPlayer playerAttacker) {
+                source = nmsTarget.level().damageSources().playerAttack(playerAttacker.getHandle());
+            }
+            else {
+                source = nmsTarget.level().damageSources().mobAttack(((CraftLivingEntity) attacker).getHandle());
+            }
+            if (nmsTarget.isInvulnerableTo(source)) {
                 return 0;
+            }
+            // TODO: 1.21: Target entity is required now, might need to change how the tag works?
+            if (attacker.getEquipment() != null) {
+                damage = EnchantmentHelper.modifyDamage(nmsWorld, CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), nmsTarget, source, (float) damage);
             }
             if (!(nmsTarget instanceof net.minecraft.world.entity.LivingEntity livingTarget)) {
                 return damage;
             }
-            damage = CombatRules.getDamageAfterAbsorb(livingTarget, (float) damage, nmsSource, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
-            float enchantDamageModifier = EnchantmentHelper.getDamageProtection(nmsWorld, livingTarget, nmsSource);
+            damage = CombatRules.getDamageAfterAbsorb(livingTarget, (float) damage, source, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+            float enchantDamageModifier = EnchantmentHelper.getDamageProtection(nmsWorld, livingTarget, source);
             if (enchantDamageModifier > 0) {
                 damage = CombatRules.getDamageAfterMagicAbsorb((float) damage, enchantDamageModifier);
             }
