@@ -874,7 +874,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             ListTag potionEffects = new ListTag();
             for (PotionEffectType potionEffect : PotionEffectType.values()) {
                 if (potionEffect != null) {
-                    potionEffects.add(potionEffect.getName());
+                    String name = potionEffect.getName();
+                    if (name.startsWith("minecraft:")) {
+                        name = CoreUtilities.toUpperCase(name.substring("minecraft:".length()));
+                    }
+                    potionEffects.add(name);
                 }
             }
             return potionEffects;
