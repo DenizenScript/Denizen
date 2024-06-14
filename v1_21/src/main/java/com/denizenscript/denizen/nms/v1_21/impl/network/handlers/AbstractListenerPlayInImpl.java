@@ -6,6 +6,9 @@ import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.CrashReport;
+import net.minecraft.CrashReportCategory;
+import net.minecraft.ReportedException;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.DisconnectionDetails;
 import net.minecraft.network.PacketSendListener;
@@ -31,7 +34,6 @@ import java.net.SocketAddress;
 import java.util.Set;
 
 public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
-    // TODO: 1.20.6: there are some new methods that should potentially be overriden
 
     public static final Field ServerGamePacketListenerImpl_chunkSender = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_chunkSender);
 
@@ -98,6 +100,16 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public boolean isAcceptingMessages() {
         return oldListener.isAcceptingMessages();
+    }
+
+    @Override
+    public void fillCrashReport(CrashReport var0) {
+        oldListener.fillCrashReport(var0);
+    }
+
+    @Override
+    public void fillListenerSpecificCrashDetails(CrashReport var0, CrashReportCategory var1) {
+        oldListener.fillListenerSpecificCrashDetails(var0, var1);
     }
 
     @Override
@@ -518,5 +530,15 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public PacketFlow flow() {
         return oldListener == null ? PacketFlow.SERVERBOUND : oldListener.flow();
+    }
+
+    @Override
+    public void onPacketError(Packet var0, Exception var1) throws ReportedException {
+        oldListener.onPacketError(var0, var1);
+    }
+
+    @Override
+    public DisconnectionDetails createDisconnectionInfo(Component var0, Throwable var1) {
+        return oldListener.createDisconnectionInfo(var0, var1);
     }
 }

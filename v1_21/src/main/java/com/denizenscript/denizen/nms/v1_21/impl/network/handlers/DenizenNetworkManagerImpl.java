@@ -28,6 +28,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.network.ServerPlayerConnection;
+import net.minecraft.util.debugchart.LocalSampleLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_21_R1.CraftRegistry;
@@ -49,7 +50,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class DenizenNetworkManagerImpl extends Connection {
-    // TODO: 1.20.6: there are some new methods that should potentially be overriden
 
     // TODO: 1.20.6: this can be cleaned up by decoding with the codec and returning the new packet
     public static <T extends Packet<?>, B extends FriendlyByteBuf> RegistryFriendlyByteBuf copyPacket(T original, StreamCodec<B, T> packetCodec) {
@@ -199,6 +199,16 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
+    public <T extends PacketListener> void setupInboundProtocol(ProtocolInfo<T> protocolinfo, T t0) {
+        oldManager.setupInboundProtocol(protocolinfo, t0);
+    }
+
+    @Override
+    public void setupOutboundProtocol(ProtocolInfo<?> protocolinfo) {
+        oldManager.setupOutboundProtocol(protocolinfo);
+    }
+
+    @Override
     protected void channelRead0(ChannelHandlerContext channelhandlercontext, Packet packet) {
         if (oldManager.channel.isOpen()) {
             try {
@@ -223,6 +233,11 @@ public class DenizenNetworkManagerImpl extends Connection {
     @Override
     public void initiateServerboundPlayConnection(String s, int i, ClientLoginPacketListener packetloginoutlistener) {
         oldManager.initiateServerboundPlayConnection(s, i, packetloginoutlistener);
+    }
+
+    @Override
+    public <S extends ServerboundPacketListener, C extends ClientboundPacketListener> void initiateServerboundPlayConnection(String s, int i, ProtocolInfo<S> protocolinfo, ProtocolInfo<C> protocolinfo1, C c0, boolean flag) {
+        oldManager.initiateServerboundPlayConnection(s, i, protocolinfo, protocolinfo1, c0, flag);
     }
 
     @Override
@@ -425,6 +440,11 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
+    public void disconnect(DisconnectionDetails disconnectiondetails) {
+        oldManager.disconnect(disconnectiondetails);
+    }
+
+    @Override
     public boolean isMemoryConnection() {
         return oldManager != null && oldManager.isMemoryConnection();
     }
@@ -497,6 +517,11 @@ public class DenizenNetworkManagerImpl extends Connection {
     @Override
     public float getAverageSentPackets() {
         return oldManager.getAverageSentPackets();
+    }
+
+    @Override
+    public void setBandwidthLogger(LocalSampleLogger localsamplelogger) {
+        oldManager.setBandwidthLogger(localsamplelogger);
     }
 
     //////////////////////////////////

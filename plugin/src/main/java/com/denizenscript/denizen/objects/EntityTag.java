@@ -2488,10 +2488,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @group properties
         // @description
         // Returns the amount of damage the entity will do based on its held item.
-        // Optionally, specify a target entity to test how much damage will be done to that specific target
-        // (modified based on enchantments and that entity's armor/status/etc).
-        // Note that the result will not always be completely exact, as it doesn't take into account some specific factors
-        // (eg sweeping vs single-hit, etc).
+        // Optionally, specify a target entity to test how much damage will be done to that specific target (modified based on enchantments and that entity's armor/status/etc).
+        // Note that the result will not always be completely exact, as it doesn't take into account some specific factors (eg sweeping vs single-hit, etc).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "weapon_damage", (attribute, object) -> {
             Entity target = null;
@@ -3893,6 +3891,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Makes a player-type entity interact with a block.
         // -->
         if (mechanism.matches("interact_with") && mechanism.requireObject(LocationTag.class)) {
+            if (!isPlayer()) {
+                mechanism.echoError("Only player-type entities can interact with blocks!");
+                return;
+            }
             LocationTag interactLocation = mechanism.valueAsType(LocationTag.class);
             NMSHandler.entityHelper.forceInteraction(getPlayer(), interactLocation);
         }

@@ -117,31 +117,32 @@ public class EntityHelperImpl extends EntityHelper {
         if (damage <= 0) {
             return 0;
         }
-        if (target != null) {
-            DamageSource source;
-            net.minecraft.world.entity.Entity nmsTarget = ((CraftEntity) target).getHandle();
-            ServerLevel nmsWorld = ((CraftWorld) attacker.getWorld()).getHandle();
-            if (attacker instanceof CraftPlayer playerAttacker) {
-                source = nmsTarget.level().damageSources().playerAttack(playerAttacker.getHandle());
-            }
-            else {
-                source = nmsTarget.level().damageSources().mobAttack(((CraftLivingEntity) attacker).getHandle());
-            }
-            if (nmsTarget.isInvulnerableTo(source)) {
-                return 0;
-            }
-            // TODO: 1.21: Target entity is required now, might need to change how the tag works?
-            if (attacker.getEquipment() != null) {
-                damage = EnchantmentHelper.modifyDamage(nmsWorld, CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), nmsTarget, source, (float) damage);
-            }
-            if (!(nmsTarget instanceof net.minecraft.world.entity.LivingEntity livingTarget)) {
-                return damage;
-            }
-            damage = CombatRules.getDamageAfterAbsorb(livingTarget, (float) damage, source, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
-            float enchantDamageModifier = EnchantmentHelper.getDamageProtection(nmsWorld, livingTarget, source);
-            if (enchantDamageModifier > 0) {
-                damage = CombatRules.getDamageAfterMagicAbsorb((float) damage, enchantDamageModifier);
-            }
+        if (target == null) {
+            // Target is required as of MC 1.21, so if unspecified just assume target is equivalent to attacker
+            target = attacker;
+        }
+        DamageSource source;
+        net.minecraft.world.entity.Entity nmsTarget = ((CraftEntity) target).getHandle();
+        ServerLevel nmsWorld = ((CraftWorld) attacker.getWorld()).getHandle();
+        if (attacker instanceof CraftPlayer playerAttacker) {
+            source = nmsTarget.level().damageSources().playerAttack(playerAttacker.getHandle());
+        }
+        else {
+            source = nmsTarget.level().damageSources().mobAttack(((CraftLivingEntity) attacker).getHandle());
+        }
+        if (nmsTarget.isInvulnerableTo(source)) {
+            return 0;
+        }
+        if (attacker.getEquipment() != null) {
+            damage = EnchantmentHelper.modifyDamage(nmsWorld, CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), nmsTarget, source, (float) damage);
+        }
+        if (!(nmsTarget instanceof net.minecraft.world.entity.LivingEntity livingTarget)) {
+            return damage;
+        }
+        damage = CombatRules.getDamageAfterAbsorb(livingTarget, (float) damage, source, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+        float enchantDamageModifier = EnchantmentHelper.getDamageProtection(nmsWorld, livingTarget, source);
+        if (enchantDamageModifier > 0) {
+            damage = CombatRules.getDamageAfterMagicAbsorb((float) damage, enchantDamageModifier);
         }
         return damage;
     }
@@ -164,7 +165,6 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void forceInteraction(Player player, Location location) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
-        // TODO: 1.20.6: passing a null player isn't valid (and seemingly never was) - need to require HumanEntity in the mechanism
         ((CraftBlock) location.getBlock()).getNMS().useItemOn(craftPlayer.getHandle().getMainHandItem(), ((CraftWorld) location.getWorld()).getHandle(),
                 craftPlayer.getHandle(), InteractionHand.MAIN_HAND,
                 new BlockHitResult(new Vec3(0, 0, 0), null, CraftLocation.toBlockPosition(location), false));
@@ -628,6 +628,7 @@ public class EntityHelperImpl extends EntityHelper {
             case CUSTOM -> sources.generic();
             case FLY_INTO_WALL -> sources.flyIntoWall();
             case HOT_FLOOR -> sources.hotFloor();
+            case CAMPFIRE -> sources.campfire();
             case CRAMMING -> sources.cramming();
             case DRYOUT -> sources.dryOut();
             case FREEZE -> sources.freeze();
