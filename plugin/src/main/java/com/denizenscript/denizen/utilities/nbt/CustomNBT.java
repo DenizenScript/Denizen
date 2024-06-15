@@ -72,7 +72,7 @@ public class CustomNBT {
     }
 
     public static ItemStack addCustomNBT(ItemStack itemStack, String key, String value, String basekey) {
-        if (itemStack == null || itemStack.getType().isAir()) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
         }
         CompoundTag customData = NMSHandler.itemHelper.getCustomData(itemStack);
@@ -93,7 +93,7 @@ public class CustomNBT {
     }
 
     public static ItemStack removeCustomNBT(ItemStack itemStack, String key, String basekey) {
-        if (itemStack == null || itemStack.getType().isAir()) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
         }
         CompoundTag customData = NMSHandler.itemHelper.getCustomData(itemStack);
@@ -115,7 +115,7 @@ public class CustomNBT {
     }
 
     public static boolean hasCustomNBT(ItemStack itemStack, String key, String basekey) {
-        if (itemStack == null || itemStack.getType().isAir()) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return false;
         }
         CompoundTag customData = NMSHandler.itemHelper.getCustomData(itemStack);
@@ -127,7 +127,7 @@ public class CustomNBT {
     }
 
     public static String getCustomNBT(ItemStack itemStack, String key, String basekey) {
-        if (itemStack == null || itemStack.getType().isAir() || key == null) {
+        if (itemStack == null || itemStack.getType() == Material.AIR || key == null) {
             return null;
         }
         CompoundTag customData = NMSHandler.itemHelper.getCustomData(itemStack);
@@ -144,7 +144,7 @@ public class CustomNBT {
 
     public static List<String> listNBT(ItemStack itemStack, String basekey) {
         List<String> nbt = new ArrayList<>();
-        if (itemStack == null || itemStack.getType().isAir()) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return nbt;
         }
         CompoundTag customData = NMSHandler.itemHelper.getCustomData(itemStack);
