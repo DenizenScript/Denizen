@@ -210,6 +210,10 @@ public class CompoundTagBuilder {
         return new CompoundTagBuilder();
     }
 
+    public static CompoundTagBuilder create(CompoundTag tag) {
+        return tag == null ? new CompoundTagBuilder() : tag.createBuilder();
+    }
+
     private static void checkNotNull(Object object) {
         if (object == null) {
             throw new NullPointerException();
