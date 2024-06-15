@@ -76,7 +76,7 @@ public class CustomNBT {
             return null;
         }
         CompoundTag customData = NMSHandler.itemHelper.getCustomData(itemStack);
-        CompoundTagBuilder denizenDataBuilder = CompoundTagBuilder.create(customData != null ? (CompoundTag) customData.getValue().get(basekey) : null);
+        CompoundTagBuilder denizenDataBuilder = CompoundTagBuilder.create(customData != null ? customData.getCompound(basekey) : null);
         CompoundTag denizenData = denizenDataBuilder.putString(CoreUtilities.toLowerCase(key), value).build();
         customData = CompoundTagBuilder.create(customData).put(basekey, denizenData).build();
         return NMSHandler.itemHelper.setCustomData(itemStack, customData);
@@ -100,7 +100,7 @@ public class CustomNBT {
         if (customData == null) {
             return itemStack;
         }
-        CompoundTag denizenData = (CompoundTag) customData.getValue().get(basekey);
+        CompoundTag denizenData = customData.getCompound(basekey);
         if (denizenData == null) {
             return itemStack;
         }
@@ -122,7 +122,7 @@ public class CustomNBT {
         if (customData == null) {
             return false;
         }
-        CompoundTag denizenData = (CompoundTag) customData.getValue().get(basekey);
+        CompoundTag denizenData = customData.getCompound(basekey);
         return denizenData != null && denizenData.containsKey(CoreUtilities.toLowerCase(key));
     }
 
@@ -134,7 +134,7 @@ public class CustomNBT {
         if (customData == null) {
             return null;
         }
-        CompoundTag denizenData = (CompoundTag) customData.getValue().get(basekey);
+        CompoundTag denizenData = customData.getCompound(basekey);
         if (denizenData == null) {
             return null;
         }
@@ -151,7 +151,7 @@ public class CustomNBT {
         if (customData == null) {
             return nbt;
         }
-        CompoundTag denizenData = (CompoundTag) customData.getValue().get(basekey);
+        CompoundTag denizenData = customData.getCompound(basekey);
         if (denizenData == null) {
             return nbt;
         }
