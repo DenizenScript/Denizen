@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.nbt.CustomNBT;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Material;
@@ -45,7 +45,7 @@ public class ItemCanDestroy implements Property {
 
     public ListTag getMaterials() {
         ItemStack itemStack = item.getItemStack();
-        List<Material> materials = CustomNBT.getNBTMaterials(itemStack, CustomNBT.KEY_CAN_DESTROY);
+        List<Material> materials = NMSHandler.itemHelper.getCanBreak(itemStack);
         if (materials != null && !materials.isEmpty()) {
             ListTag list = new ListTag();
             for (Material material : materials) {
@@ -116,10 +116,10 @@ public class ItemCanDestroy implements Property {
             if (mechanism.hasValue()) {
                 List<Material> materials = mechanism.valueAsType(ListTag.class).filter(MaterialTag.class, mechanism.context)
                         .stream().map(MaterialTag::getMaterial).collect(Collectors.toList());
-                itemStack = CustomNBT.setNBTMaterials(itemStack, CustomNBT.KEY_CAN_DESTROY, materials);
+                itemStack = NMSHandler.itemHelper.setCanBreak(itemStack, materials);
             }
             else {
-                itemStack = CustomNBT.clearNBT(itemStack, CustomNBT.KEY_CAN_DESTROY);
+                itemStack = NMSHandler.itemHelper.setCanBreak(itemStack, null);
             }
 
             item.setItemStack(itemStack);

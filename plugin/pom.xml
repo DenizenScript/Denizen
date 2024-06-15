@@ -5,7 +5,7 @@
 
     <groupId>com.denizenscript</groupId>
     <artifactId>denizen</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.1-SNAPSHOT</version>
 
     <name>Denizen</name>
     <description>Scriptable Minecraft and Citizens2</description>
@@ -15,6 +15,14 @@
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
         <BUILD_CLASS>CUSTOM</BUILD_CLASS>
     </properties>
+
+    <!-- Repositories -->
+    <repositories>
+        <repository>
+            <id>everything</id>
+            <url>https://maven.citizensnpcs.co/repo</url>
+        </repository>
+    </repositories>
 
     <!-- Dependencies -->
     <dependencies>
@@ -36,7 +44,7 @@
         <dependency>
             <groupId>net.citizensnpcs</groupId>
             <artifactId>citizens-main</artifactId>
-            <version>2.0.33-SNAPSHOT</version>
+            <version>2.0.34-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
             <exclusions>

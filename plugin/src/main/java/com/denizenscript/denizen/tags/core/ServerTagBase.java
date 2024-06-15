@@ -807,6 +807,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all materials known to the server.
         // Generally used with <@link objecttype MaterialTag>.
         // This is only types listed in the Bukkit Material enum, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>.
+        // Note: Some materials might be disabled in specific worlds, check using <@link tag MaterialTag.is_enabled>.
         // -->
         tagProcessor.registerStaticTag(ListTag.class, "material_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
@@ -873,7 +874,11 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             ListTag potionEffects = new ListTag();
             for (PotionEffectType potionEffect : PotionEffectType.values()) {
                 if (potionEffect != null) {
-                    potionEffects.add(potionEffect.getName());
+                    String name = potionEffect.getName();
+                    if (name.startsWith("minecraft:")) {
+                        name = CoreUtilities.toUpperCase(name.substring("minecraft:".length()));
+                    }
+                    potionEffects.add(name);
                 }
             }
             return potionEffects;

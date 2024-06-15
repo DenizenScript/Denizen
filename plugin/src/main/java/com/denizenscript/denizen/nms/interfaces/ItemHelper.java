@@ -5,9 +5,11 @@ import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -47,6 +49,60 @@ public abstract class ItemHelper {
 
     public abstract ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag);
 
+    public CompoundTag getCustomData(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        return getNbtData(item);
+    }
+
+    public ItemStack setCustomData(ItemStack item, CompoundTag data) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        throw new UnsupportedOperationException();
+    }
+
+    public ItemStack setPartialOldNbt(ItemStack item, CompoundTag oldTag) {
+        throw new UnsupportedOperationException();
+    }
+
+    public CompoundTag getEntityData(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        CompoundTag nbt = getNbtData(item);
+        return nbt != null && nbt.getValue().get("EntityTag") instanceof CompoundTag entityNbt ? entityNbt : null;
+    }
+
+    public ItemStack setEntityData(ItemStack item, CompoundTag entityNbt, EntityType entityType) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        boolean shouldRemove = entityNbt == null || entityNbt.isEmpty();
+        CompoundTag nbt = getNbtData(item);
+        if (shouldRemove && !nbt.containsKey("EntityTag")) {
+            return item;
+        }
+        if (shouldRemove) {
+            nbt = nbt.createBuilder().remove("EntityTag").build();
+        }
+        else {
+            nbt = nbt.createBuilder().put("EntityTag", entityNbt).build();
+        }
+        return setNbtData(item, nbt);
+    }
+
+    public List<Material> getCanPlaceOn(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        return CustomNBT.getNBTMaterials(item, CustomNBT.KEY_CAN_PLACE_ON);
+    }
+
+    public ItemStack setCanPlaceOn(ItemStack item, List<Material> canPlaceOn) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        if (canPlaceOn == null) {
+            return CustomNBT.clearNBT(item, CustomNBT.KEY_CAN_PLACE_ON);
+        }
+        return CustomNBT.setNBTMaterials(item, CustomNBT.KEY_CAN_PLACE_ON, canPlaceOn);
+    }
+
+    public List<Material> getCanBreak(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        return CustomNBT.getNBTMaterials(item, CustomNBT.KEY_CAN_DESTROY);
+    }
+
+    public ItemStack setCanBreak(ItemStack item, List<Material> canBreak) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        if (canBreak == null) {
+            return CustomNBT.clearNBT(item, CustomNBT.KEY_CAN_DESTROY);
+        }
+        return CustomNBT.setNBTMaterials(item, CustomNBT.KEY_CAN_DESTROY, canBreak);
+    }
+    
     public abstract void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact, ItemStack[] templateItem, boolean templateExact);
 
     public abstract void setInventoryItem(Inventory inventory, ItemStack item, int slot);
