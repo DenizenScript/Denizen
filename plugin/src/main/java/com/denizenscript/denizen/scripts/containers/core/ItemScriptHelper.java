@@ -58,7 +58,7 @@ public class ItemScriptHelper implements Listener {
         recipeIdToItemScript.clear();
         Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
         while (recipeIterator.hasNext()) {
-            if (recipeIterator.next() instanceof Keyed keyed && keyed.getKey().equals("denizen")) {
+            if (recipeIterator.next() instanceof Keyed keyed && keyed.getKey().getNamespace().equals("denizen")) {
                 recipeIterator.remove();
             }
         }
