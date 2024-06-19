@@ -85,6 +85,10 @@ public abstract class CompoundTag extends Tag {
         return new CompoundTagBuilder(new HashMap<>(value));
     }
 
+    public CompoundTag getCompound(String key) {
+        return value.get(key) instanceof CompoundTag compoundTag ? compoundTag : null;
+    }
+
     /**
      * Get a byte array named with the given key.
      * <p/>

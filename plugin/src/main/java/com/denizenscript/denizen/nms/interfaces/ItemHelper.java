@@ -54,7 +54,7 @@ public abstract class ItemHelper {
     }
 
     public ItemStack setCustomData(ItemStack item, CompoundTag data) { // TODO: once 1.20 is the minimum supported version, remove default impl
-        throw new UnsupportedOperationException();
+        return setNbtData(item, data);
     }
 
     public ItemStack setPartialOldNbt(ItemStack item, CompoundTag oldTag) {
