@@ -17,8 +17,8 @@ public class LegacyNamingHelper<T extends Enum<T>> {
         this.enumType = enumType;
         T[] enumConstants = enumType.getEnumConstants();
         modernNames = new HashSet<>(enumConstants.length);
-        for (T constant : enumConstants) {
-            modernNames.add(constant.name());
+        for (T enumConstant : enumConstants) {
+            modernNames.add(enumConstant.name());
         }
     }
 
