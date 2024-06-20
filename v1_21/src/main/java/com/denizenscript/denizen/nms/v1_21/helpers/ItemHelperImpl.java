@@ -578,7 +578,7 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public Map<NamespacedKey, BrewingRecipe> getCustomBrewingRecipes() {
         if (customBrewingRecipes == null) {
-            customBrewingRecipes = Maps.transformValues((Map<NamespacedKey, ?>) ReflectionHelper.getFieldValue(PotionBrewing.class, "CUSTOM_MIXES", null), paperMix -> {
+            customBrewingRecipes = Maps.transformValues((Map<NamespacedKey, ?>) ReflectionHelper.getFieldValue(PotionBrewing.class, "customMixes", MinecraftServer.getServer().potionBrewing()), paperMix -> {
                 if (PaperPotionMix_CLASS == null) {
                     PaperPotionMix_CLASS = paperMix.getClass();
                 }
