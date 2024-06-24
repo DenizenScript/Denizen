@@ -76,6 +76,7 @@ public class PropertyRegistry {
         }
         PropertyParser.registerProperty(EntityDropsItem.class, EntityTag.class);
         PropertyParser.registerProperty(EntityEquipment.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityEquipmentDropChance.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityExploredLocations.class, EntityTag.class);
         }
