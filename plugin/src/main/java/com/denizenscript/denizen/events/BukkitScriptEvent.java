@@ -162,7 +162,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public static HashSet<String> inventoryCouldMatchableText = new HashSet<>(List.of("inventory", "notable", "note"));
+    public static HashSet<String> inventoryCouldMatchableText = new HashSet<>(List.of("inventory", "notable", "note", "gui"));
     public static HashSet<String> inventoryCouldMatchPrefixes = new HashSet<>(List.of("inventory_flagged"));
 
     public static boolean couldMatchInventory(String text) {

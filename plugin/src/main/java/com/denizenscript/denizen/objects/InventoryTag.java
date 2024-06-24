@@ -88,6 +88,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     // Inventory note name: matches if the inventory is noted with the given name, using advanced matchers.
     // Inventory type: matches if the inventory is of a given type, using advanced matchers.
     // "inventory_flagged:<flag>": a Flag Matchable for InventoryTag flags.
+    // "gui" plaintext: matches if the inventory is a GUI (see <@link language inventory script containers>).
     //
     // -->
 
@@ -2592,6 +2593,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         }
         if (matcherLow.startsWith("inventory_flagged:")) {
             return flagTracker != null && BukkitScriptEvent.coreFlaggedCheck(comparedto.substring("inventory_flagged:".length()), flagTracker);
+        }
+        if (matcherLow.equals("gui")) {
+            return InventoryScriptHelper.isGUI(getInventory());
         }
         ScriptEvent.MatchHelper matcher = BukkitScriptEvent.createMatcher(comparedto);
         return compareInventoryToMatch(matcher);
