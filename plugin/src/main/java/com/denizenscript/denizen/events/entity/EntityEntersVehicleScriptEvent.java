@@ -90,7 +90,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public String getName() { // TODO: once 1.20 is the minimum supported version, remove
-        return "EntityEntersVehicleScriptEvent";
+        return "EntityEntersVehicle";
     }
 
     public void fire(EntityEvent event, Entity vehicle) {
