@@ -559,10 +559,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "reflect_event": return currentEvent == null ? null : new JavaReflectedObjectTag(currentEvent);
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "reflect_event" -> currentEvent == null ? null : new JavaReflectedObjectTag(currentEvent);
+            default -> super.getContext(name);
+        };
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.nms.interfaces;
 
+import com.denizenscript.denizen.events.entity.EntityEntersVehicleScriptEvent;
+import com.denizenscript.denizen.events.entity.EntityExitsVehicleScriptEvent;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -13,9 +15,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.util.BoundingBox;
@@ -475,5 +476,27 @@ public abstract class EntityHelper {
 
     public void modifyRawNBT(Entity entity, CompoundTag tag) {
         throw new UnsupportedOperationException();
+    }
+
+    public static class EntityEntersVehicleScriptEventImpl extends EntityEntersVehicleScriptEvent {
+        @EventHandler
+        public void onEntityMount(EntityMountEvent event) {
+            fire(event, event.getMount());
+        }
+    }
+
+    public Class<? extends EntityEntersVehicleScriptEvent> getEntersVehicleEventImpl() { // TODO: once 1.20 is the minimum supported version, implement in the ScriptEvent class as usual
+        return EntityEntersVehicleScriptEventImpl.class;
+    }
+
+    public static class EntityExistsVehicleScriptEventImpl extends EntityExitsVehicleScriptEvent {
+        @EventHandler
+        public void onEntityMount(EntityDismountEvent event) {
+            fire(event, event.getDismounted());
+        }
+    }
+
+    public Class<? extends EntityExitsVehicleScriptEvent> getExistsVehicleEventImpl() { // TODO: once 1.20 is the minimum supported version, implement in the ScriptEvent class as usual
+        return EntityExistsVehicleScriptEventImpl.class;
     }
 }
