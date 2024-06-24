@@ -489,14 +489,14 @@ public abstract class EntityHelper {
         return EntityEntersVehicleScriptEventImpl.class;
     }
 
-    public static class EntityExistsVehicleScriptEventImpl extends EntityExitsVehicleScriptEvent {
+    public static class EntityExitsVehicleScriptEventImpl extends EntityExitsVehicleScriptEvent {
         @EventHandler
         public void onEntityMount(EntityDismountEvent event) {
             fire(event, event.getDismounted());
         }
     }
 
-    public Class<? extends EntityExitsVehicleScriptEvent> getExistsVehicleEventImpl() { // TODO: once 1.20 is the minimum supported version, implement in the ScriptEvent class as usual
-        return EntityExistsVehicleScriptEventImpl.class;
+    public Class<? extends EntityExitsVehicleScriptEvent> getExitsVehicleEventImpl() { // TODO: once 1.20 is the minimum supported version, implement in the ScriptEvent class as usual
+        return EntityExitsVehicleScriptEventImpl.class;
     }
 }

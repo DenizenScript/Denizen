@@ -795,14 +795,14 @@ public class EntityHelperImpl extends EntityHelper {
         return EntityEntersVehicleScriptEventImpl.class;
     }
 
-    public static class EntityExistsVehicleScriptEventImpl extends EntityExitsVehicleScriptEvent {
+    public static class EntityExitsVehicleScriptEventImpl extends EntityExitsVehicleScriptEvent {
         @EventHandler
         public void onEntityMount(EntityDismountEvent event) {
             fire(event, event.getDismounted());
         }
     }
 
-    public Class<? extends EntityExitsVehicleScriptEvent> getExistsVehicleEventImpl() {
-        return EntityExistsVehicleScriptEventImpl.class;
+    public Class<? extends EntityExitsVehicleScriptEvent> getExitsVehicleEventImpl() {
+        return EntityExitsVehicleScriptEventImpl.class;
     }
 }
