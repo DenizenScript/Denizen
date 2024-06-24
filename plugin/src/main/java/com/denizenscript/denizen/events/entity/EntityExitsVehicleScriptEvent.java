@@ -72,6 +72,11 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
         return super.getContext(name);
     }
 
+    @Override
+    public String getName() { // TODO: once 1.20 is the minimum supported version, remove
+        return "EntityExitsVehicleScriptEvent";
+    }
+
     public void fire(EntityEvent event, Entity vehicle) {
         this.entity = new EntityTag(event.getEntity());
         this.vehicle = new EntityTag(vehicle);
