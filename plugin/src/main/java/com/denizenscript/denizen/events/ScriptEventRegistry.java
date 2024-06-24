@@ -113,9 +113,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(EntityDespawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityDropsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityEntersPortalScriptEvent.class);
-        ScriptEvent.registerScriptEvent(EntityEntersVehicleScriptEvent.class);
+        ScriptEvent.registerScriptEvent(NMSHandler.entityHelper.getEntersVehicleEventImpl());
         ScriptEvent.registerScriptEvent(EntityExitsPortalScriptEvent.class);
-        ScriptEvent.registerScriptEvent(EntityExitsVehicleScriptEvent.class);
+        ScriptEvent.registerScriptEvent(NMSHandler.entityHelper.getExitsVehicleEventImpl());
         ScriptEvent.registerScriptEvent(EntityExplodesScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityExplosionPrimesScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityFoodLevelChangeScriptEvent.class);
