@@ -1,16 +1,16 @@
 package com.denizenscript.denizen.objects.properties.material;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.utilities.MultiVersionHelper1_19;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.Candle;
-import org.bukkit.block.data.type.RespawnAnchor;
-import org.bukkit.block.data.type.SeaPickle;
-import org.bukkit.block.data.type.TurtleEgg;
+import org.bukkit.block.data.type.*;
 
 public class MaterialCount implements Property {
 
@@ -26,7 +26,8 @@ public class MaterialCount implements Property {
         return data instanceof SeaPickle
                 || data instanceof TurtleEgg
                 || data instanceof RespawnAnchor
-                || data instanceof Candle;
+                || data instanceof Candle
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.isCountable(mat));
     }
 
     public static MaterialCount getFrom(ObjectTag _material) {
@@ -56,7 +57,7 @@ public class MaterialCount implements Property {
         // @mechanism MaterialTag.count
         // @group properties
         // @description
-        // Returns the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, or candles in a Candle material.
+        // Returns the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, candles in a Candle material, or petals in a Pink Petals material.
         // -->
         PropertyParser.registerStaticTag(MaterialCount.class, ElementTag.class, "count", (attribute, material) -> {
             return new ElementTag(material.getCurrent());
@@ -68,7 +69,7 @@ public class MaterialCount implements Property {
         // @mechanism MaterialTag.count
         // @group properties
         // @description
-        // Returns the maximum amount of pickles allowed in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, or candles in a Candle material.
+        // Returns the maximum amount of pickles allowed in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, candles in a Candle material, or petals in a Pink Petals material.
         // -->
         PropertyParser.registerStaticTag(MaterialCount.class, ElementTag.class, "count_max", (attribute, material) -> {
             return new ElementTag(material.getMax());
@@ -80,7 +81,7 @@ public class MaterialCount implements Property {
         // @mechanism MaterialTag.count
         // @group properties
         // @description
-        // Returns the minimum amount of pickles allowed in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, or candles in a Candle material.
+        // Returns the minimum amount of pickles allowed in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, candles in a Candle material, or petals in a Pink Petals material.
         // -->
         PropertyParser.registerStaticTag(MaterialCount.class, ElementTag.class, "count_min", (attribute, material) -> {
             return new ElementTag(material.getMin());
@@ -132,6 +133,9 @@ public class MaterialCount implements Property {
         else if (isCandle()) {
             return getCandle().getCandles();
         }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            return MultiVersionHelper1_19.getCount(material);
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -148,6 +152,9 @@ public class MaterialCount implements Property {
         else if (isCandle()) {
             return getCandle().getMaximumCandles();
         }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            return MultiVersionHelper1_19.getMaxCount(material);
+        }
         throw new UnsupportedOperationException();
     }
 
@@ -163,6 +170,9 @@ public class MaterialCount implements Property {
         }
         else if (isCandle()) {
             return 1;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            return MultiVersionHelper1_19.getMinCount(material);
         }
         throw new UnsupportedOperationException();
     }
@@ -185,7 +195,7 @@ public class MaterialCount implements Property {
         // @name count
         // @input ElementTag(Number)
         // @description
-        // Sets the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, or candles in a Candle material.
+        // Sets the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, candles in a Candle material, or petals in a Pink Petals material.
         // @tags
         // <MaterialTag.count>
         // <MaterialTag.count_min>
@@ -208,6 +218,9 @@ public class MaterialCount implements Property {
             }
             else if (isCandle()) {
                 getCandle().setCandles(count);
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                MultiVersionHelper1_19.setCount(material, count);
             }
         }
     }

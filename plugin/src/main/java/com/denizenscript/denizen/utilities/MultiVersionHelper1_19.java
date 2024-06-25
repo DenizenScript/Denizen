@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.utilities;
 
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -8,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import org.bukkit.World;
+import org.bukkit.block.data.type.PinkPetals;
 import org.bukkit.entity.*;
 
 public class MultiVersionHelper1_19 {
@@ -58,5 +60,32 @@ public class MultiVersionHelper1_19 {
 
     public static ElementTag getWardenAngerLevel(Warden warden) {
         return new ElementTag(warden.getAngerLevel());
+    }
+
+    public static boolean isCountable(MaterialTag material) {
+        return material.getModernData() instanceof PinkPetals;
+    }
+    public static int getCount(MaterialTag material) {
+        if (material.getModernData() instanceof PinkPetals petals) {
+            return petals.getFlowerAmount();
+        }
+        throw new UnsupportedOperationException();
+    }
+    public static int getMaxCount(MaterialTag material) {
+        if (material.getModernData() instanceof PinkPetals petals) {
+            return petals.getMaximumFlowerAmount();
+        }
+        throw new UnsupportedOperationException();
+    }
+    public static int getMinCount(MaterialTag material) {
+        if (material.getModernData() instanceof PinkPetals) {
+            return 1;
+        }
+        throw new UnsupportedOperationException();
+    }
+    public static void setCount(MaterialTag material, int count) {
+        if (material.getModernData() instanceof PinkPetals petals) {
+            petals.setFlowerAmount(count);
+        }
     }
 }
