@@ -25,7 +25,8 @@ public class ItemTrim extends ItemProperty<MapTag> {
     // Valid values also include ones added by datapacks, plugins, etc. as a namespaced key.
     // For the mechanism, if an item already has a trim, you can omit either material or pattern to keep the original data while also changing the other option.
     // For example, if you only want to change the pattern and not the material, you can omit the material, and it will use the already existing material.
-    // To remove the trim provide an empty map omitting both material and pattern
+    // @mechanism
+    // To remove the trim provide an empty map omitting both material and pattern.
     // -->
 
     public static boolean describes(ItemTag item) {
