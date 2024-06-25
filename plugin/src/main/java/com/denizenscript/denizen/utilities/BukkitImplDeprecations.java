@@ -306,6 +306,10 @@ public class BukkitImplDeprecations {
     // 2023-year-end commonality: #30
     public static Warning debugBlockAlpha = new VerySlowWarning("debugBlockAlpha", "The 'alpha' argument for the 'debugblock' command is deprecated: put the alpha in the color input instead.");
 
+    // Added 2024/6/17
+    // Good candidate for SlowWarning, due to ease of update and the newer names already being more "normal"/well-known
+    public static Warning oldSpigotNames = new VerySlowWarning("oldSpigotNames", "Several features (particles, entities, etc.) had alternative naming added by Spigot, which is now deprecated in favor of the official Minecraft naming; see relevant feature's meta docs for more information.");
+
     // ==================== FUTURE deprecations ====================
 
     // Added 2023/01/15, deprecate officially by 2026

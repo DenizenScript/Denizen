@@ -84,7 +84,6 @@ public abstract class NMSHandler {
     public static FishingHelper fishingHelper;
     public static ItemHelper itemHelper;
     public static PacketHelper packetHelper;
-    public static ParticleHelper particleHelper;
     public static PlayerHelper playerHelper;
     public static WorldHelper worldHelper;
     public static EnchantmentHelper enchantmentHelper;
