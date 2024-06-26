@@ -30,6 +30,7 @@ public class PaperWorldExtensions  {
         });
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+
             // <--[tag]
             // @attribute <WorldTag.gateway_count>
             // @returns ElementTag(Number)
@@ -88,12 +89,13 @@ public class PaperWorldExtensions  {
             WorldTag.tagProcessor.registerMechanism("spawn_gateway", false, (object, mechanism) -> {
                 DragonBattle battle = object.getWorld().getEnderDragonBattle();
                 if (battle == null) {
+                    mechanism.echoError("Cannot spawn gateway in non-end world!");
                     return;
                 }
                 if (!mechanism.hasValue()) {
                     battle.spawnNewGateway();
                 }
-                if (mechanism.requireObject(LocationTag.class)) {
+                else if (mechanism.requireObject(LocationTag.class)) {
                     battle.spawnNewGateway(mechanism.getValue().asType(LocationTag.class, mechanism.context));
                 }
             });
