@@ -26,7 +26,7 @@ public class ItemTrim extends ItemProperty<MapTag> {
     // For the mechanism, if an item already has a trim, you can omit either material or pattern to keep the original data while also changing the other option.
     // For example, if you only want to change the pattern and not the material, you can omit the material, and it will use the already existing material.
     // @mechanism
-    // To remove the trim provide an empty map omitting both material and pattern.
+    // To remove the trim provide no input.
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -57,15 +57,15 @@ public class ItemTrim extends ItemProperty<MapTag> {
 
     @Override
     public void setPropertyValue(MapTag map, Mechanism mechanism) {
-        ElementTag mat = map.getElement("material");
-        ElementTag pat = map.getElement("pattern");
         ArmorMeta meta = (ArmorMeta) getItemMeta();
-        ArmorTrim currentTrim = meta.getTrim();
         ArmorTrim newTrim;
-        if (mat == null && pat == null) {
+        if (map == null) {
             newTrim = null;
         }
         else {
+            ElementTag mat = map.getElement("material");
+            ElementTag pat = map.getElement("pattern");
+            ArmorTrim currentTrim = meta.getTrim();
             if (mat == null && currentTrim == null) {
                 mechanism.echoError("The armor piece must have a material already if you want to omit it!");
                 return;
@@ -83,6 +83,6 @@ public class ItemTrim extends ItemProperty<MapTag> {
     }
 
     public static void register() {
-        autoRegister("trim", ItemTrim.class, MapTag.class, false);
+        autoRegisterNullable("trim", ItemTrim.class, MapTag.class, false);
     }
 }
