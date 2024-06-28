@@ -55,6 +55,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.bukkit.util.*;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -98,12 +99,13 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
      */
     public String backupWorld;
     public int trackedWorldChange;
+    public WeakReference<World> internalWorld;
 
     public String getWorldName() {
         if (backupWorld != null) {
             return backupWorld;
         }
-        World w = super.getWorld();
+        World w = internalWorld == null ? null : internalWorld.get();
         if (w != null) {
             backupWorld = w.getName();
         }
@@ -112,7 +114,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
 
     @Override
     public World getWorld() {
-        World w = super.getWorld();
+        World w = internalWorld == null ? null : internalWorld.get();
         if (w != null) {
             if (trackedWorldChange == WorldListChangeTracker.changes) {
                 return w;
@@ -125,8 +127,10 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             return null;
         }
         trackedWorldChange = WorldListChangeTracker.changes;
-        super.setWorld(Bukkit.getWorld(backupWorld));
-        return super.getWorld();
+        w = Bukkit.getWorld(backupWorld);
+        internalWorld = new WeakReference<>(w);
+        super.setWorld(w);
+        return w;
     }
 
     @Override
@@ -231,8 +235,9 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
      */
     public LocationTag(Location location) {
         this(location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-        if (location instanceof LocationTag) {
-            backupWorld = ((LocationTag) location).backupWorld;
+        if (location instanceof LocationTag loctag) {
+            backupWorld = loctag.backupWorld;
+            internalWorld = loctag.internalWorld;
         }
     }
 
@@ -270,6 +275,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         super(world, x, y, z, EntityHelper.normalizeYaw(yaw), pitch);
         if (world != null) {
             backupWorld = world.getName();
+            internalWorld = new WeakReference<>(world);
         }
     }
 
@@ -532,6 +538,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
     @Override
     public void setWorld(World world) {
         super.setWorld(world);
+        internalWorld = world == null ? null : new WeakReference<>(world);
         backupWorld = world == null ? null : world.getName();
     }
 
