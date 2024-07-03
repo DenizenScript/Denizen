@@ -32,10 +32,10 @@ public class ItemBaseColor extends ItemProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        if (mechanism.hasValue() && !mechanism.requireEnum(DyeColor.class)) {
+        if (value != null && !mechanism.requireEnum(DyeColor.class)) {
             return;
         }
-        setItemStack(NMSHandler.itemHelper.setShieldColor(getItemStack(), mechanism.hasValue() ? value.asEnum(DyeColor.class) : null));
+        setItemStack(NMSHandler.itemHelper.setShieldColor(getItemStack(), value != null ? value.asEnum(DyeColor.class) : null));
     }
 
     @Override
