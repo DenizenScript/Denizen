@@ -6,8 +6,10 @@ import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Banner;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -15,6 +17,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.map.MapView;
 
 import java.util.List;
@@ -141,5 +144,23 @@ public abstract class ItemHelper {
 
     public int getFoodPoints(Material itemType) {
         throw new UnsupportedOperationException();
+    }
+
+    public DyeColor getShieldColor(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        BlockStateMeta stateMeta = (BlockStateMeta) item.getItemMeta();
+        return stateMeta.hasBlockState() ? ((Banner) stateMeta.getBlockState()).getBaseColor() : null;
+    }
+
+    public ItemStack setShieldColor(ItemStack item, DyeColor color) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        if (color == null) {
+            CompoundTag noStateNbt = getNbtData(item).createBuilder().remove("BlockEntityTag").build();
+            return setNbtData(item, noStateNbt);
+        }
+        BlockStateMeta stateMeta = (BlockStateMeta) item.getItemMeta();
+        Banner banner = (Banner) stateMeta.getBlockState();
+        banner.setBaseColor(color);
+        stateMeta.setBlockState(banner);
+        item.setItemMeta(stateMeta);
+        return item;
     }
 }
