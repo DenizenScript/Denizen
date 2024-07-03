@@ -12,6 +12,7 @@ import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -211,5 +212,9 @@ public class PaperAPITools {
     public String getClientBrand(Player player) {
         NetworkInterceptHelper.enable();
         return NMSHandler.playerHelper.getClientBrand(player);
+    }
+
+    public boolean canUseEquipmentSlot(LivingEntity entity, EquipmentSlot slot) {
+        return true;
     }
 }

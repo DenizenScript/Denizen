@@ -25,6 +25,7 @@ import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -376,5 +377,10 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     public String getClientBrand(Player player) {
         String clientBrand = player.getClientBrandName();
         return clientBrand != null ? clientBrand : "unknown";
+    }
+
+    @Override
+    public boolean canUseEquipmentSlot(LivingEntity entity, EquipmentSlot slot) {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? entity.canUseEquipmentSlot(slot) : super.canUseEquipmentSlot(entity, slot);
     }
 }
