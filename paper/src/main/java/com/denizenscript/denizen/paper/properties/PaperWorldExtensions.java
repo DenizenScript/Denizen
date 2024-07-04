@@ -41,6 +41,7 @@ public class PaperWorldExtensions  {
             WorldTag.tagProcessor.registerTag(ElementTag.class, "gateway_count", (attribute, object) -> {
                 DragonBattle battle = object.getWorld().getEnderDragonBattle();
                 if (battle == null) {
+                    attribute.echoError("Provided world is not an end world!");
                     return null;
                 }
                 return new ElementTag(battle.getGatewayCount());
@@ -56,6 +57,7 @@ public class PaperWorldExtensions  {
             WorldTag.tagProcessor.registerTag(ListTag.class, "healing_crystals", (attribute, object) -> {
                 DragonBattle battle = object.getWorld().getEnderDragonBattle();
                 if (battle == null) {
+                    attribute.echoError("Provided world is not an end world!");
                     return null;
                 }
                 return new ListTag(battle.getHealingCrystals(), EntityTag::new);
@@ -71,6 +73,7 @@ public class PaperWorldExtensions  {
             WorldTag.tagProcessor.registerTag(ListTag.class, "respawn_crystals", (attribute, object) -> {
                 DragonBattle battle = object.getWorld().getEnderDragonBattle();
                 if (battle == null) {
+                    attribute.echoError("Provided world is not an end world!");
                     return null;
                 }
                 return new ListTag(battle.getRespawnCrystals(), EntityTag::new);

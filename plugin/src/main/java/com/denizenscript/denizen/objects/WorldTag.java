@@ -838,6 +838,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         registerTag(LocationTag.class, "dragon_portal_location", (attribute, object) -> {
             DragonBattle battle = object.getWorld().getEnderDragonBattle();
             if (battle == null) {
+                attribute.echoError("Provided world is not an end world!");
                 return null;
             }
             if (battle.getEndPortalLocation() == null) {
@@ -1018,6 +1019,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         registerTag(ElementTag.class, "first_dragon_killed", (attribute, object) -> {
             DragonBattle battle = object.getWorld().getEnderDragonBattle();
             if (battle == null) {
+                attribute.echoError("Provided world is not an end world!");
                 return null;
             }
             return new ElementTag(battle.hasBeenPreviouslyKilled());
@@ -1031,12 +1033,9 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Only works in end worlds.
         // -->
         tagProcessor.registerMechanism("respawn_dragon", false, (object, mechanism) -> {
-            if (object.getWorld() == null) {
-                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot set respawn phase.");
-                return;
-            }
             DragonBattle battle = object.getWorld().getEnderDragonBattle();
             if (battle == null) {
+                mechanism.echoError("Provided world is not an end world!");
                 return;
             }
             battle.initiateRespawn();
@@ -1050,12 +1049,9 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Only works in end worlds.
         // -->
         tagProcessor.registerMechanism("reset_crystals", false, (object, mechanism) -> {
-            if (object.getWorld() == null) {
-                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot reset crystals.");
-                return;
-            }
             DragonBattle battle = object.getWorld().getEnderDragonBattle();
             if (battle == null) {
+                mechanism.echoError("Provided world is not an end world!");
                 return;
             }
             battle.resetCrystals();
@@ -1070,12 +1066,9 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Only works in end worlds.
         // -->
         tagProcessor.registerMechanism("respawn_phase", false, ElementTag.class, (object, mechanism, input) -> {
-            if (object.getWorld() == null) {
-                mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot set respawn phase.");
-                return;
-            }
             DragonBattle battle = object.getWorld().getEnderDragonBattle();
             if (battle == null) {
+                mechanism.echoError("Provided world is not an end world!");
                 return;
             }
             battle.setRespawnPhase(input.asEnum(DragonBattle.RespawnPhase.class));
@@ -1092,12 +1085,9 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // Only works in end worlds.
             // -->
             tagProcessor.registerMechanism("first_dragon_killed", false, ElementTag.class, (object, mechanism, input) -> {
-                if (object.getWorld() == null) {
-                    mechanism.echoError("World '" + object.world_name + "' is unloaded, cannot set respawn phase.");
-                    return;
-                }
                 DragonBattle battle = object.getWorld().getEnderDragonBattle();
                 if (battle == null) {
+                    mechanism.echoError("Provided world is not an end world!");
                     return;
                 }
                 battle.setPreviouslyKilled(input.asBoolean());
