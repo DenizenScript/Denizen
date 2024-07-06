@@ -53,6 +53,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.data.BlockData;
@@ -607,5 +608,23 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public int getFoodPoints(Material itemType) {
         return CraftMagicNumbers.getItem(itemType).components().get(DataComponents.FOOD).nutrition();
+    }
+
+    @Override
+    public DyeColor getShieldColor(ItemStack item) {
+        net.minecraft.world.item.DyeColor nmsColor = CraftItemStack.asNMSCopy(item).get(DataComponents.BASE_COLOR);
+        return nmsColor != null ? DyeColor.getByWoolData((byte) nmsColor.getId()) : null;
+    }
+
+    @Override
+    public ItemStack setShieldColor(ItemStack item, DyeColor color) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        if (color != null) {
+            nmsItemStack.set(DataComponents.BASE_COLOR, net.minecraft.world.item.DyeColor.byId(color.getWoolData()));
+        }
+        else {
+            nmsItemStack.remove(DataComponents.BASE_COLOR);
+        }
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 }
