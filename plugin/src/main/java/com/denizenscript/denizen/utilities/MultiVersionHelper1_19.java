@@ -18,7 +18,8 @@ public class MultiVersionHelper1_19 {
 
     public static String getColor(Entity entity) {
         if (entity instanceof Frog frog) {
-            return frog.getVariant().name();
+            // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
+            return String.valueOf(frog.getVariant());
         }
         else if (entity instanceof Boat boat) {
             return boat.getBoatType().name();

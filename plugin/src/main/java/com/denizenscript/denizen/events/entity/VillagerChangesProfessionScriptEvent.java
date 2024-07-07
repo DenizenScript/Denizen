@@ -71,9 +71,10 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
             case "entity":
                 return entity;
             case "reason":
-                return new ElementTag(event.getReason().toString());
+                return new ElementTag(event.getReason());
             case "profession":
-                return new ElementTag(event.getProfession().toString());
+                // TODO: once 1.21 is the minimum supported version, use proper registry-based logic
+                return new ElementTag(String.valueOf(event.getProfession()), true);
         }
         return super.getContext(name);
     }

@@ -242,14 +242,16 @@ public class EntityColor extends EntityProperty<ElementTag> {
             case FOX -> as(Fox.class).getFoxType().name();
             case CAT -> {
                 Cat cat = as(Cat.class);
-                yield cat.getCatType().name() + "|" + cat.getCollarColor().name();
+                // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
+                yield cat.getCatType() + "|" + cat.getCollarColor().name();
             }
             case PANDA -> {
                 Panda panda = as(Panda.class);
                 yield panda.getMainGene().name() + "|" + panda.getHiddenGene().name();
             }
-            case VILLAGER -> as(Villager.class).getVillagerType().name();
-            case ZOMBIE_VILLAGER -> as(ZombieVillager.class).getVillagerType().name();
+            // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
+            case VILLAGER -> String.valueOf(as(Villager.class).getVillagerType());
+            case ZOMBIE_VILLAGER -> String.valueOf(as(ZombieVillager.class).getVillagerType());
             case ARROW -> {
                 try {
                     yield BukkitColorExtensions.fromColor(as(Arrow.class).getColor()).identify();

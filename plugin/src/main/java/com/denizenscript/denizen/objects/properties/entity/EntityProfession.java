@@ -63,7 +63,8 @@ public class EntityProfession implements Property {
 
     @Override
     public String getPropertyString() {
-        return CoreUtilities.toLowerCase(getProfession().name());
+        // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
+        return CoreUtilities.toLowerCase(String.valueOf(getProfession()));
     }
 
     @Override
@@ -89,6 +90,7 @@ public class EntityProfession implements Property {
         // For the list of possible professions, refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html>
         // -->
         if (attribute.startsWith("profession")) {
+            // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
             return new ElementTag(String.valueOf(getProfession()), true)
                     .getObjectAttribute(attribute.fulfill(1));
         }
