@@ -268,7 +268,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
 
     // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
     @SuppressWarnings({"unchecked", "DataFlowIssue"})
-    public static ListTag listForEnum(Class<?> clazz) {
+    public static ListTag listTypes(Class<?> clazz) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(clazz)) {
             return Utilities.registryKeys(Bukkit.getRegistry((Class<? extends Keyed>) clazz));
         }
@@ -281,34 +281,34 @@ public class EntityColor extends EntityProperty<ElementTag> {
             return MultiVersionHelper1_19.getAllowedColors(type);
         }
         if (type == MOOSHROOM_ENTITY_TYPE) {
-            return listForEnum(MushroomCow.Variant.class);
+            return listTypes(MushroomCow.Variant.class);
         }
         return switch (type) {
             case HORSE -> {
-                ListTag horseColors = listForEnum(Horse.Color.class);
-                horseColors.addAll(listForEnum(Horse.Style.class));
+                ListTag horseColors = listTypes(Horse.Color.class);
+                horseColors.addAll(listTypes(Horse.Style.class));
                 yield horseColors;
             }
-            case SHEEP, WOLF, SHULKER -> listForEnum(DyeColor.class);
-            case RABBIT -> listForEnum(Rabbit.Type.class);
-            case LLAMA, TRADER_LLAMA -> listForEnum(Llama.Color.class);
-            case PARROT -> listForEnum(Parrot.Variant.class);
+            case SHEEP, WOLF, SHULKER -> listTypes(DyeColor.class);
+            case RABBIT -> listTypes(Rabbit.Type.class);
+            case LLAMA, TRADER_LLAMA -> listTypes(Llama.Color.class);
+            case PARROT -> listTypes(Parrot.Variant.class);
             case TROPICAL_FISH -> {
-                ListTag patterns = listForEnum(TropicalFish.Pattern.class);
-                patterns.addAll(listForEnum(DyeColor.class));
+                ListTag patterns = listTypes(TropicalFish.Pattern.class);
+                patterns.addAll(listTypes(DyeColor.class));
                 yield patterns;
             }
-            case FOX -> listForEnum(Fox.Type.class);
-            case CAT -> listForEnum(Cat.Type.class);
-            case PANDA -> listForEnum(Panda.Gene.class);
-            case VILLAGER, ZOMBIE_VILLAGER -> listForEnum(Villager.Type.class);
+            case FOX -> listTypes(Fox.Type.class);
+            case CAT -> listTypes(Cat.Type.class);
+            case PANDA -> listTypes(Panda.Gene.class);
+            case VILLAGER, ZOMBIE_VILLAGER -> listTypes(Villager.Type.class);
             case GOAT -> {
                 ListTag result = new ListTag();
                 result.add("screaming");
                 result.add("normal");
                 yield result;
             }
-            case AXOLOTL -> EntityColor.listForEnum(Axolotl.Variant.class);
+            case AXOLOTL -> EntityColor.listTypes(Axolotl.Variant.class);
             default -> null; // includes Ocelot (deprecated) and arrow (ColorTag)
         };
     }
