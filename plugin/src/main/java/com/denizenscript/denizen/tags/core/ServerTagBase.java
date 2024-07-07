@@ -981,7 +981,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             // For locating specific structures, see <@link language Structure lookups>.
             // -->
             tagProcessor.registerTag(ListTag.class, "structures", (attribute, object) -> {
-                return new ListTag(Registry.STRUCTURE.stream().toList(), structure -> new ElementTag(Utilities.namespacedKeyToString(structure.getKey()), true));
+                return Utilities.registryKeys(Registry.STRUCTURE);
             });
         }
 

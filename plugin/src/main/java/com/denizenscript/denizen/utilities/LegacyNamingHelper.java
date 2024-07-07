@@ -21,7 +21,7 @@ public class LegacyNamingHelper<T extends Enum<T>> {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T extends Keyed> T convert(Class<T> type, String string) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            return Bukkit.getRegistry(type).get(NamespacedKey.minecraft(CoreUtilities.toLowerCase(string)));
+            return Bukkit.getRegistry(type).get(Utilities.parseNamespacedKey(CoreUtilities.toLowerCase(string)));
         }
         return (T) ElementTag.asEnum((Class<? extends Enum>) type, string);
     }
