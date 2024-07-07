@@ -9,6 +9,8 @@ import com.denizenscript.denizen.scripts.commands.world.SignCommand;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.events.ScriptEvent;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -52,6 +54,10 @@ public class Utilities {
 
     public static String namespacedKeyToString(NamespacedKey key) {
         return key.getNamespace().equals(NamespacedKey.MINECRAFT) ? key.getKey() : key.toString();
+    }
+
+    public static ListTag registryKeys(Registry<?> registry) {
+        return new ListTag(registry.stream().toList(), keyed -> new ElementTag(namespacedKeyToString(keyed.getKey()), true));
     }
 
     public static boolean matchesNamespacedKeyButCaseInsensitive(String input) {

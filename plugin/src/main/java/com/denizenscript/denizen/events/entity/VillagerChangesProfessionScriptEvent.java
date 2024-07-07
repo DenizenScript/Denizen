@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.LegacyNamingHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.Villager;
@@ -56,8 +57,8 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (exactMatchesEnum(determinationObj.toString(), Villager.Profession.values())) {
-            Villager.Profession newProfession = Villager.Profession.valueOf(determinationObj.toString().toUpperCase());
+        Villager.Profession newProfession = LegacyNamingHelper.convert(Villager.Profession.class, determinationObj.toString());
+        if (newProfession != null) {
             event.setProfession(newProfession);
             return true;
         }

@@ -912,7 +912,16 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Generally used with <@link command map> and <@link language Map Script Containers>.
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/map/MapCursor.Type.html>.
         // -->
-        registerEnumListTag("map_cursor_types", MapCursor.Type.class, "list_map_cursor_types");
+        // TODO once 1.20 is the minimum supported version, replace with direct registry-based handling
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            tagProcessor.registerStaticTag(ListTag.class, "map_cursor_types", (attribute, object) -> {
+                listDeprecateWarn(attribute);
+                return Utilities.registryKeys(Registry.MAP_DECORATION_TYPE);
+            }, "list_map_cursor_types");
+        }
+        else {
+            registerEnumListTag("map_cursor_types", (Class<? extends Enum<?>>) (Class<?>) MapCursor.Type.class, "list_map_cursor_types");
+        }
 
         // <--[tag]
         // @attribute <server.world_types>

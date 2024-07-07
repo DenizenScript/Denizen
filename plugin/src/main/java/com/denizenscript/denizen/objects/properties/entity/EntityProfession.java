@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.LegacyNamingHelper;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -88,7 +89,7 @@ public class EntityProfession implements Property {
         // For the list of possible professions, refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html>
         // -->
         if (attribute.startsWith("profession")) {
-            return new ElementTag(getProfession())
+            return new ElementTag(String.valueOf(getProfession()), true)
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -109,8 +110,8 @@ public class EntityProfession implements Property {
         // @tags
         // <EntityTag.profession>
         // -->
-        if (mechanism.matches("profession") && mechanism.requireEnum(Villager.Profession.class)) {
-            setProfession(Villager.Profession.valueOf(mechanism.getValue().asString().toUpperCase()));
+        if (mechanism.matches("profession")) {
+            LegacyNamingHelper.requireType(mechanism, Villager.Profession.class).ifPresent(this::setProfession);
         }
     }
 }
