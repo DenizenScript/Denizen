@@ -269,11 +269,11 @@ public class EntityColor extends EntityProperty<ElementTag> {
 
     // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
     @SuppressWarnings({"unchecked", "DataFlowIssue"})
-    public static ListTag listTypes(Class<?> clazz) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(clazz)) {
-            return Utilities.registryKeys(Bukkit.getRegistry((Class<? extends Keyed>) clazz));
+    public static ListTag listTypes(Class<?> type) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
+            return Utilities.registryKeys(Bukkit.getRegistry((Class<? extends Keyed>) type));
         }
-        return new ListTag(Arrays.asList(((Class<? extends Enum<?>>) clazz).getEnumConstants()), ElementTag::new);
+        return new ListTag(Arrays.asList(((Class<? extends Enum<?>>) type).getEnumConstants()), ElementTag::new);
     }
 
     public ListTag getAllowedColors() {
