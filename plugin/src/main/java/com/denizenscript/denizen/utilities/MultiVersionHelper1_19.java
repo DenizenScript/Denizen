@@ -16,9 +16,9 @@ public class MultiVersionHelper1_19 {
         return type == EntityType.FROG || type == EntityType.BOAT || type == EntityType.CHEST_BOAT;
     }
 
+    // TODO Frog variants technically have registries on all supported versions
     public static String getColor(Entity entity) {
         if (entity instanceof Frog frog) {
-            // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
             return String.valueOf(frog.getVariant());
         }
         else if (entity instanceof Boat boat) {
@@ -28,7 +28,6 @@ public class MultiVersionHelper1_19 {
     }
 
     public static ListTag getAllowedColors(EntityType type) {
-        // TODO This technically has registries on all supported versions
         if (type == EntityType.FROG) {
             return EntityColor.listTypes(Frog.Variant.class);
         }
@@ -40,7 +39,6 @@ public class MultiVersionHelper1_19 {
 
     public static void setColor(Entity entity, Mechanism mech) {
         if (entity instanceof Frog frog) {
-            // TODO This technically has registries on all supported versions
             LegacyNamingHelper.requireType(mech, Frog.Variant.class).ifPresent(frog::setVariant);
         }
         else if (entity instanceof Boat boat && mech.requireEnum(Boat.Type.class)) {

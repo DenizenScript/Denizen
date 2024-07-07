@@ -57,6 +57,7 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
 
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
+        // TODO This technically has registries on all supported versions
         Villager.Profession newProfession = LegacyNamingHelper.convert(Villager.Profession.class, determinationObj.toString());
         if (newProfession != null) {
             event.setProfession(newProfession);
@@ -73,7 +74,6 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
             case "reason":
                 return new ElementTag(event.getReason());
             case "profession":
-                // TODO: once 1.21 is the minimum supported version, use proper registry-based logic
                 return new ElementTag(String.valueOf(event.getProfession()), true);
         }
         return super.getContext(name);
