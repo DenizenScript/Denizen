@@ -14,6 +14,7 @@ import org.bukkit.entity.ZombieVillager;
 
 public class EntityProfession implements Property {
 
+    // TODO This technically has registries on all supported versions
     public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof EntityTag)) {
             return false;
@@ -63,7 +64,6 @@ public class EntityProfession implements Property {
 
     @Override
     public String getPropertyString() {
-        // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
         return CoreUtilities.toLowerCase(String.valueOf(getProfession()));
     }
 
@@ -90,7 +90,6 @@ public class EntityProfession implements Property {
         // For the list of possible professions, refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html>
         // -->
         if (attribute.startsWith("profession")) {
-            // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
             return new ElementTag(String.valueOf(getProfession()), true)
                     .getObjectAttribute(attribute.fulfill(1));
         }

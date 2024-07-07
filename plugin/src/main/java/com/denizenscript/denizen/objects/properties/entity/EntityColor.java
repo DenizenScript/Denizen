@@ -187,6 +187,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 }
             }
         }
+        // TODO This technically has registries on all supported versions
         else if (type == EntityType.VILLAGER) {
             LegacyNamingHelper.requireType(mechanism, Villager.Type.class).ifPresent(as(Villager.class)::setVillagerType);
         }
@@ -249,7 +250,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 Panda panda = as(Panda.class);
                 yield panda.getMainGene().name() + "|" + panda.getHiddenGene().name();
             }
-            // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
+            // TODO This technically has registries on all supported versions
             case VILLAGER -> String.valueOf(as(Villager.class).getVillagerType());
             case ZOMBIE_VILLAGER -> String.valueOf(as(ZombieVillager.class).getVillagerType());
             case ARROW -> {
@@ -301,6 +302,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
             case FOX -> listTypes(Fox.Type.class);
             case CAT -> listTypes(Cat.Type.class);
             case PANDA -> listTypes(Panda.Gene.class);
+            // TODO This technically has registries on all supported versions
             case VILLAGER, ZOMBIE_VILLAGER -> listTypes(Villager.Type.class);
             case GOAT -> {
                 ListTag result = new ListTag();

@@ -28,6 +28,7 @@ public class MultiVersionHelper1_19 {
     }
 
     public static ListTag getAllowedColors(EntityType type) {
+        // TODO This technically has registries on all supported versions
         if (type == EntityType.FROG) {
             return EntityColor.listTypes(Frog.Variant.class);
         }
@@ -39,6 +40,7 @@ public class MultiVersionHelper1_19 {
 
     public static void setColor(Entity entity, Mechanism mech) {
         if (entity instanceof Frog frog) {
+            // TODO This technically has registries on all supported versions
             LegacyNamingHelper.requireType(mech, Frog.Variant.class).ifPresent(frog::setVariant);
         }
         else if (entity instanceof Boat boat && mech.requireEnum(Boat.Type.class)) {
