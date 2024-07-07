@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
-import org.bukkit.NamespacedKey;
 
 import java.util.HashSet;
 import java.util.Optional;

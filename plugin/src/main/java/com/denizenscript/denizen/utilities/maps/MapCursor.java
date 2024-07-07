@@ -27,7 +27,7 @@ public class MapCursor extends MapObject {
     }
 
     public org.bukkit.map.MapCursor.Type getType(PlayerTag player) {
-        return LegacyNamingHelper.convert(org.bukkit.map.MapCursor.Type.class, tag(typeTag, player).toUpperCase());
+        return LegacyNamingHelper.convert(org.bukkit.map.MapCursor.Type.class, tag(typeTag, player));
     }
 
     private byte yawToDirection(double yaw) {
