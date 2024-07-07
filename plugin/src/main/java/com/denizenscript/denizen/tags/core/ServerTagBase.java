@@ -913,7 +913,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/map/MapCursor.Type.html>.
         // -->
         // TODO once 1.20 is the minimum supported version, replace with direct registry-based handling
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             tagProcessor.registerStaticTag(ListTag.class, "map_cursor_types", (attribute, object) -> {
                 listDeprecateWarn(attribute);
                 return Utilities.registryKeys(Registry.MAP_DECORATION_TYPE);
