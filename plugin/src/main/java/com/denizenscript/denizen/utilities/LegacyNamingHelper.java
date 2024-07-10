@@ -17,10 +17,10 @@ import java.util.Set;
 public class LegacyNamingHelper<T extends Enum<T>> {
 
     // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({"unchecked", "rawtypes", "DataFlowIssue"})
     public static <T extends Keyed> T convert(Class<T> type, String string) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            return Bukkit.getRegistry(type).get(Utilities.parseNamespacedKey(CoreUtilities.toLowerCase(string)));
+            return Bukkit.getRegistry(type).get(Utilities.parseNamespacedKey(string));
         }
         return (T) ElementTag.asEnum((Class<? extends Enum>) type, string);
     }
