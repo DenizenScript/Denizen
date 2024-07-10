@@ -7,6 +7,7 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -69,11 +70,12 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
             if (entity == null) {
                 return false;
             }
-            if (!entity.tryAdvancedMatcher(fish)) {
+            TagContext context = getTagContext(path);
+            if (!entity.tryAdvancedMatcher(fish, context)) {
                 if (item == null) {
                     return false;
                 }
-                if (!item.tryAdvancedMatcher(fish)) {
+                if (!item.tryAdvancedMatcher(fish, context)) {
                     return false;
                 }
             }

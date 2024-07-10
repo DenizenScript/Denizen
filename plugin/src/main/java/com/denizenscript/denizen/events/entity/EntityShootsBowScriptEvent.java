@@ -67,10 +67,10 @@ public class EntityShootsBowScriptEvent extends BukkitScriptEvent implements Lis
     public boolean matches(ScriptPath path) {
         String attacker = path.eventArgLowerAt(0);
         String item = path.eventArgLowerAt(2);
-        if (!entity.tryAdvancedMatcher(attacker)) {
+        if (!entity.tryAdvancedMatcher(attacker, getTagContext(path))) {
             return false;
         }
-        if (!item.equals("bow") && !bow.tryAdvancedMatcher(item)) {
+        if (!item.equals("bow") && !bow.tryAdvancedMatcher(item, getTagContext(path))) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

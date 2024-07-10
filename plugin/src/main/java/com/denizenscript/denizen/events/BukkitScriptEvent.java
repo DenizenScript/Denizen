@@ -428,7 +428,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public static boolean nonSwitchWithCheck(ScriptPath path, ItemTag held) {
+    public boolean nonSwitchWithCheck(ScriptPath path, ItemTag held) {
         int index;
         for (index = 0; index < path.eventArgsLower.length; index++) {
             if (path.eventArgsLower[index].equals("with")) {
@@ -441,7 +441,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
 
         String with = path.eventArgLowerAt(index + 1);
-        if (with != null && (held == null || !held.tryAdvancedMatcher(with))) {
+        if (with != null && (held == null || !held.tryAdvancedMatcher(with, getTagContext(path)))) {
             return false;
         }
         return true;
@@ -804,17 +804,17 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
-    public static boolean runWithCheck(ScriptPath path, ItemTag held) {
+    public boolean runWithCheck(ScriptPath path, ItemTag held) {
         return runWithCheck(path, held, "with");
     }
 
-    public static boolean runWithCheck(ScriptPath path, ItemTag held, String key) {
+    public boolean runWithCheck(ScriptPath path, ItemTag held, String key) {
         String with = path.switches.get(key);
         if (with != null) {
             if (CoreUtilities.equalsIgnoreCase(with, "item")) {
                 return true;
             }
-            if (held == null || !held.tryAdvancedMatcher(with)) {
+            if (held == null || !held.tryAdvancedMatcher(with, getTagContext(path))) {
                 return false;
             }
         }

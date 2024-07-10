@@ -127,7 +127,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         String mat = path.eventArgLowerAt(index + 1);
-        if (mat.length() > 0 && !withHelpList.contains(mat) && !blockMaterial.tryAdvancedMatcher(mat)) {
+        if (mat.length() > 0 && !withHelpList.contains(mat) && !blockMaterial.tryAdvancedMatcher(mat, getTagContext(path))) {
             return false;
         }
         if (!nonSwitchWithCheck(path, new ItemTag(event.getItem()))) {

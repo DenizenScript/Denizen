@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.tags.TagContext;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -72,10 +73,11 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         String arg3 = path.eventArgLowerAt(3);
         String arg4 = path.eventArgLowerAt(4);
         String inv = arg2.equals("in") ? arg3 : arg3.equals("in") ? arg4 : "";
-        if (!inv.equals("") && !dInv.tryAdvancedMatcher(inv)) {
+        TagContext context = getTagContext(path);
+        if (!inv.equals("") && !dInv.tryAdvancedMatcher(inv, context)) {
             return false;
         }
-        if (!arg2.equals("in") && !item.tryAdvancedMatcher(arg2)) {
+        if (!arg2.equals("in") && !item.tryAdvancedMatcher(arg2, context)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation(), "in_area")) {

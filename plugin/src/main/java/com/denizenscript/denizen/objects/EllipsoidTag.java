@@ -653,7 +653,7 @@ public class EllipsoidTag implements ObjectTag, Notable, Cloneable, AreaContainm
     }
 
     @Override
-    public boolean advancedMatches(String matcher) {
+    public boolean advancedMatches(String matcher, TagContext context) {
         String matcherLow = CoreUtilities.toLowerCase(matcher);
         if (matcherLow.equals("ellipsoid")) {
             return true;

@@ -170,7 +170,7 @@ public interface AreaContainmentObject extends ObjectTag {
             for (Entity ent : area.getCuboidBoundary().getEntitiesPossiblyWithinForTag()) {
                 if (area.doesContainLocation(ent.getLocation())) {
                     EntityTag current = new EntityTag(ent);
-                    if (matcher == null || current.tryAdvancedMatcher(matcher)) {
+                    if (matcher == null || current.tryAdvancedMatcher(matcher, attribute.context)) {
                         entities.addObject(current.getDenizenObject());
                     }
                 }
@@ -226,7 +226,7 @@ public interface AreaContainmentObject extends ObjectTag {
                 NMSHandler.chunkHelper.changeChunkServerThread(area.getWorld().getWorld());
                 try {
                     String matcher = attribute.getParam();
-                    Predicate<Location> predicate = (l) -> new LocationTag(l).tryAdvancedMatcher(matcher);
+                    Predicate<Location> predicate = (l) -> new LocationTag(l).tryAdvancedMatcher(matcher, attribute.context);
                     return area.getBlocks(predicate);
                 }
                 finally {
@@ -252,7 +252,7 @@ public interface AreaContainmentObject extends ObjectTag {
             try {
                 if (attribute.hasParam()) {
                     String matcher = attribute.getParam();
-                    Predicate<Location> predicate = (l) -> SpawnableHelper.isSpawnable(l) && new LocationTag(l.getBlock().getRelative(0, -1, 0).getLocation()).tryAdvancedMatcher(matcher);
+                    Predicate<Location> predicate = (l) -> SpawnableHelper.isSpawnable(l) && new LocationTag(l.getBlock().getRelative(0, -1, 0).getLocation()).tryAdvancedMatcher(matcher, attribute.context);
                     return area.getBlocks(predicate);
                 }
                 return area.getBlocks(SpawnableHelper::isSpawnable);

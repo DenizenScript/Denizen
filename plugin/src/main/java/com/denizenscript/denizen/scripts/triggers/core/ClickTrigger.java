@@ -8,6 +8,8 @@ import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.triggers.AbstractTrigger;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizencore.objects.core.ScriptTag;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.tags.TagManager;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
@@ -107,9 +109,10 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
                 Map<String, String> idMap = script.getIdMapFor(ClickTrigger.class, player);
                 if (!idMap.isEmpty()) {
                     ItemTag heldItem = new ItemTag(player.getPlayerEntity().getEquipment().getItemInMainHand());
+                    TagContext context = new BukkitTagContext(player, npc, new ScriptTag(script));
                     for (Map.Entry<String, String> entry : idMap.entrySet()) {
-                        String entry_value = TagManager.tag(entry.getValue(), new BukkitTagContext(player, npc, null, false, null));
-                        boolean isMatch = entry_value.isEmpty() || heldItem.tryAdvancedMatcher(entry_value);
+                        String entry_value = TagManager.tag(entry.getValue(), context);
+                        boolean isMatch = entry_value.isEmpty() || heldItem.tryAdvancedMatcher(entry_value, context);
                         if (script.shouldDebug()) {
                             Debug.echoDebug(script, "Comparing click trigger '<A>" + entry_value + "<W>' with item '<A>" + heldItem.debuggable() + "<W>': " + (isMatch ? "<GR>Match!" : "<Y>Not a match"));
                         }

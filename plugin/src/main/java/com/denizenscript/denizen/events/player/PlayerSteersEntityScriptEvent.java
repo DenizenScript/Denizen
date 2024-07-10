@@ -72,7 +72,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     @Override
     public boolean matches(ScriptPath path) {
         String entityName = path.eventArgLowerAt(2);
-        if (!entity.tryAdvancedMatcher(entityName)) {
+        if (!entity.tryAdvancedMatcher(entityName, getTagContext(path))) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.ChunkTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.tags.TagContext;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,8 +54,9 @@ public class ChunkLoadEntitiesScriptEvent extends BukkitScriptEvent implements L
         String typeMatch = path.switches.get("entity_type");
         if (typeMatch != null) {
             boolean any = false;
+            TagContext context = getTagContext(path);
             for (Entity e : event.getEntities()) {
-                any = new EntityTag(e).tryAdvancedMatcher(typeMatch);
+                any = new EntityTag(e).tryAdvancedMatcher(typeMatch, context);
                 if (any) {
                     break;
                 }

@@ -52,7 +52,7 @@ public class EntityDropsItemScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
         String iCheck = path.eventArgLowerAt(2);
-        if (!item.tryAdvancedMatcher(iCheck)) {
+        if (!item.tryAdvancedMatcher(iCheck, getTagContext(path))) {
             return false;
         }
         if (!runInCheck(path, location)) {

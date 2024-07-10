@@ -44,7 +44,7 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!mat.equals("leaves") && !material.tryAdvancedMatcher(mat)) {
+        if (!mat.equals("leaves") && !material.tryAdvancedMatcher(mat, getTagContext(path))) {
             return false;
         }
         return super.matches(path);

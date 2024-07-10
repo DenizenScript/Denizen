@@ -51,7 +51,7 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!mat.equals("piston") && !material.tryAdvancedMatcher(mat)) {
+        if (!mat.equals("piston") && !material.tryAdvancedMatcher(mat, getTagContext(path))) {
             return false;
         }
         return super.matches(path);

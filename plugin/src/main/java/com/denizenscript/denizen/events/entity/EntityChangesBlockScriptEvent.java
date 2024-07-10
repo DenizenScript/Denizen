@@ -49,7 +49,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     @Override
     public boolean matches(ScriptPath path) {
         String entName = path.eventArgLowerAt(0);
-        if (!entity.tryAdvancedMatcher(entName)) {
+        if (!entity.tryAdvancedMatcher(entName, getTagContext(path))) {
             return false;
         }
         if (!path.tryArgObject(2, old_material)) {
@@ -61,7 +61,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
                 Debug.echoError("Invalid event material [" + getName() + "]: '" + path.event + "' for " + path.container.getName());
                 return false;
             }
-            else if (!new_material.tryAdvancedMatcher(mat2)) {
+            else if (!new_material.tryAdvancedMatcher(mat2, getTagContext(path))) {
                 return false;
             }
         }

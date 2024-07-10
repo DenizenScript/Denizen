@@ -260,7 +260,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             String matcher = attribute.hasParam() ? attribute.getParam() : null;
             for (Entity entity : object.getEntitiesForTag()) {
                 EntityTag current = new EntityTag(entity);
-                if (matcher == null || current.tryAdvancedMatcher(matcher)) {
+                if (matcher == null || current.tryAdvancedMatcher(matcher, attribute.context)) {
                     entities.addObject(current.getDenizenObject());
                 }
             }
@@ -1405,7 +1405,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     @Override
-    public boolean advancedMatches(String matcher) {
+    public boolean advancedMatches(String matcher, TagContext context) {
         String matcherLow = CoreUtilities.toLowerCase(matcher);
         if (matcherLow.equals("world")) {
             return true;

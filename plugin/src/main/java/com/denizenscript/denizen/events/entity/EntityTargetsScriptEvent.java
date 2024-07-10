@@ -53,7 +53,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
         String victim = path.eventArgLowerAt(2);
-        if (!victim.equals("in") && !victim.equals("because") && !victim.equals("") && (target == null || !target.tryAdvancedMatcher(victim))) {
+        if (!victim.equals("in") && !victim.equals("because") && !victim.equals("") && (target == null || !target.tryAdvancedMatcher(victim, getTagContext(path)))) {
             return false;
         }
         if (!runInCheck(path, location)) {

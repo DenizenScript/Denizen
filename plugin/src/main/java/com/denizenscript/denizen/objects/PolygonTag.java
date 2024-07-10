@@ -888,7 +888,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
                 NMSHandler.chunkHelper.changeChunkServerThread(polygon.getWorld().getWorld());
                 try {
                     String matcher = attribute.getParam();
-                    Predicate<Location> predicate = (l) -> new LocationTag(l).tryAdvancedMatcher(matcher);
+                    Predicate<Location> predicate = (l) -> new LocationTag(l).tryAdvancedMatcher(matcher, attribute.context);
                     return polygon.getBlocksInternal(predicate, true);
                 }
                 finally {
@@ -934,7 +934,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     }
 
     @Override
-    public boolean advancedMatches(String matcher) {
+    public boolean advancedMatches(String matcher, TagContext context) {
         String matcherLow = CoreUtilities.toLowerCase(matcher);
         if (matcherLow.equals("polygon")) {
             return true;

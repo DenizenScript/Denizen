@@ -15,10 +15,7 @@ import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
-import com.denizenscript.denizen.utilities.MultiVersionHelper1_19;
-import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.VanillaTagHelper;
+import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
@@ -2160,7 +2157,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 String matcher = attribute.getParam();
-                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher);
+                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher, attribute.context);
             }
             else {
                 requirement = (e) -> !e.equals(object.getBukkitEntity());
@@ -2196,7 +2193,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 String matcher = attribute.getParam();
-                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher);
+                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher, attribute.context);
             }
             else {
                 requirement = (e) -> !e.equals(object.getBukkitEntity());
@@ -2644,7 +2641,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             String matcher = attribute.getParam();
             for (ItemStack item : object.getLivingEntity().getEquipment().getArmorContents()) {
-                if (new ItemTag(item).tryAdvancedMatcher(matcher)) {
+                if (new ItemTag(item).tryAdvancedMatcher(matcher, attribute.context)) {
                     return new ElementTag(true);
                 }
             }
@@ -4582,7 +4579,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     @Override
-    public boolean advancedMatches(String text) {
+    public boolean advancedMatches(String text, TagContext context) {
         ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(text);
         if (isCitizensNPC()) {
             return matcher.doesMatch("npc", this::tryExactMatcher);

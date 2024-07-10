@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -36,7 +37,7 @@ public class HideEntitiesHelper {
                 }
                 EntityTag entityTag = new EntityTag(entity);
                 for (String matchable : matchersHidden) {
-                    if (entityTag.tryAdvancedMatcher(matchable)) {
+                    if (entityTag.tryAdvancedMatcher(matchable, CoreUtilities.noDebugContext)) {
                         if (entity instanceof Player) {
                             Player thisPlayer = Bukkit.getPlayer(player);
                             if (thisPlayer != null && thisPlayer.canSee((Player) entity)) {

@@ -133,7 +133,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         String target = cmd.equals("damages") ? path.eventArgLowerAt(2) : path.eventArgLowerAt(0);
         if (!attacker.isEmpty()) {
             if (damager != null) {
-                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker)) && (damager == null || !damager.tryAdvancedMatcher(attacker))) {
+                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker, getTagContext(path))) && (damager == null || !damager.tryAdvancedMatcher(attacker, getTagContext(path)))) {
                     return false;
                 }
             }
@@ -143,7 +143,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 }
             }
         }
-        if (!entity.tryAdvancedMatcher(target) || !path.tryObjectSwitch("type", entity)) {
+        if (!entity.tryAdvancedMatcher(target, getTagContext(path)) || !path.tryObjectSwitch("type", entity)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {
@@ -161,7 +161,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             if (block == null) {
                 return false;
             }
-            if (!new LocationTag(block.getLocation()).tryAdvancedMatcher(blockMatcher)) {
+            if (!new LocationTag(block.getLocation()).tryAdvancedMatcher(blockMatcher, getTagContext(path))) {
                 return false;
             }
         }

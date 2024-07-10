@@ -5,6 +5,7 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.tags.TagContext;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
@@ -77,10 +78,11 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
         String cmd = path.eventArgLowerAt(1);
         String veh = cmd.equals("destroyed") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
         String ent = cmd.equals("destroys") ? path.eventArgLowerAt(0) : "";
-        if (!vehicle.tryAdvancedMatcher(veh)) {
+        TagContext context = getTagContext(path);
+        if (!vehicle.tryAdvancedMatcher(veh, context)) {
             return false;
         }
-        if (ent.length() > 0 && (entity == null || !entity.tryAdvancedMatcher(ent))) {
+        if (ent.length() > 0 && (entity == null || !entity.tryAdvancedMatcher(ent, context))) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {

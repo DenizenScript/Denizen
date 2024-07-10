@@ -800,7 +800,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     return false;
                 }
                 if (matcher != null) {
-                    return new EntityTag(e).tryAdvancedMatcher(matcher);
+                    return new EntityTag(e).tryAdvancedMatcher(matcher, attribute.context);
                 }
                 return true;
             });
@@ -3376,7 +3376,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             map.matchersHidden.add(hideMe);
             if (isOnline()) {
                 for (Entity ent : getPlayerEntity().getWorld().getEntities()) {
-                    if (new EntityTag(ent).tryAdvancedMatcher(hideMe) && map.shouldHide(ent)) {
+                    if (new EntityTag(ent).tryAdvancedMatcher(hideMe, mechanism.context) && map.shouldHide(ent)) {
                         NMSHandler.entityHelper.sendHidePacket(getPlayerEntity(), ent);
                     }
                 }
@@ -3399,7 +3399,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             if (isOnline()) {
                 for (Entity ent : getPlayerEntity().getWorld().getEntities()) {
-                    if (new EntityTag(ent).tryAdvancedMatcher(unhideMe) && !map.shouldHide(ent)) {
+                    if (new EntityTag(ent).tryAdvancedMatcher(unhideMe, mechanism.context) && !map.shouldHide(ent)) {
                         NMSHandler.entityHelper.sendShowPacket(getPlayerEntity(), ent);
                     }
                 }
@@ -4172,8 +4172,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     @Override
-    public boolean advancedMatches(String matcher) {
-        return isOnline() && getDenizenEntity().tryAdvancedMatcher(matcher);
+    public boolean advancedMatches(String matcher, TagContext context) {
+        return isOnline() && getDenizenEntity().tryAdvancedMatcher(matcher, context);
     }
 
     /**
