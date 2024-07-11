@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.block.Block;
@@ -131,9 +132,10 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         String attacker = cmd.equals("damages") ? path.eventArgLowerAt(0) :
                 path.eventArgLowerAt(2).equals("by") ? path.eventArgLowerAt(3) : "";
         String target = cmd.equals("damages") ? path.eventArgLowerAt(2) : path.eventArgLowerAt(0);
+        TagContext context = getTagContext(path);
         if (!attacker.isEmpty()) {
             if (damager != null) {
-                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker, getTagContext(path))) && (damager == null || !damager.tryAdvancedMatcher(attacker, getTagContext(path)))) {
+                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker, context)) && (damager == null || !damager.tryAdvancedMatcher(attacker, context))) {
                     return false;
                 }
             }
@@ -143,7 +145,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 }
             }
         }
-        if (!entity.tryAdvancedMatcher(target, getTagContext(path)) || !path.tryObjectSwitch("type", entity)) {
+        if (!entity.tryAdvancedMatcher(target, context) || !path.tryObjectSwitch("type", entity)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {
@@ -161,7 +163,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             if (block == null) {
                 return false;
             }
-            if (!new LocationTag(block.getLocation()).tryAdvancedMatcher(blockMatcher, getTagContext(path))) {
+            if (!new LocationTag(block.getLocation()).tryAdvancedMatcher(blockMatcher, context)) {
                 return false;
             }
         }

@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -67,10 +68,11 @@ public class EntityShootsBowScriptEvent extends BukkitScriptEvent implements Lis
     public boolean matches(ScriptPath path) {
         String attacker = path.eventArgLowerAt(0);
         String item = path.eventArgLowerAt(2);
-        if (!entity.tryAdvancedMatcher(attacker, getTagContext(path))) {
+        TagContext context = getTagContext(path);
+        if (!entity.tryAdvancedMatcher(attacker, context)) {
             return false;
         }
-        if (!item.equals("bow") && !bow.tryAdvancedMatcher(item, getTagContext(path))) {
+        if (!item.equals("bow") && !bow.tryAdvancedMatcher(item, context)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

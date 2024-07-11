@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.EventHandler;
@@ -74,9 +75,10 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         String arg3 = path.eventArgLowerAt(3);
         String attacker = cmd.equals("kills") ? arg0 : arg2.equals("by") ? arg3 : "";
         String target = cmd.equals("kills") ? arg2 : arg0;
+        TagContext context = getTagContext(path);
         if (!attacker.isEmpty()) {
             if (damager != null) {
-                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker, getTagContext(path))) && (damager == null || !damager.tryAdvancedMatcher(attacker, getTagContext(path)))) {
+                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker, context)) && (damager == null || !damager.tryAdvancedMatcher(attacker, context))) {
                     return false;
                 }
             }
@@ -84,7 +86,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
                 return false;
             }
         }
-        if (!entity.tryAdvancedMatcher(target, getTagContext(path))) {
+        if (!entity.tryAdvancedMatcher(target, context)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

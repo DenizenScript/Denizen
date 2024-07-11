@@ -7,6 +7,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.tags.TagContext;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -66,10 +67,11 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     public boolean matches(ScriptPath path) {
         String entName = path.eventArgLowerAt(0);
         String hang = path.eventArgLowerAt(2);
-        if (!breaker.tryAdvancedMatcher(entName, getTagContext(path))) {
+        TagContext context = getTagContext(path);
+        if (!breaker.tryAdvancedMatcher(entName, context)) {
             return false;
         }
-        if (!hang.equals("hanging") && !hanging.tryAdvancedMatcher(hang, getTagContext(path))) {
+        if (!hang.equals("hanging") && !hanging.tryAdvancedMatcher(hang, context)) {
             return false;
         }
         if (!runInCheck(path, location)) {
