@@ -47,7 +47,7 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
         String vehicleLabel = path.eventArgLowerAt(2);
-        if (!vehicleLabel.equals("vehicle") && !vehicle.tryAdvancedMatcher(vehicleLabel, getTagContext(path))) {
+        if (!vehicleLabel.equals("vehicle") && !vehicle.tryAdvancedMatcher(vehicleLabel, path.context)) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {

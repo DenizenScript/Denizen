@@ -70,8 +70,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean matches(ScriptPath path) {
         String mat = path.eventArgLowerAt(2);
-        TagContext context = getTagContext(path);
-        if (!item_in_hand.tryAdvancedMatcher(mat, context) && !material.tryAdvancedMatcher(mat, context)) {
+        if (!item_in_hand.tryAdvancedMatcher(mat, path.context) && !material.tryAdvancedMatcher(mat, path.context)) {
             return false;
         }
         if (!runGenericSwitchCheck(path, "using", hand.asString())) {

@@ -77,7 +77,7 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
                     return false;
                 }
             }
-            else if (!itemCompare.equals("armor") && !newItem.tryAdvancedMatcher(itemCompare, getTagContext(path))) {
+            else if (!itemCompare.equals("armor") && !newItem.tryAdvancedMatcher(itemCompare, path.context)) {
                 return false;
             }
         }
@@ -87,7 +87,7 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
                     return false;
                 }
             }
-            else if (!itemCompare.equals("armor") && !oldItem.tryAdvancedMatcher(itemCompare, getTagContext(path))) {
+            else if (!itemCompare.equals("armor") && !oldItem.tryAdvancedMatcher(itemCompare, path.context)) {
                 return false;
             }
         }

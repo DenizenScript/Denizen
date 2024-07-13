@@ -49,12 +49,11 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     public boolean matches(ScriptPath path) {
         String[] data = path.eventArgsLower;
         // TODO: Switches
-        TagContext context = getTagContext(path);
         for (int index = 3; index < data.length; index++) {
-            if (data[index].equals("from") && !origin_world.tryAdvancedMatcher(data[index + 1], context)) {
+            if (data[index].equals("from") && !origin_world.tryAdvancedMatcher(data[index + 1], path.context)) {
                 return false;
             }
-            else if (data[index].equals("to") && !destination_world.tryAdvancedMatcher(data[index + 1], context)) {
+            else if (data[index].equals("to") && !destination_world.tryAdvancedMatcher(data[index + 1], path.context)) {
                 return false;
             }
         }

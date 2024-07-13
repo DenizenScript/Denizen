@@ -54,9 +54,8 @@ public class ChunkLoadEntitiesScriptEvent extends BukkitScriptEvent implements L
         String typeMatch = path.switches.get("entity_type");
         if (typeMatch != null) {
             boolean any = false;
-            TagContext context = getTagContext(path);
             for (Entity e : event.getEntities()) {
-                any = new EntityTag(e).tryAdvancedMatcher(typeMatch, context);
+                any = new EntityTag(e).tryAdvancedMatcher(typeMatch, path.context);
                 if (any) {
                     break;
                 }

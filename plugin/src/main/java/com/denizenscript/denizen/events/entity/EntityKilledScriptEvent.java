@@ -75,10 +75,9 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         String arg3 = path.eventArgLowerAt(3);
         String attacker = cmd.equals("kills") ? arg0 : arg2.equals("by") ? arg3 : "";
         String target = cmd.equals("kills") ? arg2 : arg0;
-        TagContext context = getTagContext(path);
         if (!attacker.isEmpty()) {
             if (damager != null) {
-                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker, context)) && (damager == null || !damager.tryAdvancedMatcher(attacker, context))) {
+                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker, path.context)) && (damager == null || !damager.tryAdvancedMatcher(attacker, path.context))) {
                     return false;
                 }
             }
@@ -86,7 +85,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
                 return false;
             }
         }
-        if (!entity.tryAdvancedMatcher(target, context)) {
+        if (!entity.tryAdvancedMatcher(target, path.context)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

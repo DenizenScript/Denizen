@@ -54,8 +54,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     @Override
     public boolean matches(ScriptPath path) {
         boolean isAt = path.eventArgLowerAt(3).equals("at");
-        TagContext context = getTagContext(path);
-        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(isAt ? 4 : 3), context)) {
+        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(isAt ? 4 : 3), path.context)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {
@@ -65,7 +64,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
             return false;
         }
         // Deprecated in favor of with: format
-        if (path.eventArgLowerAt(isAt ? 5 : 4).equals("with") && !item.tryAdvancedMatcher(path.eventArgLowerAt(isAt ? 6 : 5), context)) {
+        if (path.eventArgLowerAt(isAt ? 5 : 4).equals("with") && !item.tryAdvancedMatcher(path.eventArgLowerAt(isAt ? 6 : 5), path.context)) {
             return false;
         }
         if (!path.tryObjectSwitch("type", entity)) {

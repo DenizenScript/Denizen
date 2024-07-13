@@ -83,11 +83,10 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
         String cmd = path.eventArgLowerAt(1);
         String veh = cmd.equals("damaged") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
         String ent = cmd.equals("damages") ? path.eventArgLowerAt(0) : "";
-        TagContext context = getTagContext(path);
-        if (!vehicle.tryAdvancedMatcher(veh, context)) {
+        if (!vehicle.tryAdvancedMatcher(veh, path.context)) {
             return false;
         }
-        if (!ent.isEmpty() && (entity == null || !entity.tryAdvancedMatcher(ent, context))) {
+        if (!ent.isEmpty() && (entity == null || !entity.tryAdvancedMatcher(ent, path.context))) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {

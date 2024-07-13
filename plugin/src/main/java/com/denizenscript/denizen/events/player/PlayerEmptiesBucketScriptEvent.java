@@ -50,7 +50,7 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     @Override
     public boolean matches(ScriptPath path) {
         String iTest = path.eventArgLowerAt(2);
-        if ((!iTest.equals("bucket") && !item.tryAdvancedMatcher(iTest, getTagContext(path))) || !runInCheck(path, location)) {
+        if ((!iTest.equals("bucket") && !item.tryAdvancedMatcher(iTest, path.context)) || !runInCheck(path, location)) {
             return false;
         }
         return super.matches(path);

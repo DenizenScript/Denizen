@@ -59,8 +59,7 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     public boolean matches(ScriptPath path) {
         String attacker = path.eventArgLowerAt(0);
         String target = path.eventArgLowerAt(3);
-        TagContext context = getTagContext(path);
-        if (!hitBy.tryAdvancedMatcher(attacker, context) || (!entity.tryAdvancedMatcher(target, context))) {
+        if (!hitBy.tryAdvancedMatcher(attacker, path.context) || (!entity.tryAdvancedMatcher(target, path.context))) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

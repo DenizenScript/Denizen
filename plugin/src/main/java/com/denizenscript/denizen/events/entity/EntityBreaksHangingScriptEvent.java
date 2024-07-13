@@ -67,11 +67,10 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     public boolean matches(ScriptPath path) {
         String entName = path.eventArgLowerAt(0);
         String hang = path.eventArgLowerAt(2);
-        TagContext context = getTagContext(path);
-        if (!breaker.tryAdvancedMatcher(entName, context)) {
+        if (!breaker.tryAdvancedMatcher(entName, path.context)) {
             return false;
         }
-        if (!hang.equals("hanging") && !hanging.tryAdvancedMatcher(hang, context)) {
+        if (!hang.equals("hanging") && !hanging.tryAdvancedMatcher(hang, path.context)) {
             return false;
         }
         if (!runInCheck(path, location)) {

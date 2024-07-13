@@ -40,7 +40,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
     public ItemDespawnEvent event;
 
     @Override
-    public boolean matches(ScriptPath path) {
+    public (ScriptPath path) {
         if (!path.tryArgObject(0, item)) {
             return false;
         }

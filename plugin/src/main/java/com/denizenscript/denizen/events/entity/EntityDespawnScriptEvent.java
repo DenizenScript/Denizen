@@ -44,7 +44,7 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     @Override
     public boolean matches(ScriptPath path) {
         String target = path.eventArgLowerAt(0);
-        if (!entity.tryAdvancedMatcher(target, getTagContext(path))) {
+        if (!entity.tryAdvancedMatcher(target, path.context)) {
             return false;
         }
         if (!path.checkSwitch("cause", cause.asLowerString())) {

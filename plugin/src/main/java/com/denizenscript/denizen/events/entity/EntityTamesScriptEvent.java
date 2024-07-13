@@ -61,8 +61,7 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
         String cmd = path.eventArgLowerAt(1);
         String ownerTest = cmd.equals("tames") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
         String tamed = cmd.equals("tamed") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
-        TagContext context = getTagContext(path);
-        if (!owner.tryAdvancedMatcher(ownerTest, context) || !entity.tryAdvancedMatcher(tamed, context)) {
+        if (!owner.tryAdvancedMatcher(ownerTest, path.context) || !entity.tryAdvancedMatcher(tamed, path.context)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

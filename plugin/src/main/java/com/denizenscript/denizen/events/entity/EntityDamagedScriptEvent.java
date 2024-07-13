@@ -132,10 +132,9 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         String attacker = cmd.equals("damages") ? path.eventArgLowerAt(0) :
                 path.eventArgLowerAt(2).equals("by") ? path.eventArgLowerAt(3) : "";
         String target = cmd.equals("damages") ? path.eventArgLowerAt(2) : path.eventArgLowerAt(0);
-        TagContext context = getTagContext(path);
         if (!attacker.isEmpty()) {
             if (damager != null) {
-                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker, context)) && (damager == null || !damager.tryAdvancedMatcher(attacker, context))) {
+                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker, path.context)) && (damager == null || !damager.tryAdvancedMatcher(attacker, path.context))) {
                     return false;
                 }
             }
@@ -145,7 +144,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 }
             }
         }
-        if (!entity.tryAdvancedMatcher(target, context) || !path.tryObjectSwitch("type", entity)) {
+        if (!entity.tryAdvancedMatcher(target, path.context) || !path.tryObjectSwitch("type", entity)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {
@@ -163,7 +162,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             if (block == null) {
                 return false;
             }
-            if (!new LocationTag(block.getLocation()).tryAdvancedMatcher(blockMatcher, context)) {
+            if (!new LocationTag(block.getLocation()).tryAdvancedMatcher(blockMatcher, path.context)) {
                 return false;
             }
         }

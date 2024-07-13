@@ -70,12 +70,11 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
             if (entity == null) {
                 return false;
             }
-            TagContext context = getTagContext(path);
-            if (!entity.tryAdvancedMatcher(fish, context)) {
+            if (!entity.tryAdvancedMatcher(fish, path.context)) {
                 if (item == null) {
                     return false;
                 }
-                if (!item.tryAdvancedMatcher(fish, context)) {
+                if (!item.tryAdvancedMatcher(fish, path.context)) {
                     return false;
                 }
             }

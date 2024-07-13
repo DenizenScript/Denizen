@@ -70,7 +70,7 @@ public class BlockDropsItemScriptEvent extends BukkitScriptEvent implements List
         if (!item.equals("item")) {
             boolean anyMatch = false;
             for (Item itemEnt : event.getItems()) {
-                if (new ItemTag(itemEnt.getItemStack()).tryAdvancedMatcher(item, getTagContext(path))) {
+                if (new ItemTag(itemEnt.getItemStack()).tryAdvancedMatcher(item, path.context)) {
                     anyMatch = true;
                     break;
                 }

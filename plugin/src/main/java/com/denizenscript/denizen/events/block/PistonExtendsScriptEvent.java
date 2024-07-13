@@ -51,7 +51,7 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!mat.equals("piston") && !material.tryAdvancedMatcher(mat, getTagContext(path))) {
+        if (!mat.equals("piston") && !material.tryAdvancedMatcher(mat, path.context)) {
             return false;
         }
         return super.matches(path);
