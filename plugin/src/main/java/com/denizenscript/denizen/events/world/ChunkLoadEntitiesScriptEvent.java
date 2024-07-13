@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.ChunkTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.tags.TagContext;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
