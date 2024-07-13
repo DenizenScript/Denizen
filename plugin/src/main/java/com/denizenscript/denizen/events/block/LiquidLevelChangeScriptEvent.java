@@ -51,7 +51,7 @@ public class LiquidLevelChangeScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean matches(ScriptPath path) {
         String mat = path.eventArgLowerAt(0);
-        if (!mat.equals("liquid") && !old_material.tryAdvancedMatcher(mat)) {
+        if (!mat.equals("liquid") && !old_material.tryAdvancedMatcher(mat, path.context)) {
             return false;
         }
         if (!runInCheck(path, location)) {

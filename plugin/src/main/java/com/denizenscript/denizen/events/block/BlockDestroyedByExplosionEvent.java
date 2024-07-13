@@ -59,10 +59,10 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (path.switches.containsKey("source_entity") && (entityEvent == null || !new EntityTag(entityEvent.getEntity()).tryAdvancedMatcher(path.switches.get("source_entity")))) {
+        if (path.switches.containsKey("source_entity") && (entityEvent == null || !new EntityTag(entityEvent.getEntity()).tryAdvancedMatcher(path.switches.get("source_entity"), path.context))) {
             return false;
         }
-        if (path.switches.containsKey("source_block") && (blockEvent == null || !new LocationTag(blockEvent.getBlock().getLocation()).tryAdvancedMatcher(path.switches.get("source_block")))) {
+        if (path.switches.containsKey("source_block") && (blockEvent == null || !new LocationTag(blockEvent.getBlock().getLocation()).tryAdvancedMatcher(path.switches.get("source_block"), path.context))) {
             return false;
         }
         return super.matches(path);

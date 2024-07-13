@@ -71,7 +71,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         if (areaName.equals("notable")) { // TODO: Deprecate?
             areaName = path.eventArgLowerAt(3);
         }
-        if (!area.tryAdvancedMatcher(areaName)) {
+        if (!area.tryAdvancedMatcher(areaName, path.context)) {
             return false;
         }
         if (!path.tryArgObject(0, currentEntity)) {

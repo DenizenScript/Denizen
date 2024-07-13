@@ -11,6 +11,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -171,11 +172,12 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
             throw new UnsupportedOperationException();
         }
-        RecipeChoice inputChoice = parseBrewingRecipeChoice(itemScriptContainer, input);
+        TagContext context = DenizenCore.implementation.getTagContext(itemScriptContainer);
+        RecipeChoice inputChoice = parseBrewingRecipeChoice(itemScriptContainer, input, context);
         if (inputChoice == null) {
             return;
         }
-        RecipeChoice ingredientChoice = parseBrewingRecipeChoice(itemScriptContainer, ingredient);
+        RecipeChoice ingredientChoice = parseBrewingRecipeChoice(itemScriptContainer, ingredient, context);
         if (ingredientChoice == null) {
             return;
         }
@@ -196,10 +198,10 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         }
     }
 
-    public static RecipeChoice parseBrewingRecipeChoice(ItemScriptContainer container, String choice) {
+    public static RecipeChoice parseBrewingRecipeChoice(ItemScriptContainer container, String choice, TagContext context) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && choice.startsWith("matcher:")) {
             String matcher = choice.substring("matcher:".length());
-            return PotionMix.createPredicateChoice(item -> new ItemTag(item).tryAdvancedMatcher(matcher));
+            return PotionMix.createPredicateChoice(item -> new ItemTag(item).tryAdvancedMatcher(matcher, context));
         }
         boolean exact = true;
         if (choice.startsWith("material:")) {

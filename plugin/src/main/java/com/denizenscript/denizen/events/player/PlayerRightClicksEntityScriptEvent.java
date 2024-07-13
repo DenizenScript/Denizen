@@ -1,12 +1,15 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -53,7 +56,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     @Override
     public boolean matches(ScriptPath path) {
         boolean isAt = path.eventArgLowerAt(3).equals("at");
-        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(isAt ? 4 : 3))) {
+        if (!entity.tryAdvancedMatcher(path.eventArgLowerAt(isAt ? 4 : 3), path.context)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {
@@ -63,7 +66,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
             return false;
         }
         // Deprecated in favor of with: format
-        if (path.eventArgLowerAt(isAt ? 5 : 4).equals("with") && !item.tryAdvancedMatcher(path.eventArgLowerAt(isAt ? 6 : 5))) {
+        if (path.eventArgLowerAt(isAt ? 5 : 4).equals("with") && !item.tryAdvancedMatcher(path.eventArgLowerAt(isAt ? 6 : 5), path.context)) {
             return false;
         }
         if (!path.tryObjectSwitch("type", entity)) {

@@ -1,13 +1,13 @@
 package com.denizenscript.denizen.events.entity;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -49,7 +49,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     @Override
     public boolean matches(ScriptPath path) {
         String entName = path.eventArgLowerAt(0);
-        if (!entity.tryAdvancedMatcher(entName)) {
+        if (!entity.tryAdvancedMatcher(entName, path.context)) {
             return false;
         }
         if (!path.tryArgObject(2, old_material)) {
@@ -61,7 +61,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
                 Debug.echoError("Invalid event material [" + getName() + "]: '" + path.event + "' for " + path.container.getName());
                 return false;
             }
-            else if (!new_material.tryAdvancedMatcher(mat2)) {
+            else if (!new_material.tryAdvancedMatcher(mat2, path.context)) {
                 return false;
             }
         }

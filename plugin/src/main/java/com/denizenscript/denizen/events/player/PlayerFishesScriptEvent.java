@@ -10,7 +10,6 @@ import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,11 +68,11 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
             if (entity == null) {
                 return false;
             }
-            if (!entity.tryAdvancedMatcher(fish)) {
+            if (!entity.tryAdvancedMatcher(fish, path.context)) {
                 if (item == null) {
                     return false;
                 }
-                if (!item.tryAdvancedMatcher(fish)) {
+                if (!item.tryAdvancedMatcher(fish, path.context)) {
                     return false;
                 }
             }

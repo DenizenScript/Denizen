@@ -960,7 +960,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     @Override
-    public boolean advancedMatches(String matcher) {
+    public boolean advancedMatches(String matcher, TagContext context) {
         String matcherLow = CoreUtilities.toLowerCase(matcher);
         if (matcherLow.contains(":")) {
             if (matcherLow.startsWith("item_flagged:")) {

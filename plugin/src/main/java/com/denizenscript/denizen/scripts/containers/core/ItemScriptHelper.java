@@ -14,6 +14,7 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -118,8 +119,9 @@ public class ItemScriptHelper implements Listener {
                     }
                 }
                 if (exact) {
+                    TagContext context = DenizenCore.implementation.getTagContext(container);
                     for (ItemScriptContainer possibleContainer : ItemScriptHelper.item_scripts.values()) {
-                        if (possibleContainer.getCleanReference() != null && possibleContainer.getCleanReference().tryAdvancedMatcher(entry)) {
+                        if (possibleContainer.getCleanReference() != null && possibleContainer.getCleanReference().tryAdvancedMatcher(entry, context)) {
                             outputItems.add(possibleContainer.getCleanReference().getItemStack());
                             any = true;
                         }

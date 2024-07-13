@@ -695,10 +695,13 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
 
         public String matcher;
 
-        public void run(LocationTag start, AreaContainmentObject area) {
+        public TagContext context;
+
+        public void run(LocationTag start, AreaContainmentObject area, TagContext context) {
             iterationLimit = Settings.blockTagsMaxBlocks();
             areaLimit = area;
             result = new LinkedHashSet<>();
+            this.context = context;
             flood(start.getBlockLocation());
         }
 
@@ -709,7 +712,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             if (!loc.isChunkLoaded()) {
                 return;
             }
-            if (matcher == null ? loc.getBlock().getType() != requiredMaterial : !loc.tryAdvancedMatcher(matcher)) {
+            if (matcher == null ? loc.getBlock().getType() != requiredMaterial : !loc.tryAdvancedMatcher(matcher, context)) {
                 return;
             }
             result.add(loc);
@@ -1785,7 +1788,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 traced = object.getWorld().rayTraceBlocks(object, direction, range, fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER, !nonsolids);
             }
             else {
-                traced = object.getWorld().rayTrace(object, direction, range, fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER, !nonsolids, raySize, (e) -> !ignoreIds.contains(e.getUniqueId()) && new EntityTag(e).tryAdvancedMatcher(entitiesMatcher));
+                traced = object.getWorld().rayTrace(object, direction, range, fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER, !nonsolids, raySize, (e) -> !ignoreIds.contains(e.getUniqueId()) && new EntityTag(e).tryAdvancedMatcher(entitiesMatcher, attribute.context));
             }
             if (traced != null) {
                 LocationTag result = null;
@@ -1870,11 +1873,11 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             RayTraceResult traced;
             if (!blocks) {
                 traced = object.getWorld().rayTraceEntities(object, direction, range, raySize,
-                        (e) -> !ignoreIds.contains(e.getUniqueId()) && (entitiesMatcher.isEmpty() || new EntityTag(e).tryAdvancedMatcher(entitiesMatcher)));
+                        (e) -> !ignoreIds.contains(e.getUniqueId()) && (entitiesMatcher.isEmpty() || new EntityTag(e).tryAdvancedMatcher(entitiesMatcher, attribute.context)));
             }
             else {
                 traced = object.getWorld().rayTrace(object, direction, range, fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER, !nonsolids, raySize,
-                        (e) -> !ignoreIds.contains(e.getUniqueId()) && (entitiesMatcher.isEmpty() || new EntityTag(e).tryAdvancedMatcher(entitiesMatcher)));
+                        (e) -> !ignoreIds.contains(e.getUniqueId()) && (entitiesMatcher.isEmpty() || new EntityTag(e).tryAdvancedMatcher(entitiesMatcher, attribute.context)));
             }
             if (traced != null && traced.getHitEntity() != null) {
                 return new EntityTag(traced.getHitEntity());
@@ -2569,7 +2572,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 else {
                     flooder.requiredMaterial = object.getBlock().getType();
                 }
-                flooder.run(object, area);
+                flooder.run(object, area, attribute.context);
             }
             finally {
                 NMSHandler.chunkHelper.restoreServerThread(object.getWorld());
@@ -2675,7 +2678,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             for (Entity entity : new WorldTag(object.getWorld()).getPossibleEntitiesForBoundaryForTag(box)) {
                 if (Utilities.checkLocationWithBoundingBox(object, entity, radius)) {
                     EntityTag current = new EntityTag(entity);
-                    if (matcher == null || current.tryAdvancedMatcher(matcher)) {
+                    if (matcher == null || current.tryAdvancedMatcher(matcher, attribute.context)) {
                         found.addObject(current.getDenizenObject());
                     }
                 }
@@ -2719,7 +2722,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                             break fullloop;
                         }
                         if (Utilities.checkLocation(object, tstart.clone().add(x + 0.5, y + 0.5, z + 0.5), radius)) {
-                            if (matcher == null || new LocationTag(tstart.clone().add(x, y, z)).tryAdvancedMatcher(matcher)) {
+                            if (matcher == null || new LocationTag(tstart.clone().add(x, y, z)).tryAdvancedMatcher(matcher, attribute.context)) {
                                 found.addObject(new LocationTag(tstart.clone().add(x, y, z)));
                             }
                         }
@@ -2778,7 +2781,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                             Location current = block.getLocation(refLoc).add(0.5, 0.5, 0.5);
                             if (Utilities.checkLocation(object, current, radius)) {
                                 LocationTag actualLoc = new LocationTag(current);
-                                if (matcher == null || actualLoc.tryAdvancedMatcher(matcher)) {
+                                if (matcher == null || actualLoc.tryAdvancedMatcher(matcher, attribute.context)) {
                                     found.addObject(actualLoc);
                                 }
                             }
@@ -3524,7 +3527,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             String matcher = attribute.getParam();
             ListTag list = new ListTag();
             NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
-                if (matcher == null || area.tryAdvancedMatcher(matcher)) {
+                if (matcher == null || area.tryAdvancedMatcher(matcher, attribute.context)) {
                     list.addObject(area);
                 }
             });
@@ -3544,7 +3547,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             ListTag list = new ListTag();
             NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
                 if (area instanceof CuboidTag) {
-                    if (matcher == null || area.tryAdvancedMatcher(matcher)) {
+                    if (matcher == null || area.tryAdvancedMatcher(matcher, attribute.context)) {
                         list.addObject(area);
                     }
                 }
@@ -3565,7 +3568,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             ListTag list = new ListTag();
             NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
                 if (area instanceof EllipsoidTag) {
-                    if (matcher == null || area.tryAdvancedMatcher(matcher)) {
+                    if (matcher == null || area.tryAdvancedMatcher(matcher, attribute.context)) {
                         list.addObject(area);
                     }
                 }
@@ -3586,7 +3589,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             ListTag list = new ListTag();
             NotedAreaTracker.forEachAreaThatContains(object, (area) -> {
                 if (area instanceof PolygonTag) {
-                    if (matcher == null || area.tryAdvancedMatcher(matcher)) {
+                    if (matcher == null || area.tryAdvancedMatcher(matcher, attribute.context)) {
                         list.addObject(area);
                     }
                 }
@@ -5651,7 +5654,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
     }
 
     @Override
-    public boolean advancedMatches(String matcher) {
+    public boolean advancedMatches(String matcher, TagContext context) {
         String matcherLow = CoreUtilities.toLowerCase(matcher);
         if (matcherLow.equals("location")) {
             return true;

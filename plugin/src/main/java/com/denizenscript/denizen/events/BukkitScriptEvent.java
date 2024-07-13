@@ -441,7 +441,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
 
         String with = path.eventArgLowerAt(index + 1);
-        if (with != null && (held == null || !held.tryAdvancedMatcher(with))) {
+        if (with != null && (held == null || !held.tryAdvancedMatcher(with, path.context))) {
             return false;
         }
         return true;
@@ -699,9 +699,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
         if (inputText.startsWith("!")) {
-            return !inCheckInternal(getTagContext(path), getName(), location, inputText.substring(1), path.event, path.container.getName());
+            return !inCheckInternal(path.context, getName(), location, inputText.substring(1), path.event, path.container.getName());
         }
-        return inCheckInternal(getTagContext(path), getName(), location, inputText, path.event, path.container.getName());
+        return inCheckInternal(path.context, getName(), location, inputText, path.event, path.container.getName());
     }
 
     public static boolean inCheckInternal(TagContext context, String name, Location location, String inputText, String evtLine, String containerName) {
@@ -814,7 +814,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             if (CoreUtilities.equalsIgnoreCase(with, "item")) {
                 return true;
             }
-            if (held == null || !held.tryAdvancedMatcher(with)) {
+            if (held == null || !held.tryAdvancedMatcher(with, path.context)) {
                 return false;
             }
         }

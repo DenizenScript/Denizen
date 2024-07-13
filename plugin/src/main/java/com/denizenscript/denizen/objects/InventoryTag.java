@@ -1357,7 +1357,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             }
             for (int slot = 0; slot < dummyInv.inventory.getSize(); slot++) {
                 ItemStack item = dummyInv.inventory.getItem(slot);
-                if (item != null && new ItemTag(item).tryAdvancedMatcher(matcher)) {
+                if (item != null && new ItemTag(item).tryAdvancedMatcher(matcher, attribute.context)) {
                     quantity -= item.getAmount();
                     if (quantity >= 0) {
                         dummyInv.inventory.setItem(slot, null);
@@ -1472,7 +1472,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             int found_items = 0;
             for (ItemStack item : object.getContents()) {
                 if (item != null) {
-                    if (new ItemTag(item).tryAdvancedMatcher(matcher)) {
+                    if (new ItemTag(item).tryAdvancedMatcher(matcher, attribute.context)) {
                         found_items += item.getAmount();
                         if (found_items >= qty) {
                             break;
@@ -1870,7 +1870,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             for (int i = 0; i < object.inventory.getSize(); i++) {
                 ItemStack item = object.inventory.getItem(i);
                 if (item != null) {
-                    if (new ItemTag(item).tryAdvancedMatcher(matcher)) {
+                    if (new ItemTag(item).tryAdvancedMatcher(matcher, attribute.context)) {
                         return new ElementTag(i + 1);
                     }
                 }
@@ -1895,7 +1895,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             for (int i = 0; i < object.inventory.getSize(); i++) {
                 ItemStack item = object.inventory.getItem(i);
                 if (item != null) {
-                    if (new ItemTag(item).tryAdvancedMatcher(matcher)) {
+                    if (new ItemTag(item).tryAdvancedMatcher(matcher, attribute.context)) {
                         result.addObject(new ElementTag(i + 1));
                     }
                 }
@@ -2029,7 +2029,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
             int found_items = 0;
             for (ItemStack item : object.getContents()) {
                 if (item != null) {
-                    if (matcher == null || new ItemTag(item).tryAdvancedMatcher(matcher)) {
+                    if (matcher == null || new ItemTag(item).tryAdvancedMatcher(matcher, attribute.context)) {
                         found_items += item.getAmount();
                     }
                 }
@@ -2583,7 +2583,7 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
     }
 
     @Override
-    public boolean advancedMatches(String comparedto) {
+    public boolean advancedMatches(String comparedto, TagContext context) {
         String matcherLow = CoreUtilities.toLowerCase(comparedto);
         if (matcherLow.equals("inventory")) {
             return true;

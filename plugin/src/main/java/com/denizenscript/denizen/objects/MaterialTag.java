@@ -833,7 +833,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     @Override
-    public boolean advancedMatches(String matcher) {
+    public boolean advancedMatches(String matcher, TagContext context) {
         return advancedMatchesInternal(getMaterial(), matcher, true);
     }
 }

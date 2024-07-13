@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.events.block;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -59,14 +59,14 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
         }
         String adjacent = path.switches.get("adjacent");
         if (adjacent != null) {
-            if (!material.tryAdvancedMatcher(adjacent)) {
+            if (!material.tryAdvancedMatcher(adjacent, path.context)) {
                 Block block = location.getBlock();
-                if (!new LocationTag(block.getRelative(0, 1, 0).getLocation()).tryAdvancedMatcher(adjacent)
-                        && !new LocationTag(block.getRelative(0, -1, 0).getLocation()).tryAdvancedMatcher(adjacent)
-                        && !new LocationTag(block.getRelative(1, 0, 0).getLocation()).tryAdvancedMatcher(adjacent)
-                        && !new LocationTag(block.getRelative(-1, 0, 0).getLocation()).tryAdvancedMatcher(adjacent)
-                        && !new LocationTag(block.getRelative(0, 0, 1).getLocation()).tryAdvancedMatcher(adjacent)
-                        && !new LocationTag(block.getRelative(0, 0, -1).getLocation()).tryAdvancedMatcher(adjacent)) {
+                if (!new LocationTag(block.getRelative(0, 1, 0).getLocation()).tryAdvancedMatcher(adjacent, path.context)
+                        && !new LocationTag(block.getRelative(0, -1, 0).getLocation()).tryAdvancedMatcher(adjacent, path.context)
+                        && !new LocationTag(block.getRelative(1, 0, 0).getLocation()).tryAdvancedMatcher(adjacent, path.context)
+                        && !new LocationTag(block.getRelative(-1, 0, 0).getLocation()).tryAdvancedMatcher(adjacent, path.context)
+                        && !new LocationTag(block.getRelative(0, 0, 1).getLocation()).tryAdvancedMatcher(adjacent, path.context)
+                        && !new LocationTag(block.getRelative(0, 0, -1).getLocation()).tryAdvancedMatcher(adjacent, path.context)) {
                     return false;
                 }
             }

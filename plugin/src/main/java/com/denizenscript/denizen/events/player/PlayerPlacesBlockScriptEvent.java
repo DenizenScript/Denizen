@@ -1,10 +1,13 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.*;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,7 +72,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean matches(ScriptPath path) {
         String mat = path.eventArgLowerAt(2);
-        if (!item_in_hand.tryAdvancedMatcher(mat) && !material.tryAdvancedMatcher(mat)) {
+        if (!item_in_hand.tryAdvancedMatcher(mat, path.context) && !material.tryAdvancedMatcher(mat, path.context)) {
             return false;
         }
         if (!runGenericSwitchCheck(path, "using", hand.asString())) {

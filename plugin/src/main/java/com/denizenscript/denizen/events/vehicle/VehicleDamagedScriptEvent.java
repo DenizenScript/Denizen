@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.vehicle;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -82,10 +82,10 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
         String cmd = path.eventArgLowerAt(1);
         String veh = cmd.equals("damaged") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
         String ent = cmd.equals("damages") ? path.eventArgLowerAt(0) : "";
-        if (!vehicle.tryAdvancedMatcher(veh)) {
+        if (!vehicle.tryAdvancedMatcher(veh, path.context)) {
             return false;
         }
-        if (!ent.isEmpty() && (entity == null || !entity.tryAdvancedMatcher(ent))) {
+        if (!ent.isEmpty() && (entity == null || !entity.tryAdvancedMatcher(ent, path.context))) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {

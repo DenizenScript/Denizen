@@ -2160,7 +2160,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 String matcher = attribute.getParam();
-                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher);
+                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher, attribute.context);
             }
             else {
                 requirement = (e) -> !e.equals(object.getBukkitEntity());
@@ -2196,7 +2196,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 String matcher = attribute.getParam();
-                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher);
+                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher, attribute.context);
             }
             else {
                 requirement = (e) -> !e.equals(object.getBukkitEntity());
@@ -2644,7 +2644,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             String matcher = attribute.getParam();
             for (ItemStack item : object.getLivingEntity().getEquipment().getArmorContents()) {
-                if (new ItemTag(item).tryAdvancedMatcher(matcher)) {
+                if (new ItemTag(item).tryAdvancedMatcher(matcher, attribute.context)) {
                     return new ElementTag(true);
                 }
             }
@@ -4582,7 +4582,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     @Override
-    public boolean advancedMatches(String text) {
+    public boolean advancedMatches(String text, TagContext context) {
         ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(text);
         if (isCitizensNPC()) {
             return matcher.doesMatch("npc", this::tryExactMatcher);

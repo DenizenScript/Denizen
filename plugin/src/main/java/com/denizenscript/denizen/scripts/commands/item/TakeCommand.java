@@ -405,7 +405,7 @@ public class TakeCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry, "Must specify an item matcher!");
                     return;
                 }
-                takeByMatcher(inventory, (item) -> new ItemTag(item).tryAdvancedMatcher(matcherText.asString()), quantity.asInt());
+                takeByMatcher(inventory, (item) -> new ItemTag(item).tryAdvancedMatcher(matcherText.asString(), scriptEntry.getContext()), quantity.asInt());
                 break;
             }
             case SLOT: {

@@ -1,9 +1,9 @@
 package com.denizenscript.denizen.events.player;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.event.EventHandler;
@@ -49,10 +49,10 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
         String[] data = path.eventArgsLower;
         // TODO: Switches
         for (int index = 3; index < data.length; index++) {
-            if (data[index].equals("from") && !origin_world.tryAdvancedMatcher(data[index + 1])) {
+            if (data[index].equals("from") && !origin_world.tryAdvancedMatcher(data[index + 1], path.context)) {
                 return false;
             }
-            else if (data[index].equals("to") && !destination_world.tryAdvancedMatcher(data[index + 1])) {
+            else if (data[index].equals("to") && !destination_world.tryAdvancedMatcher(data[index + 1], path.context)) {
                 return false;
             }
         }
