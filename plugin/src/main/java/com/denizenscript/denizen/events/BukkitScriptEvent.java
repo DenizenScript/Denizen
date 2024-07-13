@@ -428,7 +428,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
-    public boolean nonSwitchWithCheck(ScriptPath path, ItemTag held) {
+    public static boolean nonSwitchWithCheck(ScriptPath path, ItemTag held) {
         int index;
         for (index = 0; index < path.eventArgsLower.length; index++) {
             if (path.eventArgsLower[index].equals("with")) {
@@ -804,11 +804,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
-    public boolean runWithCheck(ScriptPath path, ItemTag held) {
+    public static boolean runWithCheck(ScriptPath path, ItemTag held) {
         return runWithCheck(path, held, "with");
     }
 
-    public boolean runWithCheck(ScriptPath path, ItemTag held, String key) {
+    public static boolean runWithCheck(ScriptPath path, ItemTag held, String key) {
         String with = path.switches.get(key);
         if (with != null) {
             if (CoreUtilities.equalsIgnoreCase(with, "item")) {
