@@ -217,18 +217,19 @@ public class EntityAttributeModifiers implements Property {
     // These can be modified by such mechanisms as <@link mechanism EntityTag.attribute_base_values>, <@link mechanism EntityTag.attribute_modifiers>, <@link mechanism EntityTag.add_attribute_modifiers>,
     // <@link mechanism EntityTag.remove_attribute_modifiers>, <@link mechanism ItemTag.attribute_modifiers>, <@link mechanism ItemTag.add_attribute_modifiers>, <@link mechanism ItemTag.remove_attribute_modifiers>, ...
     //
-    // The input format of each of the 'add' and set mechanisms is slightly complicated:  a MapTag where the keys are attribute names, and values are a ListTag of modifiers,
+    // The input format of each of the 'add' and set mechanisms is slightly complicated: a MapTag where the keys are attribute names, and values are a ListTag of modifiers,
     // where each modifier is itself a MapTag with required keys 'operation' and 'amount', and additionally:
     // Before MC 1.20.6: optional 'name', 'slot', and 'id' keys.
-    // On MC 1.20.6: optional  'name', 'slot_group', and 'id' keys.
+    // On MC 1.20.6: optional 'name', 'slot_group', and 'id' keys.
+    // The default ID will be randomly generated, the default name will be the attribute name.
     // After MC 1.21: required 'key' key, and optional 'slot_group'.
-    // The 'id' is the attribute's name/identifier in a "namespaced:key" format (defaulting to the "minecraft" namespace), which has to be unique from other modifiers on the object.
+    // The 'key' is the attribute's name/identifier in a "namespaced:key" format (defaulting to the "minecraft" namespace), which has to be unique from other modifiers on the object.
     //
     // Valid operations: ADD_NUMBER, ADD_SCALAR, and MULTIPLY_SCALAR_1
     // Valid slots (used up to MC 1.20.6): HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
-    // Valid slot groups (used on MC 1.21+): <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlotGroup.html>
+    // Valid slot groups (used on MC 1.20.6+): <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlotGroup.html>
     // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
-    // The default ID will be randomly generated, the default name will be the attribute name, the default slot/slot group is any.
+    // The default slot/slot group is "any".
     //
     // Operation names are based on the Bukkit enum.
     // ADD_NUMBER corresponds to Mojang "ADDITION" - adds on top of the base value.
@@ -250,16 +251,17 @@ public class EntityAttributeModifiers implements Property {
     //
     // See also <@link url https://minecraft.wiki/w/Attribute#Modifiers>
     //
-    // For a quick and dirty in-line input, you can do for example: [generic_max_health=<list[<map[operation=ADD_NUMBER;amount=20;slot=HEAD]>]>]
+    // For a quick and dirty in-line input, you can do for example: [generic_max_health=<list[<map[key=my_project:add_health;operation=ADD_NUMBER;amount=20;slot_group=HEAD]>]>]
     //
     // For more clean/proper input, instead do something like:
     // <code>
     // - definemap attributes:
     //     generic_max_health:
     //         1:
+    //             key: my_project:add_health
     //             operation: ADD_NUMBER
     //             amount: 20
-    //             slot: head
+    //             slot_group: head
     // - inventory adjust slot:head add_attribute_modifiers:<[attributes]>
     // </code>
     //
