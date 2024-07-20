@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityAttributeModifiers;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -14,6 +15,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -61,7 +63,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
         for (Map.Entry<StringHolder, ObjectTag> mapEntry : param.entrySet()) {
             org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(mapEntry.getKey().str.toUpperCase());
             for (ObjectTag listValue : CoreUtilities.objectToList(mapEntry.getValue(), mechanism.context)) {
-                metaMap.put(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue));
+                metaMap.put(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue, mechanism.context));
             }
         }
         ItemMeta meta = getItemMeta();
@@ -132,7 +134,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
             for (Map.Entry<StringHolder, ObjectTag> subValue : param.entrySet()) {
                 org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
                 for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
-                    meta.addAttributeModifier(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue));
+                    meta.addAttributeModifier(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue, mechanism.context));
                 }
             }
             prop.setItemMeta(meta);
@@ -143,7 +145,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
         // @name remove_attribute_modifiers
         // @input ListTag
         // @description
-        // Removes attribute modifiers from an item. Specify a list of attribute names or modifier UUIDs as input.
+        // Removes attribute modifiers from an item. Specify a list of attribute names or modifier keys (UUIDs on versions below MC 1.21) as input.
         // See also <@link language attribute modifiers>.
         // @tags
         // <ItemTag.attribute_modifiers>
@@ -159,11 +161,19 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
                 }
             }
             for (String toRemove : inputList) {
-                UUID id = UUID.fromString(toRemove);
+                UUID id = null;
+                NamespacedKey key = null;
+                boolean is1_21 = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21);
+                if (is1_21) {
+                    key = Utilities.parseNamespacedKey(toRemove);
+                }
+                else {
+                    id = UUID.fromString(toRemove);
+                }
                 Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = meta.getAttributeModifiers();
                 for (org.bukkit.attribute.Attribute attribute : metaMap.keys()) {
                     for (AttributeModifier modifer : metaMap.get(attribute)) {
-                        if (modifer.getUniqueId().equals(id)) {
+                        if (is1_21 ? modifer.getKey().equals(key) : modifer.getUniqueId().equals(id)) {
                             meta.removeAttributeModifier(attribute, modifer);
                             break;
                         }

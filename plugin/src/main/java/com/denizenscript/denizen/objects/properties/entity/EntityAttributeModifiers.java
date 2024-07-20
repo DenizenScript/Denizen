@@ -1,7 +1,10 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -9,15 +12,18 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,24 +84,64 @@ public class EntityAttributeModifiers implements Property {
         result.putObject("name", new ElementTag(modifier.getName()));
         result.putObject("amount", new ElementTag(modifier.getAmount()));
         result.putObject("operation", new ElementTag(modifier.getOperation()));
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            result.putObject("slot_group", new ElementTag(modifier.getSlotGroup().toString(), true));
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            result.putObject("key", new ElementTag(Utilities.namespacedKeyToString(modifier.getKey()), true));
+        }
+        // TODO: remove/deprecate these two
         result.putObject("slot", new ElementTag(modifier.getSlot() == null ? "any" : modifier.getSlot().name()));
-        result.putObject("id", new ElementTag(modifier.getUniqueId().toString()));
+        try {
+            result.putObject("id", new ElementTag(modifier.getUniqueId().toString()));
+        }
+        catch (Exception ignored) {}
         return result;
     }
 
-    public static AttributeModifier modiferForMap(Attribute attr, MapTag map) {
-        ElementTag name = map.getElement("name");
+    public static AttributeModifier modiferForMap(Attribute attr, MapTag map, TagContext context) {
         ElementTag amount = map.getElement("amount");
         ElementTag operation = map.getElement("operation");
-        ElementTag slot = map.getElement("slot", "any");
-        ElementTag id = map.getElement("id");
-        UUID idValue;
         double amountValue;
         AttributeModifier.Operation operationValue = operation.asEnum(AttributeModifier.Operation.class);
         if (operationValue == null) {
             Debug.echoError("Attribute modifier operation '" + operation + "' does not exist.");
             return null;
         }
+        try {
+            amountValue = Double.parseDouble(amount.toString());
+        }
+        catch (NumberFormatException ex) {
+            Debug.echoError("Attribute modifier amount '" + amount + "' is not a valid decimal number.");
+            return null;
+        }
+        ElementTag key = map.getElement("key");
+        boolean is1_21 = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21);
+        if (!is1_21) {
+            return parseLegacyModifier(attr, map, amountValue, operationValue);
+        }
+        if (key == null && map.size() > 2) {
+            BukkitImplDeprecations.pre1_21AttributeFormat.warn(context);
+            return parseLegacyModifier(attr, map, amountValue, operationValue);
+        }
+        if (key == null) {
+            Debug.echoError("Must specify a key.");
+            return null;
+        }
+        String groupName = map.getElement("slot_group", "any").asString();
+        EquipmentSlotGroup group = EquipmentSlotGroup.getByName(groupName);
+        if (group == null) {
+            Debug.echoError("Invalid equipment slot group specified: " + groupName);
+            return null;
+        }
+        return new AttributeModifier(Utilities.parseNamespacedKey(key.asString()), amountValue, operationValue, group);
+    }
+
+    private static AttributeModifier parseLegacyModifier(Attribute attr, MapTag map, double amount, AttributeModifier.Operation operation) {
+        ElementTag name = map.getElement("name");
+        ElementTag slot = map.getElement("slot", "any");
+        ElementTag id = map.getElement("id");
+        UUID idValue;
         try {
             idValue = id == null ? UUID.randomUUID() : UUID.fromString(id.toString());
         }
@@ -104,14 +150,16 @@ public class EntityAttributeModifiers implements Property {
             return null;
         }
         EquipmentSlot slotValue = CoreUtilities.equalsIgnoreCase(slot.toString(), "any") ? null : slot.asEnum(EquipmentSlot.class);
-        try {
-            amountValue = Double.parseDouble(amount.toString());
+        if (slotValue == null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            String groupName = map.getElement("slot_group", "any").asString();
+            EquipmentSlotGroup group = EquipmentSlotGroup.getByName(groupName);
+            if (group == null) {
+                Debug.echoError("Invalid equipment slot group specified: " + groupName);
+                return null;
+            }
+            return new AttributeModifier(idValue, name == null ? attr.name() : name.asString(), amount, operation, group);
         }
-        catch (NumberFormatException ex) {
-            Debug.echoError("Attribute modifier amount '" + amount + "' is not a valid decimal number.");
-            return null;
-        }
-        return new AttributeModifier(idValue, name == null ? attr.name() : name.toString(), amountValue, operationValue, slotValue);
+        return new AttributeModifier(idValue, name == null ? attr.name() : name.toString(), amount, operation, slotValue);
     }
 
     public ListTag getAttributeModifierList(AttributeInstance instance) {
@@ -170,12 +218,17 @@ public class EntityAttributeModifiers implements Property {
     // <@link mechanism EntityTag.remove_attribute_modifiers>, <@link mechanism ItemTag.attribute_modifiers>, <@link mechanism ItemTag.add_attribute_modifiers>, <@link mechanism ItemTag.remove_attribute_modifiers>, ...
     //
     // The input format of each of the 'add' and set mechanisms is slightly complicated:  a MapTag where the keys are attribute names, and values are a ListTag of modifiers,
-    // where each modifier is itself a MapTag with required keys 'operation' and 'amount', and optional keys 'name', 'slot', and 'id'.
+    // where each modifier is itself a MapTag with required keys 'operation' and 'amount', and additionally:
+    // Before MC 1.20.6: optional 'name', 'slot', and 'id' keys.
+    // On MC 1.20.6: optional  'name', 'slot_group', and 'id' keys.
+    // After MC 1.21: required 'key' key, and optional 'slot_group'.
+    // The 'id' is the attribute's name/identifier in a "namespaced:key" format (defaulting to the "minecraft" namespace), which has to be unique from other modifiers on the object.
     //
     // Valid operations: ADD_NUMBER, ADD_SCALAR, and MULTIPLY_SCALAR_1
-    // Valid slots: HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
+    // Valid slots (used up to MC 1.20.6): HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
+    // Valid slot groups (used on MC 1.21+): <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlotGroup.html>
     // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
-    // The default ID will be randomly generated, the default name will be the attribute name, the default slot is any.
+    // The default ID will be randomly generated, the default name will be the attribute name, the default slot/slot group is any.
     //
     // Operation names are based on the Bukkit enum.
     // ADD_NUMBER corresponds to Mojang "ADDITION" - adds on top of the base value.
@@ -210,7 +263,7 @@ public class EntityAttributeModifiers implements Property {
     // - inventory adjust slot:head add_attribute_modifiers:<[attributes]>
     // </code>
     //
-    // When pre-defining a custom item, instead of any of this, simply use an item script: <@link language item script containers>. That page shows an example of valid attribute modifiers on an item script.
+    // When pre-defining a custom item, instead of this, simply use an item script: <@link language item script containers>. That page shows an example of valid attribute modifiers on an item script.
     //
     // -->
 
@@ -270,7 +323,7 @@ public class EntityAttributeModifiers implements Property {
                         instance.removeModifier(modifier);
                     }
                     for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
-                        instance.addModifier(modiferForMap(attr, listValue.asType(MapTag.class, mechanism.context)));
+                        instance.addModifier(modiferForMap(attr, listValue.asType(MapTag.class, mechanism.context), mechanism.context));
                     }
                 }
             }
@@ -305,7 +358,7 @@ public class EntityAttributeModifiers implements Property {
                         continue;
                     }
                     for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
-                        AttributeModifier modifier = modiferForMap(attr, listValue.asType(MapTag.class, mechanism.context));
+                        AttributeModifier modifier = modiferForMap(attr, listValue.asType(MapTag.class, mechanism.context), mechanism.context);
                         try {
                             instance.addModifier(modifier);
                         }
@@ -313,7 +366,12 @@ public class EntityAttributeModifiers implements Property {
                             if (!ex.getMessage().equals("Modifier is already applied on this attribute!")) {
                                 throw ex;
                             }
-                            Debug.echoError("Cannot add attribute with ID '" + modifier.getUniqueId() + "' as the entity already has a modifier with the same ID.");
+                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+                                mechanism.echoError("Cannot add attribute with key '" + modifier.getKey() + "' as the entity already has a modifier with the same key.");
+                            }
+                            else {
+                                mechanism.echoError("Cannot add attribute with ID '" + modifier.getUniqueId() + "' as the entity already has a modifier with the same ID.");
+                            }
                         }
                     }
                 }
@@ -328,7 +386,7 @@ public class EntityAttributeModifiers implements Property {
         // @name remove_attribute_modifiers
         // @input ListTag
         // @description
-        // Removes attribute modifiers from an entity. Specify a list of attribute names or modifier UUIDs as input.
+        // Removes attribute modifiers from an entity. Specify a list of attribute names or modifier keys (UUIDs on versions below MC 1.21) as input.
         // See also <@link language attribute modifiers>.
         // @tags
         // <EntityTag.has_attribute>
@@ -355,14 +413,22 @@ public class EntityAttributeModifiers implements Property {
                 }
             }
             for (String toRemove : inputList) {
-                UUID id = UUID.fromString(toRemove);
+                UUID id = null;
+                NamespacedKey key = null;
+                boolean is1_21 = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21);
+                if (is1_21) {
+                    key = Utilities.parseNamespacedKey(toRemove);
+                }
+                else {
+                    id = UUID.fromString(toRemove);
+                }
                 for (Attribute attr : Attribute.values()) {
                     AttributeInstance instance = ent.getAttribute(attr);
                     if (instance == null) {
                         continue;
                     }
                     for (AttributeModifier modifer : instance.getModifiers()) {
-                        if (modifer.getUniqueId().equals(id)) {
+                        if (is1_21 ? modifer.getKey().equals(key) : modifer.getUniqueId().equals(id)) {
                             instance.removeModifier(modifer);
                             break;
                         }
