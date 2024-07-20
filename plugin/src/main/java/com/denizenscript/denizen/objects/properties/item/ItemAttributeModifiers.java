@@ -159,10 +159,11 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
                 }
             }
             for (String toRemove : inputList) {
+                UUID id = UUID.fromString(toRemove);
                 Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = meta.getAttributeModifiers();
                 for (org.bukkit.attribute.Attribute attribute : metaMap.keys()) {
                     for (AttributeModifier modifer : metaMap.get(attribute)) {
-                        if (getIdString(modifer).equals(toRemove)) {
+                        if (modifer.getUniqueId().equals(id)) {
                             meta.removeAttributeModifier(attribute, modifer);
                             break;
                         }
@@ -171,14 +172,5 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
             }
             prop.setItemMeta(meta);
         });
-    }
-
-    public static String getIdString(AttributeModifier modifier) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            return modifier.getName();
-        }
-        else {
-            return modifier.getUniqueId().toString();
-        }
     }
 }

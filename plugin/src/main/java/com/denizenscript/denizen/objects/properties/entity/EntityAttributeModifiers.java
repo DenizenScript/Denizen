@@ -1,9 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.objects.properties.item.ItemAttributeModifiers;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -82,9 +79,7 @@ public class EntityAttributeModifiers implements Property {
         result.putObject("amount", new ElementTag(modifier.getAmount()));
         result.putObject("operation", new ElementTag(modifier.getOperation()));
         result.putObject("slot", new ElementTag(modifier.getSlot() == null ? "any" : modifier.getSlot().name()));
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) {
-            result.putObject("id", new ElementTag(modifier.getUniqueId().toString()));
-        }
+        result.putObject("id", new ElementTag(modifier.getUniqueId().toString()));
         return result;
     }
 
@@ -93,7 +88,6 @@ public class EntityAttributeModifiers implements Property {
         ElementTag amount = map.getElement("amount");
         ElementTag operation = map.getElement("operation");
         ElementTag slot = map.getElement("slot", "any");
-        // TODO: MC 1.21: ID and name are now the same internal value.
         ElementTag id = map.getElement("id");
         UUID idValue;
         double amountValue;
@@ -316,12 +310,10 @@ public class EntityAttributeModifiers implements Property {
                             instance.addModifier(modifier);
                         }
                         catch (IllegalArgumentException ex) {
-                            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20) && ex.getMessage().equals("Modifier is already applied on this attribute!")) {
-                                Debug.echoError("Cannot add attribute with ID '" + modifier.getUniqueId() + "' as the entity already has a modifier with the same ID.");
-                            }
-                            else {
+                            if (!ex.getMessage().equals("Modifier is already applied on this attribute!")) {
                                 throw ex;
                             }
+                            Debug.echoError("Cannot add attribute with ID '" + modifier.getUniqueId() + "' as the entity already has a modifier with the same ID.");
                         }
                     }
                 }
@@ -363,13 +355,14 @@ public class EntityAttributeModifiers implements Property {
                 }
             }
             for (String toRemove : inputList) {
+                UUID id = UUID.fromString(toRemove);
                 for (Attribute attr : Attribute.values()) {
                     AttributeInstance instance = ent.getAttribute(attr);
                     if (instance == null) {
                         continue;
                     }
                     for (AttributeModifier modifer : instance.getModifiers()) {
-                        if (ItemAttributeModifiers.getIdString(modifer).equals(toRemove)) {
+                        if (modifer.getUniqueId().equals(id)) {
                             instance.removeModifier(modifer);
                             break;
                         }
