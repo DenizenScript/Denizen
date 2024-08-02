@@ -6,6 +6,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.Phantom;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Stray;
 import org.bukkit.entity.Zombie;
 
 public class EntityShouldBurn extends EntityProperty<ElementTag> {
@@ -16,12 +17,13 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @plugin Paper
     // @description
-    // If the entity is a Zombie, Skeleton, or Phantom, controls whether it should burn in daylight.
+    // If the entity is a Zombie, Skeleton, Stray, or Phantom, controls whether it should burn in daylight.
     // -->
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Zombie
                 || entity.getBukkitEntity() instanceof Skeleton
+                || entity.getBukkitEntity() instanceof Stray
                 || entity.getBukkitEntity() instanceof Phantom;
     }
 
@@ -32,6 +34,9 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
         }
         else if (getEntity() instanceof Skeleton skeleton) {
             return new ElementTag(skeleton.shouldBurnInDay());
+        }
+        else if (getEntity() instanceof Stray stray) {
+            return new ElementTag(stray.shouldBurnInDay());
         }
         else { // phantom
             return new ElementTag(as(Phantom.class).shouldBurnInDay());
@@ -51,6 +56,9 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
             }
             else if (getEntity() instanceof Skeleton skeleton) {
                 skeleton.setShouldBurnInDay(param.asBoolean());
+            }
+            else if (getEntity() instanceof Stray stray) {
+                stray.setShouldBurnInDay(param.asBoolean());
             }
             else { // phantom
                 as(Phantom.class).setShouldBurnInDay(param.asBoolean());
