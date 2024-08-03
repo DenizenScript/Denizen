@@ -4,9 +4,8 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import org.bukkit.entity.AbstractSkeleton;
 import org.bukkit.entity.Phantom;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Stray;
 import org.bukkit.entity.Zombie;
 
 public class EntityShouldBurn extends EntityProperty<ElementTag> {
@@ -22,8 +21,7 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Zombie
-                || entity.getBukkitEntity() instanceof Skeleton
-                || entity.getBukkitEntity() instanceof Stray
+                || entity.getBukkitEntity() instanceof AbstractSkeleton
                 || entity.getBukkitEntity() instanceof Phantom;
     }
 
@@ -32,11 +30,8 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
         if (getEntity() instanceof Zombie zombie) {
             return new ElementTag(zombie.shouldBurnInDay());
         }
-        else if (getEntity() instanceof Skeleton skeleton) {
+        else if (getEntity() instanceof AbstractSkeleton skeleton) {
             return new ElementTag(skeleton.shouldBurnInDay());
-        }
-        else if (getEntity() instanceof Stray stray) {
-            return new ElementTag(stray.shouldBurnInDay());
         }
         else { // phantom
             return new ElementTag(as(Phantom.class).shouldBurnInDay());
@@ -54,11 +49,8 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
             if (getEntity() instanceof Zombie zombie) {
                 zombie.setShouldBurnInDay(param.asBoolean());
             }
-            else if (getEntity() instanceof Skeleton skeleton) {
+            else if (getEntity() instanceof AbstractSkeleton skeleton) {
                 skeleton.setShouldBurnInDay(param.asBoolean());
-            }
-            else if (getEntity() instanceof Stray stray) {
-                stray.setShouldBurnInDay(param.asBoolean());
             }
             else { // phantom
                 as(Phantom.class).setShouldBurnInDay(param.asBoolean());
