@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.*;
@@ -539,5 +540,14 @@ public class Utilities {
             }
         }
         return mats;
+    }
+
+    // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
+    @SuppressWarnings({"unchecked", "DataFlowIssue"})
+    public static ListTag listTypes(Class<?> type) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
+            return registryKeys(Bukkit.getRegistry((Class<? extends Keyed>) type));
+        }
+        return new ListTag(Arrays.asList(((Class<? extends Enum<?>>) type).getEnumConstants()), ElementTag::new);
     }
 }

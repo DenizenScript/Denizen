@@ -2429,15 +2429,10 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         });
     }
 
-    public void registerEnumListTag(String name, Class<? extends Enum<?>> enumType, String... deprecatedVariants) {
+    public void registerEnumListTag(String name, Class<?> enumType, String... deprecatedVariants) {
         tagProcessor.registerStaticTag(ListTag.class, name, (attribute, object) -> {
             listDeprecateWarn(attribute);
-            Enum<?>[] enumConstants = enumType.getEnumConstants();
-            ListTag result = new ListTag(enumConstants.length);
-            for (Enum<?> constant : enumConstants) {
-                result.addObject(new ElementTag(constant));
-            }
-            return result;
+            return Utilities.listTypes(enumType);
         }, deprecatedVariants);
     }
 
