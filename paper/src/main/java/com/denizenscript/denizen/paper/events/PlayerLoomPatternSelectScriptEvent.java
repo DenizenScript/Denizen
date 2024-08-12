@@ -2,6 +2,7 @@ package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.InventoryTag;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -64,7 +65,7 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
         if (!runInCheck(path, event.getLoomInventory().getLocation())) {
             return false;
         }
-        if (!path.tryObjectSwitch("type", new ElementTag(event.getPatternType()))) {
+        if (!path.tryObjectSwitch("type", Utilities.enumlikeToElement(event.getPatternType()))) {
             return false;
         }
         return super.matches(path);
@@ -79,7 +80,7 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "loom" -> InventoryTag.mirrorBukkitInventory(event.getLoomInventory());
-            case "pattern" -> new ElementTag(event.getPatternType());
+            case "pattern" -> Utilities.enumlikeToElement(event.getPatternType());
             default -> super.getContext(name);
         };
     }
@@ -90,7 +91,7 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
             String lower = CoreUtilities.toLowerCase(determinationObj.toString());
             if (lower.startsWith("pattern:")) {
                 ElementTag value = new ElementTag(lower.substring("pattern:".length()));
-                event.setPatternType(value.asEnum(PatternType.class));
+                event.setPatternType(Utilities.elementToEnumlike(value, PatternType.class));
                 return true;
             }
         }

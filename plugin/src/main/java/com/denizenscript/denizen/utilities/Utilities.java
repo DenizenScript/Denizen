@@ -550,4 +550,21 @@ public class Utilities {
         }
         return new ListTag(Arrays.asList(((Class<? extends Enum<?>>) type).getEnumConstants()), ElementTag::new);
     }
+
+    public static ElementTag enumlikeToElement(Object val) {
+        if (val instanceof Enum) {
+            return new ElementTag(((Enum<?>) val).name());
+        }
+        if (val instanceof Keyed) {
+            return new ElementTag(namespacedKeyToString(((Keyed) val).getKey()));
+        }
+        return new ElementTag(val.toString());
+    }
+
+    public static <T> T elementToEnumlike(ElementTag element, Class<T> type) {
+        if (Keyed.class.isAssignableFrom(type)) {
+            return (T) Bukkit.getRegistry((Class<? extends Keyed>) type).get(parseNamespacedKey(element.asString()));
+        }
+        return (T) element.asEnum((Class<? extends Enum>) type);
+    }
 }
