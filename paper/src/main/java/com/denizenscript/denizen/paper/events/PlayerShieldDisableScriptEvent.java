@@ -29,7 +29,7 @@ public class PlayerShieldDisableScriptEvent extends BukkitScriptEvent implements
     //
     // @Context
     // <context.damager> returns an EntityTag of the attacker.
-    // <context.cooldown> returns an ElementTag of the cooldown in ticks.
+    // <context.cooldown> returns a DurationTag of the cooldown.
     //
     // @Determine
     // "COOLDOWN:<DurationTag>" to change the cooldown.
