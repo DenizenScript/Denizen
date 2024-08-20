@@ -36,8 +36,4 @@ public class PlayerQuitsScriptEventPaperImpl extends PlayerQuitsScriptEvent {
             default -> super.getContext(name);
         };
     }
-
-
-
-
 }
