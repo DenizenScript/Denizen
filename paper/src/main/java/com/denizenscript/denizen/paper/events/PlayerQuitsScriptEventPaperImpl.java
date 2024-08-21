@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.player.PlayerQuitsScriptEvent;
-import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 
