@@ -5,7 +5,6 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.trait.ArmorStandTrait;
-import net.citizensnpcs.trait.Toggleable;
 import net.citizensnpcs.util.NMS;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -15,7 +14,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class InvisibleTrait extends Trait implements Listener, Toggleable {
+public class InvisibleTrait extends Trait implements Listener {
 
     // <--[language]
     // @name Invisible Trait
