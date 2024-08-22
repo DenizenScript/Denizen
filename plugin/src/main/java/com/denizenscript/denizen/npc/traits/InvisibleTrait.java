@@ -117,7 +117,6 @@ public class InvisibleTrait extends Trait implements Listener {
         }
     }
 
-    @Override
     public boolean toggle() {
         setInvisible(!invisible);
         return invisible;
