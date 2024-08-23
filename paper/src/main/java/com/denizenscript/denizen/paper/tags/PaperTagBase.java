@@ -25,7 +25,7 @@ public class PaperTagBase extends PseudoObjectTagBase<PaperTagBase> {
         // On average, a tick should take 50ms or less for a stable 20tps.
         // -->
         tagProcessor.registerTag(ListTag.class, "tick_times", (attribute, object) -> {
-            ListTag list = new ListTag(3);
+            ListTag list = new ListTag();
             for (long time : Bukkit.getServer().getTickTimes()) {
                 list.addObject(new DurationTag(time / 1000000000D));
             }
