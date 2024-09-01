@@ -25,11 +25,11 @@ public class PlayerShieldDisableScriptEvent extends BukkitScriptEvent implements
     //
     // @Cancellable true
     //
-    // @Triggers When a player shield is disabled.
+    // @Triggers When a players shield is disabled.
     //
     // @Context
-    // <context.damager> returns an EntityTag of the attacker.
-    // <context.cooldown> returns a DurationTag of the cooldown.
+    // <context.damager> returns an EntityTag of the attacker who disabled the shield.
+    // <context.cooldown> returns a DurationTag of the cooldown the shield is disabled for.
     //
     // @Determine
     // "COOLDOWN:<DurationTag>" to change the cooldown.
