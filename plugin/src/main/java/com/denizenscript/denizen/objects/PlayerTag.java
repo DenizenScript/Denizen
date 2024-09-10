@@ -2619,6 +2619,38 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         // <--[mechanism]
         // @object PlayerTag
+        // @name stop_sound
+        // @input ElementTag
+        // @description
+        // Stops all sounds of the specified type for the player.
+        // Valid types are AMBIENT, BLOCKS, HOSTILE, MASTER, MUSIC, NEUTRAL, PLAYERS, RECORDS, VOICE, and WEATHER
+        // Instead of a type, you can specify a full sound key, which usually has the 'minecraft:' prefix.
+        // If no sound type is specified, all types will be stopped.
+        // -->
+        registerOnlineOnlyMechanism("stop_sound", (object, mechanism) -> {
+            SoundCategory category = null;
+            String key = null;
+            if (mechanism.hasValue()) {
+                if (mechanism.getValue().matchesEnum(SoundCategory.class)) {
+                    category = mechanism.getValue().asEnum(SoundCategory.class);
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                        object.getPlayerEntity().stopSound(category);
+                        return;
+                    }
+                }
+                else if (mechanism.getValue().matchesEnum(Sound.class) && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                    object.getPlayerEntity().stopSound(mechanism.getValue().asEnum(Sound.class));
+                    return;
+                }
+                else {
+                    key = mechanism.getValue().asString();
+                }
+            }
+            NMSHandler.playerHelper.stopSound(object.getPlayerEntity(), key, category);
+        });
+
+        // <--[mechanism]
+        // @object PlayerTag
         // @name whitelisted
         // @input ElementTag(Boolean)
         // @description
@@ -3930,34 +3962,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     Debug.echoError("Must specify a valid location and pattern list!");
                 }
             }
-        }
-
-        // <--[mechanism]
-        // @object PlayerTag
-        // @name stop_sound
-        // @input ElementTag
-        // @description
-        // Stops all sounds of the specified type for the player.
-        // Valid types are AMBIENT, BLOCKS, HOSTILE, MASTER, MUSIC, NEUTRAL, PLAYERS, RECORDS, VOICE, and WEATHER
-        // Instead of a type, you can specify a full sound key, which usually has the 'minecraft:' prefix.
-        // If no sound type is specified, all types will be stopped.
-        // -->
-        if (mechanism.matches("stop_sound")) {
-            SoundCategory category = null;
-            String key = null;
-            if (mechanism.hasValue()) {
-                if (mechanism.getValue().matchesEnum(SoundCategory.class)) {
-                    category = mechanism.getValue().asEnum(SoundCategory.class);
-                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-                        getPlayerEntity().stopSound(category);
-                        return;
-                    }
-                }
-                else {
-                    key = mechanism.getValue().asString();
-                }
-            }
-            NMSHandler.playerHelper.stopSound(getPlayerEntity(), key, category);
         }
 
         // <--[mechanism]
