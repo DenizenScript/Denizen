@@ -2624,7 +2624,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Stops all sounds of the specified type for the player.
         // Valid types are AMBIENT, BLOCKS, HOSTILE, MASTER, MUSIC, NEUTRAL, PLAYERS, RECORDS, VOICE, and WEATHER
-        // Instead of a type, you can specify a full sound key, which usually has the 'minecraft:' prefix.
+        // Instead of a type, you can specify a sound <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html>
+        // or a full sound key, which usually has the 'minecraft:' prefix.
         // If no sound type is specified, all types will be stopped.
         // -->
         registerOnlineOnlyMechanism("stop_sound", (object, mechanism) -> {
