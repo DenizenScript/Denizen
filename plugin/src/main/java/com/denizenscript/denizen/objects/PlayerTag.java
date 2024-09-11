@@ -2639,7 +2639,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                         return;
                     }
                 }
-                else if (mechanism.getValue().matchesEnum(Sound.class) && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && mechanism.getValue().matchesEnum(Sound.class)) {
                     object.getPlayerEntity().stopSound(mechanism.getValue().asEnum(Sound.class));
                     return;
                 }
