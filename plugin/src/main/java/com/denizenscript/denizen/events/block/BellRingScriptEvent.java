@@ -57,7 +57,7 @@ public class BellRingScriptEvent extends BukkitScriptEvent implements Listener {
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "entity" -> event.getEntity() == null ? null : new EntityTag(event.getEntity());
+            case "entity" -> event.getEntity() == null ? null : new EntityTag(event.getEntity()).getDenizenObject();
             case "location" -> location;
             case "direction" -> new ElementTag(event.getDirection());
             default -> super.getContext(name);
