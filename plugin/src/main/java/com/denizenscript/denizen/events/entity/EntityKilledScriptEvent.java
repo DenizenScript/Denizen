@@ -1,16 +1,16 @@
 package com.denizenscript.denizen.events.entity;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -76,7 +76,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         String target = cmd.equals("kills") ? arg2 : arg0;
         if (!attacker.isEmpty()) {
             if (damager != null) {
-                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker)) && (damager == null || !damager.tryAdvancedMatcher(attacker))) {
+                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker, path.context)) && (damager == null || !damager.tryAdvancedMatcher(attacker, path.context))) {
                     return false;
                 }
             }
@@ -84,7 +84,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
                 return false;
             }
         }
-        if (!entity.tryAdvancedMatcher(target)) {
+        if (!entity.tryAdvancedMatcher(target, path.context)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

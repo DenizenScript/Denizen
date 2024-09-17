@@ -1,13 +1,13 @@
 package com.denizenscript.denizen.events.entity;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import org.bukkit.event.EventHandler;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
-import org.spigotmc.event.entity.EntityDismountEvent;
+import org.bukkit.event.entity.EntityEvent;
 
 public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -40,8 +40,6 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
 
     public EntityTag vehicle;
     public EntityTag entity;
-    // TODO: 1.20.6: EntityDismountEvent changed packages, might need to register in version-specific modules? or reflection?
-    public EntityDismountEvent event;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -49,7 +47,7 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
         String vehicleLabel = path.eventArgLowerAt(2);
-        if (!vehicleLabel.equals("vehicle") && !vehicle.tryAdvancedMatcher(vehicleLabel)) {
+        if (!vehicleLabel.equals("vehicle") && !vehicle.tryAdvancedMatcher(vehicleLabel, path.context)) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {
@@ -74,11 +72,14 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
         return super.getContext(name);
     }
 
-    @EventHandler
-    public void onEntityExitsVehicle(EntityDismountEvent event) {
-        vehicle = new EntityTag(event.getDismounted());
-        entity = new EntityTag(event.getEntity());
-        this.event = event;
+    @Override
+    public String getName() { // TODO: once 1.20 is the minimum supported version, remove
+        return "EntityExitsVehicle";
+    }
+
+    public void fire(EntityEvent event, Entity vehicle) {
+        this.entity = new EntityTag(event.getEntity());
+        this.vehicle = new EntityTag(vehicle);
         fire(event);
     }
 }

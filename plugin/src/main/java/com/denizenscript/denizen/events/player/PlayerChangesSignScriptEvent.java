@@ -69,7 +69,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean matches(ScriptPath path) {
         String mat = path.eventArgLowerAt(2);
-        if (!mat.equals("sign") && (!material.tryAdvancedMatcher(mat))) {
+        if (!mat.equals("sign") && (!material.tryAdvancedMatcher(mat, path.context))) {
             return false;
         }
         if (!runInCheck(path, location)) {

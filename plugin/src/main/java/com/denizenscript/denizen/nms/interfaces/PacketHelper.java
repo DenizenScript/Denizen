@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import org.bukkit.Bukkit;
@@ -93,7 +94,9 @@ public interface PacketHelper {
         EntityEquipment equipment = entity.getEquipment();
         Map<EquipmentSlot, ItemStack> equipmentMap = new EnumMap<>(EquipmentSlot.class);
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-            equipmentMap.put(slot, equipment.getItem(slot));
+            if (PaperAPITools.instance.canUseEquipmentSlot(entity, slot)) {
+                equipmentMap.put(slot, equipment.getItem(slot));
+            }
         }
         player.sendEquipmentChange(entity, equipmentMap);
     }

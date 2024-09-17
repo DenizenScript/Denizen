@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.npc.traits.TriggerTrait;
 import com.denizenscript.denizen.objects.*;
@@ -9,6 +10,8 @@ import com.denizenscript.denizen.scripts.commands.world.SignCommand;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.events.ScriptEvent;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.tags.TagManager;
@@ -52,6 +55,10 @@ public class Utilities {
 
     public static String namespacedKeyToString(NamespacedKey key) {
         return key.getNamespace().equals(NamespacedKey.MINECRAFT) ? key.getKey() : key.toString();
+    }
+
+    public static ListTag registryKeys(Registry<?> registry) {
+        return new ListTag(registry.stream().toList(), keyed -> new ElementTag(namespacedKeyToString(keyed.getKey()), true));
     }
 
     public static boolean matchesNamespacedKeyButCaseInsensitive(String input) {
@@ -533,5 +540,31 @@ public class Utilities {
             }
         }
         return mats;
+    }
+
+    // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
+    @SuppressWarnings({"unchecked", "DataFlowIssue"})
+    public static ListTag listTypes(Class<?> type) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
+            return registryKeys(Bukkit.getRegistry((Class<? extends Keyed>) type));
+        }
+        return new ListTag(Arrays.asList(((Class<? extends Enum<?>>) type).getEnumConstants()), ElementTag::new);
+    }
+
+    public static ElementTag enumlikeToElement(Object val) {
+        if (val instanceof Enum) {
+            return new ElementTag(((Enum<?>) val).name());
+        }
+        if (val instanceof Keyed) {
+            return new ElementTag(namespacedKeyToString(((Keyed) val).getKey()));
+        }
+        return new ElementTag(val.toString());
+    }
+
+    public static <T> T elementToEnumlike(ElementTag element, Class<T> type) {
+        if (Keyed.class.isAssignableFrom(type)) {
+            return (T) Bukkit.getRegistry((Class<? extends Keyed>) type).get(parseNamespacedKey(element.asString()));
+        }
+        return (T) element.asEnum((Class<? extends Enum>) type);
     }
 }

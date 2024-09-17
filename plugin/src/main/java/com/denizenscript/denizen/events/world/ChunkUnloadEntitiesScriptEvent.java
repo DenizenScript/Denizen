@@ -54,7 +54,7 @@ public class ChunkUnloadEntitiesScriptEvent extends BukkitScriptEvent implements
         if (typeMatch != null) {
             boolean any = false;
             for (Entity e : event.getEntities()) {
-                any = new EntityTag(e).tryAdvancedMatcher(typeMatch);
+                any = new EntityTag(e).tryAdvancedMatcher(typeMatch, path.context);
                 if (any) {
                     break;
                 }

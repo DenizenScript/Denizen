@@ -6,18 +6,19 @@
     <groupId>com.denizenscript</groupId>
     <artifactId>denizen-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
         <BUILD_CLASS>CUSTOM</BUILD_CLASS>
-        <DENIZEN_VERSION>1.3.0</DENIZEN_VERSION>
+        <DENIZEN_VERSION>1.3.1</DENIZEN_VERSION>
     </properties>
 
     <modules>
         <module>plugin</module>
         <module>paper</module>
+        <module>v1_21</module>
         <module>v1_20</module>
         <module>v1_19</module>
         <module>v1_18</module>

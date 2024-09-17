@@ -1,16 +1,16 @@
 package com.denizenscript.denizen.events.entity;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -133,7 +133,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         String target = cmd.equals("damages") ? path.eventArgLowerAt(2) : path.eventArgLowerAt(0);
         if (!attacker.isEmpty()) {
             if (damager != null) {
-                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker)) && (damager == null || !damager.tryAdvancedMatcher(attacker))) {
+                if (!runGenericCheck(attacker, event.getCause().name()) && (projectile == null || !projectile.tryAdvancedMatcher(attacker, path.context)) && (damager == null || !damager.tryAdvancedMatcher(attacker, path.context))) {
                     return false;
                 }
             }
@@ -143,7 +143,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 }
             }
         }
-        if (!entity.tryAdvancedMatcher(target) || !path.tryObjectSwitch("type", entity)) {
+        if (!entity.tryAdvancedMatcher(target, path.context) || !path.tryObjectSwitch("type", entity)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {
@@ -161,7 +161,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             if (block == null) {
                 return false;
             }
-            if (!new LocationTag(block.getLocation()).tryAdvancedMatcher(blockMatcher)) {
+            if (!new LocationTag(block.getLocation()).tryAdvancedMatcher(blockMatcher, path.context)) {
                 return false;
             }
         }

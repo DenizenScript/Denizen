@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.events.entity;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.entity.Entity;
@@ -60,7 +60,7 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
         String cmd = path.eventArgLowerAt(1);
         String ownerTest = cmd.equals("tames") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
         String tamed = cmd.equals("tamed") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
-        if (!owner.tryAdvancedMatcher(ownerTest) || !entity.tryAdvancedMatcher(tamed)) {
+        if (!owner.tryAdvancedMatcher(ownerTest, path.context) || !entity.tryAdvancedMatcher(tamed, path.context)) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

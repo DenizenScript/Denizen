@@ -65,12 +65,12 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
         String with = path.switches.get("with");
         if (with != null) {
             if (event.getAnimationType() == PlayerAnimationType.ARM_SWING) {
-                if (!new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()).tryAdvancedMatcher(with)) {
+                if (!new ItemTag(event.getPlayer().getEquipment().getItemInMainHand()).tryAdvancedMatcher(with, path.context)) {
                     return false;
                 }
             }
             else if (event.getAnimationType() == PlayerAnimationType.OFF_ARM_SWING) {
-                if (!new ItemTag(event.getPlayer().getEquipment().getItemInOffHand()).tryAdvancedMatcher(with)) {
+                if (!new ItemTag(event.getPlayer().getEquipment().getItemInOffHand()).tryAdvancedMatcher(with, path.context)) {
                     return false;
                 }
             }

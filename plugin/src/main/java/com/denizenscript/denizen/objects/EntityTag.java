@@ -2160,7 +2160,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 String matcher = attribute.getParam();
-                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher);
+                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher, attribute.context);
             }
             else {
                 requirement = (e) -> !e.equals(object.getBukkitEntity());
@@ -2196,7 +2196,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.startsWith("type", 2) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
                 String matcher = attribute.getParam();
-                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher);
+                requirement = (e) -> !e.equals(object.getBukkitEntity()) && new EntityTag(e).tryAdvancedMatcher(matcher, attribute.context);
             }
             else {
                 requirement = (e) -> !e.equals(object.getBukkitEntity());
@@ -2488,10 +2488,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @group properties
         // @description
         // Returns the amount of damage the entity will do based on its held item.
-        // Optionally, specify a target entity to test how much damage will be done to that specific target
-        // (modified based on enchantments and that entity's armor/status/etc).
-        // Note that the result will not always be completely exact, as it doesn't take into account some specific factors
-        // (eg sweeping vs single-hit, etc).
+        // Optionally, specify a target entity to test how much damage will be done to that specific target (modified based on enchantments and that entity's armor/status/etc).
+        // Note that the result will not always be completely exact, as it doesn't take into account some specific factors (eg sweeping vs single-hit, etc).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "weapon_damage", (attribute, object) -> {
             Entity target = null;
@@ -2646,7 +2644,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             String matcher = attribute.getParam();
             for (ItemStack item : object.getLivingEntity().getEquipment().getArmorContents()) {
-                if (new ItemTag(item).tryAdvancedMatcher(matcher)) {
+                if (new ItemTag(item).tryAdvancedMatcher(matcher, attribute.context)) {
                     return new ElementTag(true);
                 }
             }
@@ -3893,6 +3891,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Makes a player-type entity interact with a block.
         // -->
         if (mechanism.matches("interact_with") && mechanism.requireObject(LocationTag.class)) {
+            if (!isPlayer()) {
+                mechanism.echoError("Only player-type entities can interact with blocks!");
+                return;
+            }
             LocationTag interactLocation = mechanism.valueAsType(LocationTag.class);
             NMSHandler.entityHelper.forceInteraction(getPlayer(), interactLocation);
         }
@@ -4580,7 +4582,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     }
 
     @Override
-    public boolean advancedMatches(String text) {
+    public boolean advancedMatches(String text, TagContext context) {
         ScriptEvent.MatchHelper matcher = ScriptEvent.createMatcher(text);
         if (isCitizensNPC()) {
             return matcher.doesMatch("npc", this::tryExactMatcher);

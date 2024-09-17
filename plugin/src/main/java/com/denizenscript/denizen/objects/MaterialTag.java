@@ -21,6 +21,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.PropertyMatchHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -671,6 +672,20 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
                 return itemType.isEdible() ? new ElementTag(NMSHandler.itemHelper.getFoodPoints(itemType)) : null;
             });
         }
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
+            // <--[tag]
+            // @attribute <MaterialTag.is_enabled[<world>]>
+            // @returns ElementTag(Boolean)
+            // @description
+            // Returns whether the material is enabled in the specified world.
+            // If experimental features are disabled in the given world, and the MaterialTag is an item or block that is only enabled by experimental features, this will return false.
+            // -->
+            tagProcessor.registerTag(ElementTag.class, WorldTag.class, "is_enabled", (attribute, object, world) -> {
+                return new ElementTag(object.getMaterial().isEnabledByFeature(world.getWorld()));
+            });
+        }
     }
 
     public static ObjectTagProcessor<MaterialTag> tagProcessor = new ObjectTagProcessor<>();
@@ -819,7 +834,19 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     @Override
-    public boolean advancedMatches(String matcher) {
-        return advancedMatchesInternal(getMaterial(), matcher, true);
+    public boolean advancedMatches(String matcher, TagContext context) {
+        if (advancedMatchesInternal(getMaterial(), matcher, true)) {
+            return true;
+        }
+        if (matcher.contains("[") && matcher.endsWith("]")) {
+            PropertyMatchHelper<MaterialTag> helper = PropertyMatchHelper.getPropertyMatchHelper(MaterialTag.class, matcher, (actual, compare) -> {
+                return actual.getMaterial() == compare.getMaterial();
+            });
+            if (helper == null) {
+                return false;
+            }
+            return helper.doesMatch(this);
+        }
+        return false;
     }
 }

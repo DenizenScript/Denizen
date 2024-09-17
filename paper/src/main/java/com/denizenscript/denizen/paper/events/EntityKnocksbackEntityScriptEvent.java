@@ -2,10 +2,10 @@ package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import org.bukkit.event.EventHandler;
@@ -58,7 +58,7 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     public boolean matches(ScriptPath path) {
         String attacker = path.eventArgLowerAt(0);
         String target = path.eventArgLowerAt(3);
-        if (!hitBy.tryAdvancedMatcher(attacker) || (!entity.tryAdvancedMatcher(target))) {
+        if (!hitBy.tryAdvancedMatcher(attacker, path.context) || (!entity.tryAdvancedMatcher(target, path.context))) {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {

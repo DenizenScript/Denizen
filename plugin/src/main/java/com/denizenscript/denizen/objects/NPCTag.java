@@ -2046,8 +2046,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
     }
 
     @Override
-    public boolean advancedMatches(String matcher) {
-        return isSpawned() && getDenizenEntity().tryAdvancedMatcher(matcher);
+    public boolean advancedMatches(String matcher, TagContext context) {
+        return isSpawned() && getDenizenEntity().tryAdvancedMatcher(matcher, context);
     }
 
     /**

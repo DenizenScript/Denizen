@@ -80,7 +80,6 @@ public class Handler extends NMSHandler {
         fishingHelper = new FishingHelperImpl();
         itemHelper = new ItemHelperImpl();
         packetHelper = new PacketHelperImpl();
-        particleHelper = new ParticleHelperImpl();
         playerHelper = new PlayerHelperImpl();
         worldHelper = new WorldHelperImpl();
         enchantmentHelper = new EnchantmentHelperImpl();

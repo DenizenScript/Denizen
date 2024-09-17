@@ -6,17 +6,12 @@
 
     <groupId>com.denizenscript</groupId>
     <artifactId>denizen-paper</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.1-SNAPSHOT</version>
 
     <repositories>
         <repository>
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
-        </repository>
-        <!--TODO: 1.20.6: Paper 1.20.6 uses a snapshot build of adventure currently, can remove this once that's no longer the case-->
-        <repository>
-            <id>sonatype-oss-snapshots1</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
     </repositories>
 
@@ -30,13 +25,13 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.20.6-R0.1-SNAPSHOT</version>
+            <version>1.21.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.citizensnpcs</groupId>
             <artifactId>citizens-main</artifactId>
-            <version>2.0.33-SNAPSHOT</version>
+            <version>2.0.35-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
             <exclusions>

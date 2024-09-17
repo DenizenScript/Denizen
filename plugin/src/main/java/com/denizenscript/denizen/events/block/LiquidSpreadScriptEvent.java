@@ -65,7 +65,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
         }
         else {
             String mat = path.eventArgLowerAt(0);
-            if (!mat.equals("liquid") && !material.tryAdvancedMatcher(mat)) {
+            if (!mat.equals("liquid") && !material.tryAdvancedMatcher(mat, path.context)) {
                 return false;
             }
         }

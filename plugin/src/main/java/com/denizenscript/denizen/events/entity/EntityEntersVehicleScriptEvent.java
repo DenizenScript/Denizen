@@ -1,13 +1,13 @@
 package com.denizenscript.denizen.events.entity;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import org.bukkit.event.EventHandler;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.Listener;
-import org.spigotmc.event.entity.EntityMountEvent;
+import org.bukkit.event.entity.EntityEvent;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -43,8 +43,6 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
 
     public EntityTag vehicle;
     public EntityTag entity;
-    // TODO: 1.20.6: EntityMountEvent changed packages, might need to register in version-specific modules? or reflection?
-    public EntityMountEvent event;
 
     public static HashSet<String> notRelevantEnterables = new HashSet<>(Arrays.asList("notable", "cuboid", "biome", "bed", "portal"));
 
@@ -65,7 +63,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
             return false;
         }
         String vehicleLabel = path.eventArgLowerAt(2);
-        if (!vehicleLabel.equals("vehicle") && !vehicle.tryAdvancedMatcher(vehicleLabel)) {
+        if (!vehicleLabel.equals("vehicle") && !vehicle.tryAdvancedMatcher(vehicleLabel, path.context)) {
             return false;
         }
         if (!runInCheck(path, vehicle.getLocation())) {
@@ -90,11 +88,14 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
         return super.getContext(name);
     }
 
-    @EventHandler
-    public void onEntityEntersVehicle(EntityMountEvent event) {
-        vehicle = new EntityTag(event.getMount());
-        entity = new EntityTag(event.getEntity());
-        this.event = event;
+    @Override
+    public String getName() { // TODO: once 1.20 is the minimum supported version, remove
+        return "EntityEntersVehicle";
+    }
+
+    public void fire(EntityEvent event, Entity vehicle) {
+        this.entity = new EntityTag(event.getEntity());
+        this.vehicle = new EntityTag(vehicle);
         fire(event);
     }
 }

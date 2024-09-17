@@ -16,9 +16,10 @@ public class MultiVersionHelper1_19 {
         return type == EntityType.FROG || type == EntityType.BOAT || type == EntityType.CHEST_BOAT;
     }
 
+    // TODO Frog variants technically have registries on all supported versions
     public static String getColor(Entity entity) {
         if (entity instanceof Frog frog) {
-            return frog.getVariant().name();
+            return String.valueOf(frog.getVariant());
         }
         else if (entity instanceof Boat boat) {
             return boat.getBoatType().name();
@@ -28,17 +29,17 @@ public class MultiVersionHelper1_19 {
 
     public static ListTag getAllowedColors(EntityType type) {
         if (type == EntityType.FROG) {
-            return EntityColor.listForEnum(Frog.Variant.values());
+            return Utilities.listTypes(Frog.Variant.class);
         }
         else if (type == EntityType.BOAT || type == EntityType.CHEST_BOAT) {
-            return EntityColor.listForEnum(Boat.Type.values());
+            return Utilities.listTypes(Boat.Type.class);
         }
         return null;
     }
 
     public static void setColor(Entity entity, Mechanism mech) {
-        if (entity instanceof Frog frog && mech.requireEnum(Frog.Variant.class)) {
-            frog.setVariant(mech.getValue().asEnum(Frog.Variant.class));
+        if (entity instanceof Frog frog) {
+            LegacyNamingHelper.requireType(mech, Frog.Variant.class).ifPresent(frog::setVariant);
         }
         else if (entity instanceof Boat boat && mech.requireEnum(Boat.Type.class)) {
             boat.setBoatType(mech.getValue().asEnum(Boat.Type.class));

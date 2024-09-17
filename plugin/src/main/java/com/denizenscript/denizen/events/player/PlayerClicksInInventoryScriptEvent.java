@@ -149,7 +149,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
             return false;
         }
         String clickedItemText = path.eventArgLowerAt(hasClickType ? 3 : 2);
-        if (!clickedItemText.equals("in") && !item.tryAdvancedMatcher(clickedItemText)) {
+        if (!clickedItemText.equals("in") && !item.tryAdvancedMatcher(clickedItemText, path.context)) {
             return false;
         }
         int inIndex = -1;
@@ -158,7 +158,7 @@ public class PlayerClicksInInventoryScriptEvent extends BukkitScriptEvent implem
                 inIndex = i;
             }
         }
-        if (!inventory.tryAdvancedMatcher(path.eventArgLowerAt(inIndex + 1))) {
+        if (!inventory.tryAdvancedMatcher(path.eventArgLowerAt(inIndex + 1), path.context)) {
             return false;
         }
         if (!runWithCheck(path, cursor)) {

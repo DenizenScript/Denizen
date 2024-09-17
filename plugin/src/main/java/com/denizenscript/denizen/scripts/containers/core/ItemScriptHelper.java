@@ -14,6 +14,7 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -58,7 +59,7 @@ public class ItemScriptHelper implements Listener {
         recipeIdToItemScript.clear();
         Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
         while (recipeIterator.hasNext()) {
-            if (recipeIterator.next() instanceof Keyed keyed && keyed.getKey().equals("denizen")) {
+            if (recipeIterator.next() instanceof Keyed keyed && keyed.getKey().getNamespace().equals("denizen")) {
                 recipeIterator.remove();
             }
         }
@@ -118,8 +119,9 @@ public class ItemScriptHelper implements Listener {
                     }
                 }
                 if (exact) {
+                    TagContext context = DenizenCore.implementation.getTagContext(container);
                     for (ItemScriptContainer possibleContainer : ItemScriptHelper.item_scripts.values()) {
-                        if (possibleContainer.getCleanReference() != null && possibleContainer.getCleanReference().tryAdvancedMatcher(entry)) {
+                        if (possibleContainer.getCleanReference() != null && possibleContainer.getCleanReference().tryAdvancedMatcher(entry, context)) {
                             outputItems.add(possibleContainer.getCleanReference().getItemStack());
                             any = true;
                         }
@@ -369,7 +371,10 @@ public class ItemScriptHelper implements Listener {
         if (item == null) {
             return null;
         }
-        CompoundTag tag = NMSHandler.itemHelper.getNbtData(item);
+        CompoundTag tag = NMSHandler.itemHelper.getCustomData(item);
+        if (tag == null) {
+            return null;
+        }
         String scriptName = tag.getString("DenizenItemScript");
         if (scriptName != null && !scriptName.equals("")) {
             return scriptName;
@@ -389,7 +394,10 @@ public class ItemScriptHelper implements Listener {
         if (item == null) {
             return null;
         }
-        CompoundTag tag = NMSHandler.itemHelper.getNbtData(item);
+        CompoundTag tag = NMSHandler.itemHelper.getCustomData(item);
+        if (tag == null) {
+            return null;
+        }
         String scriptName = tag.getString("DenizenItemScript");
         if (scriptName != null && !scriptName.equals("")) {
             return item_scripts.get(scriptName);

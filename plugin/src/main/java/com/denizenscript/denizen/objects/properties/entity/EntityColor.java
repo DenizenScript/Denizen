@@ -4,17 +4,16 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
+import com.denizenscript.denizen.utilities.LegacyNamingHelper;
 import com.denizenscript.denizen.utilities.MultiVersionHelper1_19;
+import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 
 import java.util.Arrays;
@@ -150,12 +149,13 @@ public class EntityColor extends EntityProperty<ElementTag> {
         else if (type == EntityType.CAT && mechanism.requireObject(ListTag.class)) {
             Cat cat = as(Cat.class);
             ListTag list = mechanism.valueAsType(ListTag.class);
-            ElementTag catType = new ElementTag(list.get(0));
-            if (catType.matchesEnum(Cat.Type.class)) {
-                cat.setCatType(catType.asEnum(Cat.Type.class));
+            String catTypeStr = list.get(0);
+            Cat.Type catType = LegacyNamingHelper.convert(Cat.Type.class, catTypeStr);
+            if (catType != null) {
+                cat.setCatType(catType);
             }
             else {
-                mechanism.echoError("Invalid cat type specified: " + catType);
+                mechanism.echoError("Invalid cat type specified: " + catTypeStr);
             }
             if (list.size() > 1) {
                 ElementTag collarColor = new ElementTag(list.get(1));
@@ -187,11 +187,12 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 }
             }
         }
-        else if (type == EntityType.VILLAGER && mechanism.requireEnum(Villager.Type.class)) {
-            as(Villager.class).setVillagerType(color.asEnum(Villager.Type.class));
+        // TODO This technically has registries on all supported versions
+        else if (type == EntityType.VILLAGER) {
+            LegacyNamingHelper.requireType(mechanism, Villager.Type.class).ifPresent(as(Villager.class)::setVillagerType);
         }
-        else if (type == EntityType.ZOMBIE_VILLAGER && mechanism.requireEnum(Villager.Type.class)) {
-            as(ZombieVillager.class).setVillagerType(color.asEnum(Villager.Type.class));
+        else if (type == EntityType.ZOMBIE_VILLAGER) {
+            LegacyNamingHelper.requireType(mechanism, Villager.Type.class).ifPresent(as(ZombieVillager.class)::setVillagerType);
         }
         else if (type == EntityType.ARROW && mechanism.requireObject(ColorTag.class)) {
             as(Arrow.class).setColor(BukkitColorExtensions.getColor(mechanism.valueAsType(ColorTag.class)));
@@ -242,14 +243,16 @@ public class EntityColor extends EntityProperty<ElementTag> {
             case FOX -> as(Fox.class).getFoxType().name();
             case CAT -> {
                 Cat cat = as(Cat.class);
-                yield cat.getCatType().name() + "|" + cat.getCollarColor().name();
+                // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
+                yield cat.getCatType() + "|" + cat.getCollarColor().name();
             }
             case PANDA -> {
                 Panda panda = as(Panda.class);
                 yield panda.getMainGene().name() + "|" + panda.getHiddenGene().name();
             }
-            case VILLAGER -> as(Villager.class).getVillagerType().name();
-            case ZOMBIE_VILLAGER -> as(ZombieVillager.class).getVillagerType().name();
+            // TODO This technically has registries on all supported versions
+            case VILLAGER -> String.valueOf(as(Villager.class).getVillagerType());
+            case ZOMBIE_VILLAGER -> String.valueOf(as(ZombieVillager.class).getVillagerType());
             case ARROW -> {
                 try {
                     yield BukkitColorExtensions.fromColor(as(Arrow.class).getColor()).identify();
@@ -264,48 +267,41 @@ public class EntityColor extends EntityProperty<ElementTag> {
         };
     }
 
-    public static ListTag listForEnum(Enum<?>[] values) {
-        ListTag list = new ListTag(values.length);
-        for (Enum<?> obj : values) {
-            list.addObject(new ElementTag(obj));
-        }
-        return list;
-    }
-
     public ListTag getAllowedColors() {
         EntityType type = getType();
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
             return MultiVersionHelper1_19.getAllowedColors(type);
         }
         if (type == MOOSHROOM_ENTITY_TYPE) {
-            return listForEnum(MushroomCow.Variant.values());
+            return Utilities.listTypes(MushroomCow.Variant.class);
         }
         return switch (type) {
             case HORSE -> {
-                ListTag horseColors = listForEnum(Horse.Color.values());
-                horseColors.addAll(listForEnum(Horse.Style.values()));
+                ListTag horseColors = Utilities.listTypes(Horse.Color.class);
+                horseColors.addAll(Utilities.listTypes(Horse.Style.class));
                 yield horseColors;
             }
-            case SHEEP, WOLF, SHULKER -> listForEnum(DyeColor.values());
-            case RABBIT -> listForEnum(Rabbit.Type.values());
-            case LLAMA, TRADER_LLAMA -> listForEnum(Llama.Color.values());
-            case PARROT -> listForEnum(Parrot.Variant.values());
+            case SHEEP, WOLF, SHULKER -> Utilities.listTypes(DyeColor.class);
+            case RABBIT -> Utilities.listTypes(Rabbit.Type.class);
+            case LLAMA, TRADER_LLAMA -> Utilities.listTypes(Llama.Color.class);
+            case PARROT -> Utilities.listTypes(Parrot.Variant.class);
             case TROPICAL_FISH -> {
-                ListTag patterns = listForEnum(TropicalFish.Pattern.values());
-                patterns.addAll(listForEnum(DyeColor.values()));
+                ListTag patterns = Utilities.listTypes(TropicalFish.Pattern.class);
+                patterns.addAll(Utilities.listTypes(DyeColor.class));
                 yield patterns;
             }
-            case FOX -> listForEnum(Fox.Type.values());
-            case CAT -> listForEnum(Cat.Type.values());
-            case PANDA -> listForEnum(Panda.Gene.values());
-            case VILLAGER, ZOMBIE_VILLAGER -> listForEnum(Villager.Type.values());
+            case FOX -> Utilities.listTypes(Fox.Type.class);
+            case CAT -> Utilities.listTypes(Cat.Type.class);
+            case PANDA -> Utilities.listTypes(Panda.Gene.class);
+            // TODO This technically has registries on all supported versions
+            case VILLAGER, ZOMBIE_VILLAGER -> Utilities.listTypes(Villager.Type.class);
             case GOAT -> {
                 ListTag result = new ListTag();
                 result.add("screaming");
                 result.add("normal");
                 yield result;
             }
-            case AXOLOTL -> EntityColor.listForEnum(Axolotl.Variant.values());
+            case AXOLOTL -> Utilities.listTypes(Axolotl.Variant.class);
             default -> null; // includes Ocelot (deprecated) and arrow (ColorTag)
         };
     }

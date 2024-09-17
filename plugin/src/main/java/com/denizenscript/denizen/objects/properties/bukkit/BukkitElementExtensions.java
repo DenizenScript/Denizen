@@ -741,6 +741,12 @@ public class BukkitElementExtensions {
             if (colorOut == null) {
                 try {
                     ChatColor color = ChatColor.of(colorName.toUpperCase());
+                    if (color.getColor() == null) {
+                        if (!TagManager.isStaticParsing) {
+                            attribute.echoError("Color '" + colorName + "' is valid but is a format code not a real color (for ElementTag.color[...]).");
+                        }
+                        return null;
+                    }
                     String colorStr = color.toString().replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace("x", "#");
                     colorOut = ChatColor.COLOR_CHAR + "[color=" + colorStr + "]";
                 }

@@ -25,6 +25,8 @@ public class ItemTrim extends ItemProperty<MapTag> {
     // Valid values also include ones added by datapacks, plugins, etc. as a namespaced key.
     // For the mechanism, if an item already has a trim, you can omit either material or pattern to keep the original data while also changing the other option.
     // For example, if you only want to change the pattern and not the material, you can omit the material, and it will use the already existing material.
+    // @mechanism
+    // To remove the trim provide no input.
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -55,25 +57,32 @@ public class ItemTrim extends ItemProperty<MapTag> {
 
     @Override
     public void setPropertyValue(MapTag map, Mechanism mechanism) {
-        ElementTag mat = map.getElement("material");
-        ElementTag pat = map.getElement("pattern");
         ArmorMeta meta = (ArmorMeta) getItemMeta();
-        ArmorTrim currentTrim = meta.getTrim();
-        if (mat == null && currentTrim == null) {
-            mechanism.echoError("The armor piece must have a material already if you want to omit it!");
-            return;
+        ArmorTrim newTrim;
+        if (map == null) {
+            newTrim = null;
         }
-        if (pat == null && currentTrim == null) {
-            mechanism.echoError("The armor piece must have a pattern already if you want to omit it!");
-            return;
+        else {
+            ElementTag mat = map.getElement("material");
+            ElementTag pat = map.getElement("pattern");
+            ArmorTrim currentTrim = meta.getTrim();
+            if (mat == null && currentTrim == null) {
+                mechanism.echoError("The armor piece must have a material already if you want to omit it!");
+                return;
+            }
+            if (pat == null && currentTrim == null) {
+                mechanism.echoError("The armor piece must have a pattern already if you want to omit it!");
+                return;
+            }
+            TrimMaterial material = mat == null ? currentTrim.getMaterial() : Registry.TRIM_MATERIAL.get(Utilities.parseNamespacedKey(mat.asString()));
+            TrimPattern pattern = pat == null ? currentTrim.getPattern() : Registry.TRIM_PATTERN.get(Utilities.parseNamespacedKey(pat.asString()));
+            newTrim = new ArmorTrim(material, pattern);
         }
-        TrimMaterial material = mat == null ? currentTrim.getMaterial() : Registry.TRIM_MATERIAL.get(Utilities.parseNamespacedKey(mat.asString()));
-        TrimPattern pattern = pat == null ? currentTrim.getPattern() : Registry.TRIM_PATTERN.get(Utilities.parseNamespacedKey(pat.asString()));
-        meta.setTrim(new ArmorTrim(material, pattern));
+        meta.setTrim(newTrim);
         setItemMeta(meta);
     }
 
     public static void register() {
-        autoRegister("trim", ItemTrim.class, MapTag.class, false);
+        autoRegisterNullable("trim", ItemTrim.class, MapTag.class, false);
     }
 }

@@ -23,12 +23,12 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when an entity targets a new entity - usually a hostile mob preparing to attack something.
+    // @Triggers when an entity targets a new entity (usually a hostile mob preparing to attack something), or un-targets one.
     //
     // @Context
     // <context.entity> returns the targeting entity.
     // <context.reason> returns the reason the entity changed targets. Refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityTargetEvent.TargetReason.html>.
-    // <context.target> returns the targeted entity.
+    // <context.target> returns the targeted entity, if any.
     //
     // @Determine
     // EntityTag to make the entity target a different entity instead.
@@ -53,7 +53,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
         String victim = path.eventArgLowerAt(2);
-        if (!victim.equals("in") && !victim.equals("because") && !victim.equals("") && (target == null || !target.tryAdvancedMatcher(victim))) {
+        if (!victim.equals("in") && !victim.equals("because") && !victim.equals("") && (target == null || !target.tryAdvancedMatcher(victim, path.context))) {
             return false;
         }
         if (!runInCheck(path, location)) {
