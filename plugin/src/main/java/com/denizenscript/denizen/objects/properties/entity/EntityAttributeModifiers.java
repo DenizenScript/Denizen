@@ -136,7 +136,8 @@ public class EntityAttributeModifiers implements Property {
         return new AttributeModifier(Utilities.parseNamespacedKey(key.asString()), amountValue, operationValue, group);
     }
 
-    private static AttributeModifier parseLegacyModifier(Attribute attr, MapTag map, double amount, AttributeModifier.Operation operation) {
+    @Deprecated(forRemoval = true)
+    public static AttributeModifier parseLegacyModifier(Attribute attr, MapTag map, double amount, AttributeModifier.Operation operation) {
         ElementTag name = map.getElement("name");
         ElementTag slot = map.getElement("slot", "any");
         ElementTag id = map.getElement("id");
