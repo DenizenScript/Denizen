@@ -310,7 +310,7 @@ public class BukkitImplDeprecations {
     // Good candidate for SlowWarning, due to ease of update and the newer names already being more "normal"/well-known
     public static Warning oldSpigotNames = new VerySlowWarning("oldSpigotNames", "Several features (particles, entities, etc.) had alternative naming added by Spigot, which is now deprecated in favor of the official Minecraft naming; see relevant feature's meta docs for more information.");
 
-    // Added 2024/7/13
+    // Added 2024/07/13
     public static Warning pre1_21AttributeFormat = new VerySlowWarning("pre1_21AttributeFormat", "Attribute modifiers were changed in 1.21, now using slot groups instead of slots and namespaced keys instead of UUIDS; check relevant meta docs for more information.");
 
     // ==================== FUTURE deprecations ====================
