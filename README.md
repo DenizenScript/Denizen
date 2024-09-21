@@ -3,7 +3,7 @@ The Denizen Scripting Language - Spigot Impl
 
 An implementation of the Denizen Scripting Language for Spigot servers, with strong Citizens interlinks to emphasize the power of using Denizen with NPCs!
 
-**Version 1.3.1**: Compatible with Spigot 1.17.1, 1.18.2, 1.19.4, 1.20.6, and 1.21!
+**Version 1.3.1**: Compatible with Spigot 1.17.1, 1.18.2, 1.19.4, 1.20.6, and 1.21.1!
 
 **Learn about Denizen from the Beginner's guide:** https://guide.denizenscript.com/guides/background/index.html
 

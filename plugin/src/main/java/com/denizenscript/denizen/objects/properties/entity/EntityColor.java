@@ -267,50 +267,41 @@ public class EntityColor extends EntityProperty<ElementTag> {
         };
     }
 
-    // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
-    @SuppressWarnings({"unchecked", "DataFlowIssue"})
-    public static ListTag listTypes(Class<?> type) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
-            return Utilities.registryKeys(Bukkit.getRegistry((Class<? extends Keyed>) type));
-        }
-        return new ListTag(Arrays.asList(((Class<? extends Enum<?>>) type).getEnumConstants()), ElementTag::new);
-    }
-
     public ListTag getAllowedColors() {
         EntityType type = getType();
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
             return MultiVersionHelper1_19.getAllowedColors(type);
         }
         if (type == MOOSHROOM_ENTITY_TYPE) {
-            return listTypes(MushroomCow.Variant.class);
+            return Utilities.listTypes(MushroomCow.Variant.class);
         }
         return switch (type) {
             case HORSE -> {
-                ListTag horseColors = listTypes(Horse.Color.class);
-                horseColors.addAll(listTypes(Horse.Style.class));
+                ListTag horseColors = Utilities.listTypes(Horse.Color.class);
+                horseColors.addAll(Utilities.listTypes(Horse.Style.class));
                 yield horseColors;
             }
-            case SHEEP, WOLF, SHULKER -> listTypes(DyeColor.class);
-            case RABBIT -> listTypes(Rabbit.Type.class);
-            case LLAMA, TRADER_LLAMA -> listTypes(Llama.Color.class);
-            case PARROT -> listTypes(Parrot.Variant.class);
+            case SHEEP, WOLF, SHULKER -> Utilities.listTypes(DyeColor.class);
+            case RABBIT -> Utilities.listTypes(Rabbit.Type.class);
+            case LLAMA, TRADER_LLAMA -> Utilities.listTypes(Llama.Color.class);
+            case PARROT -> Utilities.listTypes(Parrot.Variant.class);
             case TROPICAL_FISH -> {
-                ListTag patterns = listTypes(TropicalFish.Pattern.class);
-                patterns.addAll(listTypes(DyeColor.class));
+                ListTag patterns = Utilities.listTypes(TropicalFish.Pattern.class);
+                patterns.addAll(Utilities.listTypes(DyeColor.class));
                 yield patterns;
             }
-            case FOX -> listTypes(Fox.Type.class);
-            case CAT -> listTypes(Cat.Type.class);
-            case PANDA -> listTypes(Panda.Gene.class);
+            case FOX -> Utilities.listTypes(Fox.Type.class);
+            case CAT -> Utilities.listTypes(Cat.Type.class);
+            case PANDA -> Utilities.listTypes(Panda.Gene.class);
             // TODO This technically has registries on all supported versions
-            case VILLAGER, ZOMBIE_VILLAGER -> listTypes(Villager.Type.class);
+            case VILLAGER, ZOMBIE_VILLAGER -> Utilities.listTypes(Villager.Type.class);
             case GOAT -> {
                 ListTag result = new ListTag();
                 result.add("screaming");
                 result.add("normal");
                 yield result;
             }
-            case AXOLOTL -> EntityColor.listTypes(Axolotl.Variant.class);
+            case AXOLOTL -> Utilities.listTypes(Axolotl.Variant.class);
             default -> null; // includes Ocelot (deprecated) and arrow (ColorTag)
         };
     }

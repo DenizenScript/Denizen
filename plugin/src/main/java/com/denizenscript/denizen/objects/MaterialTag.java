@@ -21,6 +21,7 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.PropertyMatchHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -834,6 +835,18 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public boolean advancedMatches(String matcher, TagContext context) {
-        return advancedMatchesInternal(getMaterial(), matcher, true);
+        if (advancedMatchesInternal(getMaterial(), matcher, true)) {
+            return true;
+        }
+        if (matcher.contains("[") && matcher.endsWith("]")) {
+            PropertyMatchHelper<MaterialTag> helper = PropertyMatchHelper.getPropertyMatchHelper(MaterialTag.class, matcher, (actual, compare) -> {
+                return actual.getMaterial() == compare.getMaterial();
+            });
+            if (helper == null) {
+                return false;
+            }
+            return helper.doesMatch(this);
+        }
+        return false;
     }
 }

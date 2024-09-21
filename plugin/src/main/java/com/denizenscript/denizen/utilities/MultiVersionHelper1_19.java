@@ -29,10 +29,10 @@ public class MultiVersionHelper1_19 {
 
     public static ListTag getAllowedColors(EntityType type) {
         if (type == EntityType.FROG) {
-            return EntityColor.listTypes(Frog.Variant.class);
+            return Utilities.listTypes(Frog.Variant.class);
         }
         else if (type == EntityType.BOAT || type == EntityType.CHEST_BOAT) {
-            return EntityColor.listTypes(Boat.Type.class);
+            return Utilities.listTypes(Boat.Type.class);
         }
         return null;
     }
