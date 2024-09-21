@@ -116,8 +116,7 @@ public class EntityAttributeModifiers implements Property {
             return null;
         }
         ElementTag key = map.getElement("key");
-        boolean is1_21 = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21);
-        if (!is1_21) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
             return parseLegacyModifier(attr, map, amountValue, operationValue);
         }
         if (key == null && map.size() > 2) {
