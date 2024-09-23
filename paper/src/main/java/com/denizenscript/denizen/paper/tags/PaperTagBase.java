@@ -14,6 +14,7 @@ public class PaperTagBase extends PseudoObjectTagBase<PaperTagBase> {
         TagManager.registerStaticTagBaseHandler(PaperTagBase.class, "paper", (t) -> instance);
     }
 
+    @Override
     public void register() {
 
         // <--[tag]
