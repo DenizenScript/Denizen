@@ -10,8 +10,12 @@ import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.properties.item.ItemRawComponents;
+import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -23,6 +27,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -78,6 +83,7 @@ import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class ItemHelperImpl extends ItemHelper {
@@ -304,6 +310,45 @@ public class ItemHelperImpl extends ItemHelper {
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
         CustomData.set(DataComponents.ENTITY_DATA, nmsItemStack, nmsEntityNbt);
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public MapTag getRawComponents(ItemStack item, boolean excludeHandled) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        DataComponentPatch patch = nmsItemStack.getComponentsPatch();
+        if (excludeHandled) {
+            patch = patch.forget(componentType -> {
+                ResourceLocation componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
+                return ItemRawComponents.propertyHandledComponents.contains(componentId.toString());
+            });
+        }
+        if (patch.isEmpty()) {
+            return new MapTag();
+        }
+        net.minecraft.nbt.CompoundTag nmsPatch = (net.minecraft.nbt.CompoundTag) DataComponentPatch.CODEC.encodeStart(NbtOps.INSTANCE, patch).getOrThrow();
+        MapTag rawComponents = (MapTag) ItemRawNBT.jnbtTagToObject(CompoundTagImpl.fromNMSTag(nmsPatch));
+        rawComponents.putObject(ItemRawComponents.DATA_VERSION_KEY, new ElementTag(CraftMagicNumbers.INSTANCE.getDataVersion()));
+        return rawComponents;
+    }
+
+    @Override
+    public ItemStack setRawComponents(ItemStack item, MapTag rawComponentsMap, int dataVersion, Consumer<String> errorHandler) {
+        int currentDataVersion = CraftMagicNumbers.INSTANCE.getDataVersion();
+        Tag rawComponents = ItemRawNBT.convertObjectToNbt(rawComponentsMap.identify(), CoreUtilities.errorButNoDebugContext, "");
+        net.minecraft.nbt.CompoundTag nmsRawComponents = ((CompoundTagImpl) rawComponents).toNMSTag();
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        if (dataVersion < currentDataVersion) {
+            net.minecraft.nbt.CompoundTag legacyItemData = new net.minecraft.nbt.CompoundTag();
+            legacyItemData.putString("id", BuiltInRegistries.ITEM.getKey(nmsItemStack.getItem()).toString());
+            legacyItemData.putInt("count", nmsItemStack.getCount());
+            legacyItemData.put("components", nmsRawComponents);
+            net.minecraft.nbt.CompoundTag nmsUpdatedTag = (net.minecraft.nbt.CompoundTag) MinecraftServer.getServer().fixerUpper.update(References.ITEM_STACK, new Dynamic<>(NbtOps.INSTANCE, legacyItemData), dataVersion, currentDataVersion).getValue();
+            nmsRawComponents = nmsUpdatedTag.getCompound("components");
+        }
+        DataComponentPatch.CODEC.parse(NbtOps.INSTANCE, nmsRawComponents)
+                .ifError(error -> errorHandler.accept(error.message()))
+                .ifSuccess(nmsItemStack::applyComponents);
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 

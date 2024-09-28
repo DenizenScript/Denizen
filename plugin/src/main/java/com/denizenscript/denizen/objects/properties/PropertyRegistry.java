@@ -9,6 +9,7 @@ import com.denizenscript.denizen.objects.properties.inventory.*;
 import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.objects.properties.trade.*;
+import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class PropertyRegistry {
@@ -204,15 +205,15 @@ public class PropertyRegistry {
 
         // register core ItemTag properties
         PropertyParser.registerProperty(ItemArmorPose.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemAttributeModifiers.class, ItemTag.class);
+        registerItemProperty(ItemAttributeModifiers.class, "attribute_modifiers");
         PropertyParser.registerProperty(ItemAttributeNBT.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemBaseColor.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemBlockMaterial.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemBook.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemBookGeneration.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemDisplayname.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemDurability.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemCanDestroy.class, ItemTag.class);
+        registerItemProperty(ItemBaseColor.class, "base_color");
+        registerItemProperty(ItemBlockMaterial.class, "block_state");
+        registerItemProperty(ItemBook.class, "writable_book_content", "written_book_content");
+        PropertyParser.registerProperty(ItemBookGeneration.class, ItemTag.class); // Part of "written_book_content"
+        registerItemProperty(ItemDisplayname.class, "custom_name");
+        registerItemProperty(ItemDurability.class, "damage");
+        registerItemProperty(ItemCanDestroy.class, "can_break");
         PropertyParser.registerProperty(ItemCanPlaceOn.class, ItemTag.class);
         PropertyParser.registerProperty(ItemColor.class, ItemTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
@@ -241,6 +242,9 @@ public class PropertyRegistry {
             PropertyParser.registerProperty(ItemPotion.class, ItemTag.class);
         }
         PropertyParser.registerProperty(ItemQuantity.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(ItemRawComponents.class, ItemTag.class);
+        }
         PropertyParser.registerProperty(ItemRawNBT.class, ItemTag.class);
         PropertyParser.registerProperty(ItemRepairCost.class, ItemTag.class);
         PropertyParser.registerProperty(ItemScript.class, ItemTag.class);
@@ -302,5 +306,12 @@ public class PropertyRegistry {
         }
         PropertyParser.registerProperty(TradeUses.class, TradeTag.class);
         PropertyParser.registerProperty(TradeVillagerXP.class, TradeTag.class);
+    }
+
+    public static void registerItemProperty(Class<? extends Property> propertyClass, String... internalComponents) {
+        PropertyParser.registerProperty(propertyClass, ItemTag.class);
+        for (String internalComponent : internalComponents) {
+            ItemRawComponents.registerHandledComponent(internalComponent);
+        }
     }
 }
