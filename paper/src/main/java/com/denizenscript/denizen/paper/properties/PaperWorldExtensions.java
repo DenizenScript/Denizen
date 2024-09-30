@@ -36,7 +36,7 @@ public class PaperWorldExtensions  {
             // @returns ElementTag(Number)
             // @description
             // Returns the number of end gateway portals.
-            // Only works in end worlds.
+            // Only works if the world is an end world.
             // -->
             WorldTag.tagProcessor.registerTag(ElementTag.class, "gateway_count", (attribute, object) -> {
                 DragonBattle battle = object.getWorld().getEnderDragonBattle();
@@ -52,7 +52,7 @@ public class PaperWorldExtensions  {
             // @returns ListTag(EntityTag)
             // @description
             // Returns a ListTag of the healing crystals located on top of the obsidian towers.
-            // Only works in end worlds.
+            // Only works if the world is an end world.
             // -->
             WorldTag.tagProcessor.registerTag(ListTag.class, "healing_crystals", (attribute, object) -> {
                 DragonBattle battle = object.getWorld().getEnderDragonBattle();
@@ -64,11 +64,11 @@ public class PaperWorldExtensions  {
             });
 
             // <--[tag]
-            // @attribute <WorldTag.healing_crystals>
+            // @attribute <WorldTag.respawn_crystals>
             // @returns ListTag(EntityTag)
             // @description
             // Returns a ListTag of the respawn crystals located at the end exit portal.
-            // Only works in end worlds.
+            // Only works if the world is an end world.
             // -->
             WorldTag.tagProcessor.registerTag(ListTag.class, "respawn_crystals", (attribute, object) -> {
                 DragonBattle battle = object.getWorld().getEnderDragonBattle();
@@ -86,8 +86,9 @@ public class PaperWorldExtensions  {
             // @Plugin Paper
             // @group paper
             // @description
-            // If no location is specified, tries to spawn a new end gateway using default game mechanics. Otherwise, spawns a new end gateway portal at the specified location.
-            // Only works in end worlds.
+            // Spawns a new end gateway portal at the specified location.
+            // If no location is specified, tries to spawn a new end gateway using default game mechanics.
+            // Only works if the world is an end world.
             // -->
             WorldTag.tagProcessor.registerMechanism("spawn_gateway", false, (object, mechanism) -> {
                 DragonBattle battle = object.getWorld().getEnderDragonBattle();
