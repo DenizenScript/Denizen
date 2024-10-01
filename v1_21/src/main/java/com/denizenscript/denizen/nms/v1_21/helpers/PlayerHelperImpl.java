@@ -64,6 +64,7 @@ import org.bukkit.craftbukkit.v1_21_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_21_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R1.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -85,8 +86,8 @@ public class PlayerHelperImpl extends PlayerHelper {
     public static final EntityDataAccessor<Byte> PLAYER_DATA_ACCESSOR_SKINLAYERS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.player.Player.class, ReflectionMappingsInfo.Player_DATA_PLAYER_MODE_CUSTOMISATION, null);
 
     @Override
-    public void stopSound(Player player, String sound, SoundCategory category) {
-        ((CraftPlayer) player).getHandle().connection.send(new ClientboundStopSoundPacket(sound == null ? null : ResourceLocation.withDefaultNamespace(sound), null));
+    public void stopSound(Player player, NamespacedKey sound, SoundCategory category) {
+        ((CraftPlayer) player).getHandle().connection.send(new ClientboundStopSoundPacket(sound == null ? null : CraftNamespacedKey.toMinecraft(sound), null));
     }
 
     @Override
