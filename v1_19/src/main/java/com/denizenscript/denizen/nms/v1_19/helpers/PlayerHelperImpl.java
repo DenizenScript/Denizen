@@ -63,6 +63,7 @@ import org.bukkit.craftbukkit.v1_19_R3.boss.CraftBossBar;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_19_R3.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_19_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -94,8 +95,8 @@ public class PlayerHelperImpl extends PlayerHelper {
     }
 
     @Override
-    public void stopSound(Player player, String sound, SoundCategory category) {
-        ((CraftPlayer) player).getHandle().connection.send(new ClientboundStopSoundPacket(sound == null ? null : new ResourceLocation(sound), null));
+    public void stopSound(Player player, NamespacedKey sound, SoundCategory category) {
+        ((CraftPlayer) player).getHandle().connection.send(new ClientboundStopSoundPacket(sound == null ? null : CraftNamespacedKey.toMinecraft(sound), null));
     }
 
     @Override
