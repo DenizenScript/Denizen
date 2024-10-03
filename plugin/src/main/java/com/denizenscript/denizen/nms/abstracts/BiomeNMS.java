@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.nms.abstracts;
 
 import com.denizenscript.denizencore.objects.core.ColorTag;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
