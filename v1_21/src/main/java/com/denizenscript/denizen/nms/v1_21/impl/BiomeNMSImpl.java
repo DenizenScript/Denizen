@@ -18,10 +18,12 @@ import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_21_R1.entity.CraftEntityType;
 import org.bukkit.craftbukkit.v1_21_R1.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R1.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 
 import java.lang.invoke.MethodHandle;
@@ -36,10 +38,10 @@ public class BiomeNMSImpl extends BiomeNMS {
     public Holder<Biome> biomeHolder;
     public ServerLevel world;
 
-    public BiomeNMSImpl(ServerLevel world, String name) {
-        super(world.getWorld(), name);
+    public BiomeNMSImpl(ServerLevel world, NamespacedKey key) {
+        super(world.getWorld(), key);
         this.world = world;
-        biomeHolder = world.registryAccess().registryOrThrow(Registries.BIOME).getHolder(ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace(name))).orElse(null);
+        biomeHolder = world.registryAccess().registryOrThrow(Registries.BIOME).getHolder(ResourceKey.create(Registries.BIOME, CraftNamespacedKey.toMinecraft(key))).orElse(null);
     }
 
     @Override
@@ -175,7 +177,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setTo(Block block) {
         if (((CraftWorld) block.getWorld()).getHandle() != this.world) {
-            NMSHandler.instance.getBiomeNMS(block.getWorld(), getName()).setTo(block);
+            NMSHandler.instance.getBiomeNMS(block.getWorld(), getKey()).setTo(block);
             return;
         }
         // Based on CraftWorld source
