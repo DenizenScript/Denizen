@@ -28,7 +28,7 @@ public class BellRingScriptEvent extends BukkitScriptEvent implements Listener {
     // @Context
     // <context.entity> returns the EntityTag that rung the bell, if any.
     // <context.location> returns the LocationTag of the bell being rung.
-    // <context.direction> returns the ElementTag of the direction the bell was rung. Available only on MC 1.19+.
+    // <context.direction> returns the ElementTag of the direction the bell was rung in. Can be "north", "west", "south", "east". Available only on MC 1.19+.
     //
     // @Player when the ringing entity is a player.
     //
