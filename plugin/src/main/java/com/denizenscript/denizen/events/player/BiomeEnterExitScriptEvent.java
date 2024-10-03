@@ -78,10 +78,11 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         if (biome == null) {
             return false;
         }
-        if (!biome_test.equals("biome") && !biome_test.equals(CoreUtilities.toLowerCase(biome.getBiome().getName()))) {
+        String biomeKey = Utilities.namespacedKeyToString(biome.getBiome().getKey());
+        if (!biome_test.equals("biome") && !biome_test.equals(biomeKey)) {
             return false;
         }
-        if (!runGenericSwitchCheck(path, "biome", biome.getBiome().getName())) {
+        if (!runGenericSwitchCheck(path, "biome", biomeKey)) {
             return false;
         }
         return super.matches(path);
