@@ -20,16 +20,16 @@ public class MoistureChangeScriptEvent extends BukkitScriptEvent implements List
     //
     // @Location true
     //
-    // @Triggers when a farmland moisture level changes
+    // @Triggers when a farmland's moisture level changes.
     //
     // @Switch from:<level> to only process the event when the previous moisture level matches the input.
     // @Switch to:<level> to only process the event when the new moisture level matches the input.
     //
     // @Context
     // <context.location> returns the LocationTag of the farmland.
-    // <context.material> returns the MaterialTag of the farmland.
-    // <context.old_level> returns the ElementTag of the previous moisture level.
-    // <context.new_level> returns the ElementTag of the new moisture level.
+    // <context.material> returns the MaterialTag of the new farmland.
+    // <context.old_level> returns the ElementTag(Number) of the previous moisture level.
+    // <context.new_level> returns the ElementTag(Number) of the new moisture level.
     //
     // @Cancellable true
     //
