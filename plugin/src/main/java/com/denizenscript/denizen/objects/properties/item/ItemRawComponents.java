@@ -15,6 +15,7 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
 
     public static final String DATA_VERSION_KEY = "denizen:__data_version";
     public static final String ENTITY_DATA_PROPERTY = "minecraft:entity_data";
+    public static final String INSTRUMENT_PROPERTY = "minecraft:instrument";
     public static final Set<String> propertyHandledComponents = new HashSet<>();
 
     public static void registerHandledComponent(String component) {
@@ -47,6 +48,9 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
                     rawComponents = new MapTag();
                 }
             }
+        }
+        if (rawComponents.getObject(INSTRUMENT_PROPERTY) instanceof ElementTag) {
+            rawComponents.remove(INSTRUMENT_PROPERTY);
         }
         return rawComponents;
     }
