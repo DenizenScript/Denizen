@@ -51,7 +51,7 @@ public class PaperWorldExtensions  {
             // @attribute <WorldTag.healing_crystals>
             // @returns ListTag(EntityTag)
             // @description
-            // Returns a ListTag of the healing crystals located on top of the obsidian towers.
+            // Returns a ListTag of the healing end crystals located on top of the obsidian towers.
             // Only works if the world is an end world.
             // -->
             WorldTag.tagProcessor.registerTag(ListTag.class, "healing_crystals", (attribute, object) -> {
@@ -100,7 +100,7 @@ public class PaperWorldExtensions  {
                     battle.spawnNewGateway();
                 }
                 else if (mechanism.requireObject(LocationTag.class)) {
-                    battle.spawnNewGateway(mechanism.getValue().asType(LocationTag.class, mechanism.context));
+                    battle.spawnNewGateway(mechanism.valueAsType(LocationTag.class));
                 }
             });
         }
