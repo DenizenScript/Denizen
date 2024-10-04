@@ -30,7 +30,9 @@ public class PaperModule {
         // Events
         ScriptEvent.registerScriptEvent(AnvilBlockDamagedScriptEvent.class);
         ScriptEvent.registerScriptEvent(AreaEnterExitScriptEventPaperImpl.class);
-        ScriptEvent.registerScriptEvent(BellRingScriptEvent.class);
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
+            ScriptEvent.registerScriptEvent(BellRingScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(BlockPreDispenseScriptEvent.class);
         ScriptEvent.registerScriptEvent(CreeperIgnitesScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityAddToWorldScriptEvent.class);
