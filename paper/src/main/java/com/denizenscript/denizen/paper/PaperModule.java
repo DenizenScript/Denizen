@@ -75,6 +75,9 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerSelectsStonecutterRecipeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerLecternPageChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSpectatesEntityScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            ScriptEvent.registerScriptEvent(PlayerShieldDisableScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(PlayerStopsSpectatingScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             ScriptEvent.registerScriptEvent(PlayerTracksEntityScriptEvent.class);
