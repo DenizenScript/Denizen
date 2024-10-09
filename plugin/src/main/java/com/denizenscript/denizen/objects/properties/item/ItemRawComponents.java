@@ -6,20 +6,40 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class ItemRawComponents extends ItemProperty<MapTag> {
 
     public static final String DATA_VERSION_KEY = "denizen:__data_version";
-    public static final String ENTITY_DATA_PROPERTY = "minecraft:entity_data";
-    public static final String INSTRUMENT_PROPERTY = "minecraft:instrument";
+    public static final String ENTITY_DATA_COMPONENT = "minecraft:entity_data";
+    public static final StringHolder INSTRUMENT_COMPONENT = new StringHolder("minecraft:instrument");
+    public static final String BLOCK_ENTITY_DATA_COMPONENT = "minecraft:block_entity_data";
+    public static final Map<String, Set<StringHolder>> ENTITY_DATA_TO_REMOVE = new HashMap<>();
     public static final Set<String> propertyHandledComponents = new HashSet<>();
+
+    public static void registerEntityDataRemove(EntityType type, String... dataKeys) {
+        Set<StringHolder> keysSet = new HashSet<>(dataKeys.length + 1);
+        keysSet.add(new StringHolder("id"));
+        for (String dataKey : dataKeys) {
+            keysSet.add(new StringHolder(dataKey));
+        }
+        ENTITY_DATA_TO_REMOVE.put("string:" + type.getKey(), keysSet);
+    }
 
     public static void registerHandledComponent(String component) {
         propertyHandledComponents.add("minecraft:" + component);
+    }
+
+    static {
+        registerEntityDataRemove(EntityType.ITEM_FRAME, "Invisible");
+        registerEntityDataRemove(EntityType.ARMOR_STAND, "Pose", "Small", "NoBasePlate", "Marker", "Invisible", "ShowArms");
     }
 
     public static boolean describes(ItemTag item) {
@@ -29,28 +49,22 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
     @Override
     public MapTag getPropertyValue() {
         MapTag rawComponents = NMSHandler.itemHelper.getRawComponents(getItemStack(), true);
-        MapTag entityData = (MapTag) rawComponents.getObject(ENTITY_DATA_PROPERTY);
+        MapTag entityData = (MapTag) rawComponents.getObject(ENTITY_DATA_COMPONENT);
         if (entityData != null) {
-            switch (entityData.getElement("id").asString()) {
-                case "string:minecraft:item_frame" -> entityData.remove("Invisible");
-                case "string:minecraft:armor_stand" -> {
-                    entityData.remove("Pose");
-                    entityData.remove("Small");
-                    entityData.remove("NoBasePlate");
-                    entityData.remove("Marker");
-                    entityData.remove("Invisible");
-                    entityData.remove("ShowArms");
-                }
-            }
-            if (entityData.size() == 1) { // Just "id"
-                rawComponents.remove(ENTITY_DATA_PROPERTY);
-                if (rawComponents.size() == 1) { // Just the data version
-                    rawComponents = new MapTag();
-                }
+            Set<StringHolder> keysToRemove = ENTITY_DATA_TO_REMOVE.get(entityData.getElement("id").asString());
+            if (keysToRemove != null && keysToRemove.containsAll(entityData.keySet())) {
+                rawComponents.remove(ENTITY_DATA_COMPONENT);
             }
         }
-        if (rawComponents.getObject(INSTRUMENT_PROPERTY) instanceof ElementTag) {
-            rawComponents.remove(INSTRUMENT_PROPERTY);
+        rawComponents.map.computeIfPresent(INSTRUMENT_COMPONENT, (key, value) -> value instanceof ElementTag ? null : value);
+        MapTag blockEntityData = (MapTag) rawComponents.getObject(BLOCK_ENTITY_DATA_COMPONENT);
+        if (blockEntityData != null && blockEntityData.size() == 4 && blockEntityData.getElement("id").asString().endsWith("sign")
+                && blockEntityData.containsKey("front_text") && blockEntityData.containsKey("back_text")
+                && blockEntityData.getElement("is_waxed").asString().equals("byte:0")) {
+            rawComponents.remove(BLOCK_ENTITY_DATA_COMPONENT);
+        }
+        if (rawComponents.size() == 1) { // Just the data version
+            return new MapTag();
         }
         return rawComponents;
     }
