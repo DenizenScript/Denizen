@@ -250,12 +250,12 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemScript.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSignContents.class, ItemTag.class); // Special case handling in ItemRawComponents
         registerItemProperty(ItemSkullskin.class, "profile");
-        PropertyParser.registerProperty(ItemSpawnerCount.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSpawnerDelay.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSpawnerMaxNearbyEntities.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSpawnerPlayerRange.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSpawnerRange.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSpawnerType.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemSpawnerCount.class, ItemTag.class); // Special case handling in ItemRawComponents
+        PropertyParser.registerProperty(ItemSpawnerDelay.class, ItemTag.class); // Special case handling in ItemRawComponents
+        PropertyParser.registerProperty(ItemSpawnerMaxNearbyEntities.class, ItemTag.class); // Special case handling in ItemRawComponents
+        PropertyParser.registerProperty(ItemSpawnerPlayerRange.class, ItemTag.class); // Special case handling in ItemRawComponents
+        PropertyParser.registerProperty(ItemSpawnerRange.class, ItemTag.class); // Special case handling in ItemRawComponents
+        PropertyParser.registerProperty(ItemSpawnerType.class, ItemTag.class); // Special case handling in ItemRawComponents
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             PropertyParser.registerProperty(ItemTrim.class, ItemTag.class);
         }

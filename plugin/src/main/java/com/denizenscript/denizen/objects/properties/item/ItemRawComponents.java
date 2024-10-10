@@ -33,6 +33,8 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
         ENTITY_DATA_REMOVER.registerRemoval(EntityType.ARMOR_STAND, "Pose", "Small", "NoBasePlate", "Marker", "Invisible", "ShowArms");
         BLOCK_ENTITY_DATA_REMOVER.registerRemoval("minecraft:sign", "front_text", "back_text", "is_waxed");
         BLOCK_ENTITY_DATA_REMOVER.registerRemoval("minecraft:hanging_sign", "front_text", "back_text", "is_waxed");
+        BLOCK_ENTITY_DATA_REMOVER.registerRemoval("minecraft:spawner",
+                "SpawnCount", "Delay", "MinSpawnDelay", "MaxSpawnDelay", "MaxNearbyEntities", "RequiredPlayerRange", "SpawnRange", "SpawnData", "SpawnPotentials");
     }
 
     public static boolean describes(ItemTag item) {
