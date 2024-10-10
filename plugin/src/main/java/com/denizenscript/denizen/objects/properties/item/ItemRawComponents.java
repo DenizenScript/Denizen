@@ -7,6 +7,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
@@ -18,28 +19,20 @@ import java.util.Set;
 public class ItemRawComponents extends ItemProperty<MapTag> {
 
     public static final String DATA_VERSION_KEY = "denizen:__data_version";
-    public static final String ENTITY_DATA_COMPONENT = "minecraft:entity_data";
+    public static final PerIdPropertyDataRemover ENTITY_DATA_REMOVER = new PerIdPropertyDataRemover("minecraft:entity_data");
+    public static final PerIdPropertyDataRemover BLOCK_ENTITY_DATA_REMOVER = new PerIdPropertyDataRemover("minecraft:block_entity_data");
     public static final StringHolder INSTRUMENT_COMPONENT = new StringHolder("minecraft:instrument");
-    public static final String BLOCK_ENTITY_DATA_COMPONENT = "minecraft:block_entity_data";
-    public static final Map<String, Set<StringHolder>> ENTITY_DATA_TO_REMOVE = new HashMap<>();
     public static final Set<String> propertyHandledComponents = new HashSet<>();
-
-    public static void registerEntityDataRemove(EntityType type, String... dataKeys) {
-        Set<StringHolder> keysSet = new HashSet<>(dataKeys.length + 1);
-        keysSet.add(new StringHolder("id"));
-        for (String dataKey : dataKeys) {
-            keysSet.add(new StringHolder(dataKey));
-        }
-        ENTITY_DATA_TO_REMOVE.put("string:" + type.getKey(), keysSet);
-    }
 
     public static void registerHandledComponent(String component) {
         propertyHandledComponents.add("minecraft:" + component);
     }
 
     static {
-        registerEntityDataRemove(EntityType.ITEM_FRAME, "Invisible");
-        registerEntityDataRemove(EntityType.ARMOR_STAND, "Pose", "Small", "NoBasePlate", "Marker", "Invisible", "ShowArms");
+        ENTITY_DATA_REMOVER.registerRemoval(EntityType.ITEM_FRAME, "Invisible");
+        ENTITY_DATA_REMOVER.registerRemoval(EntityType.ARMOR_STAND, "Pose", "Small", "NoBasePlate", "Marker", "Invisible", "ShowArms");
+        BLOCK_ENTITY_DATA_REMOVER.registerRemoval("minecraft:sign", "front_text", "back_text", "is_waxed");
+        BLOCK_ENTITY_DATA_REMOVER.registerRemoval("minecraft:hanging_sign", "front_text", "back_text", "is_waxed");
     }
 
     public static boolean describes(ItemTag item) {
@@ -49,20 +42,9 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
     @Override
     public MapTag getPropertyValue() {
         MapTag rawComponents = NMSHandler.itemHelper.getRawComponents(getItemStack(), true);
-        MapTag entityData = (MapTag) rawComponents.getObject(ENTITY_DATA_COMPONENT);
-        if (entityData != null) {
-            Set<StringHolder> keysToRemove = ENTITY_DATA_TO_REMOVE.get(entityData.getElement("id").asString());
-            if (keysToRemove != null && keysToRemove.containsAll(entityData.keySet())) {
-                rawComponents.remove(ENTITY_DATA_COMPONENT);
-            }
-        }
+        ENTITY_DATA_REMOVER.removeFrom(rawComponents);
+        BLOCK_ENTITY_DATA_REMOVER.removeFrom(rawComponents);
         rawComponents.map.computeIfPresent(INSTRUMENT_COMPONENT, (key, value) -> value instanceof ElementTag ? null : value);
-        MapTag blockEntityData = (MapTag) rawComponents.getObject(BLOCK_ENTITY_DATA_COMPONENT);
-        if (blockEntityData != null && blockEntityData.size() == 4 && blockEntityData.getElement("id").asString().endsWith("sign")
-                && blockEntityData.containsKey("front_text") && blockEntityData.containsKey("back_text")
-                && blockEntityData.getElement("is_waxed").asString().equals("byte:0")) {
-            rawComponents.remove(BLOCK_ENTITY_DATA_COMPONENT);
-        }
         if (rawComponents.size() == 1) { // Just the data version
             return new MapTag();
         }
@@ -102,5 +84,38 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
         PropertyParser.registerTag(ItemRawComponents.class, MapTag.class, "all_raw_components", (attribute, property) -> {
             return NMSHandler.itemHelper.getRawComponents(property.getItemStack(), false);
         });
+    }
+
+    public record PerIdPropertyDataRemover(StringHolder propertyId, Map<String, Set<StringHolder>> removalsPerId) {
+
+        public static final StringHolder ID_STRING = new StringHolder("id");
+
+        public PerIdPropertyDataRemover(String propertyId) {
+            this(new StringHolder(propertyId), new HashMap<>());
+        }
+
+        public void registerRemoval(Keyed type, String... keys) {
+            registerRemoval(type.getKey().toString(), keys);
+        }
+
+        public void registerRemoval(String id, String... keys) {
+            Set<StringHolder> toRemove = new HashSet<>(keys.length + 1);
+            toRemove.add(ID_STRING);
+            for (String key : keys) {
+                toRemove.add(new StringHolder(key));
+            }
+            removalsPerId.put("string:" + id, toRemove);
+        }
+
+        public void removeFrom(MapTag rawComponents) {
+            rawComponents.map.computeIfPresent(propertyId, (key, rawValue) -> {
+                MapTag value = (MapTag) rawValue;
+                Set<StringHolder> toRemove = removalsPerId.get(value.getObject(ID_STRING).toString());
+                if (toRemove != null && value.size() <= toRemove.size() && toRemove.containsAll(value.keySet())) {
+                    return null;
+                }
+                return rawValue;
+            });
+        }
     }
 }

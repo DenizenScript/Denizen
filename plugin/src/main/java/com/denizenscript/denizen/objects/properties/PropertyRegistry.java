@@ -248,8 +248,8 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemRawNBT.class, ItemTag.class);
         registerItemProperty(ItemRepairCost.class, "repair_cost");
         PropertyParser.registerProperty(ItemScript.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSignContents.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSkullskin.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemSignContents.class, ItemTag.class); // Special case handling in ItemRawComponents
+        registerItemProperty(ItemSkullskin.class, "profile");
         PropertyParser.registerProperty(ItemSpawnerCount.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerDelay.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerMaxNearbyEntities.class, ItemTag.class);
