@@ -257,9 +257,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemSpawnerRange.class, ItemTag.class); // Special case handling in ItemRawComponents
         PropertyParser.registerProperty(ItemSpawnerType.class, ItemTag.class); // Special case handling in ItemRawComponents
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            PropertyParser.registerProperty(ItemTrim.class, ItemTag.class);
+            registerItemProperty(ItemTrim.class, "trim");
         }
-        PropertyParser.registerProperty(ItemUnbreakable.class, ItemTag.class);
+        registerItemProperty(ItemUnbreakable.class, "unbreakable");
 
         // register core MaterialTag properties
         PropertyParser.registerProperty(MaterialAge.class, MaterialTag.class);
