@@ -14,7 +14,7 @@ public class ItemSignIsWaxed extends ItemProperty<ElementTag> {
     // @name is_waxed
     // @input ElementTag(Boolean)
     // @description
-    // Controls whether a sign item is waxed.
+    // Controls whether a sign item is waxed (cannot be edited once placed).
     // @tag
     // Will return null if the item doesn't have a waxed state set.
     // -->
