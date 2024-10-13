@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.tags.Attribute;
 
+@Deprecated(forRemoval = true)
 public class EntityStepHeight extends EntityProperty<ElementTag> {
 
     // <--[property]
