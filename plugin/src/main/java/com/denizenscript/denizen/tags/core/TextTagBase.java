@@ -36,8 +36,9 @@ public class TextTagBase {
         // @description
         // Returns a special chat code that makes the following text display the input hover text when the mouse is left over it.
         // This tag must be followed by an <&end_hover> tag.
-        // For example: - narrate "There is a <&hover[you found it!]>secret<&end_hover> in this message!"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "There is a <&hover[you found it!]>secret<&end_hover> in this message!"
         // -->
         TagManager.registerTagHandler(ElementTag.class, "&hover", (attribute) -> { // Cannot be static due to hacked sub-tag
               if (!attribute.hasParam()) {
@@ -52,9 +53,10 @@ public class TextTagBase {
               // Returns a special chat code that makes the following text display the input hover text when the mouse is left over it.
               // This tag must be followed by an <&end_hover> tag.
               // Available hover types: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
-              // For example: - narrate "There is a <&hover[you found it!].type[SHOW_TEXT]>secret<&end_hover> in this message!"
               // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
               // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+              // @example
+              // - narrate "There is a <&hover[you found it!].type[SHOW_TEXT]>secret<&end_hover> in this message!"
               // -->
               String type = "SHOW_TEXT";
               if (attribute.startsWith("type", 2)) {
@@ -71,9 +73,11 @@ public class TextTagBase {
         // Returns a special chat code that makes the following text execute the input command line value when clicked.
         // To execute a command "/" should be used at the start. Otherwise, it will display as chat.
         // This tag must be followed by an <&end_click> tag.
-        // For example: - narrate "You can <&click[wow]>click here<&end_click> to say wow!"
-        // For example: - narrate "You can <&click[/help]>click here<&end_click> for help!"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "You can <&click[wow]>click here<&end_click> to say wow!"
+        // @example
+        // - narrate "You can <&click[/help]>click here<&end_click> for help!"
         // -->
         TagManager.registerTagHandler(ElementTag.class, "&click", (attribute) -> { // Cannot be static due to hacked sub-tag
             if (!attribute.hasParam()) {
@@ -88,8 +92,9 @@ public class TextTagBase {
             // Returns a special chat code that makes the following text execute the input command when clicked.
             // This tag must be followed by an <&end_click> tag.
             // Available command types: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, COPY_TO_CLIPBOARD, or CHANGE_PAGE.
-            // For example: - narrate "You can <&click[https://denizenscript.com].type[OPEN_URL]>click here<&end_click> to learn about Denizen!"
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+            // @example
+            // - narrate "You can <&click[https://denizenscript.com].type[OPEN_URL]>click here<&end_click> to learn about Denizen!"
             // -->
             String type = "RUN_COMMAND";
             if (attribute.startsWith("type", 2)) {
@@ -105,8 +110,9 @@ public class TextTagBase {
         // @description
         // Returns a special chat code that makes the following text insert the input message to chat when shift-clicked.
         // This tag must be followed by an <&end_insertion> tag.
-        // For example: - narrate "You can <&insertion[wow]>click here<&end_insertion> to add 'wow' to your chat!"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "You can <&insertion[wow]>click here<&end_insertion> to add 'wow' to your chat!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&insertion", (attribute) -> {
             if (!attribute.hasParam()) {
@@ -122,6 +128,8 @@ public class TextTagBase {
         // @description
         // Returns a special chat code that ends a '&click' tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "You can <&click[wow]>click here<&end_click> to say wow!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_click", (attribute) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[/click]");
@@ -133,6 +141,8 @@ public class TextTagBase {
         // @description
         // Returns a special chat code that ends a '&hover' tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "There is a <&hover[you found it!].type[SHOW_TEXT]>secret<&end_hover> in this message!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_hover", (attribute) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[/hover]");
@@ -144,6 +154,8 @@ public class TextTagBase {
         // @description
         // Returns a special chat code that ends an '&insertion' tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "You can <&insertion[wow]>click here<&end_insertion> to add 'wow' to your chat!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_insertion", (attribute) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[/insertion]");
@@ -154,8 +166,9 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns a special chat code that displays a keybind.
-        // For example: - narrate "Press your <&keybind[key.jump]> key!"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // - narrate "Press your <&keybind[key.jump]> key!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&keybind", (attribute) -> {
             if (!attribute.hasParam()) {
@@ -253,6 +266,9 @@ public class TextTagBase {
         // Returns a chat code that makes the following text be the specified color.
         // Color can be a color name, color code, hex, or ColorTag... that is: "&color[gold]", "&color[6]", and "&color[#AABB00]" are all valid.
         // The ColorTag input option can be used for dynamic color effects, such as automatic rainbows.
+        // @example
+        // Narrates "Hi there" in brown
+        // - narrate "<&color[#643E36]>Hi there"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&color", (attribute) -> {
             if (!attribute.hasParam()) {
