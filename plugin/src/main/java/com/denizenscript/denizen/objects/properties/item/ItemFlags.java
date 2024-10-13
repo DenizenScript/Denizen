@@ -58,11 +58,14 @@ public class ItemFlags implements Property {
         // @description
         // Returns a copy of the item with the specified flag data action applied to it.
         // @example
-        // <[item].with_flag[myflagname]>
+        // # Shows your held item with the flag 'myflagname'
+        // <player.item_in_hand.with_flag[myflagname]>
         // @example
-        // <[item].with_flag[myflag:myvalue]>
+        // # Shows your held item with the flag 'myflagname' set to 'myvalue'
+        // <player.item_in_hand.with_flag[myflag:myvalue]>
         // @example
-        // <[item].with_flag[mycounter:+:<[amount]>]>
+        // # Shows your held item with the flag 'mycounter' increased by 'amount'
+        // <player.item_in_hand.with_flag[mycounter:+:<[amount]>]>
         // -->
         if (attribute.startsWith("with_flag")) {
             ItemTag item = new ItemTag(this.item.getItemStack().clone());
@@ -129,11 +132,11 @@ public class ItemFlags implements Property {
         // @description
         // Modifies a flag on this item, using syntax similar to <@link command flag>.
         // @example
-        // Removes flag 'myflagname'
-        // - flag:myflagname:!
+        // # Removes flag 'myflagname' from your held item
+        // - flag <player.item_in_hand> myflagname:!
         // @example
-        // Sets flag 'myflagname' to value '3'
-        // - flag:myflagname:3
+        // # Sets flag 'myflagname' on your held item to value '3'
+        // - flag <player.item_in_hand> myflagname:3
         // @tags
         // <FlaggableObject.flag[<flag_name>]>
         // <FlaggableObject.has_flag[<flag_name>]>
