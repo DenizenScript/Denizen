@@ -245,6 +245,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemRepairCost.class, ItemTag.class);
         PropertyParser.registerProperty(ItemScript.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSignContents.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(ItemSignIsWaxed.class, ItemTag.class);
+        }
         PropertyParser.registerProperty(ItemSkullskin.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerCount.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerDelay.class, ItemTag.class);
