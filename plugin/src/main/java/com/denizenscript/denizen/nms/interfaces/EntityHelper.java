@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
@@ -445,11 +446,13 @@ public abstract class EntityHelper {
     }
 
     public float getStepHeight(Entity entity) {
-        throw new UnsupportedOperationException();
+        return entity instanceof LivingEntity livingEntity ? (float) livingEntity.getAttribute(Attribute.GENERIC_STEP_HEIGHT).getBaseValue() : 0;
     }
 
     public void setStepHeight(Entity entity, float stepHeight) {
-        throw new UnsupportedOperationException();
+        if (entity instanceof LivingEntity livingEntity) {
+            livingEntity.getAttribute(Attribute.GENERIC_STEP_HEIGHT).setBaseValue(stepHeight);
+        }
     }
 
     public List<Object> convertInternalEntityDataValues(Entity entity, MapTag internalData) {
