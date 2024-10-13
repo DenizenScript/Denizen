@@ -77,8 +77,10 @@ public class TextTagBase {
         // This tag must be followed by an <&end_click> tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // @example
+        // # Sends a chat message from the clicking player saying 'wow!' when clicking on 'click here'
         // - narrate "You can <&click[wow]>click here<&end_click> to say wow!"
         // @example
+        // # Sends the '/help' command from the player when clicking on 'click here'
         // - narrate "You can <&click[/help]>click here<&end_click> for help!"
         // -->
         TagManager.registerTagHandler(ElementTag.class, "&click", (attribute) -> { // Cannot be static due to hacked sub-tag
@@ -96,6 +98,7 @@ public class TextTagBase {
             // Available command types: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, COPY_TO_CLIPBOARD, or CHANGE_PAGE.
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
             // @example
+            // # Opens the URL 'https://denizenscript.com' for a player when clicking on 'click here'
             // - narrate "You can <&click[https://denizenscript.com].type[OPEN_URL]>click here<&end_click> to learn about Denizen!"
             // -->
             String type = "RUN_COMMAND";
@@ -114,6 +117,7 @@ public class TextTagBase {
         // This tag must be followed by an <&end_insertion> tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // @example
+        // # Inserts the word 'wow' at the end of your open chat message when clicking on 'click here'
         // - narrate "You can <&insertion[wow]>click here<&end_insertion> to add 'wow' to your chat!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&insertion", (attribute) -> {
@@ -131,6 +135,7 @@ public class TextTagBase {
         // Returns a special chat code that ends a '&click' tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // @example
+        // # Sends a chat message from the clicking player saying 'wow!' when clicking on 'click here'
         // - narrate "You can <&click[wow]>click here<&end_click> to say wow!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_click", (attribute) -> {
@@ -144,6 +149,7 @@ public class TextTagBase {
         // Returns a special chat code that ends a '&hover' tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // @example
+        // # Shows 'you found it!' when hovering over just the word 'secret'
         // - narrate "There is a <&hover[you found it!].type[SHOW_TEXT]>secret<&end_hover> in this message!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_hover", (attribute) -> {
@@ -157,6 +163,7 @@ public class TextTagBase {
         // Returns a special chat code that ends an '&insertion' tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // @example
+        // # Inserts the word 'wow' at the end of your open chat message when clicking on 'click here'
         // - narrate "You can <&insertion[wow]>click here<&end_insertion> to add 'wow' to your chat!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_insertion", (attribute) -> {
@@ -170,6 +177,7 @@ public class TextTagBase {
         // Returns a special chat code that displays a keybind.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // @example
+        // # Narrates 'Press your Space key!' if the player's key to jump is the space bar.
         // - narrate "Press your <&keybind[key.jump]> key!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&keybind", (attribute) -> {
