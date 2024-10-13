@@ -38,6 +38,7 @@ public class TextTagBase {
         // This tag must be followed by an <&end_hover> tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // @example
+        // # Shows 'you found it!' when hovering over just the word 'secret'
         // - narrate "There is a <&hover[you found it!]>secret<&end_hover> in this message!"
         // -->
         TagManager.registerTagHandler(ElementTag.class, "&hover", (attribute) -> { // Cannot be static due to hacked sub-tag
@@ -56,6 +57,7 @@ public class TextTagBase {
               // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
               // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
               // @example
+              // # Shows 'you found it!' when hovering over just the word 'secret'
               // - narrate "There is a <&hover[you found it!].type[SHOW_TEXT]>secret<&end_hover> in this message!"
               // -->
               String type = "SHOW_TEXT";
