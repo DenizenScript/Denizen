@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public abstract class PlayerHelper {
 
-    public abstract void stopSound(Player player, String sound, SoundCategory category); // TODO: remove the category param once 1.19 is the minimum version
+    public abstract void stopSound(Player player, NamespacedKey sound, SoundCategory category); // TODO: remove the category param once 1.19 is the minimum version
 
     public abstract FakeEntity sendEntitySpawn(List<PlayerTag> players, DenizenEntityType entityType, LocationTag location, ArrayList<Mechanism> mechanisms, int customId, UUID customUUID, boolean autoTrack);
 

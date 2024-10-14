@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -78,7 +79,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             }
             world = worldTag.getWorld();
         }
-        BiomeNMS biome = NMSHandler.instance.getBiomeNMS(world, biomeName);
+        BiomeNMS biome = NMSHandler.instance.getBiomeNMS(world, Utilities.parseNamespacedKey(biomeName));
         if (biome == null) {
             return null;
         }
@@ -97,14 +98,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     /////////////
 
     public BiomeTag(Biome biome) {
-        String key;
-        if (biome.getKey().getNamespace().equals("minecraft")) {
-            key = biome.getKey().getKey();
-        }
-        else {
-            key = biome.getKey().toString();
-        }
-        this.biome = NMSHandler.instance.getBiomeNMS(Bukkit.getWorlds().get(0), key);
+        this.biome = NMSHandler.instance.getBiomeNMS(Bukkit.getWorlds().get(0), biome.getKey());
     }
 
     public BiomeTag(BiomeNMS biome) {
@@ -135,7 +129,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public String identify() {
-        return "b@" + biome.world.getName() + "," + biome.getName();
+        return "b@" + biome.world.getName() + "," + Utilities.namespacedKeyToString(biome.getKey());
     }
 
     @Override
@@ -158,7 +152,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
 
     @Override
     public AbstractFlagTracker getFlagTracker() {
-        return new RedirectionFlagTracker(DenizenCore.serverFlagMap, "__biomes." + biome.getName().replace(".", "&dot"));
+        return new RedirectionFlagTracker(DenizenCore.serverFlagMap, "__biomes." + Utilities.namespacedKeyToString(biome.getKey()).replace(".", "&dot"));
     }
 
     @Override
@@ -200,7 +194,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         // - narrate "You are currently in a <biome[plains].name> biome!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
-            return new ElementTag(CoreUtilities.toLowerCase(object.biome.getName()));
+            return new ElementTag(Utilities.namespacedKeyToString(object.biome.getKey()), true);
         });
 
         // <--[tag]

@@ -61,6 +61,9 @@ public class ScriptEventRegistry {
         ScriptEvent.notNameParts.add(0, "SpigotImpl");
 
         // Block events
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            ScriptEvent.registerScriptEvent(BellRingScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(BlockBuiltScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockBurnsScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockCooksSmeltsItemScriptEvent.class);
