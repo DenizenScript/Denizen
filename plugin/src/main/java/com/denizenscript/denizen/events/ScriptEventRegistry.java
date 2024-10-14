@@ -87,6 +87,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(LeafDecaysScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidSpreadScriptEvent.class);
+        ScriptEvent.registerScriptEvent(MoistureChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(NoteBlockPlaysNoteScriptEvent.class);
         ScriptEvent.registerScriptEvent(PistonExtendsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PistonRetractsScriptEvent.class);
