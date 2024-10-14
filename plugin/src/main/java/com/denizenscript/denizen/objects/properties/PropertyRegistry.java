@@ -249,6 +249,9 @@ public class PropertyRegistry {
         registerItemProperty(ItemRepairCost.class, "repair_cost");
         PropertyParser.registerProperty(ItemScript.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSignContents.class, ItemTag.class); // Special case handling in ItemRawComponents
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(ItemSignIsWaxed.class, ItemTag.class);
+        }
         registerItemProperty(ItemSkullskin.class, "profile");
         PropertyParser.registerProperty(ItemSpawnerCount.class, ItemTag.class); // Special case handling in ItemRawComponents
         PropertyParser.registerProperty(ItemSpawnerDelay.class, ItemTag.class); // Special case handling in ItemRawComponents

@@ -2,7 +2,10 @@ package com.denizenscript.denizen.nms.v1_21;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.abstracts.*;
+import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizen.nms.abstracts.BlockLight;
+import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
+import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
@@ -47,7 +50,6 @@ import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -61,6 +63,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
@@ -78,6 +81,7 @@ import org.bukkit.craftbukkit.v1_21_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.craftbukkit.v1_21_R1.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_21_R1.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_21_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R1.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -306,15 +310,15 @@ public class Handler extends NMSHandler {
     public List<BiomeNMS> getBiomes(World world) {
         ServerLevel level = ((CraftWorld) world).getHandle();
         ArrayList<BiomeNMS> output = new ArrayList<>();
-        for (Map.Entry<ResourceKey<Biome>, Biome> pair : level.registryAccess().registryOrThrow(Registries.BIOME).entrySet()) {
-            output.add(new BiomeNMSImpl(level, pair.getKey().location().toString()));
+        for (ResourceLocation key : level.registryAccess().registryOrThrow(Registries.BIOME).keySet()) {
+            output.add(new BiomeNMSImpl(level, CraftNamespacedKey.fromMinecraft(key)));
         }
         return output;
     }
 
     @Override
-    public BiomeNMS getBiomeNMS(World world, String name) {
-        BiomeNMSImpl impl = new BiomeNMSImpl(((CraftWorld) world).getHandle(), name);
+    public BiomeNMS getBiomeNMS(World world, NamespacedKey key) {
+        BiomeNMSImpl impl = new BiomeNMSImpl(((CraftWorld) world).getHandle(), key);
         if (impl.biomeHolder == null) {
             return null;
         }
@@ -327,8 +331,7 @@ public class Handler extends NMSHandler {
         ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
         Holder<Biome> biome = level.getNoiseBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2);
         ResourceLocation key = level.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome.value());
-        String keyText = key.getNamespace().equals("minecraft") ? key.getPath() : key.toString();
-        return new BiomeNMSImpl(level, keyText);
+        return new BiomeNMSImpl(level, CraftNamespacedKey.fromMinecraft(key));
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -725,7 +726,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
             else if (lower.startsWith("biome:")) {
                 String biome = inputText.substring("biome:".length());
-                return runGenericCheck(biome, new LocationTag(location).getBiome().name);
+                return runGenericCheck(biome, Utilities.namespacedKeyToString(new LocationTag(location).getBiome().getKey()));
             }
         }
         if (lower.equals("cuboid")) {

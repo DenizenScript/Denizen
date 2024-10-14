@@ -3944,7 +3944,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("stop_sound")) {
             SoundCategory category = null;
-            String key = null;
+            NamespacedKey key = null;
             if (mechanism.hasValue()) {
                 if (mechanism.getValue().matchesEnum(SoundCategory.class)) {
                     category = mechanism.getValue().asEnum(SoundCategory.class);
@@ -3954,7 +3954,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     }
                 }
                 else {
-                    key = mechanism.getValue().asString();
+                    key = Utilities.parseNamespacedKey(mechanism.getValue().asString());
                 }
             }
             NMSHandler.playerHelper.stopSound(getPlayerEntity(), key, category);

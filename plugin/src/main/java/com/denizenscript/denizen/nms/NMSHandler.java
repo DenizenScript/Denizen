@@ -8,6 +8,7 @@ import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
@@ -110,10 +111,10 @@ public abstract class NMSHandler {
         throw new UnsupportedOperationException();
     }
 
-    public abstract BiomeNMS getBiomeNMS(World world, String name);
+    public abstract BiomeNMS getBiomeNMS(World world, NamespacedKey key);
 
     public BiomeNMS getBiomeAt(Block block) {
-        return NMSHandler.instance.getBiomeNMS(block.getWorld(), block.getBiome().name());
+        return NMSHandler.instance.getBiomeNMS(block.getWorld(), block.getBiome().getKey());
     }
 
     public abstract double[] getRecentTps();
