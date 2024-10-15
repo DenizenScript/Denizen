@@ -85,17 +85,16 @@ public class EntityAttributeModifiers implements Property {
         result.putObject("amount", new ElementTag(modifier.getAmount()));
         result.putObject("operation", new ElementTag(modifier.getOperation()));
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            result.putObject("slot_group", new ElementTag(modifier.getSlotGroup().toString(), true));
+            result.putObject("slot", new ElementTag(modifier.getSlotGroup().toString(), true));
+        }
+        else {
+            result.putObject("slot", new ElementTag(modifier.getSlot() == null ? "any" : modifier.getSlot().name()));
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
             result.putObject("key", new ElementTag(Utilities.namespacedKeyToString(modifier.getKey()), true));
         }
-        // TODO: remove/deprecate these two
-        result.putObject("slot", new ElementTag(modifier.getSlot() == null ? "any" : modifier.getSlot().name()));
-        try {
-            result.putObject("id", new ElementTag(modifier.getUniqueId().toString()));
-        }
-        catch (Exception ignored) {}
+        // TODO: remove/deprecate the UUID key
+        result.putObject("id", new ElementTag(modifier.getUniqueId().toString()));
         return result;
     }
 
@@ -115,11 +114,11 @@ public class EntityAttributeModifiers implements Property {
             Debug.echoError("Attribute modifier amount '" + amount + "' is not a valid decimal number.");
             return null;
         }
-        ElementTag key = map.getElement("key");
         if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
             return parseLegacyModifier(attr, map, amountValue, operationValue);
         }
-        if (key == null && map.size() > 2) {
+        ElementTag key = map.getElement("key");
+        if (key == null && map.size() >= 2) {
             BukkitImplDeprecations.pre1_21AttributeFormat.warn(context);
             return parseLegacyModifier(attr, map, amountValue, operationValue);
         }
@@ -127,11 +126,15 @@ public class EntityAttributeModifiers implements Property {
             Debug.echoError("Must specify a key.");
             return null;
         }
-        String groupName = map.getElement("slot_group", "any").asString();
-        EquipmentSlotGroup group = EquipmentSlotGroup.getByName(groupName);
+        String slotGroupName = map.getElement("slot", "any").asString();
+        EquipmentSlotGroup group = EquipmentSlotGroup.getByName(slotGroupName);
         if (group == null) {
-            Debug.echoError("Invalid equipment slot group specified: " + groupName);
-            return null;
+            EquipmentSlot slot = ElementTag.asEnum(EquipmentSlot.class, slotGroupName);
+            if (slot == null) {
+                Debug.echoError("Invalid equipment slot group specified: " + slotGroupName);
+                return null;
+            }
+            group = slot.getGroup();
         }
         return new AttributeModifier(Utilities.parseNamespacedKey(key.asString()), amountValue, operationValue, group);
     }
@@ -151,10 +154,9 @@ public class EntityAttributeModifiers implements Property {
         }
         EquipmentSlot slotValue = CoreUtilities.equalsIgnoreCase(slot.toString(), "any") ? null : slot.asEnum(EquipmentSlot.class);
         if (slotValue == null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            String groupName = map.getElement("slot_group", "any").asString();
-            EquipmentSlotGroup group = EquipmentSlotGroup.getByName(groupName);
+            EquipmentSlotGroup group = EquipmentSlotGroup.getByName(slot.asString());
             if (group == null) {
-                Debug.echoError("Invalid equipment slot group specified: " + groupName);
+                Debug.echoError("Invalid equipment slot group specified: " + slot);
                 return null;
             }
             return new AttributeModifier(idValue, name == null ? attr.name() : name.asString(), amount, operation, group);
@@ -219,11 +221,10 @@ public class EntityAttributeModifiers implements Property {
     //
     // The input format of each of the 'add' and set mechanisms is slightly complicated: a MapTag where the keys are attribute names, and values are a ListTag of modifiers,
     // where each modifier is itself a MapTag with required keys 'operation' and 'amount', and additionally:
-    // Before MC 1.20.6: optional 'name', 'slot', and 'id' keys.
-    // On MC 1.20.6: optional 'name', 'slot_group', and 'id' keys.
+    // Before MC 1.21: optional 'name', 'slot', and 'id' keys.
     // The default ID will be randomly generated, the default name will be the attribute name.
-    // After MC 1.21: required 'key' key, and optional 'slot_group'.
-    // The 'key' is the attribute's name/identifier in a "namespaced:key" format (defaulting to the "minecraft" namespace), which has to be unique from other modifiers on the object.
+    // After MC 1.21: required 'key' key, and optional 'slot'.
+    // The 'key' is the attribute's name/identifier in a "namespace:key" format (defaulting to the "minecraft" namespace), which has to be distinct to other modifiers of the same type on the object.
     //
     // Valid operations: ADD_NUMBER, ADD_SCALAR, and MULTIPLY_SCALAR_1
     // Valid slots (used up to MC 1.20.6): HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
@@ -251,7 +252,7 @@ public class EntityAttributeModifiers implements Property {
     //
     // See also <@link url https://minecraft.wiki/w/Attribute#Modifiers>
     //
-    // For a quick and dirty in-line input, you can do for example: [generic_max_health=<list[<map[key=my_project:add_health;operation=ADD_NUMBER;amount=20;slot_group=HEAD]>]>]
+    // For a quick and dirty in-line input, you can do for example: [generic_max_health=<list[<map[key=my_project:add_health;operation=ADD_NUMBER;amount=20;slot=HEAD]>]>]
     //
     // For more clean/proper input, instead do something like:
     // <code>
@@ -261,7 +262,7 @@ public class EntityAttributeModifiers implements Property {
     //             key: my_project:add_health
     //             operation: ADD_NUMBER
     //             amount: 20
-    //             slot_group: head
+    //             slot: head
     // - inventory adjust slot:head add_attribute_modifiers:<[attributes]>
     // </code>
     //
