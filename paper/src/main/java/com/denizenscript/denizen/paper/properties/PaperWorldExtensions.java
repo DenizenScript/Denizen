@@ -34,6 +34,8 @@ public class PaperWorldExtensions  {
             // <--[tag]
             // @attribute <WorldTag.gateway_count>
             // @returns ElementTag(Number)
+            // @group paper
+            // @Plugin Paper
             // @description
             // Returns the number of end gateway portals.
             // Only works if the world is an end world.
@@ -50,6 +52,8 @@ public class PaperWorldExtensions  {
             // <--[tag]
             // @attribute <WorldTag.healing_crystals>
             // @returns ListTag(EntityTag)
+            // @group paper
+            // @Plugin Paper
             // @description
             // Returns a ListTag of the healing end crystals located on top of the obsidian towers.
             // Only works if the world is an end world.
@@ -66,8 +70,10 @@ public class PaperWorldExtensions  {
             // <--[tag]
             // @attribute <WorldTag.respawn_crystals>
             // @returns ListTag(EntityTag)
+            // @group paper
+            // @Plugin Paper
             // @description
-            // Returns a ListTag of the respawn crystals located at the end exit portal.
+            // Returns a ListTag of the respawn end crystals located at the end exit portal.
             // Only works if the world is an end world.
             // -->
             WorldTag.tagProcessor.registerTag(ListTag.class, "respawn_crystals", (attribute, object) -> {
@@ -83,8 +89,8 @@ public class PaperWorldExtensions  {
             // @object WorldTag
             // @name spawn_gateway
             // @input LocationTag
-            // @Plugin Paper
             // @group paper
+            // @Plugin Paper
             // @description
             // Spawns a new end gateway portal at the specified location.
             // If no location is specified, tries to spawn a new end gateway using default game mechanics.

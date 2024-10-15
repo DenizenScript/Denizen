@@ -1012,6 +1012,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // <--[tag]
         // @attribute <WorldTag.first_dragon_killed>
         // @returns ElementTag(Boolean)
+        // @mechanism WorldTag.first_dragon_killed
         // @description
         // Returns whether the ender dragon has been killed in this world before.
         // Only works if the world is an end world.
@@ -1086,6 +1087,8 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // Set whether the first ender dragon was killed already.
             // Toggling this value won't really affect anything in the end world, but may be useful when creating custom end worlds.
             // Only works if the world is an end world.
+            // @tags
+            // <WorldTag.first_dragon_killed>
             // -->
             tagProcessor.registerMechanism("first_dragon_killed", false, ElementTag.class, (object, mechanism, input) -> {
                 DragonBattle battle = object.getWorld().getEnderDragonBattle();
