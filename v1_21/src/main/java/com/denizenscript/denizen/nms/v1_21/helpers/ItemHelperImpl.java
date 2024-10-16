@@ -339,15 +339,15 @@ public class ItemHelperImpl extends ItemHelper {
         int currentDataVersion = CraftMagicNumbers.INSTANCE.getDataVersion();
         Tag rawComponents = ItemRawNBT.convertObjectToNbt(rawComponentsMap.identify(), CoreUtilities.errorButNoDebugContext, "");
         net.minecraft.nbt.CompoundTag nmsRawComponents = ((CompoundTagImpl) rawComponents).toNMSTag();
-        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
         if (dataVersion < currentDataVersion) {
             net.minecraft.nbt.CompoundTag legacyItemData = new net.minecraft.nbt.CompoundTag();
-            legacyItemData.putString("id", BuiltInRegistries.ITEM.getKey(nmsItemStack.getItem()).toString());
-            legacyItemData.putInt("count", nmsItemStack.getCount());
+            legacyItemData.putString("id", item.getType().getKey().toString());
+            legacyItemData.putInt("count", item.getAmount());
             legacyItemData.put("components", nmsRawComponents);
             net.minecraft.nbt.CompoundTag nmsUpdatedTag = (net.minecraft.nbt.CompoundTag) MinecraftServer.getServer().fixerUpper.update(References.ITEM_STACK, new Dynamic<>(NbtOps.INSTANCE, legacyItemData), dataVersion, currentDataVersion).getValue();
             nmsRawComponents = nmsUpdatedTag.getCompound("components");
         }
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
         DataComponentPatch.CODEC.parse(NbtOps.INSTANCE, nmsRawComponents)
                 .ifError(error -> errorHandler.accept(error.message()))
                 .ifSuccess(nmsItemStack::applyComponents);
