@@ -92,7 +92,7 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
 
     public record PerIdPropertyDataRemover(StringHolder propertyId, Map<String, Set<StringHolder>> removalsPerId) {
 
-        public static final StringHolder ID_STRING = new StringHolder("id");
+        public static final StringHolder ID_STRING_HOLDER = new StringHolder("id");
 
         public PerIdPropertyDataRemover(String propertyId) {
             this(new StringHolder(propertyId), new HashMap<>());
@@ -104,7 +104,7 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
 
         public void registerRemoval(String id, String... keys) {
             Set<StringHolder> toRemove = new HashSet<>(keys.length + 1);
-            toRemove.add(ID_STRING);
+            toRemove.add(ID_STRING_HOLDER);
             for (String key : keys) {
                 toRemove.add(new StringHolder(key));
             }
@@ -114,7 +114,7 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
         public void removeFrom(MapTag rawComponents) {
             rawComponents.map.computeIfPresent(propertyId, (key, rawValue) -> {
                 MapTag value = (MapTag) rawValue;
-                Set<StringHolder> toRemove = removalsPerId.get(value.getObject(ID_STRING).toString());
+                Set<StringHolder> toRemove = removalsPerId.get(value.getObject(ID_STRING_HOLDER).toString());
                 if (toRemove != null && value.size() <= toRemove.size() && toRemove.containsAll(value.keySet())) {
                     return null;
                 }
