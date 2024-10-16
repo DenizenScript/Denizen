@@ -34,7 +34,9 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
         BLOCK_ENTITY_DATA_REMOVER.registerRemoval("minecraft:sign", "front_text", "back_text", "is_waxed");
         BLOCK_ENTITY_DATA_REMOVER.registerRemoval("minecraft:hanging_sign", "front_text", "back_text", "is_waxed");
         BLOCK_ENTITY_DATA_REMOVER.registerRemoval("minecraft:spawner",
-                "SpawnCount", "Delay", "MinSpawnDelay", "MaxSpawnDelay", "MaxNearbyEntities", "RequiredPlayerRange", "SpawnRange", "SpawnData", "SpawnPotentials");
+                "SpawnCount", "Delay", "MinSpawnDelay", "MaxSpawnDelay", "MaxNearbyEntities", "RequiredPlayerRange", "SpawnRange"
+//                , "SpawnData", "SpawnPotentials" TODO: needs proper property support
+        );
     }
 
     public static boolean describes(ItemTag item) {
