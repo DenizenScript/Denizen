@@ -338,8 +338,8 @@ public class ItemHelperImpl extends ItemHelper {
     public ItemStack setRawComponents(ItemStack item, MapTag rawComponentsMap, int dataVersion, Consumer<String> errorHandler) {
         int currentDataVersion = CraftMagicNumbers.INSTANCE.getDataVersion();
         Tag rawComponents = ItemRawNBT.convertObjectToNbt(rawComponentsMap.identify(), CoreUtilities.errorButNoDebugContext, "");
-        RegistryOps<net.minecraft.nbt.Tag> registryOps = CraftRegistry.getMinecraftRegistry().createSerializationContext(NbtOps.INSTANCE);
         net.minecraft.nbt.CompoundTag nmsRawComponents = ((CompoundTagImpl) rawComponents).toNMSTag();
+        RegistryOps<net.minecraft.nbt.Tag> registryOps = CraftRegistry.getMinecraftRegistry().createSerializationContext(NbtOps.INSTANCE);
         if (dataVersion < currentDataVersion) {
             net.minecraft.nbt.CompoundTag legacyItemData = new net.minecraft.nbt.CompoundTag();
             legacyItemData.putString("id", item.getType().getKey().toString());
