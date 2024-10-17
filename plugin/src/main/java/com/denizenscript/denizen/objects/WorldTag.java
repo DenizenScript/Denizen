@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
@@ -837,6 +838,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         registerTag(LocationTag.class, "dragon_portal_location", (attribute, object) -> {
             DragonBattle battle = object.getWorld().getEnderDragonBattle();
             if (battle == null) {
+                attribute.echoError("Provided world is not an end world!");
                 return null;
             }
             if (battle.getEndPortalLocation() == null) {
@@ -1006,6 +1008,100 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         registerTag(ElementTag.class, "is_night", (attribute, world) -> {
             return new ElementTag(NMSHandler.worldHelper.isNight(world.getWorld()));
         });
+
+        // <--[tag]
+        // @attribute <WorldTag.first_dragon_killed>
+        // @returns ElementTag(Boolean)
+        // @mechanism WorldTag.first_dragon_killed
+        // @description
+        // Returns whether the ender dragon has been killed in this world before.
+        // Only works if the world is an end world.
+        // -->
+        registerTag(ElementTag.class, "first_dragon_killed", (attribute, object) -> {
+            DragonBattle battle = object.getWorld().getEnderDragonBattle();
+            if (battle == null) {
+                attribute.echoError("Provided world is not an end world!");
+                return null;
+            }
+            return new ElementTag(battle.hasBeenPreviouslyKilled());
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name respawn_dragon
+        // @description
+        // Initiates the respawn sequence of the ender dragon as if a player placed 4 end crystals on the portal.
+        // Only works if the world is an end world.
+        // -->
+        tagProcessor.registerMechanism("respawn_dragon", false, (object, mechanism) -> {
+            DragonBattle battle = object.getWorld().getEnderDragonBattle();
+            if (battle == null) {
+                mechanism.echoError("Provided world is not an end world!");
+                return;
+            }
+            battle.initiateRespawn();
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name reset_crystals
+        // @description
+        // Resets the end crystals located on the obsidian pillars in this world.
+        // Only works if the world is an end world.
+        // -->
+        tagProcessor.registerMechanism("reset_crystals", false, (object, mechanism) -> {
+            DragonBattle battle = object.getWorld().getEnderDragonBattle();
+            if (battle == null) {
+                mechanism.echoError("Provided world is not an end world!");
+                return;
+            }
+            battle.resetCrystals();
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name respawn_phase
+        // @input ElementTag
+        // @description
+        // Set the current respawn phase of the ender dragon. Valid phases can be found at <@link url https://jd.papermc.io/paper/1.21.1/org/bukkit/boss/DragonBattle.RespawnPhase.html>
+        // Only works if the world is an end world.
+        // -->
+        tagProcessor.registerMechanism("respawn_phase", false, ElementTag.class, (object, mechanism, input) -> {
+            DragonBattle battle = object.getWorld().getEnderDragonBattle();
+            if (battle == null) {
+                mechanism.echoError("Provided world is not an end world!");
+                return;
+            }
+            if (mechanism.requireEnum(DragonBattle.RespawnPhase.class)) {
+                battle.setRespawnPhase(input.asEnum(DragonBattle.RespawnPhase.class));
+            }
+        });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+
+            // <--[mechanism]
+            // @object WorldTag
+            // @name first_dragon_killed
+            // @input ElementTag(Boolean)
+            // @description
+            // Set whether the first ender dragon was killed already.
+            // Toggling this value won't really affect anything in the end world, but may be useful when creating custom end worlds.
+            // Only works if the world is an end world.
+            // @tags
+            // <WorldTag.first_dragon_killed>
+            // -->
+            tagProcessor.registerMechanism("first_dragon_killed", false, ElementTag.class, (object, mechanism, input) -> {
+                DragonBattle battle = object.getWorld().getEnderDragonBattle();
+                if (battle == null) {
+                    mechanism.echoError("Provided world is not an end world!");
+                    return;
+                }
+                if (mechanism.requireBoolean()) {
+                    battle.setPreviouslyKilled(input.asBoolean());
+                }
+            });
+        }
+
     }
 
     public static ObjectTagProcessor<WorldTag> tagProcessor = new ObjectTagProcessor<>();
