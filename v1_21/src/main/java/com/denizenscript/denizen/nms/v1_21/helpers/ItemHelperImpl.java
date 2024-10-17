@@ -10,8 +10,12 @@ import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_21.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.properties.item.ItemRawComponents;
+import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -23,12 +27,14 @@ import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.fixes.References;
@@ -78,6 +84,7 @@ import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class ItemHelperImpl extends ItemHelper {
@@ -304,6 +311,47 @@ public class ItemHelperImpl extends ItemHelper {
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
         CustomData.set(DataComponents.ENTITY_DATA, nmsItemStack, nmsEntityNbt);
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public MapTag getRawComponents(ItemStack item, boolean excludeHandled) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        DataComponentPatch patch = nmsItemStack.getComponentsPatch();
+        if (excludeHandled) {
+            patch = patch.forget(componentType -> {
+                ResourceLocation componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
+                return ItemRawComponents.propertyHandledComponents.contains(componentId.toString());
+            });
+        }
+        if (patch.isEmpty()) {
+            return new MapTag();
+        }
+        RegistryOps<net.minecraft.nbt.Tag> registryOps = CraftRegistry.getMinecraftRegistry().createSerializationContext(NbtOps.INSTANCE);
+        net.minecraft.nbt.CompoundTag nmsPatch = (net.minecraft.nbt.CompoundTag) DataComponentPatch.CODEC.encodeStart(registryOps, patch).getOrThrow();
+        MapTag rawComponents = (MapTag) ItemRawNBT.jnbtTagToObject(CompoundTagImpl.fromNMSTag(nmsPatch));
+        rawComponents.putObject(ItemRawComponents.DATA_VERSION_KEY, new ElementTag(CraftMagicNumbers.INSTANCE.getDataVersion()));
+        return rawComponents;
+    }
+
+    @Override
+    public ItemStack setRawComponents(ItemStack item, MapTag rawComponentsMap, int dataVersion, Consumer<String> errorHandler) {
+        int currentDataVersion = CraftMagicNumbers.INSTANCE.getDataVersion();
+        Tag rawComponents = ItemRawNBT.convertObjectToNbt(rawComponentsMap.identify(), CoreUtilities.errorButNoDebugContext, "");
+        net.minecraft.nbt.CompoundTag nmsRawComponents = ((CompoundTagImpl) rawComponents).toNMSTag();
+        RegistryOps<net.minecraft.nbt.Tag> registryOps = CraftRegistry.getMinecraftRegistry().createSerializationContext(NbtOps.INSTANCE);
+        if (dataVersion < currentDataVersion) {
+            net.minecraft.nbt.CompoundTag legacyItemData = new net.minecraft.nbt.CompoundTag();
+            legacyItemData.putString("id", item.getType().getKey().toString());
+            legacyItemData.putInt("count", item.getAmount());
+            legacyItemData.put("components", nmsRawComponents);
+            net.minecraft.nbt.CompoundTag nmsUpdatedTag = (net.minecraft.nbt.CompoundTag) MinecraftServer.getServer().fixerUpper.update(References.ITEM_STACK, new Dynamic<>(registryOps, legacyItemData), dataVersion, currentDataVersion).getValue();
+            nmsRawComponents = nmsUpdatedTag.getCompound("components");
+        }
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        DataComponentPatch.CODEC.parse(registryOps, nmsRawComponents)
+                .ifError(error -> errorHandler.accept(error.message()))
+                .ifSuccess(nmsItemStack::applyComponents);
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 

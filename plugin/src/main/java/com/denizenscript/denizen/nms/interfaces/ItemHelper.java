@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -23,6 +24,7 @@ import org.bukkit.map.MapView;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public abstract class ItemHelper {
 
@@ -105,7 +107,15 @@ public abstract class ItemHelper {
         }
         return CustomNBT.setNBTMaterials(item, CustomNBT.KEY_CAN_DESTROY, canBreak);
     }
-    
+
+    public MapTag getRawComponents(ItemStack item, boolean excludeHandled) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ItemStack setRawComponents(ItemStack item, MapTag rawComponentsMap, int dataVersion, Consumer<String> errorHandler) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact, ItemStack[] templateItem, boolean templateExact);
 
     public abstract void setInventoryItem(Inventory inventory, ItemStack item, int slot);
