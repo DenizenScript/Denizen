@@ -18,6 +18,21 @@ import java.util.Set;
 
 public class ItemRawComponents extends ItemProperty<MapTag> {
 
+    // <--[property]
+    // @object ItemTag
+    // @name raw_components
+    // @input MapTag
+    // @description
+    // Controls the item's internal component patch. That is, the changes in components on top of the item type's default components.
+    // The map is in <@link language Raw NBT Encoding> format.
+    // This is mainly intended for item data persistence, and scripts should prefer using proper item properties instead of setting raw data directly.
+    // If you're trying to read custom data set by other plugins, use <@link property ItemTag.custom_data>.
+    // @tag
+    // Note that this is just data that isn't already controlled by other ItemTag properties, see <@link tag ItemTag.all_raw_components> for the complete component patch.
+    // @warning
+    // Due to this being a direct representation of internal data, compatibility for script usage across versions is not guaranteed.
+    // -->
+
     public static final String DATA_VERSION_KEY = "denizen:__data_version";
     public static final PerIdPropertyDataRemover ENTITY_DATA_REMOVER = new PerIdPropertyDataRemover("minecraft:entity_data");
     public static final PerIdPropertyDataRemover BLOCK_ENTITY_DATA_REMOVER = new PerIdPropertyDataRemover("minecraft:block_entity_data");
@@ -85,6 +100,15 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
 
     public static void register() {
         autoRegister("raw_components", ItemRawComponents.class, MapTag.class, false);
+
+        // <--[tag]
+        // @attribute <ItemTag.all_raw_components>
+        // @returns MapTag
+        // @description
+        // Returns the item's entire internal component patch (see <@link tag ItemTag.raw_components>).
+        // @warning
+        // Due to this being a direct representation of internal data, compatibility for script usage across versions is not guaranteed.
+        // -->
         PropertyParser.registerTag(ItemRawComponents.class, MapTag.class, "all_raw_components", (attribute, property) -> {
             return NMSHandler.itemHelper.getRawComponents(property.getItemStack(), false);
         });
