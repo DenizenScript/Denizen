@@ -7,6 +7,7 @@ import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.inventory.InventoryViewUtil;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -112,8 +113,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
             case "item":
                 return item;
             case "clicked_inventory":
-                return InventoryTag.mirrorBukkitInventory(event.getView()
-                        .getInventory(event.getRawSlots().stream().findFirst().orElse(0)));
+                return InventoryTag.mirrorBukkitInventory(InventoryViewUtil.getInventory(event.getView(), event.getRawSlots().stream().findFirst().orElse(0)));
             case "drag_type":
                 return new ElementTag(event.getType());
         }
