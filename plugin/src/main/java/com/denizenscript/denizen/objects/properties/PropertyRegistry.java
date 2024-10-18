@@ -9,6 +9,7 @@ import com.denizenscript.denizen.objects.properties.inventory.*;
 import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.objects.properties.trade.*;
+import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class PropertyRegistry {
@@ -203,62 +204,65 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(InventoryUniquifier.class, InventoryTag.class);
 
         // register core ItemTag properties
-        PropertyParser.registerProperty(ItemArmorPose.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemAttributeModifiers.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemArmorPose.class, ItemTag.class);  // Special case handling in ItemRawComponents
+        registerItemProperty(ItemAttributeModifiers.class, "attribute_modifiers");
         PropertyParser.registerProperty(ItemAttributeNBT.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemBaseColor.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemBlockMaterial.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemBook.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemBookGeneration.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemDisplayname.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemDurability.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemCanDestroy.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemCanPlaceOn.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemColor.class, ItemTag.class);
+        registerItemProperty(ItemBaseColor.class, "base_color");
+        registerItemProperty(ItemBlockMaterial.class, "block_state");
+        registerItemProperty(ItemBook.class, "writable_book_content", "written_book_content");
+        PropertyParser.registerProperty(ItemBookGeneration.class, ItemTag.class); // Part of "written_book_content"
+        registerItemProperty(ItemDisplayname.class, "custom_name");
+        registerItemProperty(ItemDurability.class, "damage");
+        registerItemProperty(ItemCanDestroy.class, "can_break");
+        PropertyParser.registerProperty(ItemCanPlaceOn.class, ItemTag.class); // Let "can_place_on" through, this doesn't cover the entire component
+        registerItemProperty(ItemColor.class, "dyed_color", "map_color"); // Potion color included in ItemPotion's "potion_contents"
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            PropertyParser.registerProperty(ItemCustomData.class, ItemTag.class);
+            registerItemProperty(ItemCustomData.class, "custom_data");
         }
-        PropertyParser.registerProperty(ItemCustomModel.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemChargedProjectile.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemEnchantments.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemFirework.class, ItemTag.class);
+        registerItemProperty(ItemCustomModel.class, "custom_model_data");
+        registerItemProperty(ItemChargedProjectile.class, "charged_projectiles");
+        registerItemProperty(ItemEnchantments.class, "enchantments", "stored_enchantments");
+        registerItemProperty(ItemFirework.class, "fireworks", "firework_explosion");
         PropertyParser.registerProperty(ItemFlags.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemFrameInvisible.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemHidden.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemFrameInvisible.class, ItemTag.class); // Special case handling in ItemRawComponents
+        PropertyParser.registerProperty(ItemHidden.class, ItemTag.class); // Relevant components control their own hiding internally
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            PropertyParser.registerProperty(ItemInstrument.class, ItemTag.class);
+            PropertyParser.registerProperty(ItemInstrument.class, ItemTag.class); // Special case handling in ItemRawComponents
         }
-        PropertyParser.registerProperty(ItemInventoryContents.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemKnowledgeBookRecipes.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemLock.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemLodestoneLocation.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemLodestoneTracked.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemLore.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemMap.class, ItemTag.class);
+        registerItemProperty(ItemInventoryContents.class, "container", "bundle_contents");
+        registerItemProperty(ItemKnowledgeBookRecipes.class, "recipes");
+        registerItemProperty(ItemLock.class, "lock");
+        registerItemProperty(ItemLodestoneLocation.class, "lodestone_tracker");
+        registerItemProperty(ItemLodestoneTracked.class, "lodestone_tracker");
+        registerItemProperty(ItemLore.class, "lore");
+        registerItemProperty(ItemMap.class, "map_id");
         PropertyParser.registerProperty(ItemNBT.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemPatterns.class, ItemTag.class);
+        registerItemProperty(ItemPatterns.class, "banner_patterns");
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
-            PropertyParser.registerProperty(ItemPotion.class, ItemTag.class);
+            registerItemProperty(ItemPotion.class, "potion_contents");
         }
         PropertyParser.registerProperty(ItemQuantity.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(ItemRawComponents.class, ItemTag.class);
+        }
         PropertyParser.registerProperty(ItemRawNBT.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemRepairCost.class, ItemTag.class);
+        registerItemProperty(ItemRepairCost.class, "repair_cost");
         PropertyParser.registerProperty(ItemScript.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSignContents.class, ItemTag.class);
+        PropertyParser.registerProperty(ItemSignContents.class, ItemTag.class); // Special case handling in ItemRawComponents
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            PropertyParser.registerProperty(ItemSignIsWaxed.class, ItemTag.class);
+            PropertyParser.registerProperty(ItemSignIsWaxed.class, ItemTag.class); // Special case handling in ItemRawComponents
         }
-        PropertyParser.registerProperty(ItemSkullskin.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSpawnerCount.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSpawnerDelay.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSpawnerMaxNearbyEntities.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSpawnerPlayerRange.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSpawnerRange.class, ItemTag.class);
-        PropertyParser.registerProperty(ItemSpawnerType.class, ItemTag.class);
+        registerItemProperty(ItemSkullskin.class, "profile");
+        PropertyParser.registerProperty(ItemSpawnerCount.class, ItemTag.class); // Special case handling in ItemRawComponents
+        PropertyParser.registerProperty(ItemSpawnerDelay.class, ItemTag.class); // Special case handling in ItemRawComponents
+        PropertyParser.registerProperty(ItemSpawnerMaxNearbyEntities.class, ItemTag.class); // Special case handling in ItemRawComponents
+        PropertyParser.registerProperty(ItemSpawnerPlayerRange.class, ItemTag.class); // Special case handling in ItemRawComponents
+        PropertyParser.registerProperty(ItemSpawnerRange.class, ItemTag.class); // Special case handling in ItemRawComponents
+        PropertyParser.registerProperty(ItemSpawnerType.class, ItemTag.class); // Special case handling in ItemRawComponents
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            PropertyParser.registerProperty(ItemTrim.class, ItemTag.class);
+            registerItemProperty(ItemTrim.class, "trim");
         }
-        PropertyParser.registerProperty(ItemUnbreakable.class, ItemTag.class);
+        registerItemProperty(ItemUnbreakable.class, "unbreakable");
 
         // register core MaterialTag properties
         PropertyParser.registerProperty(MaterialAge.class, MaterialTag.class);
@@ -305,5 +309,12 @@ public class PropertyRegistry {
         }
         PropertyParser.registerProperty(TradeUses.class, TradeTag.class);
         PropertyParser.registerProperty(TradeVillagerXP.class, TradeTag.class);
+    }
+
+    public static void registerItemProperty(Class<? extends Property> propertyClass, String... internalComponents) {
+        PropertyParser.registerProperty(propertyClass, ItemTag.class);
+        for (String internalComponent : internalComponents) {
+            ItemRawComponents.registerHandledComponent(internalComponent);
+        }
     }
 }
