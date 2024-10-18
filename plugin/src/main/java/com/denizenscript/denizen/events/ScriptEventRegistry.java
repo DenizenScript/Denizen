@@ -223,7 +223,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerPreLoginScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerPreparesAnvilCraftScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerPreparesEnchantScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerQuitsScriptEvent.class);
+        if (!Denizen.supportsPaper) {
+            ScriptEvent.registerScriptEvent(PlayerQuitsScriptEvent.class);
+        }
         if (!Denizen.supportsPaper || NMSHandler.getVersion().isAtMost(NMSVersion.v1_17)) {
             ScriptEvent.registerScriptEvent(PlayerRaiseLowerItemScriptEvent.PlayerRaiseLowerItemScriptEventSpigotImpl.class);
         }
