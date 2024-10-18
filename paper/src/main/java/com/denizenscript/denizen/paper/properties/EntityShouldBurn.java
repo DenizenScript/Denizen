@@ -4,8 +4,8 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import org.bukkit.entity.AbstractSkeleton;
 import org.bukkit.entity.Phantom;
-import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Zombie;
 
 public class EntityShouldBurn extends EntityProperty<ElementTag> {
@@ -16,12 +16,12 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @plugin Paper
     // @description
-    // If the entity is a Zombie, Skeleton, or Phantom, controls whether it should burn in daylight.
+    // If the entity is a Zombie, Skeleton, Stray, or Phantom, controls whether it should burn in daylight.
     // -->
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Zombie
-                || entity.getBukkitEntity() instanceof Skeleton
+                || entity.getBukkitEntity() instanceof AbstractSkeleton
                 || entity.getBukkitEntity() instanceof Phantom;
     }
 
@@ -30,7 +30,7 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
         if (getEntity() instanceof Zombie zombie) {
             return new ElementTag(zombie.shouldBurnInDay());
         }
-        else if (getEntity() instanceof Skeleton skeleton) {
+        else if (getEntity() instanceof AbstractSkeleton skeleton) {
             return new ElementTag(skeleton.shouldBurnInDay());
         }
         else { // phantom
@@ -49,7 +49,7 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
             if (getEntity() instanceof Zombie zombie) {
                 zombie.setShouldBurnInDay(param.asBoolean());
             }
-            else if (getEntity() instanceof Skeleton skeleton) {
+            else if (getEntity() instanceof AbstractSkeleton skeleton) {
                 skeleton.setShouldBurnInDay(param.asBoolean());
             }
             else { // phantom
