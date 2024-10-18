@@ -57,7 +57,15 @@ public class ItemFlags implements Property {
         // @group properties
         // @description
         // Returns a copy of the item with the specified flag data action applied to it.
-        // For example: <[item].with_flag[myflagname]>, or <[item].with_flag[myflag:myvalue]>, or <[item].with_flag[mycounter:+:<[amount]>]>
+        // @example
+        // # Gives the player a grass block with the flag 'myflagname'.
+        // - give <item[grass_block].with_flag[myflagname]>
+        // @example
+        // # Gives the player a grass block with the flag 'myflagname' set to 'value'.
+        // - give <item[grass_block].with_flag[myflagname:value]>
+        // @example
+        // # Gives the player their held item with the flag 'mycounter' increased by 'amount'
+        // - give <player.item_in_hand.with_flag[mycounter:+:<[amount]>]>
         // -->
         if (attribute.startsWith("with_flag")) {
             ItemTag item = new ItemTag(this.item.getItemStack().clone());
@@ -72,7 +80,9 @@ public class ItemFlags implements Property {
             // @group properties
             // @description
             // Returns a copy of the item with the specified flag data action (and the specified expiration duration) applied to it.
-            // For example: <[item].with_flag[myflagname].duration[5m]>
+            // @example
+            // # Gives the player a grass block with the flag 'myflagname' expiring in 5 minutes.
+            // - give <item[grass_block].with_flag[myflagname].duration[5m]>
             // -->
             if (attribute.startsWith("duration", 2)) {
                 provider.expiration = new TimeTag(TimeTag.now().millis() + attribute.getContextObject(2).asType(DurationTag.class, attribute.context).getMillis());
@@ -122,7 +132,12 @@ public class ItemFlags implements Property {
         // @input ObjectTag
         // @description
         // Modifies a flag on this item, using syntax similar to <@link command flag>.
-        // For example, 'flag:myflagname:!' will remove flag 'myflagname', or 'flag:myflagname:3' sets flag 'myflagname' to value '3'.
+        // @example
+        // # Removes flag 'myflagname' from your held item
+        // - flag <player.item_in_hand> myflagname:!
+        // @example
+        // # Sets flag 'myflagname' on your held item to value '3'
+        // - flag <player.item_in_hand> myflagname:3
         // @tags
         // <FlaggableObject.flag[<flag_name>]>
         // <FlaggableObject.has_flag[<flag_name>]>
