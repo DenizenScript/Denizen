@@ -595,7 +595,7 @@ public class TextTagBase {
         // Returns the ChatColor that makes the following characters have an underline.
         // Same as <@link tag underline>
         // @example
-        // # Narrates "Look at this cool message!" with an underline.
+        // # Narrates "Look at this cool message!" underlined.
         // - narrate "<&n>Look at this cool message!"
         // -->
 
