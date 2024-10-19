@@ -1788,8 +1788,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the entity on the entity's left shoulder.
         // Only applies to player-typed entities.
-        // NOTE: The returned entity will not be spawned within the world,
-        // so most operations are invalid unless the entity is first spawned in.
+        // NOTE: The returned entity must be spawned within the world for this operation to work.
         // -->
         registerSpawnedOnlyTag(EntityFormObject.class, "left_shoulder", (attribute, object) -> {
             if (!(object.getLivingEntity() instanceof HumanEntity)) {
@@ -1809,8 +1808,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the entity on the entity's right shoulder.
         // Only applies to player-typed entities.
-        // NOTE: The returned entity will not be spawned within the world,
-        // so most operations are invalid unless the entity is first spawned in.
+        // NOTE: The returned entity must be spawned within the world for this operation to work.
         // -->
         registerSpawnedOnlyTag(EntityFormObject.class, "right_shoulder", (attribute, object) -> {
             if (!(object.getLivingEntity() instanceof HumanEntity)) {
