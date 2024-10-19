@@ -960,7 +960,6 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // You can also use <@link mechanism add_member>
         // @example
         // # Creates a new cuboid named "my_third_cuboid" and adds "my_cuboid" and "my_second_cuboid" as members.
-        // # You can also use the "add_member" mechanism.
         // - note <cuboid[my_cuboid].add_member[my_second_cuboid]> as:my_third_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "add_member", (attribute, cuboid) -> {
