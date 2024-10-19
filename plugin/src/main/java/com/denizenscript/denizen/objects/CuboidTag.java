@@ -957,6 +957,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @mechanism CuboidTag.add_member
         // @description
         // Returns a modified copy of this cuboid, with the input cuboid(s) added at the end.
+        // You can also use <@link mechanism add_member>
         // @example
         // # Creates a new cuboid named "my_third_cuboid" and adds "my_cuboid" and "my_second_cuboid" as members.
         // # You can also use the "add_member" mechanism.
@@ -977,9 +978,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
             // @mechanism CuboidTag.add_member
             // @description
             // Returns a modified copy of this cuboid, with the input cuboid(s) added at the specified index.
+            // You can also use <@link mechanism add_member>
             // @example
             // # Adds "my_second_cuboid" as a member of "my_cuboid" at an index of 3.
-            // # You can also use the "add_member" mechanism.
             // - note <cuboid[my_cuboid].add_member[my_second_cuboid].at[3]> as:my_third_cuboid
             // -->
             if (attribute.startsWith("at", 2)) {
@@ -1017,9 +1018,9 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @mechanism CuboidTag.remove_member
         // @description
         // Returns a modified copy of this cuboid, with member at the input index removed.
+        // You can also use <@link mechanism remove_member>
         // @example
         // # Removes the third member in the cuboid "my_cuboid" and notes it as "my_new_cuboid".
-        // # You can also use the "remove_member" mechanism.
         // - note <cuboid[my_cuboid].remove_member[3]> as:my_new_cuboid
         // -->
         tagProcessor.registerTag(CuboidTag.class, "remove_member", (attribute, cuboid) -> {
