@@ -36,8 +36,10 @@ public class TextTagBase {
         // @description
         // Returns a special chat code that makes the following text display the input hover text when the mouse is left over it.
         // This tag must be followed by an <&end_hover> tag.
-        // For example: - narrate "There is a <&hover[you found it!]>secret<&end_hover> in this message!"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // # Shows the text "you found it!" when hovering over the word "secret" in chat.
+        // - narrate "There is a <&hover[you found it!]>secret<&end_hover> in this message!"
         // -->
         TagManager.registerTagHandler(ElementTag.class, "&hover", (attribute) -> { // Cannot be static due to hacked sub-tag
               if (!attribute.hasParam()) {
@@ -52,9 +54,15 @@ public class TextTagBase {
               // Returns a special chat code that makes the following text display the input hover text when the mouse is left over it.
               // This tag must be followed by an <&end_hover> tag.
               // Available hover types: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
-              // For example: - narrate "There is a <&hover[you found it!].type[SHOW_TEXT]>secret<&end_hover> in this message!"
-              // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
+              // Note: for "SHOW_ITEM", replace the text with a valid <@link objecttype ItemTag>. 
+              // Note: for "SHOW_ENTITY", replace the text with a valid <@link objecttype EntityTag> (use F3+H to see entities).
               // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+              // @example
+              // # Shows the text "you found it!" when hovering over the word "secret" in chat.
+              // - narrate "There is a <&hover[you found it!].type[SHOW_TEXT]>secret<&end_hover> in this message!"
+              // @example
+              // # Shows the name, lore, and attack damage of the player's held item when hovering over the word "here" in chat.
+              // - narrate "The item in your hand can be found <&hover[<player.item_in_hand>].type[SHOW_ITEM]>here<&end_hover>."
               // -->
               String type = "SHOW_TEXT";
               if (attribute.startsWith("type", 2)) {
@@ -70,10 +78,14 @@ public class TextTagBase {
         // @description
         // Returns a special chat code that makes the following text execute the input command line value when clicked.
         // To execute a command "/" should be used at the start. Otherwise, it will display as chat.
-        // This tag must be followed by an <&end_click> tag.
-        // For example: - narrate "You can <&click[wow]>click here<&end_click> to say wow!"
-        // For example: - narrate "You can <&click[/help]>click here<&end_click> for help!"
+        // This tag must be followed by <@link tag &end_click>.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // # Sends the message "wow" when clicking on "click here" in chat.
+        // - narrate "You can <&click[wow]>click here<&end_click> to say wow!"
+        // @example
+        // # Sends the command "/help" when clicking on "click here" in chat.
+        // - narrate "You can <&click[/help]>click here<&end_click> for help!"
         // -->
         TagManager.registerTagHandler(ElementTag.class, "&click", (attribute) -> { // Cannot be static due to hacked sub-tag
             if (!attribute.hasParam()) {
@@ -86,10 +98,15 @@ public class TextTagBase {
             // @returns ElementTag
             // @description
             // Returns a special chat code that makes the following text execute the input command when clicked.
-            // This tag must be followed by an <&end_click> tag.
+            // This tag must be followed by <@link tag &end_click>.
             // Available command types: OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, COPY_TO_CLIPBOARD, or CHANGE_PAGE.
-            // For example: - narrate "You can <&click[https://denizenscript.com].type[OPEN_URL]>click here<&end_click> to learn about Denizen!"
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+            // @example
+            // # Sends the player to https://denizenscript.com when clicking on "click here" in chat.
+            // - narrate "You can <&click[https://denizenscript.com].type[OPEN_URL]>click here<&end_click> to learn about Denizen!"
+            // @example
+            // # Sets the player's suggested command to "/msg mcmonkey4eva I think you're the best." when clicking on "gratitude".
+            // - narrate "If you want to thank the author of this plugin, you can show him some <&click[/msg mcmonkey4eva I think you're the best.].type[SUGGEST_COMMAND]>gratitude<&end_click>."
             // -->
             String type = "RUN_COMMAND";
             if (attribute.startsWith("type", 2)) {
@@ -104,9 +121,11 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns a special chat code that makes the following text insert the input message to chat when shift-clicked.
-        // This tag must be followed by an <&end_insertion> tag.
-        // For example: - narrate "You can <&insertion[wow]>click here<&end_insertion> to add 'wow' to your chat!"
+        // This tag must be followed by <@link tag &end_insertion>.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // # Adds "wow" to the end of the player's open chat message when shift-clicking on the words "click here".
+        // - narrate "You can <&insertion[wow]>click here<&end_insertion> to add 'wow' to your chat!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&insertion", (attribute) -> {
             if (!attribute.hasParam()) {
@@ -120,8 +139,11 @@ public class TextTagBase {
         // @attribute <&end_click>
         // @returns ElementTag
         // @description
-        // Returns a special chat code that ends a '&click' tag.
+        // Returns a special chat code that ends a <@link tag click[<click_command>]>.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // # Sends the message "wow" when clicking on "click here" in chat.
+        // - narrate "You can <&click[wow]>click here<&end_click> to say wow!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_click", (attribute) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[/click]");
@@ -131,8 +153,11 @@ public class TextTagBase {
         // @attribute <&end_hover>
         // @returns ElementTag
         // @description
-        // Returns a special chat code that ends a '&hover' tag.
+        // Returns a special chat code that ends a <@link tag hover[<hover_text>]>.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // # Shows the text "you found it!" when hovering over the word "secret" in chat.
+        // - narrate "There is a <&hover[you found it!]>secret<&end_hover> in this message!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_hover", (attribute) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[/hover]");
@@ -142,8 +167,11 @@ public class TextTagBase {
         // @attribute <&end_insertion>
         // @returns ElementTag
         // @description
-        // Returns a special chat code that ends an '&insertion' tag.
+        // Returns a special chat code that ends a <@link tag insertion[<message>]>.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // # Adds "wow" to the end of the player's open chat message when shift-clicking on the words "click here".
+        // - narrate "You can <&insertion[wow]>click here<&end_insertion> to add 'wow' to your chat!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_insertion", (attribute) -> {
             return new ElementTag(ChatColor.COLOR_CHAR + "[/insertion]");
@@ -154,8 +182,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns a special chat code that displays a keybind.
-        // For example: - narrate "Press your <&keybind[key.jump]> key!"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
+        // @example
+        // # Narrates "Press your Space key!" if the player's jump key is set to the space bar.
+        // - narrate "Press your <&keybind[key.jump]> key!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&keybind", (attribute) -> {
             if (!attribute.hasParam()) {
@@ -192,13 +222,13 @@ public class TextTagBase {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // You can use <@link tag ElementTag.strip_color> to convert the translated output to plain text (pre-translated).
         // @example
-        // Narrates a translatable of a diamond sword's name.
+        // # Narrates a translatable of a diamond sword's name.
         // - narrate "Reward: <&translate[key=item.minecraft.diamond_sword]>"
         // @example
-        // Narrates a translatable with some input data.
+        // # Narrates a translatable with some input data.
         // - narrate <&translate[key=commands.give.success.single;with=32|<&translate[key=item.minecraft.diamond_sword]>|<player.name>]>
         // @example
-        // Narrates a custom translatable (from something like a resource pack), with a fallback in case it can't be translated.
+        // # Narrates a custom translatable (from something like a resource pack), with a fallback in case it can't be translated.
         // - narrate <&translate[key=my.custom.translation;fallback=Please use the resource pack!]>
         // -->
         TagManager.registerTagHandler(ElementTag.class, ObjectTag.class, "&translate", (attribute, param) -> { // Cannot be static due to hacked sub-tag
@@ -251,8 +281,13 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns a chat code that makes the following text be the specified color.
-        // Color can be a color name, color code, hex, or ColorTag... that is: "&color[gold]", "&color[6]", and "&color[#AABB00]" are all valid.
+        // Color can be a color name, color code, hex, or <@link ObjectType ColorTag>.
         // The ColorTag input option can be used for dynamic color effects, such as automatic rainbows.
+        // @example
+        // # Narrates "Look at this cool message!" in gold.
+        // - narrate "<&color[gold]>Look at this cool message!"
+        // - narrate "<&color[6]>Look at this cool message!"
+        // - narrate "<&color[#AABB00]>Look at this cool message!"
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&color", (attribute) -> {
             if (!attribute.hasParam()) {
@@ -349,6 +384,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Black.
+        // Same as <@link tag black>
+        // @example
+        // # Narrates "Look at this cool message!" in black.
+        // - narrate "<&0>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -356,6 +395,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Dark Blue.
+        // Same as <@link tag dark_blue>
+        // @example
+        // # Narrates "Look at this cool message!" in dark blue.
+        // - narrate "<&1>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -363,6 +406,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Dark Green.
+        // Same as <@link tag dark_green>
+        // @example
+        // # Narrates "Look at this cool message!" in dark green.
+        // - narrate "<&2>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -370,6 +417,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Dark Cyan.
+        // Same as <@link tag dark_aqua>
+        // @example
+        // # Narrates "Look at this cool message!" in dark cyan.
+        // - narrate "<&3>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -377,13 +428,21 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Dark Red.
+        // Same as <@link tag dark_red>
+        // @example
+        // # Narrates "Look at this cool message!" in dark red.
+        // - narrate "<&4>Look at this cool message!"
         // -->
 
         // <--[tag]
         // @attribute <&5>
         // @returns ElementTag
         // @description
-        // Returns the ChatColor that makes the following characters Dark Magenta.
+        // Returns the ChatColor that makes the following characters Dark Purple.
+        // Same as <@link tag dark_purple>
+        // @example
+        // # Narrates "Look at this cool message!" in dark purple.
+        // - narrate "<&5>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -391,6 +450,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Gold.
+        // Same as <@link tag gold>
+        // @example
+        // # Narrates "Look at this cool message!" in gold.
+        // - narrate "<&6>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -398,6 +461,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Light Gray.
+        // Same as <@link tag gray>
+        // @example
+        // # Narrates "Look at this cool message!" in light gray.
+        // - narrate "<&7>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -405,13 +472,21 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Dark Gray.
+        // Same as <@link tag dark_gray>
+        // @example
+        // # Narrates "Look at this cool message!" in dark gray.
+        // - narrate "<&8>Look at this cool message!"
         // -->
 
         // <--[tag]
         // @attribute <&9>
         // @returns ElementTag
         // @description
-        // Returns the ChatColor that makes the following characters Light Blue.
+        // Returns the ChatColor that makes the following characters Blue.
+        // Same as <@link tag blue>
+        // @example
+        // # Narrates "Look at this cool message!" in blue.
+        // - narrate "<&9>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -419,13 +494,21 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Light Green.
+        // Same as <@link tag green>
+        // @example
+        // # Narrates "Look at this cool message!" in light green.
+        // - narrate "<&a>Look at this cool message!"
         // -->
 
         // <--[tag]
         // @attribute <&b>
         // @returns ElementTag
         // @description
-        // Returns the ChatColor that makes the following characters Cyan.
+        // Returns the ChatColor that makes the following characters Light Blue.
+        // Same as <@link tag aqua>
+        // @example
+        // # Narrates "Look at this cool message!" in light blue.
+        // - narrate "<&b>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -433,13 +516,21 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Light Red.
+        // Same as <@link tag red>
+        // @example
+        // # Narrates "Look at this cool message!" in light red.
+        // - narrate "<&c>Look at this cool message!"
         // -->
 
         // <--[tag]
         // @attribute <&d>
         // @returns ElementTag
         // @description
-        // Returns the ChatColor that makes the following characters Magenta.
+        // Returns the ChatColor that makes the following characters Light Purple.
+        // Same as <@link tag light_purple>
+        // @example
+        // # Narrates "Look at this cool message!" in light purple.
+        // - narrate "<&d>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -447,6 +538,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Yellow.
+        // Same as <@link tag yellow>
+        // @example
+        // # Narrates "Look at this cool message!" in yellow.
+        // - narrate "<&e>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -454,6 +549,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters White.
+        // Same as <@link tag white>
+        // @example
+        // # Narrates "Look at this cool message!" in white.
+        // - narrate "<&f>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -461,6 +560,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters obfuscated.
+        // Same as <@link tag magic>
+        // @example
+        // # Narrates "Look at this cool message!" obfuscated.
+        // - narrate "<&k>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -468,6 +571,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters bold.
+        // Same as <@link tag bold>
+        // @example
+        // # Narrates "Look at this cool message!" bolded.
+        // - narrate "<&l>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -475,6 +582,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters have a strike-through.
+        // Same as <@link tag strikethrough>
+        // @example
+        // # Narrates "Look at this cool message!" with a strike-through.
+        // - narrate "<&m>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -482,6 +593,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters have an underline.
+        // Same as <@link tag underline>
+        // @example
+        // # Narrates "Look at this cool message!" with an underline.
+        // - narrate "<&n>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -489,6 +604,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters italicized.
+        // Same as <@link tag italic>
+        // @example
+        // # Narrates "Look at this cool message!" italicized.
+        // - narrate "<&o>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -496,6 +615,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that resets the following characters to normal.
+        // Same as <@link tag reset>
+        // @example
+        // # Narrates just "this" in light red, but the exclamation point afterward in the default color.
+        // - narrate "Look at <&c>this<&r>!"
         // -->
 
         // <--[tag]
@@ -503,6 +626,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Black.
+        // Same as <@link tag &0>
+        // @example
+        // # Narrates "Look at this cool message!" in black.
+        // - narrate "<black>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -510,6 +637,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Dark Blue.
+        // Same as <@link tag &1>
+        // @example
+        // # Narrates "Look at this cool message!" in dark blue.
+        // - narrate "<dark_blue>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -517,6 +648,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Dark Green.
+        // Same as <@link tag &2>
+        // @example
+        // # Narrates "Look at this cool message!" in dark green.
+        // - narrate "<dark_green>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -524,6 +659,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Dark Cyan.
+        // Same as <@link tag &3>
+        // @example
+        // # Narrates "Look at this cool message!" in dark cyan.
+        // - narrate "<dark_cyan>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -531,13 +670,21 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Dark Red.
+        // Same as <@link tag &4>
+        // @example
+        // # Narrates "Look at this cool message!" in dark red.
+        // - narrate "<dark_red>Look at this cool message!"
         // -->
 
         // <--[tag]
         // @attribute <dark_purple>
         // @returns ElementTag
         // @description
-        // Returns the ChatColor that makes the following characters Dark Magenta.
+        // Returns the ChatColor that makes the following characters Dark Purple.
+        // Same as <@link tag &5>
+        // @example
+        // # Narrates "Look at this cool message!" in dark purple.
+        // - narrate "<dark_purple>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -545,6 +692,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Gold.
+        // Same as <@link tag &6>
+        // @example
+        // # Narrates "Look at this cool message!" in gold.
+        // - narrate "<gold>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -552,6 +703,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Light Gray.
+        // Same as <@link tag &7>
+        // @example
+        // # Narrates "Look at this cool message!" in light gray.
+        // - narrate "<gray>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -559,13 +714,21 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Dark Gray.
+        // Same as <@link tag &8>
+        // @example
+        // # Narrates "Look at this cool message!" in dark gray.
+        // - narrate "<dark_gray>Look at this cool message!"
         // -->
 
         // <--[tag]
         // @attribute <blue>
         // @returns ElementTag
         // @description
-        // Returns the ChatColor that makes the following characters Light Blue.
+        // Returns the ChatColor that makes the following characters Blue.
+        // Same as <@link tag &9>
+        // @example
+        // # Narrates "Look at this cool message!" in blue.
+        // - narrate "<blue>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -573,13 +736,21 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Light Green.
+        // Same as <@link tag &a>
+        // @example
+        // # Narrates "Look at this cool message!" in light green.
+        // - narrate "<green>Look at this cool message!"
         // -->
 
         // <--[tag]
         // @attribute <aqua>
         // @returns ElementTag
         // @description
-        // Returns the ChatColor that makes the following characters Cyan.
+        // Returns the ChatColor that makes the following characters Light Blue.
+        // Same as <@link tag &b>
+        // @example
+        // # Narrates "Look at this cool message!" in light blue.
+        // - narrate "<aqua>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -587,13 +758,21 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Light Red.
+        // Same as <@link tag &c>
+        // @example
+        // # Narrates "Look at this cool message!" in light red.
+        // - narrate "<red>Look at this cool message!"
         // -->
 
         // <--[tag]
         // @attribute <light_purple>
         // @returns ElementTag
         // @description
-        // Returns the ChatColor that makes the following characters Magenta.
+        // Returns the ChatColor that makes the following characters Light Purple.
+        // Same as <@link tag &d>
+        // @example
+        // # Narrates "Look at this cool message!" in light purple.
+        // - narrate "<light_purple>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -601,6 +780,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters Yellow.
+        // Same as <@link tag &e>
+        // @example
+        // # Narrates "Look at this cool message!" in yellow.
+        // - narrate "<yellow>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -608,6 +791,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters White.
+        // Same as <@link tag &f>
+        // @example
+        // # Narrates "Look at this cool message!" in white.
+        // - narrate "<white>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -615,6 +802,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters obfuscated.
+        // Same as <@link tag &k>
+        // @example
+        // # Narrates "Look at this cool message!" obfuscated.
+        // - narrate "<magic>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -622,6 +813,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters bold.
+        // Same as <@link tag &l>
+        // @example
+        // # Narrates "Look at this cool message!" bolded.
+        // - narrate "<bold>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -629,6 +824,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters have a strike-through.
+        // Same as <@link tag &m>
+        // @example
+        // # Narrates "Look at this cool message!" with a strike-through.
+        // - narrate "<strikethrough>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -636,6 +835,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters have an underline.
+        // Same as <@link tag &n>
+        // @example
+        // # Narrates "Look at this cool message!" underlined.
+        // - narrate "<underline>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -643,6 +846,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that makes the following characters italicized.
+        // Same as <@link tag &o>
+        // @example
+        // # Narrates "Look at this cool message!" italicized.
+        // - narrate "<italic>Look at this cool message!"
         // -->
 
         // <--[tag]
@@ -650,6 +857,10 @@ public class TextTagBase {
         // @returns ElementTag
         // @description
         // Returns the ChatColor that resets the following characters to normal.
+        // Same as <@link tag &r>
+        // @example
+        // # Narrates just "this" in light red, but the exclamation point afterward in the default color.
+        // - narrate "Look at <light_red>this<reset>!"
         // -->
 
         for (ChatColor color : ChatColor.values()) {
