@@ -925,7 +925,7 @@ public class BukkitElementExtensions {
             // See <@link language Raw NBT Encoding> for more information on the returned MapTag.
             // See <@link url https://minecraft.wiki/w/NBT_format#SNBT_format> for more information on SNBT.
             // @example
-            // Use to set certain SNBT data onto an entity.
+            // # Use to set certain SNBT data onto an entity.
             // - adjust <[entity]> raw_nbt:<[snbt].snbt_to_map>
             // -->
             ElementTag.tagProcessor.registerStaticTag(MapTag.class, "snbt_to_map", (attribute, object) -> {
