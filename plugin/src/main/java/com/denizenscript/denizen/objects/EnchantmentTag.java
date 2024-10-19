@@ -163,8 +163,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // For Denizen custom enchantments, returns the 'id' specified in the script.
         // For any other enchantments, returns the full key.
         // @example
-        // # This can narrate something like this:
-        // # "The item in your hand's first enchantment is sharpness!"
+        // # Narrates "The item in your hand's first enchantment is sharpness!"
         // - narrate "The item in your hand's first enchantment is <player.item_in_hand.enchantment_types.get[1].name||nothing>!"
         // -->
         tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
@@ -176,11 +175,11 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @returns ElementTag
         // @description
         // Returns the full key for this enchantment, like "minecraft:sharpness".
+        // For Denizen enchantment scripts, returns like "denizen:my_enchantment"
         // @example
         // # Narrates "The key for the flame enchantment is: minecraft:flame!"
         // - narrate "The key for the flame enchantment is: <enchantment[flame].key>!"
         // @example
-        // # This example uses a custom Denizen enchantment.
         // # Narrates "The key for the my_enchantment enchantment is: denizen:my_enchantment!"
         // - narrate "The key for the my_enchantment enchantment is: <enchantment[my_enchantment].key>!"
         // -->
@@ -194,9 +193,9 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the full name for this enchantment for a given level, like "Sharpness V".
         // For vanilla enchantments, uses language translation keys.
+        // Note: vanilla enchantments have a color applied to them, such as grey or red.
         // @example
         // # Narrates "You don your Thorns III armor."
-        // # Note: vanilla enchantments have a color applied to them, such as grey or red.
         // - narrate "You don your <enchantment[thorns].full_name[3]><reset> armor."
         // -->
         tagProcessor.registerTag(ElementTag.class, "full_name", (attribute, object) -> {
@@ -212,8 +211,7 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns the script that created this enchantment type, if any.
         // @example
-        // # This can narrate something like this:
-        // # "The script used to create the my_enchantment enchantment is: my_enchantment_script"
+        // # Narrates "The script used to create the my_enchantment enchantment is: my_enchantment_script"
         // - narrate "The script used to create the my_enchantment enchantment is: <enchantment[my_enchantment].script.name>"
         // -->
         tagProcessor.registerTag(ScriptTag.class, "script", (attribute, object) -> {
@@ -259,12 +257,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns whether this enchantment is only for spawning as treasure.
         // @example
-        // # In the case of the "loyalty" enchantment, this will narrate:
-        // # "You cannot find this enchantment as treasure!"
-        // - if <enchantment[loyalty].treasure_only>:
-        //     - narrate "You can only find this enchantment as treasure!"
-        // - else:
-        //     - narrate "You cannot find this enchantment as treasure!"
+        // # Narrates "true"
+        // - narrate <enchantment[loyalty].treasure_only>:
         // -->
         tagProcessor.registerTag(ElementTag.class, "treasure_only", (attribute, object) -> {
             return new ElementTag(object.enchantment.isTreasure());
@@ -276,12 +270,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns whether this enchantment is only considered to be tradable. Villagers won't trade this enchantment if set to false.
         // @example
-        // # In the case of the "loyalty" enchantment, this will narrate:
-        // # "Let's do some haggling to get this enchantment!"
-        // - if <enchantment[loyalty].is_tradable>:
-        //     - narrate "Let's do some haggling to get this enchantment!"
-        // - else:
-        //     - narrate "Villagers don't seem to want to trade this enchantment!"
+        // # Narrates "true"
+        // - narrate <enchantment[loyalty].is_tradable>
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_tradable", (attribute, object) -> {
             return new ElementTag(NMSHandler.enchantmentHelper.isTradable(object.enchantment));
@@ -294,12 +284,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // Returns whether this enchantment is only considered to be discoverable.
         // If true, this will spawn from vanilla sources like the enchanting table. If false, it can only be given directly by script.
         // @example
-        // # In the case of the "loyalty" enchantment, this will narrate:
-        // # "Time to do some discovering!"
-        // - if <enchantment[loyalty].is_discoverable>:
-        //     - narrate "Time to do some discovering!"
-        // - else:
-        //     - narrate "You'll have to be given this enchantment through a script!"
+        // # Narrates "true"
+        // - narrate <enchantment[loyalty].is_discoverable>
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_discoverable", (attribute, object) -> {
             return new ElementTag(NMSHandler.enchantmentHelper.isDiscoverable(object.enchantment));
@@ -311,12 +297,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns whether this enchantment is only considered to be a curse. Curses are removed at grindstones, and spread from crafting table repairs.
         // @example
-        // # In the case of the "vanishing_curse" enchantment, this will narrate:
-        // # "Watch out! This enchantment is a curse!"
-        // - if <enchantment[vanishing_curse].is_curse>:
-        //     - narrate "Watch out! This enchantment is a curse!"
-        // - else:
-        //     - narrate "Phew, this enchantment is not a curse!"
+        // # Narrates "true"
+        // - narrate <enchantment[vanishing_curse].is_curse>
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_curse", (attribute, object) -> {
             return new ElementTag(NMSHandler.enchantmentHelper.isCurse(object.enchantment));
@@ -356,12 +338,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // Returns whether this enchantment can enchant the given ItemTag (based on material mainly).
         // This is internally based on multiple factors, such as the enchantment's category and its own specific compatibility checks.
         // @example
-        // # In the case of the "knockback" enchantment, this narrates
-        // # "You can apply the knockback enchantment in a diamond sword!"
-        // - if <enchantment[knockback].can_enchant[diamond_sword]>:
-        //     - narrate "You can apply the knockback enchantment in a diamond sword!"
-        // - else:
-        //     - narrate "You cannot apply the knockback enchantment in a diamond sword!"
+        // # Narrates "true"
+        // - narrate <enchantment[knockback].can_enchant[diamond_sword]>
         // -->
         tagProcessor.registerTag(ElementTag.class, "can_enchant", (attribute, object) -> {
             if (!attribute.hasParam()) {
@@ -376,12 +354,8 @@ public class EnchantmentTag implements ObjectTag, FlaggableObject {
         // @description
         // Returns whether this enchantment is compatible with another given enchantment.
         // @example
-        // # In the case of the "silk_touch" and "mending" enchantments, this narrates
-        // # "These enchantments are compatible together!"
-        // - if <enchantment[silk_touch].is_compatible[mending]>:
-        //     - narrate "These enchantments are compatible together!"
-        // - else:
-        //     - narrate "These enchantments are not compatible with each other!"
+        // # Narrates "true"
+        // - narrate <enchantment[silk_touch].is_compatible[mending]>
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_compatible", (attribute, object) -> {
             if (!attribute.hasParam()) {
