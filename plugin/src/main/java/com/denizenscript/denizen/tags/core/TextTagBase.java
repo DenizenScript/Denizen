@@ -61,8 +61,8 @@ public class TextTagBase {
               // # Shows the text "you found it!" when hovering over the word "secret" in chat.
               // - narrate "There is a <&hover[you found it!].type[SHOW_TEXT]>secret<&end_hover> in this message!"
               // @example
-              // # Shows the name, lore, and attack damage of the player's held item when hovering over the word "here" in chat.
-              // - narrate "The item in your hand can be found <&hover[<player.item_in_hand>].type[SHOW_ITEM]>here<&end_hover>."
+              // # Shows the name, lore, and attack damage of a diamond sword when hovering over the word "here" in chat.
+              // - narrate "The item in your hand can be found <&hover[<item[diamond_sword].type[SHOW_ITEM]>here<&end_hover>."
               // -->
               String type = "SHOW_TEXT";
               if (attribute.startsWith("type", 2)) {
