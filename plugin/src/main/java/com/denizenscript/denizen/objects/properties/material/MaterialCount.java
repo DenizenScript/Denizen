@@ -2,9 +2,7 @@ package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Candle;
@@ -12,43 +10,33 @@ import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.block.data.type.SeaPickle;
 import org.bukkit.block.data.type.TurtleEgg;
 
-public class MaterialCount implements Property {
+public class MaterialCount extends MaterialProperty<ElementTag> {
 
-    public static boolean describes(ObjectTag material) {
-        if (!(material instanceof MaterialTag)) {
-            return false;
-        }
-        MaterialTag mat = (MaterialTag) material;
-        if (!mat.hasModernData()) {
-            return false;
-        }
-        BlockData data = mat.getModernData();
+    // <--[property]
+    // @object MaterialTag
+    // @name count
+    // @input ElementTag(Number)
+    // @description
+    // Controls the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, or candles in a Candle material.
+    // See also:
+    // <@link tag MaterialTag.count>
+    // <@link tag MaterialTag.count_min>
+    // <@link tag MaterialTag.count_max>
+    // -->
+
+    public static boolean describes(MaterialTag material) {
+        BlockData data = material.getModernData();
         return data instanceof SeaPickle
                 || data instanceof TurtleEgg
                 || data instanceof RespawnAnchor
                 || data instanceof Candle;
     }
 
-    public static MaterialCount getFrom(ObjectTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialCount((MaterialTag) _material);
-        }
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "count", "pickle_count"
-    };
-
-    public MaterialCount(MaterialTag _material) {
-        material = _material;
-    }
-
     MaterialTag material;
 
     public static void register() {
+
+        autoRegister("count", MaterialCount.class, ElementTag.class, true, "pickle_count");
 
         // <--[tag]
         // @attribute <MaterialTag.count>
@@ -168,47 +156,36 @@ public class MaterialCount implements Property {
     }
 
     @Override
-    public String getPropertyString() {
-        return String.valueOf(getCurrent());
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getCurrent());
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag elementTag, Mechanism mechanism) {
+        if (!mechanism.requireInteger()) {
+            return;
+        }
+        int count = elementTag.asInt();
+        if (count < getMin() || count > getMax()) {
+            mechanism.echoError("Material count mechanism value '" + count + "' is not valid. Must be between " + getMin() + " and " + getMax() + ".");
+            return;
+        }
+        if (isSeaPickle()) {
+            getSeaPickle().setPickles(count);
+        }
+        else if (isTurtleEgg()) {
+            getTurtleEgg().setEggs(count);
+        }
+        else if (isRespawnAnchor()) {
+            getRespawnAnchor().setCharges(count);
+        }
+        else if (isCandle()) {
+            getCandle().setCandles(count);
+        }
     }
 
     @Override
     public String getPropertyId() {
         return "count";
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object MaterialTag
-        // @name count
-        // @input ElementTag(Number)
-        // @description
-        // Sets the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, or candles in a Candle material.
-        // @tags
-        // <MaterialTag.count>
-        // <MaterialTag.count_min>
-        // <MaterialTag.count_max>
-        // -->
-        if ((mechanism.matches("count") || (mechanism.matches("pickle_count"))) && mechanism.requireInteger()) {
-            int count = mechanism.getValue().asInt();
-            if (count < getMin() || count > getMax()) {
-                mechanism.echoError("Material count mechanism value '" + count + "' is not valid. Must be between " + getMin() + " and " + getMax() + ".");
-                return;
-            }
-            if (isSeaPickle()) {
-                getSeaPickle().setPickles(count);
-            }
-            else if (isTurtleEgg()) {
-                getTurtleEgg().setEggs(count);
-            }
-            else if (isRespawnAnchor()) {
-                getRespawnAnchor().setCharges(count);
-            }
-            else if (isCandle()) {
-                getCandle().setCandles(count);
-            }
-        }
     }
 }
