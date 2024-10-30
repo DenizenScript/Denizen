@@ -154,7 +154,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
             ItemMeta meta = prop.getItemMeta();
             ArrayList<String> inputList = new ArrayList<>(param);
             for (String toRemove : new ArrayList<>(inputList)) {
-                if (new ElementTag(toRemove).matchesEnum(org.bukkit.attribute.Attribute.class)) {
+                if (Utilities.matchesEnumlike(new ElementTag(toRemove), org.bukkit.attribute.Attribute.class)) {
                     inputList.remove(toRemove);
                     org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(toRemove.toUpperCase());
                     meta.removeAttributeModifier(attr);

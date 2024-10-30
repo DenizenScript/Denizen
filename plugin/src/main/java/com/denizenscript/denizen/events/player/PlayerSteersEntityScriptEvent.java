@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntryData;
 
 import java.util.function.Consumer;
 
+// TODO: 1.21.3: This can probably be deprecated in favor of the new "PlayerInputEvent"
 public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
 
     // <--[event]

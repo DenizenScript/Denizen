@@ -26,9 +26,11 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.fixes.References;
@@ -44,7 +46,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -57,17 +58,17 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_21_R1.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R1.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftInventoryPlayer;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftRecipe;
-import org.bukkit.craftbukkit.v1_21_R1.map.CraftMapView;
-import org.bukkit.craftbukkit.v1_21_R1.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_21_R1.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_21_R2.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R2.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftRecipe;
+import org.bukkit.craftbukkit.v1_21_R2.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_21_R2.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R2.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -83,7 +84,7 @@ import java.util.function.Predicate;
 public class ItemHelperImpl extends ItemHelper {
 
     public static net.minecraft.world.item.crafting.RecipeHolder<?> getNMSRecipe(NamespacedKey key) {
-        ResourceLocation nmsKey = CraftNamespacedKey.toMinecraft(key);
+        ResourceKey<Recipe<?>> nmsKey = ResourceKey.create(Registries.RECIPE, CraftNamespacedKey.toMinecraft(key));
         return ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().byKey(nmsKey).orElse(null);
     }
 
@@ -92,7 +93,7 @@ public class ItemHelperImpl extends ItemHelper {
     public void setMaxStackSize(Material material, int size) {
         try {
             ReflectionHelper.getFinalSetter(Material.class, "maxStack").invoke(material, size);
-            Item nmsItem = BuiltInRegistries.ITEM.get(CraftNamespacedKey.toMinecraft(material.getKey()));
+            Item nmsItem = BuiltInRegistries.ITEM.getValue(CraftNamespacedKey.toMinecraft(material.getKey()));
             DataComponentMap currentComponents = nmsItem.components();
             Item_components.set(nmsItem, DataComponentMap.composite(currentComponents, DataComponentMap.builder().set(DataComponents.MAX_STACK_SIZE, size).build()));
         }
@@ -103,7 +104,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public Integer burnTime(Material material) {
-        return AbstractFurnaceBlockEntity.getFuel().get(CraftMagicNumbers.getItem(material));
+        return MinecraftServer.getServer().fuelValues().burnDuration(new net.minecraft.world.item.ItemStack(CraftMagicNumbers.getItem(material)));
     }
 
     @Override
@@ -123,19 +124,21 @@ public class ItemHelperImpl extends ItemHelper {
         }
     }
 
+    // TODO: Recipe registration should be moved to the API
     public static Ingredient itemArrayToRecipe(ItemStack[] items, boolean exact) {
-        Ingredient.ItemValue[] stacks = new Ingredient.ItemValue[items.length];
-        for (int i = 0; i < items.length; i++) {
-            stacks[i] = new Ingredient.ItemValue(CraftItemStack.asNMSCopy(items[i]));
+        if (!exact) {
+            return Ingredient.of(Arrays.stream(items).map(item -> CraftMagicNumbers.getItem(item.getType())));
         }
-        Ingredient itemRecipe = new Ingredient(Arrays.stream(stacks));
-        itemRecipe.exact = exact;
-        return itemRecipe;
+        return Ingredient.ofStacks(Arrays.stream(items).map(CraftItemStack::asNMSCopy).toList());
+    }
+
+    public static ResourceKey<Recipe<?>> createRecipeKey(String name) {
+        return ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath("denizen", name));
     }
 
     @Override
     public void registerFurnaceRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, float exp, int time, String type, boolean exact, String category) {
-        ResourceLocation key = ResourceLocation.fromNamespaceAndPath("denizen", keyName);
+        ResourceKey<Recipe<?>> key = createRecipeKey(keyName);
         Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
         AbstractCookingRecipe recipe;
         CookingBookCategory categoryValue = category == null ? CookingBookCategory.MISC : CookingBookCategory.valueOf(CoreUtilities.toUpperCase(category));
@@ -157,7 +160,7 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {
-        ResourceLocation key = ResourceLocation.fromNamespaceAndPath("denizen", keyName);
+        ResourceKey<Recipe<?>> key = createRecipeKey(keyName);
         Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
         StonecutterRecipe recipe = new StonecutterRecipe(group, itemRecipe, CraftItemStack.asNMSCopy(result));
         RecipeHolder<StonecutterRecipe> holder = new RecipeHolder<>(key, recipe);
@@ -166,18 +169,18 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact, ItemStack[] templateItem, boolean templateExact) {
-        ResourceLocation key = ResourceLocation.fromNamespaceAndPath("denizen", keyName);
+        ResourceKey<Recipe<?>> key = createRecipeKey(keyName);
         Ingredient templateItemRecipe = itemArrayToRecipe(templateItem, templateExact);
         Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
         Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
-        SmithingTransformRecipe recipe = new SmithingTransformRecipe(templateItemRecipe, baseItemRecipe, upgradeItemRecipe, CraftItemStack.asNMSCopy(result));
+        SmithingTransformRecipe recipe = new SmithingTransformRecipe(Optional.of(templateItemRecipe), Optional.of(baseItemRecipe), Optional.of(upgradeItemRecipe), CraftItemStack.asNMSCopy(result));
         RecipeHolder<SmithingTransformRecipe> holder = new RecipeHolder<>(key, recipe);
         ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(holder);
     }
 
     @Override
     public void registerShapelessRecipe(String keyName, String group, ItemStack result, List<ItemStack[]> ingredients, boolean[] exact, String category) {
-        ResourceLocation key = ResourceLocation.fromNamespaceAndPath("denizen", keyName);
+        ResourceKey<Recipe<?>> key = createRecipeKey(keyName);
         ArrayList<Ingredient> ingredientList = new ArrayList<>();
         CraftingBookCategory categoryValue = category == null ? CraftingBookCategory.MISC : CraftingBookCategory.valueOf(CoreUtilities.toUpperCase(category));
         for (int i = 0; i < ingredients.size(); i++) {
@@ -364,7 +367,7 @@ public class ItemHelperImpl extends ItemHelper {
             return CraftItemStack.asBukkitCopy(nmsItemStack);
         }
         BlockPredicate nmsPredicate = new BlockPredicate(Optional.of(
-                HolderSet.direct(material -> BuiltInRegistries.BLOCK.getHolder(CraftNamespacedKey.toMinecraft(material.getKey())).orElseThrow(), materials)
+                HolderSet.direct(material -> BuiltInRegistries.BLOCK.get(CraftNamespacedKey.toMinecraft(material.getKey())).orElseThrow(), materials)
         ), Optional.empty(), Optional.empty());
         nmsItemStack.set(nmsComponent, new AdventureModePredicate(List.of(nmsPredicate), nmsAdventurePredicate == null || nmsAdventurePredicate.showInTooltip()));
         return CraftItemStack.asBukkitCopy(nmsItemStack);
@@ -491,7 +494,7 @@ public class ItemHelperImpl extends ItemHelper {
                             for (int j4 = 0; j4 < scale; ++j4) {
                                 int k4 = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, i4 + i3, j4 + j3) + 1;
                                 BlockState iblockdata;
-                                if (k4 <= world.getMinBuildHeight() + 1) {
+                                if (k4 <= world.getMinY() + 1) {
                                     iblockdata = Blocks.BEDROCK.defaultBlockState();
                                 }
                                 else {
@@ -499,8 +502,8 @@ public class ItemHelperImpl extends ItemHelper {
                                         --k4;
                                         blockposition_mutableblockposition.set(chunkcoordintpair.getMinBlockX() + i4 + i3, k4, chunkcoordintpair.getMinBlockZ() + j4 + j3);
                                         iblockdata = chunk.getBlockState(blockposition_mutableblockposition);
-                                    } while (iblockdata.getMapColor(world, blockposition_mutableblockposition) == MapColor.NONE && k4 > world.getMinBuildHeight());
-                                    if (k4 > world.getMinBuildHeight() && !iblockdata.getFluidState().isEmpty()) {
+                                    } while (iblockdata.getMapColor(world, blockposition_mutableblockposition) == MapColor.NONE && k4 > world.getMinY());
+                                    if (k4 > world.getMinY() && !iblockdata.getFluidState().isEmpty()) {
                                         int l4 = k4 - 1;
                                         blockposition_mutableblockposition1.set(blockposition_mutableblockposition);
 
@@ -509,7 +512,7 @@ public class ItemHelperImpl extends ItemHelper {
                                             blockposition_mutableblockposition1.setY(l4--);
                                             iblockdata1 = chunk.getBlockState(blockposition_mutableblockposition1);
                                             k3++;
-                                        } while (l4 > world.getMinBuildHeight() && !iblockdata1.getFluidState().isEmpty());
+                                        } while (l4 > world.getMinY() && !iblockdata1.getFluidState().isEmpty());
                                         iblockdata = getCorrectStateForFluidBlock(world, iblockdata, blockposition_mutableblockposition);
                                     }
                                 }

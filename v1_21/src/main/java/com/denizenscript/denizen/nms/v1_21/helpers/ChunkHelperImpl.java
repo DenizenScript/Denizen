@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.nms.v1_21.helpers;
 
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizen.nms.v1_21.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
+import com.denizenscript.denizen.nms.v1_21.impl.BiomeNMSImpl;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -18,10 +18,10 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
-import org.bukkit.World;
 import org.bukkit.Chunk;
-import org.bukkit.craftbukkit.v1_21_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_21_R2.CraftChunk;
+import org.bukkit.craftbukkit.v1_21_R2.CraftWorld;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -102,7 +102,7 @@ public class ChunkHelperImpl implements ChunkHelper {
         int i = QuartPos.fromBlock(chunkcoordintpair.getMinBlockX());
         int j = QuartPos.fromBlock(chunkcoordintpair.getMinBlockZ());
         LevelHeightAccessor levelheightaccessor = nmsChunk.getHeightAccessorForGeneration();
-        for(int k = levelheightaccessor.getMinSection(); k < levelheightaccessor.getMaxSection(); ++k) {
+        for(int k = levelheightaccessor.getMinSectionY(); k < levelheightaccessor.getMaxSectionY(); ++k) {
             LevelChunkSection chunksection = nmsChunk.getSection(nmsChunk.getSectionIndexFromSectionY(k));
             PalettedContainer<Holder<Biome>> datapaletteblock = (PalettedContainer<Holder<Biome>>) chunksection.getBiomes();
             datapaletteblock.acquire();

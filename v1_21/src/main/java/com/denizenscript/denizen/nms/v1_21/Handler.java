@@ -67,21 +67,21 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R1.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R1.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R1.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftInventoryView;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R1.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.v1_21_R1.util.CraftChatMessage;
-import org.bukkit.craftbukkit.v1_21_R1.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_21_R1.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_21_R1.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_21_R2.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R2.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R2.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R2.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_21_R2.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_21_R2.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R2.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R2.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -150,7 +150,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("7092ff1ff9352ad7e2260dc150e6a3ec");
+        return CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("61a218cda78417b6039da56e08194083");
     }
 
     @Override
@@ -310,7 +310,7 @@ public class Handler extends NMSHandler {
     public List<BiomeNMS> getBiomes(World world) {
         ServerLevel level = ((CraftWorld) world).getHandle();
         ArrayList<BiomeNMS> output = new ArrayList<>();
-        for (ResourceLocation key : level.registryAccess().registryOrThrow(Registries.BIOME).keySet()) {
+        for (ResourceLocation key : level.registryAccess().lookupOrThrow(Registries.BIOME).keySet()) {
             output.add(new BiomeNMSImpl(level, CraftNamespacedKey.fromMinecraft(key)));
         }
         return output;
@@ -330,7 +330,7 @@ public class Handler extends NMSHandler {
         // Based on CraftWorld source
         ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
         Holder<Biome> biome = level.getNoiseBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2);
-        ResourceLocation key = level.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome.value());
+        ResourceLocation key = level.registryAccess().lookupOrThrow(Registries.BIOME).getKey(biome.value());
         return new BiomeNMSImpl(level, CraftNamespacedKey.fromMinecraft(key));
     }
 

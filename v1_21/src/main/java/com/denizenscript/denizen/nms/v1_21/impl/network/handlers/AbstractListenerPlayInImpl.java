@@ -19,14 +19,16 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.*;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.ping.ServerboundPingRequestPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.entity.PositionMoveRotation;
+import net.minecraft.world.entity.Relative;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.lang.reflect.Field;
@@ -68,13 +70,13 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void teleport(double d0, double d1, double d2, float f, float f1, Set<RelativeMovement> set) {
-        oldListener.teleport(d0, d1, d2, f, f1, set);
+    public void teleport(PositionMoveRotation positionmoverotation, Set<Relative> set) {
+        oldListener.teleport(positionmoverotation, set);
     }
 
     @Override
-    public boolean teleport(double d0, double d1, double d2, float f, float f1, Set<RelativeMovement> set, PlayerTeleportEvent.TeleportCause cause) {
-        return oldListener.teleport(d0, d1, d2, f, f1, set, cause);
+    public boolean teleport(PositionMoveRotation positionmoverotation, Set<Relative> set, PlayerTeleportEvent.TeleportCause cause) {
+        return oldListener.teleport(positionmoverotation, set, cause);
     }
 
     @Override
@@ -520,6 +522,54 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public void handleChunkBatchReceived(ServerboundChunkBatchReceivedPacket packet) {
         if (handlePacketIn(packet)) { return; }
         oldListener.handleChunkBatchReceived(packet);
+    }
+
+    @Override
+    public void handleBlockEntityTagQuery(ServerboundBlockEntityTagQueryPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleBlockEntityTagQuery(packet);
+    }
+
+    @Override
+    public void handleBundleItemSelectedPacket(ServerboundSelectBundleItemPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleBundleItemSelectedPacket(packet);
+    }
+
+    @Override
+    public void handleClientTickEnd(ServerboundClientTickEndPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleClientTickEnd(packet);
+    }
+
+    @Override
+    public void handleContainerSlotStateChanged(ServerboundContainerSlotStateChangedPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleContainerSlotStateChanged(packet);
+    }
+
+    @Override
+    public void handleDebugSampleSubscription(ServerboundDebugSampleSubscriptionPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleDebugSampleSubscription(packet);
+    }
+
+    @Override
+    public void handleEntityTagQuery(ServerboundEntityTagQueryPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleEntityTagQuery(packet);
+    }
+
+    @Override
+    public void handlePingRequest(ServerboundPingRequestPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handlePingRequest(packet);
+    }
+
+    @Override
+    public void handleSignedChatCommand(ServerboundChatCommandSignedPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleSignedChatCommand(packet);
     }
 
     @Override

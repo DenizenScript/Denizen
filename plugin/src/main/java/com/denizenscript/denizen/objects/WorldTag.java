@@ -1064,7 +1064,7 @@ public class WorldTag implements ObjectTag, FlaggableObject {
         // @name respawn_phase
         // @input ElementTag
         // @description
-        // Set the current respawn phase of the ender dragon. Valid phases can be found at <@link url https://jd.papermc.io/paper/1.21.1/org/bukkit/boss/DragonBattle.RespawnPhase.html>
+        // Set the current respawn phase of the ender dragon. Valid phases can be found at <@link url https://jd.papermc.io/paper/1.21.3/org/bukkit/boss/DragonBattle.RespawnPhase.html>
         // Only works if the world is an end world.
         // -->
         tagProcessor.registerMechanism("respawn_phase", false, ElementTag.class, (object, mechanism, input) -> {

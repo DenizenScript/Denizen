@@ -8,7 +8,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.UUID;
 
 public class EntityAttachmentHelper {
 
@@ -178,18 +181,10 @@ public class EntityAttachmentHelper {
 
     public static byte adaptedCompressedAngle(byte angle, float offset) {
         float angleF = ((float) angle) * (360F / 256F);
-        angleF += offset;
-        angleF %= 360;
-        if (angleF > 180) {
-            angleF -= 360;
-        }
-        if (angleF < -180) {
-            angleF += 360;
-        }
-        return (byte)((int)(angleF * (256F / 360F)));
+        return compressAngle(angleF + offset);
     }
 
-    public static byte compressAngle(float angle) {
+    public static float normalizeAngle(float angle) {
         angle %= 360;
         if (angle > 180) {
             angle -= 360;
@@ -197,7 +192,11 @@ public class EntityAttachmentHelper {
         if (angle < -180) {
             angle += 360;
         }
-        return (byte)((int)(angle * (256F / 360F)));
+        return angle;
+    }
+
+    public static byte compressAngle(float angle) {
+        return (byte)((int)(normalizeAngle(angle) * (256F / 360F)));
     }
 
     public static Vector fixOffset(Vector offset, double yaw, double pitch) {

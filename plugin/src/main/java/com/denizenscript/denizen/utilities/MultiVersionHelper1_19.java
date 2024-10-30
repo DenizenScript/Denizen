@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.objects.properties.entity.EntityColor;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -13,7 +12,7 @@ import org.bukkit.entity.*;
 public class MultiVersionHelper1_19 {
 
     public static boolean colorIsApplicable(EntityType type) {
-        return type == EntityType.FROG || type == EntityType.BOAT || type == EntityType.CHEST_BOAT;
+        return type == EntityType.FROG || Boat.class.isAssignableFrom(type.getEntityClass());
     }
 
     // TODO Frog variants technically have registries on all supported versions
@@ -31,17 +30,18 @@ public class MultiVersionHelper1_19 {
         if (type == EntityType.FROG) {
             return Utilities.listTypes(Frog.Variant.class);
         }
-        else if (type == EntityType.BOAT || type == EntityType.CHEST_BOAT) {
+        else if (Boat.class.isAssignableFrom(type.getEntityClass())) {
             return Utilities.listTypes(Boat.Type.class);
         }
         return null;
     }
 
     public static void setColor(Entity entity, Mechanism mech) {
-        if (entity instanceof Frog frog) {
-            LegacyNamingHelper.requireType(mech, Frog.Variant.class).ifPresent(frog::setVariant);
+        if (entity instanceof Frog frog && Utilities.requireEnumlike(mech, Frog.Variant.class)) {
+            frog.setVariant(Utilities.elementToEnumlike(mech.getValue(), Frog.Variant.class));
         }
         else if (entity instanceof Boat boat && mech.requireEnum(Boat.Type.class)) {
+            // TODO: 1.21.3: Deprecate setting boat types
             boat.setBoatType(mech.getValue().asEnum(Boat.Type.class));
         }
     }

@@ -4,8 +4,6 @@ import com.denizenscript.denizen.nms.interfaces.FishingHelper;
 import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.google.common.collect.Maps;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -16,21 +14,20 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftFishHook;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftFishHook;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftItemStack;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 
 public class FishingHelperImpl implements FishingHelper {
 
@@ -72,18 +69,18 @@ public class FishingHelperImpl implements FishingHelper {
 
     public ItemStack getRandomReward(FishingHook nmsHook, ResourceKey<LootTable> key) {
         ServerLevel nmsWorld = (ServerLevel) nmsHook.level();
-        Map<LootContextParam<?>, Object> params = Maps.newIdentityHashMap();
-        params.put(LootContextParams.ORIGIN, new Vec3(nmsHook.getX(), nmsHook.getY(), nmsHook.getZ()));
-        params.put(LootContextParams.TOOL, new ItemStack(Items.FISHING_ROD));
-        LootParams nmsLootParams = new LootParams(nmsWorld, params, Maps.newHashMap(), 0);
-        List<ItemStack> nmsItems = nmsHook.registryAccess().registryOrThrow(Registries.LOOT_TABLE).get(key).getRandomItems(nmsLootParams);
+        LootParams nmsLootParams = new LootParams.Builder(nmsWorld)
+                .withParameter(LootContextParams.ORIGIN, new Vec3(nmsHook.getX(), nmsHook.getY(), nmsHook.getZ()))
+                .withParameter(LootContextParams.TOOL, new ItemStack(Items.FISHING_ROD))
+                .create(LootContextParamSets.FISHING);
+        List<ItemStack> nmsItems = nmsWorld.getServer().reloadableRegistries().getLootTable(key).getRandomItems(nmsLootParams);
         return nmsItems.get(nmsWorld.random.nextInt(nmsItems.size()));
     }
 
     @Override
     public FishHook spawnHook(Location location, Player player) {
         ServerLevel nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
-        FishingHook hook = new FishingHook(((CraftPlayer) player).getHandle(), nmsWorld, 0, 0);
+        FishingHook hook = new FishingHook(((CraftPlayer) player).getHandle(), nmsWorld, 0, 0, new ItemStack(Items.FISHING_ROD));
         nmsWorld.addFreshEntity(hook, CreatureSpawnEvent.SpawnReason.CUSTOM);
         return (FishHook) hook.getBukkitEntity();
     }

@@ -28,7 +28,6 @@ public abstract class EntityProperty<TData extends ObjectTag> extends ObjectProp
         return object.getBukkitEntityType();
     }
 
-    @SuppressWarnings({"unchecked", "unused"})
     public <T extends Entity> T as(Class<T> entityClass) {
         return (T) getEntity();
     }

@@ -402,7 +402,7 @@ public class EntityAttributeModifiers implements Property {
             ArrayList<String> inputList = new ArrayList<>(mechanism.valueAsType(ListTag.class));
             Attributable ent = getAttributable();
             for (String toRemove : new ArrayList<>(inputList)) {
-                if (new ElementTag(toRemove).matchesEnum(Attribute.class)) {
+                if (Utilities.matchesEnumlike(new ElementTag(toRemove), Attribute.class)) {
                     inputList.remove(toRemove);
                     Attribute attr = Attribute.valueOf(toRemove.toUpperCase());
                     AttributeInstance instance = ent.getAttribute(attr);
