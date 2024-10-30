@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 
 import java.lang.reflect.Field;
-import java.util.Map;
 
 public class PacketOutSetSlotImpl implements PacketOutSetSlot {
 

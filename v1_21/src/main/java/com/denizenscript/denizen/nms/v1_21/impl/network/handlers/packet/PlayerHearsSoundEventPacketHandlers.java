@@ -22,7 +22,7 @@ public class PlayerHearsSoundEventPacketHandlers {
         }
         if (packet instanceof ClientboundSoundPacket) {
             ClientboundSoundPacket spacket = (ClientboundSoundPacket) packet;
-            return PlayerHearsSoundScriptEvent.instance.run(networkManager.player.getBukkitEntity(), spacket.getSound().value().getLocation().getPath(), spacket.getSource().name(),
+            return PlayerHearsSoundScriptEvent.instance.run(networkManager.player.getBukkitEntity(), spacket.getSound().value().location().getPath(), spacket.getSource().name(),
                     false, null, new Location(networkManager.player.getBukkitEntity().getWorld(), spacket.getX(), spacket.getY(), spacket.getZ()), spacket.getVolume(), spacket.getPitch()) ? null : packet;
         }
         else if (packet instanceof ClientboundSoundEntityPacket) {
@@ -31,7 +31,7 @@ public class PlayerHearsSoundEventPacketHandlers {
             if (entity == null) {
                 return packet;
             }
-            return PlayerHearsSoundScriptEvent.instance.run(networkManager.player.getBukkitEntity(), spacket.getSound().value().getLocation().getPath(), spacket.getSource().name(),
+            return PlayerHearsSoundScriptEvent.instance.run(networkManager.player.getBukkitEntity(), spacket.getSound().value().location().getPath(), spacket.getSource().name(),
                     false, entity.getBukkitEntity(), null, spacket.getVolume(), spacket.getPitch()) ? null : packet;
         }
         return packet;

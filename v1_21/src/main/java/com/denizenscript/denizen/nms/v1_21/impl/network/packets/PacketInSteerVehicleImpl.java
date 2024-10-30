@@ -13,21 +13,21 @@ public class PacketInSteerVehicleImpl implements PacketInSteerVehicle {
 
     @Override
     public float getLeftwardInput() {
-        return internal.getXxa();
+        return internal.input().left() ? 1 : 0;
     }
 
     @Override
     public float getForwardInput() {
-        return internal.getZza();
+        return internal.input().forward() ? 1 : 0;
     }
 
     @Override
     public boolean getJumpInput() {
-        return internal.isJumping();
+        return internal.input().jump();
     }
 
     @Override
     public boolean getDismountInput() {
-        return internal.isShiftKeyDown();
+        return internal.input().shift();
     }
 }

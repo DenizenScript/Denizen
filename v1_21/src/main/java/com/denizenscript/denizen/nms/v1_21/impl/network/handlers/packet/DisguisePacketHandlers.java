@@ -1,24 +1,23 @@
 package com.denizenscript.denizen.nms.v1_21.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_21.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.level.Level;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +31,10 @@ public class DisguisePacketHandlers {
         registerPacketHandler(ClientboundSetEntityDataPacket.class, ClientboundSetEntityDataPacket::id, DisguisePacketHandlers::processEntityDataPacket);
         registerPacketHandler(ClientboundUpdateAttributesPacket.class, ClientboundUpdateAttributesPacket::getEntityId, DisguisePacketHandlers::processAttributesPacket);
         registerPacketHandler(ClientboundAddEntityPacket.class, ClientboundAddEntityPacket::getId, DisguisePacketHandlers::sendDisguiseForPacket);
-        registerPacketHandler(ClientboundTeleportEntityPacket.class, ClientboundTeleportEntityPacket::getId, DisguisePacketHandlers::processTeleportPacket);
+        registerPacketHandler(ClientboundTeleportEntityPacket.class, ClientboundTeleportEntityPacket::id, DisguisePacketHandlers::processTeleportPacket);
         registerPacketHandler(ClientboundMoveEntityPacket.Rot.class, ClientboundMoveEntityPacket::getEntity, DisguisePacketHandlers::processMoveEntityRotPacket);
         registerPacketHandler(ClientboundMoveEntityPacket.PosRot.class, ClientboundMoveEntityPacket::getEntity, DisguisePacketHandlers::processMoveEntityPosRotPacket);
     }
-
-    public static final Field TELEPORT_PACKET_YAW = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_yRot, byte.class);
 
     private static boolean antiDuplicate = false;
 
@@ -114,9 +111,13 @@ public class DisguisePacketHandlers {
 
     public static ClientboundTeleportEntityPacket processTeleportPacket(DenizenNetworkManagerImpl networkManager, ClientboundTeleportEntityPacket teleportEntityPacket, DisguiseCommand.TrackedDisguise disguise) throws IllegalAccessException {
         if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
-            ClientboundTeleportEntityPacket pNew = ClientboundTeleportEntityPacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket(teleportEntityPacket, ClientboundTeleportEntityPacket.STREAM_CODEC));
-            TELEPORT_PACKET_YAW.setByte(pNew, EntityAttachmentHelper.adaptedCompressedAngle(teleportEntityPacket.getyRot(), 180));
-            return pNew;
+            PositionMoveRotation oldChange = teleportEntityPacket.change();
+            return new ClientboundTeleportEntityPacket(
+                    teleportEntityPacket.id(),
+                    new PositionMoveRotation(oldChange.position(), oldChange.deltaMovement(), EntityAttachmentHelper.normalizeAngle(oldChange.yRot() + 180), oldChange.xRot()),
+                    teleportEntityPacket.relatives(),
+                    teleportEntityPacket.onGround()
+            );
         }
         return sendDisguiseForPacket(networkManager, teleportEntityPacket, disguise);
     }
@@ -124,7 +125,12 @@ public class DisguisePacketHandlers {
 
     public static ClientboundMoveEntityPacket.Rot processMoveEntityRotPacket(DenizenNetworkManagerImpl networkManager, ClientboundMoveEntityPacket.Rot rotPacket, DisguiseCommand.TrackedDisguise disguise) {
         if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
-            return new ClientboundMoveEntityPacket.Rot(disguise.entity.getBukkitEntity().getEntityId(), EntityAttachmentHelper.adaptedCompressedAngle(rotPacket.getyRot(), 180), rotPacket.getxRot(), rotPacket.isOnGround());
+            return new ClientboundMoveEntityPacket.Rot(
+                    disguise.entity.getBukkitEntity().getEntityId(),
+                    EntityAttachmentHelper.compressAngle(rotPacket.getyRot() + 180),
+                    Mth.packDegrees(rotPacket.getxRot()),
+                    rotPacket.isOnGround()
+            );
         }
         return sendDisguiseForPacket(networkManager, rotPacket, disguise);
     }
@@ -132,7 +138,15 @@ public class DisguisePacketHandlers {
 
     public static ClientboundMoveEntityPacket.PosRot processMoveEntityPosRotPacket(DenizenNetworkManagerImpl networkManager, ClientboundMoveEntityPacket.PosRot posRotPacket, DisguiseCommand.TrackedDisguise disguise) {
         if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
-            return new ClientboundMoveEntityPacket.PosRot(disguise.entity.getBukkitEntity().getEntityId(), posRotPacket.getXa(), posRotPacket.getYa(), posRotPacket.getZa(), EntityAttachmentHelper.adaptedCompressedAngle(posRotPacket.getyRot(), 180), posRotPacket.getxRot(), posRotPacket.isOnGround());
+            return new ClientboundMoveEntityPacket.PosRot(
+                    disguise.entity.getBukkitEntity().getEntityId(),
+                    posRotPacket.getXa(),
+                    posRotPacket.getYa(),
+                    posRotPacket.getZa(),
+                    EntityAttachmentHelper.compressAngle(posRotPacket.getyRot() + 180),
+                    Mth.packDegrees(posRotPacket.getxRot()),
+                    posRotPacket.isOnGround()
+            );
         }
         return sendDisguiseForPacket(networkManager, posRotPacket, disguise);
     }

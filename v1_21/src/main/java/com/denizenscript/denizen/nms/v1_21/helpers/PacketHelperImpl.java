@@ -28,7 +28,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.entity.PositionMoveRotation;
+import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.CaveSpider;
@@ -38,6 +39,7 @@ import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Team;
 import org.bukkit.Bukkit;
@@ -46,14 +48,14 @@ import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
-import org.bukkit.craftbukkit.v1_21_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R1.map.CraftMapCanvas;
-import org.bukkit.craftbukkit.v1_21_R1.map.CraftMapView;
-import org.bukkit.craftbukkit.v1_21_R1.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R2.map.CraftMapCanvas;
+import org.bukkit.craftbukkit.v1_21_R2.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_21_R2.util.CraftLocation;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -368,29 +370,30 @@ public class PacketHelperImpl implements PacketHelper {
         send(player, new ClientboundTakeItemEntityPacket(item.getEntityId(), taker.getEntityId(), amount));
     }
 
-    public RelativeMovement toNmsRelativeMovement(TeleportCommand.Relative relative) {
+    public Relative toNmsRelativeMovement(TeleportCommand.Relative relative) {
+        // TODO: 1.21.3: There seem to be more relative movement types now
         return switch (relative) {
-            case X -> RelativeMovement.X;
-            case Y -> RelativeMovement.Y;
-            case Z -> RelativeMovement.Z;
-            case YAW -> RelativeMovement.Y_ROT;
-            case PITCH -> RelativeMovement.X_ROT;
+            case X -> Relative.X;
+            case Y -> Relative.Y;
+            case Z -> Relative.Z;
+            case YAW -> Relative.Y_ROT;
+            case PITCH -> Relative.X_ROT;
         };
     }
 
     @Override
     public void sendRelativePositionPacket(Player player, double x, double y, double z, float yaw, float pitch, List<TeleportCommand.Relative> relativeAxis) {
-        Set<RelativeMovement> relativeMovements;
+        Set<Relative> relativeMovements;
         if (relativeAxis == null) {
-            relativeMovements = RelativeMovement.ALL;
+            relativeMovements = Relative.ALL;
         }
         else {
-            relativeMovements = EnumSet.noneOf(RelativeMovement.class);
+            relativeMovements = EnumSet.noneOf(Relative.class);
             for (TeleportCommand.Relative relative : relativeAxis) {
                 relativeMovements.add(toNmsRelativeMovement(relative));
             }
         }
-        ClientboundPlayerPositionPacket packet = new ClientboundPlayerPositionPacket(x, y, z, yaw, pitch, relativeMovements, 0);
+        ClientboundPlayerPositionPacket packet = new ClientboundPlayerPositionPacket(0, new PositionMoveRotation(new Vec3(x, y, z), Vec3.ZERO, yaw, pitch), relativeMovements);
         sendAsyncSafe(player, packet);
     }
 

@@ -1,20 +1,21 @@
 package com.denizenscript.denizen.scripts.commands.item;
 
-import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.command.TabCompleteHelper;
+import com.denizenscript.denizen.utilities.inventory.InventoryViewUtil;
+import com.denizenscript.denizen.utilities.inventory.SlotHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.*;
+import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.scheduling.OneTimeSchedulable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
@@ -138,15 +139,15 @@ public class FakeItemCommand extends AbstractCommand {
                 final Player ent = player.getPlayerEntity();
                 final int translated = raw ? slot : translateSlot(ent, slot);
                 final InventoryView view = ent.getOpenInventory();
-                final Inventory top = view.getTopInventory();
+                final Inventory top = InventoryViewUtil.getTopInventory(view);
                 NMSHandler.packetHelper.setSlot(ent, translated, item.getItemStack(), false);
                 if (duration.getSeconds() > 0) {
                     DenizenCore.schedule(new OneTimeSchedulable(() -> {
                         if (!ent.isOnline()) {
                             return;
                         }
-                        if (top == view.getTopInventory()) {
-                            ItemStack original = view.getItem(translated);
+                        if (top == InventoryViewUtil.getTopInventory(view)) {
+                            ItemStack original = InventoryViewUtil.getItem(view, translated);
                             NMSHandler.packetHelper.setSlot(ent, translated, original, false);
                         }
                         else if (slotSnapshot < 36) {
@@ -162,8 +163,8 @@ public class FakeItemCommand extends AbstractCommand {
     static int translateSlot(Player player, int slot) {
         // This translates Spigot slot standards to vanilla slots.
         // The slot order is different when a player is viewing an inventory vs not doing so, leading to this chaos.
-        int topSize = player.getOpenInventory().getTopInventory().getSize();
-        if (player.getOpenInventory().getTopInventory() instanceof CraftingInventory) {
+        int topSize = InventoryViewUtil.getTopInventory(player.getOpenInventory()).getSize();
+        if (InventoryViewUtil.getTopInventory(player.getOpenInventory()) instanceof CraftingInventory) {
             topSize = 9;
             if (slot > 35) {
                 if (slot < 40) { // Armor equipment

@@ -10,6 +10,7 @@ import com.denizenscript.denizen.scripts.commands.world.SignCommand;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.events.ScriptEvent;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -19,6 +20,7 @@ import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -543,7 +545,6 @@ public class Utilities {
     }
 
     // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
-    @SuppressWarnings({"unchecked", "DataFlowIssue"})
     public static ListTag listTypes(Class<?> type) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
             return registryKeys(Bukkit.getRegistry((Class<? extends Keyed>) type));
@@ -562,9 +563,31 @@ public class Utilities {
     }
 
     public static <T> T elementToEnumlike(ElementTag element, Class<T> type) {
-        if (Keyed.class.isAssignableFrom(type)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
             return (T) Bukkit.getRegistry((Class<? extends Keyed>) type).get(parseNamespacedKey(element.asString()));
         }
         return (T) element.asEnum((Class<? extends Enum>) type);
+    }
+
+    public static <T> T findBestEnumlike(Class<T> type, String... names) {
+        for (String name : names) {
+            T val = elementToEnumlike(new ElementTag(name), type);
+            if (val != null) {
+                return val;
+            }
+        }
+        return null;
+    }
+
+    public static boolean matchesEnumlike(ElementTag element, Class<?> type) {
+        return elementToEnumlike(element, type) != null;
+    }
+
+    public static boolean requireEnumlike(Mechanism mechanism, Class<?> type) {
+        if (!matchesEnumlike(mechanism.getValue(), type)) {
+            mechanism.echoError("Invalid " + DebugInternals.getClassNameOpti(type) + " specified.");
+            return false;
+        }
+        return true;
     }
 }

@@ -11,10 +11,14 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftEntity;
+import net.minecraft.world.entity.PositionMoveRotation;
+import net.minecraft.world.phys.Vec3;
+import org.bukkit.craftbukkit.v1_21_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R2.util.CraftVector;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
+import java.util.Set;
 
 public class AttachPacketHandlers {
 
@@ -31,12 +35,6 @@ public class AttachPacketHandlers {
     public static Field POS_Z_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get(ReflectionMappingsInfo.ClientboundMoveEntityPacket_za, short.class);
     public static Field YAW_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get(ReflectionMappingsInfo.ClientboundMoveEntityPacket_yRot, byte.class);
     public static Field PITCH_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get(ReflectionMappingsInfo.ClientboundMoveEntityPacket_xRot, byte.class);
-    public static Field ENTITY_ID_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_id, int.class);
-    public static Field POS_X_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_x, double.class);
-    public static Field POS_Y_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_y, double.class);
-    public static Field POS_Z_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_z, double.class);
-    public static Field YAW_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_yRot, byte.class);
-    public static Field PITCH_PACKTELENT = ReflectionHelper.getFields(ClientboundTeleportEntityPacket.class).get(ReflectionMappingsInfo.ClientboundTeleportEntityPacket_xRot, byte.class);
     public static Field ENTITY_ID_PACKVELENT = ReflectionHelper.getFields(ClientboundSetEntityMotionPacket.class).get(ReflectionMappingsInfo.ClientboundSetEntityMotionPacket_id, int.class);
 
     public static Vector VECTOR_ZERO = new Vector(0, 0, 0);
@@ -53,10 +51,10 @@ public class AttachPacketHandlers {
                         pNew = new ClientboundMoveEntityPacket.Pos(newId, packet.getXa(), packet.getYa(), packet.getZa(), packet.isOnGround());
                     }
                     else if (packet instanceof ClientboundMoveEntityPacket.Rot) {
-                        pNew = new ClientboundMoveEntityPacket.Rot(newId, packet.getyRot(), packet.getxRot(), packet.isOnGround());
+                        pNew = new ClientboundMoveEntityPacket.Rot(newId, Mth.packDegrees(packet.getyRot()), Mth.packDegrees(packet.getxRot()), packet.isOnGround());
                     }
                     else if (packet instanceof ClientboundMoveEntityPacket.PosRot) {
-                        pNew = new ClientboundMoveEntityPacket.PosRot(newId, packet.getXa(), packet.getYa(), packet.getZa(), packet.getyRot(), packet.getxRot(), packet.isOnGround());
+                        pNew = new ClientboundMoveEntityPacket.PosRot(newId, packet.getXa(), packet.getYa(), packet.getZa(), Mth.packDegrees(packet.getyRot()), Mth.packDegrees(packet.getxRot()), packet.isOnGround());
                     }
                     else {
                         if (CoreConfiguration.debugVerbose) {
@@ -66,28 +64,27 @@ public class AttachPacketHandlers {
                     }
                     if (att.positionalOffset != null) {
                         boolean isRotate = packet instanceof ClientboundMoveEntityPacket.PosRot || packet instanceof ClientboundMoveEntityPacket.Rot;
-                        byte yaw, pitch;
+                        float yaw, pitch;
                         if (att.noRotate) {
                             Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
-                            yaw = EntityAttachmentHelper.compressAngle(attachedEntity.getYRot());
-                            pitch = EntityAttachmentHelper.compressAngle(attachedEntity.getXRot());
+                            yaw = attachedEntity.getYRot();
+                            pitch = attachedEntity.getXRot();
                         }
                         else if (isRotate) {
                             yaw = packet.getyRot();
                             pitch = packet.getxRot();
                         }
                         else {
-                            yaw = EntityAttachmentHelper.compressAngle(e.getYRot());
-                            pitch = EntityAttachmentHelper.compressAngle(e.getXRot());
+                            yaw = e.getYRot();
+                            pitch = e.getXRot();
                         }
                         if (att.noPitch) {
-                            Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
-                            pitch = EntityAttachmentHelper.compressAngle(attachedEntity.getXRot());
+                            pitch = ((CraftEntity) att.attached.getBukkitEntity()).getHandle().getXRot();
                         }
-                        byte newYaw = yaw;
+                        float newYaw = yaw;
                         if (isRotate) {
-                            newYaw = EntityAttachmentHelper.adaptedCompressedAngle(newYaw, att.positionalOffset.getYaw());
-                            pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
+                            newYaw = EntityAttachmentHelper.normalizeAngle(newYaw + att.positionalOffset.getYaw());
+                            pitch = EntityAttachmentHelper.normalizeAngle(pitch + att.positionalOffset.getPitch());
                         }
                         Vector goalPosition = att.fixedForOffset(new Vector(e.getX(), e.getY(), e.getZ()), e.getYRot(), e.getXRot());
                         Vector oldPos = att.visiblePositions.get(networkManager.player.getUUID());
@@ -104,13 +101,12 @@ public class AttachPacketHandlers {
                         if ((isRotate && att.offsetRelative) || forceTele || offX < Short.MIN_VALUE || offX > Short.MAX_VALUE
                                 || offY < Short.MIN_VALUE || offY > Short.MAX_VALUE
                                 || offZ < Short.MIN_VALUE || offZ > Short.MAX_VALUE) {
-                            ClientboundTeleportEntityPacket newTeleportPacket = new ClientboundTeleportEntityPacket(e);
-                            ENTITY_ID_PACKTELENT.setInt(newTeleportPacket, att.attached.getBukkitEntity().getEntityId());
-                            POS_X_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getX());
-                            POS_Y_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getY());
-                            POS_Z_PACKTELENT.setDouble(newTeleportPacket, goalPosition.getZ());
-                            YAW_PACKTELENT.setByte(newTeleportPacket, newYaw);
-                            PITCH_PACKTELENT.setByte(newTeleportPacket, pitch);
+                            ClientboundTeleportEntityPacket newTeleportPacket = new ClientboundTeleportEntityPacket(
+                                    att.attached.getBukkitEntity().getEntityId(),
+                                    new PositionMoveRotation(CraftVector.toNMS(goalPosition), Vec3.ZERO, newYaw, pitch),
+                                    Set.of(),
+                                    e.onGround()
+                            );
                             if (NMSHandler.debugPackets) {
                                 DenizenNetworkManagerImpl.doPacketOutput("Attach Move-Tele Packet: " + newTeleportPacket.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName() + " with original yaw " + yaw + " adapted to " + newYaw);
                             }
@@ -121,8 +117,8 @@ public class AttachPacketHandlers {
                             POS_Y_PACKENT.setShort(pNew, (short) Mth.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE));
                             POS_Z_PACKENT.setShort(pNew, (short) Mth.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE));
                             if (isRotate) {
-                                YAW_PACKENT.setByte(pNew, yaw);
-                                PITCH_PACKENT.setByte(pNew, pitch);
+                                YAW_PACKENT.setByte(pNew, EntityAttachmentHelper.compressAngle(yaw));
+                                PITCH_PACKENT.setByte(pNew, EntityAttachmentHelper.compressAngle(pitch));
                             }
                             if (NMSHandler.debugPackets) {
                                 DenizenNetworkManagerImpl.doPacketOutput("Attach Move Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName() + " with original yaw " + yaw + " adapted to " + newYaw);
@@ -152,15 +148,15 @@ public class AttachPacketHandlers {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
                 EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    byte yaw = packet.getYHeadRot();
+                    float yaw = packet.getYHeadRot();
                     Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
                     if (att.positionalOffset != null) {
                         if (att.noRotate) {
-                            yaw = EntityAttachmentHelper.compressAngle(attachedEntity.getYRot());
+                            yaw = attachedEntity.getYRot();
                         }
-                        yaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
+                        yaw = EntityAttachmentHelper.normalizeAngle(yaw + att.positionalOffset.getYaw());
                     }
-                    ClientboundRotateHeadPacket pNew = new ClientboundRotateHeadPacket(attachedEntity, yaw);
+                    ClientboundRotateHeadPacket pNew = new ClientboundRotateHeadPacket(attachedEntity, EntityAttachmentHelper.compressAngle(yaw));
                     if (NMSHandler.debugPackets) {
                         DenizenNetworkManagerImpl.doPacketOutput("Head Rotation Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName());
                     }
@@ -203,36 +199,38 @@ public class AttachPacketHandlers {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
                 EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    ClientboundTeleportEntityPacket pNew = ClientboundTeleportEntityPacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket(packet, ClientboundTeleportEntityPacket.STREAM_CODEC));
-                    ENTITY_ID_PACKTELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
-                    Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew)).add(relative);
+                    ClientboundTeleportEntityPacket pNew;
+                    Vector resultPos = CraftVector.toBukkit(packet.change().position()).add(relative);
                     if (att.positionalOffset != null) {
                         resultPos = att.fixedForOffset(resultPos, e.getYRot(), e.getXRot());
-                        byte yaw, pitch;
+                        float yaw, pitch;
                         if (att.noRotate) {
                             Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
-                            yaw = EntityAttachmentHelper.compressAngle(attachedEntity.getYRot());
-                            pitch = EntityAttachmentHelper.compressAngle(attachedEntity.getXRot());
+                            yaw = attachedEntity.getYRot();
+                            pitch = attachedEntity.getXRot();
                         }
                         else {
-                            yaw = packet.getyRot();
-                            pitch = packet.getxRot();
+                            yaw = packet.change().yRot();
+                            pitch = packet.change().xRot();
                         }
                         if (att.noPitch) {
-                            Entity attachedEntity = ((CraftEntity) att.attached.getBukkitEntity()).getHandle();
-                            pitch = EntityAttachmentHelper.compressAngle(attachedEntity.getXRot());
+                            pitch = ((CraftEntity) att.attached.getBukkitEntity()).getHandle().getXRot();
                         }
-                        byte newYaw = EntityAttachmentHelper.adaptedCompressedAngle(yaw, att.positionalOffset.getYaw());
-                        pitch = EntityAttachmentHelper.adaptedCompressedAngle(pitch, att.positionalOffset.getPitch());
-                        POS_X_PACKTELENT.setDouble(pNew, resultPos.getX());
-                        POS_Y_PACKTELENT.setDouble(pNew, resultPos.getY());
-                        POS_Z_PACKTELENT.setDouble(pNew, resultPos.getZ());
-                        YAW_PACKTELENT.setByte(pNew, newYaw);
-                        PITCH_PACKTELENT.setByte(pNew, pitch);
+                        float newYaw = EntityAttachmentHelper.normalizeAngle(yaw + att.positionalOffset.getYaw());
+                        pitch = EntityAttachmentHelper.normalizeAngle(pitch + att.positionalOffset.getPitch());
+                        pNew = new ClientboundTeleportEntityPacket(
+                                att.attached.getBukkitEntity().getEntityId(),
+                                new PositionMoveRotation(CraftVector.toNMS(resultPos), packet.change().deltaMovement(), newYaw, pitch),
+                                packet.relatives(),
+                                packet.onGround()
+                        );
                         if (NMSHandler.debugPackets) {
                             DenizenNetworkManagerImpl.doPacketOutput("Attach Teleport Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID()
                                     + " sent to " + networkManager.player.getScoreboardName() + " with raw yaw " + yaw + " adapted to " + newYaw);
                         }
+                    }
+                    else {
+                        pNew = new ClientboundTeleportEntityPacket(att.attached.getBukkitEntity().getEntityId(), packet.change(), packet.relatives(), packet.onGround());
                     }
                     att.visiblePositions.put(networkManager.player.getUUID(), resultPos.clone());
                     networkManager.oldManager.send(pNew);
@@ -279,7 +277,7 @@ public class AttachPacketHandlers {
                 return EntityAttachmentHelper.denyOriginalPacketSend(networkManager.player.getUUID(), e.getUUID()) ? null : packet;
             }
             else if (packet instanceof ClientboundTeleportEntityPacket teleportEntityPacket) {
-                int ider = teleportEntityPacket.getId();
+                int ider = teleportEntityPacket.id();
                 Entity e = networkManager.player.level().getEntity(ider);
                 if (e == null) {
                     return packet;

@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.utilities.LegacyNamingHelper;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -111,8 +111,8 @@ public class EntityProfession implements Property {
         // @tags
         // <EntityTag.profession>
         // -->
-        if (mechanism.matches("profession")) {
-            LegacyNamingHelper.requireType(mechanism, Villager.Profession.class).ifPresent(this::setProfession);
+        if (mechanism.matches("profession") && Utilities.requireEnumlike(mechanism, Villager.Profession.class)) {
+            setProfession(Utilities.elementToEnumlike(mechanism.getValue(), Villager.Profession.class));
         }
     }
 }

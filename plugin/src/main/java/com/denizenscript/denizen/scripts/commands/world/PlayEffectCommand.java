@@ -5,8 +5,8 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
-import com.denizenscript.denizen.utilities.LegacyNamingHelper;
 import com.denizenscript.denizen.utilities.LegacyParticleNaming;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -32,7 +32,6 @@ import java.util.Random;
 
 public class PlayEffectCommand extends AbstractCommand {
 
-    public static final LegacyNamingHelper<Particle> PARTICLE_NAMING = new LegacyNamingHelper<>(Particle.class);
     public static final List<Particle> VISIBLE_PARTICLES = new ArrayList<>(Arrays.asList(Particle.values()));
 
     static {
@@ -129,7 +128,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     !scriptEntry.hasObject("particleeffect") &&
                     !scriptEntry.hasObject("iconcrack")) {
                 String particleName = CoreUtilities.toUpperCase(arg.getValue());
-                Particle particle = PARTICLE_NAMING.fromName(particleName, scriptEntry.getContext());
+                Particle particle = Utilities.elementToEnumlike(new ElementTag(particleName), Particle.class);
                 if (particle != null) {
                     scriptEntry.addObject("particleeffect", particle);
                     continue;

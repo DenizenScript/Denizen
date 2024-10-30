@@ -3,6 +3,7 @@ package com.denizenscript.denizen.paper.events;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.inventory.InventoryViewUtil;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -91,7 +92,7 @@ public class AnvilBlockDamagedScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(event.getView().getPlayer());
+        return new BukkitScriptEntryData(InventoryViewUtil.getPlayer(event.getView()));
     }
 
     @EventHandler
