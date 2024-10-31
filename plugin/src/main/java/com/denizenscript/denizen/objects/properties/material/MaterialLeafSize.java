@@ -2,66 +2,31 @@ package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Bamboo;
 
-public class MaterialLeafSize implements Property {
+public class MaterialLeafSize extends MaterialProperty<ElementTag> {
 
-    public static boolean describes(ObjectTag material) {
-        return material instanceof MaterialTag
-                && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData() instanceof Bamboo;
-    }
+    // <--[property]
+    // @object MaterialTag
+    // @name leaf_size
+    // @input ElementTag
+    // @description
+    // Controls the size of the leaves for this bamboo block.
+    // Valid values are SMALL, LARGE, or NONE.
+    // -->
 
-    public static MaterialLeafSize getFrom(ObjectTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialLeafSize((MaterialTag) _material);
-        }
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "leaf_size"
-    };
-
-    public MaterialLeafSize(MaterialTag _material) {
-        material = _material;
+    public static boolean describes(MaterialTag material) {
+        BlockData data = material.getModernData();
+        return data instanceof Bamboo;
     }
 
     MaterialTag material;
 
-    public static void register() {
-
-        // <--[tag]
-        // @attribute <MaterialTag.leaf_size>
-        // @returns ElementTag
-        // @mechanism MaterialTag.leaf_size
-        // @group properties
-        // @description
-        // Returns the size of the leaves for this bamboo block.
-        // Output is SMALL, LARGE, or NONE.
-        // -->
-        PropertyParser.registerStaticTag(MaterialLeafSize.class, ElementTag.class, "leaf_size", (attribute, material) -> {
-            return new ElementTag(material.getBamboo().getLeaves());
-        });
-    }
-
-    public Bamboo getBamboo() {
-        return (Bamboo) material.getModernData();
-    }
-
-    public void setLeafSize(String size) {
-        getBamboo().setLeaves(Bamboo.Leaves.valueOf(size));
-    }
-
     @Override
-    public String getPropertyString() {
-        return getBamboo().getLeaves().name();
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getBamboo().getLeaves());
     }
 
     @Override
@@ -70,20 +35,17 @@ public class MaterialLeafSize implements Property {
     }
 
     @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object MaterialTag
-        // @name leaf_size
-        // @input ElementTag
-        // @description
-        // Sets the size of the leaves for this bamboo block.
-        // Valid input is SMALL, LARGE, or NONE.
-        // @tags
-        // <MaterialTag.leaf_size>
-        // -->
-        if (mechanism.matches("leaf_size") && mechanism.requireEnum(Bamboo.Leaves.class)) {
-            setLeafSize(mechanism.getValue().asString().toUpperCase());
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        if (mechanism.requireEnum(Bamboo.Leaves.class)) {
+            getBamboo().setLeaves(value.asEnum(Bamboo.Leaves.class));
         }
+    }
+
+    public static void register() {
+        autoRegister("leaf_size", MaterialLeafSize.class, ElementTag.class, false);
+    }
+
+    public Bamboo getBamboo() {
+        return (Bamboo) material.getModernData();
     }
 }
