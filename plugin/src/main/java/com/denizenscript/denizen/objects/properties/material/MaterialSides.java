@@ -28,59 +28,14 @@ public class MaterialSides extends MaterialProperty<ListTag> {
 
     MaterialTag material;
 
-    public static void register() {
-
-        // <--[tag]
-        // @attribute <MaterialTag.heights>
-        // @returns ListTag
-        // @mechanism MaterialTag.heights
-        // @group properties
-        // @deprecated Use 'sides'
-        // @description
-        // Deprecated in favor of <@link property MaterialTag.sides>
-        // -->
-        autoRegister("sides", MaterialSides.class, ListTag.class, true, "heights");
-    }
-
-    public boolean isWall() {
-        return material.getModernData() instanceof Wall;
-    }
-
-    public Wall getWall() {
-        return (Wall) material.getModernData();
-    }
-
-    public boolean isWire() {
-        return material.getModernData() instanceof RedstoneWire;
-    }
-
-    public RedstoneWire getWire() {
-        return (RedstoneWire) material.getModernData();
-    }
-
-    public ListTag getSidesList() {
-        ListTag list = new ListTag(5);
-        if (isWall()) {
-            Wall wall = getWall();
-            list.add(wall.getHeight(BlockFace.NORTH).name());
-            list.add(wall.getHeight(BlockFace.EAST).name());
-            list.add(wall.getHeight(BlockFace.SOUTH).name());
-            list.add(wall.getHeight(BlockFace.WEST).name());
-            list.add(wall.isUp() ? "TALL" : "NONE");
-        }
-        else if (isWire()) {
-            RedstoneWire wire = getWire();
-            list.add(wire.getFace(BlockFace.NORTH).name());
-            list.add(wire.getFace(BlockFace.EAST).name());
-            list.add(wire.getFace(BlockFace.SOUTH).name());
-            list.add(wire.getFace(BlockFace.WEST).name());
-        }
-        return list;
-    }
-
     @Override
     public ListTag getPropertyValue() {
         return getSidesList();
+    }
+
+    @Override
+    public String getPropertyId() {
+        return "sides";
     }
 
     @Override
@@ -121,8 +76,53 @@ public class MaterialSides extends MaterialProperty<ListTag> {
         }
     }
 
-    @Override
-    public String getPropertyId() {
-        return "sides";
+    public static void register() {
+        autoRegister("sides", MaterialSides.class, ListTag.class, true, "heights");
+
+        // <--[tag]
+        // @attribute <MaterialTag.heights>
+        // @returns ListTag
+        // @mechanism MaterialTag.heights
+        // @group properties
+        // @deprecated Use 'sides'
+        // @description
+        // Deprecated in favor of <@link property MaterialTag.sides>
+        // -->
+    }
+
+    public boolean isWall() {
+        return material.getModernData() instanceof Wall;
+    }
+
+    public Wall getWall() {
+        return (Wall) material.getModernData();
+    }
+
+    public boolean isWire() {
+        return material.getModernData() instanceof RedstoneWire;
+    }
+
+    public RedstoneWire getWire() {
+        return (RedstoneWire) material.getModernData();
+    }
+
+    public ListTag getSidesList() {
+        ListTag list = new ListTag(5);
+        if (isWall()) {
+            Wall wall = getWall();
+            list.add(wall.getHeight(BlockFace.NORTH).name());
+            list.add(wall.getHeight(BlockFace.EAST).name());
+            list.add(wall.getHeight(BlockFace.SOUTH).name());
+            list.add(wall.getHeight(BlockFace.WEST).name());
+            list.add(wall.isUp() ? "TALL" : "NONE");
+        }
+        else if (isWire()) {
+            RedstoneWire wire = getWire();
+            list.add(wire.getFace(BlockFace.NORTH).name());
+            list.add(wire.getFace(BlockFace.EAST).name());
+            list.add(wire.getFace(BlockFace.SOUTH).name());
+            list.add(wire.getFace(BlockFace.WEST).name());
+        }
+        return list;
     }
 }
