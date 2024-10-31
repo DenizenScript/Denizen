@@ -615,6 +615,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @returns DurationTag
             // @description
             // Returns the relative in-game time of this world as a duration.
+            // @deprecated Use <@link tag WorldTag.time_duration> instead.
             // -->
             if (attribute.startsWith("duration", 2)) {
                 BukkitImplDeprecations.timeDuration.warn(attribute.context);
@@ -627,6 +628,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @returns DurationTag
             // @description
             // Returns the in-game time of this world.
+            // @deprecated Use <@link tag WorldTag.time_full> instead.
             // -->
             else if (attribute.startsWith("full", 2)) {
                 BukkitImplDeprecations.timeFull.warn(attribute.context);
@@ -639,6 +641,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @returns ElementTag
             // @description
             // Returns the time as 'day', 'night', 'dawn', or 'dusk'.
+            // @deprecated Use <@link tag WorldTag.time_period> instead.
             // -->
             else if (attribute.startsWith("period", 2)) {
                 BukkitImplDeprecations.timePeriod.warn(attribute.context);
