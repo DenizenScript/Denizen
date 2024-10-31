@@ -2,63 +2,27 @@ package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Stairs;
 
-public class MaterialShape implements Property {
+public class MaterialShape extends MaterialProperty<ElementTag> {
 
-    public static boolean describes(ObjectTag material) {
-        return material instanceof MaterialTag
-                && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData() instanceof Stairs;
-    }
+    // <--[property]
+    // @object MaterialTag
+    // @name shape
+    // @input ElementTag
+    // @description
+    // Controls the shape of a block.
+    // For stairs, the corner shape can be INNER_LEFT, INNER_RIGHT, OUTER_LEFT, OUTER_RIGHT, or STRAIGHT.
+    // -->
 
-    public static MaterialShape getFrom(ObjectTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialShape((MaterialTag) _material);
-        }
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "shape"
-    };
-
-    public MaterialShape(MaterialTag _material) {
-        material = _material;
+    public static boolean describes(MaterialTag material) {
+        BlockData data = material.getModernData();
+        return data instanceof Stairs;
     }
 
     MaterialTag material;
-
-    public static void register() {
-
-        // <--[tag]
-        // @attribute <MaterialTag.shape>
-        // @returns ElementTag
-        // @mechanism MaterialTag.shape
-        // @group properties
-        // @description
-        // Returns the shape of a block.
-        // For stairs, output is the corner shape as INNER_LEFT, INNER_RIGHT, OUTER_LEFT, OUTER_RIGHT, or STRAIGHT.
-        // -->
-        PropertyParser.registerStaticTag(MaterialShape.class, ElementTag.class, "shape", (attribute, material) -> {
-            return new ElementTag(material.getStairs().getShape());
-        });
-    }
-
-    public Stairs getStairs() {
-        return (Stairs) material.getModernData();
-    }
-
-    @Override
-    public String getPropertyString() {
-        return getStairs().getShape().name();
-    }
 
     @Override
     public String getPropertyId() {
@@ -66,20 +30,22 @@ public class MaterialShape implements Property {
     }
 
     @Override
-    public void adjust(Mechanism mechanism) {
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getStairs().getShape());
+    }
 
-        // <--[mechanism]
-        // @object MaterialTag
-        // @name shape
-        // @input ElementTag
-        // @description
-        // Sets the shape of a block.
-        // For stairs, input is the corner shape as INNER_LEFT, INNER_RIGHT, OUTER_LEFT, OUTER_RIGHT, or STRAIGHT.
-        // @tags
-        // <MaterialTag.shape>
-        // -->
-        if (mechanism.matches("shape") && mechanism.requireEnum(Stairs.Shape.class)) {
-            getStairs().setShape(Stairs.Shape.valueOf(mechanism.getValue().asString().toUpperCase()));
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        if (mechanism.requireEnum(Stairs.Shape.class)) {
+            getStairs().setShape(Stairs.Shape.valueOf(value.asString().toUpperCase()));
         }
+    }
+
+    public static void register() {
+        autoRegister("shape", MaterialShape.class, ElementTag.class, true);
+    }
+
+    public Stairs getStairs() {
+        return (Stairs) material.getModernData();
     }
 }
