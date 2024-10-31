@@ -19,8 +19,8 @@ public class MaterialSwitchable extends MaterialProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @synonyms MaterialTag.lit, MaterialTag.open, MaterialTag.active
     // @description
-    // Returns whether a material is 'switched on', which has different semantic meaning depending on the material type.
-    // More specifically, this returns whether:
+    // Controls whether a material is 'switched on', which has different semantic meaning depending on the material type.
+    // More specifically, this controls whether:
     // - a Powerable material (like pressure plates) is activated
     // - an Openable material (like doors) is open
     // - a dispenser is powered and should dispense its contents
@@ -46,6 +46,23 @@ public class MaterialSwitchable extends MaterialProperty<ElementTag> {
     }
 
     public MaterialTag material;
+
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getState());
+    }
+
+    @Override
+    public String getPropertyId() {
+        return "switched";
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        if (mechanism.requireBoolean()) {
+            setState(value.asBoolean());
+        }
+    }
 
     public static void register() {
         autoRegister("switched", MaterialSwitchable.class, ElementTag.class, true);
@@ -182,23 +199,5 @@ public class MaterialSwitchable extends MaterialProperty<ElementTag> {
         else if (isSculkShrieker()) {
             ((SculkShrieker) material.getModernData()).setCanSummon(state);
         }
-    }
-
-    @Override
-    public ElementTag getPropertyValue() {
-        return new ElementTag(getState());
-    }
-
-    @Override
-    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        if (!mechanism.requireBoolean()) {
-            return;
-        }
-        setState(value.asBoolean());
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "switched";
     }
 }
