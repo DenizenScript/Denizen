@@ -23,6 +23,23 @@ public class MaterialUnstable extends MaterialProperty<ElementTag> {
 
     MaterialTag material;
 
+    @Override
+    public String getPropertyId() {
+        return "unstable";
+    }
+
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(isUnstable());
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        if (mechanism.requireBoolean()) {
+            getTNT().setUnstable(value.asBoolean());
+        }
+    }
+
     public static void register() {
         autoRegister("unstable", MaterialUnstable.class, ElementTag.class, true);
     }
@@ -33,23 +50,5 @@ public class MaterialUnstable extends MaterialProperty<ElementTag> {
 
     public boolean isUnstable() {
         return getTNT().isUnstable();
-    }
-
-    @Override
-    public ElementTag getPropertyValue() {
-        return new ElementTag(isUnstable());
-    }
-
-    @Override
-    public void setPropertyValue(ElementTag elementTag, Mechanism mechanism) {
-        if (!mechanism.requireBoolean()) {
-            return;
-        }
-        getTNT().setUnstable(elementTag.asBoolean());
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "unstable";
     }
 }
