@@ -23,21 +23,21 @@ public class MaterialWaterlogged extends MaterialProperty<ElementTag> {
 
     MaterialTag material;
 
-    @Override
-    public ElementTag getPropertyValue() {
-        return new ElementTag(((Waterlogged) material.getModernData()).isWaterlogged());
-    }
-
     public static void register() {
         autoRegister("waterlogged", MaterialWaterlogged.class, ElementTag.class, true);
     }
 
     @Override
-    public void setPropertyValue(ElementTag val, Mechanism mechanism) {
+    public ElementTag getPropertyValue() {
+        return new ElementTag(((Waterlogged) material.getModernData()).isWaterlogged());
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         if (!mechanism.requireBoolean()) {
             return;
         }
-        ((Waterlogged) material.getModernData()).setWaterlogged(val.asBoolean());
+        ((Waterlogged) material.getModernData()).setWaterlogged(value.asBoolean());
     }
 
     @Override
