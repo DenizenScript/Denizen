@@ -21,11 +21,17 @@ public class MaterialAttachmentFace extends MaterialProperty<ElementTag> {
     // -->
 
     public static boolean describes(MaterialTag material) {
-        return material.getModernData() instanceof FaceAttachable || material.getModernData() instanceof Bell;
+        return material.getModernData() instanceof FaceAttachable
+                || material.getModernData() instanceof Bell;
     }
 
     public MaterialAttachmentFace(MaterialTag material) {
         super(material);
+    }
+
+    @Override
+    public String getPropertyId() {
+        return "attachment_face";
     }
 
     @Override
@@ -40,11 +46,6 @@ public class MaterialAttachmentFace extends MaterialProperty<ElementTag> {
     }
 
     @Override
-    public String getPropertyId() {
-        return "attachment_face";
-    }
-
-    @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         if (getBlockData() instanceof FaceAttachable attachable) {
             if (mechanism.requireEnum(FaceAttachable.AttachedFace.class)) {
@@ -56,6 +57,10 @@ public class MaterialAttachmentFace extends MaterialProperty<ElementTag> {
                 bell.setAttachment(value.asEnum(Bell.Attachment.class));
             }
         }
+    }
+
+    public static void register() {
+        autoRegister("attachment_face", MaterialAttachmentFace.class, ElementTag.class, false, "switch_face");
     }
 
     public BlockFace getAttachedTo() {
@@ -74,9 +79,5 @@ public class MaterialAttachmentFace extends MaterialProperty<ElementTag> {
             };
         }
         return null;
-    }
-
-    public static void register() {
-        autoRegister("attachment_face", MaterialAttachmentFace.class, ElementTag.class, false, "switch_face");
     }
 }
