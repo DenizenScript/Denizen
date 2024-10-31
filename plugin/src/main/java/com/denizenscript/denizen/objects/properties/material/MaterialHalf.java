@@ -2,73 +2,66 @@ package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.util.Vector;
 
-public class MaterialHalf implements Property {
+public class MaterialHalf extends MaterialProperty<ElementTag> {
 
-    public static boolean describes(ObjectTag material) {
-        return material instanceof MaterialTag
-                && ((MaterialTag) material).hasModernData()
-                && isHalfData(((MaterialTag) material).getModernData());
-    }
+    // <--[property]
+    // @object MaterialTag
+    // @name half
+    // @input ElementTag
+    // @description
+    // Controls the current half for a bisected material (like a door, double-plant, chest, or a bed).
+    // For "Bisected" blocks (doors/double plants/...), values are either "BOTTOM" or "TOP".
+    // For beds, values are either "HEAD" or "FOOT".
+    // For chests, values are either "LEFT" or "RIGHT".
+    // For the half name, see <@link tag MaterialTag.half>.
+    // For the relative vector, see <@link tag MaterialTag.relative_vector>.
+    // -->
 
-    public static boolean isHalfData(BlockData data) {
-        if (data instanceof Bisected || data instanceof Bed || data instanceof Chest) {
-            return true;
-        }
-        return false;
-    }
-
-    public static MaterialHalf getFrom(ObjectTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialHalf((MaterialTag) _material);
-        }
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "half"
-    };
-
-    public MaterialHalf(MaterialTag _material) {
-        material = _material;
+    public static boolean describes(MaterialTag material) {
+        BlockData data = material.getModernData();
+        return data instanceof Bisected
+                || data instanceof Bed
+                || data instanceof Chest;
     }
 
     MaterialTag material;
 
-    public static void register() {
+    @Override
+    public String getPropertyId() {
+        return "half";
+    }
 
-        // <--[tag]
-        // @attribute <MaterialTag.half>
-        // @returns ElementTag
-        // @mechanism MaterialTag.half
-        // @group properties
-        // @description
-        // Returns the current half for a bisected material (like a door, double-plant, chest, or a bed).
-        // Output for "Bisected" blocks (doors/double plants/...) is "BOTTOM" or "TOP".
-        // Output for beds is "HEAD" or "FOOT".
-        // Output for chests is "LEFT" or "RIGHT".
-        // -->
-        PropertyParser.registerStaticTag(MaterialHalf.class, ElementTag.class, "half", (attribute, material) -> {
-            String halfName = material.getHalfName();
-            if (halfName == null) {
-                return null;
-            }
-            return new ElementTag(halfName);
-        });
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getHalfName());
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        BlockData data = material.getModernData();
+        if (data instanceof Bisected bisected) {
+            bisected.setHalf(value.asEnum(Bisected.Half.class));
+        }
+        else if (data instanceof Bed bed) {
+            bed.setPart(value.asEnum(Bed.Part.class));
+        }
+        else if (data instanceof Chest chest) {
+            chest.setType(value.asEnum(Chest.Type.class));
+        }
+    }
+
+    public static void register() {
+        autoRegister("half", MaterialHalf.class, ElementTag.class, true);
 
         // <--[tag]
         // @attribute <MaterialTag.relative_vector>
@@ -88,17 +81,17 @@ public class MaterialHalf implements Property {
     }
 
     public static String getHalfName(BlockData data) {
-        if (data instanceof Bisected) {
-            return ((Bisected) data).getHalf().name();
+        if (data instanceof Bisected bisected) {
+            return bisected.getHalf().name();
         }
-        else if (data instanceof Bed) {
-            return ((Bed) data).getPart().name();
+        else if (data instanceof Bed bed) {
+            return bed.getPart().name();
         }
-        else if (data instanceof Chest) {
-            if (((Chest) data).getType() == Chest.Type.SINGLE) {
+        else if (data instanceof Chest chest) {
+            if (chest.getType() == Chest.Type.SINGLE) {
                 return null;
             }
-            return ((Chest) data).getType().name();
+            return chest.getType().name();
         }
         return null;
     }
@@ -107,40 +100,28 @@ public class MaterialHalf implements Property {
         return getHalfName(material.getModernData());
     }
 
-    public static void setHalfByName(BlockData data, String name) {
-        if (data instanceof Bisected) {
-            ((Bisected) data).setHalf(Bisected.Half.valueOf(name));
-        }
-        else if (data instanceof Bed) {
-            ((Bed) data).setPart(Bed.Part.valueOf(name));
-        }
-        else if (data instanceof Chest) {
-            ((Chest) data).setType(Chest.Type.valueOf(name));
-        }
-    }
-
     public static Vector getRelativeBlockVector(BlockData data) {
-        if (data instanceof Bisected) {
-            if (((Bisected) data).getHalf() == Bisected.Half.TOP) {
+        if (data instanceof Bisected bisected) {
+            if (bisected.getHalf() == Bisected.Half.TOP) {
                 return new Vector(0, -1, 0);
             }
             else {
                 return new Vector(0, 1, 0);
             }
         }
-        else if (data instanceof Bed) {
-            BlockFace face = ((Directional) data).getFacing();
-            if (((Bed) data).getPart() == Bed.Part.HEAD) {
+        else if (data instanceof Bed bed) {
+            BlockFace face = bed.getFacing();
+            if (bed.getPart() == Bed.Part.HEAD) {
                 face = face.getOppositeFace();
             }
             return face.getDirection();
         }
-        else if (data instanceof Chest) {
-            if (((Chest) data).getType() == Chest.Type.SINGLE) {
+        else if (data instanceof Chest chest) {
+            if (chest.getType() == Chest.Type.SINGLE) {
                 return null;
             }
-            Vector direction = ((Directional) data).getFacing().getDirection();
-            if (((Chest) data).getType() == Chest.Type.LEFT) {
+            Vector direction = chest.getFacing().getDirection();
+            if (chest.getType() == Chest.Type.LEFT) {
                 return new Vector(-direction.getZ(), 0, direction.getX());
             }
             return new Vector(direction.getZ(), 0, -direction.getX());
@@ -150,32 +131,5 @@ public class MaterialHalf implements Property {
 
     public Vector getRelativeBlockVector() {
         return getRelativeBlockVector(material.getModernData());
-    }
-
-    @Override
-    public String getPropertyString() {
-        return getHalfName();
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "half";
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object MaterialTag
-        // @name half
-        // @input ElementTag
-        // @description
-        // Sets the current half for a bisected material (like a door, double-plant, chest, or a bed).
-        // @tags
-        // <MaterialTag.half>
-        // -->
-        if (mechanism.matches("half")) {
-            setHalfByName(material.getModernData(), mechanism.getValue().asString().toUpperCase());
-        }
     }
 }
