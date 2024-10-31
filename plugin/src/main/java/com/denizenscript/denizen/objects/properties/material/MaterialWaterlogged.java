@@ -23,8 +23,9 @@ public class MaterialWaterlogged extends MaterialProperty<ElementTag> {
 
     MaterialTag material;
 
-    public static void register() {
-        autoRegister("waterlogged", MaterialWaterlogged.class, ElementTag.class, true);
+    @Override
+    public String getPropertyId() {
+        return "waterlogged";
     }
 
     @Override
@@ -34,14 +35,12 @@ public class MaterialWaterlogged extends MaterialProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        if (!mechanism.requireBoolean()) {
-            return;
+        if (mechanism.requireBoolean()) {
+            ((Waterlogged) material.getModernData()).setWaterlogged(value.asBoolean());
         }
-        ((Waterlogged) material.getModernData()).setWaterlogged(value.asBoolean());
     }
 
-    @Override
-    public String getPropertyId() {
-        return "waterlogged";
+    public static void register() {
+        autoRegister("waterlogged", MaterialWaterlogged.class, ElementTag.class, true);
     }
 }
