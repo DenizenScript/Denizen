@@ -1470,7 +1470,12 @@ public class WorldTag implements ObjectTag, FlaggableObject {
                 NMSHandler.worldHelper.wakeUpAllPlayers(world);
             }
             // minor change: prior to 1.18, hasStorm/isRaining was not checked
-            if (getGameRuleOrDefault(GameRule.DO_WEATHER_CYCLE) && world.hasStorm()) {
+            if (world.getGameRuleValue(GameRule.DO_WEATHER_CYCLE) == null) {
+                if (world.getGameRuleDefault(GameRule.DO_WEATHER_CYCLE) == null) {
+                    throw new IllegalStateException("World " + world.getName() + " contains no GameRule " + GameRule.DO_WEATHER_CYCLE.getName());
+                }
+            }
+            if (world.hasStorm()) {
                 NMSHandler.worldHelper.clearWeather(world);
             }
         });
