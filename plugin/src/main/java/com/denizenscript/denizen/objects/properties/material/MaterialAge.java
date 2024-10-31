@@ -37,6 +37,11 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
     }
 
     @Override
+    public String getPropertyId() {
+        return "age";
+    }
+
+    @Override
     public ElementTag getPropertyValue() {
         return new ElementTag(getCurrent());
     }
@@ -66,12 +71,8 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
         }
     }
 
-    @Override
-    public String getPropertyId() {
-        return "age";
-    }
-
     public static void register() {
+        autoRegister("age", MaterialAge.class, ElementTag.class, true, "plant_growth");
 
         // <--[tag]
         // @attribute <MaterialTag.maximum_age>
@@ -83,8 +84,6 @@ public class MaterialAge extends MaterialProperty<ElementTag> {
         PropertyParser.registerStaticTag(MaterialAge.class, ElementTag.class, "maximum_age", (attribute, prop) -> {
             return new ElementTag(prop.getMax());
         }, "maximum_plant_growth");
-
-        autoRegister("age", MaterialAge.class, ElementTag.class, true, "plant_growth");
     }
 
     public int getCurrent() {
