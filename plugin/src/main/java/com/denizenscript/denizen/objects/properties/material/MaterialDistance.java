@@ -84,4 +84,17 @@ public class MaterialDistance extends MaterialProperty<ElementTag> {
     public boolean isLeaves() {
         return material.getModernData() instanceof Leaves;
     }
+
+    public static MaterialDistance getFrom(MaterialTag _material) {
+        if (!describes(_material)) {
+            return null;
+        }
+        else {
+            return new MaterialDistance(_material);
+        }
+    }
+
+    public MaterialDistance(MaterialTag _material) {
+        material = _material;
+    }
 }

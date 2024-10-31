@@ -132,4 +132,17 @@ public class MaterialHalf extends MaterialProperty<ElementTag> {
     public Vector getRelativeBlockVector() {
         return getRelativeBlockVector(material.getModernData());
     }
+
+    public static MaterialHalf getFrom(MaterialTag _material) {
+        if (!describes(_material)) {
+            return null;
+        }
+        else {
+            return new MaterialHalf(_material);
+        }
+    }
+
+    public MaterialHalf(MaterialTag _material) {
+        material = _material;
+    }
 }
