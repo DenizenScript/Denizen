@@ -344,6 +344,15 @@ public class BukkitImplDeprecations {
     // Good candidate for bumping, as this is a niche feature only on 1.19+ that already had some issues
     public static Warning entityStepHeight = new FutureWarning("entityStepHeight", "'EntityTag.step_height' is deprecated in favor of the step height attribute.");
 
+    // Added 2024/10/30, deprecate officially by 2028.
+    public static Warning timePeriod = new FutureWarning("timePeriod", "'time.period' is deprecated in favor of 'time_period'.");
+
+    // Added 2024/10/30, deprecate officially by 2028.
+    public static Warning timeFull = new FutureWarning("timeFull", "'time.full' is deprecated in favor of 'time_full'.");
+
+    // Added 2024/10/30
+    public static Warning timeDuration = new FutureWarning("timeDuration", "'time.duration' is deprecated in favor of 'time_duration'.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2023/10/29 without warning.

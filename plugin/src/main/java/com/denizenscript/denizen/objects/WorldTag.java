@@ -4,9 +4,11 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
+import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -36,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class WorldTag implements ObjectTag, FlaggableObject {
+public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
 
     // <--[ObjectType]
     // @name WorldTag
@@ -615,6 +617,7 @@ public class WorldTag implements ObjectTag, FlaggableObject {
             // Returns the relative in-game time of this world as a duration.
             // -->
             if (attribute.startsWith("duration", 2)) {
+                BukkitImplDeprecations.timeDuration.warn(attribute.context);
                 attribute.fulfill(1);
                 return new DurationTag(object.getWorld().getTime());
             }
@@ -626,6 +629,7 @@ public class WorldTag implements ObjectTag, FlaggableObject {
             // Returns the in-game time of this world.
             // -->
             else if (attribute.startsWith("full", 2)) {
+                BukkitImplDeprecations.timeFull.warn(attribute.context);
                 attribute.fulfill(1);
                 return new DurationTag(object.getWorld().getFullTime());
             }
@@ -637,6 +641,7 @@ public class WorldTag implements ObjectTag, FlaggableObject {
             // Returns the time as 'day', 'night', 'dawn', or 'dusk'.
             // -->
             else if (attribute.startsWith("period", 2)) {
+                BukkitImplDeprecations.timePeriod.warn(attribute.context);
                 attribute.fulfill(1);
 
                 long time = object.getWorld().getTime();
@@ -660,6 +665,52 @@ public class WorldTag implements ObjectTag, FlaggableObject {
             else {
                 return new ElementTag(object.getWorld().getTime());
             }
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.time_duration>
+        // @returns DurationTag
+        // @description
+        // Returns the relative in-game time of this world as a duration.
+        // -->
+        registerTag(DurationTag.class, "time_duration", (attribute1, object1) -> {
+            return new DurationTag(object1.getWorld().getTime());
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.time_full>
+        // @returns DurationTag
+        // @description
+        // Returns the in-game time of this world.
+        // -->
+        registerTag(DurationTag.class, "time_full", (attribute, object) -> {
+            return new DurationTag(object.getWorld().getFullTime());
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.time_period>
+        // @returns ElementTag
+        // @description
+        // Returns the time as 'day', 'night', 'dawn', or 'dusk'.
+        // -->
+        registerTag(ElementTag.class, "time_period", (attribute, object) -> {;
+            long time = object.getWorld().getTime();
+            String period;
+
+            if (time >= 23000) {
+                period = "dawn";
+            }
+            else if (time >= 13500) {
+                period = "night";
+            }
+            else if (time >= 12500) {
+                period = "dusk";
+            }
+            else {
+                period = "day";
+            }
+
+            return new ElementTag(period);
         });
 
         // <--[tag]
@@ -1497,6 +1548,11 @@ public class WorldTag implements ObjectTag, FlaggableObject {
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
         return tagProcessor.getObjectAttribute(this, attribute);
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+        tagProcessor.processMechanism(this, mechanism);
     }
 
     public void applyProperty(Mechanism mechanism) {
