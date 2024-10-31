@@ -265,7 +265,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialAttached.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialAttachmentFace.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialBlockType.class, MaterialTag.class);
-        PropertyParser.registerProperty(MaterialBrewingStand.class, MaterialTag.class);
+        PropertyParser.registerProperty(MaterialBottles.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialCampfire.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialCount.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialDelay.class, MaterialTag.class);
