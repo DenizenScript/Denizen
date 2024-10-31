@@ -200,4 +200,17 @@ public class MaterialSwitchable extends MaterialProperty<ElementTag> {
             ((SculkShrieker) material.getModernData()).setCanSummon(state);
         }
     }
+
+    public MaterialSwitchable(MaterialTag _material) {
+        material = _material;
+    }
+
+    public static MaterialSwitchable getFrom(MaterialTag _material) {
+        if (!describes(_material)) {
+            return null;
+        }
+        else {
+            return new MaterialSwitchable(_material);
+        }
+    }
 }
