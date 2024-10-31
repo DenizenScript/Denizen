@@ -23,6 +23,23 @@ public class MaterialSnowable extends MaterialProperty<ElementTag> {
 
     MaterialTag material;
 
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(isSnowy());
+    }
+
+    @Override
+    public String getPropertyId() {
+        return "snowy";
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        if (mechanism.requireBoolean()) {
+            getSnowable().setSnowy(value.asBoolean());
+        }
+    }
+
     public static void register() {
         autoRegister("snowy", MaterialSnowable.class, ElementTag.class, true);
     }
@@ -33,23 +50,5 @@ public class MaterialSnowable extends MaterialProperty<ElementTag> {
 
     public boolean isSnowy() {
         return getSnowable().isSnowy();
-    }
-
-    @Override
-    public ElementTag getPropertyValue() {
-        return new ElementTag(isSnowy());
-    }
-
-    @Override
-    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        if (!mechanism.requireBoolean()) {
-            return;
-        }
-        getSnowable().setSnowy(value.asBoolean());
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "snowy";
     }
 }
