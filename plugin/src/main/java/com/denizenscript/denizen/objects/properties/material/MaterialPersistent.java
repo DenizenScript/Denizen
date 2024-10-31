@@ -2,62 +2,26 @@ package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Leaves;
 
-public class MaterialPersistent implements Property {
+public class MaterialPersistent extends MaterialProperty<ElementTag> {
 
-    public static boolean describes(ObjectTag material) {
-        return material instanceof MaterialTag
-                && ((MaterialTag) material).hasModernData()
-                && ((MaterialTag) material).getModernData() instanceof Leaves;
-    }
+    // <--[property]
+    // @object MaterialTag
+    // @name persistent
+    // @input ElementTag(Boolean)
+    // @description
+    // Controls whether this block will decay from being too far away from a tree.
+    // -->
 
-    public static MaterialPersistent getFrom(ObjectTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialPersistent((MaterialTag) _material);
-        }
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "persistent"
-    };
-
-    public MaterialPersistent(MaterialTag _material) {
-        material = _material;
+    public static boolean describes(MaterialTag material) {
+        BlockData data = material.getModernData();
+        return data instanceof Leaves;
     }
 
     MaterialTag material;
-
-    public static void register() {
-
-        // <--[tag]
-        // @attribute <MaterialTag.persistent>
-        // @returns ElementTag(Boolean)
-        // @mechanism MaterialTag.persistent
-        // @group properties
-        // @description
-        // Returns whether this block will decay from being too far away from a tree.
-        // -->
-        PropertyParser.registerStaticTag(MaterialPersistent.class, ElementTag.class, "persistent", (attribute, material) -> {
-            return new ElementTag(material.getLeaves().isPersistent());
-        });
-    }
-
-    public Leaves getLeaves() {
-        return (Leaves) material.getModernData();
-    }
-
-    @Override
-    public String getPropertyString() {
-        return String.valueOf(getLeaves().isPersistent());
-    }
 
     @Override
     public String getPropertyId() {
@@ -65,19 +29,20 @@ public class MaterialPersistent implements Property {
     }
 
     @Override
-    public void adjust(Mechanism mechanism) {
+    public ElementTag getPropertyValue() {
+        return new ElementTag(getLeaves().isPersistent());
+    }
 
-        // <--[mechanism]
-        // @object MaterialTag
-        // @name persistent
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets leaves blocks to ignore decay, or to obey it.
-        // @tags
-        // <MaterialTag.persistent>
-        // -->
-        if (mechanism.matches("persistent") && mechanism.requireBoolean()) {
-            getLeaves().setPersistent(mechanism.getValue().asBoolean());
-        }
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        getLeaves().setPersistent(value.asBoolean());
+    }
+
+    public static void register() {
+        autoRegister("persistent", MaterialPersistent.class, ElementTag.class, true);
+    }
+
+    public Leaves getLeaves() {
+        return (Leaves) material.getModernData();
     }
 }
