@@ -11,6 +11,14 @@ import org.bukkit.entity.EnderCrystal;
 
 public class EntityBeamTarget implements Property {
 
+    // <--[property]
+    // @object EntityTag
+    // @name beam_target
+    // @input LocationTag
+    // @description
+    // Controls the target location of the ender crystal's beam, if any.
+    // -->
+
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
                 && ((EntityTag) entity).getBukkitEntity() instanceof EnderCrystal;
@@ -22,6 +30,18 @@ public class EntityBeamTarget implements Property {
         }
         else {
             return new EntityBeamTarget((EntityTag) entity);
+        }
+    }
+
+    @Override
+    public void setPropertyValue(LocationTag value, Mechanism mechanism) {
+        if (mechanism.hasValue()) {
+            if (mechanism.requireObject(LocationTag.class)) {
+                getCrystal().setBeamTarget(mechanism.valueAsType(LocationTag.class));
+            }
+        }
+        else {
+            getCrystal().setBeamTarget(null);
         }
     }
 
@@ -51,46 +71,10 @@ public class EntityBeamTarget implements Property {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.beam_target>
-        // @returns LocationTag
-        // @mechanism EntityTag.beam_target
-        // @group properties
-        // @description
-        // Returns the target location of the ender crystal's beam, if any.
-        // -->
-        PropertyParser.registerTag(EntityBeamTarget.class, LocationTag.class, "beam_target", (attribute, object) -> {
-            Location beamTarget = object.getCrystal().getBeamTarget();
-            if (beamTarget != null) {
-                return new LocationTag(beamTarget);
-            }
-            return null;
-        });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name beam_target
-        // @input LocationTag
-        // @description
-        // Sets a new target location for the ender crystal's beam.
-        // Provide no input to remove the beam.
-        // @tags
-        // <EntityTag.beam_target>
-        // -->
-        if (mechanism.matches("beam_target")) {
-            if (mechanism.hasValue()) {
-                if (mechanism.requireObject(LocationTag.class)) {
-                    getCrystal().setBeamTarget(mechanism.valueAsType(LocationTag.class));
-                }
-            }
-            else {
-                getCrystal().setBeamTarget(null);
-            }
+        autoRegister("beam_target", EntityBeamTarget.class, LocationTag.class, false)
+        if (beamTarget != null) {
+            return new LocationTag(beamTarget);
         }
+        return null;
     }
 }
