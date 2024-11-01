@@ -29,9 +29,6 @@ public class KickCommand extends AbstractCommand {
     // Kick a player or a list of players from the server and optionally specify a reason.
     // If no reason is specified it defaults to "Kicked."
     //
-    // @Tags
-    // None
-    //
     // @Usage
     // Use to kick the player with the default reason.
     // - kick <player>
