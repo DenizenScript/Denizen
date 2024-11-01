@@ -64,6 +64,6 @@ public class EntityArmorBonus implements Property {
     }
 
     public static void register() {
-        autoRegister("armor_bonus", EntityArmorBonus.class, ElementTag.class, false)
+        autoRegister("armor_bonus", EntityArmorBonus.class, ElementTag.class, false);
     }
 }
