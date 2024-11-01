@@ -54,7 +54,7 @@ public class EntityAngry implements Property {
     EntityTag entity;
 
     @Override
-    public void setPropertyValue(Boolean param, Mechanism mechanism) {
+    public void setPropertyValue(ElementTag param, Mechanism mechanism) {
         
         if (isWolf()) {
             getWolf().setAngry(mechanism.getValue().asBoolean());
