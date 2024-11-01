@@ -43,6 +43,11 @@ public class EntityArms implements Property {
     EntityTag dentity;
 
     @Override
+    public void setPropertyValue(ElementTag param, Mechanism mechanism) {
+        getStand().setArms(mechanism.getValue().asBoolean());
+    }
+
+    @Override
     public String getPropertyString() {
         return getStand().hasArms() ? "true" : null;
     }
@@ -58,13 +63,5 @@ public class EntityArms implements Property {
 
     public static void register() {
         autoRegister("arms", EntityArms.class, ElementTag.class, false)
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        if (mechanism.matches("arms") && mechanism.requireBoolean()) {
-            getStand().setArms(mechanism.getValue().asBoolean());
-        }
     }
 }
