@@ -62,8 +62,6 @@ public class EntityCanJoinRaid implements Property {
     }
 
     public static void register() {
-        PropertyParser.registerTag(EntityCanJoinRaid.class, ElementTag.class, "can_join_raid", (attribute, object) -> {
-            return new ElementTag(object.getRaider().isCanJoinRaid());
-        });
+        autoRegister("can_join_raid", EntityCanJoinRaid.class, ElementTag.class, false);
     }
 }
