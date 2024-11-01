@@ -62,6 +62,6 @@ public class EntityChestCarrier implements Property {
     }
 
     public static void register() {
-        autoRegister("carries_chest", EntityChestCarrier.class, ElementTag.class, false)
+        autoRegister("carries_chest", EntityChestCarrier.class, ElementTag.class, false);
     }
 }
