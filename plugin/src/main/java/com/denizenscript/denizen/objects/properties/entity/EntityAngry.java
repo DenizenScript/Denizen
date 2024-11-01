@@ -54,6 +54,21 @@ public class EntityAngry implements Property {
     EntityTag entity;
 
     @Override
+    public void adjust(Mechanism mechanism) {
+
+        if (mechanism.matches("angry") && mechanism.requireBoolean()) {
+            if (isWolf()) {
+                getWolf().setAngry(mechanism.getValue().asBoolean());
+            }
+            else if (isPigZombie()) {
+                getPigZombie().setAngry(mechanism.getValue().asBoolean());
+            }
+            else if (isVindicator()) {
+                getVindicator().setJohnny(mechanism.getValue().asBoolean());
+            }
+        }
+    }
+    @Override
     public String getPropertyString() {
         if (isWolf()) {
             return getWolf().isAngry() ? "true" : null;
@@ -73,19 +88,7 @@ public class EntityAngry implements Property {
     }
 
     public static void register() {
-    
-        PropertyParser.registerTag(EntityAngry.class, ElementTag.class, "angry", (attribute, entity) -> {
-            if (entity.isWolf()) {
-                return new ElementTag(entity.getWolf().isAngry());
-            }
-            else if (entity.isPigZombie()) {
-                return new ElementTag(entity.getPigZombie().isAngry());
-            }
-            else if (entity.isVindicator()) {
-                return new ElementTag(entity.getVindicator().isJohnny());
-            }
-            return null;
-        });
+        autoRegister("angry", EntityAngry.class, ElementTag.class, false)
     }
 
     public boolean isWolf() {
@@ -110,21 +113,5 @@ public class EntityAngry implements Property {
 
     public Vindicator getVindicator() {
         return (Vindicator) entity.getBukkitEntity();
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        if (mechanism.matches("angry") && mechanism.requireBoolean()) {
-            if (isWolf()) {
-                getWolf().setAngry(mechanism.getValue().asBoolean());
-            }
-            else if (isPigZombie()) {
-                getPigZombie().setAngry(mechanism.getValue().asBoolean());
-            }
-            else if (isVindicator()) {
-                getVindicator().setJohnny(mechanism.getValue().asBoolean());
-            }
-        }
     }
 }
