@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtens
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizen.utilities.entity.AreaEffectCloudHelper;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.objects.EntityTag;
