@@ -95,8 +95,6 @@ public class EntityBoundingBox implements Property {
     }
 
     public static void register() {
-        PropertyParser.registerTag(EntityBoundingBox.class, ListTag.class, "bounding_box", (attribute, object) -> {
-            return object.getBoundingBox();
-        });
+        autoRegister("bounding_box", EntityBoundingBox.class, ListTag.class, false);
     }
 }
