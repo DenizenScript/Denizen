@@ -62,6 +62,6 @@ public class EntityBasePlate implements Property {
     }
 
     public static void register() {
-        autoRegister("base_plate", EntityBasePlate.class, ElementTag.class, false)
+        autoRegister("base_plate", EntityBasePlate.class, ElementTag.class, false);
     }
 }
