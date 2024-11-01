@@ -1,6 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtens
 import com.denizenscript.denizen.utilities.entity.AreaEffectCloudHelper;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -122,13 +122,12 @@ public class EntityAreaEffectCloud implements Property {
                     .getObjectAttribute(attribute);
         }
 
-        // <--[tag]
-        // @attribute <EntityTag.particle>
-        // @returns ElementTag
-        // @mechanism EntityTag.particle
-        // @group properties
+        // <--[property]
+        // @object EntityTag
+        // @name particle
+        // @input ElementTag
         // @description
-        // Returns the Area Effect Cloud's particle.
+        // Controls the Area Effect Cloud's particle.
         // -->
         if (attribute.startsWith("particle")) {
             attribute = attribute.fulfill(1);
@@ -148,13 +147,12 @@ public class EntityAreaEffectCloud implements Property {
                     .getObjectAttribute(attribute);
         }
 
-        // <--[tag]
-        // @attribute <EntityTag.duration>
-        // @returns DurationTag
-        // @mechanism EntityTag.duration
-        // @group properties
+        // <--[property]
+        // @object EntityTag
+        // @name duration
+        // @input DurationTag
         // @description
-        // Returns the Area Effect Cloud's duration.
+        // Controls the Area Effect Cloud's duration.
         // -->
         if (attribute.startsWith("duration")) {
             attribute = attribute.fulfill(1);
@@ -175,13 +173,12 @@ public class EntityAreaEffectCloud implements Property {
                     .getObjectAttribute(attribute);
         }
 
-        // <--[tag]
-        // @attribute <EntityTag.radius>
-        // @returns ElementTag(Decimal)
-        // @mechanism EntityTag.radius
-        // @group properties
+        // <--[property]
+        // @object EntityTag
+        // @name radius
+        // @input ElementTag(Decimal)
         // @description
-        // Returns the Area Effect Cloud's radius.
+        // Controls the Area Effect Cloud's radius.
         // -->
         if (attribute.startsWith("radius")) {
             attribute = attribute.fulfill(1);
@@ -215,13 +212,12 @@ public class EntityAreaEffectCloud implements Property {
                     .getObjectAttribute(attribute);
         }
 
-        // <--[tag]
-        // @attribute <EntityTag.reapplication_delay>
-        // @returns DurationTag
-        // @mechanism EntityTag.reapplication_delay
-        // @group properties
+        // <--[property]
+        // @object EntityTag
+        // @name reapplication_delay
+        // @input DurationTag
         // @description
-        // Returns the duration an entity will be immune
+        // Controls the duration an entity will be immune
         // from the Area Effect Cloud's subsequent exposure.
         // -->
         if (attribute.startsWith("reapplication_delay")) {
@@ -229,13 +225,12 @@ public class EntityAreaEffectCloud implements Property {
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <EntityTag.wait_time>
-        // @returns DurationTag
-        // @mechanism EntityTag.wait_time
-        // @group properties
+        // <--[property]
+        // @object EntityTag
+        // @name wait_time
+        // @input DurationTag
         // @description
-        // Returns the duration before the Area Effect Cloud starts applying potion effects.
+        // Controls the duration before the Area Effect Cloud starts applying potion effects.
         // -->
         if (attribute.startsWith("wait_time")) {
             return new DurationTag(getHelper().getWaitTime())
@@ -265,13 +260,12 @@ public class EntityAreaEffectCloud implements Property {
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <EntityTag.source>
-        // @returns EntityTag
-        // @mechanism EntityTag.source
-        // @group properties
+        // <--[property]
+        // @object EntityTag
+        // @name source
+        // @input EntityTag
         // @description
-        // Returns the source of the Area Effect Cloud.
+        // Controls the source of the Area Effect Cloud.
         // -->
         if (attribute.startsWith("source")) {
             ProjectileSource shooter = getHelper().getSource();
@@ -281,14 +275,13 @@ public class EntityAreaEffectCloud implements Property {
             }
         }
 
-        // <--[tag]
-        // @attribute <EntityTag.custom_effects>
-        // @returns ListTag
-        // @mechanism EntityTag.custom_effects
-        // @group properties
+        // <--[property]
+        // @object EntityTag
+        // @name custom_effects
+        // @input ListTag
         // @description
-        // Returns a ListTag of the Area Effect Cloud's custom effects
-        // In the form Type,Amplifier,Duration,Ambient,Particles|...
+        // Controls the Area Effect Cloud's custom effects.
+        // Listed in the form Type,Amplifier,Duration,Ambient,Particles|...
         // -->
         if (attribute.startsWith("custom_effects")) {
             List<PotionEffect> effects = getHelper().getCustomEffects();
@@ -416,16 +409,6 @@ public class EntityAreaEffectCloud implements Property {
             }
         }
 
-        // <--[mechanism]
-        // @object EntityTag
-        // @name custom_effects
-        // @input ListTag
-        // @description
-        // Adds a list of custom potion effects to the Area Effect Cloud
-        // In the form Type,Amplifier,Duration(,Ambient,Particles)|...
-        // @tags
-        // <EntityTag.custom_effects>
-        // -->
         if (mechanism.matches("custom_effects")) {
             ListTag list = mechanism.valueAsType(ListTag.class);
             getHelper().clearEffects();
@@ -505,15 +488,6 @@ public class EntityAreaEffectCloud implements Property {
             }
         }
 
-        // <--[mechanism]
-        // @object EntityTag
-        // @name duration
-        // @input DurationTag
-        // @description
-        // Sets the Area Effect Cloud's duration.
-        // @tags
-        // <EntityTag.duration>
-        // -->
         if (mechanism.matches("duration") && mechanism.requireObject(DurationTag.class)) {
             getHelper().setDuration(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
@@ -532,28 +506,10 @@ public class EntityAreaEffectCloud implements Property {
             getHelper().setDurationOnUse(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
 
-        // <--[mechanism]
-        // @object EntityTag
-        // @name particle
-        // @input ElementTag
-        // @description
-        // Sets the particle of the Area Effect Cloud
-        // @tags
-        // <EntityTag.particle>
-        // -->
         if (mechanism.matches("particle") && mechanism.hasValue()) {
             getHelper().setParticle(mechanism.getValue().asString().toUpperCase());
         }
 
-        // <--[mechanism]
-        // @object EntityTag
-        // @name radius
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the radius of the Area Effect Cloud
-        // @tags
-        // <EntityTag.radius>
-        // -->
         if (mechanism.matches("radius") && mechanism.requireFloat()) {
             getHelper().setRadius(mechanism.getValue().asFloat());
         }
@@ -586,42 +542,14 @@ public class EntityAreaEffectCloud implements Property {
             getHelper().setRadiusPerTick(mechanism.getValue().asFloat());
         }
 
-        // <--[mechanism]
-        // @object EntityTag
-        // @name reapplication_delay
-        // @input DurationTag
-        // @description
-        // Sets the duration an entity will be immune
-        // from the Area Effect Cloud's subsequent exposure.
-        // @tags
-        // <EntityTag.reapplication_delay>
-        // -->
         if (mechanism.matches("reapplication_delay") && mechanism.requireObject(DurationTag.class)) {
             getHelper().setReappDelay(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name source
-        // @input EntityTag
-        // @description
-        // Sets the source of the Area Effect Cloud
-        // @tags
-        // <EntityTag.source>
-        // -->
+        
         if (mechanism.matches("source") && mechanism.requireObject(EntityTag.class)) {
             getHelper().setSource((ProjectileSource) mechanism.valueAsType(EntityTag.class).getBukkitEntity());
         }
 
-        // <--[mechanism]
-        // @object EntityTag
-        // @name wait_time
-        // @input DurationTag
-        // @description
-        // Sets the duration before the Area Effect Cloud starts applying potion effects.
-        // @tags
-        // <EntityTag.wait_time>
-        // -->
         if (mechanism.matches("wait_time") && mechanism.requireObject(DurationTag.class)) {
             getHelper().setWaitTime(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
         }
