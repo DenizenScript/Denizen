@@ -10,6 +10,14 @@ import org.bukkit.entity.Raider;
 
 public class EntityCanJoinRaid implements Property {
 
+    // <--[property]
+    // @object EntityTag
+    // @name can_join_raid
+    // @input ElementTag(Boolean)
+    // @description
+    // If the entity is raider mob (like a pillager), controls whether the entity is allowed to join active raids.
+    // -->
+
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
                 && ((EntityTag) entity).getBukkitEntity() instanceof Raider;
@@ -35,6 +43,11 @@ public class EntityCanJoinRaid implements Property {
     EntityTag entity;
 
     @Override
+    public void setPropertyValue(ElementTag param, Mechanism mechanism) {
+        getRaider().setCanJoinRaid(mechanism.getValue().asBoolean());
+    }
+
+    @Override
     public String getPropertyString() {
         return getRaider().isCanJoinRaid() ? "true" : "false";
     }
@@ -49,34 +62,8 @@ public class EntityCanJoinRaid implements Property {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.can_join_raid>
-        // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.can_join_raid
-        // @group properties
-        // @description
-        // If the entity is raider mob (like a pillager), returns whether the entity is allowed to join active raids.
-        // -->
         PropertyParser.registerTag(EntityCanJoinRaid.class, ElementTag.class, "can_join_raid", (attribute, object) -> {
             return new ElementTag(object.getRaider().isCanJoinRaid());
         });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name can_join_raid
-        // @input ElementTag(Boolean)
-        // @description
-        // If the entity is raider mob (like a pillager), changes whether the entity is allowed to join active raids.
-        // @tags
-        // <EntityTag.can_join_raid>
-        // -->
-        if (mechanism.matches("can_join_raid") && mechanism.requireBoolean()) {
-            getRaider().setCanJoinRaid(mechanism.getValue().asBoolean());
-        }
     }
 }
