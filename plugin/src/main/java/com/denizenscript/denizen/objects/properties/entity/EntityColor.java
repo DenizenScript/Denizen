@@ -350,8 +350,6 @@ public class EntityColor extends EntityProperty<ElementTag> {
         // If the entity can have a color, returns the list of allowed colors.
         // See also <@link language Entity Color Types>.
         // -->
-        PropertyParser.registerTag(EntityColor.class, ListTag.class, "allowed_colors", (attribute, object) -> {
-            return object.getAllowedColors();
-        });
+        autoRegister("allowed_colors", EntityColor.class, ListTag.class, false);
     }
 }
