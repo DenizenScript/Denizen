@@ -10,6 +10,14 @@ import org.bukkit.entity.ChestedHorse;
 
 public class EntityChestCarrier implements Property {
 
+    // <--[property]
+    // @object EntityTag
+    // @name carries_chest
+    // @input ElementTag(Boolean)
+    // @description
+    // Returns whether a horse-like entity is carrying a chest.
+    // -->
+
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
                 && ((EntityTag) entity).getBukkitEntity() instanceof ChestedHorse;
@@ -35,6 +43,11 @@ public class EntityChestCarrier implements Property {
     EntityTag entity;
 
     @Override
+    public void adjust(Mechanism mechanism) {
+        getChestedHorse().setCarryingChest(mechanism.getValue().asBoolean());
+    }
+
+    @Override
     public String getPropertyString() {
         return String.valueOf(getChestedHorse().isCarryingChest());
     }
@@ -49,34 +62,6 @@ public class EntityChestCarrier implements Property {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.carries_chest>
-        // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.carries_chest
-        // @group properties
-        // @description
-        // Returns whether a horse-like entity is carrying a chest.
-        // -->
-        PropertyParser.registerTag(EntityChestCarrier.class, ElementTag.class, "carries_chest", (attribute, object) -> {
-            return new ElementTag(object.getChestedHorse().isCarryingChest());
-        });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name carries_chest
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether a horse-like entity is carrying a chest.
-        // @tags
-        // <EntityTag.carries_chest>
-        // -->
-        if (mechanism.matches("carries_chest") && mechanism.requireBoolean()) {
-            getChestedHorse().setCarryingChest(mechanism.getValue().asBoolean());
-        }
+        autoRegister("carries_chest", EntityChestCarrier.class, ElementTag.class, false)
     }
 }
