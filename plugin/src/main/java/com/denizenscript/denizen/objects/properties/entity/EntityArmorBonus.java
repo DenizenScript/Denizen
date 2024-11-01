@@ -42,6 +42,11 @@ public class EntityArmorBonus implements Property {
     }
 
     EntityTag entity;
+    
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        getAttribute().setBaseValue(mechanism.getValue().asDouble());
+    }
 
     @Override
     public String getPropertyString() {
@@ -59,18 +64,6 @@ public class EntityArmorBonus implements Property {
     }
 
     public static void register() {
-
-        PropertyParser.registerTag(EntityArmorBonus.class, ElementTag.class, "armor_bonus", (attribute, object) -> {
-            return new ElementTag(object.getAttribute().getValue());
-        });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        if (mechanism.matches("armor_bonus") && mechanism.requireDouble()) {
-            getAttribute().setBaseValue(mechanism.getValue().asDouble());
-        }
-
+        autoRegister("armor_bonus", EntityArmorBonus.class, ElementTag.class, false)
     }
 }
