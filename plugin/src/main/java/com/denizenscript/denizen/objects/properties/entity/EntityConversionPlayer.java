@@ -12,6 +12,14 @@ import org.bukkit.entity.ZombieVillager;
 
 public class EntityConversionPlayer implements Property {
 
+    // <--[property]
+    // @object EntityTag
+    // @name conversion_player
+    // @input PlayerTag
+    // @description
+    // Controls which player caused a zombie villager to start converting back to a villager, if any.
+    // -->
+
     public static boolean describes(ObjectTag object) {
         if (!(object instanceof EntityTag)) {
             return false;
@@ -38,6 +46,18 @@ public class EntityConversionPlayer implements Property {
     }
 
     EntityTag entity;
+    
+    @Override
+    public void adjust(Mechanism mechanism) {
+        if (mechanism.hasValue()) {
+            if (mechanism.requireObject(PlayerTag.class)) {
+                getZombieVillager().setConversionPlayer(mechanism.valueAsType(PlayerTag.class).getOfflinePlayer());
+            }
+        }
+        else {
+            getZombieVillager().setConversionPlayer(null);
+        }
+    }
 
     @Override
     public String getPropertyString() {
@@ -54,50 +74,14 @@ public class EntityConversionPlayer implements Property {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.conversion_player>
-        // @returns PlayerTag
-        // @mechanism EntityTag.conversion_player
-        // @group properties
-        // @description
-        // Returns the player that caused a zombie villager to start converting back to a villager, if any.
-        // -->
-        PropertyParser.registerTag(EntityConversionPlayer.class, PlayerTag.class, "conversion_player", (attribute, object) -> {
-            OfflinePlayer player = object.getZombieVillager().getConversionPlayer();
-            if (player != null && player.hasPlayedBefore()) {
-                return new PlayerTag(player);
-            }
-            return null;
-        });
+        autoRegister("conversion_player", EntityConversionPlayer.class, PlayerTag.class, false);
+        if (player != null && player.hasPlayedBefore()) {
+            return new PlayerTag(player);
+        }
+        return null;
     }
 
     public ZombieVillager getZombieVillager() {
         return (ZombieVillager) entity.getBukkitEntity();
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name conversion_player
-        // @input PlayerTag
-        // @description
-        // Sets the player that caused a zombie villager to start converting back to a villager.
-        // Give no input to remove the player ID from the zombie-villager.
-        // @tags
-        // <EntityTag.conversion_player>
-        // -->
-        if (mechanism.matches("conversion_player")) {
-            if (mechanism.hasValue()) {
-                if (mechanism.requireObject(PlayerTag.class)) {
-                    getZombieVillager().setConversionPlayer(mechanism.valueAsType(PlayerTag.class).getOfflinePlayer());
-                }
-            }
-            else {
-                getZombieVillager().setConversionPlayer(null);
-            }
-        }
     }
 }
