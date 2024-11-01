@@ -10,6 +10,14 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.attribute.AttributeInstance;
 
 public class EntityArmorBonus implements Property {
+    
+    // <--[property]
+    // @object EntityTag
+    // @name armor_bonus
+    // @input ElementTag(Decimal)
+    // @description
+    // Controls an entity's base armor bonus.
+    // -->
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
@@ -52,14 +60,6 @@ public class EntityArmorBonus implements Property {
 
     public static void register() {
 
-        // <--[tag]
-        // @attribute <EntityTag.armor_bonus>
-        // @returns ElementTag(Decimal)
-        // @mechanism EntityTag.armor_bonus
-        // @group attributes
-        // @description
-        // Returns the entity's base armor bonus.
-        // -->
         PropertyParser.registerTag(EntityArmorBonus.class, ElementTag.class, "armor_bonus", (attribute, object) -> {
             return new ElementTag(object.getAttribute().getValue());
         });
@@ -68,15 +68,6 @@ public class EntityArmorBonus implements Property {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        // <--[mechanism]
-        // @object EntityTag
-        // @name armor_bonus
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the entity's base armor bonus.
-        // @tags
-        // <EntityTag.armor_bonus>
-        // -->
         if (mechanism.matches("armor_bonus") && mechanism.requireDouble()) {
             getAttribute().setBaseValue(mechanism.getValue().asDouble());
         }
