@@ -56,18 +56,17 @@ public class EntityAnger implements Property {
     @Override
     public void setPropertyValue(DurationTag param, Mechanism mechanism) {
         
-            if (mechanism.getValue().isInt()) { // Soft-deprecated - backwards compatibility, as this used to use a tick count
-                duration = new DurationTag(mechanism.getValue().asLong());
-            }
-            else {
-                duration = mechanism.valueAsType(DurationTag.class);
-            }
-            if (isPigZombie()) {
-                getPigZombie().setAnger(duration.getTicksAsInt());
-            }
-            else {
-                getBee().setAnger(duration.getTicksAsInt());
-            }
+        if (mechanism.getValue().isInt()) { // Soft-deprecated - backwards compatibility, as this used to use a tick count
+            duration = new DurationTag(mechanism.getValue().asLong());
+        }
+        else {
+            duration = mechanism.valueAsType(DurationTag.class);
+        }
+        if (isPigZombie()) {
+            getPigZombie().setAnger(duration.getTicksAsInt());
+        }
+        else {
+            getBee().setAnger(duration.getTicksAsInt());
         }
     }
 
