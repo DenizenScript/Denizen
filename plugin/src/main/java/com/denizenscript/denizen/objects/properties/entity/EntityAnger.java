@@ -12,6 +12,14 @@ import org.bukkit.entity.PigZombie;
 
 public class EntityAnger implements Property {
 
+    // <--[property]
+    // @object EntityTag
+    // @name anger
+    // @input DurationTag
+    // @description
+    // Controls the anger time of a PigZombie or Bee.
+    // -->
+
     public static boolean describes(ObjectTag entity) {
         if (!(entity instanceof EntityTag)) {
             return false;
@@ -72,32 +80,12 @@ public class EntityAnger implements Property {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.anger>
-        // @returns DurationTag
-        // @mechanism EntityTag.anger
-        // @group properties
-        // @description
-        // Returns the remaining anger time of a PigZombie or Bee.
-        // -->
-        PropertyParser.registerTag(EntityAnger.class, DurationTag.class, "anger", (attribute, object) -> {
-            return new DurationTag((long) object.getAnger());
-        });
+        autoRegister("anger", EntityAnger.class, DurationTag.class, false);
     }
 
     @Override
     public void adjust(Mechanism mechanism) {
 
-        // <--[mechanism]
-        // @object EntityTag
-        // @name anger
-        // @input DurationTag
-        // @description
-        // Changes the remaining anger time of a PigZombie or Bee.
-        // @tags
-        // <EntityTag.anger>
-        // -->
         if (mechanism.matches("anger") && mechanism.requireObject(DurationTag.class)) {
             DurationTag duration;
             if (mechanism.getValue().isInt()) { // Soft-deprecated - backwards compatibility, as this used to use a tick count
