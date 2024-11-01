@@ -251,6 +251,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemSkullskin.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerCount.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerDelay.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(ItemSpawnerEntity.class, ItemTag.class);
+        }
         PropertyParser.registerProperty(ItemSpawnerMaxNearbyEntities.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerPlayerRange.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSpawnerRange.class, ItemTag.class);
