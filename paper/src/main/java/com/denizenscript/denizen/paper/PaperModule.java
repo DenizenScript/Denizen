@@ -35,6 +35,7 @@ public class PaperModule {
         }
         ScriptEvent.registerScriptEvent(BlockPreDispenseScriptEvent.class);
         ScriptEvent.registerScriptEvent(CreeperIgnitesScriptEvent.class);
+        ScriptEvent.registerScriptEvent(DragonEggFormScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityAddToWorldScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityKnocksbackEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(EntityLoadCrossbowScriptEvent.class);
