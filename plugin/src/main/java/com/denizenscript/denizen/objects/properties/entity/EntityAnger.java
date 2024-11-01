@@ -99,5 +99,4 @@ public class EntityAnger implements Property {
     public static void register() {
         autoRegister("anger", EntityAnger.class, DurationTag.class, false);
     }
-
 }
