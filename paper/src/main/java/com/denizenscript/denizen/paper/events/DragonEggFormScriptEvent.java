@@ -29,8 +29,8 @@ public class DragonEggFormScriptEvent extends BukkitScriptEvent implements Liste
     // <context.end_portal_location> returns the LocationTag of the end portal.
     // <context.previously_killed> returns an ElementTag(Boolean) of whether the dragon has been previously killed.
     // <context.respawn_phase> returns an ElementTag of the respawn phase. Valid values can be found at <@link url https://jd.papermc.io/paper/1.21.3/org/bukkit/boss/DragonBattle.RespawnPhase.html>.
-    // <context.healing_crystals> returns a ListTag(EntityTag) of the healing crystals.
-    // <context.respawn_crystals> returns a ListTag(EntityTag) of the respawn crystals.
+    // <context.healing_crystals> returns a ListTag(EntityTag) of the healing end crystals.
+    // <context.respawn_crystals> returns a ListTag(EntityTag) of the respawn end crystals.
     //
     // -->
 
