@@ -54,18 +54,16 @@ public class EntityAngry implements Property {
     EntityTag entity;
 
     @Override
-    public void adjust(Mechanism mechanism) {
-
-        if (mechanism.matches("angry") && mechanism.requireBoolean()) {
-            if (isWolf()) {
-                getWolf().setAngry(mechanism.getValue().asBoolean());
-            }
-            else if (isPigZombie()) {
-                getPigZombie().setAngry(mechanism.getValue().asBoolean());
-            }
-            else if (isVindicator()) {
-                getVindicator().setJohnny(mechanism.getValue().asBoolean());
-            }
+    public void setPropertyValue(Boolean param, Mechanism mechanism) {
+        
+        if (isWolf()) {
+            getWolf().setAngry(mechanism.getValue().asBoolean());
+        }
+        else if (isPigZombie()) {
+            getPigZombie().setAngry(mechanism.getValue().asBoolean());
+        }
+        else if (isVindicator()) {
+            getVindicator().setJohnny(mechanism.getValue().asBoolean());
         }
     }
     @Override
