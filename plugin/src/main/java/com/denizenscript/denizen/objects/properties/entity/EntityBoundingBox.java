@@ -17,6 +17,14 @@ import java.util.UUID;
 
 public class EntityBoundingBox implements Property {
 
+    // <--[property]
+    // @object EntityTag
+    // @name bounding_box
+    // @input ListTag(LocationTag)
+    // @description
+    // Controls the collision bounding box of an entity in the format "<low>|<high>", essentially a cuboid with decimals.
+    // -->
+
     public static boolean describes(ObjectTag object) {
         return object instanceof EntityTag;
     }
@@ -55,6 +63,22 @@ public class EntityBoundingBox implements Property {
     }
 
     @Override
+    public void setPropertyValue(ListTag param, Mechanism mechanism) {
+        if (entity.isCitizensNPC()) {
+            // TODO: Allow editing NPC boxes properly?
+            return;
+        }
+        List<LocationTag> locations = mechanism.valueAsType(ListTag.class).filter(LocationTag.class, mechanism.context);
+        if (locations.size() == 2) {
+            NMSHandler.entityHelper.setBoundingBox(entity.getBukkitEntity(), BoundingBox.of(locations.get(0), locations.get(1)));
+            modifiedBoxes.add(entity.getUUID());
+        }
+        else {
+            mechanism.echoError("Must specify exactly 2 LocationTags in the format '<low>|<high>'!");
+        }
+    }
+
+    @Override
     public String getPropertyString() {
         if (entity.isCitizensNPC()) {
             return null;
@@ -71,45 +95,8 @@ public class EntityBoundingBox implements Property {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.bounding_box>
-        // @returns ListTag(LocationTag)
-        // @mechanism EntityTag.bounding_box
-        // @group properties
-        // @description
-        // Returns the collision bounding box of the entity in the format "<low>|<high>", essentially a cuboid with decimals.
-        // -->
         PropertyParser.registerTag(EntityBoundingBox.class, ListTag.class, "bounding_box", (attribute, object) -> {
             return object.getBoundingBox();
         });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name bounding_box
-        // @input ListTag(LocationTag)
-        // @description
-        // Changes the collision bounding box of the entity in the format "<low>|<high>", essentially a cuboid with decimals.
-        // @tags
-        // <EntityTag.bounding_box>
-        // -->
-        if (mechanism.matches("bounding_box") && mechanism.requireObject(ListTag.class)) {
-            if (entity.isCitizensNPC()) {
-                // TODO: Allow editing NPC boxes properly?
-                return;
-            }
-            List<LocationTag> locations = mechanism.valueAsType(ListTag.class).filter(LocationTag.class, mechanism.context);
-            if (locations.size() == 2) {
-                NMSHandler.entityHelper.setBoundingBox(entity.getBukkitEntity(), BoundingBox.of(locations.get(0), locations.get(1)));
-                modifiedBoxes.add(entity.getUUID());
-            }
-            else {
-                mechanism.echoError("Must specify exactly 2 LocationTags in the format '<low>|<high>'!");
-            }
-        }
     }
 }
