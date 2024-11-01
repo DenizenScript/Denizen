@@ -71,7 +71,7 @@ public class EntityBeamTarget implements Property {
     }
 
     public static void register() {
-        autoRegister("beam_target", EntityBeamTarget.class, LocationTag.class, false)
+        autoRegister("beam_target", EntityBeamTarget.class, LocationTag.class, false);
         if (beamTarget != null) {
             return new LocationTag(beamTarget);
         }
