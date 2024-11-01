@@ -9,6 +9,14 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.ArmorStand;
 
 public class EntityBasePlate implements Property {
+    
+    // <--[property]
+    // @object EntityTag
+    // @name base_plate
+    // @input ElementTag(Boolean)
+    // @description
+    // If the entity is an armor stand, controls its base plate.
+    // -->
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
@@ -22,6 +30,11 @@ public class EntityBasePlate implements Property {
         else {
             return new EntityBasePlate((EntityTag) entity);
         }
+    }
+    
+    @Override
+    public void setPropertyValue(ElementTag param, Mechanism mechanism) {
+        getStand().setBasePlate(mechanism.getValue().asBoolean());
     }
 
     public static final String[] handledMechs = new String[] {
@@ -49,34 +62,6 @@ public class EntityBasePlate implements Property {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.base_plate>
-        // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.base_plate
-        // @group properties
-        // @description
-        // If the entity is an armor stand, returns whether the armor stand has a base plate.
-        // -->
-        PropertyParser.registerTag(EntityBasePlate.class, ElementTag.class, "base_plate", (attribute, object) -> {
-            return new ElementTag(object.getStand().hasBasePlate());
-        });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name base_plate
-        // @input ElementTag(Boolean)
-        // @description
-        // Changes the base plate state of an armor stand.
-        // @tags
-        // <EntityTag.base_plate>
-        // -->
-        if (mechanism.matches("base_plate") && mechanism.requireBoolean()) {
-            getStand().setBasePlate(mechanism.getValue().asBoolean());
-        }
+        autoRegister("base_plate", EntityBasePlate.class, ElementTag.class, false)
     }
 }
