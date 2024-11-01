@@ -86,7 +86,7 @@ public class EntityAngry implements Property {
     }
 
     public static void register() {
-        autoRegister("angry", EntityAngry.class, ElementTag.class, false)
+        autoRegister("angry", EntityAngry.class, ElementTag.class, false);
     }
 
     public boolean isWolf() {
