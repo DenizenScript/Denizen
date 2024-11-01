@@ -9,6 +9,14 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.ArmorStand;
 
 public class EntityArms implements Property {
+    
+    // <--[property]
+    // @object EntityTag
+    // @name arms
+    // @input ElementTag(Boolean)
+    // @description
+    // If the entity is an armor stand, controls its arms.
+    // -->
 
     public static boolean describes(ObjectTag entity) {
         return entity instanceof EntityTag
@@ -49,32 +57,12 @@ public class EntityArms implements Property {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.arms>
-        // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.arms
-        // @group properties
-        // @description
-        // If the entity is an armor stand, returns whether the armor stand has arms.
-        // -->
-        PropertyParser.registerTag(EntityArms.class, ElementTag.class, "arms", (attribute, object) -> {
-            return new ElementTag(object.getStand().hasArms());
-        });
+        autoRegister("arms", EntityArms.class, ElementTag.class, false)
     }
 
     @Override
     public void adjust(Mechanism mechanism) {
 
-        // <--[mechanism]
-        // @object EntityTag
-        // @name arms
-        // @input ElementTag(Boolean)
-        // @description
-        // Changes the arms state of an armor stand.
-        // @tags
-        // <EntityTag.arms>
-        // -->
         if (mechanism.matches("arms") && mechanism.requireBoolean()) {
             getStand().setArms(mechanism.getValue().asBoolean());
         }
