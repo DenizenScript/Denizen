@@ -62,6 +62,6 @@ public class EntityArms implements Property {
     }
 
     public static void register() {
-        autoRegister("arms", EntityArms.class, ElementTag.class, false)
+        autoRegister("arms", EntityArms.class, ElementTag.class, false);
     }
 }
