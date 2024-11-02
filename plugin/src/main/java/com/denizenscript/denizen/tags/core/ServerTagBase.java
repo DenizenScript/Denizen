@@ -731,14 +731,14 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @attribute <server.biome_types>
         // @returns ListTag(BiomeTag)
         // @description
-        // Returns a list of all biomes known to the server.
+        // Returns a list of all biomes known to the server, including custom added ones.
         // Generally used with <@link objecttype BiomeTag>.
-        // This is based on Bukkit Biome enum, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>.
+        // See <@link url https://minecraft.wiki/w/Biome#List_of_biomes> for a list of all default (vanilla) biomes.
         // -->
         tagProcessor.registerStaticTag(ListTag.class, "biome_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
             ListTag biomes = new ListTag();
-            for (Biome biome : Biome.values()) {
+            for (Biome biome : Registry.BIOME) {
                 BiomeTag biomeTag = new BiomeTag(biome);
                 if (biomeTag.getBiome() != null) {
                     biomes.addObject(biomeTag);

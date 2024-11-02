@@ -9,6 +9,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -59,7 +60,7 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         if (!super.couldMatch(path)) {
             return false;
         }
-        if (!path.eventArgLowerAt(2).equals("biome") && !couldMatchEnum(path.eventArgLowerAt(2), Biome.values())) {
+        if (!path.eventArgLowerAt(2).equals("biome") && !couldMatchRegistry(path.eventArgLowerAt(2), Registry.BIOME)) {
             return false;
         }
         return true;
