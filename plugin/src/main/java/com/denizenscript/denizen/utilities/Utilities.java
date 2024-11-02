@@ -553,8 +553,9 @@ public class Utilities {
         return new ListTag(Arrays.asList(((Class<? extends Enum<?>>) type).getEnumConstants()), ElementTag::new);
     }
 
-    public static ListTag listLegacyTypes(Class<?> type) {
-        return new ListTag(Arrays.asList(type.getEnumConstants()), val -> new ElementTag(val.toString(), true));
+    public static ListTag listLegacyTypes(Class<? extends Keyed> type) {
+        List<?> types = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) ? Bukkit.getRegistry(type).stream().toList() : Arrays.asList(type.getEnumConstants());
+        return new ListTag(types, Utilities::enumLikeToLegacyElement);
     }
 
     public static ElementTag enumlikeToElement(Object val) {
