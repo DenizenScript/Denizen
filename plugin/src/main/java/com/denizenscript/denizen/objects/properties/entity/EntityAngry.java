@@ -15,6 +15,15 @@ import org.bukkit.entity.Wolf;
 
 public class EntityAngry implements Property {
 
+    // <--[property]
+    // @object EntityTag
+    // @name angry
+    // @input ElementTag(Boolean)
+    // @description
+    // If the entity is a Wolf or PigZombie, controls the entity's anger mode.
+    // If the entity is a Vindicator, controls it in "Johnny" mode.
+    // -->
+
     public static boolean describes(ObjectTag object) {
         if (!(object instanceof EntityTag)) {
             return false;
@@ -45,6 +54,19 @@ public class EntityAngry implements Property {
     EntityTag entity;
 
     @Override
+    public void setPropertyValue(ElementTag param, Mechanism mechanism) {
+        
+        if (isWolf()) {
+            getWolf().setAngry(mechanism.getValue().asBoolean());
+        }
+        else if (isPigZombie()) {
+            getPigZombie().setAngry(mechanism.getValue().asBoolean());
+        }
+        else if (isVindicator()) {
+            getVindicator().setJohnny(mechanism.getValue().asBoolean());
+        }
+    }
+    @Override
     public String getPropertyString() {
         if (isWolf()) {
             return getWolf().isAngry() ? "true" : null;
@@ -64,28 +86,7 @@ public class EntityAngry implements Property {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.angry>
-        // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.angry
-        // @group properties
-        // @description
-        // If the entity is a wolf or PigZombie, returns whether the entity is angry.
-        // If the entity is a Vindicator, returns whether it is in "Johnny" mode.
-        // -->
-        PropertyParser.registerTag(EntityAngry.class, ElementTag.class, "angry", (attribute, entity) -> {
-            if (entity.isWolf()) {
-                return new ElementTag(entity.getWolf().isAngry());
-            }
-            else if (entity.isPigZombie()) {
-                return new ElementTag(entity.getPigZombie().isAngry());
-            }
-            else if (entity.isVindicator()) {
-                return new ElementTag(entity.getVindicator().isJohnny());
-            }
-            return null;
-        });
+        autoRegister("angry", EntityAngry.class, ElementTag.class, false);
     }
 
     public boolean isWolf() {
@@ -110,31 +111,5 @@ public class EntityAngry implements Property {
 
     public Vindicator getVindicator() {
         return (Vindicator) entity.getBukkitEntity();
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name angry
-        // @input ElementTag(Boolean)
-        // @description
-        // If the entity is wolf or PigZombie, sets whether the entity is angry.
-        // If the entity is a Vindicator, returns whether it is in "Johnny" mode.
-        // @tags
-        // <EntityTag.angry>
-        // -->
-        if (mechanism.matches("angry") && mechanism.requireBoolean()) {
-            if (isWolf()) {
-                getWolf().setAngry(mechanism.getValue().asBoolean());
-            }
-            else if (isPigZombie()) {
-                getPigZombie().setAngry(mechanism.getValue().asBoolean());
-            }
-            else if (isVindicator()) {
-                getVindicator().setJohnny(mechanism.getValue().asBoolean());
-            }
-        }
     }
 }
