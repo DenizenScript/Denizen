@@ -578,7 +578,7 @@ public class Utilities {
         throw new UnsupportedOperationException("Cannot get legacy name element, value isn't an enum: " + val);
     }
 
-    // TODO: need proper input backsupport, see discord://discord.com/channels/315163488085475337/1011496047811506227/1301272242386370580
+    // TODO: need proper input backsupport, see https://discord.com/channels/315163488085475337/1011496047811506227/1301272242386370580
     public static <T> T elementToEnumlike(ElementTag element, Class<T> type) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
             return (T) Bukkit.getRegistry((Class<? extends Keyed>) type).get(parseNamespacedKey(element.asString()));

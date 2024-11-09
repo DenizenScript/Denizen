@@ -164,14 +164,16 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public static boolean couldMatchRegistry(String text, Registry<?> registry) {
-        String textLower = CoreUtilities.toLowerCase(text);
-        MatchHelper matcher = isAdvancedMatchable(text) ? createMatcher(text) : null;
-        for (Keyed value : registry) {
-            String valueKey = Utilities.namespacedKeyToString(value.getKey());
-            if (matcher != null && matcher.doesMatch(valueKey)) {
+        if (!isAdvancedMatchable(text)) {
+            if (registry.get(Utilities.parseNamespacedKey(text)) != null) {
                 return true;
             }
-            if (matcher == null && textLower.equals(valueKey)) {
+            addPossibleCouldMatchFailReason("Does not match required registry", text);
+            return false;
+        }
+        MatchHelper matcher = createMatcher(text);
+        for (Keyed value : registry) {
+            if (matcher.doesMatch(Utilities.namespacedKeyToString(value.getKey()))) {
                 return true;
             }
         }
