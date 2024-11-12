@@ -16,11 +16,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ItemRawComponents extends ItemProperty<MapTag> {
+public class ItemComponentsPatch extends ItemProperty<MapTag> {
 
     // <--[property]
     // @object ItemTag
-    // @name raw_components
+    // @name components_patch
     // @input MapTag
     // @description
     // Controls the item's internal component patch. That is, the changes in components on top of the item type's default components.
@@ -28,7 +28,7 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
     // This is mainly intended for item data persistence, and scripts should prefer using proper item properties instead of setting raw data directly.
     // If you're trying to read custom data set by other plugins, use <@link property ItemTag.custom_data>.
     // @tag
-    // Note that this is just data that isn't already controlled by other ItemTag properties, see <@link tag ItemTag.all_raw_components> for the complete component patch.
+    // Note that this is just data that isn't already controlled by other ItemTag properties, see <@link tag ItemTag.full_components_patch> for the complete component patch.
     // @warning
     // Due to this being a direct representation of internal data, compatibility for script usage across versions is not guaranteed.
     // -->
@@ -60,7 +60,7 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
 
     @Override
     public MapTag getPropertyValue() {
-        MapTag rawComponents = NMSHandler.itemHelper.getRawComponents(getItemStack(), true);
+        MapTag rawComponents = NMSHandler.itemHelper.getRawComponentsPatch(getItemStack(), true);
         ENTITY_DATA_REMOVER.removeFrom(rawComponents);
         BLOCK_ENTITY_DATA_REMOVER.removeFrom(rawComponents);
         rawComponents.map.computeIfPresent(INSTRUMENT_COMPONENT, (key, value) -> value instanceof ElementTag ? null : value);
@@ -90,27 +90,27 @@ public class ItemRawComponents extends ItemProperty<MapTag> {
             dataVersion = dataVersionInput.asInt();
             value.remove(DATA_VERSION_KEY);
         }
-        setItemStack(NMSHandler.itemHelper.setRawComponents(getItemStack(), value, dataVersion, mechanism::echoError));
+        setItemStack(NMSHandler.itemHelper.setRawComponentsPatch(getItemStack(), value, dataVersion, mechanism::echoError));
     }
 
     @Override
     public String getPropertyId() {
-        return "raw_components";
+        return "components_patch";
     }
 
     public static void register() {
-        autoRegister("raw_components", ItemRawComponents.class, MapTag.class, false);
+        autoRegister("components_patch", ItemComponentsPatch.class, MapTag.class, false);
 
         // <--[tag]
-        // @attribute <ItemTag.all_raw_components>
+        // @attribute <ItemTag.full_components_patch>
         // @returns MapTag
         // @description
-        // Returns the item's entire internal component patch (see <@link tag ItemTag.raw_components>).
+        // Returns the item's entire internal component patch (see <@link tag ItemTag.components_patch>).
         // @warning
         // Due to this being a direct representation of internal data, compatibility for script usage across versions is not guaranteed.
         // -->
-        PropertyParser.registerTag(ItemRawComponents.class, MapTag.class, "all_raw_components", (attribute, property) -> {
-            return NMSHandler.itemHelper.getRawComponents(property.getItemStack(), false);
+        PropertyParser.registerTag(ItemComponentsPatch.class, MapTag.class, "full_components_patch", (attribute, property) -> {
+            return NMSHandler.itemHelper.getRawComponentsPatch(property.getItemStack(), false);
         });
     }
 

@@ -10,7 +10,7 @@ import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_21.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.properties.item.ItemRawComponents;
+import com.denizenscript.denizen.objects.properties.item.ItemComponentsPatch;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
@@ -318,13 +318,13 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public MapTag getRawComponents(ItemStack item, boolean excludeHandled) {
+    public MapTag getRawComponentsPatch(ItemStack item, boolean excludeHandled) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
         DataComponentPatch patch = nmsItemStack.getComponentsPatch();
         if (excludeHandled) {
             patch = patch.forget(componentType -> {
                 ResourceLocation componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
-                return ItemRawComponents.propertyHandledComponents.contains(componentId.toString());
+                return ItemComponentsPatch.propertyHandledComponents.contains(componentId.toString());
             });
         }
         if (patch.isEmpty()) {
@@ -333,12 +333,12 @@ public class ItemHelperImpl extends ItemHelper {
         RegistryOps<net.minecraft.nbt.Tag> registryOps = CraftRegistry.getMinecraftRegistry().createSerializationContext(NbtOps.INSTANCE);
         net.minecraft.nbt.CompoundTag nmsPatch = (net.minecraft.nbt.CompoundTag) DataComponentPatch.CODEC.encodeStart(registryOps, patch).getOrThrow();
         MapTag rawComponents = (MapTag) ItemRawNBT.jnbtTagToObject(CompoundTagImpl.fromNMSTag(nmsPatch));
-        rawComponents.putObject(ItemRawComponents.DATA_VERSION_KEY, new ElementTag(CraftMagicNumbers.INSTANCE.getDataVersion()));
+        rawComponents.putObject(ItemComponentsPatch.DATA_VERSION_KEY, new ElementTag(CraftMagicNumbers.INSTANCE.getDataVersion()));
         return rawComponents;
     }
 
     @Override
-    public ItemStack setRawComponents(ItemStack item, MapTag rawComponentsMap, int dataVersion, Consumer<String> errorHandler) {
+    public ItemStack setRawComponentsPatch(ItemStack item, MapTag rawComponentsMap, int dataVersion, Consumer<String> errorHandler) {
         int currentDataVersion = CraftMagicNumbers.INSTANCE.getDataVersion();
         Tag rawComponents = ItemRawNBT.convertObjectToNbt(rawComponentsMap.identify(), CoreUtilities.errorButNoDebugContext, "");
         net.minecraft.nbt.CompoundTag nmsRawComponents = ((CompoundTagImpl) rawComponents).toNMSTag();

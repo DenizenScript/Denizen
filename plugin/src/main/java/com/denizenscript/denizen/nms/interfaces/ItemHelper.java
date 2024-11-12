@@ -108,11 +108,11 @@ public abstract class ItemHelper {
         return CustomNBT.setNBTMaterials(item, CustomNBT.KEY_CAN_DESTROY, canBreak);
     }
 
-    public MapTag getRawComponents(ItemStack item, boolean excludeHandled) {
+    public MapTag getRawComponentsPatch(ItemStack item, boolean excludeHandled) {
         throw new UnsupportedOperationException();
     }
 
-    public ItemStack setRawComponents(ItemStack item, MapTag rawComponentsMap, int dataVersion, Consumer<String> errorHandler) {
+    public ItemStack setRawComponentsPatch(ItemStack item, MapTag rawComponentsMap, int dataVersion, Consumer<String> errorHandler) {
         throw new UnsupportedOperationException();
     }
 
