@@ -26,7 +26,7 @@ public class ItemComponentsPatch extends ItemProperty<MapTag> {
     // Controls the item's internal component patch. That is, the changes in components on top of the item type's default components.
     // The map is in <@link language Raw NBT Encoding> format.
     // This is mainly intended for item data persistence, and scripts should prefer using proper item properties instead of setting raw data directly.
-    // If you're trying to read custom data set by other plugins, use <@link property ItemTag.custom_data>.
+    // If you're trying to control custom data (such as data set by other plugins), use <@link property ItemTag.custom_data>.
     // @tag
     // Note that this is just data that isn't already controlled by other ItemTag properties, see <@link tag ItemTag.full_components_patch> for the complete component patch.
     // @warning
@@ -61,6 +61,9 @@ public class ItemComponentsPatch extends ItemProperty<MapTag> {
     @Override
     public MapTag getPropertyValue() {
         MapTag rawComponents = NMSHandler.itemHelper.getRawComponentsPatch(getItemStack(), true);
+        if (rawComponents.isEmpty()) {
+            return rawComponents;
+        }
         ENTITY_DATA_REMOVER.removeFrom(rawComponents);
         BLOCK_ENTITY_DATA_REMOVER.removeFrom(rawComponents);
         rawComponents.map.computeIfPresent(INSTRUMENT_COMPONENT, (key, value) -> value instanceof ElementTag ? null : value);
@@ -139,7 +142,7 @@ public class ItemComponentsPatch extends ItemProperty<MapTag> {
             rawComponents.map.computeIfPresent(propertyId, (key, rawValue) -> {
                 MapTag value = (MapTag) rawValue;
                 Set<StringHolder> toRemove = removalsPerId.get(value.getObject(ID_STRING_HOLDER).toString());
-                if (toRemove != null && value.size() <= toRemove.size() && toRemove.containsAll(value.keySet())) {
+                if (toRemove != null && toRemove.size() >= value.size() && toRemove.containsAll(value.keySet())) {
                     return null;
                 }
                 return rawValue;
