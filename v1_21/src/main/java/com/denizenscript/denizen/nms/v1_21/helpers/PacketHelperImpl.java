@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.v1_21.Handler;
 import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_21.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -45,6 +46,7 @@ import net.minecraft.world.scores.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
@@ -175,7 +177,7 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showSignEditor(Player player, Location location) {
+    public void showSignEditor(Player player, Location location) { // TODO: MC 1.18: once 1.18 is removed, remove 'location' arg
         NetworkInterceptHelper.enable();
         Sign sign = null;
         BlockPos toOpen = null;
@@ -199,6 +201,9 @@ public class PacketHelperImpl implements PacketHelper {
                 front.setLine(line, "");
             }
             player.sendBlockUpdate(sign.getLocation(), sign);
+        }
+        else {
+            player.sendBlockChange(new LocationTag(player.getWorld(), toOpen.getX(), toOpen.getY(), toOpen.getZ()), Material.OAK_WALL_SIGN.createBlockData());
         }
         DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.fakeSignExpected = toOpen;
         send(player, new ClientboundOpenSignEditorPacket(toOpen, true));

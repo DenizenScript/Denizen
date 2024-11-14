@@ -4,16 +4,26 @@ import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.v1_21.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ClientInformation;
+import net.minecraft.server.level.ParticleStatus;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
+import net.minecraft.world.entity.player.ChatVisiblity;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_21_R2.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.HumanEntity;
@@ -55,10 +65,23 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
         }
     }
 
+    public static ServerPlayer fakeNmsPlayer;
+
+    public static ServerPlayer getFakeNmsPlayer() {
+        if (fakeNmsPlayer == null) {
+            MinecraftServer server = ((CraftServer)Bukkit.getServer()).getServer();
+            World world = Bukkit.getWorlds().getFirst();
+            GameProfile fakeProfile = new GameProfile(new UUID(0, 0xABC123), "fakeplayer");
+            ClientInformation fakeClientInfo = new ClientInformation("en", 0, ChatVisiblity.HIDDEN, false, 0, HumanoidArm.LEFT, true, false, ParticleStatus.MINIMAL);
+            fakeNmsPlayer = new ServerPlayer(server, ((CraftWorld) world).getHandle(), fakeProfile, fakeClientInfo);
+        }
+        return fakeNmsPlayer;
+    }
+
     @Override
     public org.bukkit.inventory.PlayerInventory getInventory() {
         if (inventory == null) {
-            net.minecraft.world.entity.player.Inventory newInv = new OfflinePlayerInventory(null);
+            net.minecraft.world.entity.player.Inventory newInv = new OfflinePlayerInventory(getFakeNmsPlayer());
             newInv.load(((CompoundTagImpl) this.compound).toNMSTag().getList("Inventory", 10));
             inventory = new OfflineCraftInventoryPlayer(newInv);
         }

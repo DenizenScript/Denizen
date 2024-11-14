@@ -96,6 +96,8 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void handleSignUpdate(ServerboundSignUpdatePacket packet) {
         if (fakeSignExpected != null && packet.getPos().equals(fakeSignExpected)) {
+            LocationTag loc = new LocationTag(player.getBukkitEntity().getWorld(), fakeSignExpected.getX(), fakeSignExpected.getY(), fakeSignExpected.getZ());
+            this.connection.send(new ClientboundBlockUpdatePacket(player.level(), fakeSignExpected));
             PlayerChangesSignScriptEvent evt = (PlayerChangesSignScriptEvent) PlayerChangesSignScriptEvent.instance.clone();
             evt.material = new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN);
             evt.location = new LocationTag(player.getBukkitEntity().getLocation());

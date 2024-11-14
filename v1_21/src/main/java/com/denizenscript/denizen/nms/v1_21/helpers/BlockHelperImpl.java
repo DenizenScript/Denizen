@@ -99,7 +99,7 @@ public class BlockHelperImpl implements BlockHelper {
     public void setPlayerProfile(Skull skull, PlayerProfile playerProfile) {
         GameProfile gameProfile = ProfileEditorImpl.getGameProfile(playerProfile);
         try {
-            craftSkull_profile.set(skull, gameProfile);
+            craftSkull_profile.set(skull, new ResolvableProfile(gameProfile));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
