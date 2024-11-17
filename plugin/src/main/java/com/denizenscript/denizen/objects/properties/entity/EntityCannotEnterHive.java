@@ -21,7 +21,7 @@ public class EntityCannotEnterHive extends EntityProperty<DurationTag> {
 
     @Override
     public DurationTag getPropertyValue() {
-        return new DurationTag(as(Bee.class).getCannotEnterHiveTicks());
+        return new DurationTag((long) as(Bee.class).getCannotEnterHiveTicks());
     }
 
     @Override

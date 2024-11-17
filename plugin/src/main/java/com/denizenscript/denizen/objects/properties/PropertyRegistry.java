@@ -57,6 +57,7 @@ public class PropertyRegistry {
         }
         PropertyParser.registerProperty(EntityCanBreakDoors.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCanJoinRaid.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityCannotEnterHive.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCharged.class, EntityTag.class);
         PropertyParser.registerProperty(EntityChestCarrier.class, EntityTag.class);
         PropertyParser.registerProperty(EntityColor.class, EntityTag.class);
