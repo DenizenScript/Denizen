@@ -9,6 +9,7 @@ import com.denizenscript.denizen.objects.properties.inventory.*;
 import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.objects.properties.trade.*;
+import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class PropertyRegistry {
@@ -43,6 +44,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityAttributeModifiers.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArmorPose.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArms.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityAwake.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAware.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityBackgroundColor.class, EntityTag.class);
