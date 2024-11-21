@@ -9,7 +9,6 @@ import com.denizenscript.denizen.objects.properties.inventory.*;
 import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.objects.properties.trade.*;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 
 public class PropertyRegistry {
