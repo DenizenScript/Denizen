@@ -242,7 +242,12 @@ public class EntityColor extends EntityProperty<ElementTag> {
             case SHEEP -> as(Sheep.class).getColor().name();
             case WOLF -> {
                 Wolf wolf = as(Wolf.class);
-                yield wolf.getVariant() + "|" + wolf.getCollarColor().name();
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                    yield wolf.getVariant() + "|" + wolf.getCollarColor().name();
+                }
+                else { // TODO: Remove once 1.20 is the minimum
+                    yield wolf.getCollarColor().name();
+                }
             }
             case OCELOT -> {
                 if (includeDeprecated) {
