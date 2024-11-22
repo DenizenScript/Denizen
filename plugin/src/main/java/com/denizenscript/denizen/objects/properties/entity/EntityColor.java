@@ -92,8 +92,8 @@ public class EntityColor extends EntityProperty<ElementTag> {
         else if (type == EntityType.SHEEP && mechanism.requireEnum(DyeColor.class)) {
             as(Sheep.class).setColor(color.asEnum(DyeColor.class));
         }
-        else if (type == EntityType.WOLF && mechanism.requireObject(ListTag.class)) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) { // TODO: Remove when 1.20 is the minimum
+        else if (type == EntityType.WOLF) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && mechanism.requireObject(ListTag.class)) { // TODO: Remove when 1.20 is the minimum
                 Wolf wolf = as(Wolf.class);
                 ListTag list = mechanism.valueAsType(ListTag.class);
                 ElementTag input = list.getObject(0).asElement();
@@ -113,7 +113,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                         mechanism.echoError("Invalid color specified: " + collarColor);
                     }
                 }
-            else {
+            else if (mechanism.requireEnum(DyeColor.class)) {
                 as(Wolf.class).setCollarColor(color.asEnum(DyeColor.class));
                 }
             }
@@ -244,7 +244,10 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 yield horse.getColor().name() + "|" + horse.getStyle().name();
             }
             case SHEEP -> as(Sheep.class).getColor().name();
-            case WOLF -> as(Wolf.class).getCollarColor().name();
+            case WOLF -> {
+                Wolf wolf = as(Wolf.class);
+                yield wolf.getVariant() + "|" + wolf.getCollarColor().name();
+            }
             case OCELOT -> {
                 if (includeDeprecated) {
                     yield as(Ocelot.class).getCatType().name();
@@ -303,7 +306,8 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 horseColors.addAll(Utilities.listTypes(Horse.Style.class));
                 yield horseColors;
             }
-            case SHEEP, WOLF, SHULKER -> Utilities.listTypes(DyeColor.class);
+            case WOLF -> Utilities.listTypes(Wolf.Variant.class);
+            case SHEEP, SHULKER -> Utilities.listTypes(DyeColor.class);
             case RABBIT -> Utilities.listTypes(Rabbit.Type.class);
             case LLAMA, TRADER_LLAMA -> Utilities.listTypes(Llama.Color.class);
             case PARROT -> Utilities.listTypes(Parrot.Variant.class);
