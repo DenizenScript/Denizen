@@ -154,32 +154,39 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         return getMapTagData(false);
     }
 
+    private boolean applyBasePotionData(PotionMeta potionMeta, List<ObjectTag> input, Mechanism mechanism) {
+        ObjectTag firstObj = input.remove(0);
+        if (!firstObj.canBeType(MapTag.class)) {
+            return applyLegacyStringBasePotionData(firstObj.toString(), potionMeta, mechanism);
+        }
+        MapTag baseEffect = firstObj.asType(MapTag.class, mechanism.context);
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) || baseEffect.containsKey("type")) {
+            return applyLegacyMapBasePotionData(baseEffect, potionMeta, mechanism);
+        }
+        ElementTag baseTypeElement = baseEffect.getElement("base_type");
+        if (baseTypeElement == null) {
+            mechanism.echoError("Must specify a base potion type.");
+            return true;
+        }
+        PotionType baseType = Registry.POTION.get(Utilities.parseNamespacedKey(baseTypeElement.asString()));
+        if (baseType == null && baseTypeElement.matchesEnum(PotionType.class)) {
+            baseType = baseTypeElement.asEnum(PotionType.class);
+        }
+        if (baseType == null) {
+            mechanism.echoError("Invalid base potion type '" + baseTypeElement + "' specified: valid base potion type is required.");
+            return true;
+        }
+        potionMeta.setBasePotionType(baseType);
+        return false;
+    }
+
     @Override
     public void setPropertyValue(ObjectTag value, Mechanism mechanism) {
         List<ObjectTag> data = new ArrayList<>(CoreUtilities.objectToList(value, mechanism.context));
         ItemMeta meta = getItemMeta();
         if (meta instanceof PotionMeta potionMeta) {
-            ObjectTag firstObj = data.remove(0);
-            if (firstObj.canBeType(MapTag.class)) {
-                MapTag baseEffect = firstObj.asType(MapTag.class, mechanism.context);
-                if (baseEffect.containsKey("base_type")) {
-                    ElementTag baseTypeElement = baseEffect.getElement("base_type");
-                    PotionType type = Registry.POTION.get(Utilities.parseNamespacedKey(baseTypeElement.asString()));
-                    if (type == null && baseTypeElement.matchesEnum(PotionType.class)) {
-                        type = baseTypeElement.asEnum(PotionType.class);
-                    }
-                    if (type == null) {
-                        mechanism.echoError("Invalid base potion type '" + baseTypeElement + "': valid base potion_type is required");
-                        return;
-                    }
-                    potionMeta.setBasePotionType(type);
-                }
-                else {
-                    applyLegacyMapBasePotionData(baseEffect, potionMeta, mechanism);
-                }
-            }
-            else {
-                applyLegacyStringBasePotionData(firstObj.toString(), potionMeta, mechanism);
+            if (applyBasePotionData(potionMeta, data, mechanism)) {
+                return;
             }
             potionMeta.clearCustomEffects();
         }
@@ -409,15 +416,15 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         });
     }
 
-    private static void applyLegacyMapBasePotionData(MapTag input, PotionMeta potionMeta, Mechanism mechanism) {
+    private static boolean applyLegacyMapBasePotionData(MapTag input, PotionMeta potionMeta, Mechanism mechanism) {
         if (!input.containsKey("type")) {
             mechanism.echoError("Must specify a base potion type.");
-            return;
+            return true;
         }
         ElementTag typeElement = input.getElement("type");
         if (!typeElement.matchesEnum(PotionType.class)) {
             mechanism.echoError("Invalid base potion type '" + typeElement + "': type is required");
-            return;
+            return true;
         }
         PotionType type = PotionType.valueOf(typeElement.asString().toUpperCase());
         boolean upgraded = false;
@@ -451,9 +458,10 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
         }
         applyLegacyBasePotionData(potionMeta, type, upgraded, extended, color, mechanism);
+        return false;
     }
 
-    private static void applyLegacyStringBasePotionData(String input, PotionMeta potionMeta, Mechanism mechanism) {
+    private static boolean applyLegacyStringBasePotionData(String input, PotionMeta potionMeta, Mechanism mechanism) {
         String[] d1 = input.split(",");
         PotionType type;
         try {
@@ -461,7 +469,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         }
         catch (IllegalArgumentException ex) {
             mechanism.echoError("Invalid base potion type '" + d1[0] + "': type is required");
-            return;
+            return true;
         }
         boolean upgraded = CoreUtilities.equalsIgnoreCase(d1[1], "true");
         boolean extended = CoreUtilities.equalsIgnoreCase(d1[2], "true");
@@ -476,6 +484,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
         }
         applyLegacyBasePotionData(potionMeta, type, upgraded, extended, color, mechanism);
+        return false;
     }
 
     private static void applyLegacyBasePotionData(PotionMeta potionMeta, PotionType type, boolean upgraded, boolean extended, ColorTag color, Mechanism mechanism) {
