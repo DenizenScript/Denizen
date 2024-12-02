@@ -346,7 +346,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
     // For rabbits, the types are BROWN, WHITE, BLACK, BLACK_AND_WHITE, GOLD, SALT_AND_PEPPER, or THE_KILLER_BUNNY.
     // For cats (not ocelots), the format is TYPE|COLOR (see below).
     //          The types are TABBY, BLACK, RED, SIAMESE, BRITISH_SHORTHAIR, CALICO, PERSIAN, RAGDOLL, WHITE, JELLIE, and ALL_BLACK.
-    // For wolves on 1.20 and above, the format is VARIANT|COLOR (see below).
+    // For wolves on 1.20 and above, the format is COLOR|VARIANT (see below).
     //          The variants are ASHEN, BLACK, CHESTNUT, PALE, RUSTY, SNOWY, SPOTTED, STRIPED, and WOODS.
     // For wolves on 1.19 and below, the input is a Dye Color.
     // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
