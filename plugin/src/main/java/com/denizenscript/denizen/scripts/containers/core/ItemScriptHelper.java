@@ -58,10 +58,19 @@ public class ItemScriptHelper implements Listener {
         recipeCache.clear();
         recipeIdToItemScript.clear();
         Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
+        ArrayList<NamespacedKey> keys = new ArrayList<>();
         while (recipeIterator.hasNext()) {
             if (recipeIterator.next() instanceof Keyed keyed && keyed.getKey().getNamespace().equals("denizen")) {
-                recipeIterator.remove();
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+                    keys.add(keyed.getKey());
+                }
+                else {
+                    recipeIterator.remove();
+                }
             }
+        }
+        if (!keys.isEmpty()) {
+            NMSHandler.itemHelper.removeRecipes(keys);
         }
         PaperAPITools.instance.clearBrewingRecipes();
     }
@@ -194,7 +203,7 @@ public class ItemScriptHelper implements Listener {
                 NMSHandler.itemHelper.setShapedRecipeIngredient(recipe, itemChars.charAt(i), ingredients.get(i), exacts.get(i));
             }
         }
-        Bukkit.addRecipe(recipe);
+        NMSHandler.itemHelper.registerOtherRecipe(recipe);
     }
 
     public static void registerShapelessRecipe(ItemScriptContainer container, ItemStack item, String shapelessString, String internalId, String group, String category) {
@@ -283,6 +292,7 @@ public class ItemScriptHelper implements Listener {
     }
 
     public static void rebuildRecipes() {
+        NMSHandler.itemHelper.blockRecipeFinalization();
         for (ItemScriptContainer container : item_scripts.values()) {
             try {
                 if (container.contains("recipes", Map.class)) {
@@ -356,6 +366,7 @@ public class ItemScriptHelper implements Listener {
                 Debug.echoError(ex);
             }
         }
+        NMSHandler.itemHelper.restoreRecipeFinalization();
     }
 
     @EventHandler

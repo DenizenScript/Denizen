@@ -10,8 +10,12 @@ import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_21.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.objects.properties.item.ItemComponentsPatch;
+import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -23,6 +27,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -30,10 +35,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.fixes.References;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.AdventureModePredicate;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -42,6 +49,11 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.BlastingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -63,22 +75,21 @@ import org.bukkit.craftbukkit.v1_21_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_21_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_21_R2.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftInventoryPlayer;
-import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftRecipe;
+import org.bukkit.craftbukkit.v1_21_R2.inventory.*;
 import org.bukkit.craftbukkit.v1_21_R2.map.CraftMapView;
 import org.bukkit.craftbukkit.v1_21_R2.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_21_R2.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.SmithingTrimRecipe;
+import org.bukkit.inventory.TransmuteRecipe;
 import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class ItemHelperImpl extends ItemHelper {
@@ -90,6 +101,8 @@ public class ItemHelperImpl extends ItemHelper {
 
     public static final Field Item_components = ReflectionHelper.getFields(Item.class).get(ReflectionMappingsInfo.Item_components, DataComponentMap.class);
 
+    public static final Field RecipeManager_featureFlagSet = ReflectionHelper.getFields(RecipeManager.class).getFirstOfType(FeatureFlagSet.class);
+
     public void setMaxStackSize(Material material, int size) {
         try {
             ReflectionHelper.getFinalSetter(Material.class, "maxStack").invoke(material, size);
@@ -100,6 +113,53 @@ public class ItemHelperImpl extends ItemHelper {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
+    }
+
+    public static RecipeManager getRecipeManager() {
+        return ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager();
+    }
+
+    public Object recipeManagerFeatureFlagSetCache = null;
+
+    @Override
+    public void blockRecipeFinalization() {
+        try {
+            RecipeManager manager = getRecipeManager();
+            Object flags = RecipeManager_featureFlagSet.get(manager);
+            if (flags != null) {
+                recipeManagerFeatureFlagSetCache = flags;
+                RecipeManager_featureFlagSet.set(manager, null);
+
+            }
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public void restoreRecipeFinalization() {
+        try {
+            RecipeManager manager = getRecipeManager();
+            if (recipeManagerFeatureFlagSetCache != null) {
+                RecipeManager_featureFlagSet.set(manager, recipeManagerFeatureFlagSetCache);
+                manager.finalizeRecipeLoading();
+            }
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public void removeRecipes(List<NamespacedKey> keys) {
+        blockRecipeFinalization();
+        RecipeManager manager = getRecipeManager();
+        for (NamespacedKey key: keys) {
+            ResourceKey<Recipe<?>> nmsKey = ResourceKey.create(Registries.RECIPE, CraftNamespacedKey.toMinecraft(key));
+            manager.removeRecipe(nmsKey);
+        }
+        restoreRecipeFinalization();
     }
 
     @Override
@@ -155,7 +215,7 @@ public class ItemHelperImpl extends ItemHelper {
             recipe = new SmeltingRecipe(group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
         }
         RecipeHolder<AbstractCookingRecipe> holder = new RecipeHolder<>(key, recipe);
-        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(holder);
+        getRecipeManager().addRecipe(holder);
     }
 
     @Override
@@ -164,7 +224,7 @@ public class ItemHelperImpl extends ItemHelper {
         Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
         StonecutterRecipe recipe = new StonecutterRecipe(group, itemRecipe, CraftItemStack.asNMSCopy(result));
         RecipeHolder<StonecutterRecipe> holder = new RecipeHolder<>(key, recipe);
-        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(holder);
+        getRecipeManager().addRecipe(holder);
     }
 
     @Override
@@ -175,7 +235,7 @@ public class ItemHelperImpl extends ItemHelper {
         Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
         SmithingTransformRecipe recipe = new SmithingTransformRecipe(Optional.of(templateItemRecipe), Optional.of(baseItemRecipe), Optional.of(upgradeItemRecipe), CraftItemStack.asNMSCopy(result));
         RecipeHolder<SmithingTransformRecipe> holder = new RecipeHolder<>(key, recipe);
-        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(holder);
+        getRecipeManager().addRecipe(holder);
     }
 
     @Override
@@ -189,7 +249,53 @@ public class ItemHelperImpl extends ItemHelper {
         // TODO: 1.19.3: Add support for choosing a CraftingBookCategory
         ShapelessRecipe recipe = new ShapelessRecipe(group, categoryValue, CraftItemStack.asNMSCopy(result), NonNullList.of(null, ingredientList.toArray(new Ingredient[0])));
         RecipeHolder<ShapelessRecipe> holder = new RecipeHolder<>(key, recipe);
-        ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().addRecipe(holder);
+        getRecipeManager().addRecipe(holder);
+    }
+
+    @Override
+    public void registerOtherRecipe(org.bukkit.inventory.Recipe recipe) {
+        // This method copied from Bukkit CraftServer source, just to bypass unwanted paper patch
+        CraftRecipe toAdd;
+        if (recipe instanceof CraftRecipe craft) {
+            toAdd = craft;
+        }
+        else if (recipe instanceof ShapedRecipe) {
+            toAdd = CraftShapedRecipe.fromBukkitRecipe((ShapedRecipe)recipe);
+        }
+        else if (recipe instanceof org.bukkit.inventory.ShapelessRecipe) {
+            toAdd = CraftShapelessRecipe.fromBukkitRecipe((org.bukkit.inventory.ShapelessRecipe)recipe);
+        }
+        else if (recipe instanceof FurnaceRecipe) {
+            toAdd = CraftFurnaceRecipe.fromBukkitRecipe((FurnaceRecipe)recipe);
+        }
+        else if (recipe instanceof org.bukkit.inventory.BlastingRecipe) {
+            toAdd = CraftBlastingRecipe.fromBukkitRecipe((org.bukkit.inventory.BlastingRecipe)recipe);
+        }
+        else if (recipe instanceof CampfireRecipe) {
+            toAdd = CraftCampfireRecipe.fromBukkitRecipe((CampfireRecipe)recipe);
+        }
+        else if (recipe instanceof org.bukkit.inventory.SmokingRecipe) {
+            toAdd = CraftSmokingRecipe.fromBukkitRecipe((org.bukkit.inventory.SmokingRecipe)recipe);
+        }
+        else if (recipe instanceof StonecuttingRecipe) {
+            toAdd = CraftStonecuttingRecipe.fromBukkitRecipe((StonecuttingRecipe)recipe);
+        }
+        else if (recipe instanceof org.bukkit.inventory.SmithingTransformRecipe) {
+            toAdd = CraftSmithingTransformRecipe.fromBukkitRecipe((org.bukkit.inventory.SmithingTransformRecipe)recipe);
+        }
+        else if (recipe instanceof org.bukkit.inventory.SmithingTrimRecipe) {
+            toAdd = CraftSmithingTrimRecipe.fromBukkitRecipe((SmithingTrimRecipe)recipe);
+        }
+        else {
+            if (!(recipe instanceof org.bukkit.inventory.TransmuteRecipe)) {
+                if (recipe instanceof ComplexRecipe) {
+                    throw new UnsupportedOperationException("Cannot add custom complex recipe");
+                }
+                return;
+            }
+            toAdd = CraftTransmuteRecipe.fromBukkitRecipe((TransmuteRecipe)recipe);
+        }
+        toAdd.addToCraftingManager();
     }
 
     @Override
@@ -307,6 +413,47 @@ public class ItemHelperImpl extends ItemHelper {
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
         CustomData.set(DataComponents.ENTITY_DATA, nmsItemStack, nmsEntityNbt);
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public MapTag getRawComponentsPatch(ItemStack item, boolean excludeHandled) {
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        DataComponentPatch patch = nmsItemStack.getComponentsPatch();
+        if (excludeHandled) {
+            patch = patch.forget(componentType -> {
+                ResourceLocation componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
+                return ItemComponentsPatch.propertyHandledComponents.contains(componentId.toString());
+            });
+        }
+        if (patch.isEmpty()) {
+            return new MapTag();
+        }
+        RegistryOps<net.minecraft.nbt.Tag> registryOps = CraftRegistry.getMinecraftRegistry().createSerializationContext(NbtOps.INSTANCE);
+        net.minecraft.nbt.CompoundTag nmsPatch = (net.minecraft.nbt.CompoundTag) DataComponentPatch.CODEC.encodeStart(registryOps, patch).getOrThrow();
+        MapTag rawComponents = (MapTag) ItemRawNBT.jnbtTagToObject(CompoundTagImpl.fromNMSTag(nmsPatch));
+        rawComponents.putObject(ItemComponentsPatch.DATA_VERSION_KEY, new ElementTag(CraftMagicNumbers.INSTANCE.getDataVersion()));
+        return rawComponents;
+    }
+
+    @Override
+    public ItemStack setRawComponentsPatch(ItemStack item, MapTag rawComponentsMap, int dataVersion, Consumer<String> errorHandler) {
+        int currentDataVersion = CraftMagicNumbers.INSTANCE.getDataVersion();
+        Tag rawComponents = ItemRawNBT.convertObjectToNbt(rawComponentsMap.identify(), CoreUtilities.errorButNoDebugContext, "");
+        net.minecraft.nbt.CompoundTag nmsRawComponents = ((CompoundTagImpl) rawComponents).toNMSTag();
+        RegistryOps<net.minecraft.nbt.Tag> registryOps = CraftRegistry.getMinecraftRegistry().createSerializationContext(NbtOps.INSTANCE);
+        if (dataVersion < currentDataVersion) {
+            net.minecraft.nbt.CompoundTag legacyItemData = new net.minecraft.nbt.CompoundTag();
+            legacyItemData.putString("id", item.getType().getKey().toString());
+            legacyItemData.putInt("count", item.getAmount());
+            legacyItemData.put("components", nmsRawComponents);
+            net.minecraft.nbt.CompoundTag nmsUpdatedTag = (net.minecraft.nbt.CompoundTag) MinecraftServer.getServer().fixerUpper.update(References.ITEM_STACK, new Dynamic<>(registryOps, legacyItemData), dataVersion, currentDataVersion).getValue();
+            nmsRawComponents = nmsUpdatedTag.getCompound("components");
+        }
+        net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
+        DataComponentPatch.CODEC.parse(registryOps, nmsRawComponents)
+                .ifError(error -> errorHandler.accept(error.message()))
+                .ifSuccess(nmsItemStack::applyComponents);
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 
