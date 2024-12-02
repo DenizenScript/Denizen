@@ -95,23 +95,23 @@ public class EntityColor extends EntityProperty<ElementTag> {
         else if (type == EntityType.WOLF && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && mechanism.requireObject(ListTag.class)) {
             Wolf wolf = as(Wolf.class);
             ListTag list = mechanism.valueAsType(ListTag.class);
-            ElementTag input = list.getObject(0).asElement();
-            Wolf.Variant wolfVariety = Utilities.elementToEnumlike(input, Wolf.Variant.class);
-            if (wolfVariety != null) {
-                wolf.setVariant(wolfVariety);
+            ElementTag collarColor = list.getObject(0).asElement();
+            if (collarColor.matchesEnum(DyeColor.class)) {
+                wolf.setCollarColor(collarColor.asEnum(DyeColor.class));
             } else {
-                mechanism.echoError("Invalid wolf variant specified: " + input);
+                mechanism.echoError("Invalid color specified: " + collarColor);
             }
             if (list.size() > 1) {
-                ElementTag collarColor = list.getObject(1).asElement();
-                if (collarColor.matchesEnum(DyeColor.class)) {
-                    wolf.setCollarColor(collarColor.asEnum(DyeColor.class));
+                ElementTag variant = list.getObject(1).asElement();
+                Wolf.Variant wolfVariety = Utilities.elementToEnumlike(variant, Wolf.Variant.class);
+                if (wolfVariety != null) {
+                    wolf.setVariant(wolfVariety);
                 } else {
-                    mechanism.echoError("Invalid color specified: " + collarColor);
+                    mechanism.echoError("Invalid wolf variant specified: " + variant);
                 }
             }
         }
-        else if (type == EntityType.WOLF && NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) && mechanism.requireEnum(DyeColor.class)) { // TODO: Remove once 1.20 is the minimum
+        else if (type == EntityType.WOLF && NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) && mechanism.requireEnum(DyeColor.class)) {
             as(Wolf.class).setCollarColor(color.asEnum(DyeColor.class));
         }
         else if (type == EntityType.OCELOT && mechanism.requireEnum(Ocelot.Type.class)) { // TODO: Deprecate?
@@ -243,9 +243,9 @@ public class EntityColor extends EntityProperty<ElementTag> {
             case WOLF -> {
                 Wolf wolf = as(Wolf.class);
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                    yield wolf.getVariant() + "|" + wolf.getCollarColor().name();
+                    yield wolf.getCollarColor().name() + "|" + wolf.getVariant();
                 }
-                else { // TODO: Remove once 1.20 is the minimum
+                else {
                     yield wolf.getCollarColor().name();
                 }
             }
