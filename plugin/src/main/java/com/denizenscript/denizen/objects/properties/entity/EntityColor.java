@@ -311,7 +311,9 @@ public class EntityColor extends EntityProperty<ElementTag> {
             }
             case WOLF -> {
                 ListTag variants = Utilities.listTypes(DyeColor.class);
-                variants.addAll(Utilities.listTypes(Wolf.Variant.class));
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                    variants.addAll(Utilities.listTypes(Wolf.Variant.class));
+                }
                 yield variants;
             }
             case SHEEP, SHULKER -> Utilities.listTypes(DyeColor.class);
