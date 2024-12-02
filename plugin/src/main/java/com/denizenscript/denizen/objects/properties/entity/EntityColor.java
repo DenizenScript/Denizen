@@ -98,7 +98,8 @@ public class EntityColor extends EntityProperty<ElementTag> {
             ElementTag collarColor = list.getObject(0).asElement();
             if (collarColor.matchesEnum(DyeColor.class)) {
                 wolf.setCollarColor(collarColor.asEnum(DyeColor.class));
-            } else {
+            }
+            else {
                 mechanism.echoError("Invalid color specified: " + collarColor);
             }
             if (list.size() > 1) {
@@ -106,7 +107,8 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 Wolf.Variant wolfVariety = Utilities.elementToEnumlike(variant, Wolf.Variant.class);
                 if (wolfVariety != null) {
                     wolf.setVariant(wolfVariety);
-                } else {
+                }
+                else {
                     mechanism.echoError("Invalid wolf variant specified: " + variant);
                 }
             }
@@ -307,7 +309,11 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 horseColors.addAll(Utilities.listTypes(Horse.Style.class));
                 yield horseColors;
             }
-            case WOLF -> Utilities.listTypes(Wolf.Variant.class);
+            case WOLF -> {
+                ListTag variants = Utilities.listTypes(DyeColor.class);
+                variants.addAll(Utilities.listTypes(Wolf.Variant.class));
+                yield variants;
+            }
             case SHEEP, SHULKER -> Utilities.listTypes(DyeColor.class);
             case RABBIT -> Utilities.listTypes(Rabbit.Type.class);
             case LLAMA, TRADER_LLAMA -> Utilities.listTypes(Llama.Color.class);
