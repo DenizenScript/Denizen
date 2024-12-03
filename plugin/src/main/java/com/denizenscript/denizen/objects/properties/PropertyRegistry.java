@@ -184,6 +184,9 @@ public class PropertyRegistry {
             PropertyParser.registerProperty(EntityTrapped.class, EntityTag.class);
             PropertyParser.registerProperty(EntityTrapTime.class, EntityTag.class);
         }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(EntityVariant.class, EntityTag.class);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityViewRange.class, EntityTag.class);
         }

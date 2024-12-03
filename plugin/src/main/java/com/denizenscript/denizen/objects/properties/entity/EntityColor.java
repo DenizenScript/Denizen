@@ -92,28 +92,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
         else if (type == EntityType.SHEEP && mechanism.requireEnum(DyeColor.class)) {
             as(Sheep.class).setColor(color.asEnum(DyeColor.class));
         }
-        else if (type == EntityType.WOLF && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && mechanism.requireObject(ListTag.class)) {
-            Wolf wolf = as(Wolf.class);
-            ListTag list = mechanism.valueAsType(ListTag.class);
-            ElementTag collarColor = list.getObject(0).asElement();
-            if (collarColor.matchesEnum(DyeColor.class)) {
-                wolf.setCollarColor(collarColor.asEnum(DyeColor.class));
-            }
-            else {
-                mechanism.echoError("Invalid color specified: " + collarColor);
-            }
-            if (list.size() > 1) {
-                ElementTag variant = list.getObject(1).asElement();
-                Wolf.Variant wolfVariety = Utilities.elementToEnumlike(variant, Wolf.Variant.class);
-                if (wolfVariety != null) {
-                    wolf.setVariant(wolfVariety);
-                }
-                else {
-                    mechanism.echoError("Invalid wolf variant specified: " + variant);
-                }
-            }
-        }
-        else if (type == EntityType.WOLF && NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) && mechanism.requireEnum(DyeColor.class)) {
+        else if (type == EntityType.WOLF && mechanism.requireEnum(DyeColor.class)) {
             as(Wolf.class).setCollarColor(color.asEnum(DyeColor.class));
         }
         else if (type == EntityType.OCELOT && mechanism.requireEnum(Ocelot.Type.class)) { // TODO: Deprecate?
@@ -242,15 +221,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 yield horse.getColor().name() + "|" + horse.getStyle().name();
             }
             case SHEEP -> as(Sheep.class).getColor().name();
-            case WOLF -> {
-                Wolf wolf = as(Wolf.class);
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                    yield wolf.getCollarColor().name() + "|" + wolf.getVariant();
-                }
-                else {
-                    yield wolf.getCollarColor().name();
-                }
-            }
+            case WOLF -> as(Wolf.class).getCollarColor().name();
             case OCELOT -> {
                 if (includeDeprecated) {
                     yield as(Ocelot.class).getCatType().name();
@@ -309,14 +280,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 horseColors.addAll(Utilities.listTypes(Horse.Style.class));
                 yield horseColors;
             }
-            case WOLF -> {
-                ListTag variants = Utilities.listTypes(DyeColor.class);
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                    variants.addAll(Utilities.listTypes(Wolf.Variant.class));
-                }
-                yield variants;
-            }
-            case SHEEP, SHULKER -> Utilities.listTypes(DyeColor.class);
+            case SHEEP, WOLF, SHULKER -> Utilities.listTypes(DyeColor.class);
             case RABBIT -> Utilities.listTypes(Rabbit.Type.class);
             case LLAMA, TRADER_LLAMA -> Utilities.listTypes(Llama.Color.class);
             case PARROT -> Utilities.listTypes(Parrot.Variant.class);
@@ -354,9 +318,6 @@ public class EntityColor extends EntityProperty<ElementTag> {
     // For rabbits, the types are BROWN, WHITE, BLACK, BLACK_AND_WHITE, GOLD, SALT_AND_PEPPER, or THE_KILLER_BUNNY.
     // For cats (not ocelots), the format is TYPE|COLOR (see below).
     //          The types are TABBY, BLACK, RED, SIAMESE, BRITISH_SHORTHAIR, CALICO, PERSIAN, RAGDOLL, WHITE, JELLIE, and ALL_BLACK.
-    // For wolves on 1.20 and above, the format is COLOR|VARIANT (see below).
-    //          The variants are ASHEN, BLACK, CHESTNUT, PALE, RUSTY, SNOWY, SPOTTED, STRIPED, and WOODS.
-    // For wolves on 1.19 and below, the input is a Dye Color.
     // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
     // For llamas, the types are CREAMY, WHITE, BROWN, and GRAY.
     // For mushroom_cows, the types are RED and BROWN.
@@ -366,7 +327,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
     // For villagers and zombie_villagers, the types are DESERT, JUNGLE, PLAINS, SAVANNA, SNOW, SWAMP, and TAIGA.
     // For tropical_fish, the input is PATTERN|BODYCOLOR|PATTERNCOLOR, where BodyColor and PatterenColor are both DyeColor (see below),
     //          and PATTERN is KOB, SUNSTREAK, SNOOPER, DASHER, BRINELY, SPOTTY, FLOPPER, STRIPEY, GLITTER, BLOCKFISH, BETTY, is CLAYFISH.
-    // For sheep and shulker entities, the input is a Dye Color.
+    // For sheep, wolf, and shulker entities, the input is a Dye Color.
     // For Tipped Arrow entities, the input is a ColorTag.
     // For goats, the input is SCREAMING or NORMAL.
     // For axolotl, the types are BLUE, CYAN, GOLD, LUCY, or WILD.
