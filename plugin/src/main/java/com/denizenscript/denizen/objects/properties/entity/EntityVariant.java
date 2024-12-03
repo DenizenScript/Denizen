@@ -14,7 +14,7 @@ public class EntityVariant extends EntityProperty<ElementTag> {
     // @input ElementTag
     // @description
     // Controls which variant a wolf is.
-    // Valid varieties: ASHEN, BLACK, CHESTNUT, PALE, RUSTY, SNOWY, SPOTTED, STRIPED, WOODS
+    // Valid variants: ASHEN, BLACK, CHESTNUT, PALE, RUSTY, SNOWY, SPOTTED, STRIPED, WOODS
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Wolf;
