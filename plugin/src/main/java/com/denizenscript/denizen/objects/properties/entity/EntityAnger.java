@@ -25,7 +25,7 @@ public class EntityAnger extends EntityProperty<DurationTag> {
 
     @Override
     public DurationTag getPropertyValue() {
-        if (entity.getBukkitEntity() instanceof Bee) {
+        if (isBee()) {
             return new DurationTag((long) getBee().getAnger());
         }
         else if (isPigZombie()) {
