@@ -30,13 +30,13 @@ public class EntityAngry extends EntityProperty<ElementTag> {
     @Override
     public ElementTag getPropertyValue() {
         if (isWolf()) {
-            return new ElementTag(getWolf().isAngry() ? "true" : null);
+            return new ElementTag(getWolf().isAngry() ? "true" : "null");
         }
         else if (isPigZombie()) {
-            return new ElementTag(getPigZombie().isAngry() ? "true" : null);
+            return new ElementTag(getPigZombie().isAngry() ? "true" : "null");
         }
         else if (isVindicator()) {
-            return new ElementTag(getVindicator().isJohnny() ? "true" : null);
+            return new ElementTag(getVindicator().isJohnny() ? "true" : "null");
         }
         return null;
     }
