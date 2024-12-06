@@ -25,13 +25,7 @@ public class EntityAnger extends EntityProperty<DurationTag> {
 
     @Override
     public DurationTag getPropertyValue() {
-        if (isBee()) {
-            return new DurationTag((long) getBee().getAnger());
-        }
-        else if (isPigZombie()) {
-            return new DurationTag((long) getPigZombie().getAnger());
-        }
-        return null;
+        return new DurationTag((long) getAnger());
     }
 
     @Override
@@ -76,5 +70,14 @@ public class EntityAnger extends EntityProperty<DurationTag> {
 
     public PigZombie getPigZombie() {
         return (PigZombie) entity.getBukkitEntity();
+    }
+
+    public int getAnger() {
+        if (isPigZombie()) {
+            return getPigZombie().getAnger();
+        }
+        else {
+            return getBee().getAnger();
+        }
     }
 }
