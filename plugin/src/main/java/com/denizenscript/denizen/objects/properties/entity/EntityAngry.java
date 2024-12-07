@@ -29,14 +29,14 @@ public class EntityAngry extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        if (isWolf() && getWolf().isAngry()) {
-            return new ElementTag(true);
+        if (isWolf()) {
+            return getWolf().isAngry() ? new ElementTag(true) : null;
         }
-        else if (isPigZombie() && getPigZombie().isAngry()) {
-            return new ElementTag(true);
+        else if (isPigZombie()) {
+            return getPigZombie().isAngry() ? new ElementTag(true) : null;
         }
-        else if (isVindicator() && getVindicator().isJohnny()) {
-            return new ElementTag(true);
+        else if (isVindicator()) {
+            return getVindicator().isJohnny() ? new ElementTag(true) : null;
         }
         return null;
     }
@@ -62,7 +62,7 @@ public class EntityAngry extends EntityProperty<ElementTag> {
     }
 
     public static void register() {
-        autoRegister("angry", EntityAngry.class, ElementTag.class, false);
+        autoRegisterNullable("angry", EntityAngry.class, ElementTag.class, false);
     }
 
     public boolean isWolf() {

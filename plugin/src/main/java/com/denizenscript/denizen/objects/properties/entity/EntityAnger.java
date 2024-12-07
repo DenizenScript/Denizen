@@ -38,11 +38,11 @@ public class EntityAnger extends EntityProperty<DurationTag> {
             else {
                 duration = mechanism.valueAsType(DurationTag.class);
             }
-            if (isBee()) {
-                getBee().setAnger(duration.getTicksAsInt());
-            }
-            else if (isPigZombie()) {
+            if (isPigZombie()) {
                 getPigZombie().setAnger(duration.getTicksAsInt());
+            }
+            else {
+                getBee().setAnger(duration.getTicksAsInt());
             }
         }
     }
