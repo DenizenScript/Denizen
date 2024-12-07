@@ -14,7 +14,7 @@ public class EntityVariant extends EntityProperty<ElementTag> {
     // @input ElementTag
     // @description
     // Controls which variant a wolf is.
-    // Valid variants: ASHEN, BLACK, CHESTNUT, PALE, RUSTY, SNOWY, SPOTTED, STRIPED, WOODS
+    // A list of valid variants can be found at <@link url https://minecraft.wiki/w/Wolf#Variants>.
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Wolf;
@@ -22,7 +22,7 @@ public class EntityVariant extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(as(Wolf.class).getVariant().toString());
+        return new ElementTag(Utilities.namespacedKeyToString(as(Wolf.class).getVariant().getKey()));
     }
 
     @Override
