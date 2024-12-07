@@ -26,9 +26,7 @@ public class EntityCannotEnterHive extends EntityProperty<DurationTag> {
 
     @Override
     public void setPropertyValue(DurationTag param, Mechanism mechanism) {
-        if (mechanism.requireObject(DurationTag.class)) {
-            as(Bee.class).setCannotEnterHiveTicks(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
-        }
+        as(Bee.class).setCannotEnterHiveTicks(param.getTicksAsInt());
     }
 
     @Override

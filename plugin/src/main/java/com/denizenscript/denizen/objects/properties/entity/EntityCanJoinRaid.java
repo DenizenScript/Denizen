@@ -12,7 +12,7 @@ public class EntityCanJoinRaid extends EntityProperty<ElementTag> {
     // @name can_join_raid
     // @input ElementTag(Boolean)
     // @description
-    // If the entity is raider mob (like a pillager), controls whether the entity is allowed to join active raids.
+    // Controls whether a raider mob (like a pillager), is allowed to join active raids.
     // -->
 
     public static boolean describes(EntityTag entity) {
