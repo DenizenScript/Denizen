@@ -21,29 +21,24 @@ public class EntityAnger extends EntityProperty<DurationTag> {
                 || entity.getBukkitEntity() instanceof PigZombie;
     }
 
-    EntityTag entity;
-
     @Override
     public DurationTag getPropertyValue() {
-        return new DurationTag((long) getAnger());
+        if (getEntity() instanceof PigZombie pigzombie) {
+            return new DurationTag((long) pigzombie.getAnger());
+        }
+        else if (getEntity() instanceof Bee bee) {
+            return new DurationTag((long) bee.getAnger());
+        }
+        return null;
     }
 
     @Override
     public void setPropertyValue(DurationTag param, Mechanism mechanism) {
-        if (mechanism.requireObject(DurationTag.class)) {
-            DurationTag duration;
-            if (mechanism.getValue().isInt()) { // Soft-deprecated - backwards compatibility, as this used to use a tick count
-                duration = new DurationTag(mechanism.getValue().asLong());
-            }
-            else {
-                duration = mechanism.valueAsType(DurationTag.class);
-            }
-            if (isPigZombie()) {
-                getPigZombie().setAnger(duration.getTicksAsInt());
-            }
-            else {
-                getBee().setAnger(duration.getTicksAsInt());
-            }
+        if (getEntity() instanceof PigZombie) {
+            as(PigZombie.class).setAnger(param.getTicksAsInt());
+        }
+        else {
+            as(Bee.class).setAnger(param.getTicksAsInt());
         }
     }
 
@@ -54,30 +49,5 @@ public class EntityAnger extends EntityProperty<DurationTag> {
 
     public static void register() {
         autoRegister("anger", EntityAnger.class, DurationTag.class, false);
-    }
-
-    public boolean isBee() {
-        return entity.getBukkitEntity() instanceof Bee;
-    }
-
-    public boolean isPigZombie() {
-        return entity.getBukkitEntity() instanceof PigZombie;
-    }
-
-    public Bee getBee() {
-        return (Bee) entity.getBukkitEntity();
-    }
-
-    public PigZombie getPigZombie() {
-        return (PigZombie) entity.getBukkitEntity();
-    }
-
-    public int getAnger() {
-        if (isPigZombie()) {
-            return getPigZombie().getAnger();
-        }
-        else {
-            return getBee().getAnger();
-        }
     }
 }
