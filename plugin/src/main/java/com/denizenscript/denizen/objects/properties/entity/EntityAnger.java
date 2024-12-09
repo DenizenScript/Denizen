@@ -23,19 +23,24 @@ public class EntityAnger extends EntityProperty<DurationTag> {
 
     @Override
     public DurationTag getPropertyValue() {
-        if (getEntity() instanceof PigZombie pigzombie) {
-            return new DurationTag((long) pigzombie.getAnger());
+        if (getEntity() instanceof PigZombie pigZombie) {
+            return new DurationTag((long) pigZombie.getAnger());
         }
-        else if (getEntity() instanceof Bee bee) {
-            return new DurationTag((long) bee.getAnger());
+        else {
+            return new DurationTag((long) as(Bee.class).getAnger());
         }
-        return null;
     }
 
     @Override
     public void setPropertyValue(DurationTag param, Mechanism mechanism) {
-        if (getEntity() instanceof PigZombie) {
-            as(PigZombie.class).setAnger(param.getTicksAsInt());
+        if (mechanism.getValue().isInt()) { // Soft-deprecated - backwards compatibility, as this used to use a tick count
+            param = new DurationTag(mechanism.getValue().asLong());
+        }
+        else {
+            param = mechanism.valueAsType(DurationTag.class);
+        }
+        if (getEntity() instanceof PigZombie pigZombie) {
+            pigZombie.setAnger(param.getTicksAsInt());
         }
         else {
             as(Bee.class).setAnger(param.getTicksAsInt());
