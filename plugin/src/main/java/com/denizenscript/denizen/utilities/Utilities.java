@@ -33,6 +33,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.OldEnum;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -545,11 +546,20 @@ public class Utilities {
     }
 
     // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
-    public static ListTag listTypes(Class<?> type) {
+    public static <T> List<T> listTypesRaw(Class<T> type) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
-            return registryKeys(Bukkit.getRegistry((Class<? extends Keyed>) type));
+            return (List) Bukkit.getRegistry((Class<? extends Keyed>) type).stream().toList();
         }
-        return new ListTag(Arrays.asList(((Class<? extends Enum<?>>) type).getEnumConstants()), ElementTag::new);
+        return (List) Arrays.asList(((Class<? extends Enum<?>>) type).getEnumConstants());
+    }
+
+    public static ListTag listTypes(Class<?> type) {
+        return new ListTag(listTypesRaw(type), Utilities::enumlikeToElement);
+    }
+
+    public static ListTag listLegacyTypes(Class<? extends Keyed> type) {
+        List<?> types = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) ? Bukkit.getRegistry(type).stream().toList() : Arrays.asList(type.getEnumConstants());
+        return new ListTag(types, Utilities::enumLikeToLegacyElement);
     }
 
     public static ElementTag enumlikeToElement(Object val) {
@@ -557,11 +567,22 @@ public class Utilities {
             return new ElementTag(((Enum<?>) val).name());
         }
         if (val instanceof Keyed) {
-            return new ElementTag(namespacedKeyToString(((Keyed) val).getKey()));
+            return new ElementTag(namespacedKeyToString(((Keyed) val).getKey()), true);
         }
         return new ElementTag(val.toString());
     }
 
+    public static ElementTag enumLikeToLegacyElement(Object val) {
+        if (val instanceof Enum<?> enumVal) {
+            return new ElementTag(enumVal);
+        }
+        if (val instanceof OldEnum<?> oldEnumVal) {
+            return new ElementTag(oldEnumVal.name(), true);
+        }
+        throw new UnsupportedOperationException("Cannot get legacy name element, value isn't an enum: " + val);
+    }
+
+    // TODO: need proper input backsupport, see https://discord.com/channels/315163488085475337/1011496047811506227/1301272242386370580
     public static <T> T elementToEnumlike(ElementTag element, Class<T> type) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
             return (T) Bukkit.getRegistry((Class<? extends Keyed>) type).get(parseNamespacedKey(element.asString()));

@@ -170,7 +170,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             requirements = new ArrayList<>(advancement.length);
             for (int i = 0; i < advancement.length; i++) {
                 criteria.put(IMPOSSIBLE_KEY + i, new Criterion<>(new ImpossibleTrigger(), new ImpossibleTrigger.TriggerInstance()));
-                requirements.set(i, List.of(IMPOSSIBLE_KEY + i));
+                requirements.add(List.of(IMPOSSIBLE_KEY + i));
             }
         }
         AdvancementRequirements reqs = new AdvancementRequirements(requirements);
