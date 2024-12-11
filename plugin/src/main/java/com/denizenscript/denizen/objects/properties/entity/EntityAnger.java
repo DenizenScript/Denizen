@@ -33,12 +33,6 @@ public class EntityAnger extends EntityProperty<DurationTag> {
 
     @Override
     public void setPropertyValue(DurationTag param, Mechanism mechanism) {
-        if (mechanism.getValue().isInt()) { // Soft-deprecated - backwards compatibility, as this used to use a tick count
-            param = new DurationTag(mechanism.getValue().asLong());
-        }
-        else {
-            param = mechanism.valueAsType(DurationTag.class);
-        }
         if (getEntity() instanceof PigZombie pigZombie) {
             pigZombie.setAnger(param.getTicksAsInt());
         }
