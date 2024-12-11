@@ -173,4 +173,16 @@ public abstract class ItemHelper {
         item.setItemMeta(stateMeta);
         return item;
     }
+
+    public void blockRecipeFinalization() {
+    }
+
+    public void restoreRecipeFinalization() {
+    }
+
+    public void removeRecipes(List<NamespacedKey> keys) {
+    }
+
+    public void registerOtherRecipe(org.bukkit.inventory.Recipe recipe) {
+    }
 }

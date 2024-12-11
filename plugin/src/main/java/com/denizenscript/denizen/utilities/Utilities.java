@@ -546,11 +546,15 @@ public class Utilities {
     }
 
     // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
-    public static ListTag listTypes(Class<?> type) {
+    public static <T> List<T> listTypesRaw(Class<T> type) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
-            return registryKeys(Bukkit.getRegistry((Class<? extends Keyed>) type));
+            return (List) Bukkit.getRegistry((Class<? extends Keyed>) type).stream().toList();
         }
-        return new ListTag(Arrays.asList(((Class<? extends Enum<?>>) type).getEnumConstants()), ElementTag::new);
+        return (List) Arrays.asList(((Class<? extends Enum<?>>) type).getEnumConstants());
+    }
+
+    public static ListTag listTypes(Class<?> type) {
+        return new ListTag(listTypesRaw(type), Utilities::enumlikeToElement);
     }
 
     public static ListTag listLegacyTypes(Class<? extends Keyed> type) {
@@ -563,7 +567,7 @@ public class Utilities {
             return new ElementTag(((Enum<?>) val).name());
         }
         if (val instanceof Keyed) {
-            return new ElementTag(namespacedKeyToString(((Keyed) val).getKey()));
+            return new ElementTag(namespacedKeyToString(((Keyed) val).getKey()), true);
         }
         return new ElementTag(val.toString());
     }
