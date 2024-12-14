@@ -28,7 +28,7 @@ public class MapCursor extends MapObject {
     }
 
     public org.bukkit.map.MapCursor.Type getType(PlayerTag player) {
-        return Utilities.elementToEnumlike(new ElementTag(tag(typeTag, player)), org.bukkit.map.MapCursor.Type.class);
+        return Utilities.elementToEnumlike(new ElementTag(tag(typeTag, player)), org.bukkit.map.MapCursor.Type.class, getTagContext(player));
     }
 
     private byte yawToDirection(double yaw) {

@@ -15,6 +15,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
@@ -582,17 +583,29 @@ public class Utilities {
         throw new UnsupportedOperationException("Cannot get legacy name element, value isn't an enum: " + val);
     }
 
-    // TODO: need proper input backsupport, see https://discord.com/channels/315163488085475337/1011496047811506227/1301272242386370580
-    public static <T> T elementToEnumlike(ElementTag element, Class<T> type) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
-            return (T) Bukkit.getRegistry((Class<? extends Keyed>) type).get(parseNamespacedKey(element.asString()));
+    @SuppressWarnings("unchecked")
+    public static <T extends Keyed> T elementToEnumlike(ElementTag element, Class<T> type, TagContext context) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) {
+            return (T) element.asEnum((Class<? extends Enum<?>>) type);
         }
-        return (T) element.asEnum((Class<? extends Enum>) type);
+        Registry<T> registry = Bukkit.getRegistry(type);
+        T value = registry.get(parseNamespacedKey(element.asString()));
+        if (!Settings.cache_legacySpigotNamesSupport || value != null) {
+            return value;
+        }
+        String updatedName = NMSHandler.instance.updateLegacyName(type, element.asString());
+        if (CoreUtilities.equalsIgnoreCase(element.asString(), updatedName)) {
+            return null;
+        }
+        if (context != null) {
+            BukkitImplDeprecations.oldSpigotNames.warn(context);
+        }
+        return registry.get(parseNamespacedKey(updatedName));
     }
 
-    public static <T> T findBestEnumlike(Class<T> type, String... names) {
+    public static <T extends Keyed> T findBestEnumlike(Class<T> type, String... names) {
         for (String name : names) {
-            T val = elementToEnumlike(new ElementTag(name), type);
+            T val = elementToEnumlike(new ElementTag(name), type, null);
             if (val != null) {
                 return val;
             }
@@ -600,11 +613,11 @@ public class Utilities {
         return null;
     }
 
-    public static boolean matchesEnumlike(ElementTag element, Class<?> type) {
-        return elementToEnumlike(element, type) != null;
+    public static boolean matchesEnumlike(ElementTag element, Class<? extends Keyed> type) {
+        return elementToEnumlike(element, type, null) != null;
     }
 
-    public static boolean requireEnumlike(Mechanism mechanism, Class<?> type) {
+    public static boolean requireEnumlike(Mechanism mechanism, Class<? extends Keyed> type) {
         if (!matchesEnumlike(mechanism.getValue(), type)) {
             mechanism.echoError("Invalid " + DebugInternals.getClassNameOpti(type) + " specified.");
             return false;

@@ -149,7 +149,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
             Cat cat = as(Cat.class);
             ListTag list = mechanism.valueAsType(ListTag.class);
             ElementTag input = list.getObject(0).asElement();
-            Cat.Type catType = Utilities.elementToEnumlike(input, Cat.Type.class);
+            Cat.Type catType = Utilities.elementToEnumlike(input, Cat.Type.class, mechanism.context);
             if (catType != null) {
                 cat.setCatType(catType);
             }
@@ -188,10 +188,10 @@ public class EntityColor extends EntityProperty<ElementTag> {
         }
         // TODO This technically has registries on all supported versions
         else if (type == EntityType.VILLAGER && Utilities.requireEnumlike(mechanism, Villager.Type.class)) {
-            as(Villager.class).setVillagerType(Utilities.elementToEnumlike(mechanism.getValue(), Villager.Type.class));
+            as(Villager.class).setVillagerType(Utilities.elementToEnumlike(mechanism.getValue(), Villager.Type.class, mechanism.context));
         }
         else if (type == EntityType.ZOMBIE_VILLAGER && Utilities.requireEnumlike(mechanism, Villager.Type.class)) {
-            as(ZombieVillager.class).setVillagerType(Utilities.elementToEnumlike(mechanism.getValue(), Villager.Type.class));
+            as(ZombieVillager.class).setVillagerType(Utilities.elementToEnumlike(mechanism.getValue(), Villager.Type.class, mechanism.context));
         }
         else if (type == EntityType.ARROW && mechanism.requireObject(ColorTag.class)) {
             as(Arrow.class).setColor(BukkitColorExtensions.getColor(mechanism.valueAsType(ColorTag.class)));

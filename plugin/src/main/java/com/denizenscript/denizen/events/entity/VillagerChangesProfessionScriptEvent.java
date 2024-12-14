@@ -58,7 +58,7 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         // TODO This technically has registries on all supported versions
-        Villager.Profession newProfession = Utilities.elementToEnumlike(determinationObj.asElement(), Villager.Profession.class);
+        Villager.Profession newProfession = Utilities.elementToEnumlike(determinationObj.asElement(), Villager.Profession.class, getTagContext(path));
         if (newProfession != null) {
             event.setProfession(newProfession);
             return true;

@@ -134,7 +134,7 @@ public class PlaySoundCommand extends AbstractCommand {
                 }
                 else {
                     for (LocationTag location : locations) {
-                        location.getWorld().playSound(location, Utilities.elementToEnumlike(soundElement, Sound.class), categoryEnum, volume, pitch);
+                        location.getWorld().playSound(location, Utilities.elementToEnumlike(soundElement, Sound.class, scriptEntry.getContext()), categoryEnum, volume, pitch);
                     }
                 }
             }
@@ -145,7 +145,7 @@ public class PlaySoundCommand extends AbstractCommand {
                             player.getPlayerEntity().playSound(location, sound, categoryEnum, volume, pitch);
                         }
                         else {
-                            player.getPlayerEntity().playSound(location, Utilities.elementToEnumlike(soundElement, Sound.class), categoryEnum, volume, pitch);
+                            player.getPlayerEntity().playSound(location, Utilities.elementToEnumlike(soundElement, Sound.class, scriptEntry.getContext()), categoryEnum, volume, pitch);
                         }
                     }
                 }
@@ -157,10 +157,10 @@ public class PlaySoundCommand extends AbstractCommand {
                     }
                     else {
                         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                            player.getPlayerEntity().playSound(player.getPlayerEntity(), Utilities.elementToEnumlike(soundElement, Sound.class), categoryEnum, volume, pitch);
+                            player.getPlayerEntity().playSound(player.getPlayerEntity(), Utilities.elementToEnumlike(soundElement, Sound.class, scriptEntry.getContext()), categoryEnum, volume, pitch);
                         }
                         else {
-                            player.getPlayerEntity().playSound(player.getLocation(), Utilities.elementToEnumlike(soundElement, Sound.class), categoryEnum, volume, pitch);
+                            player.getPlayerEntity().playSound(player.getLocation(), Utilities.elementToEnumlike(soundElement, Sound.class, scriptEntry.getContext()), categoryEnum, volume, pitch);
                         }
                     }
                 }

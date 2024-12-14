@@ -91,7 +91,7 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
             String lower = CoreUtilities.toLowerCase(determinationObj.toString());
             if (lower.startsWith("pattern:")) {
                 ElementTag value = new ElementTag(lower.substring("pattern:".length()));
-                event.setPatternType(Utilities.elementToEnumlike(value, PatternType.class));
+                event.setPatternType(Utilities.elementToEnumlike(value, PatternType.class, getTagContext(path)));
                 return true;
             }
         }
