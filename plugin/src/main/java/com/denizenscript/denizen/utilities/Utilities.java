@@ -15,7 +15,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
-import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
@@ -583,8 +582,12 @@ public class Utilities {
         throw new UnsupportedOperationException("Cannot get legacy name element, value isn't an enum: " + val);
     }
 
+    public static <T extends Keyed> T elementToEnumlike(ElementTag element, Class<T> type) {
+        return elementToEnumlike(element, type, true);
+    }
+
     @SuppressWarnings("unchecked")
-    public static <T extends Keyed> T elementToEnumlike(ElementTag element, Class<T> type, TagContext context) {
+    public static <T extends Keyed> T elementToEnumlike(ElementTag element, Class<T> type, boolean showWarning) {
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) {
             return (T) element.asEnum((Class<? extends Enum<?>>) type);
         }
@@ -597,15 +600,15 @@ public class Utilities {
         if (CoreUtilities.equalsIgnoreCase(element.asString(), updatedName)) {
             return null;
         }
-        if (context != null) {
-            BukkitImplDeprecations.oldSpigotNames.warn(context);
+        if (showWarning) {
+            BukkitImplDeprecations.oldSpigotNames.warn();
         }
         return registry.get(parseNamespacedKey(updatedName));
     }
 
     public static <T extends Keyed> T findBestEnumlike(Class<T> type, String... names) {
         for (String name : names) {
-            T val = elementToEnumlike(new ElementTag(name), type, null);
+            T val = elementToEnumlike(new ElementTag(name), type, false);
             if (val != null) {
                 return val;
             }
@@ -614,7 +617,7 @@ public class Utilities {
     }
 
     public static boolean matchesEnumlike(ElementTag element, Class<? extends Keyed> type) {
-        return elementToEnumlike(element, type, null) != null;
+        return elementToEnumlike(element, type, false) != null;
     }
 
     public static boolean requireEnumlike(Mechanism mechanism, Class<? extends Keyed> type) {

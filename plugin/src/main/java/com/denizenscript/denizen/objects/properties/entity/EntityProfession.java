@@ -112,7 +112,7 @@ public class EntityProfession implements Property {
         // <EntityTag.profession>
         // -->
         if (mechanism.matches("profession") && Utilities.requireEnumlike(mechanism, Villager.Profession.class)) {
-            setProfession(Utilities.elementToEnumlike(mechanism.getValue(), Villager.Profession.class, mechanism.context));
+            setProfession(Utilities.elementToEnumlike(mechanism.getValue(), Villager.Profession.class));
         }
     }
 }

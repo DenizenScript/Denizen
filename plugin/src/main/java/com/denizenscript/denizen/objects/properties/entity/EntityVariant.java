@@ -27,7 +27,7 @@ public class EntityVariant extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag variant, Mechanism mechanism) {
-        Wolf.Variant wolfVariety = Utilities.elementToEnumlike(variant, Wolf.Variant.class, mechanism.context);
+        Wolf.Variant wolfVariety = Utilities.elementToEnumlike(variant, Wolf.Variant.class);
         if (wolfVariety != null) {
             as(Wolf.class).setVariant(wolfVariety);
         }

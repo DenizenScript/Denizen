@@ -38,7 +38,7 @@ public class MultiVersionHelper1_19 {
 
     public static void setColor(Entity entity, Mechanism mech) {
         if (entity instanceof Frog frog && Utilities.requireEnumlike(mech, Frog.Variant.class)) {
-            frog.setVariant(Utilities.elementToEnumlike(mech.getValue(), Frog.Variant.class, mech.context));
+            frog.setVariant(Utilities.elementToEnumlike(mech.getValue(), Frog.Variant.class));
         }
         else if (entity instanceof Boat boat && mech.requireEnum(Boat.Type.class)) {
             // TODO: 1.21.3: Deprecate setting boat types

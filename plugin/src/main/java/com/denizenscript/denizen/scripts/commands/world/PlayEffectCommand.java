@@ -128,7 +128,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     !scriptEntry.hasObject("particleeffect") &&
                     !scriptEntry.hasObject("iconcrack")) {
                 String particleName = CoreUtilities.toUpperCase(arg.getValue());
-                Particle particle = Utilities.elementToEnumlike(new ElementTag(particleName), Particle.class, scriptEntry.getContext());
+                Particle particle = Utilities.elementToEnumlike(new ElementTag(particleName), Particle.class);
                 if (particle != null) {
                     scriptEntry.addObject("particleeffect", particle);
                     continue;
