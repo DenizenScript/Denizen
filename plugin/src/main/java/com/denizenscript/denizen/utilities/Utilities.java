@@ -586,7 +586,6 @@ public class Utilities {
         return elementToEnumlike(element, type, true);
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> T elementToEnumlike(ElementTag element, Class<T> type, boolean showWarning) {
         Registry<?> registry;
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20) || (registry = Bukkit.getRegistry((Class<? extends Keyed>) type)) == null) {
