@@ -582,17 +582,32 @@ public class Utilities {
         throw new UnsupportedOperationException("Cannot get legacy name element, value isn't an enum: " + val);
     }
 
-    // TODO: need proper input backsupport, see https://discord.com/channels/315163488085475337/1011496047811506227/1301272242386370580
     public static <T> T elementToEnumlike(ElementTag element, Class<T> type) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
-            return (T) Bukkit.getRegistry((Class<? extends Keyed>) type).get(parseNamespacedKey(element.asString()));
+        return elementToEnumlike(element, type, true);
+    }
+
+    public static <T> T elementToEnumlike(ElementTag element, Class<T> type, boolean showWarning) {
+        Registry<?> registry;
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20) || (registry = Bukkit.getRegistry((Class<? extends Keyed>) type)) == null) {
+            return (T) element.asEnum((Class<? extends Enum<?>>) type);
         }
-        return (T) element.asEnum((Class<? extends Enum>) type);
+        T value = (T) registry.get(parseNamespacedKey(element.asString()));
+        if (!Settings.cache_legacySpigotNamesSupport || value != null) {
+            return value;
+        }
+        String updatedName = NMSHandler.instance.updateLegacyName(type, element.asString());
+        if (CoreUtilities.equalsIgnoreCase(element.asString(), updatedName)) {
+            return null;
+        }
+        if (showWarning) {
+            BukkitImplDeprecations.oldSpigotNames.warn();
+        }
+        return (T) registry.get(parseNamespacedKey(updatedName));
     }
 
     public static <T> T findBestEnumlike(Class<T> type, String... names) {
         for (String name : names) {
-            T val = elementToEnumlike(new ElementTag(name), type);
+            T val = elementToEnumlike(new ElementTag(name), type, false);
             if (val != null) {
                 return val;
             }
@@ -601,7 +616,7 @@ public class Utilities {
     }
 
     public static boolean matchesEnumlike(ElementTag element, Class<?> type) {
-        return elementToEnumlike(element, type) != null;
+        return elementToEnumlike(element, type, false) != null;
     }
 
     public static boolean requireEnumlike(Mechanism mechanism, Class<?> type) {
