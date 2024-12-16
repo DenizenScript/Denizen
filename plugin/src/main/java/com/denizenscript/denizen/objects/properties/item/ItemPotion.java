@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -26,21 +27,24 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: 1.20.6: Spigot removed the PotionData API, can either remove relevant features on 1.20.6, or try and backsupport somehow (probably either hard-coding our own data or hacking it based on the name)
 public class ItemPotion extends ItemProperty<ObjectTag> {
 
     public static boolean describes(ItemTag item) {
         return item.getItemMeta() instanceof PotionMeta || item.getItemMeta() instanceof SuspiciousStewMeta;
     }
 
-    public static MapTag effectToMap(PotionEffect effect) {
+    public static MapTag effectToMap(PotionEffect effect, boolean includeDeprecated) {
         MapTag map = new MapTag();
-        map.putObject("type", new ElementTag(effect.getType().getName()));
+        map.putObject("effect", new ElementTag(Utilities.namespacedKeyToString(effect.getType().getKey()), true));
         map.putObject("amplifier", new ElementTag(effect.getAmplifier()));
         map.putObject("duration", new DurationTag((long) effect.getDuration()));
         map.putObject("ambient", new ElementTag(effect.isAmbient()));
         map.putObject("particles", new ElementTag(effect.hasParticles()));
         map.putObject("icon", new ElementTag(effect.hasIcon()));
+        // TODO: deprecate this
+        if (includeDeprecated) {
+            map.putObject("type", new ElementTag(effect.getType().getName()));
+        }
         return map;
     }
 
@@ -50,12 +54,18 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         if (getItemMeta() instanceof PotionMeta potionMeta) {
             MapTag base = new MapTag();
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                base.putObject("base_type", new ElementTag(Utilities.namespacedKeyToString(potionMeta.getBasePotionType().getKey()), true));
+                if (potionMeta.hasBasePotionType()) {
+                    base.putObject("base_type", new ElementTag(Utilities.namespacedKeyToString(potionMeta.getBasePotionType().getKey()), true));
+                }
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && PaperAPITools.instance.hasCustomName(potionMeta)) {
+                    base.putObject("translation_id", new ElementTag(potionMeta.getCustomName(), true));
+                }
             }
             else {
                 includeExtras = true;
             }
-            if (includeExtras) { // TODO: Eventually remove these 4
+            PotionData legacyData = potionMeta.getBasePotionData();
+            if (includeExtras && legacyData != null) { // TODO: Eventually remove these 4
                 base.putObject("type", new ElementTag(potionMeta.getBasePotionData().getType()));
                 base.putObject("upgraded", new ElementTag(potionMeta.getBasePotionData().isUpgraded()));
                 base.putObject("extended", new ElementTag(potionMeta.getBasePotionData().isExtended()));
@@ -66,7 +76,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             result.addObject(base);
         }
         for (PotionEffect potionEffect : potionEffects) {
-            result.addObject(effectToMap(potionEffect));
+            result.addObject(effectToMap(potionEffect, includeExtras));
         }
         return result;
     }
@@ -78,19 +88,24 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         boolean ambient = true;
         boolean particles = true;
         boolean icon = false;
-        if (effectMap.containsKey("type")) {
-            String typeString = effectMap.getObject("type").toString();
-            type = PotionEffectType.getByName(typeString);
-            if (type == null) {
-                if (context.showErrors()) {
-                    Debug.echoError("Invalid potion effect type '" + typeString + "': effect type is required.");
-                }
-                return null;
-            }
+        ElementTag effectInput = effectMap.getElement("effect");
+        ElementTag typeInput = null;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && effectInput != null) {
+            type = Registry.EFFECT.get(Utilities.parseNamespacedKey(effectInput.asString()));
+        }
+        else if ((typeInput = effectMap.getElement("type")) != null) {
+            type = PotionEffectType.getByName(typeInput.asString());
+            BukkitImplDeprecations.oldPotionEffectType.warn(context);
         }
         else {
             if (context.showErrors()) {
-                Debug.echoError("Invalid potion effect type: effect type is required.");
+                Debug.echoError("Invalid potion effect: effect type is required.");
+            }
+            return null;
+        }
+        if (type == null) {
+            if (context.showErrors()) {
+                Debug.echoError("Invalid potion effect type '" + (effectInput != null ? effectInput : typeInput) + "' specified: effect type is required.");
             }
             return null;
         }
@@ -163,17 +178,18 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) || baseEffect.containsKey("type")) {
             return applyLegacyMapBasePotionData(baseEffect, potionMeta, mechanism);
         }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ElementTag translationId = baseEffect.getElement("translation_id");
+            potionMeta.setCustomName(translationId != null ? translationId.asString() : null);
+        }
         ElementTag baseTypeElement = baseEffect.getElement("base_type");
         if (baseTypeElement == null) {
-            mechanism.echoError("Must specify a base potion type.");
-            return true;
+            potionMeta.setBasePotionType(null);
+            return false;
         }
-        PotionType baseType = Registry.POTION.get(Utilities.parseNamespacedKey(baseTypeElement.asString()));
-        if (baseType == null && baseTypeElement.matchesEnum(PotionType.class)) {
-            baseType = baseTypeElement.asEnum(PotionType.class);
-        }
+        PotionType baseType = Utilities.elementToEnumlike(baseTypeElement, PotionType.class);
         if (baseType == null) {
-            mechanism.echoError("Invalid base potion type '" + baseTypeElement + "' specified: valid base potion type is required.");
+            mechanism.echoError("Invalid base potion type '" + baseTypeElement + "' specified.");
             return true;
         }
         potionMeta.setBasePotionType(baseType);

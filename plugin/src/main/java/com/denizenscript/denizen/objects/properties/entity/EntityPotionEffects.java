@@ -66,10 +66,10 @@ public class EntityPotionEffects implements Property {
         return result;
     }
 
-    public ListTag getEffectsMapTag() {
+    public ListTag getEffectsMapTag(boolean includeDeprecated) {
         ListTag result = new ListTag();
         for (PotionEffect effect : getEffectsList()) {
-            result.addObject(ItemPotion.effectToMap(effect));
+            result.addObject(ItemPotion.effectToMap(effect, includeDeprecated));
         }
         return result;
     }
@@ -83,7 +83,7 @@ public class EntityPotionEffects implements Property {
     }
 
     public String getPropertyString() {
-        ListTag effects = getEffectsMapTag();
+        ListTag effects = getEffectsMapTag(false);
         return effects.isEmpty() ? null : effects.identify();
     }
 
@@ -117,7 +117,7 @@ public class EntityPotionEffects implements Property {
         // Returns the active potion effects on the entity, in the MapTag format of the mechanism.
         // -->
         PropertyParser.registerTag(EntityPotionEffects.class, ListTag.class, "effects_data", (attribute, object) -> {
-            return object.getEffectsMapTag();
+            return object.getEffectsMapTag(true);
         });
 
         // <--[tag]

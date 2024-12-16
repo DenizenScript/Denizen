@@ -118,8 +118,8 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
             case "override" -> new ElementTag(event.isOverride());
             case "new_effect" -> event.getNewEffect() == null ? null : new ElementTag(ItemPotion.effectToLegacyString(event.getNewEffect(), null));
             case "old_effect" -> event.getOldEffect() == null ? null : new ElementTag(ItemPotion.effectToLegacyString(event.getOldEffect(), null));
-            case "new_effect_data" -> event.getNewEffect() == null ? null : ItemPotion.effectToMap(event.getNewEffect());
-            case "old_effect_data" -> event.getOldEffect() == null ? null : ItemPotion.effectToMap(event.getOldEffect());
+            case "new_effect_data" -> event.getNewEffect() == null ? null : ItemPotion.effectToMap(event.getNewEffect(), true);
+            case "old_effect_data" -> event.getOldEffect() == null ? null : ItemPotion.effectToMap(event.getOldEffect(), true);
             default -> super.getContext(name);
         };
     }

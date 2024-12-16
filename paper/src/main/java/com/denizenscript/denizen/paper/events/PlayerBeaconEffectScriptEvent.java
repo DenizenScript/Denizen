@@ -78,7 +78,7 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
         return switch (name) {
             case "location" -> new LocationTag(event.getBlock().getLocation());
             case "effect" -> new ElementTag(ItemPotion.effectToLegacyString(event.getEffect(), null));
-            case "effect_data" -> ItemPotion.effectToMap(event.getEffect());
+            case "effect_data" -> ItemPotion.effectToMap(event.getEffect(), true);
             case "effect_type" -> new ElementTag(event.getEffect().getType().getName());
             case "is_primary" -> new ElementTag(event.isPrimary());
             default -> super.getContext(name);

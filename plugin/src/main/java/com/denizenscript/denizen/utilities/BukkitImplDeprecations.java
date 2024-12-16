@@ -344,6 +344,9 @@ public class BukkitImplDeprecations {
     // Good candidate for bumping, as this is a niche feature only on 1.19+ that already had some issues
     public static Warning entityStepHeight = new FutureWarning("entityStepHeight", "'EntityTag.step_height' is deprecated in favor of the step height attribute.");
 
+    // Added 2024/11/19
+    public static Warning oldPotionEffectType = new FutureWarning("oldPotionEffectType", "Potion effects now use an 'effect' key for the potion effect's type.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2023/10/29 without warning.

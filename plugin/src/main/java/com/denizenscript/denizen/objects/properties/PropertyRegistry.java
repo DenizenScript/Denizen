@@ -244,9 +244,7 @@ public class PropertyRegistry {
         registerItemProperty(ItemMap.class, "map_id");
         PropertyParser.registerProperty(ItemNBT.class, ItemTag.class);
         registerItemProperty(ItemPatterns.class, "banner_patterns");
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
-            registerItemProperty(ItemPotion.class, "potion_contents");
-        }
+        registerItemProperty(ItemPotion.class, "potion_contents");
         PropertyParser.registerProperty(ItemQuantity.class, ItemTag.class);
         PropertyParser.registerProperty(ItemRawNBT.class, ItemTag.class);
         registerItemProperty(ItemRepairCost.class, "repair_cost");
