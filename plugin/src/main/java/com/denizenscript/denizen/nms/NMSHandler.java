@@ -145,4 +145,8 @@ public abstract class NMSHandler {
 
     public void setBossbarUUID(BossBar bar, UUID id) {
     }
+
+    public String updateLegacyName(Class<?> type, String legacyName) {
+        return legacyName;
+    }
 }

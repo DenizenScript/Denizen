@@ -78,6 +78,7 @@ public class ItemFrameInvisible implements Property {
         return null;
     }
 
+    @Override
     public String getPropertyId() {
         return "invisible";
     }

@@ -19,21 +19,21 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.world.entity.LivingEntity
     public static String LivingEntity_attackStrengthTicker = "aS";
-    public static String LivingEntity_autoSpinAttackTicks = "bC";
+    public static String LivingEntity_autoSpinAttackTicks = "bB";
     public static String LivingEntity_setLivingEntityFlag_method = "c";
 
     // net.minecraft.world.entity.player.Player
     public static String Player_DATA_PLAYER_ABSORPTION_ID = "d";
-    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bX";
+    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bW";
 
     // net.minecraft.server.level.ServerPlayer
     public static String ServerPlayer_respawnForced = "dn";
 
     // net.minecraft.world.entity.monster.EnderMan
-    public static String EnderMan_DATA_CREEPY = "cc";
+    public static String EnderMan_DATA_CREEPY = "cb";
 
     // net.minecraft.world.entity.monster.Zombie
-    public static String Zombie_inWaterTime = "cn";
+    public static String Zombie_inWaterTime = "cm";
 
     // net.minecraft.world.item.Item
     public static String Item_components = "c";
