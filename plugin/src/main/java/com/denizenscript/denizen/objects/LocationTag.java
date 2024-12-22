@@ -52,6 +52,7 @@ import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.spawner.Spawner;
 import org.bukkit.util.Vector;
 import org.bukkit.util.*;
 
@@ -4574,6 +4575,45 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 mechanism.echoError("The 'LocationTag.page' mechanism can only be called on a lectern block.");
             }
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+
+            // <--[tag]
+            // @attribute <LocationTag.spawner_entity>
+            // @returns EntityTag
+            // @mechanism spawner_entity
+            // @description
+            // If the location is a spawner, returns the entity it will spawn.
+            // -->
+            tagProcessor.registerTag(EntityTag.class, "spawner_entity", (attribute, object) -> {
+                if (!(object.getBlockState() instanceof Spawner spawner)) {
+                    attribute.echoError("The 'LocationTag.spawner_entity' tag is only valid for spawners.");
+                    return null;
+                }
+                if (!Bukkit.getWorlds().isEmpty()) {
+                    World world = Bukkit.getWorlds().getFirst();
+                    return new EntityTag(spawner.getSpawnedEntity().createEntity(world));
+                }
+                return new EntityTag(spawner.getSpawnedEntity().getEntityType());
+            });
+
+            // <--[mechanism]
+            // @object LocationTag
+            // @name spawner_entity
+            // @input EntityTag
+            // @description
+            // If the location is a spawner, sets the entity it will spawn.
+            // @tags
+            // <LocationTag.spawner_entity>
+            // -->
+            tagProcessor.registerMechanism("spawner_entity", false, EntityTag.class, (object, mechanism, entity) -> {
+                if (!(object.getBlockState() instanceof Spawner spawner)) {
+                    mechanism.echoError("The 'LocationTag.spawner_entity' mechanism is only valid for spawners.");
+                    return;
+                }
+                spawner.setSpawnedEntity(entity.getBukkitEntity().createSnapshot());
+            });
+        }
     }
 
     public static final ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
