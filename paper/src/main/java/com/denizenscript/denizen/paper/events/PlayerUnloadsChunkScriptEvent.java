@@ -34,11 +34,10 @@ public class PlayerUnloadsChunkScriptEvent extends BukkitScriptEvent implements 
     }
 
     public PlayerChunkUnloadEvent event;
-    public PlayerTag player;
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!runInCheck(path, player.getLocation())) {
+        if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
         return super.matches(path);
