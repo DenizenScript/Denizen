@@ -16,7 +16,7 @@ public class ItemSpawnerEntity extends ItemProperty<EntityTag> {
     // @name spawner_entity
     // @input EntityTag
     // @description
-    // description here
+    // If the item is a spawner, sets the entity type that the spawner will spawn.
     // -->
 
     public static boolean describes(ItemTag item) {
