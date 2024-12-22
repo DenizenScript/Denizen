@@ -69,6 +69,7 @@ public class PaperModule {
             ScriptEvent.registerScriptEvent(PlayerOpenSignScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(PlayerPreparesGrindstoneCraftScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerQuitsScriptEventPaperImpl.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
             ScriptEvent.registerScriptEvent(PlayerRaiseLowerItemScriptEventPaperImpl.class);
         }
@@ -83,7 +84,7 @@ public class PaperModule {
             ScriptEvent.registerScriptEvent(PlayerTracksEntityScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(PlayerTradesWithMerchantScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerQuitsScriptEventPaperImpl.class);
+        ScriptEvent.registerScriptEvent(PlayerUnloadsChunkScriptEvent.class);
         ScriptEvent.registerScriptEvent(PreEntitySpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(ProjectileCollideScriptEvent.class);
         ScriptEvent.registerScriptEvent(ServerListPingScriptEventPaperImpl.class);
