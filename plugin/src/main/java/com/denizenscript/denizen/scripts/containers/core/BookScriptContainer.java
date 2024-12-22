@@ -21,7 +21,7 @@ public class BookScriptContainer extends ScriptContainer {
     // @group Script Container System
     // @description
     // Book script containers are similar to item script containers, except they are specifically
-    // for the book items. They work with with the ItemTag object, and can be fetched
+    // for the book items. They work with the ItemTag object, and can be fetched
     // with the Object Fetcher by using the ItemTag constructor book_script_name
     // Example: - give <player> my_book
     //
@@ -57,7 +57,11 @@ public class BookScriptContainer extends ScriptContainer {
     }
 
     public ItemTag getBookFrom(TagContext context) {
-        ItemTag stack = new ItemTag(Material.WRITTEN_BOOK);
+        Material material = Material.WRITTEN_BOOK;
+        if (contains("signed", String.class) && getString("signed").equalsIgnoreCase("false")) {
+            material = Material.WRITABLE_BOOK;
+        }
+        ItemTag stack = new ItemTag(material);
         return writeBookTo(stack, context);
     }
 
@@ -65,17 +69,18 @@ public class BookScriptContainer extends ScriptContainer {
         if (context == null) {
             context = new BukkitTagContext(null, null, new ScriptTag(this));
         }
-        // Get current ItemMeta from the book
+        if (contains("signed", String.class)) {
+            Material target = getString("signed").equalsIgnoreCase("false") ? Material.WRITABLE_BOOK : Material.WRITTEN_BOOK;
+            if (book.getItemStack().getType() != target) {
+                book.getItemStack().setType(target);
+                book.setItemStack(book.getItemStack());
+            }
+        }
         BookMeta bookInfo = (BookMeta) book.getItemMeta();
         if (contains("title", String.class)) {
             String title = getString("title");
             title = TagManager.tag(title, context);
             bookInfo.setTitle(title);
-        }
-        if (contains("signed", String.class)) {
-            if (getString("signed").equalsIgnoreCase("false")) {
-                book.getItemStack().setType(Material.WRITABLE_BOOK);
-            }
         }
         if (contains("author", String.class)) {
             String author = getString("author");

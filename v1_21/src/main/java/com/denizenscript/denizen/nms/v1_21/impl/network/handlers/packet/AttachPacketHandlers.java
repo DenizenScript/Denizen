@@ -13,8 +13,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.v1_21_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R2.util.CraftVector;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R3.util.CraftVector;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;

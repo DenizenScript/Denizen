@@ -1,12 +1,15 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Art;
+import org.bukkit.Registry;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Painting;
 
@@ -65,7 +68,7 @@ public class EntityPainting implements Property {
         // If the entity is a painting, returns its width.
         // -->
         if (attribute.startsWith("painting_width")) {
-            return new ElementTag(((Painting) painting.getBukkitEntity()).getArt().getBlockWidth())
+            return new ElementTag(NMSHandler.entityHelper.getBlockWidth(((Painting) painting.getBukkitEntity()).getArt()))
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -78,7 +81,7 @@ public class EntityPainting implements Property {
         // If the entity is a painting, returns its height.
         // -->
         if (attribute.startsWith("painting_height")) {
-            return new ElementTag(((Painting) painting.getBukkitEntity()).getArt().getBlockHeight())
+            return new ElementTag(NMSHandler.entityHelper.getBlockHeight(((Painting) painting.getBukkitEntity()).getArt()))
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -92,7 +95,7 @@ public class EntityPainting implements Property {
         // See also <@link tag server.art_types>.
         // -->
         if (attribute.startsWith("painting")) {
-            return new ElementTag(((Painting) painting.getBukkitEntity()).getArt())
+            return Utilities.enumlikeToElement(((Painting) painting.getBukkitEntity()).getArt())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -112,8 +115,8 @@ public class EntityPainting implements Property {
         // <EntityTag.painting>
         // <server.art_types>
         // -->
-        if (mechanism.matches("painting") && mechanism.requireEnum(Art.class)) {
-            Art art = Art.valueOf(mechanism.getValue().asString().toUpperCase());
+        if (mechanism.matches("painting") && Utilities.requireEnumlike(mechanism, Art.class)) {
+            Art art = Registry.ART.get(Utilities.parseNamespacedKey(mechanism.getValue().asString()));
             if (((Painting) painting.getBukkitEntity()).getArt() != art) {
                 ((Painting) painting.getBukkitEntity()).setArt(art, true);
             }

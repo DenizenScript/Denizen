@@ -52,6 +52,7 @@ public class EntityTrades implements Property {
         return getTradeRecipes().identify();
     }
 
+    @Override
     public String getPropertyId() {
         return "trades";
     }
