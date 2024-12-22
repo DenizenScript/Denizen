@@ -25,6 +25,7 @@ public class DragonEggFormScriptEvent extends BukkitScriptEvent implements Liste
     // @Triggers when the ender dragon is defeated and the dragon egg forms.
     //
     // @Context
+    // <context.entity> returns the EntityTag of the ender dragon right before it's removed.
     // <context.location> returns the LocationTag of the dragon egg.
     // <context.end_portal_location> returns the LocationTag of the end portal.
     // <context.previously_killed> returns an ElementTag(Boolean) of whether the dragon has been previously killed.
@@ -39,6 +40,7 @@ public class DragonEggFormScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     public LocationTag location;
+    public EntityTag entity;
     public DragonEggFormEvent event;
 
     @Override
@@ -52,6 +54,7 @@ public class DragonEggFormScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
+            case "entity" -> entity;
             case "location" -> location;
             case "end_portal_location" -> new LocationTag(event.getDragonBattle().getEndPortalLocation());
             case "previously_killed" -> new ElementTag(event.getDragonBattle().hasBeenPreviouslyKilled());
@@ -65,6 +68,7 @@ public class DragonEggFormScriptEvent extends BukkitScriptEvent implements Liste
     @EventHandler
     public void onDragonEggForms(DragonEggFormEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
+        entity = new EntityTag(event.getDragonBattle().getEnderDragon());
         this.event = event;
         fire(event);
     }
