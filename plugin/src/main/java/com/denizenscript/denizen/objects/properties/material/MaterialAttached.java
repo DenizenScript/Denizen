@@ -36,11 +36,6 @@ public class MaterialAttached extends MaterialProperty<ElementTag> {
     }
 
     @Override
-    public String getPropertyId() {
-        return "attached";
-    }
-
-    @Override
     public ElementTag getPropertyValue() {
         return new ElementTag(isAttached());
     }
@@ -64,6 +59,11 @@ public class MaterialAttached extends MaterialProperty<ElementTag> {
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && data instanceof Hangable hangable) {
             hangable.setHanging(attach);
         }
+    }
+
+    @Override
+    public String getPropertyId() {
+        return "attached";
     }
 
     public static void register() {
