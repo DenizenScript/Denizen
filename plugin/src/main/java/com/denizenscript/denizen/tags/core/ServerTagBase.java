@@ -731,14 +731,14 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @attribute <server.biome_types>
         // @returns ListTag(BiomeTag)
         // @description
-        // Returns a list of all biomes known to the server.
+        // Returns a list of all biomes known to the server, including custom added ones.
         // Generally used with <@link objecttype BiomeTag>.
-        // This is based on Bukkit Biome enum, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>.
+        // See <@link url https://minecraft.wiki/w/Biome#List_of_biomes> for a list of all default (vanilla) biomes.
         // -->
         tagProcessor.registerStaticTag(ListTag.class, "biome_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
             ListTag biomes = new ListTag();
-            for (Biome biome : Biome.values()) {
+            for (Biome biome : Registry.BIOME) {
                 BiomeTag biomeTag = new BiomeTag(biome);
                 if (biomeTag.getBiome() != null) {
                     biomes.addObject(biomeTag);
@@ -821,12 +821,30 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // <--[tag]
         // @attribute <server.sound_types>
         // @returns ListTag
+        // @deprecated Use 'server.sound_keys' on MC 1.21+.
         // @description
-        // Returns a list of all sounds known to the server.
-        // Generally used with <@link command playsound>.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html>.
+        // Deprecated in favor of <@link tag server.sound_keys> on MC 1.21+.
         // -->
-        registerEnumListTag("sound_types", Sound.class, "list_sounds");
+        tagProcessor.registerStaticTag(ListTag.class, "sound_types", (attribute, object) -> {
+            listDeprecateWarn(attribute);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+                BukkitImplDeprecations.oldSpigotNames.warn(attribute.context);
+            }
+            return Utilities.listLegacyTypes(Sound.class);
+        }, "list_sounds");
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+
+            // <--[tag]
+            // @attribute <server.sound_keys>
+            // @returns ListTag
+            // @description
+            // Returns a list of the keys/names of all sounds known to the server.
+            // -->
+            tagProcessor.registerStaticTag(ListTag.class, "sound_keys", (attribute, object) -> {
+                return Utilities.registryKeys(Registry.SOUNDS);
+            });
+        }
 
         // <--[tag]
         // @attribute <server.particle_types>

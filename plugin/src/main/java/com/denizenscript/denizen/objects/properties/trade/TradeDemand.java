@@ -30,6 +30,7 @@ public class TradeDemand extends TradeProperty<ElementTag> {
         }
     }
 
+    @Override
     public String getPropertyId() {
         return "demand";
     }
