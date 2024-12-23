@@ -87,6 +87,7 @@ public class EntityPotionEffects implements Property {
         return effects.isEmpty() ? null : effects.identify();
     }
 
+    @Override
     public String getPropertyId() {
         return "potion_effects";
     }

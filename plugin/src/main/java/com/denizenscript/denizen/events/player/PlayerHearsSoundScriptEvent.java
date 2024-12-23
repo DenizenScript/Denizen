@@ -3,7 +3,7 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.utilities.SoundLookup;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.Location;
+import org.bukkit.Registry;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -95,7 +96,7 @@ public class PlayerHearsSoundScriptEvent extends BukkitScriptEvent implements Li
     public ObjectTag getContext(String name) {
         switch (name) {
             case "sound_key": return new ElementTag(soundName);
-            case "sound_name": return isCustom ? null : new ElementTag(SoundLookup.keyToSound.get(soundName));
+            case "sound_name": return isCustom ? null : Utilities.enumLikeToLegacyElement(Registry.SOUNDS.get(Utilities.parseNamespacedKey(soundName)));
             case "category": return new ElementTag(category);
             case "is_custom": return new ElementTag(isCustom);
             case "source_entity": return entity == null ? null : new EntityTag(entity);

@@ -129,6 +129,7 @@ public class Settings {
         cache_packetInterception = config.getBoolean("Packets.Interception", true);
         cache_packetInterceptAutoInit = config.getBoolean("Packets.Auto init", false);
         cache_commandScriptAutoInit = config.getBoolean("Scripts.Command.Auto init", false);
+        cache_legacySpigotNamesSupport = config.getBoolean("Scripts.Support legacy Spigot names", true);
         PlayerFlagHandler.cacheTimeoutSeconds = config.getLong("Saves.Offline player cache timeout", 300);
         PlayerFlagHandler.asyncPreload = config.getBoolean("Saves.Load async on login", true);
         PlayerFlagHandler.saveOnlyWhenWorldSaveOn = config.getBoolean("Saves.Only save if world save is on", false);
@@ -162,7 +163,7 @@ public class Settings {
             cache_chatGloballyIfFailedChatTriggers, cache_chatGloballyIfNoChatTriggers,
             cache_chatGloballyIfUninteractable, cache_worldScriptChatEventAsynchronous,
             cache_packetInterception, cache_createWorldSymbols, cache_createWorldWeirdPaths,
-            cache_commandScriptAutoInit, cache_packetInterceptAutoInit, cache_warnOnAsyncPackets;
+            cache_commandScriptAutoInit, cache_packetInterceptAutoInit, cache_warnOnAsyncPackets, cache_legacySpigotNamesSupport;
 
     public static volatile boolean cache_useDefaultScriptPath;
     public static volatile String cache_getAlternateScriptPath;

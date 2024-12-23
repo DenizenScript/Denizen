@@ -50,6 +50,9 @@ Debug:
     Paste URL: default
 
 Scripts:
+    # Whether backwards compatibility for older Spigot names should be enabled (e.g. 'GENERIC_MAX_HEALTH' as an attribute instead of 'max_health').
+    # This is not needed if your scripts all use modern names. Take caution where names may be stored (eg in flag data).
+    Support legacy Spigot names: true
     World:
         Events:
             On player chats:

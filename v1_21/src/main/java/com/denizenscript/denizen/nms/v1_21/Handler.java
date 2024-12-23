@@ -30,6 +30,7 @@ import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -61,27 +62,22 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R2.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R2.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R2.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftInventoryView;
-import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R2.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.v1_21_R2.util.CraftChatMessage;
-import org.bukkit.craftbukkit.v1_21_R2.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_21_R2.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_21_R2.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_21_R3.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R3.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R3.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R3.legacy.FieldRename;
+import org.bukkit.craftbukkit.v1_21_R3.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_21_R3.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -150,7 +146,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("61a218cda78417b6039da56e08194083");
+        return CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("60ac387ca8007aa018e6aeb394a6988c");
     }
 
     @Override
@@ -435,5 +431,10 @@ public class Handler extends NMSHandler {
             return null;
         }
         return CraftChatMessage.fromJSONOrNull(FormattedTextHelper.componentToJson(spigot));
+    }
+
+    @Override
+    public String updateLegacyName(Class<?> type, String legacyName) {
+        return FieldRename.rename(ApiVersion.FIELD_NAME_PARITY, DebugInternals.getFullClassNameOpti(type).replace('.', '/'), legacyName);
     }
 }
