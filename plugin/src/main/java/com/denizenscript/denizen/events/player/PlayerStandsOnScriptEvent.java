@@ -19,8 +19,6 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     // player stands on material
     // player stands on (<material>)
     //
-    // @Regex ^on player stands on [^\s]+$
-    //
     // @Group Player
     //
     // @Location true
@@ -39,7 +37,6 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     public PlayerStandsOnScriptEvent() {
     }
 
-    PlayerStandsOnScriptEvent instance;
     PlayerInteractEvent event;
     LocationTag location;
     MaterialTag material;

@@ -1,7 +1,10 @@
 package com.denizenscript.denizen.events.block;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.Sound;
@@ -56,6 +59,9 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
     }
 
     public Sound getSound() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            return event.getInstrument().getSound();
+        }
         switch (event.getInstrument()) {
             case PIANO:
                 return Sound.BLOCK_NOTE_BLOCK_HARP;
@@ -98,7 +104,7 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
         switch (name) {
             case "location": return location;
             case "instrument": return new ElementTag(event.getInstrument());
-            case "sound": return new ElementTag(getSound());
+            case "sound": return Utilities.enumLikeToLegacyElement(getSound());
             case "tone": return new ElementTag(event.getNote().getTone());
             case "octave": return new ElementTag(event.getNote().getOctave());
             case "sharp": return new ElementTag(event.getNote().isSharped());
