@@ -12,27 +12,6 @@ import org.bukkit.event.Listener;
 
 public class BellRingScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // <--[event]
-    // @Events
-    // bell rings
-    //
-    // @Location true
-    //
-    // @Plugin Paper
-    //
-    // @Group Paper
-    //
-    // @Cancellable true
-    //
-    // @Triggers when a bell block rings.
-    //
-    // @Context
-    // <context.entity> returns the entity that rung the bell, if any.
-    // <context.location> returns the location of the bell being rung.
-    //
-    // @Player when the ringing entity is a player.
-    //
-    // -->
 
     public BellRingScriptEvent() {
         registerCouldMatcher("bell rings");
@@ -58,7 +37,7 @@ public class BellRingScriptEvent extends BukkitScriptEvent implements Listener {
     public ObjectTag getContext(String name) {
         switch (name) {
             case "entity":
-                return event.getEntity() == null ? null : new EntityTag(event.getEntity());
+                return event.getEntity() == null ? null : new EntityTag(event.getEntity()).getDenizenObject();
             case "location": return location;
         }
         return super.getContext(name);

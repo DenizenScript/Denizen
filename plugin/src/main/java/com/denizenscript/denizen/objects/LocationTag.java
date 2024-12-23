@@ -5673,6 +5673,6 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         if (getY() < getWorld().getMinHeight() || getY() >= getWorld().getMaxHeight()) {
             return false;
         }
-        return MaterialTag.advancedMatchesInternal(getBlock().getType(), matcher, true);
+        return new MaterialTag(getBlock()).advancedMatches(matcher, context);
     }
 }

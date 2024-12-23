@@ -4,7 +4,6 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
-import com.denizenscript.denizen.utilities.LegacyNamingHelper;
 import com.denizenscript.denizen.utilities.MultiVersionHelper1_19;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -81,7 +80,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 mechanism.echoError("Invalid horse color specified: " + horseColor);
             }
             if (list.size() > 1) {
-                ElementTag style = new ElementTag(list.get(1));
+                ElementTag style = list.getObject(1).asElement();
                 if (style.matchesEnum(Horse.Style.class)) {
                     horse.setStyle(style.asEnum(Horse.Style.class));
                 }
@@ -117,7 +116,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
         else if (type == EntityType.TROPICAL_FISH && mechanism.requireObject(ListTag.class)) {
             ListTag list = mechanism.valueAsType(ListTag.class);
             TropicalFish fish = as(TropicalFish.class);
-            ElementTag pattern = new ElementTag(list.get(0));
+            ElementTag pattern = list.getObject(0).asElement();
             if (pattern.matchesEnum(TropicalFish.Pattern.class)) {
                 fish.setPattern(pattern.asEnum(TropicalFish.Pattern.class));
             }
@@ -125,7 +124,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 mechanism.echoError("Invalid tropical fish pattern specified: " + pattern);
             }
             if (list.size() > 1) {
-                ElementTag fishColor = new ElementTag(list.get(1));
+                ElementTag fishColor = list.getObject(1).asElement();
                 if (fishColor.matchesEnum(DyeColor.class)) {
                     fish.setBodyColor(fishColor.asEnum(DyeColor.class));
                 }
@@ -134,7 +133,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 }
             }
             if (list.size() > 2) {
-                ElementTag patternColor = new ElementTag(list.get(2));
+                ElementTag patternColor = list.getObject(2).asElement();
                 if (patternColor.matchesEnum(DyeColor.class)) {
                     fish.setPatternColor(patternColor.asEnum(DyeColor.class));
                 }
@@ -149,16 +148,16 @@ public class EntityColor extends EntityProperty<ElementTag> {
         else if (type == EntityType.CAT && mechanism.requireObject(ListTag.class)) {
             Cat cat = as(Cat.class);
             ListTag list = mechanism.valueAsType(ListTag.class);
-            String catTypeStr = list.get(0);
-            Cat.Type catType = LegacyNamingHelper.convert(Cat.Type.class, catTypeStr);
+            ElementTag input = list.getObject(0).asElement();
+            Cat.Type catType = Utilities.elementToEnumlike(input, Cat.Type.class);
             if (catType != null) {
                 cat.setCatType(catType);
             }
             else {
-                mechanism.echoError("Invalid cat type specified: " + catTypeStr);
+                mechanism.echoError("Invalid cat type specified: " + input);
             }
             if (list.size() > 1) {
-                ElementTag collarColor = new ElementTag(list.get(1));
+                ElementTag collarColor = list.getObject(1).asElement();
                 if (collarColor.matchesEnum(DyeColor.class)) {
                     cat.setCollarColor(collarColor.asEnum(DyeColor.class));
                 }
@@ -170,7 +169,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
         else if (type == EntityType.PANDA && mechanism.requireObject(ListTag.class)) {
             Panda panda = as(Panda.class);
             ListTag list = mechanism.valueAsType(ListTag.class);
-            ElementTag mainGene = new ElementTag(list.get(0));
+            ElementTag mainGene = list.getObject(0).asElement();
             if (mainGene.matchesEnum(Panda.Gene.class)) {
                 panda.setMainGene(mainGene.asEnum(Panda.Gene.class));
             }
@@ -178,7 +177,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 mechanism.echoError("Invalid panda gene specified: " + mainGene);
             }
             if (list.size() > 1) {
-                ElementTag hiddenGene = new ElementTag(list.get(1));
+                ElementTag hiddenGene = list.getObject(1).asElement();
                 if (hiddenGene.matchesEnum(Panda.Gene.class)) {
                     panda.setHiddenGene(hiddenGene.asEnum(Panda.Gene.class));
                 }
@@ -188,11 +187,11 @@ public class EntityColor extends EntityProperty<ElementTag> {
             }
         }
         // TODO This technically has registries on all supported versions
-        else if (type == EntityType.VILLAGER) {
-            LegacyNamingHelper.requireType(mechanism, Villager.Type.class).ifPresent(as(Villager.class)::setVillagerType);
+        else if (type == EntityType.VILLAGER && Utilities.requireEnumlike(mechanism, Villager.Type.class)) {
+            as(Villager.class).setVillagerType(Utilities.elementToEnumlike(mechanism.getValue(), Villager.Type.class));
         }
-        else if (type == EntityType.ZOMBIE_VILLAGER) {
-            LegacyNamingHelper.requireType(mechanism, Villager.Type.class).ifPresent(as(ZombieVillager.class)::setVillagerType);
+        else if (type == EntityType.ZOMBIE_VILLAGER && Utilities.requireEnumlike(mechanism, Villager.Type.class)) {
+            as(ZombieVillager.class).setVillagerType(Utilities.elementToEnumlike(mechanism.getValue(), Villager.Type.class));
         }
         else if (type == EntityType.ARROW && mechanism.requireObject(ColorTag.class)) {
             as(Arrow.class).setColor(BukkitColorExtensions.getColor(mechanism.valueAsType(ColorTag.class)));
@@ -267,50 +266,41 @@ public class EntityColor extends EntityProperty<ElementTag> {
         };
     }
 
-    // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
-    @SuppressWarnings({"unchecked", "DataFlowIssue"})
-    public static ListTag listTypes(Class<?> type) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && Keyed.class.isAssignableFrom(type)) {
-            return Utilities.registryKeys(Bukkit.getRegistry((Class<? extends Keyed>) type));
-        }
-        return new ListTag(Arrays.asList(((Class<? extends Enum<?>>) type).getEnumConstants()), ElementTag::new);
-    }
-
     public ListTag getAllowedColors() {
         EntityType type = getType();
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
             return MultiVersionHelper1_19.getAllowedColors(type);
         }
         if (type == MOOSHROOM_ENTITY_TYPE) {
-            return listTypes(MushroomCow.Variant.class);
+            return Utilities.listTypes(MushroomCow.Variant.class);
         }
         return switch (type) {
             case HORSE -> {
-                ListTag horseColors = listTypes(Horse.Color.class);
-                horseColors.addAll(listTypes(Horse.Style.class));
+                ListTag horseColors = Utilities.listTypes(Horse.Color.class);
+                horseColors.addAll(Utilities.listTypes(Horse.Style.class));
                 yield horseColors;
             }
-            case SHEEP, WOLF, SHULKER -> listTypes(DyeColor.class);
-            case RABBIT -> listTypes(Rabbit.Type.class);
-            case LLAMA, TRADER_LLAMA -> listTypes(Llama.Color.class);
-            case PARROT -> listTypes(Parrot.Variant.class);
+            case SHEEP, WOLF, SHULKER -> Utilities.listTypes(DyeColor.class);
+            case RABBIT -> Utilities.listTypes(Rabbit.Type.class);
+            case LLAMA, TRADER_LLAMA -> Utilities.listTypes(Llama.Color.class);
+            case PARROT -> Utilities.listTypes(Parrot.Variant.class);
             case TROPICAL_FISH -> {
-                ListTag patterns = listTypes(TropicalFish.Pattern.class);
-                patterns.addAll(listTypes(DyeColor.class));
+                ListTag patterns = Utilities.listTypes(TropicalFish.Pattern.class);
+                patterns.addAll(Utilities.listTypes(DyeColor.class));
                 yield patterns;
             }
-            case FOX -> listTypes(Fox.Type.class);
-            case CAT -> listTypes(Cat.Type.class);
-            case PANDA -> listTypes(Panda.Gene.class);
+            case FOX -> Utilities.listTypes(Fox.Type.class);
+            case CAT -> Utilities.listTypes(Cat.Type.class);
+            case PANDA -> Utilities.listTypes(Panda.Gene.class);
             // TODO This technically has registries on all supported versions
-            case VILLAGER, ZOMBIE_VILLAGER -> listTypes(Villager.Type.class);
+            case VILLAGER, ZOMBIE_VILLAGER -> Utilities.listTypes(Villager.Type.class);
             case GOAT -> {
                 ListTag result = new ListTag();
                 result.add("screaming");
                 result.add("normal");
                 yield result;
             }
-            case AXOLOTL -> EntityColor.listTypes(Axolotl.Variant.class);
+            case AXOLOTL -> Utilities.listTypes(Axolotl.Variant.class);
             default -> null; // includes Ocelot (deprecated) and arrow (ColorTag)
         };
     }

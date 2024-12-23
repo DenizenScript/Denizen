@@ -7,7 +7,6 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.MobCategory;
@@ -15,8 +14,10 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.chunk.LevelChunk;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
@@ -30,10 +31,10 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     public ServerLevel world;
 
-    public BiomeNMSImpl(ServerLevel world, String name) {
-        super(world.getWorld(), name);
+    public BiomeNMSImpl(ServerLevel world, NamespacedKey key) {
+        super(world.getWorld(), key);
         this.world = world;
-        biomeBase = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).get(new ResourceLocation(name));
+        biomeBase = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).get(CraftNamespacedKey.toMinecraft(key));
     }
 
     @Override
@@ -170,7 +171,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setTo(Block block) {
         if (((CraftWorld) block.getWorld()).getHandle() != this.world) {
-            NMSHandler.instance.getBiomeNMS(block.getWorld(), getName()).setTo(block);
+            NMSHandler.instance.getBiomeNMS(block.getWorld(), getKey()).setTo(block);
             return;
         }
         // Based on CraftWorld source

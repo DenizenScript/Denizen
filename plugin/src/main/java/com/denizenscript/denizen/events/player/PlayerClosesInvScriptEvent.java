@@ -26,7 +26,7 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Location true
     //
-    // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)
+    // @Triggers when a player closes an inventory.
     //
     // @Context
     // <context.inventory> returns the InventoryTag.

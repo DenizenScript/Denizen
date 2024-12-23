@@ -6,6 +6,7 @@ import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.inventory.InventoryViewUtil;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.entity.HumanEntity;
@@ -94,7 +95,7 @@ public class PlayerSmithsItemScriptEvent extends BukkitScriptEvent implements Li
 
     @EventHandler
     public void onCraftItem(SmithItemEvent event) {
-        HumanEntity humanEntity = event.getView().getPlayer();
+        HumanEntity humanEntity = InventoryViewUtil.getPlayer(event.getView());
         if (EntityTag.isNPC(humanEntity)) {
             return;
         }

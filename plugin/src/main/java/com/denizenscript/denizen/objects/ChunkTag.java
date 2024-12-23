@@ -432,6 +432,34 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         });
 
         // <--[tag]
+        // @attribute <ChunkTag.xz>
+        // @returns ElementTag
+        // @description
+        // Returns the X,Z coordinates of the chunk in the format "X,Z".
+        // @example
+        // # Narrates the player's chunk's X,Z coordinate pair.
+        // # For example, if the player was in <chunk[5,10,world]>, this will be "5,10"
+        // - narrate "Your current chunk coordinate is: <player.location.chunk.xz>!"
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "xz", (attribute, object) -> {
+            return new ElementTag(object.chunkX + "," + object.chunkZ);
+        });
+
+        // <--[tag]
+        // @attribute <ChunkTag.simple>
+        // @returns ElementTag
+        // @description
+        // Returns the X,Z coordinates and world name of the chunk in the format "X,Z,world".
+        // @example
+        // # Narrates the player's chunk's X,Z,World coordinates.
+        // # For example, if the player was in <chunk[5,10,world]>, this will be "5,10,world"
+        // - narrate "Your current chunk is: <player.location.chunk.simple>!"
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "simple", (attribute, object) -> {
+            return new ElementTag(object.chunkX + "," + object.chunkZ + "," + object.getWorldName());
+        });
+
+        // <--[tag]
         // @attribute <ChunkTag.cuboid>
         // @returns CuboidTag
         // @description

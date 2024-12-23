@@ -2,7 +2,10 @@ package com.denizenscript.denizen.nms.v1_21;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.abstracts.*;
+import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizen.nms.abstracts.BlockLight;
+import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
+import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
@@ -47,7 +50,6 @@ import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -59,25 +61,22 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R1.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R1.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R1.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftInventoryView;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R1.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.v1_21_R1.util.CraftChatMessage;
-import org.bukkit.craftbukkit.v1_21_R1.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_21_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R3.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R3.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R3.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R3.legacy.FieldRename;
+import org.bukkit.craftbukkit.v1_21_R3.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_21_R3.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -146,7 +145,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("229d7afc75b70a6c388337687ac4da1f");
+        return CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("60ac387ca8007aa018e6aeb394a6988c");
     }
 
     @Override
@@ -306,15 +305,15 @@ public class Handler extends NMSHandler {
     public List<BiomeNMS> getBiomes(World world) {
         ServerLevel level = ((CraftWorld) world).getHandle();
         ArrayList<BiomeNMS> output = new ArrayList<>();
-        for (Map.Entry<ResourceKey<Biome>, Biome> pair : level.registryAccess().registryOrThrow(Registries.BIOME).entrySet()) {
-            output.add(new BiomeNMSImpl(level, pair.getKey().location().toString()));
+        for (ResourceLocation key : level.registryAccess().lookupOrThrow(Registries.BIOME).keySet()) {
+            output.add(new BiomeNMSImpl(level, CraftNamespacedKey.fromMinecraft(key)));
         }
         return output;
     }
 
     @Override
-    public BiomeNMS getBiomeNMS(World world, String name) {
-        BiomeNMSImpl impl = new BiomeNMSImpl(((CraftWorld) world).getHandle(), name);
+    public BiomeNMS getBiomeNMS(World world, NamespacedKey key) {
+        BiomeNMSImpl impl = new BiomeNMSImpl(((CraftWorld) world).getHandle(), key);
         if (impl.biomeHolder == null) {
             return null;
         }
@@ -326,9 +325,8 @@ public class Handler extends NMSHandler {
         // Based on CraftWorld source
         ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
         Holder<Biome> biome = level.getNoiseBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2);
-        ResourceLocation key = level.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome.value());
-        String keyText = key.getNamespace().equals("minecraft") ? key.getPath() : key.toString();
-        return new BiomeNMSImpl(level, keyText);
+        ResourceLocation key = level.registryAccess().lookupOrThrow(Registries.BIOME).getKey(biome.value());
+        return new BiomeNMSImpl(level, CraftNamespacedKey.fromMinecraft(key));
     }
 
     @Override
@@ -432,5 +430,14 @@ public class Handler extends NMSHandler {
             return null;
         }
         return CraftChatMessage.fromJSONOrNull(FormattedTextHelper.componentToJson(spigot));
+    }
+
+    @Override
+    public String updateLegacyName(Class<?> type, String legacyName) {
+        if (type == Sound.class) {
+            Sound sound = ReflectionHelper.getFieldValue(Sound.class, CoreUtilities.toUpperCase(legacyName), null);
+            return sound != null ? sound.getKey().toString() : null;
+        }
+        return FieldRename.rename(ApiVersion.FIELD_NAME_PARITY, type.getName().replace('.', '/'), legacyName);
     }
 }

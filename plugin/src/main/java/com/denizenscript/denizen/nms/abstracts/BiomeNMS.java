@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.nms.abstracts;
 
 import com.denizenscript.denizencore.objects.core.ColorTag;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -12,17 +12,17 @@ import java.util.List;
 
 public abstract class BiomeNMS {
 
-    public String name;
+    public NamespacedKey key;
 
     public World world;
 
-    public BiomeNMS(World world, String name) {
+    public BiomeNMS(World world, NamespacedKey key) {
         this.world = world;
-        this.name = CoreUtilities.toLowerCase(name);
+        this.key = key;
     }
 
-    public String getName() {
-        return name;
+    public NamespacedKey getKey() {
+        return key;
     }
 
     public DownfallType getDownfallType() {

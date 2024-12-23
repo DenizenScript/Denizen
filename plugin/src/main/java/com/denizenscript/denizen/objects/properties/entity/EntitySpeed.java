@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -57,7 +58,7 @@ public class EntitySpeed implements Property {
 
     public ElementTag getSpeed() {
         if (entity.isLivingEntity()) {
-            return new ElementTag(entity.getLivingEntity().getAttribute(org.bukkit.attribute.Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue());
+            return new ElementTag(entity.getLivingEntity().getAttribute(EntityHelper.ATTRIBUTE_MOVEMENT_SPEED).getBaseValue());
         }
         else {
             if (entity.getBukkitEntity() instanceof Boat) {
@@ -109,7 +110,7 @@ public class EntitySpeed implements Property {
         if (mechanism.matches("speed") && mechanism.requireDouble()) {
             double value = mechanism.getValue().asDouble();
             if (entity.isLivingEntity()) {
-                entity.getLivingEntity().getAttribute(org.bukkit.attribute.Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(value);
+                entity.getLivingEntity().getAttribute(EntityHelper.ATTRIBUTE_MOVEMENT_SPEED).setBaseValue(value);
             }
             else {
                 if (entity.getBukkitEntity() instanceof Boat) {

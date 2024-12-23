@@ -9,7 +9,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -60,7 +60,7 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         if (!super.couldMatch(path)) {
             return false;
         }
-        if (!path.eventArgLowerAt(2).equals("biome") && !couldMatchEnum(path.eventArgLowerAt(2), Biome.values())) {
+        if (!path.eventArgLowerAt(2).equals("biome") && !couldMatchRegistry(path.eventArgLowerAt(2), Registry.BIOME)) {
             return false;
         }
         return true;
@@ -78,10 +78,11 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         if (biome == null) {
             return false;
         }
-        if (!biome_test.equals("biome") && !biome_test.equals(CoreUtilities.toLowerCase(biome.getBiome().getName()))) {
+        String biomeKey = Utilities.namespacedKeyToString(biome.getBiome().getKey());
+        if (!biome_test.equals("biome") && !biome_test.equals(biomeKey)) {
             return false;
         }
-        if (!runGenericSwitchCheck(path, "biome", biome.getBiome().getName())) {
+        if (!runGenericSwitchCheck(path, "biome", biomeKey)) {
             return false;
         }
         return super.matches(path);

@@ -8,8 +8,10 @@ import com.denizenscript.denizen.scripts.containers.core.InventoryScriptHelper;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
+import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -18,14 +20,13 @@ import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.events.ScriptEvent;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.*;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.plugin.EventExecutor;
@@ -159,6 +160,24 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
         }
         addPossibleCouldMatchFailReason("Does not match required enumeration", text);
+        return false;
+    }
+
+    public static boolean couldMatchRegistry(String text, Registry<?> registry) {
+        if (!isAdvancedMatchable(text)) {
+            if (registry.get(Utilities.parseNamespacedKey(text)) != null) {
+                return true;
+            }
+            addPossibleCouldMatchFailReason("Does not match required registry", text);
+            return false;
+        }
+        MatchHelper matcher = createMatcher(text);
+        for (Keyed value : registry) {
+            if (matcher.doesMatch(Utilities.namespacedKeyToString(value.getKey()))) {
+                return true;
+            }
+        }
+        addPossibleCouldMatchFailReason("Does not match required registry", text);
         return false;
     }
 
@@ -725,7 +744,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
             else if (lower.startsWith("biome:")) {
                 String biome = inputText.substring("biome:".length());
-                return runGenericCheck(biome, new LocationTag(location).getBiome().name);
+                return runGenericCheck(biome, Utilities.namespacedKeyToString(new LocationTag(location).getBiome().getKey()));
             }
         }
         if (lower.equals("cuboid")) {

@@ -19,6 +19,7 @@ import com.denizenscript.denizen.utilities.entity.BossBarHelper;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
+import com.denizenscript.denizen.utilities.inventory.InventoryViewUtil;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
 import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
@@ -358,9 +359,9 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
     public CraftingInventory getBukkitWorkbench() {
         if (isOnline()) {
-            if (getPlayerEntity().getOpenInventory().getType() == InventoryType.WORKBENCH
-                    || getPlayerEntity().getOpenInventory().getType() == InventoryType.CRAFTING) {
-                return (CraftingInventory) getPlayerEntity().getOpenInventory().getTopInventory();
+            if (InventoryViewUtil.getType(getPlayerEntity().getOpenInventory()) == InventoryType.WORKBENCH
+                    || InventoryViewUtil.getType(getPlayerEntity().getOpenInventory()) == InventoryType.CRAFTING) {
+                return (CraftingInventory) InventoryViewUtil.getTopInventory(getPlayerEntity().getOpenInventory());
             }
         }
         return null;
@@ -1538,7 +1539,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // inventory, this returns the player's inventory.
         // -->
         registerOnlineOnlyTag(InventoryTag.class, "open_inventory", (attribute, object) -> {
-            return InventoryTag.mirrorBukkitInventory(object.getPlayerEntity().getOpenInventory().getTopInventory());
+            return InventoryTag.mirrorBukkitInventory(InventoryViewUtil.getTopInventory(object.getPlayerEntity().getOpenInventory()));
         });
 
         // <--[tag]
@@ -1562,8 +1563,8 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the index of the trade the player is currently viewing, if any.
         // -->
         registerOnlineOnlyTag(ElementTag.class, "selected_trade_index", (attribute, object) -> {
-            if (object.getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
-                return new ElementTag(((MerchantInventory) object.getPlayerEntity().getOpenInventory().getTopInventory())
+            if (InventoryViewUtil.getTopInventory(object.getPlayerEntity().getOpenInventory()) instanceof MerchantInventory) {
+                return new ElementTag(((MerchantInventory) InventoryViewUtil.getTopInventory(object.getPlayerEntity().getOpenInventory()))
                         .getSelectedRecipeIndex() + 1);
             }
             return null;
@@ -1577,7 +1578,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // This is almost completely broke and only works if the player has placed items in the trade slots.
         //
         registerOnlineOnlyTag(TradeTag.class, "selected_trade", (attribute, object) -> {
-            Inventory playerInventory = object.getPlayerEntity().getOpenInventory().getTopInventory();
+            Inventory playerInventory = InventoryViewUtil.getTopInventory(object.getPlayerEntity().getOpenInventory());
             if (playerInventory instanceof MerchantInventory && ((MerchantInventory) playerInventory).getSelectedRecipe() != null) {
                 return new TradeTag(((MerchantInventory) playerInventory).getSelectedRecipe()).duplicate();
             }
@@ -3944,7 +3945,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("stop_sound")) {
             SoundCategory category = null;
-            String key = null;
+            NamespacedKey key = null;
             if (mechanism.hasValue()) {
                 if (mechanism.getValue().matchesEnum(SoundCategory.class)) {
                     category = mechanism.getValue().asEnum(SoundCategory.class);
@@ -3954,7 +3955,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     }
                 }
                 else {
-                    key = mechanism.getValue().asString();
+                    key = Utilities.parseNamespacedKey(mechanism.getValue().asString());
                 }
             }
             NMSHandler.playerHelper.stopSound(getPlayerEntity(), key, category);

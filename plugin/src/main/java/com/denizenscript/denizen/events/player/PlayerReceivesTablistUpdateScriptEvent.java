@@ -15,6 +15,8 @@ import java.util.UUID;
 
 public class PlayerReceivesTablistUpdateScriptEvent extends BukkitScriptEvent {
 
+    // TODO: 1.21.3: players now have a list order value that's controlled here
+
     // <--[event]
     // @Events
     // player receives tablist update

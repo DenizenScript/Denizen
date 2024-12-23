@@ -1,7 +1,8 @@
 package com.denizenscript.denizen.utilities.maps;
 
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.LegacyNamingHelper;
+import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapView;
@@ -27,7 +28,7 @@ public class MapCursor extends MapObject {
     }
 
     public org.bukkit.map.MapCursor.Type getType(PlayerTag player) {
-        return LegacyNamingHelper.convert(org.bukkit.map.MapCursor.Type.class, tag(typeTag, player));
+        return Utilities.elementToEnumlike(new ElementTag(tag(typeTag, player)), org.bukkit.map.MapCursor.Type.class);
     }
 
     private byte yawToDirection(double yaw) {

@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.MobCategory;
@@ -18,9 +17,11 @@ import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_19_R3.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_19_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 
 import java.lang.invoke.MethodHandle;
@@ -36,10 +37,10 @@ public class BiomeNMSImpl extends BiomeNMS {
     public Holder<Biome> biomeHolder;
     public ServerLevel world;
 
-    public BiomeNMSImpl(ServerLevel world, String name) {
-        super(world.getWorld(), name);
+    public BiomeNMSImpl(ServerLevel world, NamespacedKey key) {
+        super(world.getWorld(), key);
         this.world = world;
-        biomeHolder = world.registryAccess().registryOrThrow(Registries.BIOME).getHolder(ResourceKey.create(Registries.BIOME, new ResourceLocation(name))).orElse(null);
+        biomeHolder = world.registryAccess().registryOrThrow(Registries.BIOME).getHolder(ResourceKey.create(Registries.BIOME, CraftNamespacedKey.toMinecraft(key))).orElse(null);
     }
 
     @Override
@@ -185,7 +186,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setTo(Block block) {
         if (((CraftWorld) block.getWorld()).getHandle() != this.world) {
-            NMSHandler.instance.getBiomeNMS(block.getWorld(), getName()).setTo(block);
+            NMSHandler.instance.getBiomeNMS(block.getWorld(), getKey()).setTo(block);
             return;
         }
         // Based on CraftWorld source

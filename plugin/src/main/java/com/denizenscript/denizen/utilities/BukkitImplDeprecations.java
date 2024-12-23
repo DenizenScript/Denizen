@@ -310,6 +310,9 @@ public class BukkitImplDeprecations {
     // Good candidate for SlowWarning, due to ease of update and the newer names already being more "normal"/well-known
     public static Warning oldSpigotNames = new VerySlowWarning("oldSpigotNames", "Several features (particles, entities, etc.) had alternative naming added by Spigot, which is now deprecated in favor of the official Minecraft naming; see relevant feature's meta docs for more information.");
 
+    // Added 2024/07/13
+    public static Warning pre1_21AttributeFormat = new VerySlowWarning("pre1_21AttributeFormat", "Attribute modifiers were changed in 1.21, now using slot groups instead of slots and namespaced keys instead of UUIDS; check relevant meta docs for more information.");
+
     // ==================== FUTURE deprecations ====================
 
     // Added 2023/01/15, deprecate officially by 2026
@@ -336,6 +339,10 @@ public class BukkitImplDeprecations {
 
     // Added 2024/02/19, deprecate officially by 2027.
     public static Warning lecternPage = new FutureWarning("lecternPage", "'LocationTag.lectern_page' is deprecated in favor of 'LocationTag.page'.");
+
+    // Added 2024/10/12
+    // Good candidate for bumping, as this is a niche feature only on 1.19+ that already had some issues
+    public static Warning entityStepHeight = new FutureWarning("entityStepHeight", "'EntityTag.step_height' is deprecated in favor of the step height attribute.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 

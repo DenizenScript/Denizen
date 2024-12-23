@@ -40,6 +40,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -65,14 +66,14 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_21_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R1.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_21_R1.block.CraftCreatureSpawner;
-import org.bukkit.craftbukkit.v1_21_R1.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R1.entity.*;
-import org.bukkit.craftbukkit.v1_21_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R1.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_21_R3.block.CraftCreatureSpawner;
+import org.bukkit.craftbukkit.v1_21_R3.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R3.entity.*;
+import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R3.util.CraftLocation;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -110,7 +111,7 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public double getDamageTo(LivingEntity attacker, Entity target) {
         double damage = 0;
-        AttributeInstance attrib = attacker.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
+        AttributeInstance attrib = attacker.getAttribute(Attribute.ATTACK_DAMAGE);
         if (attrib != null) {
             damage = attrib.getValue();
         }
@@ -130,17 +131,18 @@ public class EntityHelperImpl extends EntityHelper {
         else {
             source = nmsTarget.level().damageSources().mobAttack(((CraftLivingEntity) attacker).getHandle());
         }
-        if (nmsTarget.isInvulnerableTo(source)) {
+        net.minecraft.world.entity.LivingEntity nmsLivingTarget = nmsTarget instanceof net.minecraft.world.entity.LivingEntity living ? living : null;
+        if (nmsLivingTarget != null ? nmsLivingTarget.isInvulnerableTo(nmsWorld, source) : nmsTarget.isInvulnerableToBase(source)) {
             return 0;
         }
         if (attacker.getEquipment() != null) {
             damage = EnchantmentHelper.modifyDamage(nmsWorld, CraftItemStack.asNMSCopy(attacker.getEquipment().getItemInMainHand()), nmsTarget, source, (float) damage);
         }
-        if (!(nmsTarget instanceof net.minecraft.world.entity.LivingEntity livingTarget)) {
+        if (nmsLivingTarget == null) {
             return damage;
         }
-        damage = CombatRules.getDamageAfterAbsorb(livingTarget, (float) damage, source, (float) livingTarget.getArmorValue(), (float) livingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
-        float enchantDamageModifier = EnchantmentHelper.getDamageProtection(nmsWorld, livingTarget, source);
+        damage = CombatRules.getDamageAfterAbsorb(nmsLivingTarget, (float) damage, source, (float) nmsLivingTarget.getArmorValue(), (float) nmsLivingTarget.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+        float enchantDamageModifier = EnchantmentHelper.getDamageProtection(nmsWorld, nmsLivingTarget, source);
         if (enchantDamageModifier > 0) {
             damage = CombatRules.getDamageAfterMagicAbsorb((float) damage, enchantDamageModifier);
         }
@@ -522,7 +524,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void clientResetLoc(Entity entity) {
-        ClientboundTeleportEntityPacket packet = new ClientboundTeleportEntityPacket(((CraftEntity) entity).getHandle());
+        ClientboundTeleportEntityPacket packet = new ClientboundTeleportEntityPacket(entity.getEntityId(), PositionMoveRotation.of(((CraftEntity) entity).getHandle()), Set.of(), entity.isOnGround());
         for (Player player : getPlayersThatSee(entity)) {
             PacketHelperImpl.send(player, packet);
         }

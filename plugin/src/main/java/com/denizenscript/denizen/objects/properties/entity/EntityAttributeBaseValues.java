@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -43,10 +44,10 @@ public class EntityAttributeBaseValues implements Property {
     public MapTag attributeBaseValues() {
         MapTag result = new MapTag();
         Attributable ent = getAttributable();
-        for (Attribute attr : Attribute.values()) {
+        for (Attribute attr : Utilities.listTypesRaw(Attribute.class)) {
             AttributeInstance instance = ent.getAttribute(attr);
             if (instance != null) {
-                result.putObject(attr.name(), new ElementTag(instance.getBaseValue()));
+                result.putObject(Utilities.enumlikeToElement(attr).asString(), new ElementTag(instance.getBaseValue()));
             }
         }
         return result;
@@ -79,11 +80,11 @@ public class EntityAttributeBaseValues implements Property {
         // See also <@link language attribute modifiers>.
         // -->
         PropertyParser.registerTag(EntityAttributeBaseValues.class, ElementTag.class, "has_attribute", (attribute, object) -> {
-            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.class))) {
+            if (!(attribute.hasParam() && Utilities.matchesEnumlike(attribute.getParamElement(), Attribute.class))) {
                 attribute.echoError("Invalid entity.has_attribute[...] input: must be a valid attribute name.");
                 return null;
             }
-            Attribute attr = Attribute.valueOf(attribute.getParam().toUpperCase());
+            Attribute attr = Utilities.elementToEnumlike(attribute.getParamElement(), Attribute.class);
             return new ElementTag(object.getAttributable().getAttribute(attr) != null);
         });
 
@@ -99,14 +100,14 @@ public class EntityAttributeBaseValues implements Property {
         // See also <@link language attribute modifiers>.
         // -->
         PropertyParser.registerTag(EntityAttributeBaseValues.class, ElementTag.class, "attribute_value", (attribute, object) -> {
-            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.class))) {
+            if (!(attribute.hasParam() && Utilities.matchesEnumlike(attribute.getParamElement(), Attribute.class))) {
                 attribute.echoError("Invalid entity.attribute_value[...] input: must be a valid attribute name.");
                 return null;
             }
-            Attribute attr = Attribute.valueOf(attribute.getParam().toUpperCase());
+            Attribute attr = Utilities.elementToEnumlike(attribute.getParamElement(), Attribute.class);
             AttributeInstance instance = object.getAttributable().getAttribute(attr);
             if (instance == null) {
-                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + object.entity.getBukkitEntityType().name());
+                attribute.echoError("Attribute " + Utilities.enumlikeToElement(attr) + " is not applicable to entity of type " + object.entity.getBukkitEntityType().name());
                 return null;
             }
             return new ElementTag(instance.getValue());
@@ -124,14 +125,14 @@ public class EntityAttributeBaseValues implements Property {
         // See also <@link language attribute modifiers>.
         // -->
         PropertyParser.registerTag(EntityAttributeBaseValues.class, ElementTag.class, "attribute_base_value", (attribute, object) -> {
-            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.class))) {
+            if (!(attribute.hasParam() && Utilities.matchesEnumlike(attribute.getParamElement(), Attribute.class))) {
                 attribute.echoError("Invalid entity.attribute_base_value[...] input: must be a valid attribute name.");
                 return null;
             }
-            Attribute attr = Attribute.valueOf(attribute.getParam().toUpperCase());
+            Attribute attr = Utilities.elementToEnumlike(attribute.getParamElement(), Attribute.class);
             AttributeInstance instance = object.getAttributable().getAttribute(attr);
             if (instance == null) {
-                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + object.entity.getBukkitEntityType().name());
+                attribute.echoError("Attribute " + Utilities.enumlikeToElement(attr) + " is not applicable to entity of type " + object.entity.getBukkitEntityType().name());
                 return null;
             }
             return new ElementTag(instance.getBaseValue());
@@ -149,14 +150,14 @@ public class EntityAttributeBaseValues implements Property {
         // See also <@link language attribute modifiers>.
         // -->
         PropertyParser.registerTag(EntityAttributeBaseValues.class, ElementTag.class, "attribute_default_value", (attribute, object) -> {
-            if (!(attribute.hasParam() && attribute.getParamElement().matchesEnum(Attribute.class))) {
+            if (!(attribute.hasParam() && Utilities.matchesEnumlike(attribute.getParamElement(), Attribute.class))) {
                 attribute.echoError("Invalid entity.attribute_default_value[...] input: must be a valid attribute name.");
                 return null;
             }
-            Attribute attr = Attribute.valueOf(attribute.getParam().toUpperCase());
+            Attribute attr = Utilities.elementToEnumlike(attribute.getParamElement(), Attribute.class);
             AttributeInstance instance = object.getAttributable().getAttribute(attr);
             if (instance == null) {
-                attribute.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + object.entity.getBukkitEntityType().name());
+                attribute.echoError("Attribute " + Utilities.enumlikeToElement(attr) + " is not applicable to entity of type " + object.entity.getBukkitEntityType().name());
                 return null;
             }
             return new ElementTag(instance.getDefaultValue());
@@ -185,10 +186,10 @@ public class EntityAttributeBaseValues implements Property {
             MapTag input = mechanism.valueAsType(MapTag.class);
             Attributable ent = getAttributable();
             for (Map.Entry<StringHolder, ObjectTag> subValue : input.entrySet()) {
-                Attribute attr = Attribute.valueOf(subValue.getKey().str.toUpperCase());
+                Attribute attr = Utilities.elementToEnumlike(new ElementTag(subValue.getKey().str), Attribute.class);
                 AttributeInstance instance = ent.getAttribute(attr);
                 if (instance == null) {
-                    mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
+                    mechanism.echoError("Attribute " + Utilities.enumlikeToElement(attr) + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
                     continue;
                 }
                 ElementTag value = subValue.getValue().asElement();

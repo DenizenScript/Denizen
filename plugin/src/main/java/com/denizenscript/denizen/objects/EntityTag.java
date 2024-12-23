@@ -877,7 +877,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             try {
                 for (Mechanism mech : mechanisms) {
                     if (mech.getName().equals("painting")) {
-                        art = Art.valueOf(mech.getValue().asString().toUpperCase());
+                        art = Registry.ART.get(Utilities.parseNamespacedKey(mech.getValue().asString()));
                     }
                     else if (mech.getName().equals("rotation")) {
                         face = BlockFace.valueOf(mech.getValue().asString().toUpperCase());
@@ -888,10 +888,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 // ignore
             }
             if (art != null && face != null) { // Paintings are the worst
-                if (art.getBlockHeight() % 2 == 0) {
+                if (NMSHandler.entityHelper.getBlockHeight(art) % 2 == 0) {
                     location.subtract(0, 1, 0);
                 }
-                if (art.getBlockWidth() % 2 == 0) {
+                if (NMSHandler.entityHelper.getBlockWidth(art) % 2 == 0) {
                     if (face == BlockFace.WEST) {
                         location.subtract(0, 0, 1);
                     }
@@ -3328,6 +3328,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
             return runnable.run(attribute, object);
         }, variants);
+    }
+
+    public static void registerSpawnedOnlyMechanism(String name, boolean allowProperty, Mechanism.GenericMechRunnerInterface<EntityTag> runner) {
+        tagProcessor.registerMechanism(name, allowProperty, (entity, mechanism) -> {
+            if (!entity.isSpawned()) {
+                mechanism.echoError("Entity is not spawned, but mechanism '" + name + "' requires the entity be spawned, for entity: " + entity.debuggable());
+                return;
+            }
+            runner.run(entity, mechanism);
+        });
     }
 
     public static <P extends ObjectTag> void registerSpawnedOnlyMechanism(String name, boolean allowProperty, Class<P> paramType, Mechanism.ObjectInputMechRunnerInterface<EntityTag, P> runner) {

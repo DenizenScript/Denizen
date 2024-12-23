@@ -2,7 +2,7 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.utilities.LegacyNamingHelper;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.Villager;
@@ -58,7 +58,7 @@ public class VillagerChangesProfessionScriptEvent extends BukkitScriptEvent impl
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         // TODO This technically has registries on all supported versions
-        Villager.Profession newProfession = LegacyNamingHelper.convert(Villager.Profession.class, determinationObj.toString());
+        Villager.Profession newProfession = Utilities.elementToEnumlike(determinationObj.asElement(), Villager.Profession.class);
         if (newProfession != null) {
             event.setProfession(newProfession);
             return true;

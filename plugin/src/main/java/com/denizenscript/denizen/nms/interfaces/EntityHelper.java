@@ -5,12 +5,11 @@ import com.denizenscript.denizen.events.entity.EntityExitsVehicleScriptEvent;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
@@ -27,6 +26,20 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class EntityHelper {
+
+    public static Attribute ATTRIBUTE_ARMOR = Utilities.findBestEnumlike(Attribute.class, "ARMOR", "GENERIC_ARMOR");
+    public static Attribute ATTRIBUTE_STEP_HEIGHT = Utilities.findBestEnumlike(Attribute.class, "STEP_HEIGHT", "GENERIC_STEP_HEIGHT");
+    public static Attribute ATTRIBUTE_MOVEMENT_SPEED = Utilities.findBestEnumlike(Attribute.class, "MOVEMENT_SPEED", "GENERIC_MOVEMENT_SPEED");
+
+    // TODO: once 1.21 is the minimum supported version, remove these
+    public int getBlockHeight(Art art) {
+        return art.getBlockHeight();
+    }
+
+    // TODO: once 1.21 is the minimum supported version, remove these
+    public int getBlockWidth(Art art) {
+        return art.getBlockWidth();
+    }
 
     public abstract void setInvisible(Entity entity, boolean invisible);
 
@@ -286,7 +299,7 @@ public abstract class EntityHelper {
     public static float normalizeYaw(float yaw) {
         yaw = yaw % 360;
         if (yaw < 0) {
-            yaw += 360.0;
+            yaw += 360;
         }
         return yaw;
     }
@@ -445,11 +458,13 @@ public abstract class EntityHelper {
     }
 
     public float getStepHeight(Entity entity) {
-        throw new UnsupportedOperationException();
+        return entity instanceof LivingEntity livingEntity ? (float) livingEntity.getAttribute(ATTRIBUTE_STEP_HEIGHT).getBaseValue() : 0;
     }
 
     public void setStepHeight(Entity entity, float stepHeight) {
-        throw new UnsupportedOperationException();
+        if (entity instanceof LivingEntity livingEntity) {
+            livingEntity.getAttribute(ATTRIBUTE_STEP_HEIGHT).setBaseValue(stepHeight);
+        }
     }
 
     public List<Object> convertInternalEntityDataValues(Entity entity, MapTag internalData) {

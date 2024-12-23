@@ -1,23 +1,23 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.tags.Attribute;
 
+@Deprecated(forRemoval = true)
 public class EntityStepHeight extends EntityProperty<ElementTag> {
 
-    // TODO: 1.20.6: this can be controlled by an attribute now, can deprecate in favor of that & backsupport
     // <--[property]
     // @object EntityTag
     // @name step_height
     // @input ElementTag(Decimal)
+    // @deprecated Use the step height attribute on MC 1.20+.
     // @description
-    // Controls the entity's step height, which controls how many blocks can it walk over.
-    // As this is based on an internal value, it has some edge-cases, for example:
-    // - most (but not all) living entities can still step over 1 block tall things as usual, even if this is set to 0.
-    // - this doesn't apply to vehicles when the player is controlling them.
-    // Note that this also applies to things like getting pushed.
+    // Deprecated in favor of the step height attribute on MC 1.20+, see <@link language Attribute Modifiers>.
     // -->
 
     public static boolean describes(EntityTag entity) {
@@ -30,7 +30,18 @@ public class EntityStepHeight extends EntityProperty<ElementTag> {
     }
 
     @Override
+    public ElementTag getTagValue(Attribute attribute) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            BukkitImplDeprecations.entityStepHeight.warn(attribute.context);
+        }
+        return super.getTagValue(attribute);
+    }
+
+    @Override
     public void setPropertyValue(ElementTag param, Mechanism mechanism) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            BukkitImplDeprecations.entityStepHeight.warn(mechanism.context);
+        }
         if (mechanism.requireFloat()) {
             NMSHandler.entityHelper.setStepHeight(getEntity(), param.asFloat());
         }
