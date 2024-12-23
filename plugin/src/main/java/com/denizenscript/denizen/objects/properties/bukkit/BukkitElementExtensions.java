@@ -27,7 +27,7 @@ public class BukkitElementExtensions {
 
     public static String replaceEssentialsHexColors(char prefix, String input) {
         int hex = input.indexOf(prefix + "#");
-        while (hex != -1 && hex < input.length() + 8) {
+        while (hex != -1 && hex + 7 < input.length()) {
             StringBuilder converted = new StringBuilder(10);
             converted.append(ChatColor.COLOR_CHAR).append("x");
             for (int i = 0; i < 6; i++) {

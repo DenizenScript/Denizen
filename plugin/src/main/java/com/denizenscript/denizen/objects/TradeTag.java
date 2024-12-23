@@ -12,8 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 
-import java.util.Collections;
-
 public class TradeTag implements ObjectTag, Adjustable {
 
     // <--[ObjectType]
@@ -71,8 +69,7 @@ public class TradeTag implements ObjectTag, Adjustable {
 
     public TradeTag(MerchantRecipe recipe) {
         if (recipe == null) {
-            recipe = new MerchantRecipe(new ItemStack(Material.AIR), 0);
-            recipe.setIngredients(Collections.singletonList(new ItemStack(Material.AIR)));
+            recipe = new MerchantRecipe(new ItemStack(Material.DIRT), 0); // Dirt instead of air because Paper will get upset at air
         }
         this.recipe = recipe;
     }
