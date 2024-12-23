@@ -180,7 +180,7 @@ public class EntityAttributeModifiers implements Property {
 
     public MapTag getAttributeModifiers() {
         MapTag map = new MapTag();
-        for (Attribute attribute : Attribute.values()) {
+        for (Attribute attribute : Utilities.listTypesRaw(Attribute.class)) {
             ListTag list = getAttributeModifierList(getAttributable().getAttribute(attribute));
             if (list != null) {
                 map.putObject(attribute.name(), list);
@@ -425,7 +425,7 @@ public class EntityAttributeModifiers implements Property {
                 else {
                     id = UUID.fromString(toRemove);
                 }
-                for (Attribute attr : Attribute.values()) {
+                for (Attribute attr : Utilities.listTypesRaw(Attribute.class)) {
                     AttributeInstance instance = ent.getAttribute(attr);
                     if (instance == null) {
                         continue;
