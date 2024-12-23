@@ -21,6 +21,7 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
@@ -98,7 +99,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
     /////////////
 
     public BiomeTag(Biome biome) {
-        this.biome = NMSHandler.instance.getBiomeNMS(Bukkit.getWorlds().get(0), biome.getKey());
+        this.biome = NMSHandler.instance.getBiomeNMS(Bukkit.getWorlds().get(0), ((Keyed) biome).getKey());
     }
 
     public BiomeTag(BiomeNMS biome) {

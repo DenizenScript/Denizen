@@ -28,7 +28,7 @@ import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.lang.reflect.Field;
@@ -247,9 +247,21 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void handlePickItem(ServerboundPickItemPacket packet) {
+    public void handleAcceptPlayerLoad(ServerboundPlayerLoadedPacket packet) {
         if (handlePacketIn(packet)) { return; }
-        oldListener.handlePickItem(packet);
+        oldListener.handleAcceptPlayerLoad(packet);
+    }
+
+    @Override
+    public void handlePickItemFromBlock(ServerboundPickItemFromBlockPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handlePickItemFromBlock(packet);
+    }
+
+    @Override
+    public void handlePickItemFromEntity(ServerboundPickItemFromEntityPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handlePickItemFromEntity(packet);
     }
 
     @Override
