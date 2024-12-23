@@ -81,8 +81,11 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
 
     @Override
     public void cancellationChanged() {
-        if (cancelled) {
+        if (cancelled && rawList.contains(location.getBlock())) {
             rawList.remove(location.getBlock());
+        }
+        else if (!rawList.contains(location.getBlock())) {
+            rawList.add(location.getBlock());
         }
     }
 

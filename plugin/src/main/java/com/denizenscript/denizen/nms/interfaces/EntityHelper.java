@@ -8,10 +8,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.CreatureSpawner;
@@ -33,6 +30,16 @@ public abstract class EntityHelper {
     public static Attribute ATTRIBUTE_ARMOR = Utilities.findBestEnumlike(Attribute.class, "ARMOR", "GENERIC_ARMOR");
     public static Attribute ATTRIBUTE_STEP_HEIGHT = Utilities.findBestEnumlike(Attribute.class, "STEP_HEIGHT", "GENERIC_STEP_HEIGHT");
     public static Attribute ATTRIBUTE_MOVEMENT_SPEED = Utilities.findBestEnumlike(Attribute.class, "MOVEMENT_SPEED", "GENERIC_MOVEMENT_SPEED");
+
+    // TODO: once 1.21 is the minimum supported version, remove these
+    public int getBlockHeight(Art art) {
+        return art.getBlockHeight();
+    }
+
+    // TODO: once 1.21 is the minimum supported version, remove these
+    public int getBlockWidth(Art art) {
+        return art.getBlockWidth();
+    }
 
     public abstract void setInvisible(Entity entity, boolean invisible);
 

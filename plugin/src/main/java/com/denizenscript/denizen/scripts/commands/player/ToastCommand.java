@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -43,6 +44,8 @@ public class ToastCommand extends AbstractCommand {
     // If no target is specified it will default to the attached player.
     // The icon argument changes the icon displayed in the toast pop-up notification.
     // The frame argument changes the type of advancement.
+    //
+    // As of MC 1.20, an icon is required. Dirt will be used if it is missing.
     //
     // @Tags
     // None
@@ -109,6 +112,9 @@ public class ToastCommand extends AbstractCommand {
         final List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, name, text, frame, icon, db("targets", targets));
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && icon.getBukkitMaterial().isAir()) {
+            icon = new ItemTag(Material.DIRT);
         }
         final Advancement advancement = new Advancement(true,
                 new NamespacedKey(Denizen.getInstance(), UUID.randomUUID().toString()), null,
