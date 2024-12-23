@@ -157,6 +157,9 @@ public class MaterialSwitchable implements Property {
         if (isOpenable()) {
             return getOpenable().isOpen();
         }
+        else if (isLightable()) {
+            return getLightable().isLit();
+        }
         else if (isPowerable()) {
             return getPowerable().isPowered();
         }
@@ -165,9 +168,6 @@ public class MaterialSwitchable implements Property {
         }
         else if (isDaylightDetector()) {
             return getDaylightDetector().isInverted();
-        }
-        else if (isLightable()) {
-            return getLightable().isLit();
         }
         else if (isPiston()) {
             return getPiston().isExtended();
@@ -188,6 +188,9 @@ public class MaterialSwitchable implements Property {
         if (isOpenable()) {
             getOpenable().setOpen(state);
         }
+        else if (isLightable()) {
+            getLightable().setLit(state);
+        }
         else if (isPowerable()) {
             getPowerable().setPowered(state);
         }
@@ -196,9 +199,6 @@ public class MaterialSwitchable implements Property {
         }
         else if (isDaylightDetector()) {
             getDaylightDetector().setInverted(state);
-        }
-        else if (isLightable()) {
-            getLightable().setLit(state);
         }
         else if (isPiston()) {
             getPiston().setExtended(state);

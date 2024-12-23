@@ -17,9 +17,10 @@ public class ItemColor extends ItemProperty<ColorTag> {
     // @name color
     // @input ColorTag
     // @description
-    // The color of a leather armor, potion, filled map, or tipped arrow item.
-    // For the tag: will return a white <@link objecttype ColorTag> if the given potion item doesn't have a color.
-    // For the tag: will return null if the given map item doesn't have a color.
+    // Controls the color of a leather armor, potion, filled map, or tipped arrow item.
+    // @tag
+    // For potions, will return a white <@link objecttype ColorTag> if the given item doesn't have a color.
+    // For maps, will return null if the given item doesn't have a color.
     // -->
 
     public static boolean describes(ItemTag item) {
