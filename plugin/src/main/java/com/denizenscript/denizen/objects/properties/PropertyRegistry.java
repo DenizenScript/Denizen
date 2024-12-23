@@ -44,6 +44,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityAttributeModifiers.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArmorPose.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArms.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityAwake.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAware.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityBackgroundColor.class, EntityTag.class);
@@ -184,6 +185,9 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
             PropertyParser.registerProperty(EntityTrapped.class, EntityTag.class);
             PropertyParser.registerProperty(EntityTrapTime.class, EntityTag.class);
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(EntityVariant.class, EntityTag.class);
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityViewRange.class, EntityTag.class);

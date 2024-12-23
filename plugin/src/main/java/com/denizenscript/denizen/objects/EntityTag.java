@@ -3330,6 +3330,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }, variants);
     }
 
+    public static void registerSpawnedOnlyMechanism(String name, boolean allowProperty, Mechanism.GenericMechRunnerInterface<EntityTag> runner) {
+        tagProcessor.registerMechanism(name, allowProperty, (entity, mechanism) -> {
+            if (!entity.isSpawned()) {
+                mechanism.echoError("Entity is not spawned, but mechanism '" + name + "' requires the entity be spawned, for entity: " + entity.debuggable());
+                return;
+            }
+            runner.run(entity, mechanism);
+        });
+    }
+
     public static <P extends ObjectTag> void registerSpawnedOnlyMechanism(String name, boolean allowProperty, Class<P> paramType, Mechanism.ObjectInputMechRunnerInterface<EntityTag, P> runner) {
         tagProcessor.registerMechanism(name, allowProperty, paramType, (entity, mechanism, param) -> {
             if (!entity.isSpawned()) {
