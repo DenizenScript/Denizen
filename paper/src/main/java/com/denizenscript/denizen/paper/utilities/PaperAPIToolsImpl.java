@@ -11,6 +11,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -157,8 +158,9 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             }
         }
         if (relativeTeleportFlags != null) {
+            // TODO: MC 1.21.3: Paper updated this API to work differently due to underlying Minecraft changes.
             for (TeleportCommand.Relative relativeTeleportFlag : relativeTeleportFlags) {
-                teleportFlags.add(TeleportFlag.Relative.values()[relativeTeleportFlag.ordinal()]);
+                teleportFlags.add(new ElementTag(relativeTeleportFlag.name()).asEnum(TeleportFlag.Relative.class));
             }
         }
         entity.teleport(loc, cause, teleportFlags.toArray(new TeleportFlag[0]));

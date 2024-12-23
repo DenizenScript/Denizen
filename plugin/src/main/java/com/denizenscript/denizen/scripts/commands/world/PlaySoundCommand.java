@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -74,7 +75,7 @@ public class PlaySoundCommand extends AbstractCommand {
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        tab.addWithPrefix("sound:", Sound.values());
+        tab.addWithPrefix("sound:", Utilities.listTypes(Sound.class));
     }
 
     @Override
@@ -133,7 +134,7 @@ public class PlaySoundCommand extends AbstractCommand {
                 }
                 else {
                     for (LocationTag location : locations) {
-                        location.getWorld().playSound(location, Sound.valueOf(sound.toUpperCase()), categoryEnum, volume, pitch);
+                        location.getWorld().playSound(location, Utilities.elementToEnumlike(soundElement, Sound.class), categoryEnum, volume, pitch);
                     }
                 }
             }
@@ -144,7 +145,7 @@ public class PlaySoundCommand extends AbstractCommand {
                             player.getPlayerEntity().playSound(location, sound, categoryEnum, volume, pitch);
                         }
                         else {
-                            player.getPlayerEntity().playSound(location, Sound.valueOf(sound.toUpperCase()), categoryEnum, volume, pitch);
+                            player.getPlayerEntity().playSound(location, Utilities.elementToEnumlike(soundElement, Sound.class), categoryEnum, volume, pitch);
                         }
                     }
                 }
@@ -156,10 +157,10 @@ public class PlaySoundCommand extends AbstractCommand {
                     }
                     else {
                         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-                            player.getPlayerEntity().playSound(player.getPlayerEntity(), Sound.valueOf(sound.toUpperCase()), categoryEnum, volume, pitch);
+                            player.getPlayerEntity().playSound(player.getPlayerEntity(), Utilities.elementToEnumlike(soundElement, Sound.class), categoryEnum, volume, pitch);
                         }
                         else {
-                            player.getPlayerEntity().playSound(player.getLocation(), Sound.valueOf(sound.toUpperCase()), categoryEnum, volume, pitch);
+                            player.getPlayerEntity().playSound(player.getLocation(), Utilities.elementToEnumlike(soundElement, Sound.class), categoryEnum, volume, pitch);
                         }
                     }
                 }

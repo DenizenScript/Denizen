@@ -47,6 +47,7 @@ public class AdvancementCommand extends AbstractCommand {
     // The parent argument sets the root advancement in the advancements menu, in the format "namespace:key".
     // If no namespace is specified, the parent is assumed to have been created through this command.
     // The icon argument sets the icon displayed in toasts and the advancements menu.
+    // As of MC 1.20, an icon is required. Dirt will be used if it is missing.
     // The title argument sets the title that will show on toasts and in the advancements menu.
     // The description argument sets the information that will show when scrolling over a chat announcement or in the advancements menu.
     // The background argument sets the image to use if the advancement goes to a new tab.
@@ -205,6 +206,9 @@ public class AdvancementCommand extends AbstractCommand {
         ElementTag x = scriptEntry.getElement("x");
         ElementTag y = scriptEntry.getElement("y");
         ElementTag progressLength = scriptEntry.getElement("progress_length");
+        if (icon.getBukkitMaterial().isAir()) {
+            icon = new ItemTag(Material.DIRT);
+        }
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, name, id, parent, delete, grant, revoke, icon, title, description, background, progressLength, frame, toast, announce, hidden, x, y);
         }

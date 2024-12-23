@@ -60,6 +60,7 @@ public class ItemUnbreakable implements Property {
         return (item.getItemMeta() != null && item.getItemMeta().isUnbreakable()) ? "true" : null;
     }
 
+    @Override
     public String getPropertyId() {
         return "unbreakable";
     }

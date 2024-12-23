@@ -13,33 +13,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 /**
  * Spigot helper for the core DebugSubmitter.
  */
 public class DebugSubmit {
 
-    @Deprecated
-    public static List<Supplier<String>> additionalDebugLines = new ArrayList<>();
-
     public static void init() {
         DebugSubmitter.pasteTitleGetter = () -> "Denizen Debug Logs From " + ChatColor.stripColor(Bukkit.getServer().getMotd());
         DebugSubmitter.debugHeaderLines.add(DebugSubmit::getCoreHeader);
-        DebugSubmitter.debugHeaderLines.addAll(additionalDebugLines);
-        additionalDebugLines.clear();
     }
 
     public static String getCoreHeader() {
-        if (!DebugSubmitter.debugHeaderLines.isEmpty()) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Denizen.instance, () -> {
-                DebugSubmitter.debugHeaderLines.addAll(additionalDebugLines);
-                additionalDebugLines.clear();
-            }, 0);
-        }
         try {
             // Build a list of plugins
             StringBuilder pluginlist = new StringBuilder();

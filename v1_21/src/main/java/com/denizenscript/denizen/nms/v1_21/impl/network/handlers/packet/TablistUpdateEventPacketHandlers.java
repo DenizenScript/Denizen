@@ -98,7 +98,7 @@ public class TablistUpdateEventPacketHandlers {
                             newProfile.getProperties().put("textures", new Property("textures", data.texture, data.signature));
                         }
                         ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(newProfile.getId(), newProfile, data.isListed, data.latency, data.gamemode == null ? null : GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
-                                data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE)), update.listOrder(), update.chatSession());
+                                data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE)), update.showHat(), update.listOrder(), update.chatSession());
                         networkManager.oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(entry)));
                     }
                 }
