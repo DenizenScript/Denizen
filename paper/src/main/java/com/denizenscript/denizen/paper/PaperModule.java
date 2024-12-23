@@ -51,6 +51,7 @@ public class PaperModule {
             ScriptEvent.registerScriptEvent(PlayerChangesFramedItemScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(PlayerChoosesArrowScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerChunkUnloadScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksFakeEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClicksInRecipeBookScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerClientOptionsChangeScriptEvent.class);
@@ -84,7 +85,6 @@ public class PaperModule {
             ScriptEvent.registerScriptEvent(PlayerTracksEntityScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(PlayerTradesWithMerchantScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerUnloadsChunkScriptEvent.class);
         ScriptEvent.registerScriptEvent(PreEntitySpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(ProjectileCollideScriptEvent.class);
         ScriptEvent.registerScriptEvent(ServerListPingScriptEventPaperImpl.class);

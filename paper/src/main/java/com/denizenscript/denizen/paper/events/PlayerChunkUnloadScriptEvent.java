@@ -10,7 +10,7 @@ import io.papermc.paper.event.packet.PlayerChunkUnloadEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class PlayerUnloadsChunkScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerChunkUnloadScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -29,7 +29,7 @@ public class PlayerUnloadsChunkScriptEvent extends BukkitScriptEvent implements 
     // <context.chunk> returns a ChunkTag of the chunk being unloaded.
     // -->
 
-    public PlayerUnloadsChunkScriptEvent() {
+    public PlayerChunkUnloadScriptEvent() {
         registerCouldMatcher("player unloads chunk");
     }
 
@@ -62,5 +62,4 @@ public class PlayerUnloadsChunkScriptEvent extends BukkitScriptEvent implements 
         this.event = event;
         fire(event);
     }
-
 }
