@@ -22,6 +22,8 @@ public class PlayerChunkUnloadScriptEvent extends BukkitScriptEvent implements L
     //
     // @Plugin Paper
     //
+    // @Warning This event will fire *extremely* rapidly and almost guarantees lag. Use with maximum caution.
+    //
     // @Triggers when a player unloads a chunk.
     //
     // @Context

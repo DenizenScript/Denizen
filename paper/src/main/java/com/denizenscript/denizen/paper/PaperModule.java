@@ -59,12 +59,13 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerDeepSleepScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerElytraBoostScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerEquipsArmorScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerGrantedAdvancementCriterionScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             ScriptEvent.registerScriptEvent(PlayerInventorySlotChangeScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(PlayerItemTakesDamageScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
-        ScriptEvent.registerScriptEvent(PlayerGrantedAdvancementCriterionScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerLecternPageChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerLoomPatternSelectScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             ScriptEvent.registerScriptEvent(PlayerOpenSignScriptEvent.class);
@@ -75,17 +76,19 @@ public class PaperModule {
             ScriptEvent.registerScriptEvent(PlayerRaiseLowerItemScriptEventPaperImpl.class);
         }
         ScriptEvent.registerScriptEvent(PlayerSelectsStonecutterRecipeScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerLecternPageChangeScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerSpectatesEntityScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             ScriptEvent.registerScriptEvent(PlayerShieldDisableScriptEvent.class);
         }
+        ScriptEvent.registerScriptEvent(PlayerSpectatesEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStopsSpectatingScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             ScriptEvent.registerScriptEvent(PlayerTracksEntityScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(PlayerTradesWithMerchantScriptEvent.class);
         ScriptEvent.registerScriptEvent(PreEntitySpawnScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            ScriptEvent.registerScriptEvent(PrePlayerAttackEntityScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(ProjectileCollideScriptEvent.class);
         ScriptEvent.registerScriptEvent(ServerListPingScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(ServerResourcesReloadedScriptEvent.class);
@@ -93,9 +96,6 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(TargetBlockHitScriptEvent.class);
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_18)) {
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
-        }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            ScriptEvent.registerScriptEvent(PrePlayerAttackEntityScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(UnknownCommandScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
@@ -108,8 +108,8 @@ public class PaperModule {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
             PropertyParser.registerProperty(EntityAutoExpire.class, EntityTag.class);
         }
-        PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCarryingEgg.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDrinkingPotion.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityEggLayTime.class, EntityTag.class);
