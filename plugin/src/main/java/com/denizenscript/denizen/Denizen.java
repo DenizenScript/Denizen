@@ -499,7 +499,7 @@ public class Denizen extends JavaPlugin {
             getLogger().warning("Debug is disabled in the Denizen config. This is almost always a mistake, and should not be done in the majority of cases.");
         }
         if (Settings.cache_legacySpigotNamesSupport) {
-            getLogger().warning("LEGACY SPIGOT NAMES SUPPORT ENABLED! This should only be used if you have scripts with legacy Spigot names, and should otherwise be disabled; see config.yml for more information.");
+            Debug.log("LEGACY SPIGOT NAMES SUPPORT ENABLED! This should only be used if you have scripts with legacy Spigot names, and should otherwise be disabled; see config.yml for more information.");
         }
     }
 

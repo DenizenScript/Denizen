@@ -434,10 +434,6 @@ public class Handler extends NMSHandler {
 
     @Override
     public String updateLegacyName(Class<?> type, String legacyName) {
-        if (type == Sound.class) {
-            Sound sound = ReflectionHelper.getFieldValue(Sound.class, CoreUtilities.toUpperCase(legacyName), null);
-            return sound != null ? sound.getKey().toString() : null;
-        }
         return FieldRename.rename(ApiVersion.FIELD_NAME_PARITY, type.getName().replace('.', '/'), legacyName);
     }
 }

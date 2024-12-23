@@ -598,6 +598,13 @@ public class Utilities {
         if (value != null || !Settings.cache_legacySpigotNamesSupport) {
             return value;
         }
+        T enumValue = element.asEnum(type);
+        if (enumValue != null) {
+            if (showWarning) {
+                BukkitImplDeprecations.oldSpigotNames.warn();
+            }
+            return enumValue;
+        }
         String updatedName = NMSHandler.instance.updateLegacyName(type, element.asString());
         if (CoreUtilities.equalsIgnoreCase(element.asString(), updatedName)) {
             return null;
