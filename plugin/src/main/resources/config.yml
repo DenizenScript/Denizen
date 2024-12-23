@@ -52,7 +52,7 @@ Debug:
 Scripts:
     # Whether backwards compatibility for older Spigot names should be enabled (e.g. 'GENERIC_MAX_HEALTH' as an attribute instead of 'max_health').
     # This should generally be disabled, and should only be used while updating older scripts to Minecraft versions 1.21 and above.
-    Legacy Spigot names support: false
+    Legacy Spigot names support: true
     World:
         Events:
             On player chats:
