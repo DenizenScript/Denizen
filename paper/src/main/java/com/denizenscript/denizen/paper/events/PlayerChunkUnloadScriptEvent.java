@@ -54,10 +54,10 @@ public class PlayerChunkUnloadScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("chunk")) {
-            return new ChunkTag(event.getChunk());
-        }
-        return  super.getContext(name);
+        return switch (name) {
+            case "chunk" -> new ChunkTag(event.getChunk());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
