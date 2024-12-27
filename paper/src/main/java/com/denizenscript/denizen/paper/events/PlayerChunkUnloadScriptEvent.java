@@ -2,7 +2,6 @@ package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.ChunkTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -24,11 +23,14 @@ public class PlayerChunkUnloadScriptEvent extends BukkitScriptEvent implements L
     //
     // @Warning This event will fire *extremely* rapidly and almost guarantees lag. Use with maximum caution.
     //
-    // @Triggers when a player unloads a chunk.
+    // @Triggers when a Player receives a chunk unload packet.
+    // Should only be used for packet/clientside related stuff. Not intended for modifying server side.
+    // Generally prefer <@link event chunk unloads> in most cases.
     //
     // @Context
-    // <context.player> returns a PlayerTag of the player that unloads the chunk.
     // <context.chunk> returns a ChunkTag of the chunk being unloaded.
+    //
+    // @Player Always.
     // -->
 
     public PlayerChunkUnloadScriptEvent() {
@@ -52,11 +54,10 @@ public class PlayerChunkUnloadScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        return switch (name) {
-            case "player" -> new PlayerTag(event.getPlayer());
-            case "chunk" -> new ChunkTag(event.getChunk());
-            default -> super.getContext(name);
-        };
+        if (name.equals("chunk")) {
+            return new ChunkTag(event.getChunk());
+        }
+        return  super.getContext(name);
     }
 
     @EventHandler
