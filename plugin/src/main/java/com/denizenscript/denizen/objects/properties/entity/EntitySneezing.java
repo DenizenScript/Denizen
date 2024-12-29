@@ -9,7 +9,7 @@ public class EntitySneezing extends EntityProperty<ElementTag> {
 
     // <--[property]
     // @object EntityTag
-    // @name sneezing
+    // @name is_sneezing
     // @input ElementTag(Boolean)
     // @description
     // Controls whether a panda is sneezing.
@@ -32,10 +32,10 @@ public class EntitySneezing extends EntityProperty<ElementTag> {
 
     @Override
     public String getPropertyId() {
-        return "sneezing";
+        return "is_sneezing";
     }
 
     public static void register() {
-        autoRegister("sneezing", EntitySneezing.class, ElementTag.class, false);
+        autoRegister("is_sneezing", EntitySneezing.class, ElementTag.class, false);
     }
 }
