@@ -97,6 +97,9 @@ public class ScriptEventRegistry {
             ScriptEvent.registerScriptEvent(BrewingStartsScriptEvent.class);
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(CrafterCraftsScriptEvent.class);
+        }
 
         // Entity events
         ScriptEvent.registerScriptEvent(AreaEffectCloudApplyScriptEvent.class);

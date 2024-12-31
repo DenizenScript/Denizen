@@ -306,10 +306,6 @@ public class BukkitImplDeprecations {
     // 2023-year-end commonality: #30
     public static Warning debugBlockAlpha = new VerySlowWarning("debugBlockAlpha", "The 'alpha' argument for the 'debugblock' command is deprecated: put the alpha in the color input instead.");
 
-    // Added 2024/6/17
-    // Good candidate for SlowWarning, due to ease of update and the newer names already being more "normal"/well-known
-    public static Warning oldSpigotNames = new VerySlowWarning("oldSpigotNames", "Several features (particles, entities, etc.) had alternative naming added by Spigot, which is now deprecated in favor of the official Minecraft naming; see relevant feature's meta docs for more information.");
-
     // Added 2024/07/13
     public static Warning pre1_21AttributeFormat = new VerySlowWarning("pre1_21AttributeFormat", "Attribute modifiers were changed in 1.21, now using slot groups instead of slots and namespaced keys instead of UUIDS; check relevant meta docs for more information.");
 
@@ -343,6 +339,10 @@ public class BukkitImplDeprecations {
     // Added 2024/10/12
     // Good candidate for bumping, as this is a niche feature only on 1.19+ that already had some issues
     public static Warning entityStepHeight = new FutureWarning("entityStepHeight", "'EntityTag.step_height' is deprecated in favor of the step height attribute.");
+
+    // Added 2024/06/17, do not deprecate officially before end-of-year 2025 hitrate commonality review.
+    // Bad candidate for bumping, targets extremely commonly used naming, some of which may be hard to remove (eg stored in flag data).
+    public static Warning oldSpigotNames = new FutureWarning("oldSpigotNames", "Several features (particles, entities, etc.) had alternative naming added by Spigot, which are now deprecated in favor of the official Minecraft naming; see relevant feature's meta docs for more information.");
 
     // Added 2024/11/19
     public static Warning oldPotionEffectType = new FutureWarning("oldPotionEffectType", "Potion effects now use an 'effect' key for the potion effect's type.");

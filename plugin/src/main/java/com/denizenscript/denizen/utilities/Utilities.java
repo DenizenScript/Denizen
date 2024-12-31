@@ -587,13 +587,23 @@ public class Utilities {
     }
 
     public static <T> T elementToEnumlike(ElementTag element, Class<T> type, boolean showWarning) {
-        Registry<?> registry;
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20) || (registry = Bukkit.getRegistry((Class<? extends Keyed>) type)) == null) {
-            return (T) element.asEnum((Class<? extends Enum<?>>) type);
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) {
+            return element.asEnum(type);
+        }
+        Registry<?> registry = Bukkit.getRegistry((Class<? extends Keyed>) type);
+        if (registry == null) {
+            return element.asEnum(type);
         }
         T value = (T) registry.get(parseNamespacedKey(element.asString()));
-        if (!Settings.cache_legacySpigotNamesSupport || value != null) {
+        if (value != null || !Settings.cache_legacySpigotNamesSupport) {
             return value;
+        }
+        T enumValue = element.asEnum(type);
+        if (enumValue != null) {
+            if (showWarning) {
+                BukkitImplDeprecations.oldSpigotNames.warn();
+            }
+            return enumValue;
         }
         String updatedName = NMSHandler.instance.updateLegacyName(type, element.asString());
         if (CoreUtilities.equalsIgnoreCase(element.asString(), updatedName)) {
