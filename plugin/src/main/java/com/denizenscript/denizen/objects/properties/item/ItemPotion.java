@@ -64,11 +64,11 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             else {
                 includeExtras = true;
             }
-            PotionData legacyData = potionMeta.getBasePotionData();
-            if (includeExtras && legacyData != null) { // TODO: Eventually remove these 4
-                base.putObject("type", new ElementTag(potionMeta.getBasePotionData().getType()));
-                base.putObject("upgraded", new ElementTag(potionMeta.getBasePotionData().isUpgraded()));
-                base.putObject("extended", new ElementTag(potionMeta.getBasePotionData().isExtended()));
+            if (includeExtras) { // TODO: Eventually remove these 4
+                LegacyPotionData data = getLegacyBasePotionData();
+                base.putObject("type", new ElementTag(data.type(), true));
+                base.putObject("upgraded", new ElementTag(data.upgraded()));
+                base.putObject("extended", new ElementTag(data.extended()));
                 if (potionMeta.hasColor()) {
                     base.putObject("color", BukkitColorExtensions.fromColor(potionMeta.getColor()));
                 }
@@ -316,12 +316,12 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
         PropertyParser.registerTag(ItemPotion.class, ElementTag.class, "potion_base_type", (attribute, object) -> {
-            if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
+            if (!(object.getItemMeta() instanceof PotionMeta)) {
                 attribute.echoError("This item does not have a base potion type.");
                 return null;
             }
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
-            return new ElementTag(potionMeta.getBasePotionData().getType());
+            return new ElementTag(object.getLegacyBasePotionData().type(), true);
         });
 
         // <--[tag]
@@ -339,8 +339,9 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 return null;
             }
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
-            return new ElementTag(potionMeta.getBasePotionData().getType().name() + "," + (potionMeta.getBasePotionData().isUpgraded() ? 2 : 1)
-                    + "," + potionMeta.getBasePotionData().isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION)
+            LegacyPotionData data = object.getLegacyBasePotionData();
+            return new ElementTag(data.type() + "," + (data.upgraded() ? 2 : 1)
+                    + "," + data.extended() + "," + (object.getMaterial() == Material.SPLASH_POTION)
                     + (potionMeta.hasColor() ? "," + BukkitColorExtensions.fromColor(potionMeta.getColor()).identify() : ""));
         });
 
@@ -382,17 +383,17 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
             if (attribute.startsWith("is_extended", 2)) {
                 attribute.fulfill(1);
-                if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
+                if (!(object.getItemMeta() instanceof PotionMeta)) {
                     return null;
                 }
-                return new ElementTag(potionMeta.getBasePotionData().isExtended());
+                return new ElementTag(object.getLegacyBasePotionData().extended());
             }
             if (attribute.startsWith("level", 2)) {
                 attribute.fulfill(1);
-                if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
+                if (!(object.getItemMeta() instanceof PotionMeta)) {
                     return null;
                 }
-                return new ElementTag(potionMeta.getBasePotionData().isUpgraded() ? 2 : 1);
+                return new ElementTag(object.getLegacyBasePotionData().upgraded() ? 2 : 1);
             }
             if (attribute.startsWith("is_ambient", 2)) {
                 attribute.fulfill(1);
@@ -422,12 +423,12 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 attribute.fulfill(1);
                 return new ElementTag(0);
             }
-            if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
+            if (!(object.getItemMeta() instanceof PotionMeta)) {
                 return null;
             }
-            PotionData data = potionMeta.getBasePotionData();
-            return new ElementTag(data.getType().name() + "," + (data.isUpgraded() ? 2 : 1)
-                    + "," + data.isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION));
+            LegacyPotionData data = object.getLegacyBasePotionData();
+            return new ElementTag(data.type() + "," + (data.upgraded() ? 2 : 1)
+                    + "," + data.extended() + "," + (object.getMaterial() == Material.SPLASH_POTION));
 
         });
     }
@@ -438,11 +439,11 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             return true;
         }
         ElementTag typeElement = input.getElement("type");
-        if (!typeElement.matchesEnum(PotionType.class)) {
+        PotionType type = Utilities.elementToEnumlike(typeElement, PotionType.class);
+        if (type == null) {
             mechanism.echoError("Invalid base potion type '" + typeElement + "': type is required");
             return true;
         }
-        PotionType type = PotionType.valueOf(typeElement.asString().toUpperCase());
         boolean upgraded = false;
         boolean extended = false;
         if (input.containsKey("upgraded")) {
@@ -565,5 +566,20 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
         }
         return new PotionEffect(type, duration, amplifier, ambient, particles, icon);
+    }
+
+    @Deprecated(forRemoval = true)
+    public record LegacyPotionData(String type, boolean extended, boolean upgraded) {
+        public static final LegacyPotionData DEFAULT_DATA = new LegacyPotionData("UNCRAFTABLE", false, false);
+
+        public LegacyPotionData(PotionData data) {
+            this(data.getType().name(), data.isExtended(), data.isUpgraded());
+        }
+    }
+
+    @Deprecated(forRemoval = true)
+    public LegacyPotionData getLegacyBasePotionData() {
+        PotionData data = as(PotionMeta.class).getBasePotionData();
+        return data != null ? new LegacyPotionData(data) : LegacyPotionData.DEFAULT_DATA;
     }
 }
