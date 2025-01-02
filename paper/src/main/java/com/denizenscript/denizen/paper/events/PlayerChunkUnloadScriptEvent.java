@@ -13,7 +13,7 @@ public class PlayerChunkUnloadScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player unloads chunk
+    // player receives chunk unload
     //
     // @Group Paper
     //
@@ -34,7 +34,7 @@ public class PlayerChunkUnloadScriptEvent extends BukkitScriptEvent implements L
     // -->
 
     public PlayerChunkUnloadScriptEvent() {
-        registerCouldMatcher("player unloads chunk");
+        registerCouldMatcher("player receives chunk unload");
     }
 
     public PlayerChunkUnloadEvent event;
