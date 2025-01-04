@@ -29,6 +29,21 @@ import java.util.List;
 
 public class ItemPotion extends ItemProperty<ObjectTag> {
 
+    // <--[language]
+    // @name Potion Effect Format
+    // @group Minecraft Logic
+    // @description
+    // Potion effects (be it an effect on an entity, effect given by a potion, etc.) are represented in Denizen as <@link ObjectType MapTag>s with the following keys:
+    // - effect: the effect type given by the effect, see <@link url https://minecraft.wiki/w/Effect#Descriptions>.
+    // - amplifier: the number to increase the effect level by, usually controls how powerful its effects are (optional for input, defaults to 0 which is level 1).
+    // - duration (<@link ObjectType DurationTag>): how long the effect should last (optional for input, defaults to 0s).
+    // - ambient: a boolean (true/false) for whether the effect's particles should be more translucent and less intrusive, like effects given by a beacon (optional for input, defaults to true).
+    // - particles: a boolean (true/false) for whether the effect should display particles (optional for input, defaults to true).
+    // - icon: a boolean (true/false) for whether the effect should have an icon on a player's HUD when applied (optional for input, defaults to false).
+    //
+    // For example, [effect=speed;amplifier=2;duration=10s;ambient=false;particles=true;icon=true] would be a level 3 speed effect that lasts 10 seconds, with (normal) particles and an icon.
+    // -->
+    
     public static boolean describes(ItemTag item) {
         return item.getItemMeta() instanceof PotionMeta || item.getItemMeta() instanceof SuspiciousStewMeta;
     }
@@ -247,7 +262,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         // Returns a list of all potion effects on this item, in the same format as the MapTag input to the mechanism.
         // This applies to Potion items, Tipped Arrow items, and Suspicious Stews.
         // Note that for potions or tipped arrows (not suspicious stew) the first value in the list is the potion's base type.
-        // All subsequent entries are effect data.
+        // All subsequent entries are potion effects in <@link language Potion Effect Format>.
         // -->
         PropertyParser.registerTag(ItemPotion.class, ListTag.class, "effects_data", (attribute, prop) -> {
             return prop.getMapTagData(true);
@@ -262,22 +277,16 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         // This applies to Potion items, Tipped Arrow items, and Suspicious Stews.
         //
         // For potions or tipped arrows (not suspicious stew), the first item in the list must be a MapTag with keys:
-        // "base_type" - from <@link url https://minecraft.wiki/w/Potion#Item_data>
+        // "base_type" - from <@link url https://minecraft.wiki/w/Potion#Item_data> (optional, becomes an uncraftable potion when unset).
+        // "translation_id" - controls the translation key used for the default item display name. The translation key used is "item.minecraft.<item type>.effect.<id>" (optional).
         //
         // For example: [base_type=strong_swiftness]
         // This example produces an item labeled as "Potion of Swiftness - Speed II (1:30)"
         //
-        // Each following item in the list are potion effects, which must be a MapTag with keys:
-        // "type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>
-        // "amplifier" - number to increase the level by (0 for default level 1) (optional, default 0)
-        // "duration" - DurationTag, how long it lasts (optional, default 0s)
-        // "ambient", "particles", "icon" - booleans (optional, default true, true, false)
-        //
-        // For example: [type=SPEED;amplifier=2;duration=10s;ambient=false;particles=true;icon=true]
-        // This example would be a level 3 swiftness potion that lasts 10 seconds.
+        // Each following item in the list are potion effects, which must be a MapTag in <@link language Potion Effect Format>.
         //
         // A very short full default potion item would be: potion[potion_effects=[base_type=regeneration]
-        // A (relatively) short full potion item would be: potion[potion_effects=<list[[base_type=regeneration]|[type=speed;duration=10s]]>]
+        // A (relatively) short full potion item would be: potion[potion_effects=<list[[base_type=regeneration]|[effect=speed;duration=10s]]>]
         // (Note the list constructor to force data format interpretation, as potion formats can be given multiple ways and the system will get confused without a constructor)
         //
         // @tags
