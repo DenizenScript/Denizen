@@ -13,6 +13,7 @@ public class EntitySneezing extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @description
     // Controls whether a panda is sneezing.
+    // -->
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Panda;

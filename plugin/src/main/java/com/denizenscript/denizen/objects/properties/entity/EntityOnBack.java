@@ -13,6 +13,7 @@ public class EntityOnBack extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @description
     // Controls whether a panda is on its back.
+    // -->
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Panda;

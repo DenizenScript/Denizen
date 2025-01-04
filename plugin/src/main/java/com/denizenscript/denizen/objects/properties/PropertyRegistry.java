@@ -126,6 +126,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityMarker.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaterial.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaxFuseTicks.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            PropertyParser.registerProperty(EntityOnBack.class, EntityTag.class);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityOpacity.class, EntityTag.class);
         }
@@ -143,9 +146,6 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityPowered.class, EntityTag.class);
         PropertyParser.registerProperty(EntityProfession.class, EntityTag.class);
         PropertyParser.registerProperty(EntityPumpkinHead.class, EntityTag.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
-            PropertyParser.registerProperty(EntityOnBack.class, EntityTag.class);
-        }
         PropertyParser.registerProperty(EntityRiptide.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityRightRotation.class, EntityTag.class);

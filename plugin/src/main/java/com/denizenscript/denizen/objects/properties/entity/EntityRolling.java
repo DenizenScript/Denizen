@@ -13,6 +13,7 @@ public class EntityRolling extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @description
     // Controls whether a panda is rolling on the ground.
+    // -->
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Panda;
