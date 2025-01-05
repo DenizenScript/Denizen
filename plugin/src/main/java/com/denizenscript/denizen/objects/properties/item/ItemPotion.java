@@ -33,7 +33,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
     // @name Potion Effect Format
     // @group Minecraft Logic
     // @description
-    // Potion effects (be it an effect on an entity, effect given by a potion, etc.) are represented in Denizen as <@link ObjectType MapTag>s with the following keys:
+    // Potion effects (be it on an entity, given by a potion, etc.) are represented in Denizen as <@link ObjectType MapTag>s with the following keys:
     // - effect: the effect type given by the effect, see <@link url https://minecraft.wiki/w/Effect#Descriptions>.
     // - amplifier: the number to increase the effect level by, usually controls how powerful its effects are (optional for input, defaults to 0 which is level 1).
     // - duration (<@link ObjectType DurationTag>): how long the effect should last (optional for input, defaults to 0s).
@@ -188,19 +188,19 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         return getMapTagData(false);
     }
 
-    private boolean applyBasePotionData(PotionMeta potionMeta, ObjectTag baseDataInput, Mechanism mechanism) {
-        if (!baseDataInput.canBeType(MapTag.class)) {
-            return applyLegacyStringBasePotionData(baseDataInput.toString(), potionMeta, mechanism);
+    private boolean applyBasePotionData(PotionMeta potionMeta, ObjectTag baseData, Mechanism mechanism) {
+        if (!baseData.canBeType(MapTag.class)) {
+            return applyLegacyStringBasePotionData(baseData.toString(), potionMeta, mechanism);
         }
-        MapTag baseData = baseDataInput.asType(MapTag.class, mechanism.context);
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) || baseData.containsKey("type")) {
-            return applyLegacyMapBasePotionData(baseData, potionMeta, mechanism);
+        MapTag baseDataMap = baseData.asType(MapTag.class, mechanism.context);
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) || baseDataMap.containsKey("type")) {
+            return applyLegacyMapBasePotionData(baseDataMap, potionMeta, mechanism);
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            ElementTag translationId = baseData.getElement("translation_id");
+            ElementTag translationId = baseDataMap.getElement("translation_id");
             potionMeta.setCustomName(translationId != null ? translationId.asString() : null);
         }
-        ElementTag baseTypeElement = baseData.getElement("base_type");
+        ElementTag baseTypeElement = baseDataMap.getElement("base_type");
         if (baseTypeElement == null) {
             potionMeta.setBasePotionType(null);
             return false;
