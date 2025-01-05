@@ -50,15 +50,17 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
 
     public static MapTag effectToMap(PotionEffect effect, boolean includeDeprecated) {
         MapTag map = new MapTag();
-        map.putObject("effect", new ElementTag(Utilities.namespacedKeyToString(effect.getType().getKey()), true));
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            map.putObject("effect", new ElementTag(Utilities.namespacedKeyToString(effect.getType().getKey()), true));
+        }
         map.putObject("amplifier", new ElementTag(effect.getAmplifier()));
         map.putObject("duration", new DurationTag((long) effect.getDuration()));
         map.putObject("ambient", new ElementTag(effect.isAmbient()));
         map.putObject("particles", new ElementTag(effect.hasParticles()));
         map.putObject("icon", new ElementTag(effect.hasIcon()));
         // TODO: deprecate this
-        if (includeDeprecated) {
-            map.putObject("type", new ElementTag(effect.getType().getName()));
+        if (includeDeprecated || NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+            map.putObject("type", new ElementTag(effect.getType().getName(), true));
         }
         return map;
     }
@@ -110,7 +112,9 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         }
         else if ((typeInput = effectMap.getElement("type")) != null) {
             type = PotionEffectType.getByName(typeInput.asString());
-            BukkitImplDeprecations.oldPotionEffectType.warn(context);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                BukkitImplDeprecations.oldPotionEffectType.warn(context);
+            }
         }
         else {
             if (context.showErrors()) {

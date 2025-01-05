@@ -345,7 +345,7 @@ public class BukkitImplDeprecations {
     public static Warning oldSpigotNames = new FutureWarning("oldSpigotNames", "Several features (particles, entities, etc.) had alternative naming added by Spigot, which are now deprecated in favor of the official Minecraft naming; see relevant feature's meta docs for more information.");
 
     // Added 2024/11/19
-    public static Warning oldPotionEffectType = new FutureWarning("oldPotionEffectType", "Potion effects now use an 'effect' key for the potion effect's type.");
+    public static Warning oldPotionEffectType = new FutureWarning("oldPotionEffectType", "Potion effects now use an 'effect' key for the potion effect's type, see meta docs for more information.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
