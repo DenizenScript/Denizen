@@ -188,20 +188,19 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         return getMapTagData(false);
     }
 
-    private boolean applyBasePotionData(PotionMeta potionMeta, List<ObjectTag> input, Mechanism mechanism) {
-        ObjectTag firstObj = input.remove(0);
-        if (!firstObj.canBeType(MapTag.class)) {
-            return applyLegacyStringBasePotionData(firstObj.toString(), potionMeta, mechanism);
+    private boolean applyBasePotionData(PotionMeta potionMeta, ObjectTag baseDataInput, Mechanism mechanism) {
+        if (!baseDataInput.canBeType(MapTag.class)) {
+            return applyLegacyStringBasePotionData(baseDataInput.toString(), potionMeta, mechanism);
         }
-        MapTag baseEffect = firstObj.asType(MapTag.class, mechanism.context);
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) || baseEffect.containsKey("type")) {
-            return applyLegacyMapBasePotionData(baseEffect, potionMeta, mechanism);
+        MapTag baseData = baseDataInput.asType(MapTag.class, mechanism.context);
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) || baseData.containsKey("type")) {
+            return applyLegacyMapBasePotionData(baseData, potionMeta, mechanism);
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            ElementTag translationId = baseEffect.getElement("translation_id");
+            ElementTag translationId = baseData.getElement("translation_id");
             potionMeta.setCustomName(translationId != null ? translationId.asString() : null);
         }
-        ElementTag baseTypeElement = baseEffect.getElement("base_type");
+        ElementTag baseTypeElement = baseData.getElement("base_type");
         if (baseTypeElement == null) {
             potionMeta.setBasePotionType(null);
             return false;
@@ -220,7 +219,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         List<ObjectTag> data = new ArrayList<>(CoreUtilities.objectToList(value, mechanism.context));
         ItemMeta meta = getItemMeta();
         if (meta instanceof PotionMeta potionMeta) {
-            if (applyBasePotionData(potionMeta, data, mechanism)) {
+            if (applyBasePotionData(potionMeta, data.remove(0), mechanism)) {
                 return;
             }
             potionMeta.clearCustomEffects();
