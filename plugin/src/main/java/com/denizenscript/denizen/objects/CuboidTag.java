@@ -780,6 +780,7 @@ public class CuboidTag implements ObjectTag, Cloneable, Notable, Adjustable, Are
         // @returns ListTag(LocationTag)
         // @description
         // Returns a list of block locations along the 2D outline of this CuboidTag, at the specified Y level.
+        // @example
         // # Plays the "flame" effect at the 2D outline of the cuboid on the player's Y level.
         // - playeffect effect:flame at:<cuboid[my_cuboid].outline_2d[<player.location.y>]> offset:0.0
         // -->
