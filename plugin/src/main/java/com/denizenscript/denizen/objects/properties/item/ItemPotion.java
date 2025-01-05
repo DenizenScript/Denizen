@@ -451,6 +451,10 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             return true;
         }
         ElementTag typeElement = input.getElement("type");
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && typeElement.asLowerString().equals("uncraftable")) {
+            potionMeta.setBasePotionType(null);
+            return false;
+        }
         PotionType type = Utilities.elementToEnumlike(typeElement, PotionType.class);
         if (type == null) {
             mechanism.echoError("Invalid base potion type '" + typeElement + "': type is required");
@@ -492,6 +496,10 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
 
     private static boolean applyLegacyStringBasePotionData(String input, PotionMeta potionMeta, Mechanism mechanism) {
         String[] d1 = input.split(",");
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && CoreUtilities.equalsIgnoreCase(d1[0], "uncraftable")) {
+            potionMeta.setBasePotionType(null);
+            return false;
+        }
         PotionType type;
         try {
             type = PotionType.valueOf(d1[0].toUpperCase());
