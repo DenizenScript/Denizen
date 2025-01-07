@@ -50,8 +50,11 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
 
     public static MapTag effectToMap(PotionEffect effect, boolean includeDeprecated) {
         MapTag map = new MapTag();
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             map.putObject("effect", new ElementTag(Utilities.namespacedKeyToString(effect.getType().getKey()), true));
+        }
+        else {
+            includeDeprecated = true;
         }
         map.putObject("amplifier", new ElementTag(effect.getAmplifier()));
         map.putObject("duration", new DurationTag((long) effect.getDuration()));
@@ -59,7 +62,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         map.putObject("particles", new ElementTag(effect.hasParticles()));
         map.putObject("icon", new ElementTag(effect.hasIcon()));
         // TODO: deprecate this
-        if (includeDeprecated || NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+        if (includeDeprecated) {
             map.putObject("type", new ElementTag(effect.getType().getName(), true));
         }
         return map;
