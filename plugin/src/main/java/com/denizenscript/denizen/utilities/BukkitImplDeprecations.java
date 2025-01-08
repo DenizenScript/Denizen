@@ -343,9 +343,12 @@ public class BukkitImplDeprecations {
     // Added 2024/06/17, do not deprecate officially before end-of-year 2025 hitrate commonality review.
     // Bad candidate for bumping, targets extremely commonly used naming, some of which may be hard to remove (eg stored in flag data).
     public static Warning oldSpigotNames = new FutureWarning("oldSpigotNames", "Several features (particles, entities, etc.) had alternative naming added by Spigot, which are now deprecated in favor of the official Minecraft naming; see relevant feature's meta docs for more information.");
-
+  
     // Added 2024/11/19
     public static Warning oldPotionEffectType = new FutureWarning("oldPotionEffectType", "Potion effects now use an 'effect' key for the potion effect's type, see meta docs for more information.");
+
+    // Added 2024/12/27
+    public static Warning entityIsSheared = new FutureWarning("entityIsSheared", "'EntityTag.is_sheared' and 'EntityTag.has_pumpkin_head' properties are deprecated in favor of 'EntityTag.sheared'.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
