@@ -9,7 +9,7 @@ public class EntityOnBack extends EntityProperty<ElementTag> {
 
     // <--[property]
     // @object EntityTag
-    // @name is_on_back
+    // @name on_back
     // @input ElementTag(Boolean)
     // @description
     // Controls whether a panda is on its back.
@@ -38,10 +38,10 @@ public class EntityOnBack extends EntityProperty<ElementTag> {
 
     @Override
     public String getPropertyId() {
-        return "is_on_back";
+        return "on_back";
     }
 
     public static void register() {
-        autoRegister("is_on_back", EntityOnBack.class, ElementTag.class, false);
+        autoRegister("on_back", EntityOnBack.class, ElementTag.class, false);
     }
 }

@@ -9,7 +9,7 @@ public class EntityRolling extends EntityProperty<ElementTag> {
 
     // <--[property]
     // @object EntityTag
-    // @name is_rolling
+    // @name rolling
     // @input ElementTag(Boolean)
     // @description
     // Controls whether a panda is rolling on the ground.
@@ -38,10 +38,10 @@ public class EntityRolling extends EntityProperty<ElementTag> {
 
     @Override
     public String getPropertyId() {
-        return "is_rolling";
+        return "rolling";
     }
 
     public static void register() {
-        autoRegister("is_rolling", EntityRolling.class, ElementTag.class, false);
+        autoRegister("rolling", EntityRolling.class, ElementTag.class, false);
     }
 }
