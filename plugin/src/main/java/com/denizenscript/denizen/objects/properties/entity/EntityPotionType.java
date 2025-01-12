@@ -17,6 +17,8 @@ public class EntityPotionType extends EntityProperty<ElementTag> {
     // Controls an Arrow's base potion type, if any.
     // See <@link url https://minecraft.wiki/w/Potion#Item_data> for a list of potion types.
     // See <@link property EntityTag.potion_effects> to control the potion effects an arrow applies.
+    // @mechanism
+    // Specify no input to remove the base potion type.
     // -->
 
     public static boolean describes(EntityTag entity) {
@@ -31,7 +33,7 @@ public class EntityPotionType extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        if (!mechanism.hasValue()) {
+        if (value == null) {
             as(Arrow.class).setBasePotionType(null);
             return;
         }
@@ -46,6 +48,6 @@ public class EntityPotionType extends EntityProperty<ElementTag> {
     }
 
     public static void register() {
-        autoRegister("potion_type", EntityPotionType.class, ElementTag.class, false);
+        autoRegisterNullable("potion_type", EntityPotionType.class, ElementTag.class, false);
     }
 }
