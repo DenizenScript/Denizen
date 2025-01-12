@@ -38,8 +38,10 @@ public class EntityPotion extends EntityProperty<ItemTag> {
         else { // Tipped arrow
             ItemStack refItem = new ItemStack(Material.POTION);
             PotionMeta meta = (PotionMeta) refItem.getItemMeta();
-            // TODO: 1.20.6: PotionData API
-            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                meta.setBasePotionType(as(Arrow.class).getBasePotionType());
+            }
+            else {
                 meta.setBasePotionData(as(Arrow.class).getBasePotionData());
             }
             refItem.setItemMeta(meta);
@@ -53,8 +55,10 @@ public class EntityPotion extends EntityProperty<ItemTag> {
             thrownPotion.setItem(value.getItemStack());
         }
         else { // Tipped arrow
-            // TODO: 1.20.6: PotionData API
-            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                as(Arrow.class).setBasePotionType(((PotionMeta) value.getItemMeta()).getBasePotionType());
+            }
+            else {
                 as(Arrow.class).setBasePotionData(((PotionMeta) value.getItemMeta()).getBasePotionData());
             }
         }
