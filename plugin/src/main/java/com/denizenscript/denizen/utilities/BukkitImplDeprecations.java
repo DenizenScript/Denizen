@@ -350,6 +350,12 @@ public class BukkitImplDeprecations {
     // Added 2024/12/27
     public static Warning entityIsSheared = new FutureWarning("entityIsSheared", "'EntityTag.is_sheared' and 'EntityTag.has_pumpkin_head' properties are deprecated in favor of 'EntityTag.sheared'.");
 
+    // Added 2025/1/12
+    public static Warning splashPotionItem = new FutureWarning("splashPotionItem", "Using 'EntityTag.potion' to get a splash potion's item is deprecated in favor of 'EntityTag.item'.");
+
+    // Added 2025/1/12
+    public static Warning arrowBasePotionType = new FutureWarning("arrowBasePotionType", "Using 'EntityTag.potion' to get an arrow's base potion type is deprecated in favor of 'EntityTag.potion_type'.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2023/10/29 without warning.
