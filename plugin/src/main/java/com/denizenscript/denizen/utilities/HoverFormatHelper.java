@@ -32,7 +32,7 @@ public class HoverFormatHelper {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
                 content = new FixedItemHover(item.getBukkitMaterial().getKey().toString(), item.getAmount(), NMSHandler.itemHelper.getRawHoverComponentsJson(item.getItemStack()));
             }
-            else  {
+            else {
                 content = new Item(item.getBukkitMaterial().getKey().toString(), item.getAmount(), net.md_5.bungee.api.chat.ItemTag.ofNbt(NMSHandler.itemHelper.getLegacyHoverNbt(item)));
             }
         }
