@@ -122,14 +122,6 @@ public class HoverFormatHelper {
         public JsonObject getComponents() {
             return components;
         }
-
-        @Override
-        public net.md_5.bungee.api.chat.ItemTag getTag() {
-            if (components != null && super.getTag() == null) {
-                super.setTag(net.md_5.bungee.api.chat.ItemTag.ofNbt(FormattedTextHelper.vanillaStyleSpigotComponentGSON.toJson(components)));
-            }
-            return super.getTag();
-        }
     }
 
     public static class FixedItemHoverSerializer extends ItemSerializer {
