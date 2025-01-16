@@ -20,6 +20,8 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     //
     // @Location true
     //
+    // @Warning this event may in some cases double-fire, requiring usage of the 'ratelimit' command (like 'ratelimit <player> 1t') to prevent doubling actions.
+    //
     // @Switch with:<item> to only process the event when the item used to cause damage (in the damager's hand) is a specified item.
     //
     // @Plugin Paper
