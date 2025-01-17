@@ -19,24 +19,9 @@ public class PacketOutChatImpl extends PacketOutChat {
     public String rawJson;
     public boolean isOverlayActionbar;
 
-    public static Field paperTextField;
-
     public PacketOutChatImpl(ClientboundSystemChatPacket internal) {
         systemPacket = internal;
         rawJson = CraftChatMessage.toJSON(internal.content());
-        if (rawJson == null && convertComponentToJsonString != null) {
-            try {
-                if (paperTextField == null) {
-                    paperTextField = ReflectionHelper.getFields(ClientboundSystemChatPacket.class).get("adventure$content");
-                }
-                if (paperTextField != null) {
-                    rawJson = convertComponentToJsonString.apply(paperTextField.get(internal));
-                }
-            }
-            catch (Throwable ex) {
-                Debug.echoError(ex);
-            }
-        }
         message = FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson));
         isOverlayActionbar = internal.overlay();
     }

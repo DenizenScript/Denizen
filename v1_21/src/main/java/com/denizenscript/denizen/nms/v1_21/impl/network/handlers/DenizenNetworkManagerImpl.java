@@ -51,12 +51,11 @@ import java.util.stream.Collectors;
 
 public class DenizenNetworkManagerImpl extends Connection {
 
-    // TODO: 1.20.6: this can be cleaned up by decoding with the codec and returning the new packet
-    public static <T extends Packet<?>, B extends FriendlyByteBuf> RegistryFriendlyByteBuf copyPacket(T original, StreamCodec<B, T> packetCodec) {
+    public static <T extends Packet<?>> T copyPacket(T original, StreamCodec<? super RegistryFriendlyByteBuf, T> packetCodec) {
         try {
             RegistryFriendlyByteBuf copier = new RegistryFriendlyByteBuf(Unpooled.buffer(), CraftRegistry.getMinecraftRegistry());
-            packetCodec.encode((B) copier, original);
-            return copier;
+            packetCodec.encode(copier, original);
+            return packetCodec.decode(copier);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
