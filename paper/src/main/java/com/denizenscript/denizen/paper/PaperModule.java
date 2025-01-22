@@ -101,6 +101,9 @@ public class PaperModule {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             ScriptEvent.registerScriptEvent(WardenChangesAngerLevelScriptEvent.class);
         }
+        ScriptEvent.registerScriptEvent(WitchConsumePotionScriptEvent.class);
+        ScriptEvent.registerScriptEvent(WitchReadyPotionScriptEvent.class);
+        ScriptEvent.registerScriptEvent(WitchThrowPotionScriptEvent.class);
         ScriptEvent.registerScriptEvent(WorldGameRuleChangeScriptEvent.class);
 
         // Properties
