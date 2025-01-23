@@ -42,9 +42,9 @@ public class WitchThrowPotionScriptEvent extends BukkitScriptEvent implements Li
 
     public WitchThrowPotionScriptEvent() {
         registerCouldMatcher("witch throws potion");
-        this.<WitchThrowPotionScriptEvent, ItemTag>registerDetermination("potion", ItemTag.class, (evt, context, determination) -> {
-            if (determination.canBeType(ItemTag.class)) {
-                ItemTag potion = determination.asType(ItemTag.class, context);
+        this.<WitchThrowPotionScriptEvent, ItemTag>registerDetermination("potion", ItemTag.class, (evt, context, item) -> {
+            if (item.canBeType(ItemTag.class)) {
+                ItemTag potion = item.asType(ItemTag.class, context);
                 evt.event.setPotion(potion.getItemStack());
             }
         });
