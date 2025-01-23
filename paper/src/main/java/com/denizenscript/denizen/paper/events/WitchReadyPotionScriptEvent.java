@@ -28,7 +28,7 @@ public class WitchReadyPotionScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Context
     // <context.entity> returns an EntityTag of the witch that is preparing to throw a potion.
-    // <context.potion> returns an ItemTag of the potion being prepared to be thrown.
+    // <context.potion> returns an ItemTag of the potion being prepared to be consumed.
     //
     // @Determine
     // "POTION:<ItemTag>" to change the potion the witch is consuming.
