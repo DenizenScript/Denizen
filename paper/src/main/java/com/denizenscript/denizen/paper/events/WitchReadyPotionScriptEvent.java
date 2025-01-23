@@ -14,7 +14,7 @@ public class WitchReadyPotionScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // witch prepares to throw potion
+    // witch prepares to consume potion
     //
     // @Location true
     //
@@ -24,16 +24,25 @@ public class WitchReadyPotionScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Cancellable true
     //
-    // @Triggers when a witch is preparing to throw a potion, for the witch actually throwing the potion, use <@link event witch throws potion>.
+    // @Triggers when a witch is preparing to consume a potion, for the witch actually consuming the potion, use <@link event witch consumes potion>.
     //
     // @Context
     // <context.entity> returns an EntityTag of the witch that is preparing to throw a potion.
     // <context.potion> returns an ItemTag of the potion being prepared to be thrown.
     //
+    // @Determine
+    // "POTION:<ItemTag>" to change the potion the witch is consuming.
+    //
     // -->
 
     public WitchReadyPotionScriptEvent() {
-        registerCouldMatcher("witch prepares to throw potion");
+        registerCouldMatcher("witch prepares to consume potion");
+        this.<WitchReadyPotionScriptEvent, ItemTag>registerDetermination("potion", ItemTag.class, (evt, context, item) -> {
+            if (item.canBeType(ItemTag.class)) {
+                ItemTag potion = item.asType(ItemTag.class, context);
+                evt.event.setPotion(potion.getItemStack());
+            }
+        });
     }
 
     public WitchReadyPotionEvent event;

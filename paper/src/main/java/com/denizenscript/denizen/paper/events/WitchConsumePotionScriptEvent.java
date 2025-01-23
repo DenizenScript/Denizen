@@ -37,18 +37,15 @@ public class WitchConsumePotionScriptEvent extends BukkitScriptEvent implements 
 
     public WitchConsumePotionScriptEvent() {
         registerCouldMatcher("witch consumes potion");
-        this.<WitchConsumePotionScriptEvent, ItemTag>registerOptionalDetermination("potion", ItemTag.class, (evt, context, determination) -> {
-            if (determination.canBeType(ItemTag.class)) {
-                ItemTag potion = determination.asType(ItemTag.class, context);
+        this.<WitchConsumePotionScriptEvent, ItemTag>registerDetermination("potion", ItemTag.class, (evt, context, item) -> {
+            if (item.canBeType(ItemTag.class)) {
+                ItemTag potion = item.asType(ItemTag.class, context);
                 evt.event.setPotion(potion.getItemStack());
-                return true;
             }
-            return false;
         });
     }
 
     public WitchConsumePotionEvent event;
-    public ItemTag potion;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -67,14 +64,13 @@ public class WitchConsumePotionScriptEvent extends BukkitScriptEvent implements 
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "entity" -> new EntityTag(event.getEntity());
-            case "potion" -> potion;
+            case "potion" -> new ItemTag(event.getPotion());
             default -> super.getContext(name);
         };
     }
 
     @EventHandler
     public void onWitchThrowPotion(WitchConsumePotionEvent event) {
-        potion = new ItemTag(event.getPotion());
         this.event = event;
         fire(event);
     }

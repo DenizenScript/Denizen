@@ -42,18 +42,15 @@ public class WitchThrowPotionScriptEvent extends BukkitScriptEvent implements Li
 
     public WitchThrowPotionScriptEvent() {
         registerCouldMatcher("witch throws potion");
-        this.<WitchThrowPotionScriptEvent, ItemTag>registerOptionalDetermination("potion", ItemTag.class, (evt, context, determination) -> {
+        this.<WitchThrowPotionScriptEvent, ItemTag>registerDetermination("potion", ItemTag.class, (evt, context, determination) -> {
             if (determination.canBeType(ItemTag.class)) {
                 ItemTag potion = determination.asType(ItemTag.class, context);
                 evt.event.setPotion(potion.getItemStack());
-                return true;
             }
-            return false;
         });
     }
 
     public WitchThrowPotionEvent event;
-    public ItemTag potion;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -72,7 +69,7 @@ public class WitchThrowPotionScriptEvent extends BukkitScriptEvent implements Li
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "entity" -> new EntityTag(event.getEntity());
-            case "potion" -> potion;
+            case "potion" -> new ItemTag(event.getPotion());
             case "target" -> new EntityTag(event.getTarget());
             default -> super.getContext(name);
         };
@@ -80,7 +77,6 @@ public class WitchThrowPotionScriptEvent extends BukkitScriptEvent implements Li
 
     @EventHandler
     public void onWitchThrowPotion(WitchThrowPotionEvent event) {
-        potion = new ItemTag(event.getPotion());
         this.event = event;
         fire(event);
     }
