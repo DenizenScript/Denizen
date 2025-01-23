@@ -428,7 +428,7 @@ public class PlayEffectCommand extends AbstractCommand {
                             if (destination.shouldBeType(EntityTag.class)) {
                                 destObj = new Vibration.Destination.EntityDestination(destination.asType(EntityTag.class, scriptEntry.context).getBukkitEntity());
                             }
-                            else if (destination.shouldBeType(LocationTag.class)){
+                            else if (destination.shouldBeType(LocationTag.class)) {
                                 destObj = new Vibration.Destination.BlockDestination(destination.asType(LocationTag.class, scriptEntry.context));
                             }
                             else {
