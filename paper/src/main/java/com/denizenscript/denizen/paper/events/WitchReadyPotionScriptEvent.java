@@ -27,7 +27,7 @@ public class WitchReadyPotionScriptEvent extends BukkitScriptEvent implements Li
     // @Triggers when a witch is preparing to consume a potion, for the witch actually consuming the potion, use <@link event witch consumes potion>.
     //
     // @Context
-    // <context.entity> returns an EntityTag of the witch that is preparing to throw a potion.
+    // <context.entity> returns an EntityTag of the witch that is preparing to consume a potion.
     // <context.potion> returns an ItemTag of the potion being prepared to be consumed.
     //
     // @Determine

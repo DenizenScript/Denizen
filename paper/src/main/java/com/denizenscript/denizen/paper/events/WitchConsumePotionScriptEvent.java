@@ -70,7 +70,7 @@ public class WitchConsumePotionScriptEvent extends BukkitScriptEvent implements 
     }
 
     @EventHandler
-    public void onWitchThrowPotion(WitchConsumePotionEvent event) {
+    public void onWitchConsumePotion(WitchConsumePotionEvent event) {
         this.event = event;
         fire(event);
     }
