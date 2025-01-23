@@ -38,10 +38,8 @@ public class WitchReadyPotionScriptEvent extends BukkitScriptEvent implements Li
     public WitchReadyPotionScriptEvent() {
         registerCouldMatcher("witch prepares to consume potion");
         this.<WitchReadyPotionScriptEvent, ItemTag>registerDetermination("potion", ItemTag.class, (evt, context, item) -> {
-            if (item.canBeType(ItemTag.class)) {
-                ItemTag potion = item.asType(ItemTag.class, context);
-                evt.event.setPotion(potion.getItemStack());
-            }
+            ItemTag potion = item.asType(ItemTag.class, context);
+            evt.event.setPotion(potion.getItemStack());
         });
     }
 

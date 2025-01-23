@@ -103,7 +103,6 @@ public class PaperModule {
         }
         ScriptEvent.registerScriptEvent(WitchConsumePotionScriptEvent.class);
         ScriptEvent.registerScriptEvent(WitchReadyPotionScriptEvent.class);
-        ScriptEvent.registerScriptEvent(WitchThrowPotionScriptEvent.class);
         ScriptEvent.registerScriptEvent(WorldGameRuleChangeScriptEvent.class);
 
         // Properties

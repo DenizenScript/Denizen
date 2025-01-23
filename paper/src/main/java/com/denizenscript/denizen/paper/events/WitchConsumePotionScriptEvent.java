@@ -38,10 +38,8 @@ public class WitchConsumePotionScriptEvent extends BukkitScriptEvent implements 
     public WitchConsumePotionScriptEvent() {
         registerCouldMatcher("witch consumes potion");
         this.<WitchConsumePotionScriptEvent, ItemTag>registerDetermination("potion", ItemTag.class, (evt, context, item) -> {
-            if (item.canBeType(ItemTag.class)) {
-                ItemTag potion = item.asType(ItemTag.class, context);
-                evt.event.setPotion(potion.getItemStack());
-            }
+            ItemTag potion = item.asType(ItemTag.class, context);
+            evt.event.setPotion(potion.getItemStack());
         });
     }
 
