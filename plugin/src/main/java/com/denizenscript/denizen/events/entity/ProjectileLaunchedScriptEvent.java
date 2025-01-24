@@ -3,8 +3,8 @@ package com.denizenscript.denizen.events.entity;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -27,16 +27,19 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     // @Triggers when a projectile is launched.
     //
     // @Context
-    // <context.entity> returns the projectile.
+    // <context.projectile> returns an EntityTag of the projectile.
+    // <context.shooter> returns an EntityTag of the entity that shot the projectile, if any.
     //
     // -->
 
     public ProjectileLaunchedScriptEvent() {
+        registerSwitches("by");
     }
 
     public EntityTag projectile;
     private LocationTag location;
     public ProjectileLaunchEvent event;
+    public EntityTag shooter;
 
     @Override
     public boolean couldMatch(ScriptPath path) {
@@ -51,6 +54,9 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean matches(ScriptPath path) {
+        if (!path.tryObjectSwitch("by", shooter)) {
+            return false;
+        }
         String projTest = path.eventArgLowerAt(0);
         if (!projTest.equals("projectile") && !projectile.tryAdvancedMatcher(projTest, path.context)) {
             return false;
@@ -63,20 +69,23 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return projectile.getDenizenObject();
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> {
+                BukkitImplDeprecations.projectileLaunchedEntityContext.warn();
+                yield projectile;
+            }
+            case "projectile" -> projectile;
+            case "shooter" -> shooter;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
     public void onProjectileLaunched(ProjectileLaunchEvent event) {
-        Entity projectile = event.getEntity();
-        EntityTag.rememberEntity(projectile);
-        this.projectile = new EntityTag(projectile);
-        location = new LocationTag(event.getEntity().getLocation());
         this.event = event;
+        projectile = new EntityTag(event.getEntity());
+        location = projectile.getLocation();
+        shooter = projectile.getShooter();
         fire(event);
-        EntityTag.forgetEntity(projectile);
     }
 }
