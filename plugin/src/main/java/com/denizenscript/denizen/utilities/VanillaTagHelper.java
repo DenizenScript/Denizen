@@ -89,9 +89,6 @@ public class VanillaTagHelper {
             addMaterialTag(tag);
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) { // Note: existed on prior versions, but was bugged
-            for (Tag<Material> tag : Bukkit.getTags("fluids", Material.class)) {
-                addMaterialTag(tag);
-            }
             for (Tag<EntityType> tag : Bukkit.getTags("entity_types", EntityType.class)) {
                 addEntityTag(tag);
             }
