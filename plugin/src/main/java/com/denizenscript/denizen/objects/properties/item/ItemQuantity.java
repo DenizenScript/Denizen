@@ -6,7 +6,6 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 
 public class ItemQuantity implements Property {
 
@@ -53,11 +52,6 @@ public class ItemQuantity implements Property {
         // @description
         // Returns the number of items in the ItemTag's itemstack.
         // -->
-        if (attribute.startsWith("qty")) {
-            BukkitImplDeprecations.qtyTags.warn(attribute.context);
-            return new ElementTag(item.getItemStack().getAmount())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
         if (attribute.startsWith("quantity")) {
             return new ElementTag(item.getItemStack().getAmount())
                     .getObjectAttribute(attribute.fulfill(1));

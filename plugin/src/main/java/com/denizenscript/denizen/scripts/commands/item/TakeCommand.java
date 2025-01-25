@@ -141,11 +141,8 @@ public class TakeCommand extends AbstractCommand {
                 scriptEntry.addObject("type", Type.CURSORITEM);
             }
             else if (!scriptEntry.hasObject("quantity")
-                    && arg.matchesPrefix("q", "qty", "quantity")
+                    && arg.matchesPrefix("quantity")
                     && arg.matchesFloat()) {
-                if (arg.matchesPrefix("q", "qty")) {
-                    BukkitImplDeprecations.qtyTags.warn(scriptEntry);
-                }
                 scriptEntry.addObject("quantity", arg.asElement());
             }
             else if (!scriptEntry.hasObject("items")

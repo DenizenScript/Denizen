@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -86,9 +85,6 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
             case "entity": return entity.getDenizenObject();
             case "item": return item;
             case "hand": return new ElementTag(event.getHand() == EquipmentSlot.OFF_HAND ? "offhand" : "mainhand");
-            case "location":
-                BukkitImplDeprecations.playerRightClicksEntityContext.warn();
-                return entity.getLocation();
             case "click_position":
                 if (event instanceof PlayerInteractAtEntityEvent) {
                     return new LocationTag(((PlayerInteractAtEntityEvent) event).getClickedPosition());

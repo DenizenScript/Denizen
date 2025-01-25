@@ -9,37 +9,12 @@ public class BukkitImplDeprecations {
     // ==================== REMOVE THESE ====================
     // Every warning inside this section should be removed from the codebase.
 
-    // Added on 2019/08/11
-    // Safe to remove now.
-    public static Warning oldEconomyTags = new StrongWarning("oldEconomyTags", "player.money.currency* tags are deprecated in favor of server.economy.currency* tags.");
-
-    // Added on 2019/09/18, but was deprecated earlier.
-    // 2022-year-end commonality: #27
-    // Safe to remove now.
-    public static Warning playerRightClicksEntityContext = new StrongWarning("playerRightClicksEntityContext", "'context.location' in event 'on player right clicks entity' is deprecated: use 'context.entity.location'.");
-
     // Added on 2019/09/25, but was deprecated earlier.
     // Bad candidate for functionality removal - used to be commonly used
     // 2022-year-end commonality: #13
     // 2023-year-end commonality: #19
     // Safe to remove now.
     public static Warning qtyTags = new StrongWarning("qtyTags", "'qty' in a tag or command is deprecated: use 'quantity'.");
-
-    // In Bukkit impl, Relevant as of 2019/09/25, made current on 2020/02/12, made strong 2022/12/31.
-    // Safe to remove now.
-    public static Warning npcNicknameTag = new StrongWarning("npcNicknameTag", pointlessSubtagPrefix + "npc.name.nickname is now just npc.nickname. Note that this historically appeared in the config.yml file, so check there if you're unsure what's using this tag.");
-    public static Warning npcPreviousLocationTag = new StrongWarning("npcPreviousLocationTag", pointlessSubtagPrefix + "npc.location.previous_location is now just npc.previous_location.");
-    public static Warning npcAnchorListTag = new StrongWarning("npcAnchorListTag", pointlessSubtagPrefix + "npc.anchor.list is now just npc.list_anchors.");
-    public static Warning playerMoneyFormatTag = new StrongWarning("playerMoneyFormatTag", pointlessSubtagPrefix + "player.money.format is now just player.formatted_money.");
-    public static Warning playerFoodLevelFormatTag = new StrongWarning("playerFoodLevelFormatTag", pointlessSubtagPrefix + "player.food_level.format is now just player.formatted_food_level.");
-    public static Warning playerBanInfoTags = new StrongWarning("playerBanInfoTags", pointlessSubtagPrefix + "player.ban_info.* tags are now just player.ban_*.");
-    public static Warning playerNameTags = new StrongWarning("playerNameTags", pointlessSubtagPrefix + "player.name.* tags are now just player.*_name.");
-    public static Warning playerSidebarTags = new StrongWarning("playerSidebarTags", pointlessSubtagPrefix + "player.sidebar.* tags are now just player.sidebar_*.");
-    public static Warning playerAttackCooldownTags = new StrongWarning("playerAttackCooldownTags", pointlessSubtagPrefix + "player.attack_cooldown.* tags are now just player.attack_cooldown_*.");
-    public static Warning playerXpTags = new StrongWarning("playerXpTags", pointlessSubtagPrefix + "player.xp.* tags are now just player.xp_*.");
-    public static Warning entityMaxOxygenTag = new StrongWarning("entityMaxOxygenTag", pointlessSubtagPrefix + "entity.oxygen.max is now just entity.max_oxygen.");
-    public static Warning itemBookTags = new StrongWarning("itemBookTags", pointlessSubtagPrefix + "item.book.* tags are now just item.book_*.");
-    public static Warning playerItemInHandSlotTag = new StrongWarning("playerItemInHandSlotTag", pointlessSubtagPrefix + "player.item_in_hand_slot is now just player.held_item_slot.");
 
     // Added on 2019/09/24, made normal 2021/11/2021, made strong 2022/12/31.
     // Safe to remove now.

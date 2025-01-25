@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.milkbowl.vault.economy.Economy;
 
@@ -78,11 +77,8 @@ public class MoneyCommand extends AbstractCommand {
                 scriptEntry.addObject("action", arg.asElement());
             }
             else if (!scriptEntry.hasObject("quantity")
-                    && arg.matchesPrefix("quantity", "qty", "q")
+                    && arg.matchesPrefix("quantity")
                     && arg.matchesFloat()) {
-                if (arg.matchesPrefix("q", "qty")) {
-                    BukkitImplDeprecations.qtyTags.warn(scriptEntry);
-                }
                 scriptEntry.addObject("quantity", arg.asElement());
             }
             else if (!scriptEntry.hasObject("players")

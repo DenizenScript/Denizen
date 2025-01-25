@@ -2085,11 +2085,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Works with offline players.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "oxygen", (attribute, object) -> {
-            if (attribute.startsWith("max", 2)) {
-                BukkitImplDeprecations.entityMaxOxygenTag.warn(attribute.context);
-                attribute.fulfill(1);
-                return new DurationTag((long) object.getLivingEntity().getMaximumAir());
-            }
             return new DurationTag((long) object.getLivingEntity().getRemainingAir());
         });
 

@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -108,43 +107,6 @@ public class ItemBook implements Property {
         // -->
         PropertyParser.registerTag(ItemBook.class, MapTag.class, "book_map", (attribute, object) -> {
             return object.getBookMap();
-        });
-
-
-        PropertyParser.registerTag(ItemBook.class, ObjectTag.class, "book", (attribute, object) -> {
-            BukkitImplDeprecations.itemBookTags.warn(attribute.context);
-            BookMeta bookMeta = object.getBookMeta();
-            if (object.isWrittenBook()) {
-                if (attribute.startsWith("author", 2)) {
-                    attribute.fulfill(1);
-                    return new ElementTag(bookMeta.getAuthor());
-                }
-                if (attribute.startsWith("title", 2)) {
-                    attribute.fulfill(1);
-                    return new ElementTag(bookMeta.getTitle());
-                }
-            }
-            if (attribute.startsWith("page_count", 2)) {
-                attribute.fulfill(1);
-                return new ElementTag(bookMeta.getPageCount());
-            }
-            if ((attribute.startsWith("page", 2) || attribute.startsWith("get_page", 2)) && attribute.hasContext(2)) {
-                attribute.fulfill(1);
-                return new ElementTag(FormattedTextHelper.stringify(bookMeta.spigot().getPage(attribute.getIntParam())));
-            }
-            if (attribute.startsWith("pages", 2)) {
-                attribute.fulfill(1);
-                ListTag output = new ListTag();
-                for (BaseComponent[] page : bookMeta.spigot().getPages()) {
-                    output.add(FormattedTextHelper.stringify(page));
-                }
-                return output;
-            }
-            String output = object.getOutputString();
-            if (output == null) {
-                output = "null";
-            }
-            return new ElementTag(output);
         });
 
         // <--[mechanism]

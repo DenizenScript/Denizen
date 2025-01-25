@@ -434,11 +434,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
         // Defined in EntityTag
         tagProcessor.registerTag(ObjectTag.class, "location", (attribute, object) -> {
-            if (attribute.startsWith("previous_location", 2)) {
-                attribute.fulfill(1);
-                BukkitImplDeprecations.npcPreviousLocationTag.warn(attribute.context);
-                return NPCTagBase.previousLocations.get(object.getId());
-            }
             if (object.isSpawned()) {
                 return new EntityTag(object).doLocationTag(attribute);
             }
@@ -506,12 +501,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
         // Documented in EntityTag
         tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> {
-            if (attribute.startsWith("nickname", 2)) {
-                BukkitImplDeprecations.npcNicknameTag.warn(attribute.context);
-                attribute.fulfill(1);
-                return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getOrAddTrait(NicknameTrait.class)
-                        .getNickname() : object.getName());
-            }
             return new ElementTag(object.getName());
         });
 
@@ -613,15 +602,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                         attribute.echoError("NPC Anchor '" + attribute.getParam() + "' is not defined.");
                         return null;
                     }
-            }
-            else if (attribute.startsWith("list", 2)) {
-                attribute.fulfill(1);
-                BukkitImplDeprecations.npcAnchorListTag.warn(attribute.context);
-                ListTag list = new ListTag();
-                for (Anchor anchor : trait.getAnchors()) {
-                    list.add(anchor.getName());
-                }
-                return list;
             }
             else {
                 attribute.echoError("npc.anchor[...] tag must have an input.");
