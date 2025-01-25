@@ -450,7 +450,7 @@ public class BukkitImplDeprecations {
     public static Warning playEffectSpecialDataListInput = new FutureWarning("playEffectSpecialDataListInput", "List input for the special_data argument in playeffect command is now deprecated. Please use a MapTag instead.");
 
     // Added 2025/01/23
-    public static Warning projectileLaunchedEntityContext = new FutureWarning("projectileLaunchedEntityContext", "'context.entity' in the '<projectile>/<entity> launched' event is deprecated in favor of 'context.projectile'.");
+    public static Warning projectileLaunchedEntityContext = new FutureWarning("projectileLaunchedEntityContext", "'context.entity' in the 'projectile launched' event is deprecated in favor of 'context.projectile'.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
