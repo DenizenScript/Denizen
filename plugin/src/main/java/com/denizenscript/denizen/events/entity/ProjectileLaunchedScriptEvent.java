@@ -37,7 +37,6 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
 
     public ProjectileLaunchedScriptEvent() {
         registerCouldMatcher("<entity> launched");
-        registerCouldMatcher("projectile launched");
         registerSwitches("by");
     }
 
