@@ -14,8 +14,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.InclusiveRange;
 import net.minecraft.util.random.SimpleWeightedRandomList;
@@ -51,7 +49,7 @@ import org.bukkit.craftbukkit.v1_21_R3.util.CraftMagicNumbers;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Optional;
 
 public class BlockHelperImpl implements BlockHelper {
 
@@ -257,50 +255,4 @@ public class BlockHelperImpl implements BlockHelper {
             Debug.echoError(ex);
         }
     }
-
-    public static final MethodHandle HOLDERSET_NAMED_BIND = ReflectionHelper.getMethodHandle(HolderSet.Named.class, ReflectionMappingsInfo.HolderSetNamed_bind_method, List.class);
-    public static final MethodHandle HOLDER_REFERENCE_BINDTAGS = ReflectionHelper.getMethodHandle(Holder.Reference.class, ReflectionMappingsInfo.HolderReference_bindTags_method, Collection.class);
-
-    // TODO: 1.21.3: decently large internal changes - should probably look into implementing with Paper's API?
-//    @Override
-//    public void setVanillaTags(Material material, Set<String> tags) {
-//        Holder<net.minecraft.world.level.block.Block> nmsHolder = CraftMagicNumbers.getBlock(material).builtInRegistryHolder();
-//        nmsHolder.tags().forEach(nmsTag -> {
-//            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = BuiltInRegistries.BLOCK.get(nmsTag).orElse(null);
-//            if (nmsHolderSet == null) {
-//                return;
-//            }
-//            List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
-//            nmsHolders.remove(nmsHolder);
-//            try {
-//                HOLDERSET_NAMED_BIND.invoke(nmsHolderSet, nmsHolders);
-//            }
-//            catch (Throwable ex) {
-//                Debug.echoError(ex);
-//            }
-//            VanillaTagHelper.updateMaterialTag(new CraftBlockTag(BuiltInRegistries.BLOCK, nmsTag));
-//        });
-//        List<TagKey<net.minecraft.world.level.block.Block>> newNmsTags = new ArrayList<>();
-//        for (String tag : tags) {
-//            TagKey<net.minecraft.world.level.block.Block> newNmsTag = TagKey.create(BuiltInRegistries.BLOCK.key(), ResourceLocation.withDefaultNamespace(tag));
-//            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = BuiltInRegistries.BLOCK.getOrCreateTag(newNmsTag);
-//            List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
-//            nmsHolders.add(nmsHolder);
-//            try {
-//                HOLDERSET_NAMED_BIND.invoke(nmsHolderSet, nmsHolders);
-//            }
-//            catch (Throwable ex) {
-//                Debug.echoError(ex);
-//            }
-//            newNmsTags.add(newNmsTag);
-//            VanillaTagHelper.addOrUpdateMaterialTag(new CraftBlockTag(BuiltInRegistries.BLOCK, newNmsTag));
-//        }
-//        try {
-//            HOLDER_REFERENCE_BINDTAGS.invoke(nmsHolder, newNmsTags);
-//        }
-//        catch (Throwable ex) {
-//            Debug.echoError(ex);
-//        }
-//        PacketHelperImpl.broadcast(new ClientboundUpdateTagsPacket(TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registries())));
-//    }
 }

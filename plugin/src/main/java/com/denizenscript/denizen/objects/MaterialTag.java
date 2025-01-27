@@ -725,13 +725,14 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         if (!mechanism.isProperty && mechanism.matches("vanilla_tags") && mechanism.requireObject(ListTag.class)) {
             ListTag input = mechanism.valueAsType(ListTag.class);
-            Set<String> tags = new HashSet<>();
+            Set<NamespacedKey> tags = new HashSet<>();
             for (String tag : input) {
-                if (!VanillaTagHelper.isValidTagName(tag)) {
+                NamespacedKey tagKey = NamespacedKey.fromString(tag);
+                if (tagKey == null) {
                     mechanism.echoError("Invalid tag name '" + tag + "' inputted.");
                     continue;
                 }
-                tags.add(tag);
+                tags.add(tagKey);
             }
             NMSHandler.blockHelper.setVanillaTags(material, tags);
         }
