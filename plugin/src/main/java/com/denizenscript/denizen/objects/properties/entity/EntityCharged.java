@@ -12,10 +12,11 @@ public class EntityCharged extends EntityProperty<ElementTag> {
     // @name charged
     // @input ElementTag(Boolean)
     // @description
-    // If the entity is a wither skull, controls whether the skull is charged. Charged skulls are blue.
-    // If the entity is a vex, controls whether the vex is charging. Charging vexes have red lines.
-    // If the entity is a guardian, controls whether the guardian's laser is active.
-    // If the entity is a ghast, controls whether the ghast is charging. Charging ghasts have red eyes and a red mouth.
+    // Controls whether an entity is charged:
+    //- For a wither skull, this is whether it's blue.
+    //- For a vex, this is whether it has red lines.
+    //- For a guardian, this is whether the laser is active.
+    //- For a ghast, this is whether it has a red mouth and eyes.
     // -->
 
     public static boolean describes(EntityTag entity) {

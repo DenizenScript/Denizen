@@ -16,14 +16,19 @@ public class EntityAngry extends EntityProperty<ElementTag> {
     // @name angry
     // @input ElementTag(Boolean)
     // @description
-    // If the entity is a Wolf or PigZombie, controls whether the entity is angry.
-    // If the entity is a Vindicator, controls whether it is in "Johnny" mode.
+    // Controls whether a Wolf or PigZombie is angry.
+    // Controls whether a Vindicator is in "Johnny" mode.
     // -->
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof PigZombie
                 || entity.getBukkitEntity() instanceof Wolf
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && entity.getBukkitEntity() instanceof Vindicator);
+    }
+
+    @Override
+    public boolean isDefaultValue(ElementTag val) {
+        return !val.asBoolean();
     }
 
     @Override
@@ -49,7 +54,7 @@ public class EntityAngry extends EntityProperty<ElementTag> {
             else if (getEntity() instanceof Wolf) {
                 as(Wolf.class).setAngry(param.asBoolean());
             }
-            else if ((NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && getEntity() instanceof Vindicator)) {
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && getEntity() instanceof Vindicator) {
                 as(Vindicator.class).setJohnny(param.asBoolean());
             }
         }

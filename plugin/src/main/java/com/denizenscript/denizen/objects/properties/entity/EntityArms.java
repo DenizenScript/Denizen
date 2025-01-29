@@ -20,6 +20,11 @@ public class EntityArms extends EntityProperty<ElementTag> {
     }
 
     @Override
+    public boolean isDefaultValue(ElementTag val) {
+        return !val.asBoolean();
+    }
+
+    @Override
     public ElementTag getPropertyValue() {
         return new ElementTag(as(ArmorStand.class).hasArms());
     }
