@@ -17,8 +17,6 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     // projectile launched
     // <entity> launched
     //
-    // @Regex ^on [^\s]+ launched$
-    //
     // @Group Entity
     //
     // @Switch by:<entity> to only process the event if the projectile shooter matches the specified entity matcher.
@@ -67,7 +65,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
                 yield projectile;
             }
             case "projectile" -> projectile;
-            case "shooter" -> shooter;
+            case "shooter" -> shooter.getDenizenObject();
             default -> super.getContext(name);
         };
     }
@@ -81,6 +79,6 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
         location = projectile.getLocation();
         shooter = projectile.getShooter();
         fire(event);
-        EntityTag.forgetEntity(event.getEntity());
+        EntityTag.forgetEntity(entity);
     }
 }
