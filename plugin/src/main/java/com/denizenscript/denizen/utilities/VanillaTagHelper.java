@@ -44,6 +44,7 @@ public class VanillaTagHelper {
         }
     }
 
+    // TODO: once 1.21 is the minimum supported version, remove this and related methods
     static <T extends Keyed> void update(Tag<T> tag, HashMap<T, HashSet<String>> tagByObj, HashMap<String, HashSet<T>> objByTag) {
         String tagName = Utilities.namespacedKeyToString(tag.getKey());
         Set<T> objs = objByTag.get(tagName);

@@ -89,7 +89,7 @@ public interface BlockHelper {
         return block.getBlockData().getMapColor();
     }
 
-    default void setVanillaTags(Material material, Set<NamespacedKey> tags) {
+    default void setVanillaTags(Material material, Set<NamespacedKey> tags) { // TODO: once 1.21 is the minimum supported version, remove this
         throw new UnsupportedOperationException();
     }
 }
