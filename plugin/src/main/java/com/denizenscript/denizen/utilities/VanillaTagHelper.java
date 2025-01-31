@@ -2,7 +2,10 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
@@ -18,6 +21,10 @@ public class VanillaTagHelper {
     public static HashMap<EntityType, HashSet<String>> tagsByEntity = new HashMap<>();
 
     public static HashMap<String, HashSet<EntityType>> entityTagsByKey = new HashMap<>();
+
+    static {
+        loadTagsCache();
+    }
 
     public static void addOrUpdateMaterialTag(Tag<Material> tag) {
         if (materialTagsByKey.containsKey(tag.getKey().getKey())) {
@@ -84,7 +91,11 @@ public class VanillaTagHelper {
         add(tag, tagsByEntity, entityTagsByKey);
     }
 
-    static {
+    public static void loadTagsCache() {
+        tagsByMaterial.clear();
+        materialTagsByKey.clear();
+        tagsByEntity.clear();
+        entityTagsByKey.clear();
         for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {
             addMaterialTag(tag);
         }
@@ -96,9 +107,5 @@ public class VanillaTagHelper {
         for (Tag<Material> tag : Bukkit.getTags("items", Material.class)) {
             addMaterialTag(tag);
         }
-    }
-
-    public static boolean isValidTagName(String name) {
-        return name != null && !name.isEmpty() && NamespacedKey.fromString(name) != null;
     }
 }

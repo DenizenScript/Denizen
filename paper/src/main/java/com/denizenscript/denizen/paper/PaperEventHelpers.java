@@ -2,9 +2,11 @@ package com.denizenscript.denizen.paper;
 
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.scripts.containers.core.InventoryScriptContainer;
+import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizen.utilities.inventory.InventoryViewUtil;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.destroystokyo.paper.event.player.PlayerRecipeBookClickEvent;
+import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -18,5 +20,10 @@ public class PaperEventHelpers implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+
+    @EventHandler
+    public void onServerResourcesReloaded(ServerResourcesReloadedEvent event) {
+        VanillaTagHelper.loadTagsCache();
     }
 }
