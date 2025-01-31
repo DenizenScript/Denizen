@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -734,7 +735,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
                 }
                 tags.add(tagKey);
             }
-            NMSHandler.blockHelper.setVanillaTags(material, tags);
+            PaperAPITools.instance.setMaterialTags(material, tags);
         }
 
         // TODO: 1.20.6: need an ItemTag variant providing the proper functionality, and then deprecate this
