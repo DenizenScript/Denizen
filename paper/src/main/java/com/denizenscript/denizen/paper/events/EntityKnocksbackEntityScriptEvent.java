@@ -36,7 +36,7 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     // <context.entity> returns the EntityTag that was knocked back.
     // <context.damager> returns the EntityTag of the one who knocked.
     // <context.acceleration> returns the knockback applied as a vector.
-    // <context.cause> returns the cause of the knockback (only on 1.20+). Causes list: <@link url https://jd.papermc.io/paper/1.21.1/io/papermc/paper/event/entity/EntityKnockbackEvent.Cause.html>
+    // <context.cause> returns the cause of the knockback (only on MC 1.20+). Causes list: <@link url https://jd.papermc.io/paper/1.21.1/io/papermc/paper/event/entity/EntityKnockbackEvent.Cause.html>
     //
     // @Determine
     // LocationTag as a vector to change the acceleration applied.
