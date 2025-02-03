@@ -42,8 +42,8 @@ public class EntityAnger extends EntityProperty<DurationTag> {
         else {
             param = mechanism.valueAsType(DurationTag.class);
         }
-        if (getEntity() instanceof PigZombie) {
-            as(PigZombie.class).setAnger(param.getTicksAsInt());
+        if (getEntity() instanceof PigZombie entity) {
+            entity.setAnger(param.getTicksAsInt());
         }
         else {
             as(Bee.class).setAnger(param.getTicksAsInt());

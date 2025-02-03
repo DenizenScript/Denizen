@@ -33,14 +33,14 @@ public class EntityAngry extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        if (getEntity() instanceof PigZombie) {
-            return new ElementTag(as(PigZombie.class).isAngry());
+        if (getEntity() instanceof PigZombie entity) {
+            return new ElementTag(entity.isAngry());
         }
-        else if (getEntity() instanceof Wolf) {
-            return new ElementTag(as(Wolf.class).isAngry());
+        else if (getEntity() instanceof Wolf entity) {
+            return new ElementTag(entity.isAngry());
         }
-        else if ((NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && getEntity() instanceof Vindicator)) {
-            return new ElementTag(as(Vindicator.class).isJohnny());
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && getEntity() instanceof Vindicator entity) {
+            return new ElementTag(entity.isJohnny());
         }
         return null;
     }
@@ -48,14 +48,14 @@ public class EntityAngry extends EntityProperty<ElementTag> {
     @Override
     public void setPropertyValue(ElementTag param, Mechanism mechanism) {
         if (mechanism.requireBoolean()) {
-            if (getEntity() instanceof PigZombie) {
-                as(PigZombie.class).setAngry(param.asBoolean());
+            if (getEntity() instanceof PigZombie entity) {
+                entity.setAngry(param.asBoolean());
             }
-            else if (getEntity() instanceof Wolf) {
-                as(Wolf.class).setAngry(param.asBoolean());
+            else if (getEntity() instanceof Wolf entity) {
+                entity.setAngry(param.asBoolean());
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && getEntity() instanceof Vindicator) {
-                as(Vindicator.class).setJohnny(param.asBoolean());
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18) && getEntity() instanceof Vindicator entity) {
+                entity.setJohnny(param.asBoolean());
             }
         }
     }
