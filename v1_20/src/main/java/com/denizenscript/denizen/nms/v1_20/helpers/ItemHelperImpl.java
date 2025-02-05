@@ -20,9 +20,11 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.*;
+import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.*;
@@ -203,13 +205,26 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public String getRawHoverText(ItemStack itemStack) {
-        // TODO: 1.20.6: this is relatively hot code, ideally should have some early returns before serializing the item
-        net.minecraft.nbt.Tag tag = CraftItemStack.asNMSCopy(itemStack).saveOptional(CraftRegistry.getMinecraftRegistry());
-        if (tag == null) {
+    public JsonObject getRawHoverComponentsJson(ItemStack item) {
+        DataComponentPatch nmsComponents = CraftItemStack.asNMSCopy(item).getComponentsPatch();
+        if (nmsComponents.isEmpty()) {
             return null;
         }
-        return tag.toString();
+        return DataComponentPatch.CODEC.encodeStart(CraftRegistry.getMinecraftRegistry().createSerializationContext(JsonOps.INSTANCE), nmsComponents).getOrThrow().getAsJsonObject();
+    }
+
+    @Override
+    public ItemStack applyRawHoverComponentsJson(ItemStack item, JsonObject components) {
+        return DataComponentPatch.CODEC.parse(CraftRegistry.getMinecraftRegistry().createSerializationContext(JsonOps.INSTANCE), components).mapOrElse(
+                nmsComponents -> {
+                    net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                    nmsItem.applyComponents(nmsComponents);
+                    return CraftItemStack.asCraftMirror(nmsItem);
+                },
+                error -> {
+                    Debug.echoError("Invalid hover item data '" + components + "': " + error.message());
+                    return item;
+                });
     }
 
     @Override

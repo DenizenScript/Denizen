@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -26,21 +27,44 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: 1.20.6: Spigot removed the PotionData API, can either remove relevant features on 1.20.6, or try and backsupport somehow (probably either hard-coding our own data or hacking it based on the name)
 public class ItemPotion extends ItemProperty<ObjectTag> {
 
+    // <--[language]
+    // @name Potion Effect Format
+    // @group Minecraft Logic
+    // @description
+    // Potion effects (be it on an entity, given by a potion, etc.) are represented in Denizen as <@link ObjectType MapTag>s with the following keys:
+    // - effect: the effect type given by the effect, see <@link url https://minecraft.wiki/w/Effect#Descriptions>.
+    // - amplifier: the number to increase the effect level by, usually controls how powerful its effects are (optional for input, defaults to 0 which is level 1).
+    // - duration (<@link ObjectType DurationTag>): how long the effect should last (optional for input, defaults to 0s).
+    // - ambient: a boolean (true/false) for whether the effect's particles should be more translucent and less intrusive, like effects given by a beacon (optional for input, defaults to true).
+    // - particles: a boolean (true/false) for whether the effect should display particles (optional for input, defaults to true).
+    // - icon: a boolean (true/false) for whether the effect should have an icon on a player's HUD when applied (optional for input, defaults to false).
+    //
+    // For example, [effect=speed;amplifier=2;duration=10s;ambient=false;particles=true;icon=true] would be a level 3 speed effect that lasts 10 seconds, with (normal) particles and an icon.
+    // -->
+    
     public static boolean describes(ItemTag item) {
         return item.getItemMeta() instanceof PotionMeta || item.getItemMeta() instanceof SuspiciousStewMeta;
     }
 
-    public static MapTag effectToMap(PotionEffect effect) {
+    public static MapTag effectToMap(PotionEffect effect, boolean includeDeprecated) {
         MapTag map = new MapTag();
-        map.putObject("type", new ElementTag(effect.getType().getName()));
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            map.putObject("effect", new ElementTag(Utilities.namespacedKeyToString(effect.getType().getKey()), true));
+        }
+        else {
+            includeDeprecated = true;
+        }
         map.putObject("amplifier", new ElementTag(effect.getAmplifier()));
         map.putObject("duration", new DurationTag((long) effect.getDuration()));
         map.putObject("ambient", new ElementTag(effect.isAmbient()));
         map.putObject("particles", new ElementTag(effect.hasParticles()));
         map.putObject("icon", new ElementTag(effect.hasIcon()));
+        // TODO: deprecate this
+        if (includeDeprecated) {
+            map.putObject("type", new ElementTag(effect.getType().getName(), true));
+        }
         return map;
     }
 
@@ -50,15 +74,21 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         if (getItemMeta() instanceof PotionMeta potionMeta) {
             MapTag base = new MapTag();
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                base.putObject("base_type", new ElementTag(Utilities.namespacedKeyToString(potionMeta.getBasePotionType().getKey()), true));
+                if (potionMeta.hasBasePotionType()) {
+                    base.putObject("base_type", new ElementTag(Utilities.namespacedKeyToString(potionMeta.getBasePotionType().getKey()), true));
+                }
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && PaperAPITools.instance.hasCustomName(potionMeta)) {
+                    base.putObject("translation_id", new ElementTag(potionMeta.getCustomName(), true));
+                }
             }
             else {
                 includeExtras = true;
             }
             if (includeExtras) { // TODO: Eventually remove these 4
-                base.putObject("type", new ElementTag(potionMeta.getBasePotionData().getType()));
-                base.putObject("upgraded", new ElementTag(potionMeta.getBasePotionData().isUpgraded()));
-                base.putObject("extended", new ElementTag(potionMeta.getBasePotionData().isExtended()));
+                LegacyPotionData data = getLegacyBasePotionData();
+                base.putObject("type", new ElementTag(data.type(), true));
+                base.putObject("upgraded", new ElementTag(data.upgraded()));
+                base.putObject("extended", new ElementTag(data.extended()));
                 if (potionMeta.hasColor()) {
                     base.putObject("color", BukkitColorExtensions.fromColor(potionMeta.getColor()));
                 }
@@ -66,7 +96,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             result.addObject(base);
         }
         for (PotionEffect potionEffect : potionEffects) {
-            result.addObject(effectToMap(potionEffect));
+            result.addObject(effectToMap(potionEffect, includeExtras));
         }
         return result;
     }
@@ -78,19 +108,26 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         boolean ambient = true;
         boolean particles = true;
         boolean icon = false;
-        if (effectMap.containsKey("type")) {
-            String typeString = effectMap.getObject("type").toString();
-            type = PotionEffectType.getByName(typeString);
-            if (type == null) {
-                if (context.showErrors()) {
-                    Debug.echoError("Invalid potion effect type '" + typeString + "': effect type is required.");
-                }
-                return null;
+        ElementTag effectInput = effectMap.getElement("effect");
+        ElementTag typeInput = null;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && effectInput != null) {
+            type = Registry.EFFECT.get(Utilities.parseNamespacedKey(effectInput.asString()));
+        }
+        else if ((typeInput = effectMap.getElement("type")) != null) {
+            type = PotionEffectType.getByName(typeInput.asString());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                BukkitImplDeprecations.oldPotionEffectType.warn(context);
             }
         }
         else {
             if (context.showErrors()) {
-                Debug.echoError("Invalid potion effect type: effect type is required.");
+                Debug.echoError("Invalid potion effect: effect type is required.");
+            }
+            return null;
+        }
+        if (type == null) {
+            if (context.showErrors()) {
+                Debug.echoError("Invalid potion effect type '" + (effectInput != null ? effectInput : typeInput) + "' specified: effect type is required.");
             }
             return null;
         }
@@ -154,32 +191,39 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         return getMapTagData(false);
     }
 
+    private boolean applyBasePotionData(PotionMeta potionMeta, ObjectTag baseData, Mechanism mechanism) {
+        if (!baseData.canBeType(MapTag.class)) {
+            return applyLegacyStringBasePotionData(baseData.toString(), potionMeta, mechanism);
+        }
+        MapTag baseDataMap = baseData.asType(MapTag.class, mechanism.context);
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) || baseDataMap.containsKey("type")) {
+            return applyLegacyMapBasePotionData(baseDataMap, potionMeta, mechanism);
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ElementTag translationId = baseDataMap.getElement("translation_id");
+            potionMeta.setCustomName(translationId != null ? translationId.asString() : null);
+        }
+        ElementTag baseTypeElement = baseDataMap.getElement("base_type");
+        if (baseTypeElement == null) {
+            potionMeta.setBasePotionType(null);
+            return false;
+        }
+        PotionType baseType = Utilities.elementToEnumlike(baseTypeElement, PotionType.class);
+        if (baseType == null) {
+            mechanism.echoError("Invalid base potion type '" + baseTypeElement + "' specified.");
+            return true;
+        }
+        potionMeta.setBasePotionType(baseType);
+        return false;
+    }
+
     @Override
     public void setPropertyValue(ObjectTag value, Mechanism mechanism) {
         List<ObjectTag> data = new ArrayList<>(CoreUtilities.objectToList(value, mechanism.context));
         ItemMeta meta = getItemMeta();
         if (meta instanceof PotionMeta potionMeta) {
-            ObjectTag firstObj = data.remove(0);
-            if (firstObj.canBeType(MapTag.class)) {
-                MapTag baseEffect = firstObj.asType(MapTag.class, mechanism.context);
-                if (baseEffect.containsKey("base_type")) {
-                    ElementTag baseTypeElement = baseEffect.getElement("base_type");
-                    PotionType type = Registry.POTION.get(Utilities.parseNamespacedKey(baseTypeElement.asString()));
-                    if (type == null && baseTypeElement.matchesEnum(PotionType.class)) {
-                        type = baseTypeElement.asEnum(PotionType.class);
-                    }
-                    if (type == null) {
-                        mechanism.echoError("Invalid base potion type '" + baseTypeElement + "': valid base potion_type is required");
-                        return;
-                    }
-                    potionMeta.setBasePotionType(type);
-                }
-                else {
-                    applyLegacyMapBasePotionData(baseEffect, potionMeta, mechanism);
-                }
-            }
-            else {
-                applyLegacyStringBasePotionData(firstObj.toString(), potionMeta, mechanism);
+            if (applyBasePotionData(potionMeta, data.remove(0), mechanism)) {
+                return;
             }
             potionMeta.clearCustomEffects();
         }
@@ -224,7 +268,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         // Returns a list of all potion effects on this item, in the same format as the MapTag input to the mechanism.
         // This applies to Potion items, Tipped Arrow items, and Suspicious Stews.
         // Note that for potions or tipped arrows (not suspicious stew) the first value in the list is the potion's base type.
-        // All subsequent entries are effect data.
+        // All subsequent entries are potion effects in <@link language Potion Effect Format>.
         // -->
         PropertyParser.registerTag(ItemPotion.class, ListTag.class, "effects_data", (attribute, prop) -> {
             return prop.getMapTagData(true);
@@ -239,22 +283,16 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         // This applies to Potion items, Tipped Arrow items, and Suspicious Stews.
         //
         // For potions or tipped arrows (not suspicious stew), the first item in the list must be a MapTag with keys:
-        // "base_type" - from <@link url https://minecraft.wiki/w/Potion#Item_data>
+        // "base_type" - from <@link url https://minecraft.wiki/w/Potion#Item_data> (optional, becomes an uncraftable potion when unset).
+        // "translation_id" - controls the translation key used for the default item display name. The translation key used is "item.minecraft.<item type>.effect.<id>" (optional).
         //
         // For example: [base_type=strong_swiftness]
         // This example produces an item labeled as "Potion of Swiftness - Speed II (1:30)"
         //
-        // Each following item in the list are potion effects, which must be a MapTag with keys:
-        // "type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>
-        // "amplifier" - number to increase the level by (0 for default level 1) (optional, default 0)
-        // "duration" - DurationTag, how long it lasts (optional, default 0s)
-        // "ambient", "particles", "icon" - booleans (optional, default true, true, false)
-        //
-        // For example: [type=SPEED;amplifier=2;duration=10s;ambient=false;particles=true;icon=true]
-        // This example would be a level 3 swiftness potion that lasts 10 seconds.
+        // Each following item in the list are potion effects, which must be a MapTag in <@link language Potion Effect Format>.
         //
         // A very short full default potion item would be: potion[potion_effects=[base_type=regeneration]
-        // A (relatively) short full potion item would be: potion[potion_effects=<list[[base_type=regeneration]|[type=speed;duration=10s]]>]
+        // A (relatively) short full potion item would be: potion[potion_effects=<list[[base_type=regeneration]|[effect=speed;duration=10s]]>]
         // (Note the list constructor to force data format interpretation, as potion formats can be given multiple ways and the system will get confused without a constructor)
         //
         // @tags
@@ -293,12 +331,12 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
         // Deprecated in favor of <@link tag ItemTag.effects_data>
         // -->
         PropertyParser.registerTag(ItemPotion.class, ElementTag.class, "potion_base_type", (attribute, object) -> {
-            if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
+            if (!(object.getItemMeta() instanceof PotionMeta)) {
                 attribute.echoError("This item does not have a base potion type.");
                 return null;
             }
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
-            return new ElementTag(potionMeta.getBasePotionData().getType());
+            return new ElementTag(object.getLegacyBasePotionData().type(), true);
         });
 
         // <--[tag]
@@ -316,8 +354,9 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 return null;
             }
             BukkitImplDeprecations.oldPotionEffects.warn(attribute.context);
-            return new ElementTag(potionMeta.getBasePotionData().getType().name() + "," + (potionMeta.getBasePotionData().isUpgraded() ? 2 : 1)
-                    + "," + potionMeta.getBasePotionData().isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION)
+            LegacyPotionData data = object.getLegacyBasePotionData();
+            return new ElementTag(data.type() + "," + (data.upgraded() ? 2 : 1)
+                    + "," + data.extended() + "," + (object.getMaterial() == Material.SPLASH_POTION)
                     + (potionMeta.hasColor() ? "," + BukkitColorExtensions.fromColor(potionMeta.getColor()).identify() : ""));
         });
 
@@ -359,17 +398,17 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
             if (attribute.startsWith("is_extended", 2)) {
                 attribute.fulfill(1);
-                if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
+                if (!(object.getItemMeta() instanceof PotionMeta)) {
                     return null;
                 }
-                return new ElementTag(potionMeta.getBasePotionData().isExtended());
+                return new ElementTag(object.getLegacyBasePotionData().extended());
             }
             if (attribute.startsWith("level", 2)) {
                 attribute.fulfill(1);
-                if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
+                if (!(object.getItemMeta() instanceof PotionMeta)) {
                     return null;
                 }
-                return new ElementTag(potionMeta.getBasePotionData().isUpgraded() ? 2 : 1);
+                return new ElementTag(object.getLegacyBasePotionData().upgraded() ? 2 : 1);
             }
             if (attribute.startsWith("is_ambient", 2)) {
                 attribute.fulfill(1);
@@ -399,27 +438,31 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
                 attribute.fulfill(1);
                 return new ElementTag(0);
             }
-            if (!(object.getItemMeta() instanceof PotionMeta potionMeta)) {
+            if (!(object.getItemMeta() instanceof PotionMeta)) {
                 return null;
             }
-            PotionData data = potionMeta.getBasePotionData();
-            return new ElementTag(data.getType().name() + "," + (data.isUpgraded() ? 2 : 1)
-                    + "," + data.isExtended() + "," + (object.getMaterial() == Material.SPLASH_POTION));
+            LegacyPotionData data = object.getLegacyBasePotionData();
+            return new ElementTag(data.type() + "," + (data.upgraded() ? 2 : 1)
+                    + "," + data.extended() + "," + (object.getMaterial() == Material.SPLASH_POTION));
 
         });
     }
 
-    private static void applyLegacyMapBasePotionData(MapTag input, PotionMeta potionMeta, Mechanism mechanism) {
+    private static boolean applyLegacyMapBasePotionData(MapTag input, PotionMeta potionMeta, Mechanism mechanism) {
         if (!input.containsKey("type")) {
             mechanism.echoError("Must specify a base potion type.");
-            return;
+            return true;
         }
         ElementTag typeElement = input.getElement("type");
-        if (!typeElement.matchesEnum(PotionType.class)) {
-            mechanism.echoError("Invalid base potion type '" + typeElement + "': type is required");
-            return;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && typeElement.asLowerString().equals("uncraftable")) {
+            potionMeta.setBasePotionType(null);
+            return false;
         }
-        PotionType type = PotionType.valueOf(typeElement.asString().toUpperCase());
+        PotionType type = Utilities.elementToEnumlike(typeElement, PotionType.class);
+        if (type == null) {
+            mechanism.echoError("Invalid base potion type '" + typeElement + "': type is required");
+            return true;
+        }
         boolean upgraded = false;
         boolean extended = false;
         if (input.containsKey("upgraded")) {
@@ -451,17 +494,22 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
         }
         applyLegacyBasePotionData(potionMeta, type, upgraded, extended, color, mechanism);
+        return false;
     }
 
-    private static void applyLegacyStringBasePotionData(String input, PotionMeta potionMeta, Mechanism mechanism) {
+    private static boolean applyLegacyStringBasePotionData(String input, PotionMeta potionMeta, Mechanism mechanism) {
         String[] d1 = input.split(",");
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && CoreUtilities.equalsIgnoreCase(d1[0], "uncraftable")) {
+            potionMeta.setBasePotionType(null);
+            return false;
+        }
         PotionType type;
         try {
             type = PotionType.valueOf(d1[0].toUpperCase());
         }
         catch (IllegalArgumentException ex) {
             mechanism.echoError("Invalid base potion type '" + d1[0] + "': type is required");
-            return;
+            return true;
         }
         boolean upgraded = CoreUtilities.equalsIgnoreCase(d1[1], "true");
         boolean extended = CoreUtilities.equalsIgnoreCase(d1[2], "true");
@@ -476,6 +524,7 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
         }
         applyLegacyBasePotionData(potionMeta, type, upgraded, extended, color, mechanism);
+        return false;
     }
 
     private static void applyLegacyBasePotionData(PotionMeta potionMeta, PotionType type, boolean upgraded, boolean extended, ColorTag color, Mechanism mechanism) {
@@ -540,5 +589,20 @@ public class ItemPotion extends ItemProperty<ObjectTag> {
             }
         }
         return new PotionEffect(type, duration, amplifier, ambient, particles, icon);
+    }
+
+    @Deprecated(forRemoval = true)
+    public record LegacyPotionData(String type, boolean extended, boolean upgraded) {
+        public static final LegacyPotionData DEFAULT_DATA = new LegacyPotionData("UNCRAFTABLE", false, false);
+
+        public LegacyPotionData(PotionData data) {
+            this(data.getType().name(), data.isExtended(), data.isUpgraded());
+        }
+    }
+
+    @Deprecated(forRemoval = true)
+    public LegacyPotionData getLegacyBasePotionData() {
+        PotionData data = as(PotionMeta.class).getBasePotionData();
+        return data != null ? new LegacyPotionData(data) : LegacyPotionData.DEFAULT_DATA;
     }
 }
