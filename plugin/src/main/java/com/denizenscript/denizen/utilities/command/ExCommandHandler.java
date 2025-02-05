@@ -91,8 +91,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
             npc = new NPCTag(Depends.citizens.getNPCSelector().getSelected(sender));
         }
-        List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
-                new BukkitScriptEntryData(sender instanceof Player player ? new PlayerTag(player) : null, npc));
+        List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null, new BukkitScriptEntryData(sender instanceof Player player ? new PlayerTag(player) : null, npc));
         queue.addEntries(scriptEntries);
         if (!quiet && sender instanceof Player) {
             queue.debugOutput = s -> sender.spigot().sendMessage(FormattedTextHelper.parse(s.replace("<FORCE_ALIGN>", ""), net.md_5.bungee.api.ChatColor.WHITE));
