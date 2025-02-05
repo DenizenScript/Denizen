@@ -34,6 +34,9 @@ public class BlockCooksSmeltsItemScriptEvent extends BukkitScriptEvent implement
 
     public BlockCooksSmeltsItemScriptEvent() {
         registerCouldMatcher("<block> cooks|smelts <item> (into <item>)");
+        this.<BlockCooksSmeltsItemScriptEvent, ItemTag>registerDetermination(null, ItemTag.class, (evt, context, result) -> {
+            event.setResult(result.getItemStack());
+        });
     }
 
     public ItemTag source_item;
@@ -61,23 +64,13 @@ public class BlockCooksSmeltsItemScriptEvent extends BukkitScriptEvent implement
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj.canBeType(ItemTag.class)) {
-            result_item = determinationObj.asType(ItemTag.class, getTagContext(path));
-            event.setResult(result_item.getItemStack());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "source_item": return source_item;
-            case "result_item": return result_item;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "source_item" -> source_item;
+            case "result_item" -> new ItemTag(event.getResult());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

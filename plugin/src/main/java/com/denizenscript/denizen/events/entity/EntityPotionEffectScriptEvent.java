@@ -34,8 +34,8 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
     // <context.cause> returns the cause of the effect change, based on <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityPotionEffectEvent.Cause.html>
     // <context.action> returns the action of the effect changed, which can be 'added', 'changed', 'cleared', or 'removed'
     // <context.override> returns whether the new potion effect will override the old.
-    // <context.new_effect_data> returns the new potion effect (in the same format as <@link tag EntityTag.effects_data>) (if any).
-    // <context.old_effect_data> returns the old potion effect (in the same format as <@link tag EntityTag.effects_data>) (if any).
+    // <context.new_effect_data> returns the new potion effect in <@link language Potion Effect Format>.
+    // <context.old_effect_data> returns the old potion effect in <@link language Potion Effect Format>.
     // <context.effect_type> returns the name of the modified potion effect type.
     //
     // @Determine
@@ -118,8 +118,8 @@ public class EntityPotionEffectScriptEvent extends BukkitScriptEvent implements 
             case "override" -> new ElementTag(event.isOverride());
             case "new_effect" -> event.getNewEffect() == null ? null : new ElementTag(ItemPotion.effectToLegacyString(event.getNewEffect(), null));
             case "old_effect" -> event.getOldEffect() == null ? null : new ElementTag(ItemPotion.effectToLegacyString(event.getOldEffect(), null));
-            case "new_effect_data" -> event.getNewEffect() == null ? null : ItemPotion.effectToMap(event.getNewEffect());
-            case "old_effect_data" -> event.getOldEffect() == null ? null : ItemPotion.effectToMap(event.getOldEffect());
+            case "new_effect_data" -> event.getNewEffect() == null ? null : ItemPotion.effectToMap(event.getNewEffect(), true);
+            case "old_effect_data" -> event.getOldEffect() == null ? null : ItemPotion.effectToMap(event.getOldEffect(), true);
             default -> super.getContext(name);
         };
     }
