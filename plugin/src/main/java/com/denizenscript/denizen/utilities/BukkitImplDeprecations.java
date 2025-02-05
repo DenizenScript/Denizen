@@ -450,7 +450,7 @@ public class BukkitImplDeprecations {
     public static Warning playEffectSpecialDataListInput = new FutureWarning("playEffectSpecialDataListInput", "List input for the special_data argument in playeffect command is now deprecated. Please use a MapTag instead.");
 
     // Added 2025/02/05, deprecate officially by 2028.
-    public static Warning timeSubTags = new FutureWarning("timeSubTags", pointlessSubtagPrefix + "'time.' tags are now just 'time_'.");
+    public static Warning timeSubTags = new FutureWarning("timeSubTags", pointlessSubtagPrefix + "'time.*' tags are now just 'time_*'.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
