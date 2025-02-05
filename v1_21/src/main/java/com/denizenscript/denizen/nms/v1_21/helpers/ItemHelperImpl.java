@@ -20,9 +20,11 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.*;
+import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.*;
@@ -48,12 +50,12 @@ import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
-import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmokingRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -81,10 +83,10 @@ import org.bukkit.craftbukkit.v1_21_R3.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_21_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.*;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.SmithingTrimRecipe;
 import org.bukkit.inventory.TransmuteRecipe;
+import org.bukkit.inventory.*;
 import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
@@ -305,13 +307,26 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public String getRawHoverText(ItemStack itemStack) {
-        // TODO: 1.20.6: this is relatively hot code, ideally should have some early returns before serializing the item
-        net.minecraft.nbt.Tag tag = CraftItemStack.asNMSCopy(itemStack).saveOptional(CraftRegistry.getMinecraftRegistry());
-        if (tag == null) {
+    public JsonObject getRawHoverComponentsJson(ItemStack item) {
+        DataComponentPatch nmsComponents = CraftItemStack.asNMSCopy(item).getComponentsPatch();
+        if (nmsComponents.isEmpty()) {
             return null;
         }
-        return tag.toString();
+        return DataComponentPatch.CODEC.encodeStart(CraftRegistry.getMinecraftRegistry().createSerializationContext(JsonOps.INSTANCE), nmsComponents).getOrThrow().getAsJsonObject();
+    }
+
+    @Override
+    public ItemStack applyRawHoverComponentsJson(ItemStack item, JsonObject components) {
+        return DataComponentPatch.CODEC.parse(CraftRegistry.getMinecraftRegistry().createSerializationContext(JsonOps.INSTANCE), components).mapOrElse(
+                nmsComponents -> {
+                    net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+                    nmsItem.applyComponents(nmsComponents);
+                    return CraftItemStack.asCraftMirror(nmsItem);
+                },
+                error -> {
+                    Debug.echoError("Invalid hover item data '" + components + "': " + error.message());
+                    return item;
+                });
     }
 
     @Override

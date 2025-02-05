@@ -31,7 +31,7 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
     //
     // @Context
     // <context.location> returns the LocationTag of the beacon applying an effect.
-    // <context.effect_data> returns a MapTag of the potion effect (in the same format as <@link tag EntityTag.effects_data>).
+    // <context.effect_data> returns a MapTag of the potion effect in <@link language Potion Effect Format>.
     // <context.effect_type> returns an ElementTag of the effect type.
     // <context.is_primary> returns an ElementTag(Boolean) of whether the beacon effect is the primary effect.
     //
@@ -78,7 +78,7 @@ public class PlayerBeaconEffectScriptEvent extends BukkitScriptEvent implements 
         return switch (name) {
             case "location" -> new LocationTag(event.getBlock().getLocation());
             case "effect" -> new ElementTag(ItemPotion.effectToLegacyString(event.getEffect(), null));
-            case "effect_data" -> ItemPotion.effectToMap(event.getEffect());
+            case "effect_data" -> ItemPotion.effectToMap(event.getEffect(), true);
             case "effect_type" -> new ElementTag(event.getEffect().getType().getName());
             case "is_primary" -> new ElementTag(event.isPrimary());
             default -> super.getContext(name);

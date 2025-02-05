@@ -2,12 +2,13 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Breedable;
 
@@ -20,6 +21,7 @@ public class AgeCommand extends AbstractCommand {
         setSyntax("age [<entity>|...] (adult/baby/<age>) (lock)");
         setRequiredArguments(1, 3);
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -57,64 +59,37 @@ public class AgeCommand extends AbstractCommand {
     // - age <player.location.find_entities.within[20]> adult
     // -->
 
-    private enum AgeType {ADULT, BABY}
+    private enum AgeType { ADULT, BABY }
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(EntityTag.class)) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
-            }
-            else if (!scriptEntry.hasObject("agetype")
-                    && arg.matchesEnum(AgeType.class)) {
-                scriptEntry.addObject("agetype", AgeType.valueOf(arg.getValue().toUpperCase()));
-            }
-            else if (!scriptEntry.hasObject("age")
-                    && arg.matchesInteger()) {
-                scriptEntry.addObject("age", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("lock")
-                    && arg.matches("lock")) {
-                scriptEntry.addObject("lock", new ElementTag(true));
-            }
-            else {
-                arg.reportUnhandled();
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("entities") @ArgLinear ObjectTag entities,
+                                   @ArgName("age") @ArgLinear @ArgDefaultText("1") ObjectTag age,
+                                   @ArgName("lock") boolean shouldLock) {
+        if (!age.asElement().isInt() && !age.asElement().matchesEnum(AgeType.class)) { // Compensate for legacy age/entity out-of-order support
+            Deprecations.outOfOrderArgs.warn(scriptEntry);
+            ObjectTag swap = entities;
+            entities = age;
+            age = swap;
+        }
+        int ageInt = 1;
+        ElementTag ageElement = age.asElement();
+        if (ageElement.matchesEnum(AgeType.class)) {
+            switch (ageElement.asEnum(AgeType.class)) {
+                case BABY -> ageInt = -24000;
+                case ADULT -> ageInt = 0;
             }
         }
-        if (!scriptEntry.hasObject("entities")) {
-            throw new InvalidArgumentsException("No valid entities specified.");
+        else if (ageElement.isInt()) {
+            ageInt = ageElement.asInt();
         }
-        scriptEntry.defaultObject("age", new ElementTag(1));
-    }
-
-    @Override
-    public void execute(final ScriptEntry scriptEntry) {
-        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        AgeType ageType = (AgeType) scriptEntry.getObject("agetype");
-        int age = scriptEntry.getElement("age").asInt();
-        boolean lock = scriptEntry.hasObject("lock");
-
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), (lock ? db("lock", true) : ""), (ageType != null ? db("agetype", ageType) : db("age", age)), db("entities", entities));
-        }
-        for (EntityTag entity : entities) {
+        List<EntityTag> entitiesList = entities.asType(ListTag.class, scriptEntry.context).filter(EntityTag.class, scriptEntry);
+        for (EntityTag entity : entitiesList) {
             if (entity.isSpawned()) {
                 if (EntityAge.describes(entity)) {
                     EntityAge property = new EntityAge(entity);
-                    if (ageType != null) {
-                        if (ageType.equals(AgeType.BABY)) {
-                            property.setAge(-24000);
-                        }
-                        else {
-                            property.setAge(0);
-                        }
-                    }
-                    else {
-                        property.setAge(age);
-                    }
-                    if (entity instanceof Breedable breedable) {
-                        breedable.setAgeLock(lock);
+                    property.setAge(ageInt);
+                    if (entity.getBukkitEntity() instanceof Breedable breedable) {
+                        breedable.setAgeLock(shouldLock);
                     }
                 }
                 else {

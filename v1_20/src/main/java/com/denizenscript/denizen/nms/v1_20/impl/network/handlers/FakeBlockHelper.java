@@ -90,7 +90,7 @@ public class FakeBlockHelper {
 
     public static ClientboundLevelChunkWithLightPacket handleMapChunkPacket(World world, ClientboundLevelChunkWithLightPacket originalPacket, int chunkX, int chunkZ, List<FakeBlock> blocks) {
         try {
-            ClientboundLevelChunkWithLightPacket duplicateCorePacket = ClientboundLevelChunkWithLightPacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket(originalPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC));
+            ClientboundLevelChunkWithLightPacket duplicateCorePacket = DenizenNetworkManagerImpl.copyPacket(originalPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC);
             copyPacketPaperPatch(duplicateCorePacket, originalPacket);
             RegistryFriendlyByteBuf copier = new RegistryFriendlyByteBuf(Unpooled.buffer(), CraftRegistry.getMinecraftRegistry());
             originalPacket.getChunkData().write(copier);
