@@ -1524,16 +1524,10 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
                 NMSHandler.worldHelper.wakeUpAllPlayers(world);
             }
             // minor change: prior to 1.18, hasStorm/isRaining was not checked
-            if (world.getGameRuleValue(GameRule.DO_WEATHER_CYCLE) == null) {
-                if (world.getGameRuleDefault(GameRule.DO_WEATHER_CYCLE) == null) {
-                    throw new IllegalStateException("World " + world.getName() + " contains no GameRule " + GameRule.DO_WEATHER_CYCLE.getName());
-                }
-            }
-            if (world.hasStorm()) {
+            if (object.getGameRuleOrDefault(GameRule.DO_WEATHER_CYCLE) && world.hasStorm()) {
                 NMSHandler.worldHelper.clearWeather(world);
             }
         });
-
     }
 
     public static ObjectTagProcessor<WorldTag> tagProcessor = new ObjectTagProcessor<>();
