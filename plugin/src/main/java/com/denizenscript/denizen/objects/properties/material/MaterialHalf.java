@@ -23,7 +23,6 @@ public class MaterialHalf extends MaterialProperty<ElementTag> {
     // For "Bisected" blocks (doors/double plants/...), values are either "BOTTOM" or "TOP".
     // For beds, values are either "HEAD" or "FOOT".
     // For chests, values are either "LEFT" or "RIGHT".
-    // For the half name, see <@link tag MaterialTag.half>.
     // For the relative vector, see <@link tag MaterialTag.relative_vector>.
     // -->
 
@@ -34,7 +33,9 @@ public class MaterialHalf extends MaterialProperty<ElementTag> {
                 || data instanceof Chest;
     }
 
-    MaterialTag material;
+    public MaterialHalf(MaterialTag material) {
+        super(material);
+    }
 
     @Override
     public String getPropertyId() {
@@ -48,7 +49,7 @@ public class MaterialHalf extends MaterialProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        BlockData data = material.getModernData();
+        BlockData data = getBlockData();
         if (data instanceof Bisected bisected) {
             bisected.setHalf(value.asEnum(Bisected.Half.class));
         }
@@ -97,7 +98,7 @@ public class MaterialHalf extends MaterialProperty<ElementTag> {
     }
 
     public String getHalfName() {
-        return getHalfName(material.getModernData());
+        return getHalfName(getBlockData());
     }
 
     public static Vector getRelativeBlockVector(BlockData data) {
@@ -130,19 +131,6 @@ public class MaterialHalf extends MaterialProperty<ElementTag> {
     }
 
     public Vector getRelativeBlockVector() {
-        return getRelativeBlockVector(material.getModernData());
-    }
-
-    public static MaterialHalf getFrom(MaterialTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialHalf(_material);
-        }
-    }
-
-    public MaterialHalf(MaterialTag _material) {
-        material = _material;
+        return getRelativeBlockVector(getBlockData());
     }
 }

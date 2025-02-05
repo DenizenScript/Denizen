@@ -16,15 +16,12 @@ public class MaterialFaces extends MaterialProperty<ListTag> {
     // @input ListTag
     // @description
     // Controls a list of the current faces for a material that has multiple faces (like a mushroom block).
-    // For valid faces, see <@link tag MaterialTag.valid_faces>.
     // -->
 
     public static boolean describes(MaterialTag material) {
         BlockData data = material.getModernData();
         return data instanceof MultipleFacing;
     }
-
-    MaterialTag material;
 
     @Override
     public String getPropertyId() {
@@ -77,6 +74,6 @@ public class MaterialFaces extends MaterialProperty<ListTag> {
     }
 
     public MultipleFacing getFaces() {
-        return (MultipleFacing) material.getModernData();
+        return (MultipleFacing) getBlockData();
     }
 }

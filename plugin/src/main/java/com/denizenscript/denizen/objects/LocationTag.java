@@ -3767,7 +3767,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             BukkitImplDeprecations.locationDistanceTag.warn(attribute.context);
             MaterialTag material = new MaterialTag(object.getBlockDataForTag(attribute));
             if (MaterialDistance.describes(material)) {
-                return new ElementTag(MaterialDistance.getFrom(material).getDistance());
+                return new MaterialDistance(material).getPropertyValue();
             }
             return null;
         });
@@ -3964,7 +3964,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             BlockData b = object.getBlockDataForTag(attribute);
             MaterialTag material = new MaterialTag(b);
             if (MaterialHalf.describes(material)) {
-                Vector vec = MaterialHalf.getFrom(material).getRelativeBlockVector();
+                Vector vec = new MaterialHalf(material).getRelativeBlockVector();
                 if (vec != null) {
                     return new LocationTag(object.clone().add(vec));
                 }

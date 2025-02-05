@@ -24,7 +24,9 @@ public class MaterialDistance extends MaterialProperty<ElementTag> {
                 || data instanceof Leaves;
     }
 
-    MaterialTag material;
+    public MaterialDistance(MaterialTag material) {
+        super(material);
+    }
 
     @Override
     public String getPropertyId() {
@@ -33,7 +35,13 @@ public class MaterialDistance extends MaterialProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(getDistance());
+        if (getBlockData() instanceof Scaffolding scaffolding) {
+            return new ElementTag(scaffolding.getDistance());
+        }
+        else if (getBlockData() instanceof Leaves leaves) {
+            return new ElementTag(leaves.getDistance());
+        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -42,59 +50,20 @@ public class MaterialDistance extends MaterialProperty<ElementTag> {
             return;
         }
         int distance = value.asInt();
-        if (isScaffolding()) {
-            if (distance >= 0 && distance <= getScaffolding().getMaximumDistance()) {
-                getScaffolding().setDistance(distance);
+        if (getBlockData() instanceof Scaffolding scaffolding) {
+            if (distance >= 0 && distance <= scaffolding.getMaximumDistance()) {
+                scaffolding.setDistance(distance);
             }
             else {
-                mechanism.echoError("Distance must be between 0 and " + getScaffolding().getMaximumDistance());
+                mechanism.echoError("Distance must be between 0 and " + scaffolding.getMaximumDistance());
             }
         }
-        else if (isLeaves()) {
-            getLeaves().setDistance(distance);
+        else if (getBlockData() instanceof Leaves leaves) {
+            leaves.setDistance(distance);
         }
     }
 
     public static void register() {
         autoRegister("distance", MaterialDistance.class, ElementTag.class, true);
-    }
-
-    public int getDistance() {
-        if (isScaffolding()) {
-            return getScaffolding().getDistance();
-        }
-        else if (isLeaves()) {
-            return getLeaves().getDistance();
-        }
-        throw new UnsupportedOperationException();
-    }
-
-    public Scaffolding getScaffolding() {
-        return (Scaffolding) material.getModernData();
-    }
-
-    public Leaves getLeaves() {
-        return (Leaves) material.getModernData();
-    }
-
-    public boolean isScaffolding() {
-        return material.getModernData() instanceof Scaffolding;
-    }
-
-    public boolean isLeaves() {
-        return material.getModernData() instanceof Leaves;
-    }
-
-    public static MaterialDistance getFrom(MaterialTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialDistance(_material);
-        }
-    }
-
-    public MaterialDistance(MaterialTag _material) {
-        material = _material;
     }
 }
