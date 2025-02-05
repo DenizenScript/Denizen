@@ -1,12 +1,12 @@
 package com.denizenscript.denizen.paper.properties;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import org.bukkit.entity.AbstractSkeleton;
-import org.bukkit.entity.Phantom;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 
 public class EntityShouldBurn extends EntityProperty<ElementTag> {
 
@@ -21,8 +21,11 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Zombie
-                || entity.getBukkitEntity() instanceof AbstractSkeleton
-                || entity.getBukkitEntity() instanceof Phantom;
+                || entity.getBukkitEntity() instanceof Phantom
+                || entity.getBukkitEntity() instanceof Skeleton
+                || entity.getBukkitEntity() instanceof Stray
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && entity.getBukkitEntity() instanceof Bogged);
+                // TODO: Once 1.18 is the minimum version, use AbstractSkeleton.
     }
 
     @Override
