@@ -20,6 +20,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
@@ -216,5 +217,10 @@ public class PaperAPITools {
 
     public boolean canUseEquipmentSlot(LivingEntity entity, EquipmentSlot slot) {
         return true;
+    }
+
+    // TODO workaround Paper issue - https://github.com/PaperMC/Paper/issues/11732
+    public boolean hasCustomName(PotionMeta meta) {
+        return meta.hasCustomName();
     }
 }

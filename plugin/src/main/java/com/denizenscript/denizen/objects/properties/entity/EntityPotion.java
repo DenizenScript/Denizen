@@ -4,9 +4,8 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
@@ -14,70 +13,72 @@ import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 
-public class EntityPotion implements Property {
+@Deprecated
+public class EntityPotion extends EntityProperty<ItemTag> {
 
-    public static boolean describes(ObjectTag entity) {
-        if (!(entity instanceof EntityTag)) {
-            return false;
-        }
-        return ((EntityTag) entity).getBukkitEntity() instanceof ThrownPotion
-                || ((EntityTag) entity).getBukkitEntity() instanceof Arrow;
+    // <--[property]
+    // @object EntityTag
+    // @name potion
+    // @input ItemTag
+    // @deprecated use 'EntityTag.potion_type' for arrows, and 'EntityTag.item' for splash potions.
+    // @description
+    // Deprecated in favor of <@link property EntityTag.potion_type> for arrows, and <@link property EntityTag.item> for splash potions.
+    // -->
+
+    public static boolean describes(EntityTag entity) {
+        return entity.getBukkitEntity() instanceof ThrownPotion || entity.getBukkitEntity() instanceof Arrow;
     }
 
-    public static EntityPotion getFrom(ObjectTag entity) {
-        if (!describes(entity)) {
-            return null;
-        }
-        else {
-            return new EntityPotion((EntityTag) entity);
-        }
-    }
-
-    public static final String[] handledTags = new String[] {
-            "potion"
-    };
-
-    public static final String[] handledMechs = new String[] {
-            "potion"
-    };
-
-    EntityTag entity;
-
-    public EntityPotion(EntityTag entity) {
-        this.entity = entity;
-    }
-
-    public ItemStack getPotion() {
-        if (entity.getBukkitEntity() instanceof ThrownPotion) {
-            return ((ThrownPotion) entity.getBukkitEntity()).getItem();
+    @Override
+    public ItemTag getPropertyValue() {
+        if (getEntity() instanceof ThrownPotion thrownPotion) {
+            return new ItemTag(thrownPotion.getItem());
         }
         else { // Tipped arrow
             ItemStack refItem = new ItemStack(Material.POTION);
             PotionMeta meta = (PotionMeta) refItem.getItemMeta();
-            // TODO: 1.20.6: PotionData API
-            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
-                meta.setBasePotionData(((Arrow) entity.getBukkitEntity()).getBasePotionData());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                meta.setBasePotionType(as(Arrow.class).getBasePotionType());
+            }
+            else {
+                meta.setBasePotionData(as(Arrow.class).getBasePotionData());
             }
             refItem.setItemMeta(meta);
-            return refItem;
-        }
-    }
-
-    public void setPotion(ItemStack item) {
-        if (entity.getBukkitEntity() instanceof ThrownPotion) {
-            ((ThrownPotion) entity.getBukkitEntity()).setItem(item);
-        }
-        else { // Tipped arrow
-            // TODO: 1.20.6: PotionData API
-            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
-                ((Arrow) entity.getBukkitEntity()).setBasePotionData(((PotionMeta) item.getItemMeta()).getBasePotionData());
-            }
+            return new ItemTag(refItem);
         }
     }
 
     @Override
-    public String getPropertyString() {
-        return new ItemTag(getPotion()).identify();
+    public ItemTag getTagValue(Attribute attribute) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+            return super.getTagValue(attribute);
+        }
+        if (getEntity() instanceof ThrownPotion) {
+            BukkitImplDeprecations.splashPotionItem.warn(attribute.context);
+        }
+        else {
+            BukkitImplDeprecations.arrowBasePotionType.warn(attribute.context);
+        }
+        return super.getTagValue(attribute);
+    }
+
+    @Override
+    public void setPropertyValue(ItemTag value, Mechanism mechanism) {
+        if (getEntity() instanceof ThrownPotion thrownPotion) {
+            thrownPotion.setItem(value.getItemStack());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                BukkitImplDeprecations.splashPotionItem.warn(mechanism.context);
+            }
+        }
+        else { // Tipped arrow
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                BukkitImplDeprecations.arrowBasePotionType.warn(mechanism.context);
+                as(Arrow.class).setBasePotionType(((PotionMeta) value.getItemMeta()).getBasePotionType());
+            }
+            else {
+                as(Arrow.class).setBasePotionData(((PotionMeta) value.getItemMeta()).getBasePotionData());
+            }
+        }
     }
 
     @Override
@@ -85,45 +86,7 @@ public class EntityPotion implements Property {
         return "potion";
     }
 
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-        if (attribute == null) {
-            return null;
-        }
-
-        // <--[tag]
-        // @attribute <EntityTag.potion>
-        // @returns ItemTag
-        // @mechanism EntityTag.potion
-        // @group properties
-        // @description
-        // If the entity is a Tipped Arrow, returns an ItemTag of a potion with the base potion data of the arrow.
-        // If the entity is a Splash Potion, returns an ItemTag of the splash potion's full potion data.
-        // -->
-        if (attribute.startsWith("potion")) {
-            return new ItemTag(getPotion()).getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name potion
-        // @input ItemTag
-        // @description
-        // Input must be a potion item!
-        // If the entity is a Tipped Arrow, sets the arrow's base potion data based on the item input.
-        // If the entity is a splash Potion, sets the splash potion's full potion data from the item input.
-        // @tags
-        // <EntityTag.potion>
-        // -->
-        if (mechanism.matches("potion") && mechanism.requireObject(ItemTag.class)) {
-            setPotion(mechanism.valueAsType(ItemTag.class).getItemStack());
-        }
-
+    public static void register() {
+        autoRegister("potion", EntityPotion.class, ItemTag.class, false);
     }
 }

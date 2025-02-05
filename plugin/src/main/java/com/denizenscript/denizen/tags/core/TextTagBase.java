@@ -192,13 +192,13 @@ public class TextTagBase {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // You can use <@link tag ElementTag.strip_color> to convert the translated output to plain text (pre-translated).
         // @example
-        // Narrates a translatable of a diamond sword's name.
+        // # Narrates a translatable of a diamond sword's name.
         // - narrate "Reward: <&translate[key=item.minecraft.diamond_sword]>"
         // @example
-        // Narrates a translatable with some input data.
+        // # Narrates a translatable with some input data.
         // - narrate <&translate[key=commands.give.success.single;with=32|<&translate[key=item.minecraft.diamond_sword]>|<player.name>]>
         // @example
-        // Narrates a custom translatable (from something like a resource pack), with a fallback in case it can't be translated.
+        // # Narrates a custom translatable (from something like a resource pack), with a fallback in case it can't be translated.
         // - narrate <&translate[key=my.custom.translation;fallback=Please use the resource pack!]>
         // -->
         TagManager.registerTagHandler(ElementTag.class, ObjectTag.class, "&translate", (attribute, param) -> { // Cannot be static due to hacked sub-tag

@@ -177,7 +177,7 @@ public class AttachPacketHandlers {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
                 EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    ClientboundSetEntityMotionPacket pNew = ClientboundSetEntityMotionPacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket(packet, ClientboundSetEntityMotionPacket.STREAM_CODEC));
+                    ClientboundSetEntityMotionPacket pNew = DenizenNetworkManagerImpl.copyPacket(packet, ClientboundSetEntityMotionPacket.STREAM_CODEC);
                     ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     if (NMSHandler.debugPackets) {
                         DenizenNetworkManagerImpl.doPacketOutput("Attach Velocity Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName());

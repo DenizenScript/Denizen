@@ -175,15 +175,6 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public String getRawHoverText(ItemStack itemStack) {
-        net.minecraft.nbt.CompoundTag tag = CraftItemStack.asNMSCopy(itemStack).getTag();
-        if (tag == null) {
-            return null;
-        }
-        return tag.toString();
-    }
-
-    @Override
     public PlayerProfile getSkullSkin(ItemStack is) {
         net.minecraft.world.item.ItemStack itemStack = CraftItemStack.asNMSCopy(is);
         if (itemStack.hasTag()) {
