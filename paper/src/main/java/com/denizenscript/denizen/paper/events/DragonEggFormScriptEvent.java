@@ -58,7 +58,7 @@ public class DragonEggFormScriptEvent extends BukkitScriptEvent implements Liste
             case "location" -> location;
             case "end_portal_location" -> new LocationTag(event.getDragonBattle().getEndPortalLocation());
             case "previously_killed" -> new ElementTag(event.getDragonBattle().hasBeenPreviouslyKilled());
-            case "respawn_phase" -> new ElementTag(event.getDragonBattle().getRespawnPhase().name());
+            case "respawn_phase" -> new ElementTag(event.getDragonBattle().getRespawnPhase());
             case "healing_crystals" -> new ListTag(event.getDragonBattle().getHealingCrystals(), EntityTag::new);
             case "respawn_crystals" -> new ListTag(event.getDragonBattle().getRespawnCrystals(), EntityTag::new);
             default -> super.getContext(name);
