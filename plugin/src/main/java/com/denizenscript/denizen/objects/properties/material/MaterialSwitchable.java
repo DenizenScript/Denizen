@@ -45,11 +45,36 @@ public class MaterialSwitchable extends MaterialProperty<ElementTag> {
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && data instanceof SculkShrieker);
     }
 
-    public MaterialTag material;
-
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(getState());
+        if (getBlockData() instanceof Openable openable) {
+            return new ElementTag(openable.isOpen());
+        }
+        else if (getBlockData() instanceof Lightable lightable) {
+            return new ElementTag(lightable.isLit());
+        }
+        else if (getBlockData() instanceof Powerable powerable) {
+            return new ElementTag(powerable.isPowered());
+        }
+        else if (getBlockData() instanceof Dispenser dispenser) {
+            return new ElementTag(dispenser.isTriggered());
+        }
+        else if (getBlockData() instanceof DaylightDetector daylightDetector) {
+            return new ElementTag(daylightDetector.isInverted());
+        }
+        else if (getBlockData() instanceof Piston piston) {
+            return new ElementTag(piston.isExtended());
+        }
+        else if (getBlockData() instanceof EndPortalFrame endPortalFrame) {
+            return new ElementTag(endPortalFrame.hasEye());
+        }
+        else if (getBlockData() instanceof Hopper hopper) {
+            return new ElementTag(hopper.isEnabled());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkShrieker sculkShrieker) {
+            return new ElementTag(sculkShrieker.isCanSummon());
+        }
+        return null;
     }
 
     @Override
@@ -60,157 +85,37 @@ public class MaterialSwitchable extends MaterialProperty<ElementTag> {
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         if (mechanism.requireBoolean()) {
-            setState(value.asBoolean());
+            if (getBlockData() instanceof Openable openable) {
+                openable.setOpen(value.asBoolean());
+            }
+            else if (getBlockData() instanceof Lightable lightable) {
+                lightable.setLit(value.asBoolean());
+            }
+            else if (getBlockData() instanceof Powerable powerable) {
+                powerable.setPowered(value.asBoolean());
+            }
+            else if (getBlockData() instanceof Dispenser dispenser) {
+                dispenser.setTriggered(value.asBoolean());
+            }
+            else if (getBlockData() instanceof DaylightDetector daylightDetector) {
+                daylightDetector.setInverted(value.asBoolean());
+            }
+            else if (getBlockData() instanceof Piston piston) {
+                piston.setExtended(value.asBoolean());
+            }
+            else if (getBlockData() instanceof EndPortalFrame endPortalFrame) {
+                endPortalFrame.setEye(value.asBoolean());
+            }
+            else if (getBlockData() instanceof Hopper hopper) {
+                hopper.setEnabled(value.asBoolean());
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkShrieker sculkShrieker) {
+                sculkShrieker.setCanSummon(value.asBoolean());
+            }
         }
     }
 
     public static void register() {
         autoRegister("switched", MaterialSwitchable.class, ElementTag.class, true);
-    }
-
-    public boolean isPowerable() {
-        return material.getModernData() instanceof Powerable;
-    }
-
-    public boolean isOpenable() {
-        return material.getModernData() instanceof Openable;
-    }
-
-    public boolean isDisepnser() {
-        return material.getModernData() instanceof Dispenser;
-    }
-
-    public boolean isDaylightDetector() {
-        return material.getModernData() instanceof DaylightDetector;
-    }
-
-    public boolean isLightable() {
-        return material.getModernData() instanceof Lightable;
-    }
-
-    public boolean isPiston() {
-        return material.getModernData() instanceof Piston;
-    }
-
-    public boolean isEndFrame() {
-        return material.getModernData() instanceof EndPortalFrame;
-    }
-
-    public boolean isHopper() {
-        return material.getModernData() instanceof Hopper;
-    }
-
-    public boolean isSculkShrieker() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && material.getModernData() instanceof SculkShrieker;
-    }
-
-    public Powerable getPowerable() {
-        return (Powerable) material.getModernData();
-    }
-
-    public Openable getOpenable() {
-        return (Openable) material.getModernData();
-    }
-
-    public Dispenser getDispenser() {
-        return (Dispenser) material.getModernData();
-    }
-
-    public DaylightDetector getDaylightDetector() {
-        return (DaylightDetector) material.getModernData();
-    }
-
-    public Piston getPiston() {
-        return (Piston) material.getModernData();
-    }
-
-    public Lightable getLightable() {
-        return (Lightable) material.getModernData();
-    }
-
-    public EndPortalFrame getEndFrame() {
-        return (EndPortalFrame) material.getModernData();
-    }
-
-    public Hopper getHopper() {
-        return (Hopper) material.getModernData();
-    }
-
-    /*public SculkShrieker getSculkShrieker() { // TODO: 1.19
-        return (SculkShrieker) material.getModernData();
-    }*/
-
-    public boolean getState() {
-        if (isOpenable()) {
-            return getOpenable().isOpen();
-        }
-        else if (isLightable()) {
-            return getLightable().isLit();
-        }
-        else if (isPowerable()) {
-            return getPowerable().isPowered();
-        }
-        else if (isDisepnser()) {
-            return getDispenser().isTriggered();
-        }
-        else if (isDaylightDetector()) {
-            return getDaylightDetector().isInverted();
-        }
-        else if (isPiston()) {
-            return getPiston().isExtended();
-        }
-        else if (isEndFrame()) {
-            return getEndFrame().hasEye();
-        }
-        else if (isHopper()) {
-            return getHopper().isEnabled();
-        }
-        else if (isSculkShrieker()) {
-            return ((SculkShrieker) material.getModernData()).isCanSummon();
-        }
-        return false; // Unreachable
-    }
-
-    public void setState(boolean state) {
-        if (isOpenable()) {
-            getOpenable().setOpen(state);
-        }
-        else if (isLightable()) {
-            getLightable().setLit(state);
-        }
-        else if (isPowerable()) {
-            getPowerable().setPowered(state);
-        }
-        else if (isDisepnser()) {
-            getDispenser().setTriggered(state);
-        }
-        else if (isDaylightDetector()) {
-            getDaylightDetector().setInverted(state);
-        }
-        else if (isPiston()) {
-            getPiston().setExtended(state);
-        }
-        else if (isEndFrame()) {
-            getEndFrame().setEye(state);
-        }
-        else if (isHopper()) {
-            getHopper().setEnabled(state);
-        }
-        else if (isSculkShrieker()) {
-            ((SculkShrieker) material.getModernData()).setCanSummon(state);
-        }
-    }
-
-    public MaterialSwitchable(MaterialTag _material) {
-        material = _material;
-    }
-
-    public static MaterialSwitchable getFrom(MaterialTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialSwitchable(_material);
-        }
     }
 }
