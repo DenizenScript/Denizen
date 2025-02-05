@@ -15,6 +15,7 @@ public class EntityVariant extends EntityProperty<ElementTag> {
     // @description
     // Controls which variant a wolf is.
     // A list of valid variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Wolf.Variant.html>.
+    // -->
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Wolf;

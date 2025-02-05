@@ -30,6 +30,7 @@ import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -37,10 +38,6 @@ import com.mojang.authlib.yggdrasil.ProfileResult;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.hover.content.Content;
-import net.md_5.bungee.api.chat.hover.content.Item;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -61,10 +58,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R3.CraftRegistry;
 import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_21_R3.block.data.CraftBlockData;
@@ -330,49 +329,6 @@ public class Handler extends NMSHandler {
     }
 
     @Override
-    public String stringForHover(HoverEvent hover) {
-        if (hover.getContents().isEmpty()) {
-            return "";
-        }
-        Content contentObject = hover.getContents().get(0);
-        if (contentObject instanceof Text) {
-            Object value = ((Text) contentObject).getValue();
-            if (value instanceof BaseComponent[]) {
-                return FormattedTextHelper.stringify((BaseComponent[]) value);
-            }
-            else {
-                return value.toString();
-            }
-        }
-        else if (contentObject instanceof Item) {
-            Item item = (Item) contentObject;
-            try {
-                net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
-                tag.putString("id", item.getId());
-                tag.putByte("Count", item.getCount() == -1 ? 1 : (byte) item.getCount());
-                if (item.getTag() != null && item.getTag().getNbt() != null) {
-                    tag.put("tag", TagParser.parseTag(item.getTag().getNbt()));
-                }
-                // TODO: 1.20.6: use components and fallback to creating item from tag when custom NBT is specified
-                ItemStack nmsStack = ItemStack.parseOptional(CraftRegistry.getMinecraftRegistry(), tag);
-                return new ItemTag(CraftItemStack.asBukkitCopy(nmsStack)).identify();
-            }
-            catch (Throwable ex) {
-                Debug.echoError(ex);
-                return null;
-            }
-        }
-        else if (contentObject instanceof net.md_5.bungee.api.chat.hover.content.Entity) {
-            net.md_5.bungee.api.chat.hover.content.Entity entity = (net.md_5.bungee.api.chat.hover.content.Entity) contentObject;
-            // TODO: Maybe a stabler way of doing this?
-            return "e@" + entity.getId();
-        }
-        else {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    @Override
     public ArrayList<String> containerListFlags(PersistentDataContainer container, String prefix) {
         prefix = "denizen:" + prefix;
         ArrayList<String> output = new ArrayList<>();
@@ -434,10 +390,6 @@ public class Handler extends NMSHandler {
 
     @Override
     public String updateLegacyName(Class<?> type, String legacyName) {
-        if (type == Sound.class) {
-            Sound sound = ReflectionHelper.getFieldValue(Sound.class, CoreUtilities.toUpperCase(legacyName), null);
-            return sound != null ? sound.getKey().toString() : null;
-        }
-        return FieldRename.rename(ApiVersion.FIELD_NAME_PARITY, type.getName().replace('.', '/'), legacyName);
+        return FieldRename.rename(ApiVersion.FIELD_NAME_PARITY, DebugInternals.getFullClassNameOpti(type).replace('.', '/'), legacyName);
     }
 }
