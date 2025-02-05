@@ -35,6 +35,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionBrewer;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
@@ -386,5 +387,10 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     @Override
     public boolean canUseEquipmentSlot(LivingEntity entity, EquipmentSlot slot) {
         return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? entity.canUseEquipmentSlot(slot) : super.canUseEquipmentSlot(entity, slot);
+    }
+
+    @Override
+    public boolean hasCustomName(PotionMeta meta) {
+        return meta.hasCustomPotionName();
     }
 }

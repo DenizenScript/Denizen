@@ -9,3 +9,4 @@ dependency-reduced-pom.xml
 # Temporary/etc.
 *.bak
 *.exe
+.DS_Store

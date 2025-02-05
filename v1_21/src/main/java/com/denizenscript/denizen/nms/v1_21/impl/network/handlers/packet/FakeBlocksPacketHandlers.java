@@ -50,17 +50,17 @@ public class FakeBlocksPacketHandlers {
                 ClientboundLevelChunkWithLightPacket newPacket = FakeBlockHelper.handleMapChunkPacket(networkManager.player.getBukkitEntity().getWorld(), (ClientboundLevelChunkWithLightPacket) packet, chunkX, chunkZ, blocks);
                 return newPacket;
             }
-            else if (packet instanceof ClientboundSectionBlocksUpdatePacket) {
+            else if (packet instanceof ClientboundSectionBlocksUpdatePacket sectionBlocksUpdatePacket) {
                 FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(networkManager.player.getUUID());
                 if (map == null) {
-                    return packet;
+                    return sectionBlocksUpdatePacket;
                 }
-                SectionPos coord = (SectionPos) SECTIONPOS_MULTIBLOCKCHANGE.get(packet);
+                SectionPos coord = (SectionPos) SECTIONPOS_MULTIBLOCKCHANGE.get(sectionBlocksUpdatePacket);
                 ChunkCoordinate coordinateDenizen = new ChunkCoordinate(coord.getX(), coord.getZ(), networkManager.player.level().getWorld().getName());
                 if (!map.byChunk.containsKey(coordinateDenizen)) {
-                    return packet;
+                    return sectionBlocksUpdatePacket;
                 }
-                ClientboundSectionBlocksUpdatePacket newPacket = ClientboundSectionBlocksUpdatePacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket((ClientboundSectionBlocksUpdatePacket) packet, ClientboundSectionBlocksUpdatePacket.STREAM_CODEC));
+                ClientboundSectionBlocksUpdatePacket newPacket = DenizenNetworkManagerImpl.copyPacket(sectionBlocksUpdatePacket, ClientboundSectionBlocksUpdatePacket.STREAM_CODEC);
                 LocationTag location = new LocationTag(networkManager.player.level().getWorld(), 0, 0, 0);
                 short[] originalOffsetArray = (short[])OFFSETARRAY_MULTIBLOCKCHANGE.get(newPacket);
                 BlockState[] originalDataArray = (BlockState[])BLOCKARRAY_MULTIBLOCKCHANGE.get(newPacket);

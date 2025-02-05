@@ -1214,7 +1214,9 @@ public class InventoryTag implements ObjectTag, Notable, Adjustable, FlaggableOb
         // @attribute <InventoryTag.can_fit[<item>|...]>
         // @returns ElementTag(Boolean)
         // @description
-        // Returns whether the inventory can fit an item.
+        // Returns whether the inventory can fit an item, or list of items.
+        // When giving multiple item inputs, the tag will only return true if every item can be added to the inventory at once.
+        // If only some fit, the tag will return false.
         // -->
         tagProcessor.registerTag(ElementTag.class, "can_fit", (attribute, object) -> {
             if (!attribute.hasParam()) {
