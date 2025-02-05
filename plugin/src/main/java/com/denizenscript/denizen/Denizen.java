@@ -371,6 +371,7 @@ public class Denizen extends JavaPlugin {
         ExSustainedCommandHandler exsCommand = new ExSustainedCommandHandler();
         exsCommand.enableFor(getCommand("exs"));
         FullBlockData.init();
+        HoverFormatHelper.tryInitializeItemHoverFix();
         // Load script files without processing.
         DenizenCore.preloadScripts(false, null);
         // Load the saves.yml into memory

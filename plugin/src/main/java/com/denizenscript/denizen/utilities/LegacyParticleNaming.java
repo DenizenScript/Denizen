@@ -31,7 +31,6 @@ public class LegacyParticleNaming {
         }
         registerLegacyName("INSTANT_SPELL", "SPELL_INSTANT");
         registerLegacyName("WITCH_MAGIC", "SPELL_WITCH");
-        registerLegacyName("STEP_SOUND", "HEART");
         registerLegacyName("EXPLODE", "EXPLOSION_NORMAL");
         registerLegacyName("SPLASH", "WATER_SPLASH");
         registerLegacyName("LARGE_SMOKE", "SMOKE_LARGE");
