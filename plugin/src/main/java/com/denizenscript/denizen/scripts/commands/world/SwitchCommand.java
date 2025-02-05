@@ -152,11 +152,8 @@ public class SwitchCommand extends AbstractCommand {
     }
 
     public static boolean switchState(Block b) {
-        MaterialSwitchable switchable = MaterialSwitchable.getFrom(new MaterialTag(b.getBlockData()));
-        if (switchable == null) {
-            return false;
-        }
-        return switchable.getState();
+        MaterialSwitchable switchable = new MaterialSwitchable(new MaterialTag(b));
+        return switchable.getPropertyValue().asBoolean();
     }
 
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
@@ -164,20 +161,16 @@ public class SwitchCommand extends AbstractCommand {
         Block block = interactLocation.getBlock();
         BlockData data1 = block.getBlockData();
         MaterialTag materialTag = new MaterialTag(data1);
-        MaterialSwitchable switchable = MaterialSwitchable.getFrom(materialTag);
-        if (switchable == null) {
-            Debug.echoError("Cannot switch block of type '" + materialTag.getMaterial().name() + "'");
-            return;
-        }
+        MaterialSwitchable switchable = new MaterialSwitchable(materialTag);
         if (materialTag.getMaterial() == Material.BELL) {
             NMSHandler.blockHelper.ringBell((Bell) block.getState());
             return;
         }
-        boolean currentState = switchable.getState();
+        boolean currentState = switchable.getPropertyValue().asBoolean();
         if ((switchState.equals(SwitchState.ON) && !currentState) || (switchState.equals(SwitchState.OFF) && currentState) || switchState.equals(SwitchState.TOGGLE)) {
             switchable.setState(!currentState);
             if (physics) {
-                block.setBlockData(switchable.material.getModernData());
+                block.setBlockData(switchable.getBlockData());
             }
             else {
                 ModifyBlockCommand.setBlock(block.getLocation(), materialTag, false, null);
@@ -192,9 +185,9 @@ public class SwitchCommand extends AbstractCommand {
                 }
                 BlockData data2 = other.getBlock().getBlockData();
                 if (data2.getMaterial() == data1.getMaterial()) {
-                    MaterialSwitchable switchable2 = MaterialSwitchable.getFrom(new MaterialTag(data2));
+                    MaterialSwitchable switchable2 = new MaterialSwitchable(new MaterialTag(data2));
                     switchable2.setState(!currentState);
-                    other.getBlock().setBlockData(switchable2.material.getModernData());
+                    other.getBlock().setBlockData(switchable2.getBlockData());
                     if (physics) {
                         AdjustBlockCommand.applyPhysicsAt(other);
                     }

@@ -45,6 +45,10 @@ public class MaterialSwitchable extends MaterialProperty<ElementTag> {
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && data instanceof SculkShrieker);
     }
 
+    public MaterialSwitchable(MaterialTag material) {
+        super(material);
+    }
+
     @Override
     public ElementTag getPropertyValue() {
         if (getBlockData() instanceof Openable openable) {
@@ -85,33 +89,37 @@ public class MaterialSwitchable extends MaterialProperty<ElementTag> {
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         if (mechanism.requireBoolean()) {
-            if (getBlockData() instanceof Openable openable) {
-                openable.setOpen(value.asBoolean());
-            }
-            else if (getBlockData() instanceof Lightable lightable) {
-                lightable.setLit(value.asBoolean());
-            }
-            else if (getBlockData() instanceof Powerable powerable) {
-                powerable.setPowered(value.asBoolean());
-            }
-            else if (getBlockData() instanceof Dispenser dispenser) {
-                dispenser.setTriggered(value.asBoolean());
-            }
-            else if (getBlockData() instanceof DaylightDetector daylightDetector) {
-                daylightDetector.setInverted(value.asBoolean());
-            }
-            else if (getBlockData() instanceof Piston piston) {
-                piston.setExtended(value.asBoolean());
-            }
-            else if (getBlockData() instanceof EndPortalFrame endPortalFrame) {
-                endPortalFrame.setEye(value.asBoolean());
-            }
-            else if (getBlockData() instanceof Hopper hopper) {
-                hopper.setEnabled(value.asBoolean());
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkShrieker sculkShrieker) {
-                sculkShrieker.setCanSummon(value.asBoolean());
-            }
+            setState(value.asBoolean());
+        }
+    }
+
+    public void setState(boolean state) {
+        if (getBlockData() instanceof Openable openable) {
+            openable.setOpen(state);
+        }
+        else if (getBlockData() instanceof Lightable lightable) {
+            lightable.setLit(state);
+        }
+        else if (getBlockData() instanceof Powerable powerable) {
+            powerable.setPowered(state);
+        }
+        else if (getBlockData() instanceof Dispenser dispenser) {
+            dispenser.setTriggered(state);
+        }
+        else if (getBlockData() instanceof DaylightDetector daylightDetector) {
+            daylightDetector.setInverted(state);
+        }
+        else if (getBlockData() instanceof Piston piston) {
+            piston.setExtended(state);
+        }
+        else if (getBlockData() instanceof EndPortalFrame endPortalFrame) {
+            endPortalFrame.setEye(state);
+        }
+        else if (getBlockData() instanceof Hopper hopper) {
+            hopper.setEnabled(state);
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkShrieker sculkShrieker) {
+            sculkShrieker.setCanSummon(state);
         }
     }
 
