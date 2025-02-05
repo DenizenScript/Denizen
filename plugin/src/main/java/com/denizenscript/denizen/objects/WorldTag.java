@@ -618,7 +618,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @deprecated Use <@link tag WorldTag.time_duration> instead.
             // -->
             if (attribute.startsWith("duration", 2)) {
-                BukkitImplDeprecations.timeDuration.warn(attribute.context);
+                BukkitImplDeprecations.timeSubTags.warn(attribute.context);
                 attribute.fulfill(1);
                 return new DurationTag(object.getWorld().getTime());
             }
@@ -631,7 +631,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @deprecated Use <@link tag WorldTag.time_full> instead.
             // -->
             else if (attribute.startsWith("full", 2)) {
-                BukkitImplDeprecations.timeFull.warn(attribute.context);
+                BukkitImplDeprecations.timeSubTags.warn(attribute.context);
                 attribute.fulfill(1);
                 return new DurationTag(object.getWorld().getFullTime());
             }
@@ -644,7 +644,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @deprecated Use <@link tag WorldTag.time_period> instead.
             // -->
             else if (attribute.startsWith("period", 2)) {
-                BukkitImplDeprecations.timePeriod.warn(attribute.context);
+                BukkitImplDeprecations.timeSubTags.warn(attribute.context);
                 attribute.fulfill(1);
 
                 long time = object.getWorld().getTime();

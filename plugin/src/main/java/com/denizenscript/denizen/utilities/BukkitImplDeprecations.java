@@ -344,14 +344,8 @@ public class BukkitImplDeprecations {
     // Bad candidate for bumping, targets extremely commonly used naming, some of which may be hard to remove (eg stored in flag data).
     public static Warning oldSpigotNames = new FutureWarning("oldSpigotNames", "Several features (particles, entities, etc.) had alternative naming added by Spigot, which are now deprecated in favor of the official Minecraft naming; see relevant feature's meta docs for more information.");
 
-    // Added 2024/12/23, deprecate officially by 2028.
-    public static Warning timePeriod = new FutureWarning("timePeriod", "'time.period' is deprecated in favor of 'time_period'.");
-
-    // Added 2024/12/23, deprecate officially by 2028.
-    public static Warning timeFull = new FutureWarning("timeFull", "'time.full' is deprecated in favor of 'time_full'.");
-
-    // Added 2024/12/23, deprecate officially by 2028.
-    public static Warning timeDuration = new FutureWarning("timeDuration", "'time.duration' is deprecated in favor of 'time_duration'.");
+    // Added 2025/02/05, deprecate officially by 2028.
+    public static Warning timeSubTags = new FutureWarning("timeSubTags", pointlessSubtagPrefix + "'time.*' tags are now just 'time_*'.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
