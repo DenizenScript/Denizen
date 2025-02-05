@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.interfaces.*;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
-import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -130,8 +129,6 @@ public abstract class NMSHandler {
     public void setInventoryTitle(InventoryView view, String title) {
         throw new UnsupportedOperationException();
     }
-
-    public abstract String stringForHover(HoverEvent hover);
 
     public abstract ArrayList<String> containerListFlags(PersistentDataContainer container, String prefix);
 
