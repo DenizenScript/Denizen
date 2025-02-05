@@ -164,7 +164,7 @@ public class FormattedTextHelper {
         boolean hasHover = component.getHoverEvent() != null;
         if (hasHover) {
             HoverEvent hover = component.getHoverEvent();
-            builder.append(ChatColor.COLOR_CHAR).append("[hover=").append(hover.getAction().name()).append(";").append(escape(NMSHandler.instance.stringForHover(hover))).append("]");
+            builder.append(ChatColor.COLOR_CHAR).append("[hover=").append(hover.getAction().name()).append(";").append(escape(HoverFormatHelper.stringForHover(hover))).append("]");
         }
         boolean hasClick = component.getClickEvent() != null;
         if (hasClick) {

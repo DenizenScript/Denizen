@@ -66,10 +66,10 @@ public class EntityPotionEffects implements Property {
         return result;
     }
 
-    public ListTag getEffectsMapTag() {
+    public ListTag getEffectsMapTag(boolean includeDeprecated) {
         ListTag result = new ListTag();
         for (PotionEffect effect : getEffectsList()) {
-            result.addObject(ItemPotion.effectToMap(effect));
+            result.addObject(ItemPotion.effectToMap(effect, includeDeprecated));
         }
         return result;
     }
@@ -83,7 +83,7 @@ public class EntityPotionEffects implements Property {
     }
 
     public String getPropertyString() {
-        ListTag effects = getEffectsMapTag();
+        ListTag effects = getEffectsMapTag(false);
         return effects.isEmpty() ? null : effects.identify();
     }
 
@@ -114,10 +114,10 @@ public class EntityPotionEffects implements Property {
         // @group attribute
         // @mechanism EntityTag.potion_effects
         // @description
-        // Returns the active potion effects on the entity, in the MapTag format of the mechanism.
+        // Returns the active potion effects on the entity, as a list of maps in <@link language Potion Effect Format>.
         // -->
         PropertyParser.registerTag(EntityPotionEffects.class, ListTag.class, "effects_data", (attribute, object) -> {
-            return object.getEffectsMapTag();
+            return object.getEffectsMapTag(true);
         });
 
         // <--[tag]
@@ -160,17 +160,9 @@ public class EntityPotionEffects implements Property {
         // @input ListTag
         // @description
         // Set the entity's active potion effects.
-        // Each item in the list must be a MapTag with keys:
-        // "type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>
-        // "amplifier" - number to increase the level by (0 for default level 1)
-        // "duration" - DurationTag, how long it lasts
-        // "ambient", "particles", "icon" - booleans
-        //
-        // For example: [type=SPEED;amplifier=0;duration=120t;ambient=false;particles=true;icon=true]
-        // This example would be a level 1 swiftness potion that lasts 120 ticks.
+        // Each item in the list must be a MapTag in <@link language Potion Effect Format>.
         // @tags
         // <EntityTag.effects_data>
-        // <EntityTag.list_effects>
         // <EntityTag.has_effect[<effect>]>
         // -->
         if (mechanism.matches("potion_effects")) {
