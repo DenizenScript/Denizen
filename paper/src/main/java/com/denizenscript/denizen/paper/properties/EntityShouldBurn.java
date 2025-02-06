@@ -16,7 +16,7 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @plugin Paper
     // @description
-    // If the entity is a Zombie, Skeleton, Stray, or Phantom, controls whether it should burn in daylight.
+    // If the entity is a Zombie, Skeleton, Stray, Bogged, or Phantom, controls whether it should burn in daylight.
     // -->
 
     public static boolean describes(EntityTag entity) {
@@ -33,11 +33,17 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
         if (getEntity() instanceof Zombie zombie) {
             return new ElementTag(zombie.shouldBurnInDay());
         }
-        else if (getEntity() instanceof AbstractSkeleton skeleton) {
+        else if (getEntity() instanceof Phantom phantom) {
+            return new ElementTag(phantom.shouldBurnInDay());
+        }
+        else if (getEntity() instanceof Skeleton skeleton) {
             return new ElementTag(skeleton.shouldBurnInDay());
         }
-        else { // phantom
-            return new ElementTag(as(Phantom.class).shouldBurnInDay());
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && getEntity() instanceof Bogged bogged) {
+            return new ElementTag(bogged.shouldBurnInDay());
+        }
+        else { // stray
+            return new ElementTag(as(Stray.class).shouldBurnInDay());
         }
     }
 
@@ -52,11 +58,17 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
             if (getEntity() instanceof Zombie zombie) {
                 zombie.setShouldBurnInDay(param.asBoolean());
             }
-            else if (getEntity() instanceof AbstractSkeleton skeleton) {
+            else if (getEntity() instanceof Phantom phantom) {
+                phantom.setShouldBurnInDay(param.asBoolean());
+            }
+            else if (getEntity() instanceof Skeleton skeleton) {
                 skeleton.setShouldBurnInDay(param.asBoolean());
             }
-            else { // phantom
-                as(Phantom.class).setShouldBurnInDay(param.asBoolean());
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && getEntity() instanceof Bogged bogged) {
+                bogged.setShouldBurnInDay(param.asBoolean());
+            }
+            else { // stray
+                as(Stray.class).setShouldBurnInDay(param.asBoolean());
             }
         }
     }
