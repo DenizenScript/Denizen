@@ -2,9 +2,9 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizencore.utilities.debugging.*;
 
-public class BukkitImplDeprecations {
+import static com.denizenscript.denizencore.utilities.Deprecations.pointlessSubtagPrefix;
 
-    private static final String pointlessSubtagPrefix = "Most pointless sub-tags are deprecated in favor of explicit unique tags. ";
+public class BukkitImplDeprecations {
 
     // ==================== REMOVE THESE ====================
     // Every warning inside this section should be removed from the codebase.
