@@ -16,8 +16,7 @@ public class EntityAngry extends EntityProperty<ElementTag> {
     // @name angry
     // @input ElementTag(Boolean)
     // @description
-    // Controls whether a Wolf or PigZombie is angry.
-    // Controls whether a Vindicator is in "Johnny" mode.
+    // Controls whether a Wolf or PigZombie is angry, or whether a Vindicator is in "Johnny" mode.
     // -->
 
     public static boolean describes(EntityTag entity) {

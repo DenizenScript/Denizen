@@ -13,10 +13,12 @@ public class EntityCharged extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @description
     // Controls whether an entity is charged:
-    // - For a wither skull, this is whether it's blue.
-    // - For a vex, this is whether it has red lines.
-    // - For a guardian, this is whether the laser is active.
-    // - For a ghast, this is whether it has a red mouth and eyes.
+    // - Charged wither skulls are blue.
+    // - Charged vexes have red lines.
+    // (Note that this is a visual effect, vexes will not actually charge at players.)
+    // - Charged guardians have their laser active.
+    //  (Note that guardians also require a target to use their laser, see <@link command attack>.)
+    // - Charged ghasts have a red mouth and eyes.
     // -->
 
     public static boolean describes(EntityTag entity) {
