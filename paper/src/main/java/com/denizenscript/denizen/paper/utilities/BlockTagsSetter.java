@@ -41,12 +41,6 @@ public class BlockTagsSetter {
 
     Map<TypedKey<BlockType>, Set<TagKey<BlockType>>> modifiedTags = new HashMap<>();
 
-    public void setTags(Material material, Set<NamespacedKey> tags) {
-        TypedKey<BlockType> blockKey = TypedKey.create(RegistryKey.BLOCK, material.getKey());
-        modifiedTags.put(blockKey, tags.stream().map(tag -> TagKey.create(RegistryKey.BLOCK, tag)).collect(Collectors.toSet()));
-        Bukkit.reloadData();
-    }
-
     public BlockTagsSetter(JavaPlugin plugin) {
         try {
             File pluginSourceFile = (File) JAVA_PLUGIN_GET_FILE.invoke(plugin);
@@ -74,5 +68,11 @@ public class BlockTagsSetter {
         catch (Throwable e) {
             Debug.echoError(e);
         }
+    }
+
+    public void setTags(Material material, Set<NamespacedKey> tags) {
+        TypedKey<BlockType> blockKey = TypedKey.create(RegistryKey.BLOCK, material.getKey());
+        modifiedTags.put(blockKey, tags.stream().map(tag -> TagKey.create(RegistryKey.BLOCK, tag)).collect(Collectors.toSet()));
+        Bukkit.reloadData();
     }
 }
