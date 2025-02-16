@@ -24,7 +24,7 @@ public class PlayerRecipeDiscoverScriptEvent extends BukkitScriptEvent implement
     // @Triggers when a player discovers a new item in the recipe book.
     //
     // @Context
-    // <context.item> returns the key of the item that was discovered.
+    // <context.item> returns the item that was discovered in Namespace:Key format, for example "minecraft:gold_nugget".
     //
     // @Player Always.
     //
