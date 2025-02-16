@@ -238,6 +238,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerReceivesMessageScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerReceivesPacketScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerReceivesTablistUpdateScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerRecipeDiscoverScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerRespawnsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerRightClicksEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerRiptideScriptEvent.class);
