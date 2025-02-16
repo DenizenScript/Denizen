@@ -61,7 +61,7 @@ public class CrafterCraftsScriptEvent extends BukkitScriptEvent implements Liste
         return switch (name) {
             case "item" -> new ItemTag(event.getResult());
             case "location" -> location;
-            case "recipe_id" -> new ElementTag(Utilities.namespacedKeyToString(event.getRecipe().getKey()), true);
+            case "recipe_id" -> new ElementTag(event.getRecipe().getKey().toString(), true);
             default -> super.getContext(name);
         };
     }
