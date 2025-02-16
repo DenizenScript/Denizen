@@ -24,7 +24,7 @@ public class PlayerRecipeDiscoverScriptEvent extends BukkitScriptEvent implement
     // @Triggers when a player discovers a new item in the recipe book.
     //
     // @Context
-    // <context.item> returns the item that was discovered in Namespace:Key format, for example "minecraft:gold_nugget".
+    // <context.recipe_id> returns the ID of the recipe discovered.
     //
     // @Player Always.
     //
@@ -52,7 +52,7 @@ public class PlayerRecipeDiscoverScriptEvent extends BukkitScriptEvent implement
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "item" -> new ElementTag(event.getRecipe().toString());
+            case "recipe_id" -> new ElementTag(event.getRecipe().toString());
             default -> super.getContext(name);
         };
     }
