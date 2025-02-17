@@ -17,15 +17,12 @@ public class EntityCharged extends EntityProperty<ElementTag> {
     // This is a visual effect, and does not cause the vex to actually charge at anyone.
     // If the entity is a guardian, controls whether the guardian's laser is active.
     // Note that guardians also require a target to use their laser, see <@link command attack>.
-    // If the entity is a ghast, controls whether the ghast is charging. Charging ghasts have a red mouth and eyes.
-    // This is a visual effect, and does not cause the ghast to actually shoot a fireball at anyone.
     // -->
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof WitherSkull
                 || entity.getBukkitEntity() instanceof Vex
-                || entity.getBukkitEntity() instanceof Guardian
-                || entity.getBukkitEntity() instanceof Ghast;
+                || entity.getBukkitEntity() instanceof Guardian;
     }
 
     @Override
@@ -38,9 +35,6 @@ public class EntityCharged extends EntityProperty<ElementTag> {
         }
         else if (getEntity() instanceof Guardian entity) {
             return new ElementTag(entity.hasLaser());
-        }
-        else if (getEntity() instanceof Ghast entity) {
-            return new ElementTag(entity.isCharging());
         }
         return null;
     }
@@ -56,9 +50,6 @@ public class EntityCharged extends EntityProperty<ElementTag> {
             }
             else if (getEntity() instanceof Guardian entity) {
                 entity.setLaser(param.asBoolean());
-            }
-            else if (getEntity() instanceof Ghast entity) {
-                entity.setCharging(param.asBoolean());
             }
         }
     }
