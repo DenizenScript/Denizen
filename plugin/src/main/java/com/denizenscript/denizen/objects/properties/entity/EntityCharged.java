@@ -18,6 +18,7 @@ public class EntityCharged extends EntityProperty<ElementTag> {
     // If the entity is a guardian, controls whether the guardian's laser is active.
     // Note that guardians also require a target to use their laser, see <@link command attack>.
     // If the entity is a ghast, controls whether the ghast is charging. Charging ghasts have a red mouth and eyes.
+    // This is a visual effect, and does not cause the ghast to actually shoot a fireball at anyone.
     // -->
 
     public static boolean describes(EntityTag entity) {
