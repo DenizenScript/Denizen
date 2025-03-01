@@ -1,8 +1,11 @@
 package com.denizenscript.denizen.paper.utilities;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
@@ -14,6 +17,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockType;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -22,7 +27,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BlockTagsSetter {
+public class BlockTagsSetter implements Listener {
 
     public static final MethodHandle JAVA_PLUGIN_GET_FILE = ReflectionHelper.getMethodHandle(JavaPlugin.class, "getFile");
     public static final MethodHandle BOOTSTRAP_CONTEXT_CONSTRUCTOR;
@@ -39,9 +44,11 @@ public class BlockTagsSetter {
 
     public static final BlockTagsSetter INSTANCE = new BlockTagsSetter(Denizen.getInstance());
 
-    Map<TypedKey<BlockType>, Set<TagKey<BlockType>>> modifiedTags = new HashMap<>();
+    public Map<TypedKey<BlockType>, Set<TagKey<BlockType>>> modifiedTags = new HashMap<>();
+    public boolean batchReloadNeeded;
 
     public BlockTagsSetter(JavaPlugin plugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin);
         try {
             File pluginSourceFile = (File) JAVA_PLUGIN_GET_FILE.invoke(plugin);
             BootstrapContext fakeContext = (BootstrapContext) BOOTSTRAP_CONTEXT_CONSTRUCTOR.invoke(plugin.getPluginMeta(), plugin.getDataPath(), plugin.getComponentLogger(), pluginSourceFile.toPath());
@@ -70,9 +77,22 @@ public class BlockTagsSetter {
         }
     }
 
+    @EventHandler
+    public void onServerTickEnd(ServerTickEndEvent event) {
+        if (batchReloadNeeded) {
+            batchReloadNeeded = false;
+            Bukkit.reloadData();
+        }
+    }
+
     public void setTags(Material material, Set<NamespacedKey> tags) {
         TypedKey<BlockType> blockKey = TypedKey.create(RegistryKey.BLOCK, material.getKey());
-        modifiedTags.put(blockKey, tags.stream().map(tag -> TagKey.create(RegistryKey.BLOCK, tag)).collect(Collectors.toSet()));
-        Bukkit.reloadData();
+        Set<TagKey<BlockType>> tagKeys = tags.stream().map(tag -> TagKey.create(RegistryKey.BLOCK, tag)).collect(Collectors.toCollection(HashSet::new));
+        Set<TagKey<BlockType>> oldTagKeys = modifiedTags.put(blockKey, tagKeys);
+        if (tagKeys.equals(oldTagKeys)) {
+            return;
+        }
+        VanillaTagHelper.tagsByMaterial.put(material, tags.stream().map(Utilities::namespacedKeyToString).collect(Collectors.toCollection(HashSet::new)));
+        batchReloadNeeded = true;
     }
 }

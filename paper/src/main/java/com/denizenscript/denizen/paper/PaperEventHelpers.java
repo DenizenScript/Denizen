@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.destroystokyo.paper.event.player.PlayerRecipeBookClickEvent;
 import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class PaperEventHelpers implements Listener {
@@ -22,7 +23,7 @@ public class PaperEventHelpers implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onServerResourcesReloaded(ServerResourcesReloadedEvent event) {
         VanillaTagHelper.loadTagsCache();
     }
