@@ -77,6 +77,7 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityDisplay.class, EntityTag.class);
         }
+        PropertyParser.registerProperty(EntityDomestication.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDropsItem.class, EntityTag.class);
         PropertyParser.registerProperty(EntityEquipment.class, EntityTag.class);
         PropertyParser.registerProperty(EntityEquipmentDropChance.class, EntityTag.class);
@@ -125,6 +126,7 @@ public class PropertyRegistry {
         }
         PropertyParser.registerProperty(EntityMarker.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaterial.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityMaxDomestication.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaxFuseTicks.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityOnBack.class, EntityTag.class);
