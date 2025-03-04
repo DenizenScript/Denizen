@@ -12,7 +12,9 @@ public class EntityDomestication extends EntityProperty<ElementTag> {
     // @name domestication
     // @input ElementTag(Number)
     // @description
-    // Controls a horse-type entity's current domestication level.
+    // Controls how close to being fully tamed a horse-type entity is.
+    // Value must be an integer between 1 and 2,147,483,647 inclusive.
+    // To automatically tame an entity, see <@link mechanism EntityTag.tame>.
     // -->
 
     public static boolean describes(EntityTag entity) {
