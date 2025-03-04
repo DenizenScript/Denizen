@@ -12,12 +12,17 @@ public class EntityMaxTemper extends EntityProperty<ElementTag> {
     // @name max_temper
     // @input ElementTag(Number)
     // @description
-    // Controls the temper at which a horse-type entity has to reach in order to be fully tamed.
-    // For information on how this temper is increased, see <@link tag EntityTag.temper>.
+    // Controls the upper-bound for a horse-type entity's chance to be tamed.
     //
-    // Because an entity must have a level to reach before it can be domesticated, value must be 1 or higher.
+    // When a player mounts an entity, a number between 0 and the entity's max temper minus one is generated.
+    // If this number is greater than the entity's current temper, than the entity is tamed.
+    // If not, the entity bucks the player, and its temper is increased by 5.
+    //
+    // Because an entity must have a level to reach before it can be tamed, value must be 1 or higher.
     // Default value for llamas and trader llamas is 30.
     // Default value for all other entities is 100.
+    //
+    // To control the entity's current temper, see <@link mechanism EntityTag.temper>.
     // To automatically tame an entity, see <@link mechanism EntityTag.tame>.
     // -->
 
