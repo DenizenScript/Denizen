@@ -5,15 +5,19 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.AbstractHorse;
 
-public class EntityDomestication extends EntityProperty<ElementTag> {
+public class EntityMaxTemper extends EntityProperty<ElementTag> {
 
     // <--[property]
     // @object EntityTag
-    // @name domestication
+    // @name max_temper
     // @input ElementTag(Number)
     // @description
-    // Controls how close to being fully tamed a horse-type entity is.
-    // Value must be an integer between 1 and 2,147,483,647 inclusive.
+    // Controls the temper at which a horse-type entity has to reach in order to be fully tamed.
+    // For information on how this temper is increased, see <@link tag EntityTag.temper>.
+    //
+    // Because an entity must have a level to reach before it can be domesticated, value must be 1 or higher.
+    // Default value for llamas and trader llamas is 30.
+    // Default value for all other entities is 100.
     // To automatically tame an entity, see <@link mechanism EntityTag.tame>.
     // -->
 
@@ -23,22 +27,22 @@ public class EntityDomestication extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(as(AbstractHorse.class).getDomestication());
+        return new ElementTag(as(AbstractHorse.class).getMaxDomestication());
     }
 
     @Override
     public void setPropertyValue(ElementTag param, Mechanism mechanism) {
         if (mechanism.requireInteger()) {
-            as(AbstractHorse.class).setDomestication(param.asInt());
+            as(AbstractHorse.class).setMaxDomestication(param.asInt());
         }
     }
 
     @Override
     public String getPropertyId() {
-        return "domestication";
+        return "max_temper";
     }
 
     public static void register() {
-        autoRegister("domestication", EntityDomestication.class, ElementTag.class, false);
+        autoRegister("max_temper", EntityMaxTemper.class, ElementTag.class, false);
     }
 }

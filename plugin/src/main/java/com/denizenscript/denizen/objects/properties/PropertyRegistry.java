@@ -77,7 +77,6 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityDisplay.class, EntityTag.class);
         }
-        PropertyParser.registerProperty(EntityDomestication.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDropsItem.class, EntityTag.class);
         PropertyParser.registerProperty(EntityEquipment.class, EntityTag.class);
         PropertyParser.registerProperty(EntityEquipmentDropChance.class, EntityTag.class);
@@ -126,8 +125,8 @@ public class PropertyRegistry {
         }
         PropertyParser.registerProperty(EntityMarker.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaterial.class, EntityTag.class);
-        PropertyParser.registerProperty(EntityMaxDomestication.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaxFuseTicks.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityMaxTemper.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityOnBack.class, EntityTag.class);
             PropertyParser.registerProperty(EntityOpacity.class, EntityTag.class);
@@ -184,6 +183,7 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             PropertyParser.registerProperty(EntityTeleportDuration.class, EntityTag.class);
         }
+        PropertyParser.registerProperty(EntityTemper.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityText.class, EntityTag.class);
             PropertyParser.registerProperty(EntityTextShadowed.class, EntityTag.class);
