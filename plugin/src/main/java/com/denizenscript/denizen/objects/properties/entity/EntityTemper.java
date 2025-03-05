@@ -13,11 +13,11 @@ public class EntityTemper extends EntityProperty<ElementTag> {
     // @input ElementTag(Number)
     // @description
     // Controls the temper of a horse-type entity.
-    // A value of "0" indicates that no action has been done to try and domesticate this entity.
+    // A value of 0 indicates that no action has been done to try to domesticate this entity.
     //
-    // When a player mounts an entity, a number between 0 and the entity's max temper minus one is generated.
-    // If this number is greater than the entity's current temper, than the entity is tamed.
-    // If this number is less than or equal to the entity's current temper, the entity bucks the player, and its temper is increased by 5.
+    // When a player mounts an entity, a number between 0 and the entity's max temper is generated.
+    // If this number is greater than or equal to the entity's current temper, the entity bucks the player, and its temper is increased by 5.
+    // If this number is less than the entity's current temper, than the entity is tamed.
     // Temper can also be increased by feeding the entity.
     // - Apples, sugar, and wheat increase temper by 3.
     // - Golden carrots increase temper by 5.
