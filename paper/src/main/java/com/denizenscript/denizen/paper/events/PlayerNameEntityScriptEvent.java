@@ -55,7 +55,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
 
     public PlayerNameEntityEvent event;
     public EntityTag entity;
-    public String old_name;
+    public ElementTag oldName;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -78,7 +78,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
         return switch (name) {
             case "entity" -> entity.getDenizenObject();
             case "name" -> new ElementTag(PaperModule.stringifyComponent(event.getName()));
-            case "old_name" -> (old_name == null) ? null : new ElementTag(old_name, true);
+            case "old_name" -> (oldName == null) ? null : oldName;
             case "persistent" -> new ElementTag(event.getEntity().isPersistent());
             default -> super.getContext(name);
         };
@@ -88,7 +88,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
     public void playerNamesEntity(PlayerNameEntityEvent event) {
         this.event = event;
         entity = new EntityTag(event.getEntity());
-        old_name = PaperAPITools.instance.getCustomName(entity.getBukkitEntity());
+        oldName = PaperAPITools.instance.getCustomName(entity.getBukkitEntity()) == null ? null : new ElementTag(PaperAPITools.instance.getCustomName(entity.getBukkitEntity()));
         fire(event);
     }
 }
