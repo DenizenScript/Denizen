@@ -78,7 +78,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
         return switch (name) {
             case "entity" -> entity.getDenizenObject();
             case "name" -> new ElementTag(PaperModule.stringifyComponent(event.getName()));
-            case "old_name" -> (oldName == null) ? null : oldName;
+            case "old_name" -> oldName;
             case "persistent" -> new ElementTag(event.getEntity().isPersistent());
             default -> super.getContext(name);
         };
