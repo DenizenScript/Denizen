@@ -26,18 +26,17 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Cancellable true
     //
-    // @Triggers when a player is attempting to rename an entity.
+    // @Triggers when a player attempts to rename an entity with a name tag.
     //
     // @Context
     // <context.entity> returns an EntityTag of the renamed entity.
-    // <context.old_name> returns the old name of the entity.
+    // <context.old_name> returns the old name of the entity, if any.
     // <context.name> returns the new name of the entity.
     // <context.persistent> returns whether this will cause the entity to persist through server restarts.
     //
     // @Determine
-    // "NAME:ElementTag" to set a different name for the entity.
-    // "PERSISTENT" to indicate that the entity should remain persistent.
-    // "NOT_PERSISTENT" to indicate that the entity should not remain persistent.
+    // "NAME:<ElementTag>" to set a different name for the entity.
+    // "PERSISTENT:<ElementTag(Boolean)>" to set whether the entity should remain through server restarts.
     //
     // @Player Always.
     //
@@ -45,11 +44,8 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
 
     public PlayerNameEntityScriptEvent() {
         registerCouldMatcher("player names <entity>");
-        this.<PlayerNameEntityScriptEvent>registerTextDetermination("persistent", (evt) -> {
-            event.setPersistent(true);
-        });
-        this.<PlayerNameEntityScriptEvent>registerTextDetermination("not_persistent", (evt) -> {
-            event.setPersistent(false);
+        this.<PlayerNameEntityScriptEvent, ElementTag>registerDetermination("persistent", ElementTag.class, (evt, context, determination) -> {
+            event.getEntity().setPersistent(determination.asBoolean());
         });
         this.<PlayerNameEntityScriptEvent, ElementTag>registerDetermination("name", ElementTag.class, (evt, context, determination) -> {
             event.setName(PaperModule.parseFormattedText(determination.toString(), ChatColor.WHITE));
@@ -80,8 +76,8 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
         return switch (name) {
             case "entity" -> entity.getDenizenObject();
             case "name" -> new ElementTag(PaperModule.stringifyComponent(event.getName()));
-            case "old_name" -> new ElementTag(entity.getName());
-            case "persistent" -> new ElementTag(event.isPersistent());
+            case "old_name" -> entity.getName().equals(entity.getEntityType().toString()) ? null : new ElementTag(entity.getName());
+            case "persistent" -> new ElementTag(event.getEntity().isPersistent());
             default -> super.getContext(name);
         };
     }
