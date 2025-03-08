@@ -3,6 +3,7 @@ package com.denizenscript.denizen.paper.events;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.paper.PaperModule;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -54,6 +55,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
 
     public PlayerNameEntityEvent event;
     public EntityTag entity;
+    public String old_name;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -76,7 +78,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
         return switch (name) {
             case "entity" -> entity.getDenizenObject();
             case "name" -> new ElementTag(PaperModule.stringifyComponent(event.getName()));
-            case "old_name" -> entity.getName().equals(entity.getEntityType().toString()) ? null : new ElementTag(entity.getName());
+            case "old_name" -> (old_name == null) ? null : new ElementTag(old_name, true);
             case "persistent" -> new ElementTag(event.getEntity().isPersistent());
             default -> super.getContext(name);
         };
@@ -86,6 +88,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
     public void playerNamesEntity(PlayerNameEntityEvent event) {
         this.event = event;
         entity = new EntityTag(event.getEntity());
+        old_name = PaperAPITools.instance.getCustomName(entity.getBukkitEntity());
         fire(event);
     }
 }
