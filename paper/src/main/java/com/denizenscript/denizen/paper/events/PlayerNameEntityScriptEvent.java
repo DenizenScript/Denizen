@@ -88,7 +88,8 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
     public void playerNamesEntity(PlayerNameEntityEvent event) {
         this.event = event;
         entity = new EntityTag(event.getEntity());
-        oldName = PaperAPITools.instance.getCustomName(entity.getBukkitEntity()) == null ? null : new ElementTag(PaperAPITools.instance.getCustomName(entity.getBukkitEntity()));
+        String name = PaperAPITools.instance.getCustomName(entity.getBukkitEntity());
+        oldName = name == null ? null : new ElementTag(name);
         fire(event);
     }
 }
