@@ -37,7 +37,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Determine
     // "NAME:<ElementTag>" to set a different name for the entity.
-    // "PERSISTENT:<ElementTag(Boolean)>" to set whether the entity should remain through server restarts.
+    // "PERSISTENT:<ElementTag(Boolean)>" to set whether the entity should remain through server restarts. ("True" keeps the entity across server restarts, "false" gets rid of the entity when the server restarts.)
     //
     // @Player Always.
     //
