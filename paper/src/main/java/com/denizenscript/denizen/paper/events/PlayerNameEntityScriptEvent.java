@@ -37,7 +37,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Determine
     // "NAME:<ElementTag>" to set a different name for the entity.
-    // "NOT_PERSISTENT" to override the default behavior of named entities persisting through server restarts.
+    // "NOT_PERSISTENT" to cause the entity to not remain persistent through server restarts.
     //
     // @Player Always.
     //
