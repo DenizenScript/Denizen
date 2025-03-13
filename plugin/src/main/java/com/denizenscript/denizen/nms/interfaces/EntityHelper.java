@@ -406,7 +406,7 @@ public abstract class EntityHelper {
 
     public abstract void setHeadAngle(LivingEntity entity, float angle);
 
-    public void setGhastAttacking(Ghast ghast, boolean attacking) { // TODO: one 1.19 is the minimum supported version, remove from NMS
+    public void setGhastAttacking(Ghast ghast, boolean attacking) { // TODO: once 1.19 is the minimum supported version, remove from NMS
         ghast.setCharging(attacking);
     }
 
