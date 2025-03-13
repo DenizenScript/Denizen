@@ -19,9 +19,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.lang.invoke.MethodHandle;
 import java.nio.file.Path;
 import java.util.*;
@@ -29,7 +27,6 @@ import java.util.stream.Collectors;
 
 public class BlockTagsSetter implements Listener {
 
-    public static final MethodHandle JAVA_PLUGIN_GET_FILE = ReflectionHelper.getMethodHandle(JavaPlugin.class, "getFile");
     public static final MethodHandle BOOTSTRAP_CONTEXT_CONSTRUCTOR;
 
     static {
@@ -47,11 +44,10 @@ public class BlockTagsSetter implements Listener {
     public Map<TypedKey<BlockType>, Set<TagKey<BlockType>>> modifiedTags = new HashMap<>();
     public boolean batchReloadNeeded;
 
-    public BlockTagsSetter(JavaPlugin plugin) {
+    public BlockTagsSetter(Denizen plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
         try {
-            File pluginSourceFile = (File) JAVA_PLUGIN_GET_FILE.invoke(plugin);
-            BootstrapContext fakeContext = (BootstrapContext) BOOTSTRAP_CONTEXT_CONSTRUCTOR.invoke(plugin.getPluginMeta(), plugin.getDataPath(), plugin.getComponentLogger(), pluginSourceFile.toPath());
+            BootstrapContext fakeContext = (BootstrapContext) BOOTSTRAP_CONTEXT_CONSTRUCTOR.invoke(plugin.getPluginMeta(), plugin.getDataPath(), plugin.getComponentLogger(), plugin.getFile().toPath());
             fakeContext.getLifecycleManager().registerEventHandler(LifecycleEvents.TAGS.postFlatten(RegistryKey.BLOCK), event -> {
                 Map<TagKey<BlockType>, Collection<TypedKey<BlockType>>> allTags = event.registrar().getAllTags();
                 for (Map.Entry<TypedKey<BlockType>, Set<TagKey<BlockType>>> entry : modifiedTags.entrySet()) {
