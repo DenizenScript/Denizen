@@ -37,7 +37,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Determine
     // "NAME:<ElementTag>" to set a different name for the entity.
-    // "NOT_PERSISTENT" to cause the entity to not remain persistent through server restarts.
+    // "PERSISTENT:<ElementTag(Boolean)>" to set whether the event will cause the entity to persist through restarts. NOTE: Entities may still persist for other reasons. To ensure they do not, use <@link mechanism EntityTag.force_no_persist>.
     //
     // @Player Always.
     //
@@ -45,8 +45,8 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
 
     public PlayerNameEntityScriptEvent() {
         registerCouldMatcher("player names <entity>");
-        this.<PlayerNameEntityScriptEvent>registerTextDetermination("not_persistent", (evt) -> {
-            event.getEntity().setPersistent(false);
+        this.<PlayerNameEntityScriptEvent, ElementTag>registerDetermination("persistent", ElementTag.class, (evt, context, determination) -> {
+            event.setPersistent(determination.asBoolean());
         });
         this.<PlayerNameEntityScriptEvent, ElementTag>registerDetermination("name", ElementTag.class, (evt, context, determination) -> {
             event.setName(PaperModule.parseFormattedText(determination.toString(), ChatColor.WHITE));
@@ -79,7 +79,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
             case "entity" -> entity.getDenizenObject();
             case "name" -> new ElementTag(PaperModule.stringifyComponent(event.getName()));
             case "old_name" -> oldName;
-            case "persistent" -> new ElementTag(event.getEntity().isPersistent());
+            case "persistent" -> new ElementTag(event.isPersistent());
             default -> super.getContext(name);
         };
     }
