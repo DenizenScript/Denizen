@@ -1973,22 +1973,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
-        // @attribute <EntityTag.is_sleeping>
-        // @returns ElementTag(Boolean)
-        // @description
-        // Returns whether a living entity is currently sleeping.
-        // Will always return 'false' on entities that are unable to sleep.
-        // This tag may return other values for foxes, players, and villagers.
-        // @mechanism EntityTag.is_sleeping
-        // -->
-        registerSpawnedOnlyTag(ElementTag.class, "is_sleeping", (attribute, object) -> {
-            if (object.getBukkitEntity() instanceof LivingEntity) {
-                return new ElementTag(((LivingEntity) object.getBukkitEntity()).isSleeping());
-            }
-            return null;
-        });
-
-        // <--[tag]
         // @attribute <EntityTag.killer>
         // @returns PlayerTag
         // @group attributes
@@ -4484,24 +4468,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return;
             }
             ((Lootable) getBukkitEntity()).setLootTable(table);
-        }
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name is_sleeping
-        // @input EntityTag
-        // @description
-        // Sets whether a fox is sleeping.
-        // The entity may wake up immediately after setting this to true. If this is not desired, disable <@link mechanism has_ai>.
-        // @tags
-        // <EntityTag.is_sleeping>
-        // -->
-        if (mechanism.matches("is_sleeping") && mechanism.requireBoolean()) {
-            if (!(getBukkitEntity() instanceof Fox fox)) {
-                mechanism.echoError("'is_sleeping' mechanism is only valid for Fox entities.");
-                return;
-            }
-            fox.setSleeping(mechanism.getValue().asBoolean());
         }
 
         tagProcessor.processMechanism(this, mechanism);
