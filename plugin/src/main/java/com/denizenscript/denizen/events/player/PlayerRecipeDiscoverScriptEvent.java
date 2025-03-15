@@ -52,7 +52,7 @@ public class PlayerRecipeDiscoverScriptEvent extends BukkitScriptEvent implement
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "recipe_id" -> new ElementTag(event.getRecipe().toString());
+            case "recipe_id" -> new ElementTag(event.getRecipe().toString(),true);
             default -> super.getContext(name);
         };
     }
