@@ -1973,6 +1973,22 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
+        // @attribute <EntityTag.is_sleeping>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether a living entity is currently sleeping.
+        // Will always return 'false' on entities that are unable to sleep.
+        // This tag may return other values for foxes, players, and villagers.
+        // @mechanism EntityTag.is_sleeping
+        // -->
+        registerSpawnedOnlyTag(ElementTag.class, "is_sleeping", (attribute, object) -> {
+            if (object.getBukkitEntity() instanceof LivingEntity livingEntity) {
+                return new ElementTag(livingEntity.isSleeping());
+            }
+            return null;
+        });
+
+        // <--[tag]
         // @attribute <EntityTag.killer>
         // @returns PlayerTag
         // @group attributes
@@ -3141,6 +3157,24 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (mechanism.requireEnum(Pose.class)) {
                 NMSHandler.entityHelper.setPose(object.getBukkitEntity(), input.asEnum(Pose.class));
             }
+        });
+
+        // <--[mechanism]
+        // @object EntityTag
+        // @name is_sleeping
+        // @input EntityTag
+        // @description
+        // Sets whether a fox is sleeping.
+        // The entity may wake up immediately after setting this to true. If this is not desired, disable <@link mechanism has_ai>.
+        // @tags
+        // <EntityTag.is_sleeping>
+        // -->
+        tagProcessor.registerMechanism("is_sleeping", false, ElementTag.class, (object, mechanism, input) -> {
+            if (!(object.getBukkitEntity() instanceof Fox fox)) {
+                mechanism.echoError("'is_sleeping' mechanism is only valid for Fox entities.");
+                return;
+            }
+            fox.setSleeping(mechanism.getValue().asBoolean());
         });
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
