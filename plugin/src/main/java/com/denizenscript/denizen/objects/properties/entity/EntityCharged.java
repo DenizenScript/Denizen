@@ -26,6 +26,11 @@ public class EntityCharged extends EntityProperty<ElementTag> {
     }
 
     @Override
+    public boolean isDefaultValue(ElementTag val) {
+        return !val.asBoolean();
+    }
+
+    @Override
     public ElementTag getPropertyValue() {
         if (getEntity() instanceof WitherSkull entity) {
             return new ElementTag(entity.isCharged());
