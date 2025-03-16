@@ -265,6 +265,9 @@ public class BukkitImplDeprecations {
     public static Warning oldStructureTypes = new Warning("oldStructureTypes", "'server.structure_types' is based on outdated API and doesn't support modern datapack features. Use 'server.structures' instead.");
     public static Warning findStructureTags = new Warning("findStructureTags", "'LocationTag.find.structure' and related tags are deprecated in favor of 'LocationTag.find_structure'.");
 
+    // Added 2025/03/14
+    public static Warning settingBoatType = new Warning("settingBoatType", "As of MC 1.21, separate boat types are separate entity types, meaning the type of an existing boat entity cannot be changed without spawning a new one.");
+
     // ==================== SLOW deprecations ====================
     // These aren't spammed, but will show up repeatedly until fixed. Server owners will probably notice them.
 

@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.utilities;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.DurationTag;
@@ -41,7 +43,10 @@ public class MultiVersionHelper1_19 {
             frog.setVariant(Utilities.elementToEnumlike(mech.getValue(), Frog.Variant.class));
         }
         else if (entity instanceof Boat boat && mech.requireEnum(Boat.Type.class)) {
-            // TODO: 1.21.3: Deprecate setting boat types
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+                BukkitImplDeprecations.settingBoatType.warn(mech.context);
+                return;
+            }
             boat.setBoatType(mech.getValue().asEnum(Boat.Type.class));
         }
     }
