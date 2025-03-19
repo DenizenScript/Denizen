@@ -3,10 +3,7 @@ package com.denizenscript.denizen.nms.interfaces;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
-import org.bukkit.Color;
-import org.bukkit.Instrument;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
@@ -92,7 +89,7 @@ public interface BlockHelper {
         return block.getBlockData().getMapColor();
     }
 
-    default void setVanillaTags(Material material, Set<String> tags) {
+    default void setVanillaTags(Material material, Set<NamespacedKey> tags) { // TODO: once 1.21 is the minimum supported version, remove this
         throw new UnsupportedOperationException();
     }
 }
