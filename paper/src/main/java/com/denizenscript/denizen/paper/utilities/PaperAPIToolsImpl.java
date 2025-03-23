@@ -40,6 +40,7 @@ import org.bukkit.potion.PotionBrewer;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -109,12 +110,21 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
-    public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt) {
-        if (prompt == null && !forced) {
-            super.sendResourcePack(player, url, hash, false, null);
+    public void setResourcePack(Player player, String url, String hash, boolean forced, String prompt, String id) {
+        if (prompt == null && !forced && id == null) {
+            super.setResourcePack(player, url, hash, false, null, null);
+        }
+        else if (id == null) {
+            player.setResourcePack(url, CoreUtilities.toLowerCase(hash), forced, PaperModule.parseFormattedText(prompt, ChatColor.WHITE));
         }
         else {
-            player.setResourcePack(url, CoreUtilities.toLowerCase(hash), forced, PaperModule.parseFormattedText(prompt, ChatColor.WHITE));
+            UUID packUUID;
+            try {
+                packUUID = UUID.fromString(id);
+            } catch (IllegalArgumentException e) {
+                packUUID = UUID.nameUUIDFromBytes(id.getBytes(StandardCharsets.UTF_8));
+            }
+            player.setResourcePack(packUUID, url, CoreUtilities.toLowerCase(hash), PaperModule.parseFormattedText(prompt, ChatColor.WHITE), forced);
         }
     }
 

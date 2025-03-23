@@ -56,6 +56,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.RayTraceResult;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, FlaggableObject {
@@ -2604,6 +2605,40 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 else {
                     object.getNBTEditor().setLastDeathLocation(input);
                 }
+            });
+        }
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+
+            // <--[mechanism]
+            // @object PlayerTag
+            // @name remove_resource_pack
+            // @input ElementTag
+            // @description
+            // Removes a server resource pack from a player by id.
+            // To apply a resource pack, use <@link command resourcepack>.
+            // -->
+            registerOnlineOnlyMechanism("remove_resource_pack", ElementTag.class, (object, mechanism, input) -> {
+                UUID packUUID;
+                try {
+                    packUUID = UUID.fromString(input.asString());
+                }
+                catch (IllegalArgumentException e) {
+                    packUUID = UUID.nameUUIDFromBytes(input.asString().getBytes(StandardCharsets.UTF_8));
+                }
+                object.getPlayerEntity().removeResourcePack(packUUID);
+            });
+
+            // <--[mechanism]
+            // @object PlayerTag
+            // @name remove_resource_packs
+            // @input None
+            // @description
+            // Removes all server resource packs from a player.
+            // To apply a resource pack, use <@link command resourcepack>.
+            // -->
+            registerOnlineOnlyMechanism("remove_resource_packs", (object, mechanism) -> {
+                object.getPlayerEntity().removeResourcePacks();
             });
         }
 

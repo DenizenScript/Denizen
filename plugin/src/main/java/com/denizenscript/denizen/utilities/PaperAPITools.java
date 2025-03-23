@@ -87,7 +87,7 @@ public class PaperAPITools {
         sign.setLine(line, text == null ? "" : text);
     }
 
-    public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt) {
+    public void setResourcePack(Player player, String url, String hash, boolean forced, String prompt, String id) {
         byte[] hashData = new byte[20];
         for (int i = 0; i < 20; i++) {
             hashData[i] = (byte) Integer.parseInt(hash.substring(i * 2, i * 2 + 2), 16);
