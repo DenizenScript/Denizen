@@ -121,7 +121,8 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             UUID packUUID;
             try {
                 packUUID = UUID.fromString(id);
-            } catch (IllegalArgumentException e) {
+            }
+            catch (IllegalArgumentException e) {
                 packUUID = UUID.nameUUIDFromBytes(id.getBytes(StandardCharsets.UTF_8));
             }
             player.setResourcePack(packUUID, url, CoreUtilities.toLowerCase(hash), PaperModule.parseFormattedText(prompt, ChatColor.WHITE), forced);
