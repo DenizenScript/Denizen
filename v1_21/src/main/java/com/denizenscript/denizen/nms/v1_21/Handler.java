@@ -144,7 +144,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("60ac387ca8007aa018e6aeb394a6988c");
+        return CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("7ecad754373a5fbc43d381d7450c53a5");
     }
 
     @Override
@@ -160,7 +160,7 @@ public class Handler extends NMSHandler {
     @Override
     public CompoundTag parseSNBT(String snbt) {
         try {
-            return CompoundTagImpl.fromNMSTag(TagParser.parseTag(snbt));
+            return CompoundTagImpl.fromNMSTag(TagParser.parseCompoundFully(snbt));
         }
         catch (CommandSyntaxException e) {
             return null;
@@ -349,7 +349,7 @@ public class Handler extends NMSHandler {
     public String containerGetString(PersistentDataContainer container, String key) {
         net.minecraft.nbt.Tag base = ((CraftPersistentDataContainer) container).getRaw().get(key);
         if (base instanceof StringTag) {
-            return base.getAsString();
+            return base.asString().get();
         }
         else if (base instanceof ByteArrayTag) {
             return new String(((ByteArrayTag) base).getAsByteArray(), StandardCharsets.UTF_8);

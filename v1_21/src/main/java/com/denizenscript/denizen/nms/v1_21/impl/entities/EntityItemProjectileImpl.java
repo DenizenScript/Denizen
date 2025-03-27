@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.base.Preconditions;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -88,8 +89,8 @@ public class EntityItemProjectileImpl extends ThrowableProjectile {
 
     @Override
     public void load(net.minecraft.nbt.CompoundTag nbttagcompound) {
-        net.minecraft.nbt.CompoundTag nbttagcompound1 = nbttagcompound.getCompound("Item");
-        this.setItemStack(ItemStack.parseOptional(CraftRegistry.getMinecraftRegistry(), nbttagcompound1));
+        net.minecraft.nbt.CompoundTag nbttagcompound1 = nbttagcompound.getCompound("Item").orElseGet(CompoundTag::new);
+        this.setItemStack(ItemStack.parse(CraftRegistry.getMinecraftRegistry(), nbttagcompound1).orElse(ItemStack.EMPTY));
         if (this.getItemStack().isEmpty()) {
             this.remove(RemovalReason.KILLED);
         }

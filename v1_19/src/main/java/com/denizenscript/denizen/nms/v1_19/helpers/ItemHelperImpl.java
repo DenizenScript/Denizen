@@ -247,16 +247,6 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public IntArrayTag convertUuidToNbt(UUID id) {
-        return new IntArrayTag(NbtUtils.createUUID(id).getAsIntArray());
-    }
-
-    @Override
-    public UUID convertNbtToUuid(IntArrayTag id) {
-        return NbtUtils.loadUUID(new net.minecraft.nbt.IntArrayTag(id.getValue()));
-    }
-
-    @Override
     public String getDisplayName(ItemTag item) {
         if (!item.getItemMeta().hasDisplayName()) {
             return null;

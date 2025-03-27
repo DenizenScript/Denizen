@@ -131,10 +131,6 @@ public abstract class ItemHelper {
 
     public abstract void setInventoryItem(Inventory inventory, ItemStack item, int slot);
 
-    public abstract IntArrayTag convertUuidToNbt(UUID id);
-
-    public abstract UUID convertNbtToUuid(IntArrayTag id);
-
     public abstract String getDisplayName(ItemTag item);
 
     public abstract List<String> getLore(ItemTag item);

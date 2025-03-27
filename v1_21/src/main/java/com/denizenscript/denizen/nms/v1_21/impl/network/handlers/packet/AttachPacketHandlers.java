@@ -51,10 +51,10 @@ public class AttachPacketHandlers {
                         pNew = new ClientboundMoveEntityPacket.Pos(newId, packet.getXa(), packet.getYa(), packet.getZa(), packet.isOnGround());
                     }
                     else if (packet instanceof ClientboundMoveEntityPacket.Rot) {
-                        pNew = new ClientboundMoveEntityPacket.Rot(newId, Mth.packDegrees(packet.getyRot()), Mth.packDegrees(packet.getxRot()), packet.isOnGround());
+                        pNew = new ClientboundMoveEntityPacket.Rot(newId, Mth.packDegrees(packet.getYRot()), Mth.packDegrees(packet.getXRot()), packet.isOnGround());
                     }
                     else if (packet instanceof ClientboundMoveEntityPacket.PosRot) {
-                        pNew = new ClientboundMoveEntityPacket.PosRot(newId, packet.getXa(), packet.getYa(), packet.getZa(), Mth.packDegrees(packet.getyRot()), Mth.packDegrees(packet.getxRot()), packet.isOnGround());
+                        pNew = new ClientboundMoveEntityPacket.PosRot(newId, packet.getXa(), packet.getYa(), packet.getZa(), Mth.packDegrees(packet.getYRot()), Mth.packDegrees(packet.getXRot()), packet.isOnGround());
                     }
                     else {
                         if (CoreConfiguration.debugVerbose) {
@@ -71,8 +71,8 @@ public class AttachPacketHandlers {
                             pitch = attachedEntity.getXRot();
                         }
                         else if (isRotate) {
-                            yaw = packet.getyRot();
-                            pitch = packet.getxRot();
+                            yaw = packet.getYRot();
+                            pitch = packet.getXRot();
                         }
                         else {
                             yaw = e.getYRot();

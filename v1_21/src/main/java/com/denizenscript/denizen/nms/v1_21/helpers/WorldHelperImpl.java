@@ -68,12 +68,12 @@ public class WorldHelperImpl implements WorldHelper {
 
     @Override
     public boolean isDay(World world) {
-        return ((CraftWorld) world).getHandle().isDay();
+        return ((CraftWorld) world).getHandle().isBrightOutside();
     }
 
     @Override
     public boolean isNight(World world) {
-        return ((CraftWorld) world).getHandle().isNight();
+        return ((CraftWorld) world).getHandle().isDarkOutside();
     }
 
     @Override

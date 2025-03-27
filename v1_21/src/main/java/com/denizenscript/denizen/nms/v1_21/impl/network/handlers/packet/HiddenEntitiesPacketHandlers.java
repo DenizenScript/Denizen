@@ -12,7 +12,7 @@ public class HiddenEntitiesPacketHandlers {
 
     public static void registerHandlers() {
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddEntityPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
-        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddExperienceOrbPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
+        //DenizenNetworkManagerImpl.registerPacketHandler(ClientboundAddExperienceOrbPacket.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundMoveEntityPacket.Rot.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundMoveEntityPacket.Pos.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundMoveEntityPacket.PosRot.class, HiddenEntitiesPacketHandlers::processHiddenEntitiesForPacket);
@@ -35,9 +35,11 @@ public class HiddenEntitiesPacketHandlers {
             if (packet instanceof ClientboundAddEntityPacket) {
                 ider = ((ClientboundAddEntityPacket) packet).getId();
             }
+            //TODO: 1.21.5: check this packet list
+            /*
             else if (packet instanceof ClientboundAddExperienceOrbPacket) {
                 ider = ((ClientboundAddExperienceOrbPacket) packet).getId();
-            }
+            }*/
             else if (packet instanceof ClientboundMoveEntityPacket) {
                 e = ((ClientboundMoveEntityPacket) packet).getEntity(networkManager.player.level());
             }

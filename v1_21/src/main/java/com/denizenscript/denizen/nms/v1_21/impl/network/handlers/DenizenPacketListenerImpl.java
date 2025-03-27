@@ -79,7 +79,7 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void handleContainerClick(ServerboundContainerClickPacket packet) {
         FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(player.getUUID(), getCraftPlayer());
-        if (override != null && packet.getContainerId() == 0) {
+        if (override != null && packet.containerId() == 0) {
             Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 1);
         }
         super.handleContainerClick(packet);

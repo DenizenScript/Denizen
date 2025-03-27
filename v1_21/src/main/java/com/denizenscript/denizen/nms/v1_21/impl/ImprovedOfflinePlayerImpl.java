@@ -12,6 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ParticleStatus;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -44,7 +45,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     public static class OfflinePlayerInventory extends net.minecraft.world.entity.player.Inventory {
 
         public OfflinePlayerInventory(net.minecraft.world.entity.player.Player entityhuman) {
-            super(entityhuman);
+            super(entityhuman, new EntityEquipment()); // TODO: 1.21.5: is the new Equipment right here?
         }
 
         @Override
@@ -82,7 +83,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     public org.bukkit.inventory.PlayerInventory getInventory() {
         if (inventory == null) {
             net.minecraft.world.entity.player.Inventory newInv = new OfflinePlayerInventory(getFakeNmsPlayer());
-            newInv.load(((CompoundTagImpl) this.compound).toNMSTag().getList("Inventory", 10));
+            newInv.load(((CompoundTagImpl) this.compound).toNMSTag().getList("Inventory").orElseGet(ListTag::new));
             inventory = new OfflineCraftInventoryPlayer(newInv);
         }
         return inventory;
@@ -101,7 +102,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     public Inventory getEnderChest() {
         if (enderchest == null) {
             PlayerEnderChestContainer endchest = new PlayerEnderChestContainer(null);
-            endchest.fromTag(((CompoundTagImpl) this.compound).toNMSTag().getList("EnderItems", 10), CraftRegistry.getMinecraftRegistry());
+            endchest.fromTag(((CompoundTagImpl) this.compound).toNMSTag().getList("EnderItems").orElseGet(ListTag::new), CraftRegistry.getMinecraftRegistry());
             enderchest = new CraftInventory(endchest);
         }
         return enderchest;
@@ -131,7 +132,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
 
     private AttributeMap getAttributes() {
         AttributeMap amb = new AttributeMap(DefaultAttributes.getSupplier(net.minecraft.world.entity.EntityType.PLAYER));
-        amb.load(((CompoundTagImpl) this.compound).toNMSTag().getList("Attributes", 10));
+        amb.load(((CompoundTagImpl) this.compound).toNMSTag().getList("Attributes").orElseGet(ListTag::new));
         return amb;
     }
 

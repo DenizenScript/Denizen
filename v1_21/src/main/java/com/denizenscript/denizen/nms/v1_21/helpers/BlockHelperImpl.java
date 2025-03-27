@@ -16,7 +16,7 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.InclusiveRange;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.BaseSpawner;
@@ -249,7 +249,7 @@ public class BlockHelperImpl implements BlockHelper {
             SpawnData toSpawn = nmsSpawner.nextSpawnData;
             SpawnData.CustomSpawnRules rules = skyMin == -1 ? null : new SpawnData.CustomSpawnRules(new InclusiveRange<>(skyMin, skyMax), new InclusiveRange<>(blockMin, blockMax));
             nmsSpawner.nextSpawnData = new SpawnData(toSpawn.entityToSpawn(), Optional.ofNullable(rules), toSpawn.equipment());
-            nmsSpawner.spawnPotentials = SimpleWeightedRandomList.empty();
+            nmsSpawner.spawnPotentials = WeightedList.of();
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
