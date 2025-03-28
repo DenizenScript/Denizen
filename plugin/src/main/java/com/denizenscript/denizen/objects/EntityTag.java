@@ -3874,12 +3874,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Makes a player-type entity interact with a block.
         // -->
         if (mechanism.matches("interact_with") && mechanism.requireObject(LocationTag.class)) {
-            if (!isPlayer()) {
+            Player player = getPlayer();
+            if (player == null) {
                 mechanism.echoError("Only player-type entities can interact with blocks!");
                 return;
             }
             LocationTag interactLocation = mechanism.valueAsType(LocationTag.class);
-            NMSHandler.entityHelper.forceInteraction(getPlayer(), interactLocation);
+            NMSHandler.entityHelper.forceInteraction(player, interactLocation);
         }
 
         if (mechanism.matches("play_death")) {

@@ -11,8 +11,11 @@ import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import org.bukkit.*;
+import org.bukkit.DyeColor;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.entity.*;
 
 import java.util.Arrays;
@@ -57,7 +60,16 @@ public class EntityColor extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        String color = getColor(true);
+        return getCleanedValue(false);
+    }
+
+    @Override
+    public ElementTag getTagValue(Attribute attribute) {
+        return getCleanedValue(true);
+    }
+
+    public ElementTag getCleanedValue(boolean includeDeprecated) {
+        String color = getColor(includeDeprecated);
         return color == null ? null : new ElementTag(CoreUtilities.toLowerCase(color));
     }
 
@@ -210,7 +222,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
     public String getColor(boolean includeDeprecated) {
         EntityType type = getType();
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
-            return MultiVersionHelper1_19.getColor(getEntity());
+            return MultiVersionHelper1_19.getColor(getEntity(), includeDeprecated);
         }
         if (getEntity() instanceof MushroomCow mushroomCow) {
             return mushroomCow.getVariant().name();

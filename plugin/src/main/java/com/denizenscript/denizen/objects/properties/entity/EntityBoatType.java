@@ -6,7 +6,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.TreeSpecies;
 import org.bukkit.entity.Boat;
 
@@ -28,6 +28,20 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            return null;
+        }
+        return new ElementTag(as(Boat.class).getWoodType());
+    }
+
+    @Override
+    public ElementTag getTagValue(Attribute attribute) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            BukkitImplDeprecations.boatType.warn(attribute.context);
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            BukkitImplDeprecations.gettingBoatType.warn(attribute.context);
+        }
         return new ElementTag(as(Boat.class).getWoodType());
     }
 
@@ -38,24 +52,19 @@ public class EntityBoatType extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag type, Mechanism mechanism) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            BukkitImplDeprecations.boatType.warn(mechanism.context);
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            BukkitImplDeprecations.settingBoatType.warn(mechanism.context);
+            return;
+        }
         if (mechanism.requireEnum(TreeSpecies.class)) {
             as(Boat.class).setWoodType(type.asEnum(TreeSpecies.class));
         }
     }
 
     public static void register() {
-        PropertyParser.registerTag(EntityBoatType.class, ElementTag.class, "boat_type", (attribute, object) -> {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-                BukkitImplDeprecations.boatType.warn(attribute.context);
-            }
-            return object.getPropertyValue();
-        });
-
-        PropertyParser.registerMechanism(EntityBoatType.class, ElementTag.class, "boat_type", (object, mechanism, type) -> {
-           if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-               BukkitImplDeprecations.boatType.warn(mechanism.context);
-           }
-           object.setPropertyValue(type, mechanism);
-        });
+        autoRegister("boat_type", EntityBoatType.class, ElementTag.class, false);
     }
 }
