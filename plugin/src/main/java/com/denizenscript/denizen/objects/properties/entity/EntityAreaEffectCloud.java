@@ -1,9 +1,14 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
-import com.denizenscript.denizen.utilities.entity.AreaEffectCloudHelper;
-import com.denizenscript.denizencore.objects.*;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.entity.AreaEffectCloudHelper;
+import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -74,21 +79,22 @@ public class EntityAreaEffectCloud implements Property {
         // <--[tag]
         // @attribute <EntityTag.base_potion>
         // @returns ElementTag
-        // @mechanism EntityTag.base_potion
-        // @group properties
+        // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
         // @description
-        // Returns the Area Effect Cloud's base potion data.
-        // In the format Type,Upgraded,Extended
+        // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
         // -->
         if (attribute.startsWith("base_potion")) {
             attribute = attribute.fulfill(1);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                BukkitImplDeprecations.areaEffectCloudControls.warn(attribute.context);
+            }
 
             // <--[tag]
             // @attribute <EntityTag.base_potion.type>
             // @returns ElementTag
-            // @group properties
+            // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
             // @description
-            // Returns the Area Effect Cloud's base potion type.
+            // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
             // -->
             if (attribute.startsWith("type")) {
                 return new ElementTag(getHelper().getBPName())
@@ -98,9 +104,9 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.base_potion.is_upgraded>
             // @returns ElementTag(Boolean)
-            // @group properties
+            // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
             // @description
-            // Returns whether the Area Effect Cloud's base potion is upgraded.
+            // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
             // -->
             if (attribute.startsWith("is_upgraded")) {
                 return new ElementTag(getHelper().getBPUpgraded())
@@ -110,9 +116,9 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.base_potion.is_extended>
             // @returns ElementTag(Boolean)
-            // @group properties
+            // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
             // @description
-            // Returns whether the Area Effect Cloud's base potion is extended.
+            // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
             // -->
             if (attribute.startsWith("is_extended")) {
                 return new ElementTag(getHelper().getBPExtended())
@@ -471,37 +477,31 @@ public class EntityAreaEffectCloud implements Property {
         // @object EntityTag
         // @name base_potion
         // @input ElementTag
+        // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
         // @description
-        // Sets the Area Effect Cloud's base potion.
-        // In the form: Type,Upgraded,Extended
-        // NOTE: Potion cannot be both upgraded and extended
-        // @tags
-        // <EntityTag.base_potion>
-        // <EntityTag.base_potion.type>
-        // <EntityTag.base_potion.is_upgraded>
-        // <EntityTag.base_potion.is_extended>
-        // <server.potion_types>
+        // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
         // -->
         if (mechanism.matches("base_potion")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                BukkitImplDeprecations.areaEffectCloudControls.warn(mechanism.context);
+            }
             List<String> data = CoreUtilities.split(mechanism.getValue().asString().toUpperCase(), ',');
             if (data.size() != 3) {
-                mechanism.echoError(mechanism.getValue().asString() + " is not a valid base potion!");
+                mechanism.echoError(mechanism.getValue() + " is not a valid base potion!");
+                return;
+            }
+            PotionType type = Utilities.elementToEnumlike(new ElementTag(data.get(0)), PotionType.class);
+            if (type == null) {
+                mechanism.echoError(mechanism.getValue() + " is not a valid base potion!");
+                return;
+            }
+            boolean upgraded = type.isUpgradeable() && CoreUtilities.equalsIgnoreCase(data.get(1), "true");
+            boolean extended = type.isExtendable() && CoreUtilities.equalsIgnoreCase(data.get(2), "true");
+            if (extended && upgraded) {
+                mechanism.echoError("Potion cannot be both upgraded and extended");
             }
             else {
-                try {
-                    PotionType type = PotionType.valueOf(data.get(0));
-                    boolean upgraded = type.isUpgradeable() && CoreUtilities.equalsIgnoreCase(data.get(1), "true");
-                    boolean extended = type.isExtendable() && CoreUtilities.equalsIgnoreCase(data.get(2), "true");
-                    if (extended && upgraded) {
-                        mechanism.echoError("Potion cannot be both upgraded and extended");
-                    }
-                    else {
-                        getHelper().setBP(type, extended, upgraded);
-                    }
-                }
-                catch (Exception e) {
-                    mechanism.echoError(mechanism.getValue().asString() + " is not a valid base potion!");
-                }
+                getHelper().setBP(type, extended, upgraded);
             }
         }
 
