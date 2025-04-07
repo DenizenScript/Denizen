@@ -10,13 +10,12 @@ public class ItemFireworkPower extends ItemProperty<ElementTag> {
     // <--[property]
     // @object ItemTag
     // @name firework_power
-    // @input ElementTag(number)
+    // @input ElementTag(Number)
     // @description
     // Controls the firework's power.
-    // Power primarily affects how high the firework flies, with each level of power corresponding to approximately half a second of additional flight them.
-    // @tags
-    // <ItemTag.firework_power>
+    // Power primarily affects how high the firework flies, with each level of power corresponding to approximately half a second of additional flight time.
     // -->
+
     public static boolean describes(ItemTag item) {
         return item.getItemMeta() instanceof FireworkMeta;
     }
@@ -41,5 +40,4 @@ public class ItemFireworkPower extends ItemProperty<ElementTag> {
     public static void register() {
         autoRegister("firework_power", ItemFireworkPower.class, ElementTag.class, false);
     }
-
 }
