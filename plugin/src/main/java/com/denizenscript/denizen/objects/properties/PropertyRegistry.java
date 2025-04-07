@@ -236,6 +236,7 @@ public class PropertyRegistry {
         registerItemProperty(ItemCustomModel.class, "custom_model_data");
         registerItemProperty(ItemChargedProjectile.class, "charged_projectiles");
         registerItemProperty(ItemEnchantments.class, "enchantments", "stored_enchantments");
+        registerItemProperty(ItemFireworkPower.class, "fireworks");
         registerItemProperty(ItemFirework.class, "fireworks", "firework_explosion");
         PropertyParser.registerProperty(ItemFlags.class, ItemTag.class);
         PropertyParser.registerProperty(ItemFrameInvisible.class, ItemTag.class); // Special case handling in ItemComponentsPatch
