@@ -164,9 +164,12 @@ public class DenizenNPCHelper implements Listener {
             NPCTag npc = (NPCTag) inventory.getHolder();
             npc.getInventory().setContents(inventory.getContents());
             Equipment equipment = npc.getEquipmentTrait();
-            for (int i = 0; i < 5; i++) {
-                equipment.set(i, inventory.getItem(i));
-            }
+            equipment.set(Equipment.EquipmentSlot.HAND, inventory.getItem(0));
+            equipment.set(Equipment.EquipmentSlot.HELMET, inventory.getItem(1));
+            equipment.set(Equipment.EquipmentSlot.CHESTPLATE, inventory.getItem(2));
+            equipment.set(Equipment.EquipmentSlot.LEGGINGS, inventory.getItem(3));
+            equipment.set(Equipment.EquipmentSlot.BOOTS, inventory.getItem(4));
+            equipment.set(Equipment.EquipmentSlot.OFF_HAND, inventory.getItem(5));
         }
     }
 }
