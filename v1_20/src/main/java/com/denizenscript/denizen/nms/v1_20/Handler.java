@@ -31,13 +31,16 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.ProfileResult;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
+import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.hover.content.*;
+import net.md_5.bungee.chat.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Rotations;
@@ -388,5 +391,22 @@ public class Handler extends NMSHandler {
             return null;
         }
         return CraftChatMessage.fromJSONOrNull(FormattedTextHelper.componentToJson(spigot));
+    }
+
+    @Override
+    public Gson getVanillaStyleSpigotComponentGSON() {
+        return new GsonBuilder()
+                .registerTypeAdapter(BaseComponent.class, new ComponentSerializer())
+                .registerTypeAdapter(TextComponent.class, new TextComponentSerializer())
+                .registerTypeAdapter(TranslatableComponent.class, new TranslatableComponentSerializer())
+                .registerTypeAdapter(KeybindComponent.class, new KeybindComponentSerializer())
+                .registerTypeAdapter(ScoreComponent.class, new ScoreComponentSerializer())
+                .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
+                .registerTypeAdapter(net.md_5.bungee.api.chat.hover.content.Entity.class, new EntitySerializer())
+                .registerTypeAdapter(Text.class, new TextSerializer())
+                .registerTypeAdapter(Item.class, new ItemSerializer())
+                .registerTypeAdapter(net.md_5.bungee.api.chat.ItemTag.class, new net.md_5.bungee.api.chat.ItemTag.Serializer())
+                .disableHtmlEscaping() // Mojang
+                .create();
     }
 }
