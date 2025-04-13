@@ -1975,11 +1975,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.is_sleeping>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.is_sleeping
         // @description
         // Returns whether a living entity is currently sleeping.
-        // Will always return 'false' on entities that are unable to sleep.
-        // This tag may return other values for foxes, players, and villagers.
-        // @mechanism EntityTag.is_sleeping
+        // If the entity is not a fox, player, or villager, this will always return 'false'.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "is_sleeping", (attribute, object) -> {
             if (object.getBukkitEntity() instanceof LivingEntity livingEntity) {
@@ -3162,19 +3161,21 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[mechanism]
         // @object EntityTag
         // @name is_sleeping
-        // @input EntityTag
+        // @input ElementTag(Boolean)
         // @description
         // Sets whether a fox is sleeping.
-        // The entity may wake up immediately after setting this to true. If this is not desired, disable <@link mechanism has_ai>.
+        // The entity may wake up immediately after setting this to true. If this is not desired, disable <@link mechanism EntityTag.has_ai>.
         // @tags
         // <EntityTag.is_sleeping>
         // -->
         tagProcessor.registerMechanism("is_sleeping", false, ElementTag.class, (object, mechanism, input) -> {
-            if (!(object.getBukkitEntity() instanceof Fox fox)) {
+            if (mechanism.requireBoolean()) {
+                if (object.getBukkitEntity() instanceof Fox fox) {
+                    fox.setSleeping(input.asBoolean());
+                    return;
+                }
                 mechanism.echoError("'is_sleeping' mechanism is only valid for Fox entities.");
-                return;
             }
-            fox.setSleeping(mechanism.getValue().asBoolean());
         });
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
