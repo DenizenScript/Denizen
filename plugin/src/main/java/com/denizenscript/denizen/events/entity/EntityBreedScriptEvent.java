@@ -39,11 +39,12 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
 
     public EntityBreedScriptEvent() {
         registerCouldMatcher("<entity> breeds");
-        this.<EntityBreedScriptEvent, ElementTag>registerDetermination(null, ElementTag.class, (evt, context, determination) -> {
+        this.<EntityBreedScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, determination) -> {
             if (determination.isInt()) {
-                experience = determination.asInt();
-                evt.event.setExperience(experience);
+                evt.event.setExperience(determination.asInt());
+                return true;
             }
+            return false;
         });
     }
 
