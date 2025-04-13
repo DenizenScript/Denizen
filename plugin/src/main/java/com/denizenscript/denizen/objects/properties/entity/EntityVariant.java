@@ -32,16 +32,16 @@ public class EntityVariant extends EntityProperty<ElementTag> {
     @Override
     public ElementTag getPropertyValue() {
         if (getEntity() instanceof Wolf wolf) {
-            return new ElementTag(Utilities.namespacedKeyToString(wolf.getVariant().getKeyOrThrow()));
+            return new ElementTag(Utilities.namespacedKeyToString(wolf.getVariant().getKey()));
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Chicken chicken) {
-            return new ElementTag(Utilities.namespacedKeyToString(chicken.getVariant().getKeyOrThrow()));
+            return new ElementTag(Utilities.namespacedKeyToString(chicken.getVariant().getKey()));
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Cow cow) {
-            return new ElementTag(Utilities.namespacedKeyToString(cow.getVariant().getKeyOrThrow()));
+            return new ElementTag(Utilities.namespacedKeyToString(cow.getVariant().getKey()));
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Pig pig) {
-            return new ElementTag(Utilities.namespacedKeyToString(pig.getVariant().getKeyOrThrow()));
+            return new ElementTag(Utilities.namespacedKeyToString(pig.getVariant().getKey()));
         }
         return null;
     }
