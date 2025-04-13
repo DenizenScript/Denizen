@@ -45,8 +45,12 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
 
     public PlayerNameEntityScriptEvent() {
         registerCouldMatcher("player names <entity>");
-        this.<PlayerNameEntityScriptEvent, ElementTag>registerDetermination("persistent", ElementTag.class, (evt, context, determination) -> {
-            event.setPersistent(determination.asBoolean());
+        this.<PlayerNameEntityScriptEvent, ElementTag>registerOptionalDetermination("persistent", ElementTag.class, (evt, context, determination) -> {
+            if (determination.isBoolean()) {
+                event.setPersistent(determination.asBoolean());
+                return true;
+            }
+            return false;
         });
         this.<PlayerNameEntityScriptEvent, ElementTag>registerDetermination("name", ElementTag.class, (evt, context, determination) -> {
             event.setName(PaperModule.parseFormattedText(determination.toString(), ChatColor.WHITE));
