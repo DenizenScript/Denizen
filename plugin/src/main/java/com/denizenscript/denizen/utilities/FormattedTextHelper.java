@@ -870,6 +870,11 @@ public class FormattedTextHelper {
         }
     }
 
+    static {
+        // Explicitly before initializing vanillaStyleSpigotComponentGSON
+        HoverFormatHelper.tryInitializeItemHoverFix();
+    }
+
     public static final Gson vanillaStyleSpigotComponentGSON = getBungeeGson().newBuilder().disableHtmlEscaping().create();
 
     public static String componentToJson(BaseComponent[] components) {
