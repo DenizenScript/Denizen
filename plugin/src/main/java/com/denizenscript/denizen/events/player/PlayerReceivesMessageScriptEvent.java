@@ -1,17 +1,16 @@
 package com.denizenscript.denizen.events.player;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 
 public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
 
@@ -97,7 +96,7 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
             if (lower.startsWith("raw_json:")) {
                 rawJson = new ElementTag(determination.substring("raw_json:".length()));
                 altMessageDetermination = null;
-                message = new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(rawJson.asString())), true);
+                message = new ElementTag(FormattedTextHelper.stringify(FormattedTextHelper.parseJson(rawJson.asString())), true);
                 modified = true;
                 return true;
             }
@@ -127,7 +126,7 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     public PlayerReceivesMessageScriptEvent triggerNow() {
         PlayerReceivesMessageScriptEvent event = (PlayerReceivesMessageScriptEvent) fire();
         if (event.modified && event.altMessageDetermination == null) {
-            event.altMessageDetermination = ComponentSerializer.parse(event.rawJson.asString());
+            event.altMessageDetermination = FormattedTextHelper.parseJson(event.rawJson.asString());
         }
         return event;
     }

@@ -17,6 +17,9 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.*;
 import net.md_5.bungee.chat.*;
+import net.md_5.bungee.chat.ChatVersion;
+import net.md_5.bungee.chat.ComponentSerializer;
+import net.md_5.bungee.chat.VersionedComponentSerializer;
 
 import java.util.List;
 
@@ -880,5 +883,12 @@ public class FormattedTextHelper {
             return vanillaStyleSpigotComponentGSON.toJson(components[0]);
         }
         return vanillaStyleSpigotComponentGSON.toJson(new TextComponent(components));
+    }
+
+    public static BaseComponent[] parseJson(String json) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            return VersionedComponentSerializer.forVersion(ChatVersion.V1_21_5).parse(json);
+        }
+        return ComponentSerializer.parse(json);
     }
 }
