@@ -12,8 +12,11 @@ import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.hover.content.*;
+import net.md_5.bungee.chat.*;
 
 import java.util.List;
 
@@ -857,12 +860,22 @@ public class FormattedTextHelper {
         return message;
     }
 
-    public static Gson vanillaStyleSpigotComponentGSON = null;
+    // Spigot ComponentSerializer
+    public static final Gson vanillaStyleSpigotComponentGSON = new GsonBuilder()
+            .registerTypeAdapter(BaseComponent.class, new ComponentSerializer())
+            .registerTypeAdapter(TextComponent.class, new TextComponentSerializer())
+            .registerTypeAdapter(TranslatableComponent.class, new TranslatableComponentSerializer())
+            .registerTypeAdapter(KeybindComponent.class, new KeybindComponentSerializer())
+            .registerTypeAdapter(ScoreComponent.class, new ScoreComponentSerializer())
+            .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
+            .registerTypeAdapter(Entity.class, new EntitySerializer())
+            .registerTypeAdapter(Text.class, new TextSerializer())
+            .registerTypeAdapter(Item.class, new ItemSerializer())
+            .registerTypeAdapter(ItemTag.class, new ItemTag.Serializer())
+            .disableHtmlEscaping() // Mojang
+            .create();
 
     public static String componentToJson(BaseComponent[] components) {
-        if (vanillaStyleSpigotComponentGSON == null) {
-            vanillaStyleSpigotComponentGSON = NMSHandler.instance.getVanillaStyleSpigotComponentGSON();
-        }
         if (components.length == 1) {
             return vanillaStyleSpigotComponentGSON.toJson(components[0]);
         }
