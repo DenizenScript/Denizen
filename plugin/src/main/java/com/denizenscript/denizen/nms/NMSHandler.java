@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.interfaces.*;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.Tag;
-import com.google.gson.Gson;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -32,8 +31,7 @@ public abstract class NMSHandler {
     public static boolean debugPackets = false;
     public static String debugPacketFilter = "";
 
-    public static boolean initialize(JavaPlugin plugin) {
-        javaPlugin = plugin;
+    static {
         String bukkitVersion = Bukkit.getBukkitVersion();
         for (NMSVersion potentialVersion : NMSVersion.values()) {
             if (bukkitVersion.startsWith(potentialVersion.minecraftVersion)) {
@@ -43,6 +41,12 @@ public abstract class NMSHandler {
         }
         if (version == null) {
             version = NMSVersion.NOT_SUPPORTED;
+        }
+    }
+
+    public static boolean initialize(JavaPlugin plugin) {
+        javaPlugin = plugin;
+        if (getVersion() == NMSVersion.NOT_SUPPORTED) {
             instance = null;
             return false;
         }
@@ -147,6 +151,4 @@ public abstract class NMSHandler {
     public String updateLegacyName(Class<?> type, String legacyName) {
         return legacyName;
     }
-
-    public abstract Gson getVanillaStyleSpigotComponentGSON(); // TODO: Once 1.21 is the minimum version, de-module this
 }
