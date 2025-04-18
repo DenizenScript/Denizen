@@ -65,7 +65,7 @@ public interface BlockHelper {
         return Material.matchMaterial(material).createBlockData(otherData);
     }
 
-    void makeBlockStateRaw(BlockState state);
+    default void makeBlockStateRaw(BlockState state) {} // TODO: once 1.19 is the minimum supported version, remove this
 
     void doRandomTick(Location location);
 

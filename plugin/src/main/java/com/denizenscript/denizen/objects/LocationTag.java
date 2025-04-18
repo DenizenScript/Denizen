@@ -5253,13 +5253,13 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // -->
         if (mechanism.matches("jukebox_record")) {
             BlockState state = getBlockState();
-            if (state instanceof Jukebox) {
+            if (state instanceof Jukebox jukebox) {
                 if (mechanism.hasValue() && mechanism.requireObject(ItemTag.class)) {
-                    ((Jukebox) state).setRecord(mechanism.valueAsType(ItemTag.class).getItemStack());
+                    jukebox.setRecord(mechanism.valueAsType(ItemTag.class).getItemStack());
                 }
                 else {
                     NMSHandler.blockHelper.makeBlockStateRaw(state);
-                    ((Jukebox) state).setRecord(null);
+                    jukebox.setRecord(null);
                 }
                 state.update();
             }

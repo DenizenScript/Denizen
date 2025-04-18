@@ -96,7 +96,7 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
             case "entity" -> entity.getDenizenObject();
             case "damager" -> hitBy.getDenizenObject();
             case "acceleration" -> new LocationTag(event.getAcceleration());
-            case "cause" -> new ElementTag(event.getCause());
+            case "cause" -> new ElementTag(event.getCause().name(), true); // TODO: once 1.20 is the minimum supported version, use the enum constructor
             default -> super.getContext(name);
         };
     }
