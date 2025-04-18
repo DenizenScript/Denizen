@@ -177,14 +177,14 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BiomeEnterExitScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockDropsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(ChatScriptEvent.class);
-        ScriptEvent.registerScriptEvent(HotbarScrollScriptEvent.class);
         ScriptEvent.registerScriptEvent(ExperienceBottleBreaksScriptEvent.class);
+        ScriptEvent.registerScriptEvent(HotbarScrollScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerAnimatesScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerArmorStandManipulateScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBreaksBlockScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBreaksItemScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerChangesMainHandScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesGamemodeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerChangesMainHandScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesSignScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesWorldScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesXPScriptEvent.class);
@@ -227,6 +227,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerPreLoginScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerPreparesAnvilCraftScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerPreparesEnchantScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerPreparesSmithingTableScriptEvent.class);
         if (!Denizen.supportsPaper) {
             ScriptEvent.registerScriptEvent(PlayerQuitsScriptEvent.class);
         }
@@ -245,8 +246,8 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerSendPacketScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerShearsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSmithsItemScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerPreparesSmithingTableScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSneakScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerSpawnChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSprintScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStandsOnScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStatisticIncrementsScriptEvent.class);
