@@ -47,13 +47,13 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
         registerCouldMatcher("player names <entity>");
         this.<PlayerNameEntityScriptEvent, ElementTag>registerOptionalDetermination("persistent", ElementTag.class, (evt, context, determination) -> {
             if (determination.isBoolean()) {
-                event.setPersistent(determination.asBoolean());
+                evt.event.setPersistent(determination.asBoolean());
                 return true;
             }
             return false;
         });
         this.<PlayerNameEntityScriptEvent, ElementTag>registerDetermination("name", ElementTag.class, (evt, context, determination) -> {
-            event.setName(PaperModule.parseFormattedText(determination.toString(), ChatColor.WHITE));
+            evt.event.setName(PaperModule.parseFormattedText(determination.toString(), ChatColor.WHITE));
         });
     }
 
@@ -81,7 +81,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "entity" -> entity.getDenizenObject();
-            case "name" -> new ElementTag(PaperModule.stringifyComponent(event.getName()));
+            case "name" -> new ElementTag(PaperModule.stringifyComponent(event.getName()), true);
             case "old_name" -> oldName;
             case "persistent" -> new ElementTag(event.isPersistent());
             default -> super.getContext(name);
@@ -93,7 +93,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
         this.event = event;
         entity = new EntityTag(event.getEntity());
         String name = PaperAPITools.instance.getCustomName(entity.getBukkitEntity());
-        oldName = name == null ? null : new ElementTag(name);
+        oldName = name == null ? null : new ElementTag(name, true);
         fire(event);
     }
 }
