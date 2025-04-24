@@ -32,7 +32,6 @@ import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_21_R4.CraftChunk;
@@ -53,18 +52,16 @@ import java.util.Optional;
 
 public class BlockHelperImpl implements BlockHelper {
 
-    public static final Field craftBlockEntityState_tileEntity = ReflectionHelper.getFields(CraftBlockEntityState.class).get("tileEntity");
+    public static final Field craftBlockEntityState_tileEntity;
     public static final Field craftBlockEntityState_snapshot = ReflectionHelper.getFields(CraftBlockEntityState.class).get("snapshot");
     public static final Field craftSkull_profile = ReflectionHelper.getFields(CraftSkull.class).get("profile");
 
-    @Override
-    public void makeBlockStateRaw(BlockState state) {
-        try {
-            craftBlockEntityState_snapshot.set(state, craftBlockEntityState_tileEntity.get(state));
+    static {
+        Field blockEntityField = ReflectionHelper.getFields(CraftBlockEntityState.class).getNoCheck("blockEntity");
+        if (blockEntityField == null) {
+            blockEntityField = ReflectionHelper.getFields(CraftBlockEntityState.class).get("tileEntity");
         }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
+        craftBlockEntityState_tileEntity = blockEntityField;
     }
 
     @Override
