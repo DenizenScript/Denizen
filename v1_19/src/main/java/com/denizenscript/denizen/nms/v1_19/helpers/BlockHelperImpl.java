@@ -38,7 +38,6 @@ import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.material.PushReaction;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_19_R3.CraftChunk;
@@ -65,16 +64,6 @@ public class BlockHelperImpl implements BlockHelper {
     public static final Field craftBlockEntityState_tileEntity = ReflectionHelper.getFields(CraftBlockEntityState.class).get("tileEntity");
     public static final Field craftBlockEntityState_snapshot = ReflectionHelper.getFields(CraftBlockEntityState.class).get("snapshot");
     public static final Field craftSkull_profile = ReflectionHelper.getFields(CraftSkull.class).get("profile");
-
-    @Override
-    public void makeBlockStateRaw(BlockState state) {
-        try {
-            craftBlockEntityState_snapshot.set(state, craftBlockEntityState_tileEntity.get(state));
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
-    }
 
     @Override
     public void applyPhysics(Location location) {

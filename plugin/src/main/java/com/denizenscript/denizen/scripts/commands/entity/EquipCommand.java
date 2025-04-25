@@ -141,22 +141,22 @@ public class EquipCommand extends AbstractCommand {
                 if (npc != null) {
                     Equipment trait = npc.getEquipmentTrait();
                     if (equipment.get("hand") != null) {
-                        trait.set(0, equipment.get("hand").getItemStack());
+                        trait.set(Equipment.EquipmentSlot.HAND, equipment.get("hand").getItemStack());
                     }
                     if (equipment.get("head") != null) {
-                        trait.set(1, equipment.get("head").getItemStack());
+                        trait.set(Equipment.EquipmentSlot.HELMET, equipment.get("head").getItemStack());
                     }
                     if (equipment.get("chest") != null) {
-                        trait.set(2, equipment.get("chest").getItemStack());
+                        trait.set(Equipment.EquipmentSlot.CHESTPLATE, equipment.get("chest").getItemStack());
                     }
                     if (equipment.get("legs") != null) {
-                        trait.set(3, equipment.get("legs").getItemStack());
+                        trait.set(Equipment.EquipmentSlot.LEGGINGS, equipment.get("legs").getItemStack());
                     }
                     if (equipment.get("boots") != null) {
-                        trait.set(4, equipment.get("boots").getItemStack());
+                        trait.set(Equipment.EquipmentSlot.BOOTS, equipment.get("boots").getItemStack());
                     }
                     if (equipment.get("offhand") != null) {
-                        trait.set(5, equipment.get("offhand").getItemStack());
+                        trait.set(Equipment.EquipmentSlot.OFF_HAND, equipment.get("offhand").getItemStack());
                     }
                     if (npc.isSpawned()) {
                         LivingEntity livingEntity = npc.getLivingEntity();

@@ -126,6 +126,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityMarker.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaterial.class, EntityTag.class);
         PropertyParser.registerProperty(EntityMaxFuseTicks.class, EntityTag.class);
+        PropertyParser.registerProperty(EntityMaxTemper.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityOnBack.class, EntityTag.class);
             PropertyParser.registerProperty(EntityOpacity.class, EntityTag.class);
@@ -182,6 +183,7 @@ public class PropertyRegistry {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             PropertyParser.registerProperty(EntityTeleportDuration.class, EntityTag.class);
         }
+        PropertyParser.registerProperty(EntityTemper.class, EntityTag.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityText.class, EntityTag.class);
             PropertyParser.registerProperty(EntityTextShadowed.class, EntityTag.class);
@@ -236,6 +238,7 @@ public class PropertyRegistry {
         registerItemProperty(ItemCustomModel.class, "custom_model_data");
         registerItemProperty(ItemChargedProjectile.class, "charged_projectiles");
         registerItemProperty(ItemEnchantments.class, "enchantments", "stored_enchantments");
+        registerItemProperty(ItemFireworkPower.class, "fireworks");
         registerItemProperty(ItemFirework.class, "fireworks", "firework_explosion");
         PropertyParser.registerProperty(ItemFlags.class, ItemTag.class);
         PropertyParser.registerProperty(ItemFrameInvisible.class, ItemTag.class); // Special case handling in ItemComponentsPatch

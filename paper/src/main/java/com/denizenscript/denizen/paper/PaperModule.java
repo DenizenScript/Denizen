@@ -18,7 +18,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 
 public class PaperModule {
@@ -156,7 +155,7 @@ public class PaperModule {
         if (component == null) {
             return null;
         }
-        return FormattedTextHelper.stringify(ComponentSerializer.parse(componentToJson(component)));
+        return FormattedTextHelper.stringify(FormattedTextHelper.parseJson(componentToJson(component)));
     }
 
     public static Component jsonToComponent(String json) {

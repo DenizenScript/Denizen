@@ -245,7 +245,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerSendPacketScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerShearsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSmithsItemScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayersPrepareSmithingTableScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerPreparesSmithingTableScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSneakScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSprintScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStandsOnScriptEvent.class);

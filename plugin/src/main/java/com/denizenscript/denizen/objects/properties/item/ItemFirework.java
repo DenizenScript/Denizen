@@ -40,7 +40,7 @@ public class ItemFirework implements Property {
     }
 
     public static final String[] handledMechs = new String[] {
-            "firework", "firework_power"
+            "firework"
     };
 
     public ItemFirework(ItemTag _item) {
@@ -141,20 +141,6 @@ public class ItemFirework implements Property {
         PropertyParser.registerTag(ItemFirework.class, ListTag.class, "firework_data", (attribute, object) -> {
             return object.getFireworkDataMap();
         });
-
-        // <--[tag]
-        // @attribute <ItemTag.firework_power>
-        // @returns ElementTag(Number)
-        // @group properties
-        // @mechanism ItemTag.firework_power
-        // @description
-        // Returns the firework's power.
-        // Power primarily affects how high the firework flies, with each level of power corresponding to approximately half a second of additional flight them.
-        // -->
-        PropertyParser.registerTag(ItemFirework.class, ElementTag.class, "firework_power", (attribute, object) -> {
-            ItemMeta meta = object.item.getItemMeta();
-            return meta instanceof FireworkMeta ? new ElementTag(((FireworkMeta) meta).getPower()) : null;
-        });
     }
 
     @Override
@@ -170,26 +156,6 @@ public class ItemFirework implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object ItemTag
-        // @name firework_power
-        // @input ElementTag(Number)
-        // @description
-        // Sets the power of a firework.
-        // @tags
-        // <ItemTag.firework_power>
-        // -->
-        if (mechanism.matches("firework_power") && mechanism.requireInteger()) {
-            if (item.getItemMeta() instanceof FireworkMeta) {
-                ItemMeta meta = item.getItemMeta();
-                ((FireworkMeta) meta).setPower(mechanism.getValue().asInt());
-                item.setItemMeta(meta);
-            }
-            else {
-                mechanism.echoError("Cannot set the power of a firework effect!");
-            }
-        }
 
         // <--[mechanism]
         // @object ItemTag

@@ -38,7 +38,6 @@ import com.mojang.authlib.yggdrasil.ProfileResult;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Rotations;
@@ -378,7 +377,7 @@ public class Handler extends NMSHandler {
         if (nms == null) {
             return null;
         }
-        return ComponentSerializer.parse(CraftChatMessage.toJSON(nms));
+        return FormattedTextHelper.parseJson(CraftChatMessage.toJSON(nms));
     }
 
     public static Component componentToNMS(BaseComponent[] spigot) {
