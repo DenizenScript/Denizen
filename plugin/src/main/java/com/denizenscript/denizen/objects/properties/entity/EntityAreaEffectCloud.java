@@ -252,12 +252,11 @@ public class EntityAreaEffectCloud implements Property {
         // @attribute <EntityTag.has_custom_effect[(<effect>)]>
         // @returns ElementTag(Boolean)
         // @mechanism EntityTag.custom_effects
-        // @group properties
-        // @description
-        // Returns whether the Area Effect Cloud has a specified effect.
-        // If no effect is specified, returns whether it has any custom effect.
+        // @deprecated use 'EntityTag.has_effect'.
+        // @description Deprecated in favor of <@link tag EntityTag.has_effect>.
         // -->
         if (attribute.startsWith("has_custom_effect")) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(attribute.context);
             if (attribute.hasParam()) {
                 PotionEffectType effectType = PotionEffectType.getByName(attribute.getParam());
                 for (PotionEffect effect : getHelper().getCustomEffects()) {
@@ -291,12 +290,11 @@ public class EntityAreaEffectCloud implements Property {
         // @attribute <EntityTag.custom_effects>
         // @returns ListTag
         // @mechanism EntityTag.custom_effects
-        // @group properties
-        // @description
-        // Returns a ListTag of the Area Effect Cloud's custom effects
-        // In the form Type,Amplifier,Duration,Ambient,Particles|...
+        // @deprecated use 'EntityTag.effects_data'.
+        // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
         // -->
         if (attribute.startsWith("custom_effects")) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(attribute.context);
             List<PotionEffect> effects = getHelper().getCustomEffects();
             if (!attribute.hasParam()) {
                 ListTag list = new ListTag();
@@ -319,9 +317,8 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.custom_effects[<#>].type>
             // @returns ElementTag
-            // @group properties
-            // @description
-            // Returns the specified Area Effect Cloud potion effect type.
+            // @deprecated use 'EntityTag.effects_data'.
+            // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("type")) {
                 return new ElementTag(effect.getType().getName())
@@ -331,9 +328,8 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.custom_effects[<#>].amplifier>
             // @returns ElementTag(Number)
-            // @group properties
-            // @description
-            // Returns the specified Area Effect Cloud potion effect amplifier.
+            // @deprecated use 'EntityTag.effects_data'.
+            // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("amplifier")) {
                 return new ElementTag(effect.getAmplifier())
@@ -343,9 +339,8 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.custom_effects[<#>].duration>
             // @returns DurationTag
-            // @group properties
-            // @description
-            // Returns the specified Area Effect Cloud potion effect duration.
+            // @deprecated use 'EntityTag.effects_data'.
+            // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("duration")) {
                 return new DurationTag((long) effect.getDuration())
@@ -355,9 +350,8 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.custom_effects[<#>].has_particles>
             // @returns ElementTag(Boolean)
-            // @group properties
-            // @description
-            // Returns whether the specified Area Effect Cloud potion effect has particles.
+            // @deprecated use 'EntityTag.effects_data'.
+            // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("has_particles")) {
                 return new ElementTag(effect.hasParticles())
@@ -367,9 +361,8 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.custom_effects[<#>].is_ambient>
             // @returns ElementTag(Boolean)
-            // @group properties
-            // @description
-            // Returns whether the specified Area Effect Cloud potion effect is ambient.
+            // @deprecated use 'EntityTag.effects_data'.
+            // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("is_ambient")) {
                 return new ElementTag(effect.isAmbient())
@@ -397,12 +390,13 @@ public class EntityAreaEffectCloud implements Property {
         // @object EntityTag
         // @name clear_custom_effects
         // @input None
-        // @description
-        // Clears all custom effects from the Area Effect Cloud
+        // @deprecated use 'EntityTag.potion_effects'.
+        // @description Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
         // @tags
         // <EntityTag.custom_effects>
         // -->
         if (mechanism.matches("clear_custom_effects")) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(mechanism.context);
             getHelper().clearEffects();
         }
 
@@ -410,12 +404,13 @@ public class EntityAreaEffectCloud implements Property {
         // @object EntityTag
         // @name remove_custom_effect
         // @input ElementTag
-        // @description
-        // Removes the specified custom effect from the Area Effect Cloud
+        // @deprecated use 'EntityTag.potion_effects'.
+        // @description Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
         // @tags
         // <EntityTag.custom_effects>
         // -->
         if (mechanism.matches("remove_custom_effect")) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(mechanism.context);
             PotionEffectType type = PotionEffectType.getByName(mechanism.getValue().asString().toUpperCase());
             if (type != null) {
                 getHelper().removeEffect(type);
@@ -426,13 +421,13 @@ public class EntityAreaEffectCloud implements Property {
         // @object EntityTag
         // @name custom_effects
         // @input ListTag
-        // @description
-        // Adds a list of custom potion effects to the Area Effect Cloud
-        // In the form Type,Amplifier,Duration(,Ambient,Particles)|...
+        // @deprecated use 'EntityTag.potion_effects'.
+        // @description Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
         // @tags
         // <EntityTag.custom_effects>
         // -->
         if (mechanism.matches("custom_effects")) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(mechanism.context);
             ListTag list = mechanism.valueAsType(ListTag.class);
             getHelper().clearEffects();
 
