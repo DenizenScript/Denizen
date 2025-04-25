@@ -247,7 +247,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerShearsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSmithsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSneakScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerSpawnChangeScriptEvent.class);
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+            ScriptEvent.registerScriptEvent(PlayerSpawnChangeScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(PlayerSprintScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStandsOnScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStatisticIncrementsScriptEvent.class);
