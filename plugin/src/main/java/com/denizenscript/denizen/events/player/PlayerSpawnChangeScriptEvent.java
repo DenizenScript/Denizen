@@ -69,7 +69,7 @@ public class PlayerSpawnChangeScriptEvent extends BukkitScriptEvent implements L
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "cause" -> new ElementTag(event.getCause().name());
+            case "cause" -> new ElementTag(event.getCause().name(), true);
             case "forced" -> new ElementTag(event.isForced());
             case "location" -> event.getNewSpawn() == null ? null : new LocationTag(event.getNewSpawn());
             default -> super.getContext(name);
