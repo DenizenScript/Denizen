@@ -2,7 +2,6 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -70,7 +69,7 @@ public class PlayerSpawnChangeScriptEvent extends BukkitScriptEvent implements L
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "cause" -> Utilities.enumlikeToElement(event.getCause());
+            case "cause" -> new ElementTag(event.getCause());
             case "forced" -> new ElementTag(event.isForced());
             case "location" -> event.getNewSpawn() == null ? null : new LocationTag(event.getNewSpawn());
             default -> super.getContext(name);
