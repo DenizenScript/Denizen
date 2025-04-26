@@ -3172,11 +3172,11 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (!mechanism.requireBoolean()) {
                 return;
             }
-            if (!(object.getBukkitEntity() instanceof Fox)) {
+            if (!(object.getBukkitEntity() instanceof Fox fox)) {
                 mechanism.echoError("'is_sleeping' mechanism is only valid for Fox entities.");
                 return;
             }
-            ((Fox) object.getBukkitEntity()).setSleeping(input.asBoolean());
+            fox.setSleeping(input.asBoolean());
         });
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
