@@ -538,7 +538,8 @@ public class EntityAreaEffectCloud implements Property {
         // @tags
         // <EntityTag.particle>
         // -->
-        if (mechanism.matches("particle") && mechanism.hasValue()) {
+        // TODO: some particles require additional data - need a new property that supports playeffect's special_data input
+        if (mechanism.matches("particle") && Utilities.requireEnumlike(mechanism, Particle.class)) {
             getHelper().setParticle(mechanism.getValue().asString().toUpperCase());
         }
 
