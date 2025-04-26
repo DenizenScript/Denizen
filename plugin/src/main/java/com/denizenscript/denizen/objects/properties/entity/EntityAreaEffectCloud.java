@@ -16,6 +16,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Particle;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
@@ -142,11 +143,11 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.particle.color>
             // @returns ColorTag
-            // @group properties
-            // @description
-            // Returns the Area Effect Cloud's particle color.
+            // @deprecated use 'EntityTag.color'.
+            // @description Deprecated in favor of <@link property EntityTag.color>.
             // -->
             if (attribute.startsWith("color")) {
+                BukkitImplDeprecations.areaEffectCloudControls.warn(attribute.context);
                 return BukkitColorExtensions.fromColor(getHelper().getColor())
                         .getObjectAttribute(attribute.fulfill(1));
             }
@@ -459,12 +460,13 @@ public class EntityAreaEffectCloud implements Property {
         // @object EntityTag
         // @name particle_color
         // @input ColorTag
-        // @description
-        // Sets the Area Effect Cloud's particle color.
+        // @deprecated use 'EntityTag.color'.
+        // @description Deprecated in favor of <@link property EntityTag.color>.
         // @tags
         // <EntityTag.particle.color>
         // -->
         if (mechanism.matches("particle_color") && mechanism.requireObject(ColorTag.class)) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(mechanism.context);
             getHelper().setColor(BukkitColorExtensions.getColor(mechanism.valueAsType(ColorTag.class)));
         }
 
