@@ -26,7 +26,7 @@ import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.List;
 
-// TODO: 1.20.6: PotionData API
+// TODO: most of the tags and mechs here need to become properties/be merged into existing properties
 public class EntityAreaEffectCloud implements Property {
 
     public static boolean describes(ObjectTag entity) {

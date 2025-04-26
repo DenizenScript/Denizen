@@ -34,9 +34,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityAI.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAnger.class, EntityTag.class);
         PropertyParser.registerProperty(EntityAngry.class, EntityTag.class);
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
-            PropertyParser.registerProperty(EntityAreaEffectCloud.class, EntityTag.class);
-        }
+        PropertyParser.registerProperty(EntityAreaEffectCloud.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArmorBonus.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArrowDamage.class, EntityTag.class);
         PropertyParser.registerProperty(EntityArrowPierceLevel.class, EntityTag.class);
