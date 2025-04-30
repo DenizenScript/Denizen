@@ -460,7 +460,7 @@ public class BukkitImplDeprecations {
     public static Warning projectileLaunchedEntityContext = new FutureWarning("projectileLaunchedEntityContext", "'context.entity' in the 'projectile launched' event is deprecated in favor of 'context.projectile'.");
 
     // Added 2025/04/27
-    public static Warning playerChangesWorldSwitches = new FutureWarning("playerChangesWorldSwitches", "The 'from' and 'to' arguments in the 'player changes world' script event have been deprecated for the 'from' and 'to' switches.");
+    public static Warning playerChangesWorldSwitches = new FutureWarning("playerChangesWorldSwitches", "The 'from' and 'to' arguments in the 'player changes world' script event have been deprecated in favor of the 'from' and 'to' switches.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
