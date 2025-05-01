@@ -144,7 +144,8 @@ public class EntityAreaEffectCloud implements Property {
             // @attribute <EntityTag.particle.color>
             // @returns ColorTag
             // @deprecated use 'EntityTag.color'.
-            // @description Deprecated in favor of <@link property EntityTag.color>.
+            // @description
+            // Deprecated in favor of <@link property EntityTag.color>.
             // -->
             if (attribute.startsWith("color")) {
                 BukkitImplDeprecations.areaEffectCloudControls.warn(attribute.context);
@@ -319,7 +320,8 @@ public class EntityAreaEffectCloud implements Property {
             // @attribute <EntityTag.custom_effects[<#>].type>
             // @returns ElementTag
             // @deprecated use 'EntityTag.effects_data'.
-            // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
+            // @description
+            // Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("type")) {
                 return new ElementTag(effect.getType().getName())
@@ -330,7 +332,8 @@ public class EntityAreaEffectCloud implements Property {
             // @attribute <EntityTag.custom_effects[<#>].amplifier>
             // @returns ElementTag(Number)
             // @deprecated use 'EntityTag.effects_data'.
-            // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
+            // @description
+            // Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("amplifier")) {
                 return new ElementTag(effect.getAmplifier())
@@ -341,7 +344,8 @@ public class EntityAreaEffectCloud implements Property {
             // @attribute <EntityTag.custom_effects[<#>].duration>
             // @returns DurationTag
             // @deprecated use 'EntityTag.effects_data'.
-            // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
+            // @description
+            // Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("duration")) {
                 return new DurationTag((long) effect.getDuration())
@@ -352,7 +356,8 @@ public class EntityAreaEffectCloud implements Property {
             // @attribute <EntityTag.custom_effects[<#>].has_particles>
             // @returns ElementTag(Boolean)
             // @deprecated use 'EntityTag.effects_data'.
-            // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
+            // @description
+            // Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("has_particles")) {
                 return new ElementTag(effect.hasParticles())
@@ -363,7 +368,8 @@ public class EntityAreaEffectCloud implements Property {
             // @attribute <EntityTag.custom_effects[<#>].is_ambient>
             // @returns ElementTag(Boolean)
             // @deprecated use 'EntityTag.effects_data'.
-            // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
+            // @description
+            // Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("is_ambient")) {
                 return new ElementTag(effect.isAmbient())
