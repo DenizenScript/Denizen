@@ -255,7 +255,8 @@ public class EntityAreaEffectCloud implements Property {
         // @returns ElementTag(Boolean)
         // @mechanism EntityTag.custom_effects
         // @deprecated use 'EntityTag.has_effect'.
-        // @description Deprecated in favor of <@link tag EntityTag.has_effect>.
+        // @description
+        // Deprecated in favor of <@link tag EntityTag.has_effect>.
         // -->
         if (attribute.startsWith("has_custom_effect")) {
             BukkitImplDeprecations.areaEffectCloudControls.warn(attribute.context);
@@ -293,7 +294,8 @@ public class EntityAreaEffectCloud implements Property {
         // @returns ListTag
         // @mechanism EntityTag.custom_effects
         // @deprecated use 'EntityTag.effects_data'.
-        // @description Deprecated in favor of <@link tag EntityTag.effects_data>.
+        // @description
+        // Deprecated in favor of <@link tag EntityTag.effects_data>.
         // -->
         if (attribute.startsWith("custom_effects")) {
             BukkitImplDeprecations.areaEffectCloudControls.warn(attribute.context);
@@ -398,7 +400,8 @@ public class EntityAreaEffectCloud implements Property {
         // @name clear_custom_effects
         // @input None
         // @deprecated use 'EntityTag.potion_effects'.
-        // @description Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
+        // @description
+        // Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
         // @tags
         // <EntityTag.custom_effects>
         // -->
@@ -412,7 +415,8 @@ public class EntityAreaEffectCloud implements Property {
         // @name remove_custom_effect
         // @input ElementTag
         // @deprecated use 'EntityTag.potion_effects'.
-        // @description Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
+        // @description
+        // Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
         // @tags
         // <EntityTag.custom_effects>
         // -->
@@ -429,7 +433,8 @@ public class EntityAreaEffectCloud implements Property {
         // @name custom_effects
         // @input ListTag
         // @deprecated use 'EntityTag.potion_effects'.
-        // @description Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
+        // @description
+        // Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
         // @tags
         // <EntityTag.custom_effects>
         // -->
@@ -467,7 +472,8 @@ public class EntityAreaEffectCloud implements Property {
         // @name particle_color
         // @input ColorTag
         // @deprecated use 'EntityTag.color'.
-        // @description Deprecated in favor of <@link property EntityTag.color>.
+        // @description
+        // Deprecated in favor of <@link property EntityTag.color>.
         // @tags
         // <EntityTag.particle.color>
         // -->
