@@ -80,6 +80,7 @@ public class EntityAreaEffectCloud implements Property {
         // <--[tag]
         // @attribute <EntityTag.base_potion>
         // @returns ElementTag
+        // @mechanism EntityTag.base_potion
         // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
         // @description
         // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
@@ -489,6 +490,8 @@ public class EntityAreaEffectCloud implements Property {
         // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
         // @description
         // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
+        // @tags
+        // <EntityTag.base_potion>
         // -->
         if (mechanism.matches("base_potion")) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
@@ -499,7 +502,7 @@ public class EntityAreaEffectCloud implements Property {
                 mechanism.echoError(mechanism.getValue() + " is not a valid base potion!");
                 return;
             }
-            PotionType type = Utilities.elementToEnumlike(new ElementTag(data.get(0)), PotionType.class);
+            PotionType type = Utilities.elementToEnumlike(new ElementTag(data.get(0), true), PotionType.class);
             if (type == null) {
                 mechanism.echoError(mechanism.getValue() + " is not a valid base potion!");
                 return;

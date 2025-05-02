@@ -135,7 +135,7 @@ public class EntityPotionEffects implements Property {
         // @group attributes
         // @mechanism EntityTag.potion_effects
         // @description
-        // Returns whether the entity has a specified effect, or whether an arrow/area effect cloud would apply a certain effect.
+        // Returns whether the entity has a specified effect, or whether an arrow/area effect cloud will apply a certain effect.
         // If no effect is specified, returns whether the entity has any effect.
         // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // -->
