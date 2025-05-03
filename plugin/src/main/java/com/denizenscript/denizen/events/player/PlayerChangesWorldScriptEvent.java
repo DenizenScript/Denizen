@@ -3,6 +3,7 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.WorldTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -14,13 +15,14 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // player changes world (from <world>) (to <world>)
-    //
-    // @Regex ^on player changes world( from [^\s]+)?( to [^\s]+)?$
+    // player changes world
     //
     // @Group Player
     //
     // @Location true
+    //
+    // @Switch from:<world> to only run if the player came from the specified world.
+    // @Switch to:<world> to only run if the player is going to the specified world.
     //
     // @Triggers when a player moves to a different world.
     //
@@ -33,6 +35,8 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     // -->
 
     public PlayerChangesWorldScriptEvent() {
+        registerCouldMatcher("player changes world (from <world>) (to <world>)");
+        registerSwitches("from", "to");
     }
 
     public WorldTag origin_world;
@@ -40,21 +44,27 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     public PlayerChangedWorldEvent event;
 
     @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player changes world");
-    }
-
-    @Override
     public boolean matches(ScriptPath path) {
         String[] data = path.eventArgsLower;
-        // TODO: Switches
         for (int index = 3; index < data.length; index++) {
-            if (data[index].equals("from") && !origin_world.tryAdvancedMatcher(data[index + 1], path.context)) {
-                return false;
+            if (data[index].equals("from")) {
+                BukkitImplDeprecations.playerChangesWorldSwitches.warn(getTagContext(path));
+                if (!origin_world.tryAdvancedMatcher(data[index + 1], path.context)) {
+                    return false;
+                }
             }
-            else if (data[index].equals("to") && !destination_world.tryAdvancedMatcher(data[index + 1], path.context)) {
-                return false;
+            else if (data[index].equals("to")) {
+                BukkitImplDeprecations.playerChangesWorldSwitches.warn(getTagContext(path));
+                if (!destination_world.tryAdvancedMatcher(data[index + 1], path.context)) {
+                    return false;
+                }
             }
+        }
+        if (!path.tryObjectSwitch("from", origin_world)) {
+            return false;
+        }
+        if (!path.tryObjectSwitch("to", destination_world)) {
+            return false;
         }
         return super.matches(path);
     }
@@ -66,13 +76,11 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("origin_world")) {
-            return origin_world;
-        }
-        else if (name.equals("destination_world")) {
-            return destination_world;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "origin_world" -> origin_world;
+            case "destination_world" -> destination_world;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
