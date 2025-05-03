@@ -22,6 +22,11 @@ public class EntityBodyStingers extends EntityProperty<ElementTag> {
     }
 
     @Override
+    public boolean isDefaultValue(ElementTag value) {
+        return value.asInt() == 0;
+    }
+
+    @Override
     public ElementTag getPropertyValue() {
         int stingers = getLivingEntity().getBeeStingersInBody();
         return stingers == 0 ? null : new ElementTag(stingers);
