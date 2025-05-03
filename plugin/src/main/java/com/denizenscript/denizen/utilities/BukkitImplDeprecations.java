@@ -461,6 +461,9 @@ public class BukkitImplDeprecations {
 
     // Added 2025/03/29
     public static Warning areaEffectCloudControls = new FutureWarning("areaEffectCloudControls", "Several tags/mechanisms for controlling area effect clouds have been merged into existing properties, check relevant meta docs for more information.");
+  
+    // Added 2025/04/27
+    public static Warning playerChangesWorldSwitches = new FutureWarning("playerChangesWorldSwitches", "The 'from' and 'to' arguments in the 'player changes world' script event have been deprecated in favor of the 'from' and 'to' switches.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
