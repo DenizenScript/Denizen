@@ -55,6 +55,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 type == EntityType.TROPICAL_FISH ||
                 type == EntityType.GOAT ||
                 type == EntityType.AXOLOTL ||
+                type == EntityType.AREA_EFFECT_CLOUD ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type));
     }
 
@@ -214,6 +215,9 @@ public class EntityColor extends EntityProperty<ElementTag> {
         else if (type == EntityType.AXOLOTL && mechanism.requireEnum(Axolotl.Variant.class)) {
             as(Axolotl.class).setVariant(color.asEnum(Axolotl.Variant.class));
         }
+        else if (type == EntityType.AREA_EFFECT_CLOUD && mechanism.requireObject(ColorTag.class)) {
+            as(AreaEffectCloud.class).setColor(BukkitColorExtensions.getColor(mechanism.valueAsType(ColorTag.class)));
+        }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
             MultiVersionHelper1_19.setColor(getEntity(), mechanism);
         }
@@ -274,6 +278,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
             }
             case GOAT -> as(Goat.class).isScreaming() ? "screaming" : "normal";
             case AXOLOTL -> as(Axolotl.class).getVariant().name();
+            case AREA_EFFECT_CLOUD -> BukkitColorExtensions.fromColor(as(AreaEffectCloud.class).getColor()).identify();
             default -> null;
         };
     }
@@ -313,7 +318,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 yield result;
             }
             case AXOLOTL -> Utilities.listTypes(Axolotl.Variant.class);
-            default -> null; // includes Ocelot (deprecated) and arrow (ColorTag)
+            default -> null; // includes Ocelot (deprecated) and arrow/area effect cloud (ColorTag)
         };
     }
 
@@ -340,7 +345,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
     // For tropical_fish, the input is PATTERN|BODYCOLOR|PATTERNCOLOR, where BodyColor and PatterenColor are both DyeColor (see below),
     //          and PATTERN is KOB, SUNSTREAK, SNOOPER, DASHER, BRINELY, SPOTTY, FLOPPER, STRIPEY, GLITTER, BLOCKFISH, BETTY, is CLAYFISH.
     // For sheep, wolf, and shulker entities, the input is a Dye Color.
-    // For Tipped Arrow entities, the input is a ColorTag.
+    // For Tipped Arrow and Area effect cloud entities, the input is a ColorTag.
     // For goats, the input is SCREAMING or NORMAL.
     // For axolotl, the types are BLUE, CYAN, GOLD, LUCY, or WILD.
     // For frogs, the types are TEMPERATE, WARM, or COLD.
