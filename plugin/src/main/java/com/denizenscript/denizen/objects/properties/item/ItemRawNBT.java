@@ -354,7 +354,6 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
         // Returns a map of all raw NBT on this item, including default values.
         // Refer to format details at <@link language Raw NBT Encoding>.
         // -->
-        // TODO: deprecate when raw properties property is added
         PropertyParser.registerTag(ItemRawNBT.class, MapTag.class, "all_raw_nbt", (attribute, prop) -> {
             return prop.getFullNBTMap();
         });
