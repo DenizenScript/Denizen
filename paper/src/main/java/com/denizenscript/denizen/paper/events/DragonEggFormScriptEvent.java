@@ -70,6 +70,8 @@ public class DragonEggFormScriptEvent extends BukkitScriptEvent implements Liste
         location = new LocationTag(event.getBlock().getLocation());
         entity = new EntityTag(event.getDragonBattle().getEnderDragon());
         this.event = event;
+        EntityTag.rememberEntity(entity.getBukkitEntity());
         fire(event);
+        EntityTag.forgetEntity(entity.getBukkitEntity());
     }
 }
