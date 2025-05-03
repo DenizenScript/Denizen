@@ -32,16 +32,16 @@ public class EntityVariant extends EntityProperty<ElementTag> {
     @Override
     public ElementTag getPropertyValue() {
         if (getEntity() instanceof Wolf wolf) {
-            return new ElementTag(Utilities.namespacedKeyToString(wolf.getVariant().getKey()));
+            return new ElementTag(Utilities.namespacedKeyToString(wolf.getVariant().getKey()), true);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Chicken chicken) {
-            return new ElementTag(Utilities.namespacedKeyToString(chicken.getVariant().getKey()));
+            return new ElementTag(Utilities.namespacedKeyToString(chicken.getVariant().getKey()), true);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Cow cow) {
-            return new ElementTag(Utilities.namespacedKeyToString(cow.getVariant().getKey()));
+            return new ElementTag(Utilities.namespacedKeyToString(cow.getVariant().getKey()), true);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Pig pig) {
-            return new ElementTag(Utilities.namespacedKeyToString(pig.getVariant().getKey()));
+            return new ElementTag(Utilities.namespacedKeyToString(pig.getVariant().getKey()), true);
         }
         return null;
     }
@@ -49,39 +49,27 @@ public class EntityVariant extends EntityProperty<ElementTag> {
     @Override
     public void setPropertyValue(ElementTag variant, Mechanism mechanism) {
         if (getEntity() instanceof Wolf wolf) {
-            Wolf.Variant entityVariety = Utilities.elementToEnumlike(variant, Wolf.Variant.class);
-            if (entityVariety != null) {
-                wolf.setVariant(entityVariety);
-            }
-            else {
-                mechanism.echoError("Invalid wolf variant specified: " + variant);
+            Wolf.Variant wolfVariant = Utilities.elementToRequiredEnumLike(variant, Wolf.Variant.class, mechanism);
+            if (wolfVariant != null) {
+                wolf.setVariant(wolfVariant);
             }
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Chicken chicken) {
-            Chicken.Variant entityVariety = Utilities.elementToEnumlike(variant, Chicken.Variant.class);
-            if (entityVariety != null) {
-                chicken.setVariant(entityVariety);
-            }
-            else {
-                mechanism.echoError("Invalid chicken variant specified: " + variant);
+            Chicken.Variant chickenVariant = Utilities.elementToRequiredEnumLike(variant, Chicken.Variant.class, mechanism);
+            if (chickenVariant != null) {
+                chicken.setVariant(chickenVariant);
             }
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Cow cow) {
-            Cow.Variant entityVariety = Utilities.elementToEnumlike(variant, Cow.Variant.class);
-            if (entityVariety != null) {
-                cow.setVariant(entityVariety);
-            }
-            else {
-                mechanism.echoError("Invalid cow variant specified: " + variant);
+            Cow.Variant cowVariant = Utilities.elementToRequiredEnumLike(variant, Cow.Variant.class, mechanism);
+            if (cowVariant != null) {
+                cow.setVariant(cowVariant);
             }
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Pig pig) {
-            Pig.Variant entityVariety = Utilities.elementToEnumlike(variant, Pig.Variant.class);
-            if (entityVariety != null) {
-                pig.setVariant(entityVariety);
-            }
-            else {
-                mechanism.echoError("Invalid pig variant specified: " + variant);
+            Pig.Variant pigVariant = Utilities.elementToRequiredEnumLike(variant, Pig.Variant.class, mechanism);
+            if (pigVariant != null) {
+                pig.setVariant(pigVariant);
             }
         }
     }
