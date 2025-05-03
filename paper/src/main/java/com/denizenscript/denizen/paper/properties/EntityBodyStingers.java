@@ -5,7 +5,7 @@ import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 
-public class EntityBeeStingers extends EntityProperty<ElementTag> {
+public class EntityBodyStingers extends EntityProperty<ElementTag> {
 
     // <--[property]
     // @object EntityTag
@@ -40,6 +40,6 @@ public class EntityBeeStingers extends EntityProperty<ElementTag> {
     }
 
     public static void register() {
-        autoRegister("body_stingers", EntityBeeStingers.class, ElementTag.class, false);
+        autoRegister("body_stingers", EntityBodyStingers.class, ElementTag.class, false);
     }
 }
