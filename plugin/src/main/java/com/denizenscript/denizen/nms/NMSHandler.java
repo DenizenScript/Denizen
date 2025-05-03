@@ -31,8 +31,7 @@ public abstract class NMSHandler {
     public static boolean debugPackets = false;
     public static String debugPacketFilter = "";
 
-    public static boolean initialize(JavaPlugin plugin) {
-        javaPlugin = plugin;
+    static {
         String bukkitVersion = Bukkit.getBukkitVersion();
         for (NMSVersion potentialVersion : NMSVersion.values()) {
             if (bukkitVersion.startsWith(potentialVersion.minecraftVersion)) {
@@ -42,6 +41,12 @@ public abstract class NMSHandler {
         }
         if (version == null) {
             version = NMSVersion.NOT_SUPPORTED;
+        }
+    }
+
+    public static boolean initialize(JavaPlugin plugin) {
+        javaPlugin = plugin;
+        if (getVersion() == NMSVersion.NOT_SUPPORTED) {
             instance = null;
             return false;
         }

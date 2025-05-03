@@ -41,9 +41,9 @@ public class TradeTag implements ObjectTag, Adjustable {
     // For example, the following command opens a virtual merchant inventory with two merchant trades.
     // The first trade offers a sponge for two emeralds, can be used up to 10 times,
     // and offers XP upon a successful transaction.
-    // The second trade has zero maximum uses and displays a barrier.
+    // The second trade has zero maximum uses and displays a barrier in the input and output slots.
     // <code>
-    // - opentrades trade[max_uses=10;inputs=emerald[quantity=2];result=sponge]|trade[result=barrier]
+    // - opentrades trade[max_uses=10;inputs=emerald[quantity=2];result=sponge]|trade[inputs=barrier;result=barrier]
     // </code>
     //
     // -->

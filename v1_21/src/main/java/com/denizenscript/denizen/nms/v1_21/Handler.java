@@ -38,7 +38,6 @@ import com.mojang.authlib.yggdrasil.ProfileResult;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Rotations;
@@ -64,18 +63,18 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R3.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R3.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventoryView;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R3.legacy.FieldRename;
-import org.bukkit.craftbukkit.v1_21_R3.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.v1_21_R3.util.*;
+import org.bukkit.craftbukkit.v1_21_R4.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R4.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R4.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_21_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R4.legacy.FieldRename;
+import org.bukkit.craftbukkit.v1_21_R4.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_21_R4.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -144,7 +143,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("60ac387ca8007aa018e6aeb394a6988c");
+        return CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("7ecad754373a5fbc43d381d7450c53a5");
     }
 
     @Override
@@ -160,7 +159,7 @@ public class Handler extends NMSHandler {
     @Override
     public CompoundTag parseSNBT(String snbt) {
         try {
-            return CompoundTagImpl.fromNMSTag(TagParser.parseTag(snbt));
+            return CompoundTagImpl.fromNMSTag(TagParser.parseCompoundFully(snbt));
         }
         catch (CommandSyntaxException e) {
             return null;
@@ -349,7 +348,7 @@ public class Handler extends NMSHandler {
     public String containerGetString(PersistentDataContainer container, String key) {
         net.minecraft.nbt.Tag base = ((CraftPersistentDataContainer) container).getRaw().get(key);
         if (base instanceof StringTag) {
-            return base.getAsString();
+            return base.asString().get();
         }
         else if (base instanceof ByteArrayTag) {
             return new String(((ByteArrayTag) base).getAsByteArray(), StandardCharsets.UTF_8);
@@ -378,7 +377,7 @@ public class Handler extends NMSHandler {
         if (nms == null) {
             return null;
         }
-        return ComponentSerializer.parse(CraftChatMessage.toJSON(nms));
+        return FormattedTextHelper.parseJson(CraftChatMessage.toJSON(nms));
     }
 
     public static Component componentToNMS(BaseComponent[] spigot) {

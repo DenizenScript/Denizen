@@ -10,7 +10,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.random.WeightedRandomList;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
@@ -19,10 +20,10 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftEntityType;
-import org.bukkit.craftbukkit.v1_21_R3.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_21_R3.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R4.entity.CraftEntityType;
+import org.bukkit.craftbukkit.v1_21_R4.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R4.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 
 import java.lang.invoke.MethodHandle;
@@ -162,13 +163,13 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {
         MobSpawnSettings mobs = biomeHolder.value().getMobSettings();
-        WeightedRandomList<MobSpawnSettings.SpawnerData> typeSettingList = mobs.getMobs(creatureType);
+        WeightedList<MobSpawnSettings.SpawnerData> typeSettingList = mobs.getMobs(creatureType);
         List<EntityType> entityTypes = new ArrayList<>();
         if (typeSettingList == null) {
             return entityTypes;
         }
-        for (MobSpawnSettings.SpawnerData meta : typeSettingList.unwrap()) {
-            entityTypes.add(CraftEntityType.minecraftToBukkit(meta.type));
+        for (Weighted<MobSpawnSettings.SpawnerData> meta : typeSettingList.unwrap()) {
+            entityTypes.add(CraftEntityType.minecraftToBukkit(meta.value().type()));
         }
         return entityTypes;
     }

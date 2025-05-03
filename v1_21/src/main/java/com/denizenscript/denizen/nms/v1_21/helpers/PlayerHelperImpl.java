@@ -57,14 +57,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R3.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R3.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_21_R3.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_21_R4.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R4.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_21_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R4.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R4.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -81,7 +81,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     public static final Field FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundTickCount, int.class);
     public static final Field VEHICLE_FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundVehicleTickCount, int.class);
     public static final Field PASSENGERS_PACKET_PASSENGERS = ReflectionHelper.getFields(ClientboundSetPassengersPacket.class).get(ReflectionMappingsInfo.ClientboundSetPassengersPacket_passengers, int[].class);
-    public static final MethodHandle PLAYER_RESPAWNFORCED_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnForced, boolean.class);
+    public static final MethodHandle PLAYER_RESPAWNCONFIG_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnConfig, ServerPlayer.RespawnConfig.class);
     public static final MethodHandle SERVER_RECIPE_BOOK_ADD_HIGHLIGHT = ReflectionHelper.getMethodHandle(ServerRecipeBook.class, ReflectionMappingsInfo.ServerRecipeBook_addHighlight_method, ResourceKey.class);
 
     public static final EntityDataAccessor<Byte> PLAYER_DATA_ACCESSOR_SKINLAYERS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.player.Player.class, ReflectionMappingsInfo.Player_DATA_PLAYER_MODE_CUSTOMISATION, null);
@@ -187,7 +187,8 @@ public class PlayerHelperImpl extends PlayerHelper {
         fake.triggerSpawnPacket = (player) -> {
             ServerPlayer nmsPlayer = ((CraftPlayer) player.getPlayerEntity()).getHandle();
             ServerGamePacketListenerImpl conn = nmsPlayer.connection;
-            final ServerEntity tracker = new ServerEntity(world.getHandle(), nmsEntity, 1, true, conn::send, Collections.singleton(nmsPlayer.connection));
+            // TODO: 1.21.5: what's the correct input for `BiConsumer<Packet<?>, List<UUID>> biconsumer`?
+            final ServerEntity tracker = new ServerEntity(world.getHandle(), nmsEntity, 1, true, conn::send, (p, u) -> conn.send(p), Collections.singleton(nmsPlayer.connection));
             tracker.addPairing(nmsPlayer);
             final TrackerData data = new TrackerData(player, tracker);
             trackers.add(data);
@@ -378,14 +379,16 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public boolean getSpawnForced(Player player) {
-        return ((CraftPlayer) player).getHandle().isRespawnForced();
+        return ((CraftPlayer) player).getHandle().getRespawnConfig().forced();
     }
 
     @Override
     public void setSpawnForced(Player player, boolean forced) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         try {
-            PLAYER_RESPAWNFORCED_SETTER.invoke(nmsPlayer, forced);
+            ServerPlayer.RespawnConfig config = nmsPlayer.getRespawnConfig();
+            config = new ServerPlayer.RespawnConfig(config.dimension(), config.pos(), config.angle(), forced);
+            PLAYER_RESPAWNCONFIG_SETTER.invoke(nmsPlayer, config);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -395,15 +398,15 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public Location getBedSpawnLocation(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        BlockPos spawnPosition = nmsPlayer.getRespawnPosition();
+        BlockPos spawnPosition = nmsPlayer.getRespawnConfig().pos();
         if (spawnPosition == null) {
             return null;
         }
-        Level nmsWorld = MinecraftServer.getServer().getLevel(nmsPlayer.getRespawnDimension());
+        Level nmsWorld = MinecraftServer.getServer().getLevel(nmsPlayer.getRespawnConfig().dimension());
         if (nmsWorld == null) {
             return null;
         }
-        return new Location(nmsWorld.getWorld(), spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ(), nmsPlayer.getRespawnAngle(), 0);
+        return new Location(nmsWorld.getWorld(), spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ(), nmsPlayer.getRespawnConfig().angle(), 0);
     }
 
     @Override

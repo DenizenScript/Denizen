@@ -13,7 +13,9 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.*;
+import net.md_5.bungee.chat.ChatVersion;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.md_5.bungee.chat.VersionedComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
@@ -94,7 +96,7 @@ public class HoverFormatHelper {
         if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             return;
         }
-        Gson bungeeGson = ReflectionHelper.getFieldValue(ComponentSerializer.class, "gson", null);
+        Gson bungeeGson = FormattedTextHelper.getBungeeGson();
         if (bungeeGson == null) {
             return;
         }
@@ -103,7 +105,12 @@ public class HoverFormatHelper {
                 .registerTypeAdapter(Item.class, new FixedItemHoverSerializer())
                 .create();
         try {
-            ReflectionHelper.getFinalSetter(ComponentSerializer.class, "gson").invoke(fixedGson);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+                ReflectionHelper.setFieldValue(VersionedComponentSerializer.class, "gson", VersionedComponentSerializer.forVersion(ChatVersion.V1_21_5), fixedGson);
+            }
+            else {
+                ReflectionHelper.getFinalSetter(ComponentSerializer.class, "gson").invoke(fixedGson);
+            }
         }
         catch (Throwable e) {
             Debug.echoError(e);
