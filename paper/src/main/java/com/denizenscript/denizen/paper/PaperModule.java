@@ -108,6 +108,7 @@ public class PaperModule {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
             PropertyParser.registerProperty(EntityAutoExpire.class, EntityTag.class);
         }
+        PropertyParser.registerProperty(EntityBeeStingers.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCarryingEgg.class, EntityTag.class);
         PropertyParser.registerProperty(EntityCanTick.class, EntityTag.class);
         PropertyParser.registerProperty(EntityDrinkingPotion.class, EntityTag.class);
