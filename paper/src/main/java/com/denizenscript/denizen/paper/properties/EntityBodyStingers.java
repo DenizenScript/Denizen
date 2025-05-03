@@ -28,8 +28,7 @@ public class EntityBodyStingers extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        int stingers = getLivingEntity().getBeeStingersInBody();
-        return stingers == 0 ? null : new ElementTag(stingers);
+        return new ElementTag(getLivingEntity().getBeeStingersInBody());
     }
 
     @Override
