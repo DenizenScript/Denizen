@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.utilities.entity;
 
+import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.entity.AreaEffectCloud;
@@ -12,7 +14,6 @@ import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.List;
 
-// TODO: 1.20.6: PotionData API
 public class AreaEffectCloudHelper {
     private AreaEffectCloud entity;
 
@@ -24,7 +25,6 @@ public class AreaEffectCloudHelper {
     // Base Potion Data
     /////////
 
-    // TODO: 1.20.6: PotionData API
     private PotionData getBPData() {
         return entity.getBasePotionData();
     }
@@ -62,7 +62,7 @@ public class AreaEffectCloudHelper {
     }
 
     public void setParticle(String name) {
-        Particle particle = Particle.valueOf(name);
+        Particle particle = Utilities.elementToEnumlike(new ElementTag(name, true), Particle.class);
         if (particle != null) {
             entity.setParticle(particle);
         }

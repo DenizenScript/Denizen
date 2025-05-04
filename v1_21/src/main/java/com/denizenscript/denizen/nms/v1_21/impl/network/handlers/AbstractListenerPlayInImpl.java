@@ -28,7 +28,7 @@ import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R4.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.lang.reflect.Field;
@@ -85,6 +85,11 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
+    public void internalTeleport(PositionMoveRotation positionmoverotation, Set<Relative> set) {
+        oldListener.internalTeleport(positionmoverotation, set);
+    }
+
+    @Override
     public CraftPlayer getCraftPlayer() {
         return oldListener.getCraftPlayer();
     }
@@ -102,6 +107,11 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public boolean isAcceptingMessages() {
         return oldListener.isAcceptingMessages();
+    }
+
+    @Override
+    public boolean shouldHandleMessage(Packet<?> packet) {
+        return oldListener.shouldHandleMessage(packet);
     }
 
     @Override
@@ -283,6 +293,18 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
+    public void handleSetTestBlock(ServerboundSetTestBlockPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleSetTestBlock(packet);
+    }
+
+    @Override
+    public void handleTestInstanceBlockAction(ServerboundTestInstanceBlockActionPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleTestInstanceBlockAction(packet);
+    }
+
+    @Override
     public void handleSetJigsawBlock(ServerboundSetJigsawBlockPacket packet) {
         if (handlePacketIn(packet)) { return; }
         oldListener.handleSetJigsawBlock(packet);
@@ -402,11 +424,6 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public void handlePlayerCommand(ServerboundPlayerCommandPacket packet) {
         if (handlePacketIn(packet)) { return; }
         oldListener.handlePlayerCommand(packet);
-    }
-
-    @Override
-    public void addPendingMessage(PlayerChatMessage playerchatmessage) {
-        oldListener.addPendingMessage(playerchatmessage);
     }
 
     @Override
@@ -552,6 +569,11 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public void handleClientTickEnd(ServerboundClientTickEndPacket packet) {
         if (handlePacketIn(packet)) { return; }
         oldListener.handleClientTickEnd(packet);
+    }
+
+    @Override
+    public boolean hasInfiniteMaterials() {
+        return oldListener.hasInfiniteMaterials();
     }
 
     @Override

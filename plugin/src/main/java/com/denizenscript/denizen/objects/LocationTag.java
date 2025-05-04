@@ -5252,20 +5252,21 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // <LocationTag.jukebox_record>
         // -->
         if (mechanism.matches("jukebox_record")) {
-            BlockState state = getBlockState();
-            if (state instanceof Jukebox) {
-                if (mechanism.hasValue() && mechanism.requireObject(ItemTag.class)) {
-                    ((Jukebox) state).setRecord(mechanism.valueAsType(ItemTag.class).getItemStack());
+            if (!(getBlockState() instanceof Jukebox jukebox)) {
+                mechanism.echoError("'jukebox_record' mechanism can only be called on a jukebox block.");
+                return;
+            }
+            if (mechanism.hasValue()) {
+                if (!mechanism.requireObject(ItemTag.class)) {
+                    return;
                 }
-                else {
-                    NMSHandler.blockHelper.makeBlockStateRaw(state);
-                    ((Jukebox) state).setRecord(null);
-                }
-                state.update();
+                jukebox.setRecord(mechanism.valueAsType(ItemTag.class).getItemStack());
             }
             else {
-                mechanism.echoError("'jukebox_record' mechanism can only be called on a jukebox block.");
+                NMSHandler.blockHelper.makeBlockStateRaw(jukebox);
+                jukebox.setRecord(null);
             }
+            jukebox.update();
         }
 
         // <--[mechanism]

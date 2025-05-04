@@ -615,6 +615,15 @@ public class Utilities {
         return (T) registry.get(parseNamespacedKey(updatedName));
     }
 
+    public static <T> T elementToRequiredEnumLike(ElementTag element, Class<T> type, Mechanism mechanism) {
+        T converted = elementToEnumlike(element, type);
+        if (converted == null) {
+            mechanism.echoError("Invalid " + DebugInternals.getClassNameOpti(type) + " specified.");
+            return null;
+        }
+        return converted;
+    }
+
     public static <T> T findBestEnumlike(Class<T> type, String... names) {
         for (String name : names) {
             T val = elementToEnumlike(new ElementTag(name), type, false);

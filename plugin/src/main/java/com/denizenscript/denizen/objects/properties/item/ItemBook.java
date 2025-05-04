@@ -12,7 +12,6 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
 
@@ -277,7 +276,7 @@ public class ItemBook implements Property {
             if (data.get(0).equalsIgnoreCase("raw_pages")) {
                 List<BaseComponent[]> newPages = new ArrayList<>(data.size());
                 for (int i = 1; i < data.size(); i++) {
-                    newPages.add(ComponentSerializer.parse(EscapeTagUtil.unEscape(data.get(i))));
+                    newPages.add(FormattedTextHelper.parseJson(EscapeTagUtil.unEscape(data.get(i))));
                 }
                 bookMeta.spigot().setPages(newPages);
             }

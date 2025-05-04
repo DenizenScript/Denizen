@@ -100,8 +100,8 @@ public class EntitySheared extends EntityProperty<ElementTag> {
         // @object EntityTag
         // @name has_pumpkin_head
         // @input ElementTag(Boolean)
-        // @description
         // @deprecated use 'EntityTag.sheared'
+        // @description
         // Deprecated in favor of <@link mechanism EntityTag.sheared>.
         // @tags
         // <EntityTag.has_pumpkin_head>
@@ -115,4 +115,3 @@ public class EntitySheared extends EntityProperty<ElementTag> {
         });
     }
 }
-

@@ -14,11 +14,9 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.InclusiveRange;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.BaseSpawner;
@@ -34,39 +32,36 @@ import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Skull;
-import org.bukkit.craftbukkit.v1_21_R3.CraftChunk;
-import org.bukkit.craftbukkit.v1_21_R3.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_21_R3.block.CraftBlockEntityState;
-import org.bukkit.craftbukkit.v1_21_R3.block.CraftCreatureSpawner;
-import org.bukkit.craftbukkit.v1_21_R3.block.CraftSkull;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R3.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_21_R3.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R4.CraftChunk;
+import org.bukkit.craftbukkit.v1_21_R4.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R4.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_21_R4.block.CraftBlockEntityState;
+import org.bukkit.craftbukkit.v1_21_R4.block.CraftCreatureSpawner;
+import org.bukkit.craftbukkit.v1_21_R4.block.CraftSkull;
+import org.bukkit.craftbukkit.v1_21_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R4.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R4.util.CraftMagicNumbers;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Optional;
 
 public class BlockHelperImpl implements BlockHelper {
 
-    public static final Field craftBlockEntityState_tileEntity = ReflectionHelper.getFields(CraftBlockEntityState.class).get("tileEntity");
+    public static final Field craftBlockEntityState_tileEntity;
     public static final Field craftBlockEntityState_snapshot = ReflectionHelper.getFields(CraftBlockEntityState.class).get("snapshot");
     public static final Field craftSkull_profile = ReflectionHelper.getFields(CraftSkull.class).get("profile");
 
-    @Override
-    public void makeBlockStateRaw(BlockState state) {
-        try {
-            craftBlockEntityState_snapshot.set(state, craftBlockEntityState_tileEntity.get(state));
+    static {
+        Field blockEntityField = ReflectionHelper.getFields(CraftBlockEntityState.class).getNoCheck("blockEntity");
+        if (blockEntityField == null) {
+            blockEntityField = ReflectionHelper.getFields(CraftBlockEntityState.class).get("tileEntity");
         }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
+        craftBlockEntityState_tileEntity = blockEntityField;
     }
 
     @Override
@@ -86,7 +81,6 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public PlayerProfile getPlayerProfile(Skull skull) {
-        // TODO: 1.20.6: Seems to be a holder for data that can make the request to complete it later - do we want to do that here?
         ResolvableProfile profile = getTE(((CraftSkull) skull)).owner;
         if (profile == null) {
             return null;
@@ -251,56 +245,10 @@ public class BlockHelperImpl implements BlockHelper {
             SpawnData toSpawn = nmsSpawner.nextSpawnData;
             SpawnData.CustomSpawnRules rules = skyMin == -1 ? null : new SpawnData.CustomSpawnRules(new InclusiveRange<>(skyMin, skyMax), new InclusiveRange<>(blockMin, blockMax));
             nmsSpawner.nextSpawnData = new SpawnData(toSpawn.entityToSpawn(), Optional.ofNullable(rules), toSpawn.equipment());
-            nmsSpawner.spawnPotentials = SimpleWeightedRandomList.empty();
+            nmsSpawner.spawnPotentials = WeightedList.of();
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
     }
-
-    public static final MethodHandle HOLDERSET_NAMED_BIND = ReflectionHelper.getMethodHandle(HolderSet.Named.class, ReflectionMappingsInfo.HolderSetNamed_bind_method, List.class);
-    public static final MethodHandle HOLDER_REFERENCE_BINDTAGS = ReflectionHelper.getMethodHandle(Holder.Reference.class, ReflectionMappingsInfo.HolderReference_bindTags_method, Collection.class);
-
-    // TODO: 1.21.3: decently large internal changes - should probably look into implementing with Paper's API?
-//    @Override
-//    public void setVanillaTags(Material material, Set<String> tags) {
-//        Holder<net.minecraft.world.level.block.Block> nmsHolder = CraftMagicNumbers.getBlock(material).builtInRegistryHolder();
-//        nmsHolder.tags().forEach(nmsTag -> {
-//            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = BuiltInRegistries.BLOCK.get(nmsTag).orElse(null);
-//            if (nmsHolderSet == null) {
-//                return;
-//            }
-//            List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
-//            nmsHolders.remove(nmsHolder);
-//            try {
-//                HOLDERSET_NAMED_BIND.invoke(nmsHolderSet, nmsHolders);
-//            }
-//            catch (Throwable ex) {
-//                Debug.echoError(ex);
-//            }
-//            VanillaTagHelper.updateMaterialTag(new CraftBlockTag(BuiltInRegistries.BLOCK, nmsTag));
-//        });
-//        List<TagKey<net.minecraft.world.level.block.Block>> newNmsTags = new ArrayList<>();
-//        for (String tag : tags) {
-//            TagKey<net.minecraft.world.level.block.Block> newNmsTag = TagKey.create(BuiltInRegistries.BLOCK.key(), ResourceLocation.withDefaultNamespace(tag));
-//            HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = BuiltInRegistries.BLOCK.getOrCreateTag(newNmsTag);
-//            List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
-//            nmsHolders.add(nmsHolder);
-//            try {
-//                HOLDERSET_NAMED_BIND.invoke(nmsHolderSet, nmsHolders);
-//            }
-//            catch (Throwable ex) {
-//                Debug.echoError(ex);
-//            }
-//            newNmsTags.add(newNmsTag);
-//            VanillaTagHelper.addOrUpdateMaterialTag(new CraftBlockTag(BuiltInRegistries.BLOCK, newNmsTag));
-//        }
-//        try {
-//            HOLDER_REFERENCE_BINDTAGS.invoke(nmsHolder, newNmsTags);
-//        }
-//        catch (Throwable ex) {
-//            Debug.echoError(ex);
-//        }
-//        PacketHelperImpl.broadcast(new ClientboundUpdateTagsPacket(TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registries())));
-//    }
 }

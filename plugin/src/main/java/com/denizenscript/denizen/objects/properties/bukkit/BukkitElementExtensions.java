@@ -19,7 +19,6 @@ import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.chat.ComponentSerializer;
 
 import java.nio.charset.StandardCharsets;
 
@@ -442,7 +441,7 @@ public class BukkitElementExtensions {
         // Inverts <@link tag ElementTag.to_raw_json>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "from_raw_json", (attribute, object) -> {
-            return new ElementTag(FormattedTextHelper.stringify(ComponentSerializer.parse(object.asString())));
+            return new ElementTag(FormattedTextHelper.stringify(FormattedTextHelper.parseJson(object.asString())));
         });
 
         // <--[tag]

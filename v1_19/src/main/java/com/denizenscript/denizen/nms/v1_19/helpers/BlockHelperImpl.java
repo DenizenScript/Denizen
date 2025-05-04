@@ -19,7 +19,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundUpdateTagsPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagNetworkSerialization;
@@ -39,7 +38,6 @@ import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.material.PushReaction;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_19_R3.CraftChunk;
@@ -53,6 +51,7 @@ import org.bukkit.craftbukkit.v1_19_R3.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_19_R3.tag.CraftBlockTag;
 import org.bukkit.craftbukkit.v1_19_R3.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_19_R3.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 
 import java.lang.invoke.MethodHandle;
@@ -65,16 +64,6 @@ public class BlockHelperImpl implements BlockHelper {
     public static final Field craftBlockEntityState_tileEntity = ReflectionHelper.getFields(CraftBlockEntityState.class).get("tileEntity");
     public static final Field craftBlockEntityState_snapshot = ReflectionHelper.getFields(CraftBlockEntityState.class).get("snapshot");
     public static final Field craftSkull_profile = ReflectionHelper.getFields(CraftSkull.class).get("profile");
-
-    @Override
-    public void makeBlockStateRaw(BlockState state) {
-        try {
-            craftBlockEntityState_snapshot.set(state, craftBlockEntityState_tileEntity.get(state));
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
-    }
 
     @Override
     public void applyPhysics(Location location) {
@@ -316,7 +305,7 @@ public class BlockHelperImpl implements BlockHelper {
     public static MethodHandle Holder_Reference_bindTags = ReflectionHelper.getMethodHandle(Holder.Reference.class, ReflectionMappingsInfo.HolderReference_bindTags_method, Collection.class);
 
     @Override
-    public void setVanillaTags(Material material, Set<String> tags) {
+    public void setVanillaTags(Material material, Set<NamespacedKey> tags) {
         Holder<net.minecraft.world.level.block.Block> nmsHolder = getMaterialBlock(material).builtInRegistryHolder();
         nmsHolder.tags().forEach(nmsTag -> {
             HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = BuiltInRegistries.BLOCK.getTag(nmsTag).orElse(null);
@@ -334,8 +323,8 @@ public class BlockHelperImpl implements BlockHelper {
             VanillaTagHelper.updateMaterialTag(new CraftBlockTag(BuiltInRegistries.BLOCK, nmsTag));
         });
         List<TagKey<net.minecraft.world.level.block.Block>> newNmsTags = new ArrayList<>();
-        for (String tag : tags) {
-            TagKey<net.minecraft.world.level.block.Block> newNmsTag = TagKey.create(BuiltInRegistries.BLOCK.key(), new ResourceLocation(tag));
+        for (NamespacedKey tag : tags) {
+            TagKey<net.minecraft.world.level.block.Block> newNmsTag = TagKey.create(BuiltInRegistries.BLOCK.key(), CraftNamespacedKey.toMinecraft(tag));
             HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = BuiltInRegistries.BLOCK.getOrCreateTag(newNmsTag);
             List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
             nmsHolders.add(nmsHolder);

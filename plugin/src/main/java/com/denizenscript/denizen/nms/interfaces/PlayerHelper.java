@@ -86,7 +86,7 @@ public abstract class PlayerHelper {
 
     public enum ProfileEditMode { ADD, UPDATE_DISPLAY, UPDATE_LATENCY, UPDATE_GAME_MODE, UPDATE_LISTED }
 
-    public void sendPlayerInfoAddPacket(Player player, EnumSet<ProfileEditMode> editModes, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode, boolean listed) { // TODO: once minimum version is 1.19 or higher, rename to 'sendPlayerInfoUpdatePacket'
+    public void sendPlayerInfoAddPacket(Player player, EnumSet<ProfileEditMode> editModes, String name, String display, UUID id, String texture, String signature, int latency, GameMode gameMode, boolean listed) { // TODO: once 1.19 is the minimum supported version, rename to 'sendPlayerInfoUpdatePacket'
         throw new UnsupportedOperationException();
     }
 
