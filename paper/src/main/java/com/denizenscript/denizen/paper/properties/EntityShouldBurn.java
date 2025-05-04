@@ -25,7 +25,6 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
                 || entity.getBukkitEntity() instanceof Skeleton
                 || entity.getBukkitEntity() instanceof Stray
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && entity.getBukkitEntity() instanceof Bogged);
-                // TODO: Once 1.18 is the minimum version, use AbstractSkeleton.
     }
 
     @Override
