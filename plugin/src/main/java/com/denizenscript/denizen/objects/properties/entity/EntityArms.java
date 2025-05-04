@@ -3,40 +3,37 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.entity.ArmorStand;
 
-public class EntityArms implements Property {
+public class EntityArms extends EntityProperty<ElementTag> {
 
-    public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag
-                && ((EntityTag) entity).getBukkitEntity() instanceof ArmorStand;
+    // <--[property]
+    // @object EntityTag
+    // @name arms
+    // @input ElementTag(Boolean)
+    // @description
+    // Controls whether an armor stand has arms.
+    // -->
+
+    public static boolean describes(EntityTag entity) {
+        return entity.getBukkitEntity() instanceof ArmorStand;
     }
-
-    public static EntityArms getFrom(ObjectTag entity) {
-        if (!describes(entity)) {
-            return null;
-        }
-        else {
-            return new EntityArms((EntityTag) entity);
-        }
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "arms"
-    };
-
-    public EntityArms(EntityTag entity) {
-        dentity = entity;
-    }
-
-    EntityTag dentity;
 
     @Override
-    public String getPropertyString() {
-        return getStand().hasArms() ? "true" : null;
+    public boolean isDefaultValue(ElementTag val) {
+        return !val.asBoolean();
+    }
+
+    @Override
+    public ElementTag getPropertyValue() {
+        return new ElementTag(as(ArmorStand.class).hasArms());
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag param, Mechanism mechanism) {
+        if (mechanism.requireBoolean()) {
+            as(ArmorStand.class).setArms(param.asBoolean());
+        }
     }
 
     @Override
@@ -44,39 +41,7 @@ public class EntityArms implements Property {
         return "arms";
     }
 
-    public ArmorStand getStand() {
-        return (ArmorStand) dentity.getBukkitEntity();
-    }
-
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.arms>
-        // @returns ElementTag(Boolean)
-        // @mechanism EntityTag.arms
-        // @group properties
-        // @description
-        // If the entity is an armor stand, returns whether the armor stand has arms.
-        // -->
-        PropertyParser.registerTag(EntityArms.class, ElementTag.class, "arms", (attribute, object) -> {
-            return new ElementTag(object.getStand().hasArms());
-        });
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name arms
-        // @input ElementTag(Boolean)
-        // @description
-        // Changes the arms state of an armor stand.
-        // @tags
-        // <EntityTag.arms>
-        // -->
-        if (mechanism.matches("arms") && mechanism.requireBoolean()) {
-            getStand().setArms(mechanism.getValue().asBoolean());
-        }
+        autoRegister("arms", EntityArms.class, ElementTag.class, false);
     }
 }

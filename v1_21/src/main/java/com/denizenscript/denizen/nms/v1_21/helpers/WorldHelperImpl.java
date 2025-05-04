@@ -16,7 +16,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.storage.PrimaryLevelData;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
 
 public class WorldHelperImpl implements WorldHelper {
 
@@ -68,12 +68,12 @@ public class WorldHelperImpl implements WorldHelper {
 
     @Override
     public boolean isDay(World world) {
-        return ((CraftWorld) world).getHandle().isDay();
+        return ((CraftWorld) world).getHandle().isBrightOutside();
     }
 
     @Override
     public boolean isNight(World world) {
-        return ((CraftWorld) world).getHandle().isNight();
+        return ((CraftWorld) world).getHandle().isDarkOutside();
     }
 
     @Override

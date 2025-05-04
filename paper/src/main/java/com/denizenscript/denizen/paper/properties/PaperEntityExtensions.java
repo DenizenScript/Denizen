@@ -190,6 +190,7 @@ public class PaperEntityExtensions {
             // <--[mechanism]
             // @object EntityTag
             // @name shear
+            // @input None
             // @Plugin paper
             // @group paper
             // @description

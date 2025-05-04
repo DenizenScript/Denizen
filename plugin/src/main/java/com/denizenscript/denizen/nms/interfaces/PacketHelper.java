@@ -90,7 +90,7 @@ public interface PacketHelper {
         player.sendEquipmentChange(entity, equipmentSlot, itemStack);
     }
 
-    default void resetEquipment(Player player, LivingEntity entity) { // TODO: once minimum version is 1.19 or higher, remove from NMS
+    default void resetEquipment(Player player, LivingEntity entity) { // TODO: once 1.19 is the minimum supported version, remove from NMS
         EntityEquipment equipment = entity.getEquipment();
         Map<EquipmentSlot, ItemStack> equipmentMap = new EnumMap<>(EquipmentSlot.class);
         for (EquipmentSlot slot : EquipmentSlot.values()) {

@@ -2,9 +2,9 @@ package com.denizenscript.denizen.utilities;
 
 import com.denizenscript.denizencore.utilities.debugging.*;
 
-public class BukkitImplDeprecations {
+import static com.denizenscript.denizencore.utilities.Deprecations.pointlessSubtagPrefix;
 
-    private static final String pointlessSubtagPrefix = "Most pointless sub-tags are deprecated in favor of explicit unique tags. ";
+public class BukkitImplDeprecations {
 
     // ==================== REMOVE THESE ====================
     // Every warning inside this section should be removed from the codebase.
@@ -231,7 +231,7 @@ public class BukkitImplDeprecations {
 
     // Added 2021/07/26, made very-slow 2022/12/31, made slow 2024/01/02, made normal 2025/01/15.
     // Safe to remove now.
-    public static Warning itemEnchantmentsLegacy = new Warning("itemEnchantmentsLegacy", "The tag 'ItemTag.enchantments' is deprecated: use enchantments_map, or enchantment_types.");
+    public static Warning itemEnchantmentsLegacy = new Warning("itemEnchantmentsLegacy", "The tag 'ItemTag.enchantments' is deprecated: use enchantment_map, or enchantment_types.");
     public static Warning echantmentTagUpdate = new Warning("echantmentTagUpdate", "Several legacy enchantment-related tags are deprecated in favor of using EnchantmentTag.");
 
     // Added 2022/01/30, made very-slow 2022/12/31, made slow 2024/01/02, made normal 2025/01/15.
@@ -264,6 +264,9 @@ public class BukkitImplDeprecations {
     // Safe to remove now.
     public static Warning oldStructureTypes = new Warning("oldStructureTypes", "'server.structure_types' is based on outdated API and doesn't support modern datapack features. Use 'server.structures' instead.");
     public static Warning findStructureTags = new Warning("findStructureTags", "'LocationTag.find.structure' and related tags are deprecated in favor of 'LocationTag.find_structure'.");
+
+    // Added 2025/03/14
+    public static Warning settingBoatType = new Warning("settingBoatType", "As of MC 1.21, separate boat wood types are separate entity types, meaning the wood type of an existing boat entity cannot be changed without spawning a new one.");
 
     // ==================== SLOW deprecations ====================
     // These aren't spammed, but will show up repeatedly until fixed. Server owners will probably notice them.
@@ -347,6 +350,10 @@ public class BukkitImplDeprecations {
     // 2023-year-end commonality: #30
     // Safe to remove now.
     public static Warning debugBlockAlpha = new SlowWarning("debugBlockAlpha", "The 'alpha' argument for the 'debugblock' command is deprecated: put the alpha in the color input instead.");
+
+    // Added 2025/03/16
+    // Bump once 1.21 is the minimum supported version (as that is where boat types were split)
+    public static Warning gettingBoatType = new SlowWarning("gettingBoatType", "Getting boat wood types is deprecated, as separate boat types are separate entity types now: should check the entity type.");
 
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
@@ -449,7 +456,16 @@ public class BukkitImplDeprecations {
     // Added 2025/01/04
     public static Warning playEffectSpecialDataListInput = new FutureWarning("playEffectSpecialDataListInput", "List input for the special_data argument in playeffect command is now deprecated. Please use a MapTag instead.");
 
-    // Added 2025/02/05, deprecate officially by 2028.
+    // Added 2025/01/23
+    public static Warning projectileLaunchedEntityContext = new FutureWarning("projectileLaunchedEntityContext", "'context.entity' in the 'projectile launched' event is deprecated in favor of 'context.projectile'.");
+
+    // Added 2025/03/29
+    public static Warning areaEffectCloudControls = new FutureWarning("areaEffectCloudControls", "Several tags/mechanisms for controlling area effect clouds have been merged into existing properties, check relevant meta docs for more information.");
+  
+    // Added 2025/04/27
+    public static Warning playerChangesWorldSwitches = new FutureWarning("playerChangesWorldSwitches", "The 'from' and 'to' arguments in the 'player changes world' script event have been deprecated in favor of the 'from' and 'to' switches.");
+
+    // Added 2025/05/02
     public static Warning timeSubTags = new FutureWarning("timeSubTags", pointlessSubtagPrefix + "'time.*' tags are now just 'time_*'.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================

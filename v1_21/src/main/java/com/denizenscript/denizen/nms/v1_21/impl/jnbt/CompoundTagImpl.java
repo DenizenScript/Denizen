@@ -80,19 +80,19 @@ public class CompoundTagImpl extends CompoundTag {
 
     public static CompoundTag fromNMSTag(net.minecraft.nbt.CompoundTag tag) {
         HashMap<String, Tag> tags = new HashMap<>();
-        for (String key : tag.getAllKeys()) {
+        for (String key : tag.keySet()) {
             net.minecraft.nbt.Tag base = tag.get(key);
             if (base instanceof net.minecraft.nbt.IntTag) {
-                tags.put(key, new IntTag(((net.minecraft.nbt.IntTag) base).getAsInt()));
+                tags.put(key, new IntTag(base.asInt().get()));
             }
             else if (base instanceof net.minecraft.nbt.ByteTag) {
-                tags.put(key, new ByteTag(((net.minecraft.nbt.ByteTag) base).getAsByte()));
+                tags.put(key, new ByteTag(base.asByte().get()));
             }
             else if (base instanceof net.minecraft.nbt.FloatTag) {
-                tags.put(key, new FloatTag(((net.minecraft.nbt.FloatTag) base).getAsFloat()));
+                tags.put(key, new FloatTag(base.asFloat().get()));
             }
             else if (base instanceof net.minecraft.nbt.DoubleTag) {
-                tags.put(key, new DoubleTag(((net.minecraft.nbt.DoubleTag) base).getAsDouble()));
+                tags.put(key, new DoubleTag(base.asDouble().get()));
             }
             else if (base instanceof net.minecraft.nbt.ByteArrayTag) {
                 tags.put(key, new ByteArrayTag(((net.minecraft.nbt.ByteArrayTag) base).getAsByteArray()));
@@ -107,13 +107,13 @@ public class CompoundTagImpl extends CompoundTag {
                 tags.put(key, new EndTag());
             }
             else if (base instanceof net.minecraft.nbt.LongTag) {
-                tags.put(key, new LongTag(((net.minecraft.nbt.LongTag) base).getAsLong()));
+                tags.put(key, new LongTag(base.asLong().get()));
             }
             else if (base instanceof net.minecraft.nbt.ShortTag) {
-                tags.put(key, new ShortTag(((net.minecraft.nbt.ShortTag) base).getAsShort()));
+                tags.put(key, new ShortTag(base.asShort().get()));
             }
             else if (base instanceof net.minecraft.nbt.StringTag) {
-                tags.put(key, new StringTag(base.getAsString()));
+                tags.put(key, new StringTag(base.asString().get()));
             }
             else if (base instanceof ListTag) {
                 List<net.minecraft.nbt.Tag> list = (List<net.minecraft.nbt.Tag>) base;

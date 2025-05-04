@@ -26,6 +26,7 @@ import org.bukkit.util.Consumer;
 
 import java.lang.invoke.MethodHandle;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class PaperAPITools {
@@ -222,5 +223,9 @@ public class PaperAPITools {
     // TODO workaround Paper issue - https://github.com/PaperMC/Paper/issues/11732
     public boolean hasCustomName(PotionMeta meta) {
         return meta.hasCustomName();
+    }
+
+    public void setMaterialTags(Material type, Set<NamespacedKey> tags) {
+        NMSHandler.blockHelper.setVanillaTags(type, tags);
     }
 }

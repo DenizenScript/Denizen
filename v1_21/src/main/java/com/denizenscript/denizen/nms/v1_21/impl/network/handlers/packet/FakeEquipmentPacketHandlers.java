@@ -12,7 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +49,7 @@ public class FakeEquipmentPacketHandlers {
                 case LEGS -> override.legs == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.legs.getItemStack());
                 case FEET -> override.boots == null ? pair.getSecond() : CraftItemStack.asNMSCopy(override.boots.getItemStack());
                 case BODY -> pair.getSecond(); // TODO: 1.20.6: is this actually used here? do we want to allow overriding it?
+                case SADDLE -> pair.getSecond(); // TODO: 1.21.5: same as above
             };
             equipment.set(i, new Pair<>(pair.getFirst(), use));
         }
@@ -78,14 +79,14 @@ public class FakeEquipmentPacketHandlers {
         if (FakeEquipCommand.overrides.isEmpty()) {
             return setContentPacket;
         }
-        if (setContentPacket.getContainerId() != 0) {
+        if (setContentPacket.containerId() != 0) {
             return setContentPacket;
         }
         FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(networkManager.player.getUUID(), networkManager.player.getBukkitEntity());
         if (override == null) {
             return setContentPacket;
         }
-        NonNullList<ItemStack> items = (NonNullList<ItemStack>) setContentPacket.getItems();
+        NonNullList<ItemStack> items = (NonNullList<ItemStack>) setContentPacket.items();
         if (override.head != null) {
             items.set(5, CraftItemStack.asNMSCopy(override.head.getItemStack()));
         }
@@ -104,7 +105,7 @@ public class FakeEquipmentPacketHandlers {
         if (override.hand != null) {
             items.set(getMainHandSlot(networkManager.player), CraftItemStack.asNMSCopy(override.hand.getItemStack()));
         }
-        return new ClientboundContainerSetContentPacket(setContentPacket.getContainerId(), setContentPacket.getStateId(), items, setContentPacket.getCarriedItem());
+        return new ClientboundContainerSetContentPacket(setContentPacket.containerId(), setContentPacket.stateId(), items, setContentPacket.carriedItem());
     }
 
     public static ClientboundContainerSetSlotPacket processContainerSetSlotPacket(DenizenNetworkManagerImpl networkManager, ClientboundContainerSetSlotPacket setSlotPacket) {
@@ -133,6 +134,6 @@ public class FakeEquipmentPacketHandlers {
     }
 
     public static int getMainHandSlot(ServerPlayer player) {
-        return player.getInventory().selected + 36;
+        return player.getInventory().getSelectedSlot() + 36;
     }
 }

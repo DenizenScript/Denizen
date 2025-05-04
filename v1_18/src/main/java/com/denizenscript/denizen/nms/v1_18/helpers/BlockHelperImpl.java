@@ -17,7 +17,6 @@ import com.mojang.authlib.properties.Property;
 import net.minecraft.core.Registry;
 import net.minecraft.core.*;
 import net.minecraft.network.protocol.game.ClientboundUpdateTagsPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagNetworkSerialization;
@@ -48,6 +47,7 @@ import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_18_R2.tag.CraftBlockTag;
 import org.bukkit.craftbukkit.v1_18_R2.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_18_R2.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 
 import java.lang.invoke.MethodHandle;
@@ -337,7 +337,7 @@ public class BlockHelperImpl implements BlockHelper {
     public static MethodHandle Holder_Reference_bindTags = ReflectionHelper.getMethodHandle(Holder.Reference.class, ReflectionMappingsInfo.Holder_Reference_bindTags, Collection.class);
 
     @Override
-    public void setVanillaTags(Material material, Set<String> tags) {
+    public void setVanillaTags(Material material, Set<NamespacedKey> tags) {
         Holder<net.minecraft.world.level.block.Block> nmsHolder = getMaterialBlock(material).builtInRegistryHolder();
         nmsHolder.tags().forEach(nmsTag -> {
             HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = Registry.BLOCK.getTag(nmsTag).orElse(null);
@@ -355,8 +355,8 @@ public class BlockHelperImpl implements BlockHelper {
             VanillaTagHelper.updateMaterialTag(new CraftBlockTag(Registry.BLOCK, nmsTag));
         });
         List<TagKey<net.minecraft.world.level.block.Block>> newNmsTags = new ArrayList<>();
-        for (String tag : tags) {
-            TagKey<net.minecraft.world.level.block.Block> newNmsTag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(tag));
+        for (NamespacedKey tag : tags) {
+            TagKey<net.minecraft.world.level.block.Block> newNmsTag = TagKey.create(Registry.BLOCK_REGISTRY, CraftNamespacedKey.toMinecraft(tag));
             HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = Registry.BLOCK.getOrCreateTag(newNmsTag);
             List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
             nmsHolders.add(nmsHolder);
