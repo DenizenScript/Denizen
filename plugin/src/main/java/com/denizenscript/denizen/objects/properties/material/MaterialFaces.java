@@ -5,7 +5,6 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.MultipleFacing;
 
 public class MaterialFaces extends MaterialProperty<ListTag> {
@@ -15,12 +14,11 @@ public class MaterialFaces extends MaterialProperty<ListTag> {
     // @name valid_faces
     // @input ListTag
     // @description
-    // Controls a list of the current faces for a material that has multiple faces (like a mushroom block).
+    // Controls the current faces of a material that has multiple faces (like a mushroom block).
     // -->
 
     public static boolean describes(MaterialTag material) {
-        BlockData data = material.getModernData();
-        return data instanceof MultipleFacing;
+        return material.getModernData() instanceof MultipleFacing;
     }
 
     @Override
@@ -30,12 +28,16 @@ public class MaterialFaces extends MaterialProperty<ListTag> {
 
     @Override
     public ListTag getPropertyValue() {
-        return getFaceList();
+        ListTag faces = new ListTag();
+        for (BlockFace face : ((MultipleFacing) getBlockData()).getFaces()) {
+            faces.add(face.name());
+        }
+        return faces;
     }
 
     @Override
     public void setPropertyValue(ListTag list, Mechanism mechanism) {
-        MultipleFacing facing = getFaces();
+        MultipleFacing facing = (MultipleFacing) getBlockData();
         for (BlockFace face : facing.getAllowedFaces()) {
             facing.setFace(face, false);
         }
@@ -58,22 +60,10 @@ public class MaterialFaces extends MaterialProperty<ListTag> {
         // -->
         PropertyParser.registerStaticTag(MaterialFaces.class, ListTag.class, "valid_faces", (attribute, material) -> {
             ListTag toReturn = new ListTag();
-            for (BlockFace face : material.getFaces().getAllowedFaces()) {
+            for (BlockFace face : ((MultipleFacing) material.getBlockData()).getAllowedFaces()) {
                 toReturn.add(face.name());
             }
             return toReturn;
         });
-    }
-
-    public ListTag getFaceList() {
-        ListTag toReturn = new ListTag();
-        for (BlockFace face : getFaces().getFaces()) {
-            toReturn.add(face.name());
-        }
-        return toReturn;
-    }
-
-    public MultipleFacing getFaces() {
-        return (MultipleFacing) getBlockData();
     }
 }
