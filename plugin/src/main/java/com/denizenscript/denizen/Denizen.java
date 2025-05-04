@@ -293,6 +293,9 @@ public class Denizen extends JavaPlugin {
                 configOutput.close();
                 reloadConfig();
             }
+            if (Settings.cache_legacySpigotNamesSupport) {
+                Debug.log("Legacy Spigot name support enabled. This may be unnecessary; see config.yml for more information.");
+            }
         }
         catch (Exception e) {
             Debug.echoError(e);
@@ -613,5 +616,10 @@ public class Denizen extends JavaPlugin {
             case "void_biomes" -> new VoidGenerator(false);
             default -> null;
         };
+    }
+
+    @Override
+    public File getFile() {
+        return super.getFile();
     }
 }

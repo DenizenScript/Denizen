@@ -985,8 +985,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC is targetable.
         // -->
         tagProcessor.registerTag(ElementTag.class, "targetable", (attribute, object) -> {
-            boolean targetable = object.getCitizen().data().get(NPC.Metadata.TARGETABLE, object.getCitizen().data().get(NPC.Metadata.DEFAULT_PROTECTED, true));
-            return new ElementTag(targetable);
+            TargetableTrait trait = object.getCitizen().getTraitNullable(TargetableTrait.class);
+            if (trait != null) {
+                return new ElementTag(trait.isTargetable());
+            }
+            return new ElementTag(object.getCitizen().data().get(NPC.Metadata.DEFAULT_PROTECTED, true));
         });
 
         // <--[tag]
@@ -1879,7 +1882,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.targetable>
         // -->
         if (mechanism.matches("targetable") && mechanism.requireBoolean()) {
-            getCitizen().data().setPersistent(NPC.Metadata.TARGETABLE, mechanism.getValue().asBoolean());
+            getCitizen().getOrAddTrait(TargetableTrait.class).setTargetable(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]

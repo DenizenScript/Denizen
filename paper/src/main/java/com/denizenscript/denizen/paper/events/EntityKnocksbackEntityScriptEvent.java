@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
@@ -18,6 +19,8 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     // <entity> knocks back <entity>
     //
     // @Location true
+    //
+    // @Warning this event may in some cases double-fire, requiring usage of the 'ratelimit' command (like 'ratelimit <player> 1t') to prevent doubling actions.
     //
     // @Switch with:<item> to only process the event when the item used to cause damage (in the damager's hand) is a specified item.
     //
@@ -33,6 +36,7 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
     // <context.entity> returns the EntityTag that was knocked back.
     // <context.damager> returns the EntityTag of the one who knocked.
     // <context.acceleration> returns the knockback applied as a vector.
+    // <context.cause> returns the cause of the knockback (only on MC 1.20+). Causes list: <@link url https://jd.papermc.io/paper/1.21.1/io/papermc/paper/event/entity/EntityKnockbackEvent.Cause.html>
     //
     // @Determine
     // LocationTag as a vector to change the acceleration applied.
@@ -88,15 +92,13 @@ public class EntityKnocksbackEntityScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "entity":
-                return entity.getDenizenObject();
-            case "damager":
-                return hitBy.getDenizenObject();
-            case "acceleration":
-                return new LocationTag(event.getAcceleration());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity.getDenizenObject();
+            case "damager" -> hitBy.getDenizenObject();
+            case "acceleration" -> new LocationTag(event.getAcceleration());
+            case "cause" -> new ElementTag(event.getCause().name(), true); // TODO: once 1.20 is the minimum supported version, use the enum constructor
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

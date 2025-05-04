@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.objects.properties.material.*;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -710,7 +711,7 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Sets a material's vanilla tags.
         // Any tag name will be accepted - meaning, any tag name input will be added to the material, regardless of whether it previously existed or not.
-        // Note that this gets reset once server resources are reloaded (see <@link event server resources reloaded>).
+        // This will work at any time, but applying your changes once during <@link event server prestart> is recommended, as usages require a server resources reload.
         // @tags
         // <MaterialTag.vanilla_tags>
         // @example
@@ -725,15 +726,16 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         if (!mechanism.isProperty && mechanism.matches("vanilla_tags") && mechanism.requireObject(ListTag.class)) {
             ListTag input = mechanism.valueAsType(ListTag.class);
-            Set<String> tags = new HashSet<>();
+            Set<NamespacedKey> tags = new HashSet<>();
             for (String tag : input) {
-                if (!VanillaTagHelper.isValidTagName(tag)) {
+                NamespacedKey tagKey = NamespacedKey.fromString(tag);
+                if (tagKey == null) {
                     mechanism.echoError("Invalid tag name '" + tag + "' inputted.");
                     continue;
                 }
-                tags.add(tag);
+                tags.add(tagKey);
             }
-            NMSHandler.blockHelper.setVanillaTags(material, tags);
+            PaperAPITools.instance.setMaterialTags(material, tags);
         }
 
         // TODO: 1.20.6: need an ItemTag variant providing the proper functionality, and then deprecate this

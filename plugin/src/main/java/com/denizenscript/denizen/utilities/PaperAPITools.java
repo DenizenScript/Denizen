@@ -20,11 +20,13 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
 import java.lang.invoke.MethodHandle;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class PaperAPITools {
@@ -216,5 +218,14 @@ public class PaperAPITools {
 
     public boolean canUseEquipmentSlot(LivingEntity entity, EquipmentSlot slot) {
         return true;
+    }
+
+    // TODO workaround Paper issue - https://github.com/PaperMC/Paper/issues/11732
+    public boolean hasCustomName(PotionMeta meta) {
+        return meta.hasCustomName();
+    }
+
+    public void setMaterialTags(Material type, Set<NamespacedKey> tags) {
+        NMSHandler.blockHelper.setVanillaTags(type, tags);
     }
 }

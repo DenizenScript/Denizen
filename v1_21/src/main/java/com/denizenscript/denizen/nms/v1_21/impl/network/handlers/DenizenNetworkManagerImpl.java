@@ -31,9 +31,9 @@ import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.util.debugchart.LocalSampleLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R3.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R4.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -51,12 +51,11 @@ import java.util.stream.Collectors;
 
 public class DenizenNetworkManagerImpl extends Connection {
 
-    // TODO: 1.20.6: this can be cleaned up by decoding with the codec and returning the new packet
-    public static <T extends Packet<?>, B extends FriendlyByteBuf> RegistryFriendlyByteBuf copyPacket(T original, StreamCodec<B, T> packetCodec) {
+    public static <T extends Packet<?>> T copyPacket(T original, StreamCodec<? super RegistryFriendlyByteBuf, T> packetCodec) {
         try {
             RegistryFriendlyByteBuf copier = new RegistryFriendlyByteBuf(Unpooled.buffer(), CraftRegistry.getMinecraftRegistry());
-            packetCodec.encode((B) copier, original);
-            return copier;
+            packetCodec.encode(copier, original);
+            return packetCodec.decode(copier);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

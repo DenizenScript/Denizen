@@ -13,8 +13,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R3.util.CraftVector;
+import org.bukkit.craftbukkit.v1_21_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R4.util.CraftVector;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
@@ -51,10 +51,10 @@ public class AttachPacketHandlers {
                         pNew = new ClientboundMoveEntityPacket.Pos(newId, packet.getXa(), packet.getYa(), packet.getZa(), packet.isOnGround());
                     }
                     else if (packet instanceof ClientboundMoveEntityPacket.Rot) {
-                        pNew = new ClientboundMoveEntityPacket.Rot(newId, Mth.packDegrees(packet.getyRot()), Mth.packDegrees(packet.getxRot()), packet.isOnGround());
+                        pNew = new ClientboundMoveEntityPacket.Rot(newId, Mth.packDegrees(packet.getYRot()), Mth.packDegrees(packet.getXRot()), packet.isOnGround());
                     }
                     else if (packet instanceof ClientboundMoveEntityPacket.PosRot) {
-                        pNew = new ClientboundMoveEntityPacket.PosRot(newId, packet.getXa(), packet.getYa(), packet.getZa(), Mth.packDegrees(packet.getyRot()), Mth.packDegrees(packet.getxRot()), packet.isOnGround());
+                        pNew = new ClientboundMoveEntityPacket.PosRot(newId, packet.getXa(), packet.getYa(), packet.getZa(), Mth.packDegrees(packet.getYRot()), Mth.packDegrees(packet.getXRot()), packet.isOnGround());
                     }
                     else {
                         if (CoreConfiguration.debugVerbose) {
@@ -71,8 +71,8 @@ public class AttachPacketHandlers {
                             pitch = attachedEntity.getXRot();
                         }
                         else if (isRotate) {
-                            yaw = packet.getyRot();
-                            pitch = packet.getxRot();
+                            yaw = packet.getYRot();
+                            pitch = packet.getXRot();
                         }
                         else {
                             yaw = e.getYRot();
@@ -177,7 +177,7 @@ public class AttachPacketHandlers {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
                 EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    ClientboundSetEntityMotionPacket pNew = ClientboundSetEntityMotionPacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket(packet, ClientboundSetEntityMotionPacket.STREAM_CODEC));
+                    ClientboundSetEntityMotionPacket pNew = DenizenNetworkManagerImpl.copyPacket(packet, ClientboundSetEntityMotionPacket.STREAM_CODEC);
                     ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
                     if (NMSHandler.debugPackets) {
                         DenizenNetworkManagerImpl.doPacketOutput("Attach Velocity Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName());

@@ -13,7 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareSmithingEvent;
 
-public class PlayersPrepareSmithingTableScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerPreparesSmithingTableScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -39,7 +39,7 @@ public class PlayersPrepareSmithingTableScriptEvent extends BukkitScriptEvent im
     //
     // -->
 
-    public PlayersPrepareSmithingTableScriptEvent() {
+    public PlayerPreparesSmithingTableScriptEvent() {
     }
 
     public PrepareSmithingEvent event;

@@ -175,15 +175,6 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public String getRawHoverText(ItemStack itemStack) {
-        net.minecraft.nbt.CompoundTag tag = CraftItemStack.asNMSCopy(itemStack).getTag();
-        if (tag == null) {
-            return null;
-        }
-        return tag.toString();
-    }
-
-    @Override
     public PlayerProfile getSkullSkin(ItemStack is) {
         net.minecraft.world.item.ItemStack itemStack = CraftItemStack.asNMSCopy(is);
         if (itemStack.hasTag()) {
@@ -253,16 +244,6 @@ public class ItemHelperImpl extends ItemHelper {
         else {
             inventory.setItem(slot, item);
         }
-    }
-
-    @Override
-    public IntArrayTag convertUuidToNbt(UUID id) {
-        return new IntArrayTag(NbtUtils.createUUID(id).getAsIntArray());
-    }
-
-    @Override
-    public UUID convertNbtToUuid(IntArrayTag id) {
-        return NbtUtils.loadUUID(new net.minecraft.nbt.IntArrayTag(id.getValue()));
     }
 
     @Override

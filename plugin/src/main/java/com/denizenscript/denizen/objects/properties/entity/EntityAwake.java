@@ -13,6 +13,7 @@ public class EntityAwake extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @description
     // Controls whether a bat is flying (awake/true) or hanging (asleep/false).
+    // -->
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Bat;

@@ -23,10 +23,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.PalettedContainer;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R3.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R3.block.CraftBlockStates;
-import org.bukkit.craftbukkit.v1_21_R3.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R4.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R4.block.CraftBlockStates;
+import org.bukkit.craftbukkit.v1_21_R4.block.data.CraftBlockData;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
@@ -90,7 +90,7 @@ public class FakeBlockHelper {
 
     public static ClientboundLevelChunkWithLightPacket handleMapChunkPacket(World world, ClientboundLevelChunkWithLightPacket originalPacket, int chunkX, int chunkZ, List<FakeBlock> blocks) {
         try {
-            ClientboundLevelChunkWithLightPacket duplicateCorePacket = ClientboundLevelChunkWithLightPacket.STREAM_CODEC.decode(DenizenNetworkManagerImpl.copyPacket(originalPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC));
+            ClientboundLevelChunkWithLightPacket duplicateCorePacket = DenizenNetworkManagerImpl.copyPacket(originalPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC);
             copyPacketPaperPatch(duplicateCorePacket, originalPacket);
             RegistryFriendlyByteBuf copier = new RegistryFriendlyByteBuf(Unpooled.buffer(), CraftRegistry.getMinecraftRegistry());
             originalPacket.getChunkData().write(copier);

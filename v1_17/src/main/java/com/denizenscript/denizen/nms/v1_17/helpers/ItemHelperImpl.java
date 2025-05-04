@@ -165,8 +165,8 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public String getRawHoverText(ItemStack itemStack) {
-        net.minecraft.nbt.CompoundTag tag = CraftItemStack.asNMSCopy(itemStack).getTag();
+    public String getLegacyHoverNbt(ItemTag item) {
+        net.minecraft.nbt.CompoundTag tag = CraftItemStack.asNMSCopy(item.getItemStack()).getTag();
         if (tag == null) {
             return null;
         }
@@ -243,16 +243,6 @@ public class ItemHelperImpl extends ItemHelper {
         else {
             inventory.setItem(slot, item);
         }
-    }
-
-    @Override
-    public IntArrayTag convertUuidToNbt(UUID id) {
-        return new IntArrayTag(NbtUtils.createUUID(id).getAsIntArray());
-    }
-
-    @Override
-    public UUID convertNbtToUuid(IntArrayTag id) {
-        return NbtUtils.loadUUID(new net.minecraft.nbt.IntArrayTag(id.getValue()));
     }
 
     @Override

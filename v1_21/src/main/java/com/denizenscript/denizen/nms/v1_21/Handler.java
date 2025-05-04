@@ -30,6 +30,7 @@ import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -37,11 +38,6 @@ import com.mojang.authlib.yggdrasil.ProfileResult;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.hover.content.Content;
-import net.md_5.bungee.api.chat.hover.content.Item;
-import net.md_5.bungee.api.chat.hover.content.Text;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Rotations;
@@ -61,22 +57,24 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R3.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R3.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R3.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftInventoryView;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R3.legacy.FieldRename;
-import org.bukkit.craftbukkit.v1_21_R3.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.v1_21_R3.util.*;
+import org.bukkit.craftbukkit.v1_21_R4.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R4.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R4.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_21_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R4.legacy.FieldRename;
+import org.bukkit.craftbukkit.v1_21_R4.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_21_R4.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -145,7 +143,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("60ac387ca8007aa018e6aeb394a6988c");
+        return CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("7ecad754373a5fbc43d381d7450c53a5");
     }
 
     @Override
@@ -161,7 +159,7 @@ public class Handler extends NMSHandler {
     @Override
     public CompoundTag parseSNBT(String snbt) {
         try {
-            return CompoundTagImpl.fromNMSTag(TagParser.parseTag(snbt));
+            return CompoundTagImpl.fromNMSTag(TagParser.parseCompoundFully(snbt));
         }
         catch (CommandSyntaxException e) {
             return null;
@@ -330,49 +328,6 @@ public class Handler extends NMSHandler {
     }
 
     @Override
-    public String stringForHover(HoverEvent hover) {
-        if (hover.getContents().isEmpty()) {
-            return "";
-        }
-        Content contentObject = hover.getContents().get(0);
-        if (contentObject instanceof Text) {
-            Object value = ((Text) contentObject).getValue();
-            if (value instanceof BaseComponent[]) {
-                return FormattedTextHelper.stringify((BaseComponent[]) value);
-            }
-            else {
-                return value.toString();
-            }
-        }
-        else if (contentObject instanceof Item) {
-            Item item = (Item) contentObject;
-            try {
-                net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
-                tag.putString("id", item.getId());
-                tag.putByte("Count", item.getCount() == -1 ? 1 : (byte) item.getCount());
-                if (item.getTag() != null && item.getTag().getNbt() != null) {
-                    tag.put("tag", TagParser.parseTag(item.getTag().getNbt()));
-                }
-                // TODO: 1.20.6: use components and fallback to creating item from tag when custom NBT is specified
-                ItemStack nmsStack = ItemStack.parseOptional(CraftRegistry.getMinecraftRegistry(), tag);
-                return new ItemTag(CraftItemStack.asBukkitCopy(nmsStack)).identify();
-            }
-            catch (Throwable ex) {
-                Debug.echoError(ex);
-                return null;
-            }
-        }
-        else if (contentObject instanceof net.md_5.bungee.api.chat.hover.content.Entity) {
-            net.md_5.bungee.api.chat.hover.content.Entity entity = (net.md_5.bungee.api.chat.hover.content.Entity) contentObject;
-            // TODO: Maybe a stabler way of doing this?
-            return "e@" + entity.getId();
-        }
-        else {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    @Override
     public ArrayList<String> containerListFlags(PersistentDataContainer container, String prefix) {
         prefix = "denizen:" + prefix;
         ArrayList<String> output = new ArrayList<>();
@@ -393,7 +348,7 @@ public class Handler extends NMSHandler {
     public String containerGetString(PersistentDataContainer container, String key) {
         net.minecraft.nbt.Tag base = ((CraftPersistentDataContainer) container).getRaw().get(key);
         if (base instanceof StringTag) {
-            return base.getAsString();
+            return base.asString().get();
         }
         else if (base instanceof ByteArrayTag) {
             return new String(((ByteArrayTag) base).getAsByteArray(), StandardCharsets.UTF_8);
@@ -422,7 +377,7 @@ public class Handler extends NMSHandler {
         if (nms == null) {
             return null;
         }
-        return ComponentSerializer.parse(CraftChatMessage.toJSON(nms));
+        return FormattedTextHelper.parseJson(CraftChatMessage.toJSON(nms));
     }
 
     public static Component componentToNMS(BaseComponent[] spigot) {
@@ -434,10 +389,6 @@ public class Handler extends NMSHandler {
 
     @Override
     public String updateLegacyName(Class<?> type, String legacyName) {
-        if (type == Sound.class) {
-            Sound sound = ReflectionHelper.getFieldValue(Sound.class, CoreUtilities.toUpperCase(legacyName), null);
-            return sound != null ? sound.getKey().toString() : null;
-        }
-        return FieldRename.rename(ApiVersion.FIELD_NAME_PARITY, type.getName().replace('.', '/'), legacyName);
+        return FieldRename.rename(ApiVersion.FIELD_NAME_PARITY, DebugInternals.getFullClassNameOpti(type).replace('.', '/'), legacyName);
     }
 }

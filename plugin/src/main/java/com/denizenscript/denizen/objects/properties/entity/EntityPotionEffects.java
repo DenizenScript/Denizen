@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.Arrow;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -22,11 +23,12 @@ import java.util.Collection;
 public class EntityPotionEffects implements Property {
 
     public static boolean describes(ObjectTag object) {
-        if (!(object instanceof EntityTag)) {
+        if (!(object instanceof EntityTag entity)) {
             return false;
         }
-        return ((EntityTag) object).isLivingEntity()
-                || ((EntityTag) object).getBukkitEntity() instanceof Arrow;
+        return entity.isLivingEntity()
+                || entity.getBukkitEntity() instanceof Arrow
+                || entity.getBukkitEntity() instanceof AreaEffectCloud;
     }
 
     public static EntityPotionEffects getFrom(ObjectTag object) {
@@ -55,7 +57,9 @@ public class EntityPotionEffects implements Property {
         else if (isArrow()) {
             return getArrow().getCustomEffects();
         }
-        return new ArrayList<>();
+        else {
+            return getAreaEffectCloud().getCustomEffects();
+        }
     }
 
     public ListTag getEffectsListTag(TagContext context) {
@@ -66,10 +70,10 @@ public class EntityPotionEffects implements Property {
         return result;
     }
 
-    public ListTag getEffectsMapTag() {
+    public ListTag getEffectsMapTag(boolean includeDeprecated) {
         ListTag result = new ListTag();
         for (PotionEffect effect : getEffectsList()) {
-            result.addObject(ItemPotion.effectToMap(effect));
+            result.addObject(ItemPotion.effectToMap(effect, includeDeprecated));
         }
         return result;
     }
@@ -82,8 +86,12 @@ public class EntityPotionEffects implements Property {
         return (Arrow) entity.getBukkitEntity();
     }
 
+    public AreaEffectCloud getAreaEffectCloud() {
+        return (AreaEffectCloud) entity.getBukkitEntity();
+    }
+
     public String getPropertyString() {
-        ListTag effects = getEffectsMapTag();
+        ListTag effects = getEffectsMapTag(false);
         return effects.isEmpty() ? null : effects.identify();
     }
 
@@ -114,10 +122,11 @@ public class EntityPotionEffects implements Property {
         // @group attribute
         // @mechanism EntityTag.potion_effects
         // @description
-        // Returns the active potion effects on the entity, in the MapTag format of the mechanism.
+        // Returns the active potion effects on the entity, or the potion effects an arrow/area effect cloud will apply.
+        // The effects returned are a list of maps in <@link language Potion Effect Format>.
         // -->
         PropertyParser.registerTag(EntityPotionEffects.class, ListTag.class, "effects_data", (attribute, object) -> {
-            return object.getEffectsMapTag();
+            return object.getEffectsMapTag(true);
         });
 
         // <--[tag]
@@ -126,7 +135,7 @@ public class EntityPotionEffects implements Property {
         // @group attributes
         // @mechanism EntityTag.potion_effects
         // @description
-        // Returns whether the entity has a specified effect.
+        // Returns whether the entity has a specified effect, or whether an arrow/area effect cloud will apply a certain effect.
         // If no effect is specified, returns whether the entity has any effect.
         // The effect type must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>.
         // -->
@@ -144,6 +153,9 @@ public class EntityPotionEffects implements Property {
                 else if (object.isArrow()) {
                     returnElement = object.getArrow().hasCustomEffect(effectType);
                 }
+                else {
+                    returnElement = object.getAreaEffectCloud().hasCustomEffect(effectType);
+                }
             }
             else if (!object.getEffectsList().isEmpty()) {
                 returnElement = true;
@@ -159,18 +171,10 @@ public class EntityPotionEffects implements Property {
         // @name potion_effects
         // @input ListTag
         // @description
-        // Set the entity's active potion effects.
-        // Each item in the list must be a MapTag with keys:
-        // "type" - from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html>
-        // "amplifier" - number to increase the level by (0 for default level 1)
-        // "duration" - DurationTag, how long it lasts
-        // "ambient", "particles", "icon" - booleans
-        //
-        // For example: [type=SPEED;amplifier=0;duration=120t;ambient=false;particles=true;icon=true]
-        // This example would be a level 1 swiftness potion that lasts 120 ticks.
+        // Set the entity's active potion effects, or the potion effects an arrow/area effect cloud will apply.
+        // Each item in the list must be a MapTag in <@link language Potion Effect Format>.
         // @tags
         // <EntityTag.effects_data>
-        // <EntityTag.list_effects>
         // <EntityTag.has_effect[<effect>]>
         // -->
         if (mechanism.matches("potion_effects")) {
@@ -193,6 +197,9 @@ public class EntityPotionEffects implements Property {
                 }
                 else if (isArrow()) {
                     getArrow().addCustomEffect(effect, true);
+                }
+                else {
+                    getAreaEffectCloud().addCustomEffect(effect, true);
                 }
             }
         }

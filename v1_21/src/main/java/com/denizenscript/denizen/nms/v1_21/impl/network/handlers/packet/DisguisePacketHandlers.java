@@ -14,7 +14,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.level.Level;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R4.entity.CraftEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 
@@ -127,8 +127,8 @@ public class DisguisePacketHandlers {
         if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
             return new ClientboundMoveEntityPacket.Rot(
                     disguise.entity.getBukkitEntity().getEntityId(),
-                    EntityAttachmentHelper.compressAngle(rotPacket.getyRot() + 180),
-                    Mth.packDegrees(rotPacket.getxRot()),
+                    EntityAttachmentHelper.compressAngle(rotPacket.getYRot() + 180),
+                    Mth.packDegrees(rotPacket.getXRot()),
                     rotPacket.isOnGround()
             );
         }
@@ -143,8 +143,8 @@ public class DisguisePacketHandlers {
                     posRotPacket.getXa(),
                     posRotPacket.getYa(),
                     posRotPacket.getZa(),
-                    EntityAttachmentHelper.compressAngle(posRotPacket.getyRot() + 180),
-                    Mth.packDegrees(posRotPacket.getxRot()),
+                    EntityAttachmentHelper.compressAngle(posRotPacket.getYRot() + 180),
+                    Mth.packDegrees(posRotPacket.getXRot()),
                     posRotPacket.isOnGround()
             );
         }
