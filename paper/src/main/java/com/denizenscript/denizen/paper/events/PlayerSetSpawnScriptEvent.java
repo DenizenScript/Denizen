@@ -2,15 +2,15 @@ package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.destroystokyo.paper.event.player.PlayerSetSpawnEvent;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import static com.denizenscript.denizen.paper.PaperModule.componentToJson;
-import static com.denizenscript.denizen.paper.PaperModule.jsonToComponent;
 
 public class PlayerSetSpawnScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -19,8 +19,6 @@ public class PlayerSetSpawnScriptEvent extends BukkitScriptEvent implements List
     // player spawn changes
     //
     // @Cancellable true
-    //
-    // @Location true
     //
     // @Plugin Paper
     //
@@ -58,7 +56,7 @@ public class PlayerSetSpawnScriptEvent extends BukkitScriptEvent implements List
             return false;
         });
         this.<PlayerSetSpawnScriptEvent, ElementTag>registerDetermination("message", ElementTag.class, (evt, context, message) -> {
-            evt.event.setNotification(jsonToComponent(message.toString()));
+            evt.event.setNotification(PaperModule.parseFormattedText(message.toString(), ChatColor.WHITE));
         });
         this.<PlayerSetSpawnScriptEvent, ElementTag>registerOptionalDetermination("notify", ElementTag.class, (evt, context, value) -> {
             if (value.isBoolean()) {
@@ -94,7 +92,7 @@ public class PlayerSetSpawnScriptEvent extends BukkitScriptEvent implements List
             case "cause" -> new ElementTag(event.getCause());
             case "forced" -> new ElementTag(event.isForced());
             case "location" -> event.getLocation() != null ? new LocationTag(event.getLocation()) : null;
-            case "message" -> event.getNotification() != null ? new ElementTag(componentToJson(event.getNotification())) : null;
+            case "message" -> event.getNotification() != null ? new ElementTag(PaperModule.stringifyComponent(event.getNotification()), true) : null;
             case "notify" -> new ElementTag(event.willNotifyPlayer());
             default -> super.getContext(name);
         };
