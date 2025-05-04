@@ -19,7 +19,7 @@ public class MaterialHalf extends MaterialProperty<ElementTag> {
     // @name half
     // @input ElementTag
     // @description
-    // Controls the current half for a bisected material (like a door, double-plant, chest, or a bed).
+    // Controls a bisected material's current half (like a door, double-plant, chest, or a bed).
     // For "Bisected" blocks (doors/double plants/...), values are either "BOTTOM" or "TOP".
     // For beds, values are either "HEAD" or "FOOT".
     // For chests, values are either "LEFT" or "RIGHT".
@@ -44,7 +44,20 @@ public class MaterialHalf extends MaterialProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(getHalfName());
+        BlockData data = getBlockData();
+        if (data instanceof Bisected bisected) {
+            return new ElementTag(bisected.getHalf().name());
+        }
+        else if (data instanceof Bed bed) {
+            return new ElementTag(bed.getPart().name());
+        }
+        else if (data instanceof Chest chest) {
+            if (chest.getType() == Chest.Type.SINGLE) {
+                return null;
+            }
+            return new ElementTag(chest.getType().name());
+        }
+        return null;
     }
 
     @Override
@@ -79,26 +92,6 @@ public class MaterialHalf extends MaterialProperty<ElementTag> {
             }
             return new LocationTag(vector);
         });
-    }
-
-    public static String getHalfName(BlockData data) {
-        if (data instanceof Bisected bisected) {
-            return bisected.getHalf().name();
-        }
-        else if (data instanceof Bed bed) {
-            return bed.getPart().name();
-        }
-        else if (data instanceof Chest chest) {
-            if (chest.getType() == Chest.Type.SINGLE) {
-                return null;
-            }
-            return chest.getType().name();
-        }
-        return null;
-    }
-
-    public String getHalfName() {
-        return getHalfName(getBlockData());
     }
 
     public static Vector getRelativeBlockVector(BlockData data) {
