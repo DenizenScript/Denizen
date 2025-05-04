@@ -614,7 +614,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @attribute <WorldTag.time.duration>
             // @returns DurationTag
             // @description
-            // Returns the relative in-game time of this world as a duration.
+            // Deprecated in favor of <@link tag WorldTag.time_duration>
             // @deprecated Use <@link tag WorldTag.time_duration> instead.
             // -->
             if (attribute.startsWith("duration", 2)) {
@@ -627,7 +627,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @attribute <WorldTag.time.full>
             // @returns DurationTag
             // @description
-            // Returns the in-game time of this world.
+            // Deprecated in favor of <@link tag WorldTag.time_full>
             // @deprecated Use <@link tag WorldTag.time_full> instead.
             // -->
             else if (attribute.startsWith("full", 2)) {
@@ -640,7 +640,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @attribute <WorldTag.time.period>
             // @returns ElementTag
             // @description
-            // Returns the time as 'day', 'night', 'dawn', or 'dusk'.
+            // Deprecated in favor of <@link tag WorldTag.time_period>
             // @deprecated Use <@link tag WorldTag.time_period> instead.
             // -->
             else if (attribute.startsWith("period", 2)) {
