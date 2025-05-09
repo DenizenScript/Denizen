@@ -20,6 +20,8 @@ public class PlayerSetSpawnScriptEvent extends BukkitScriptEvent implements List
     //
     // @Cancellable true
     //
+    // @Location true
+    //
     // @Plugin Paper
     //
     // @Group Paper
@@ -75,6 +77,9 @@ public class PlayerSetSpawnScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
+        if (!runInCheck(path, event.getLocation())) {
+            return false;
+        }
         if (!runGenericSwitchCheck(path, "cause", event.getCause().toString())) {
             return false;
         }
