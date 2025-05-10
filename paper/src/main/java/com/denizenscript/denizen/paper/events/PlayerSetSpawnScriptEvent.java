@@ -16,7 +16,7 @@ public class PlayerSetSpawnScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // player spawn changes
+    // player sets spawn
     //
     // @Cancellable true
     //
@@ -48,7 +48,7 @@ public class PlayerSetSpawnScriptEvent extends BukkitScriptEvent implements List
     // -->
 
     public PlayerSetSpawnScriptEvent() {
-        registerCouldMatcher("player spawn changes");
+        registerCouldMatcher("player sets spawn");
         registerSwitches("cause");
         this.<PlayerSetSpawnScriptEvent, ElementTag>registerOptionalDetermination("forced", ElementTag.class, (evt, context, value) -> {
             if (value.isBoolean()) {
