@@ -4,13 +4,14 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.CommandMinecart;
@@ -54,10 +55,10 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
     public UnknownCommandScriptEvent() {
         registerCouldMatcher("command unknown");
         this.<UnknownCommandScriptEvent, ElementTag>registerDetermination(null, ElementTag.class, (evt, context, text) -> {
-            evt.event.message(Component.text(text.toString()));
+            evt.event.message(PaperModule.parseFormattedText(text.toString(), ChatColor.WHITE));
         });
         this.<UnknownCommandScriptEvent>registerTextDetermination("none", (evt) -> {
-            evt.event.message(Component.text(""));
+            evt.event.message(null);
         });
     }
 
@@ -79,18 +80,8 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
             case "args" -> new ListTag(Arrays.asList(ArgumentHelper.buildArgs(rawArgs, false)));
             case "server" -> new ElementTag(sourceType.equals("server"));
             case "source_type" -> new ElementTag(sourceType);
-            case "command_block_location" -> {
-                if (sourceType.equals("command_block")) {
-                    yield new LocationTag(((BlockCommandSender) event.getSender()).getBlock().getLocation());
-                }
-                yield null;
-            }
-            case "command_minecart" -> {
-                if (sourceType.equals("command_minecart")) {
-                    yield new EntityTag((CommandMinecart) event.getSender());
-                }
-                yield null;
-            }
+            case "command_block_location" -> sourceType.equals("command_block") ? new LocationTag(((BlockCommandSender) event.getSender()).getBlock().getLocation()) : null;
+            case "command_minecart" -> sourceType.equals("command_minecart") ? new EntityTag((CommandMinecart) event.getSender()) : null;
             case "message" -> new ElementTag(String.valueOf(event.message()));
             default -> super.getContext(name);
         };

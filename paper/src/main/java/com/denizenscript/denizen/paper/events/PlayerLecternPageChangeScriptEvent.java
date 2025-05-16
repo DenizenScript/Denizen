@@ -57,7 +57,7 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
         registerCouldMatcher("player flips lectern page");
         registerSwitches("book");
         this.<PlayerLecternPageChangeScriptEvent, ElementTag>registerOptionalDetermination("page", ElementTag.class, (evt, context, page) -> {
-            if (page.isInt() && page.asInt() > 0) {
+            if (page.isInt()) {
                 evt.event.setNewPage(page.asInt() - 1);
                 return true;
             }

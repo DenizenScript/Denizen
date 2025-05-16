@@ -71,12 +71,7 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "merchant" -> {
-                if (event instanceof PlayerTradeEvent) {
-                    yield new EntityTag(((PlayerTradeEvent) event).getVillager());
-                }
-                yield null;
-            }
+            case "merchant" -> event instanceof PlayerTradeEvent ? new EntityTag(((PlayerTradeEvent) event).getVillager()) : null;
             case "trade" -> new TradeTag(event.getTrade()).duplicate();
             default -> super.getContext(name);
         };
