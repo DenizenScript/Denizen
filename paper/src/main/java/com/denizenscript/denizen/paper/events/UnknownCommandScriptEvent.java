@@ -10,7 +10,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.CommandMinecart;
@@ -53,6 +53,12 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
 
     public UnknownCommandScriptEvent() {
         registerCouldMatcher("command unknown");
+        this.<UnknownCommandScriptEvent, ElementTag>registerDetermination(null, ElementTag.class, (evt, context, text) -> {
+            evt.event.message(Component.text(text.toString()));
+        });
+        this.<UnknownCommandScriptEvent>registerTextDetermination("none", (evt) -> {
+            evt.event.message(Component.text(""));
+        });
     }
 
     public UnknownCommandEvent event;
@@ -61,52 +67,33 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
     public String sourceType;
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String determination = determinationObj.toString();
-            if (CoreUtilities.equalsIgnoreCase(determination, "none")) {
-                event.setMessage(null);
-            }
-            else {
-                event.setMessage(determination);
-            }
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getSender() instanceof Player ? new PlayerTag((Player) event.getSender()) : null, null);
     }
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("command")) {
-            return new ElementTag(command);
-        }
-        else if (name.equals("raw_args")) {
-            return new ElementTag(rawArgs);
-        }
-        else if (name.equals("args")) {
-            return new ListTag(Arrays.asList(ArgumentHelper.buildArgs(rawArgs, false)));
-        }
-        else if (name.equals("server")) {
-            return new ElementTag(sourceType.equals("server"));
-        }
-        else if (name.equals("source_type")) {
-            return new ElementTag(sourceType);
-        }
-        else if (name.equals("command_block_location") && sourceType.equals("command_block")) {
-            return new LocationTag(((BlockCommandSender) event.getSender()).getBlock().getLocation());
-        }
-        else if (name.equals("command_minecart") && sourceType.equals("command_minecart")) {
-            return new EntityTag((CommandMinecart) event.getSender());
-        }
-        else if (name.equals("message")) {
-            return new ElementTag(event.getMessage());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "command" -> new ElementTag(command);
+            case "raw_args" -> new ElementTag(rawArgs);
+            case "args" -> new ListTag(Arrays.asList(ArgumentHelper.buildArgs(rawArgs, false)));
+            case "server" -> new ElementTag(sourceType.equals("server"));
+            case "source_type" -> new ElementTag(sourceType);
+            case "command_block_location" -> {
+                if (sourceType.equals("command_block")) {
+                    yield new LocationTag(((BlockCommandSender) event.getSender()).getBlock().getLocation());
+                }
+                yield null;
+            }
+            case "command_minecart" -> {
+                if (sourceType.equals("command_minecart")) {
+                    yield new EntityTag((CommandMinecart) event.getSender());
+                }
+                yield null;
+            }
+            case "message" -> new ElementTag(String.valueOf(event.message()));
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
