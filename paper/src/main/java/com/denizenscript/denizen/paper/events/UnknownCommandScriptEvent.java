@@ -69,7 +69,7 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(event.getSender() instanceof Player ? new PlayerTag((Player) event.getSender()) : null, null);
+        return new BukkitScriptEntryData(event.getSender() instanceof Player player ? new PlayerTag(player) : null, null);
     }
 
     @Override

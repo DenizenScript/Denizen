@@ -56,7 +56,7 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
         registerCouldMatcher("player selects loom pattern");
         registerSwitches("type");
         this.<PlayerLoomPatternSelectScriptEvent, ElementTag>registerOptionalDetermination("pattern", ElementTag.class, (evt, context, pattern) -> {
-            if (Utilities.elementToEnumlike(pattern, PatternType.class) != null) {
+            if (Utilities.matchesEnumlike(pattern, PatternType.class)) {
                 evt.event.setPatternType(Utilities.elementToEnumlike(pattern, PatternType.class));
                 return true;
             }
