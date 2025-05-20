@@ -78,8 +78,8 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "gamerule" -> new ElementTag(event.getGameRule().getName());
-            case "value" -> new ElementTag(event.getValue());
+            case "gamerule" -> new ElementTag(event.getGameRule().getName(), true);
+            case "value" -> new ElementTag(event.getValue(), true);
             case "source_type" -> getSourceType();
             case "command_block_location" -> getCommandBlock();
             case "command_minecart" -> getCommandMinecart();

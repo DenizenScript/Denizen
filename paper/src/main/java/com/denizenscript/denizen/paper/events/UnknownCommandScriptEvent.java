@@ -75,14 +75,14 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "command" -> new ElementTag(command);
-            case "raw_args" -> new ElementTag(rawArgs);
+            case "command" -> new ElementTag(command, true);
+            case "raw_args" -> new ElementTag(rawArgs, true);
             case "args" -> new ListTag(Arrays.asList(ArgumentHelper.buildArgs(rawArgs, false)));
             case "server" -> new ElementTag(sourceType.equals("server"));
-            case "source_type" -> new ElementTag(sourceType);
+            case "source_type" -> new ElementTag(sourceType, true);
             case "command_block_location" -> sourceType.equals("command_block") ? new LocationTag(((BlockCommandSender) event.getSender()).getBlock().getLocation()) : null;
             case "command_minecart" -> sourceType.equals("command_minecart") ? new EntityTag((CommandMinecart) event.getSender()) : null;
-            case "message" -> new ElementTag(String.valueOf(event.message()));
+            case "message" -> new ElementTag(PaperModule.stringifyComponent(event.message()), true);
             default -> super.getContext(name);
         };
     }

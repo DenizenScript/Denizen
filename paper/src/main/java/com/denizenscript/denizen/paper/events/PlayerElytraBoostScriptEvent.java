@@ -48,7 +48,7 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
         registerSwitches("with", "elytra");
         this.<PlayerElytraBoostScriptEvent, ElementTag>registerOptionalDetermination("keep", ElementTag.class, (evt, context, value) -> {
             if (value.isBoolean()) {
-                evt.event.setShouldConsume(value.asBoolean());
+                evt.event.setShouldConsume(!value.asBoolean());
                 return true;
             }
             return false;
