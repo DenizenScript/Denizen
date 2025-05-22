@@ -6,9 +6,31 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import org.bukkit.entity.*;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Wolf;
+
+import java.lang.invoke.MethodHandle;
 
 public class EntityVariant extends EntityProperty<ElementTag> {
+
+    // TODO: once the plugin.yml API version is 1.21, replace with direct method calls (see https://github.com/DenizenScript/Denizen/pull/2727)
+    public static final MethodHandle COW_GET_VARIANT, COW_SET_VARIANT;
+
+    static {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            Class<?> cowClass = ReflectionHelper.getClassOrThrow("org.bukkit.entity.Cow");
+            COW_GET_VARIANT = ReflectionHelper.getMethodHandle(cowClass, "getVariant");
+            COW_SET_VARIANT = ReflectionHelper.getMethodHandle(cowClass, "setVariant", Cow.Variant.class);
+        }
+        else {
+            COW_GET_VARIANT = null;
+            COW_SET_VARIANT = null;
+        }
+    }
 
     // <--[property]
     // @object EntityTag
@@ -37,8 +59,14 @@ public class EntityVariant extends EntityProperty<ElementTag> {
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Chicken chicken) {
             return new ElementTag(Utilities.namespacedKeyToString(chicken.getVariant().getKey()), true);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Cow cow) {
-            return new ElementTag(Utilities.namespacedKeyToString(cow.getVariant().getKey()), true);
+        else if (COW_GET_VARIANT != null && getEntity() instanceof Cow cow) {
+            try {
+                return new ElementTag(Utilities.namespacedKeyToString(((Cow.Variant) COW_GET_VARIANT.invoke(cow)).getKey()), true);
+            }
+            catch (Throwable e) {
+                Debug.echoError(e);
+                return null;
+            }
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Pig pig) {
             return new ElementTag(Utilities.namespacedKeyToString(pig.getVariant().getKey()), true);
@@ -60,10 +88,15 @@ public class EntityVariant extends EntityProperty<ElementTag> {
                 chicken.setVariant(chickenVariant);
             }
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Cow cow) {
+        else if (COW_SET_VARIANT != null && getEntity() instanceof Cow cow) {
             Cow.Variant cowVariant = Utilities.elementToRequiredEnumLike(variant, Cow.Variant.class, mechanism);
             if (cowVariant != null) {
-                cow.setVariant(cowVariant);
+                try {
+                    COW_SET_VARIANT.invoke(cow, cowVariant);
+                }
+                catch (Throwable e) {
+                    Debug.echoError(e);
+                }
             }
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Pig pig) {
