@@ -17,6 +17,7 @@ import java.lang.invoke.MethodHandle;
 
 public class EntityVariant extends EntityProperty<ElementTag> {
 
+    // TODO: once 1.21 is the minimum supported version, replace with direct method calls
     public static final MethodHandle COW_GET_VARIANT, COW_SET_VARIANT;
 
     static {
