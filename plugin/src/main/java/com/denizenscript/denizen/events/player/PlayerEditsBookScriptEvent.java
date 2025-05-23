@@ -53,8 +53,8 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
             evt.event.setSigning(false);
         });
         this.<PlayerEditsBookScriptEvent, ScriptTag>registerDetermination(null, ScriptTag.class, (evt, context, value) -> {
-            if (value.getContainer() instanceof BookScriptContainer) {
-                ItemTag dBook = ((BookScriptContainer) value.getContainer()).getBookFrom(getScriptEntryData().getTagContext());
+            if (value.getContainer() instanceof BookScriptContainer script) {
+                ItemTag dBook = (script.getBookFrom(getScriptEntryData().getTagContext()));
                 BookMeta bookMeta = (BookMeta) dBook.getItemMeta();
                 if (dBook.getMaterial().getMaterial() == Material.WRITABLE_BOOK) {
                     event.setSigning(false);
@@ -93,16 +93,9 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
             case "title" -> event.isSigning() ? new ElementTag(event.getNewBookMeta().getTitle()) : null;
             case "pages" -> new ElementTag(event.getNewBookMeta().getPageCount());
             case "book" ->  {
-                if (event.isSigning()) {
-                    ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-                    book.setItemMeta(event.getNewBookMeta());
-                    yield new ItemTag(book);
-                }
-                else {
-                    ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
-                    book.setItemMeta(event.getNewBookMeta());
-                    yield new ItemTag(book);
-                }
+                ItemStack book = event.isSigning() ? new ItemStack(Material.WRITTEN_BOOK) : new ItemStack(Material.WRITABLE_BOOK);
+                book.setItemMeta(event.getNewBookMeta());
+                yield new ItemTag(book);
             }
             case "old_book" -> {
                 ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
