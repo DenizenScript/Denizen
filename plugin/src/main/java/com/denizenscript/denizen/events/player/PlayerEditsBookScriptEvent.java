@@ -54,7 +54,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
         });
         this.<PlayerEditsBookScriptEvent, ScriptTag>registerOptionalDetermination(null, ScriptTag.class, (evt, context, value) -> {
             if (value.getContainer() instanceof BookScriptContainer script) {
-                ItemTag dBook = script.getBookFrom(evt.getScriptEntryData().getTagContext());
+                ItemTag dBook = script.getBookFrom(context);
                 BookMeta bookMeta = (BookMeta) dBook.getItemMeta();
                 if (dBook.getBukkitMaterial() == Material.WRITABLE_BOOK) {
                     evt.event.setSigning(false);
