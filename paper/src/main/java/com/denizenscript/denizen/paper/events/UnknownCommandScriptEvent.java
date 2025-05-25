@@ -77,7 +77,7 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
         return switch (name) {
             case "command" -> new ElementTag(command, true);
             case "raw_args" -> new ElementTag(rawArgs, true);
-            case "args" -> new ListTag(Arrays.asList(ArgumentHelper.buildArgs(rawArgs, false)));
+            case "args" -> new ListTag(Arrays.asList(ArgumentHelper.buildArgs(rawArgs, false)), true);
             case "server" -> new ElementTag(sourceType.equals("server"));
             case "source_type" -> new ElementTag(sourceType, true);
             case "command_block_location" -> sourceType.equals("command_block") ? new LocationTag(((BlockCommandSender) event.getSender()).getBlock().getLocation()) : null;
