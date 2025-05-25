@@ -52,17 +52,19 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
         this.<PlayerEditsBookScriptEvent>registerTextDetermination("not_signing", (evt) -> {
             evt.event.setSigning(false);
         });
-        this.<PlayerEditsBookScriptEvent, ScriptTag>registerDetermination(null, ScriptTag.class, (evt, context, value) -> {
+        this.<PlayerEditsBookScriptEvent, ScriptTag>registerOptionalDetermination(null, ScriptTag.class, (evt, context, value) -> {
             if (value.getContainer() instanceof BookScriptContainer script) {
-                ItemTag dBook = script.getBookFrom(getScriptEntryData().getTagContext());
+                ItemTag dBook = script.getBookFrom(evt.getScriptEntryData().getTagContext());
                 BookMeta bookMeta = (BookMeta) dBook.getItemMeta();
-                if (dBook.getMaterial().getMaterial() == Material.WRITABLE_BOOK) {
-                    event.setSigning(false);
+                if (dBook.getBukkitMaterial() == Material.WRITABLE_BOOK) {
+                    evt.event.setSigning(false);
                 }
-                event.setNewBookMeta(bookMeta);
+                evt.event.setNewBookMeta(bookMeta);
+                return true;
             }
             else {
                 Debug.echoError("Script '" + value + "' is valid, but not of type 'book'!");
+                return false;
             }
         });
     }
@@ -90,7 +92,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "signing" -> new ElementTag(event.isSigning());
-            case "title" -> event.isSigning() ? new ElementTag(event.getNewBookMeta().getTitle()) : null;
+            case "title" -> event.isSigning() ? new ElementTag(event.getNewBookMeta().getTitle(), true) : null;
             case "pages" -> new ElementTag(event.getNewBookMeta().getPageCount());
             case "book" ->  {
                 ItemStack book = new ItemStack(event.isSigning() ? Material.WRITTEN_BOOK : Material.WRITABLE_BOOK);
