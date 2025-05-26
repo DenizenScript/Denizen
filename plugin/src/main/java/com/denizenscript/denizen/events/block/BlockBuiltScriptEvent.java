@@ -5,9 +5,7 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockCanBuildEvent;
@@ -40,6 +38,9 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
 
     public BlockBuiltScriptEvent() {
         registerCouldMatcher("<block> being built (on <block>)");
+        this.<BlockBuiltScriptEvent>registerTextDetermination("buildable", (evt) -> {
+            evt.cancelled = false;
+        });
     }
 
     public LocationTag location;
@@ -53,26 +54,13 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         String mat2 = path.eventArgLowerAt(4);
-        if (mat2.length() > 0 && !old_material.tryAdvancedMatcher(mat2, path.context)) {
+        if (!mat2.isEmpty() && !old_material.tryAdvancedMatcher(mat2, path.context)) {
             return false;
         }
         if (!path.tryArgObject(0, new_material)) {
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String determination = determinationObj.toString();
-            String lower = CoreUtilities.toLowerCase(determination);
-            if (lower.equals("buildable")) {
-                cancelled = false;
-                return true;
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
@@ -88,12 +76,12 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "new_material": return new_material;
-            case "old_material": return old_material;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "new_material" -> new_material;
+            case "old_material" -> old_material;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

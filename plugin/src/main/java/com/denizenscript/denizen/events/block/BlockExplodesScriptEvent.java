@@ -3,7 +3,6 @@ package com.denizenscript.denizen.events.block;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -41,6 +40,26 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
 
     public BlockExplodesScriptEvent() {
         registerCouldMatcher("<block> explodes");
+        this.<BlockExplodesScriptEvent, ListTag>registerOptionalDetermination(null, ListTag.class, (evt, context, value) -> {
+            evt.event.blockList().clear();
+            boolean valid = false;
+            for (LocationTag newBlock : value.filter(LocationTag.class, context)) {
+                evt.event.blockList().add(newBlock.getBlock());
+                valid = true;
+            }
+            if (!valid) {
+                Debug.echoError("No blocks in the provided list were valid.");
+                return false;
+            }
+            return true;
+        });
+        this.<BlockExplodesScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isFloat()) {
+                evt.event.setYield(value.asFloat());
+                return true;
+            }
+            return false;
+        });
     }
 
     public BlockExplodeEvent event;
@@ -59,42 +78,13 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ArgumentHelper.matchesDouble(determination)) {
-            event.setYield(Float.parseFloat(determination));
-            return true;
-        }
-        if (determination.contains(",") || determination.startsWith("li@")) { // Loose "contains any location-like value" check
-            event.blockList().clear();
-            for (String loc : ListTag.valueOf(determination, getTagContext(path))) {
-                LocationTag location = LocationTag.valueOf(loc, getTagContext(path));
-                if (location == null) {
-                    Debug.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + path.container.getName());
-                }
-                else {
-                    event.blockList().add(location.getWorld().getBlockAt(location));
-                }
-            }
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "block": return location;
-            case "blocks": {
-                ListTag blocks = new ListTag();
-                for (Block block : this.blocks) {
-                    blocks.addObject(new LocationTag(block.getLocation()));
-                }
-                return blocks;
-            }
-            case "strength": return new ElementTag(event.getYield());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "block" -> location;
+            case "blocks" -> new ListTag(this.blocks, list -> new LocationTag(list.getLocation()));
+            case "strength" -> new ElementTag(event.getYield());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

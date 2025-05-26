@@ -36,6 +36,13 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
 
     public BlockDispensesScriptEvent() {
         registerCouldMatcher("<block> dispenses <item>");
+        this.<BlockDispensesScriptEvent, LocationTag>registerDetermination(null, LocationTag.class, (evt, context, value) -> {
+            evt.event.setVelocity(value.toVector());
+        });
+        this.<BlockDispensesScriptEvent, ItemTag>registerDetermination(null, ItemTag.class, (evt, context, value) -> {
+            evt.item = value;
+            evt.event.setItem(item.getItemStack());
+        });
     }
 
     public LocationTag location;
@@ -58,33 +65,13 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj.canBeType(LocationTag.class)) {
-            LocationTag vel = determinationObj.asType(LocationTag.class, getTagContext(path));
-            if (vel != null) {
-                event.setVelocity(vel.toVector());
-                return true;
-            }
-        }
-        if (determinationObj.canBeType(ItemTag.class)) {
-            ItemTag it = determinationObj.asType(ItemTag.class, getTagContext(path));
-            if (it != null) {
-                item = it;
-                event.setItem(item.getItemStack());
-                return true;
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "item": return item;
-            case "velocity": return new LocationTag(event.getVelocity());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "item" -> item;
+            case "velocity" -> new LocationTag(event.getVelocity());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
