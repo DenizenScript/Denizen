@@ -7,7 +7,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import io.papermc.paper.event.entity.EntityLoadCrossbowEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,8 +47,10 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
     public EntityLoadCrossbowScriptEvent() {
         registerCouldMatcher("<entity> loads crossbow");
         registerSwitches("crossbow");
+        this.<EntityLoadCrossbowScriptEvent>registerTextDetermination("keep_item", (evt) -> {
+            evt.event.setConsumeItem(false);
+        });
     }
-
 
     public EntityLoadCrossbowEvent event;
     public EntityTag entity;
@@ -71,30 +72,14 @@ public class EntityLoadCrossbowScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String lower = CoreUtilities.toLowerCase(determinationObj.toString());
-            if (lower.equals("keep_item")) {
-                event.setConsumeItem(false);
-                return true;
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "entity":
-                return entity.getDenizenObject();
-            case "crossbow":
-                return new ItemTag(event.getCrossbow());
-            case "hand":
-                return new ElementTag(event.getHand());
-            case "consumes":
-                return new ElementTag(event.shouldConsumeItem());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity.getDenizenObject();
+            case "crossbow" -> new ItemTag(event.getCrossbow());
+            case "hand" -> new ElementTag(event.getHand());
+            case "consumes" -> new ElementTag(event.shouldConsumeItem());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

@@ -7,7 +7,6 @@ import com.denizenscript.denizen.utilities.inventory.InventoryViewUtil;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.event.block.AnvilDamagedEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,6 +42,20 @@ public class AnvilBlockDamagedScriptEvent extends BukkitScriptEvent implements L
     public AnvilBlockDamagedScriptEvent() {
         registerCouldMatcher("anvil block damaged|breaks");
         registerSwitches("state");
+        this.<AnvilBlockDamagedScriptEvent, ElementTag>registerOptionalDetermination("state", ElementTag.class, (evt, context, state) -> {
+            if (state.matchesEnum(AnvilDamagedEvent.DamageState.class)) {
+                evt.event.setDamageState(state.asEnum(AnvilDamagedEvent.DamageState.class));
+                return true;
+            }
+            return false;
+        });
+        this.<AnvilBlockDamagedScriptEvent, ElementTag>registerOptionalDetermination("break", ElementTag.class, (evt, context, value) -> {
+            if (value.isBoolean()) {
+                evt.event.setBreaking(value.asBoolean());
+                return true;
+            }
+            return false;
+        });
     }
 
     public AnvilDamagedEvent event;
@@ -63,31 +76,12 @@ public class AnvilBlockDamagedScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "state": return new ElementTag(event.getDamageState());
-            case "inventory": return InventoryTag.mirrorBukkitInventory(event.getInventory());
-            case "break": return new ElementTag(event.isBreaking());
-        }
-        return super.getContext(name);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String lower = CoreUtilities.toLowerCase(determinationObj.toString());
-            if (lower.startsWith("state:")) {
-                ElementTag stateElement = new ElementTag(lower.substring("state:".length()));
-                if (stateElement.matchesEnum(AnvilDamagedEvent.DamageState.class)) {
-                    event.setDamageState(stateElement.asEnum(AnvilDamagedEvent.DamageState.class));
-                    return true;
-                }
-            }
-            else if (lower.startsWith("break:")) {
-                event.setBreaking(new ElementTag(lower.substring("break:".length())).asBoolean());
-                return true;
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
+        return switch (name) {
+            case "state" -> new ElementTag(event.getDamageState());
+            case "inventory" -> InventoryTag.mirrorBukkitInventory(event.getInventory());
+            case "break" -> new ElementTag(event.isBreaking());
+            default -> super.getContext(name);
+        };
     }
 
     @Override

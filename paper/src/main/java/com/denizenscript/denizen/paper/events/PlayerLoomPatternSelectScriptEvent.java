@@ -7,7 +7,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import io.papermc.paper.event.player.PlayerLoomPatternSelectEvent;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.event.EventHandler;
@@ -56,6 +55,13 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
     public PlayerLoomPatternSelectScriptEvent() {
         registerCouldMatcher("player selects loom pattern");
         registerSwitches("type");
+        this.<PlayerLoomPatternSelectScriptEvent, ElementTag>registerOptionalDetermination("pattern", ElementTag.class, (evt, context, pattern) -> {
+            if (Utilities.matchesEnumlike(pattern, PatternType.class)) {
+                evt.event.setPatternType(Utilities.elementToEnumlike(pattern, PatternType.class));
+                return true;
+            }
+            return false;
+        });
     }
 
     public PlayerLoomPatternSelectEvent event;
@@ -83,19 +89,6 @@ public class PlayerLoomPatternSelectScriptEvent extends BukkitScriptEvent implem
             case "pattern" -> Utilities.enumlikeToElement(event.getPatternType());
             default -> super.getContext(name);
         };
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String lower = CoreUtilities.toLowerCase(determinationObj.toString());
-            if (lower.startsWith("pattern:")) {
-                ElementTag value = new ElementTag(lower.substring("pattern:".length()));
-                event.setPatternType(Utilities.elementToEnumlike(value, PatternType.class));
-                return true;
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @EventHandler
