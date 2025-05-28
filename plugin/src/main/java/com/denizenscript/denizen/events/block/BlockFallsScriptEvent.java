@@ -36,7 +36,6 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
         registerCouldMatcher("<block> falls");
     }
 
-
     public LocationTag location;
     public MaterialTag material;
     public EntityChangeBlockEvent event;

@@ -34,7 +34,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Determine
     // ListTag(LocationTag) to set a new lists of blocks that are to be affected by the explosion.
-    // ElementTag(Decimal) to change the strength of the explosion.
+    // "STRENGTH:<ElementTag(Decimal)>" to change the strength of the explosion.
     //
     // -->
 
@@ -53,7 +53,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
             }
             return true;
         });
-        this.<BlockExplodesScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+        this.<BlockExplodesScriptEvent, ElementTag>registerOptionalDetermination("strength", ElementTag.class, (evt, context, value) -> {
             if (value.isFloat()) {
                 evt.event.setYield(value.asFloat());
                 return true;
@@ -81,7 +81,7 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "block" -> location;
-            case "blocks" -> new ListTag(this.blocks, list -> new LocationTag(list.getLocation()));
+            case "blocks" -> new ListTag(this.blocks, block -> new LocationTag(block.getLocation()));
             case "strength" -> new ElementTag(event.getYield());
             default -> super.getContext(name);
         };
