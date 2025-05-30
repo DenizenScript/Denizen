@@ -17,7 +17,9 @@ public class EntityFreezeTickingLocked extends EntityProperty<ElementTag> {
     // NOTE: Clients may still show frost effects when in powder snow.
     // -->
 
-    public static boolean describes(EntityTag entity) { return true; }
+    public static boolean describes(EntityTag entity) {
+        return true;
+    }
 
     @Override
     public ElementTag getPropertyValue() {
