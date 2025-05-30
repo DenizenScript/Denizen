@@ -13,8 +13,8 @@ public class EntityFreezeTickingLocked extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @plugin Paper
     // @description
-    // Controls whether an entity’s freeze ticks are locked to a fixed value, preventing vanilla freeze tick updates.
-    // NOTE: Clients may still show frost effects when in powder snow.
+    // Controls whether an entity’s freeze duration is locked to a fixed value, preventing changes from vanilla freezing mechanics.
+    // Note: This only affects the server; clients may still display frost visuals when in powder snow.
     // -->
 
     public static boolean describes(EntityTag entity) {
