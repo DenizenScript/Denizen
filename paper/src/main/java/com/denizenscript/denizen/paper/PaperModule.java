@@ -118,6 +118,9 @@ public class PaperModule {
             PropertyParser.registerProperty(EntityEggLayTime.class, EntityTag.class);
             PropertyParser.registerProperty(EntityFriction.class, EntityTag.class);
         }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
+            PropertyParser.registerProperty(EntityFreezeTickingLocked.class, EntityTag.class);
+        }
         PropertyParser.registerProperty(EntityLeftHanded.class, EntityTag.class);
         PropertyParser.registerProperty(EntityReputation.class, EntityTag.class);
         PropertyParser.registerProperty(EntityShouldBurn.class, EntityTag.class);
