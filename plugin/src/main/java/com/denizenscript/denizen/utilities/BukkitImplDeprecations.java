@@ -465,6 +465,9 @@ public class BukkitImplDeprecations {
     // Added 2025/04/27
     public static Warning playerChangesWorldSwitches = new FutureWarning("playerChangesWorldSwitches", "The 'from' and 'to' arguments in the 'player changes world' script event have been deprecated in favor of the 'from' and 'to' switches.");
 
+    // Added 2025/06/01
+    public static Warning blockExplodesStrengthDetermination = new FutureWarning("blockExplodesStrengthDetermination", "The determination to control strength in the 'block explodes' script event has been changed into the 'STRENGTH:<ElementTag(Decimal)>' format.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2023/10/29 without warning.

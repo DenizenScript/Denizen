@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.block;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -40,18 +41,26 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
 
     public BlockExplodesScriptEvent() {
         registerCouldMatcher("<block> explodes");
-        this.<BlockExplodesScriptEvent, ListTag>registerOptionalDetermination(null, ListTag.class, (evt, context, value) -> {
-            evt.event.blockList().clear();
-            boolean valid = false;
-            for (LocationTag newBlock : value.filter(LocationTag.class, context)) {
-                evt.event.blockList().add(newBlock.getBlock());
-                valid = true;
+        this.<BlockExplodesScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            if (value.toString().contains(",") || value.toString().startsWith("li@")) { // Raw ListTag check due to there not being a prefix for block strength previously
+                evt.event.blockList().clear();
+                boolean valid = false;
+                for (String newBlock : ListTag.valueOf(value.toString(), context)) {
+                    evt.event.blockList().add(LocationTag.valueOf(newBlock, context).getBlock());
+                    valid = true;
+                }
+                if (!valid) {
+                    Debug.echoError("No blocks in the provided list were valid.");
+                    return false;
+                }
+                return true;
             }
-            if (!valid) {
-                Debug.echoError("No blocks in the provided list were valid.");
-                return false;
+            else if (value.asElement().isFloat()) {
+                BukkitImplDeprecations.blockExplodesStrengthDetermination.warn();
+                evt.event.setYield(value.asElement().asFloat());
+                return true;
             }
-            return true;
+            return false;
         });
         this.<BlockExplodesScriptEvent, ElementTag>registerOptionalDetermination("strength", ElementTag.class, (evt, context, value) -> {
             if (value.isFloat()) {
