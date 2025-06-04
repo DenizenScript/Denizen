@@ -39,7 +39,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     public BlockBuiltScriptEvent() {
         registerCouldMatcher("<block> being built (on <block>)");
         this.<BlockBuiltScriptEvent>registerTextDetermination("buildable", (evt) -> {
-            evt.cancelled = false;
+            evt.event.setBuildable(true);
         });
     }
 
