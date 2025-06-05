@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,6 +29,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     // <context.location> returns the LocationTag of the block the player is trying to build on.
     // <context.old_material> returns the MaterialTag of the block the player is trying to build on.
     // <context.new_material> returns the MaterialTag of the block the player is trying to build.
+    // <context.buildable> returns whether the block can physically be placed where it was when the event was fired.
     //
     // @Determine
     // "BUILDABLE" to allow the building.
@@ -80,6 +82,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
             case "location" -> location;
             case "new_material" -> new_material;
             case "old_material" -> old_material;
+            case "buildable" -> new ElementTag(event.isBuildable());
             default -> super.getContext(name);
         };
     }
