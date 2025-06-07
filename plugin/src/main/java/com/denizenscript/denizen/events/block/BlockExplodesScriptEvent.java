@@ -46,8 +46,13 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
                 evt.event.blockList().clear();
                 boolean valid = false;
                 for (String newBlock : ListTag.valueOf(value.toString(), context)) {
-                    evt.event.blockList().add(LocationTag.valueOf(newBlock, context).getBlock());
-                    valid = true;
+                    LocationTag location = LocationTag.valueOf(newBlock, context);
+                    if (location != null) {
+                        evt.event.blockList().add(location.getBlock());
+                        valid = true;
+                        continue;
+                    }
+                    Debug.echoError("'" + newBlock + "' is not a valid block location.");
                 }
                 if (!valid) {
                     Debug.echoError("No blocks in the provided list were valid.");
