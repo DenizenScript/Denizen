@@ -82,6 +82,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BrewingStandFueledScriptEvent.class);
         ScriptEvent.registerScriptEvent(BrewsScriptEvent.class);
         ScriptEvent.registerScriptEvent(CauldronLevelChangeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(DragonEggMovesScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceBurnsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceStartsSmeltingScriptEvent.class);
         ScriptEvent.registerScriptEvent(LeafDecaysScriptEvent.class);

@@ -465,6 +465,12 @@ public class BukkitImplDeprecations {
     // Added 2025/04/27
     public static Warning playerChangesWorldSwitches = new FutureWarning("playerChangesWorldSwitches", "The 'from' and 'to' arguments in the 'player changes world' script event have been deprecated in favor of the 'from' and 'to' switches.");
 
+    // Added 2025/06/07
+    public static Warning dragonEggMoveEventContexts = new FutureWarning("dragonEggMoveEventContexts", "The usage of <context.location> and <context.destination> in the 'dragon egg moves' script event have been deprecated in favor of <context.old_location> and <context.new_location> respectively.");
+
+    // Added 2025/06/07
+    public static Warning liquidSpreadEventContext = new FutureWarning("liquidSpreadEventContext", "The usage of <context.location> in the 'liquid spreads' script event has been deprecated in favor of <context.source>.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2023/10/29 without warning.
