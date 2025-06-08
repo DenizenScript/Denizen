@@ -2,7 +2,6 @@ package com.denizenscript.denizen.events.block;
 
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -33,16 +32,13 @@ public class DragonEggMovesScriptEvent extends BukkitScriptEvent implements List
         registerCouldMatcher("dragon egg moves");
     }
 
-    public LocationTag old_location;
-    public LocationTag new_location;
+    public LocationTag location;
+    public LocationTag destination;
     public BlockFromToEvent event;
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (event.getBlock().getType() != Material.DRAGON_EGG) { // BlockFromToEvent also fires with LiquidSpreadScriptEvent
-            return false;
-        }
-        if (!runInCheck(path, old_location) && !runInCheck(path, new_location)) {
+        if (!runInCheck(path, location) && !runInCheck(path, destination)) {
             return false;
         }
         return super.matches(path);
@@ -51,24 +47,19 @@ public class DragonEggMovesScriptEvent extends BukkitScriptEvent implements List
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "old_location" -> old_location;
-            case "new_location" -> new_location;
-            case "location" -> {
-                BukkitImplDeprecations.dragonEggMoveEventContexts.warn();
-                yield old_location;
-            }
-            case "destination" -> {
-                BukkitImplDeprecations.dragonEggMoveEventContexts.warn();
-                yield new_location;
-            }
+            case "location" -> location;
+            case "destination" -> destination;
             default -> super.getContext(name);
         };
     }
 
     @EventHandler
     public void onDragonEggMove(BlockFromToEvent event) {
-        new_location = new LocationTag(event.getToBlock().getLocation());
-        old_location = new LocationTag(event.getBlock().getLocation());
+        if (event.getBlock().getType() != Material.DRAGON_EGG) { // BlockFromToEvent also fires with LiquidSpreadScriptEvent
+            return;
+        }
+        destination = new LocationTag(event.getToBlock().getLocation());
+        location = new LocationTag(event.getBlock().getLocation());
         this.event = event;
         fire(event);
     }

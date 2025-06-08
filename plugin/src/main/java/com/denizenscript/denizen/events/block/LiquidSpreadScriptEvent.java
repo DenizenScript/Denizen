@@ -3,7 +3,6 @@ package com.denizenscript.denizen.events.block;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -28,8 +27,8 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Context
     // <context.destination> returns the LocationTag the block spread to.
-    // <context.source> returns the LocationTag the source of the liquid spreading.
-    // <context.material> returns the MaterialTag of the block that was spread.
+    // <context.location> returns the LocationTag the block spread location.
+    // <context.material> returns the MaterialTag of the block that spread.
     //
     // -->
 
@@ -45,9 +44,6 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (event.getBlock().getType() == Material.DRAGON_EGG) { // BlockFromToEvent also fires with DragonEggMovesScriptEvent
-            return false;
-        }
         if (!path.tryObjectSwitch("type", material)) {
             return false;
         }
@@ -60,11 +56,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "source" -> location;
-            case "location" -> {
-                BukkitImplDeprecations.liquidSpreadEventContext.warn();
-                yield location;
-            }
+            case "location" -> location;
             case "destination" -> destination;
             case "material" -> material;
             default -> super.getContext(name);
@@ -73,9 +65,12 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler
     public void onLiquidSpreads(BlockFromToEvent event) {
+        if (event.getBlock().getType() == Material.DRAGON_EGG) { // BlockFromToEvent also fires with DragonEggMovesScriptEvent
+            return;
+        }
+        material = new MaterialTag(event.getBlock());
         destination = new LocationTag(event.getToBlock().getLocation());
         location = new LocationTag(event.getBlock().getLocation());
-        material = new MaterialTag(event.getBlock());
         this.event = event;
         fire(event);
     }
