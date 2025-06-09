@@ -23,8 +23,8 @@ public class DragonEggMovesScriptEvent extends BukkitScriptEvent implements List
     // @Triggers when a dragon egg moves.
     //
     // @Context
-    // <context.old_location> returns the LocationTag the egg started at.
-    // <context.new_location> returns the LocationTag the egg teleported to.
+    // <context.location> returns the LocationTag the egg started at.
+    // <context.destination> returns the LocationTag the egg teleported to.
     //
     // -->
 
