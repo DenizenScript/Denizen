@@ -46,8 +46,8 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     public LocationTag location;
-    public MaterialTag old_material;
-    public MaterialTag new_material;
+    public MaterialTag oldMaterial;
+    public MaterialTag newMaterial;
     public BlockCanBuildEvent event;
 
     @Override
@@ -55,11 +55,10 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
         if (!runInCheck(path, location)) {
             return false;
         }
-        String mat2 = path.eventArgLowerAt(4);
-        if (!mat2.isEmpty() && !old_material.tryAdvancedMatcher(mat2, path.context)) {
+        if (!path.tryArgObject(4, oldMaterial)) {
             return false;
         }
-        if (!path.tryArgObject(0, new_material)) {
+        if (!path.tryArgObject(0, newMaterial)) {
             return false;
         }
         return super.matches(path);
@@ -80,8 +79,8 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "location" -> location;
-            case "new_material" -> new_material;
-            case "old_material" -> old_material;
+            case "new_material" -> newMaterial;
+            case "old_material" -> oldMaterial;
             case "buildable" -> new ElementTag(event.isBuildable());
             default -> super.getContext(name);
         };
@@ -90,8 +89,8 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     @EventHandler
     public void onBlockBuilt(BlockCanBuildEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
-        old_material = new MaterialTag(event.getBlock());
-        new_material = new MaterialTag(event.getBlockData());
+        oldMaterial = new MaterialTag(event.getBlock());
+        newMaterial = new MaterialTag(event.getBlockData());
         cancelled = !event.isBuildable();
         this.event = event;
         fire(event);

@@ -42,17 +42,17 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     public BlockExplodesScriptEvent() {
         registerCouldMatcher("<block> explodes");
         this.<BlockExplodesScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value.toString().contains(",") || value.toString().startsWith("li@")) { // Raw ListTag check due to there not being a prefix for block strength previously
-                evt.event.blockList().clear();
+            String blocks = value.identify();
+            if (blocks.contains(",") || blocks.startsWith("li@")) { // Raw ListTag check due to there not being a prefix for block strength previously
                 boolean valid = false;
-                for (String newBlock : ListTag.valueOf(value.toString(), context)) {
-                    LocationTag location = LocationTag.valueOf(newBlock, context);
-                    if (location != null) {
-                        evt.event.blockList().add(location.getBlock());
+                for (LocationTag newBlock : value.asType(ListTag.class, context).filter(LocationTag.class, context)) {
+                    if (newBlock != null) {
+                        if (!valid) {
+                            evt.event.blockList().clear();
+                        }
+                        evt.event.blockList().add(newBlock.getBlock());
                         valid = true;
-                        continue;
                     }
-                    Debug.echoError("'" + newBlock + "' is not a valid block location.");
                 }
                 if (!valid) {
                     Debug.echoError("No blocks in the provided list were valid.");
