@@ -4,13 +4,14 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.CommandMinecart;
@@ -53,6 +54,12 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
 
     public UnknownCommandScriptEvent() {
         registerCouldMatcher("command unknown");
+        this.<UnknownCommandScriptEvent, ElementTag>registerDetermination(null, ElementTag.class, (evt, context, text) -> {
+            evt.event.message(PaperModule.parseFormattedText(text.toString(), ChatColor.WHITE));
+        });
+        this.<UnknownCommandScriptEvent>registerTextDetermination("none", (evt) -> {
+            evt.event.message(null);
+        });
     }
 
     public UnknownCommandEvent event;
@@ -61,52 +68,23 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
     public String sourceType;
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String determination = determinationObj.toString();
-            if (CoreUtilities.equalsIgnoreCase(determination, "none")) {
-                event.setMessage(null);
-            }
-            else {
-                event.setMessage(determination);
-            }
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(event.getSender() instanceof Player ? new PlayerTag((Player) event.getSender()) : null, null);
+        return new BukkitScriptEntryData(event.getSender() instanceof Player player ? new PlayerTag(player) : null, null);
     }
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("command")) {
-            return new ElementTag(command);
-        }
-        else if (name.equals("raw_args")) {
-            return new ElementTag(rawArgs);
-        }
-        else if (name.equals("args")) {
-            return new ListTag(Arrays.asList(ArgumentHelper.buildArgs(rawArgs, false)));
-        }
-        else if (name.equals("server")) {
-            return new ElementTag(sourceType.equals("server"));
-        }
-        else if (name.equals("source_type")) {
-            return new ElementTag(sourceType);
-        }
-        else if (name.equals("command_block_location") && sourceType.equals("command_block")) {
-            return new LocationTag(((BlockCommandSender) event.getSender()).getBlock().getLocation());
-        }
-        else if (name.equals("command_minecart") && sourceType.equals("command_minecart")) {
-            return new EntityTag((CommandMinecart) event.getSender());
-        }
-        else if (name.equals("message")) {
-            return new ElementTag(event.getMessage());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "command" -> new ElementTag(command, true);
+            case "raw_args" -> new ElementTag(rawArgs, true);
+            case "args" -> new ListTag(Arrays.asList(ArgumentHelper.buildArgs(rawArgs, false)), true);
+            case "server" -> new ElementTag(sourceType.equals("server"));
+            case "source_type" -> new ElementTag(sourceType, true);
+            case "command_block_location" -> sourceType.equals("command_block") ? new LocationTag(((BlockCommandSender) event.getSender()).getBlock().getLocation()) : null;
+            case "command_minecart" -> sourceType.equals("command_minecart") ? new EntityTag((CommandMinecart) event.getSender()) : null;
+            case "message" -> new ElementTag(PaperModule.stringifyComponent(event.message()), true);
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

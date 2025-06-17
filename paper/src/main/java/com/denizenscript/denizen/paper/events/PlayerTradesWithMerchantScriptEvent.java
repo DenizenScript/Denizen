@@ -45,6 +45,9 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     public PlayerTradesWithMerchantScriptEvent() {
         registerCouldMatcher("player trades with merchant");
         registerSwitches("result");
+        this.<PlayerTradesWithMerchantScriptEvent, TradeTag>registerDetermination(null, TradeTag.class, (evt, context, trade) -> {
+            evt.event.setTrade(trade.getRecipe());
+        });
     }
 
     public PlayerPurchaseEvent event;
@@ -61,28 +64,17 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj.canBeType(TradeTag.class)) {
-            event.setTrade(determinationObj.asType(TradeTag.class, getTagContext(path)).getRecipe());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
         return new BukkitScriptEntryData(event.getPlayer());
     }
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("merchant") && event instanceof PlayerTradeEvent) {
-            return new EntityTag(((PlayerTradeEvent) event).getVillager());
-        }
-        else if (name.equals("trade")) {
-            return new TradeTag(event.getTrade()).duplicate();
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "merchant" -> event instanceof PlayerTradeEvent tradeEvent ? new EntityTag(tradeEvent.getVillager()) : null;
+            case "trade" -> new TradeTag(event.getTrade()).duplicate();
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
