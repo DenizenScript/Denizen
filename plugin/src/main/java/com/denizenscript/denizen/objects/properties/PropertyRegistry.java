@@ -239,6 +239,9 @@ public class PropertyRegistry {
         registerItemProperty(ItemFireworkPower.class, "fireworks");
         registerItemProperty(ItemFirework.class, "fireworks", "firework_explosion");
         PropertyParser.registerProperty(ItemFlags.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            registerItemProperty(ItemFood.class, "food");
+        }
         PropertyParser.registerProperty(ItemFrameInvisible.class, ItemTag.class); // Special case handling in ItemComponentsPatch
         PropertyParser.registerProperty(ItemHidden.class, ItemTag.class); // Relevant components control their own hiding internally
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
@@ -251,10 +254,18 @@ public class PropertyRegistry {
         registerItemProperty(ItemLodestoneTracked.class, "lodestone_tracker");
         registerItemProperty(ItemLore.class, "lore");
         registerItemProperty(ItemMap.class, "map_id");
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            registerItemProperty(ItemMaxDurability.class, "max_damage");
+            registerItemProperty(ItemMaxStackSize.class, "max_stack_size");
+            registerItemProperty(ItemModel.class, "item_model");
+        }
         PropertyParser.registerProperty(ItemNBT.class, ItemTag.class);
         registerItemProperty(ItemPatterns.class, "banner_patterns");
         registerItemProperty(ItemPotion.class, "potion_contents");
         PropertyParser.registerProperty(ItemQuantity.class, ItemTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            registerItemProperty(ItemRarity.class, "rarity");
+        }
         PropertyParser.registerProperty(ItemRawNBT.class, ItemTag.class);
         registerItemProperty(ItemRepairCost.class, "repair_cost");
         PropertyParser.registerProperty(ItemScript.class, ItemTag.class);

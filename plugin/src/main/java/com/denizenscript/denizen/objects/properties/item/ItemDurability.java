@@ -25,7 +25,7 @@ public class ItemDurability implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "durability", "max_durability"
+            "durability"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -55,19 +55,6 @@ public class ItemDurability implements Property {
         // -->
         if (attribute.startsWith("durability")) {
             return new ElementTag(((Damageable) item.getItemMeta()).getDamage())
-                    .getObjectAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <ItemTag.max_durability>
-        // @returns ElementTag(Number)
-        // @group properties
-        // @description
-        // Returns the maximum durability (number of uses) of this item.
-        // For use with <@link tag ItemTag.durability> and <@link mechanism ItemTag.durability>.
-        // -->
-        if (attribute.startsWith("max_durability")) {
-            return new ElementTag(item.getMaterial().getMaterial().getMaxDurability())
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
@@ -101,7 +88,6 @@ public class ItemDurability implements Property {
         // Changes the durability of damageable items.
         // @tags
         // <ItemTag.durability>
-        // <ItemTag.max_durability>
         // <ItemTag.repairable>
         // -->
         if (mechanism.matches("durability") && mechanism.requireInteger()) {
