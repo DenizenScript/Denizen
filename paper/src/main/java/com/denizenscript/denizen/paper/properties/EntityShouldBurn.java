@@ -1,12 +1,12 @@
 package com.denizenscript.denizen.paper.properties;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import org.bukkit.entity.Phantom;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Zombie;
+import org.bukkit.entity.*;
 
 public class EntityShouldBurn extends EntityProperty<ElementTag> {
 
@@ -16,13 +16,15 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
     // @input ElementTag(Boolean)
     // @plugin Paper
     // @description
-    // If the entity is a Zombie, Skeleton, or Phantom, controls whether it should burn in daylight.
+    // If the entity is a Zombie, Skeleton, Stray, Bogged, or Phantom, controls whether it should burn in daylight.
     // -->
 
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Zombie
+                || entity.getBukkitEntity() instanceof Phantom
                 || entity.getBukkitEntity() instanceof Skeleton
-                || entity.getBukkitEntity() instanceof Phantom;
+                || entity.getBukkitEntity() instanceof Stray
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && entity.getBukkitEntity() instanceof Bogged);
     }
 
     @Override
@@ -30,11 +32,17 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
         if (getEntity() instanceof Zombie zombie) {
             return new ElementTag(zombie.shouldBurnInDay());
         }
+        else if (getEntity() instanceof Phantom phantom) {
+            return new ElementTag(phantom.shouldBurnInDay());
+        }
         else if (getEntity() instanceof Skeleton skeleton) {
             return new ElementTag(skeleton.shouldBurnInDay());
         }
-        else { // phantom
-            return new ElementTag(as(Phantom.class).shouldBurnInDay());
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && getEntity() instanceof Bogged bogged) {
+            return new ElementTag(bogged.shouldBurnInDay());
+        }
+        else { // stray
+            return new ElementTag(as(Stray.class).shouldBurnInDay());
         }
     }
 
@@ -49,11 +57,17 @@ public class EntityShouldBurn extends EntityProperty<ElementTag> {
             if (getEntity() instanceof Zombie zombie) {
                 zombie.setShouldBurnInDay(param.asBoolean());
             }
+            else if (getEntity() instanceof Phantom phantom) {
+                phantom.setShouldBurnInDay(param.asBoolean());
+            }
             else if (getEntity() instanceof Skeleton skeleton) {
                 skeleton.setShouldBurnInDay(param.asBoolean());
             }
-            else { // phantom
-                as(Phantom.class).setShouldBurnInDay(param.asBoolean());
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && getEntity() instanceof Bogged bogged) {
+                bogged.setShouldBurnInDay(param.asBoolean());
+            }
+            else { // stray
+                as(Stray.class).setShouldBurnInDay(param.asBoolean());
             }
         }
     }
