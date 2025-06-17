@@ -676,7 +676,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the relative in-game time of this world as a duration.
         // -->
-        registerTag(DurationTag.class, "time_duration", (attribute1, object1) -> {
+        registerTag(DurationTag.class, "time_duration", (attribute, object) -> {
             return new DurationTag(object1.getWorld().getTime());
         });
 
@@ -696,7 +696,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns the time as 'day', 'night', 'dawn', or 'dusk'.
         // -->
-        registerTag(ElementTag.class, "time_period", (attribute, object) -> {;
+        registerTag(ElementTag.class, "time_period", (attribute, object) -> {
             long time = object.getWorld().getTime();
             String period;
 
@@ -1433,7 +1433,9 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // <WorldTag.time>
         // -->
         tagProcessor.registerMechanism("time", false, ElementTag.class, (object, mechanism, input) -> {
-            object.getWorld().setTime(input.asInt());
+            if (mechanism.requireInteger()) {
+                object.getWorld().setTime(input.asInt());
+            }
         });
 
         // <--[mechanism]
