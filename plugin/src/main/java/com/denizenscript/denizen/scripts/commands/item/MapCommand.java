@@ -22,7 +22,7 @@ public class MapCommand extends AbstractCommand {
     public MapCommand() {
         setName("map");
         setSyntax("map [<#>/new:<world>] (reset:<location>/reset_to_blank) (scale:<value>) (tracking) (image:<file>) (resize) (script:<script>) (dot:<color>) (radius:<#>) (x:<#>) (y:<#>) (text:<text>) (width:<#>) (height:<#>)");
-        setRequiredArguments(2, 12);
+        setRequiredArguments(2, 14);
         isProcedural = false;
         autoCompile();
     }
@@ -31,7 +31,7 @@ public class MapCommand extends AbstractCommand {
     // @Name Map
     // @Syntax map [<#>/new:<world>] (reset:<location>/reset_to_blank) (scale:<value>) (tracking) (image:<file>) (resize) (script:<script>) (dot:<color>) (radius:<#>) (x:<#>) (y:<#>) (text:<text>) (width:<#>) (height:<#>)
     // @Required 2
-    // @Maximum 12
+    // @Maximum 14
     // @Short Modifies a new or existing map by adding images or text.
     // @Group item
     //
@@ -109,9 +109,6 @@ public class MapCommand extends AbstractCommand {
         }
         if (resetLoc == null && image == null && script == null && dot == null && text == null && !resetEmpty) {
             throw new InvalidArgumentsRuntimeException("Must specify a valid action to perform!");
-        }
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, "map", id, create, resetLoc, image, script, dot, radius, scale, db("reset_to_empty", resetEmpty), db("resize", resize), db("tracking", tracking), x, y, text, width, height);
         }
         MapView map;
         if (create != null) {
