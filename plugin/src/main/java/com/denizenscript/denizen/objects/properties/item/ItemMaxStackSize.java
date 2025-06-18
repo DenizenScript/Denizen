@@ -39,6 +39,6 @@ public class ItemMaxStackSize extends ItemProperty<ElementTag> {
     }
 
     public static void register() {
-        autoRegisterNullable("max_stack_size", ItemMaxDurability.class, ElementTag.class, false);
+        autoRegisterNullable("max_stack_size", ItemMaxStackSize.class, ElementTag.class, false);
     }
 }

@@ -40,17 +40,17 @@ public class ItemFood extends ItemProperty<MapTag> {
     }
 
     @Override
-    public void setPropertyValue(MapTag element, Mechanism mechanism) {
+    public void setPropertyValue(MapTag map, Mechanism mechanism) {
         FoodComponent food = getItemMeta().getFood();
         editMeta(ItemMeta.class, meta -> {
-            if (element.getElement("nutrition") != null) {
-                food.setNutrition(element.getElement("nutrition").asInt());
+            if (map.getElement("nutrition") != null) {
+                food.setNutrition(map.getElement("nutrition").asInt());
             }
-            if (element.getElement("saturation") != null) {
-                food.setSaturation(element.getElement("saturation").asFloat());
+            if (map.getElement("saturation") != null) {
+                food.setSaturation(map.getElement("saturation").asFloat());
             }
-            if (element.getElement("can_always_eat") != null) {
-                food.setCanAlwaysEat(element.getElement("can_always_eat").asBoolean());
+            if (map.getElement("can_always_eat") != null) {
+                food.setCanAlwaysEat(map.getElement("can_always_eat").asBoolean());
             }
             meta.setFood(food);
         });
