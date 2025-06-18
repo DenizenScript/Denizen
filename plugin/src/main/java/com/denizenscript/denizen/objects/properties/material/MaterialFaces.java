@@ -2,6 +2,7 @@ package com.denizenscript.denizen.objects.properties.material;
 
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.BlockFace;
@@ -28,11 +29,7 @@ public class MaterialFaces extends MaterialProperty<ListTag> {
 
     @Override
     public ListTag getPropertyValue() {
-        ListTag faces = new ListTag();
-        for (BlockFace face : ((MultipleFacing) getBlockData()).getFaces()) {
-            faces.add(face.name());
-        }
-        return faces;
+        return new ListTag(((MultipleFacing) getBlockData()).getFaces(), ElementTag::new);
     }
 
     @Override
@@ -42,7 +39,9 @@ public class MaterialFaces extends MaterialProperty<ListTag> {
             facing.setFace(face, false);
         }
         for (String faceName : list) {
-            facing.setFace(BlockFace.valueOf(faceName.toUpperCase()), true);
+            if (mechanism.requireEnum(BlockFace.class)) {
+                facing.setFace(new ElementTag(faceName).asEnum(BlockFace.class), true);
+            }
         }
     }
 
@@ -59,11 +58,7 @@ public class MaterialFaces extends MaterialProperty<ListTag> {
         // See also <@link property MaterialTag.faces>
         // -->
         PropertyParser.registerStaticTag(MaterialFaces.class, ListTag.class, "valid_faces", (attribute, material) -> {
-            ListTag toReturn = new ListTag();
-            for (BlockFace face : ((MultipleFacing) material.getBlockData()).getAllowedFaces()) {
-                toReturn.add(face.name());
-            }
-            return toReturn;
+            return new ListTag(((MultipleFacing) material.getBlockData()).getAllowedFaces(), ElementTag::new);
         });
     }
 }

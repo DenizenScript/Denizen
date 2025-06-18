@@ -46,16 +46,13 @@ public class MaterialHalf extends MaterialProperty<ElementTag> {
     public ElementTag getPropertyValue() {
         BlockData data = getBlockData();
         if (data instanceof Bisected bisected) {
-            return new ElementTag(bisected.getHalf().name());
+            return new ElementTag(bisected.getHalf());
         }
         else if (data instanceof Bed bed) {
-            return new ElementTag(bed.getPart().name());
+            return new ElementTag(bed.getPart());
         }
-        else if (data instanceof Chest chest) {
-            if (chest.getType() == Chest.Type.SINGLE) {
-                return null;
-            }
-            return new ElementTag(chest.getType().name());
+        else if (data instanceof Chest chest && chest.getType() != Chest.Type.SINGLE) {
+            return new ElementTag(chest.getType());
         }
         return null;
     }
@@ -63,13 +60,13 @@ public class MaterialHalf extends MaterialProperty<ElementTag> {
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         BlockData data = getBlockData();
-        if (data instanceof Bisected bisected) {
+        if (data instanceof Bisected bisected && mechanism.requireEnum(Bisected.Half.class)) {
             bisected.setHalf(value.asEnum(Bisected.Half.class));
         }
-        else if (data instanceof Bed bed) {
+        else if (data instanceof Bed bed && mechanism.requireEnum(Bed.Part.class)) {
             bed.setPart(value.asEnum(Bed.Part.class));
         }
-        else if (data instanceof Chest chest) {
+        else if (data instanceof Chest chest && mechanism.requireEnum(Chest.Type.class)) {
             chest.setType(value.asEnum(Chest.Type.class));
         }
     }
