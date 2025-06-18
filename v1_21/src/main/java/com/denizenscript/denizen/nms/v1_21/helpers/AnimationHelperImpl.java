@@ -2,9 +2,9 @@ package com.denizenscript.denizen.nms.v1_21.helpers;
 
 import com.denizenscript.denizen.nms.abstracts.AnimationHelper;
 import net.minecraft.world.entity.Entity;
-import org.bukkit.craftbukkit.v1_21_R4.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R4.entity.CraftHorse;
-import org.bukkit.craftbukkit.v1_21_R4.entity.CraftPolarBear;
+import org.bukkit.craftbukkit.v1_21_R5.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R5.entity.CraftHorse;
+import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPolarBear;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.IronGolem;
@@ -22,14 +22,15 @@ public class AnimationHelperImpl extends AnimationHelper {
                 ((CraftPolarBear) entity).getHandle().setStanding(false);
             }
         });
+        // TODO: 1.21.6: this is a tick duration now, should become a mechanism
         register("HORSE_START_STANDING", entity -> {
             if (entity instanceof Horse) {
-                ((CraftHorse) entity).getHandle().setStanding(true);
+                ((CraftHorse) entity).getHandle().setStanding(Integer.MAX_VALUE);
             }
         });
         register("HORSE_STOP_STANDING", entity -> {
             if (entity instanceof Horse) {
-                ((CraftHorse) entity).getHandle().setStanding(false);
+                ((CraftHorse) entity).getHandle().clearStanding();
             }
         });
         register("HORSE_BUCK", entity -> {
