@@ -4,6 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
+import com.denizenscript.denizen.nms.v1_21.Handler;
 import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_21.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.jnbt.CompoundTagImpl;
@@ -120,7 +121,7 @@ public class BlockHelperImpl implements BlockHelper {
         ctag = builder.build();
         BlockPos blockPos = new BlockPos(block.getX(), block.getY(), block.getZ());
         BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(blockPos, true);
-        te.loadWithComponents(((CompoundTagImpl) ctag).toNMSTag(), CraftRegistry.getMinecraftRegistry());
+        Handler.useValueInput(((CompoundTagImpl) ctag).toNMSTag(), te::loadWithComponents);
     }
 
     @Override
@@ -214,6 +215,7 @@ public class BlockHelperImpl implements BlockHelper {
         }
         try {
             // Wrangle a fake entity
+            // TODO: 1.21.6: seems to have a bug where the "Pos" value being set prevents it from spawning?
             org.bukkit.entity.Entity bukkitEntity = ((CraftWorld) spawner.getWorld()).createEntity(spawner.getLocation(), entity.getBukkitEntityType().getEntityClass());
             Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
             EntityTag entityTag = new EntityTag(bukkitEntity);
@@ -224,12 +226,8 @@ public class BlockHelperImpl implements BlockHelper {
             }
             nmsEntity.unsetRemoved();
             // Store it into the spawner
-            CraftCreatureSpawner bukkitSpawner = (CraftCreatureSpawner) spawner;
-            SpawnerBlockEntity nmsSnapshot = (SpawnerBlockEntity) craftBlockEntityState_snapshot.get(bukkitSpawner);
-            BaseSpawner nmsSpawner = nmsSnapshot.getSpawner();
-            SpawnData toSpawn = nmsSpawner.nextSpawnData;
-            net.minecraft.nbt.CompoundTag tag = toSpawn.getEntityToSpawn();
-            nmsEntity.saveWithoutId(tag);
+            SpawnerBlockEntity nmsSnapshot = (SpawnerBlockEntity) craftBlockEntityState_snapshot.get(spawner);
+            Handler.useValueOutput(nmsSnapshot.getSpawner().nextSpawnData.getEntityToSpawn(), nmsEntity::saveWithoutId);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

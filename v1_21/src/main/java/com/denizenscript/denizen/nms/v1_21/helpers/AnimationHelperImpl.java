@@ -22,14 +22,15 @@ public class AnimationHelperImpl extends AnimationHelper {
                 ((CraftPolarBear) entity).getHandle().setStanding(false);
             }
         });
+        // TODO: 1.21.6: this is a tick duration now, should become a mechanism
         register("HORSE_START_STANDING", entity -> {
             if (entity instanceof Horse) {
-                ((CraftHorse) entity).getHandle().setStanding(true);
+                ((CraftHorse) entity).getHandle().setStanding(Integer.MAX_VALUE);
             }
         });
         register("HORSE_STOP_STANDING", entity -> {
             if (entity instanceof Horse) {
-                ((CraftHorse) entity).getHandle().setStanding(false);
+                ((CraftHorse) entity).getHandle().clearStanding();
             }
         });
         register("HORSE_BUCK", entity -> {

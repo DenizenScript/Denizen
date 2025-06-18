@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import net.minecraft.network.*;
@@ -298,12 +299,12 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
-    public void send(Packet<?> packet, PacketSendListener genericfuturelistener) {
-        send(packet, genericfuturelistener, true);
+    public void send(Packet<?> packet, ChannelFutureListener channelFutureListener) {
+        send(packet, channelFutureListener, true);
     }
 
     @Override
-    public void send(Packet<?> packet, @Nullable PacketSendListener genericfuturelistener, boolean flush) {
+    public void send(Packet<?> packet, @Nullable ChannelFutureListener channelFutureListener, boolean flush) {
         if (!Bukkit.isPrimaryThread()) {
             if (Settings.cache_warnOnAsyncPackets
                     && !(packet instanceof ClientboundSystemChatPacket) && !(packet instanceof ClientboundPlayerChatPacket) // Vanilla supports an async chat system, though it's normally disabled, some plugins use this as justification for sending messages async
@@ -317,7 +318,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                     Debug.echoError(ex);
                 }
             }
-            oldManager.send(packet, genericfuturelistener, flush);
+            oldManager.send(packet, channelFutureListener, flush);
             return;
         }
         if (NMSHandler.debugPackets) {
@@ -350,7 +351,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             packet = processed;
         }
-        oldManager.send(packet, genericfuturelistener, flush);
+        oldManager.send(packet, channelFutureListener, flush);
     }
 
     @Override

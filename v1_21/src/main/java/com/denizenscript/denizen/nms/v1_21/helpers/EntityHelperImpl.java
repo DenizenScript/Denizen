@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.nms.v1_21.Handler;
 import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_21.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
@@ -174,14 +175,13 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public CompoundTag getNbtData(Entity entity) {
-        net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
-        ((CraftEntity) entity).getHandle().saveAsPassenger(compound);
-        return CompoundTagImpl.fromNMSTag(compound);
+        net.minecraft.nbt.CompoundTag nmsTag = Handler.useValueOutput(((CraftEntity) entity).getHandle()::saveAsPassenger);
+        return CompoundTagImpl.fromNMSTag(nmsTag);
     }
 
     @Override
     public void setNbtData(Entity entity, CompoundTag compoundTag) {
-        ((CraftEntity) entity).getHandle().load(((CompoundTagImpl) compoundTag).toNMSTag());
+        Handler.useValueInput(((CompoundTagImpl) compoundTag).toNMSTag(), ((CraftEntity) entity).getHandle()::load);
     }
 
     /*
@@ -371,7 +371,7 @@ public class EntityHelperImpl extends EntityHelper {
         }
         ServerPlayer nmsPlayer = ((CraftPlayer) pl).getHandle();
         if (nmsPlayer.connection != null && !pl.equals(entity)) {
-            ChunkMap.TrackedEntity entry = nmsPlayer.serverLevel().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
+            ChunkMap.TrackedEntity entry = nmsPlayer.level().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
             if (entry != null) {
                 entry.removePlayer(nmsPlayer);
             }
@@ -389,7 +389,7 @@ public class EntityHelperImpl extends EntityHelper {
         }
         ServerPlayer nmsPlayer = ((CraftPlayer) pl).getHandle();
         if (nmsPlayer.connection != null && !pl.equals(entity)) {
-            ChunkMap.TrackedEntity entry = nmsPlayer.serverLevel().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
+            ChunkMap.TrackedEntity entry = nmsPlayer.level().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
             if (entry != null) {
                 entry.removePlayer(nmsPlayer);
                 entry.updatePlayer(nmsPlayer);
@@ -826,7 +826,7 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     private net.minecraft.nbt.CompoundTag getRawEntityNBT(net.minecraft.world.entity.Entity entity) {
-        return entity.saveWithoutId(new net.minecraft.nbt.CompoundTag());
+        return Handler.useValueOutput(entity::saveWithoutId);
     }
 
     @Override
@@ -840,7 +840,7 @@ public class EntityHelperImpl extends EntityHelper {
         net.minecraft.nbt.CompoundTag nmsTag = ((CompoundTagImpl) tag).toNMSTag();
         net.minecraft.nbt.CompoundTag nmsMergedTag = getRawEntityNBT(nmsEntity).merge(nmsTag);
         UUID uuid = nmsEntity.getUUID();
-        nmsEntity.load(nmsMergedTag);
+        Handler.useValueInput(nmsMergedTag, nmsEntity::load);
         nmsEntity.setUUID(uuid);
     }
 }

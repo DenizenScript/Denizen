@@ -36,6 +36,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.ProfileResult;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.DynamicOps;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.core.BlockPos;
@@ -43,12 +44,14 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Rotations;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Container;
 import net.minecraft.world.Nameable;
@@ -57,12 +60,17 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.v1_21_R5.CraftRegistry;
 import org.bukkit.craftbukkit.v1_21_R5.CraftServer;
 import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
 import org.bukkit.craftbukkit.v1_21_R5.block.data.CraftBlockData;
@@ -90,6 +98,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Handler extends NMSHandler {
@@ -385,6 +394,44 @@ public class Handler extends NMSHandler {
             return null;
         }
         return CraftChatMessage.fromJSONOrNull(FormattedTextHelper.componentToJson(spigot));
+    }
+
+    public static final MethodHandle TAG_VALUE_OUTPUT_CONSTRUCTOR = ReflectionHelper.getConstructor(TagValueOutput.class, ProblemReporter.class, DynamicOps.class, net.minecraft.nbt.CompoundTag.class);
+
+    public static net.minecraft.nbt.CompoundTag useValueOutput(Consumer<ValueOutput> handler) {
+        ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
+        TagValueOutput nmsValueOutput = TagValueOutput.createWithContext(nmsProblemReporter, CraftRegistry.getMinecraftRegistry());
+        handler.accept(nmsValueOutput);
+        handleProblems(nmsProblemReporter);
+        return nmsValueOutput.buildResult();
+    }
+
+    public static net.minecraft.nbt.CompoundTag useValueOutput(net.minecraft.nbt.CompoundTag nmsExistingValue, Consumer<ValueOutput> handler) {
+        ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
+        TagValueOutput nmsValueOutput;
+        try {
+            nmsValueOutput = (TagValueOutput) TAG_VALUE_OUTPUT_CONSTRUCTOR.invoke(nmsProblemReporter, CraftRegistry.getMinecraftRegistry().createSerializationContext(NbtOps.INSTANCE), nmsExistingValue);
+        }
+        catch (Throwable e) {
+            Debug.echoError(e);
+            return nmsExistingValue;
+        }
+        handler.accept(nmsValueOutput);
+        handleProblems(nmsProblemReporter);
+        return nmsValueOutput.buildResult();
+    }
+
+    public static void useValueInput(net.minecraft.nbt.CompoundTag nmsTag, Consumer<ValueInput> handler) {
+        ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
+        ValueInput nmsValueInput = TagValueInput.create(nmsProblemReporter, CraftRegistry.getMinecraftRegistry(), nmsTag);
+        handler.accept(nmsValueInput);
+        handleProblems(nmsProblemReporter);
+    }
+
+    private static void handleProblems(ProblemReporter.Collector nmsProblemReporter) {
+        if (!nmsProblemReporter.isEmpty()) {
+            Debug.echoError(nmsProblemReporter.getTreeReport());
+        }
     }
 
     @Override
