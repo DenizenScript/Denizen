@@ -1,9 +1,14 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
-import com.denizenscript.denizen.utilities.entity.AreaEffectCloudHelper;
-import com.denizenscript.denizencore.objects.*;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.entity.AreaEffectCloudHelper;
+import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -11,6 +16,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import org.bukkit.Particle;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
@@ -20,7 +26,7 @@ import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.List;
 
-// TODO: 1.20.6: PotionData API
+// TODO: most of the tags and mechs here need to become properties/be merged into existing properties
 public class EntityAreaEffectCloud implements Property {
 
     public static boolean describes(ObjectTag entity) {
@@ -75,20 +81,22 @@ public class EntityAreaEffectCloud implements Property {
         // @attribute <EntityTag.base_potion>
         // @returns ElementTag
         // @mechanism EntityTag.base_potion
-        // @group properties
+        // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
         // @description
-        // Returns the Area Effect Cloud's base potion data.
-        // In the format Type,Upgraded,Extended
+        // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
         // -->
         if (attribute.startsWith("base_potion")) {
             attribute = attribute.fulfill(1);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                BukkitImplDeprecations.areaEffectCloudControls.warn(attribute.context);
+            }
 
             // <--[tag]
             // @attribute <EntityTag.base_potion.type>
             // @returns ElementTag
-            // @group properties
+            // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
             // @description
-            // Returns the Area Effect Cloud's base potion type.
+            // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
             // -->
             if (attribute.startsWith("type")) {
                 return new ElementTag(getHelper().getBPName())
@@ -98,9 +106,9 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.base_potion.is_upgraded>
             // @returns ElementTag(Boolean)
-            // @group properties
+            // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
             // @description
-            // Returns whether the Area Effect Cloud's base potion is upgraded.
+            // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
             // -->
             if (attribute.startsWith("is_upgraded")) {
                 return new ElementTag(getHelper().getBPUpgraded())
@@ -110,9 +118,9 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.base_potion.is_extended>
             // @returns ElementTag(Boolean)
-            // @group properties
+            // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
             // @description
-            // Returns whether the Area Effect Cloud's base potion is extended.
+            // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
             // -->
             if (attribute.startsWith("is_extended")) {
                 return new ElementTag(getHelper().getBPExtended())
@@ -136,11 +144,12 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.particle.color>
             // @returns ColorTag
-            // @group properties
+            // @deprecated use 'EntityTag.color'.
             // @description
-            // Returns the Area Effect Cloud's particle color.
+            // Deprecated in favor of <@link property EntityTag.color>.
             // -->
             if (attribute.startsWith("color")) {
+                BukkitImplDeprecations.areaEffectCloudControls.warn(attribute.context);
                 return BukkitColorExtensions.fromColor(getHelper().getColor())
                         .getObjectAttribute(attribute.fulfill(1));
             }
@@ -246,12 +255,12 @@ public class EntityAreaEffectCloud implements Property {
         // @attribute <EntityTag.has_custom_effect[(<effect>)]>
         // @returns ElementTag(Boolean)
         // @mechanism EntityTag.custom_effects
-        // @group properties
+        // @deprecated use 'EntityTag.has_effect'.
         // @description
-        // Returns whether the Area Effect Cloud has a specified effect.
-        // If no effect is specified, returns whether it has any custom effect.
+        // Deprecated in favor of <@link tag EntityTag.has_effect>.
         // -->
         if (attribute.startsWith("has_custom_effect")) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(attribute.context);
             if (attribute.hasParam()) {
                 PotionEffectType effectType = PotionEffectType.getByName(attribute.getParam());
                 for (PotionEffect effect : getHelper().getCustomEffects()) {
@@ -285,12 +294,12 @@ public class EntityAreaEffectCloud implements Property {
         // @attribute <EntityTag.custom_effects>
         // @returns ListTag
         // @mechanism EntityTag.custom_effects
-        // @group properties
+        // @deprecated use 'EntityTag.effects_data'.
         // @description
-        // Returns a ListTag of the Area Effect Cloud's custom effects
-        // In the form Type,Amplifier,Duration,Ambient,Particles|...
+        // Deprecated in favor of <@link tag EntityTag.effects_data>.
         // -->
         if (attribute.startsWith("custom_effects")) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(attribute.context);
             List<PotionEffect> effects = getHelper().getCustomEffects();
             if (!attribute.hasParam()) {
                 ListTag list = new ListTag();
@@ -313,9 +322,9 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.custom_effects[<#>].type>
             // @returns ElementTag
-            // @group properties
+            // @deprecated use 'EntityTag.effects_data'.
             // @description
-            // Returns the specified Area Effect Cloud potion effect type.
+            // Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("type")) {
                 return new ElementTag(effect.getType().getName())
@@ -325,9 +334,9 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.custom_effects[<#>].amplifier>
             // @returns ElementTag(Number)
-            // @group properties
+            // @deprecated use 'EntityTag.effects_data'.
             // @description
-            // Returns the specified Area Effect Cloud potion effect amplifier.
+            // Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("amplifier")) {
                 return new ElementTag(effect.getAmplifier())
@@ -337,9 +346,9 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.custom_effects[<#>].duration>
             // @returns DurationTag
-            // @group properties
+            // @deprecated use 'EntityTag.effects_data'.
             // @description
-            // Returns the specified Area Effect Cloud potion effect duration.
+            // Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("duration")) {
                 return new DurationTag((long) effect.getDuration())
@@ -349,9 +358,9 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.custom_effects[<#>].has_particles>
             // @returns ElementTag(Boolean)
-            // @group properties
+            // @deprecated use 'EntityTag.effects_data'.
             // @description
-            // Returns whether the specified Area Effect Cloud potion effect has particles.
+            // Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("has_particles")) {
                 return new ElementTag(effect.hasParticles())
@@ -361,9 +370,9 @@ public class EntityAreaEffectCloud implements Property {
             // <--[tag]
             // @attribute <EntityTag.custom_effects[<#>].is_ambient>
             // @returns ElementTag(Boolean)
-            // @group properties
+            // @deprecated use 'EntityTag.effects_data'.
             // @description
-            // Returns whether the specified Area Effect Cloud potion effect is ambient.
+            // Deprecated in favor of <@link tag EntityTag.effects_data>.
             // -->
             if (attribute.startsWith("is_ambient")) {
                 return new ElementTag(effect.isAmbient())
@@ -391,12 +400,14 @@ public class EntityAreaEffectCloud implements Property {
         // @object EntityTag
         // @name clear_custom_effects
         // @input None
+        // @deprecated use 'EntityTag.potion_effects'.
         // @description
-        // Clears all custom effects from the Area Effect Cloud
+        // Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
         // @tags
         // <EntityTag.custom_effects>
         // -->
         if (mechanism.matches("clear_custom_effects")) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(mechanism.context);
             getHelper().clearEffects();
         }
 
@@ -404,12 +415,14 @@ public class EntityAreaEffectCloud implements Property {
         // @object EntityTag
         // @name remove_custom_effect
         // @input ElementTag
+        // @deprecated use 'EntityTag.potion_effects'.
         // @description
-        // Removes the specified custom effect from the Area Effect Cloud
+        // Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
         // @tags
         // <EntityTag.custom_effects>
         // -->
         if (mechanism.matches("remove_custom_effect")) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(mechanism.context);
             PotionEffectType type = PotionEffectType.getByName(mechanism.getValue().asString().toUpperCase());
             if (type != null) {
                 getHelper().removeEffect(type);
@@ -420,13 +433,14 @@ public class EntityAreaEffectCloud implements Property {
         // @object EntityTag
         // @name custom_effects
         // @input ListTag
+        // @deprecated use 'EntityTag.potion_effects'.
         // @description
-        // Adds a list of custom potion effects to the Area Effect Cloud
-        // In the form Type,Amplifier,Duration(,Ambient,Particles)|...
+        // Deprecated in favor of <@link mechanism EntityTag.potion_effects>.
         // @tags
         // <EntityTag.custom_effects>
         // -->
         if (mechanism.matches("custom_effects")) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(mechanism.context);
             ListTag list = mechanism.valueAsType(ListTag.class);
             getHelper().clearEffects();
 
@@ -458,12 +472,14 @@ public class EntityAreaEffectCloud implements Property {
         // @object EntityTag
         // @name particle_color
         // @input ColorTag
+        // @deprecated use 'EntityTag.color'.
         // @description
-        // Sets the Area Effect Cloud's particle color.
+        // Deprecated in favor of <@link property EntityTag.color>.
         // @tags
         // <EntityTag.particle.color>
         // -->
         if (mechanism.matches("particle_color") && mechanism.requireObject(ColorTag.class)) {
+            BukkitImplDeprecations.areaEffectCloudControls.warn(mechanism.context);
             getHelper().setColor(BukkitColorExtensions.getColor(mechanism.valueAsType(ColorTag.class)));
         }
 
@@ -471,37 +487,33 @@ public class EntityAreaEffectCloud implements Property {
         // @object EntityTag
         // @name base_potion
         // @input ElementTag
+        // @deprecated use 'EntityTag.potion_type' on MC 1.20+.
         // @description
-        // Sets the Area Effect Cloud's base potion.
-        // In the form: Type,Upgraded,Extended
-        // NOTE: Potion cannot be both upgraded and extended
+        // Deprecated in favor of <@link property EntityTag.potion_type> on MC 1.20+.
         // @tags
         // <EntityTag.base_potion>
-        // <EntityTag.base_potion.type>
-        // <EntityTag.base_potion.is_upgraded>
-        // <EntityTag.base_potion.is_extended>
-        // <server.potion_types>
         // -->
         if (mechanism.matches("base_potion")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                BukkitImplDeprecations.areaEffectCloudControls.warn(mechanism.context);
+            }
             List<String> data = CoreUtilities.split(mechanism.getValue().asString().toUpperCase(), ',');
             if (data.size() != 3) {
-                mechanism.echoError(mechanism.getValue().asString() + " is not a valid base potion!");
+                mechanism.echoError(mechanism.getValue() + " is not a valid base potion!");
+                return;
+            }
+            PotionType type = Utilities.elementToEnumlike(new ElementTag(data.get(0), true), PotionType.class);
+            if (type == null) {
+                mechanism.echoError(mechanism.getValue() + " is not a valid base potion!");
+                return;
+            }
+            boolean upgraded = type.isUpgradeable() && CoreUtilities.equalsIgnoreCase(data.get(1), "true");
+            boolean extended = type.isExtendable() && CoreUtilities.equalsIgnoreCase(data.get(2), "true");
+            if (extended && upgraded) {
+                mechanism.echoError("Potion cannot be both upgraded and extended");
             }
             else {
-                try {
-                    PotionType type = PotionType.valueOf(data.get(0));
-                    boolean upgraded = type.isUpgradeable() && CoreUtilities.equalsIgnoreCase(data.get(1), "true");
-                    boolean extended = type.isExtendable() && CoreUtilities.equalsIgnoreCase(data.get(2), "true");
-                    if (extended && upgraded) {
-                        mechanism.echoError("Potion cannot be both upgraded and extended");
-                    }
-                    else {
-                        getHelper().setBP(type, extended, upgraded);
-                    }
-                }
-                catch (Exception e) {
-                    mechanism.echoError(mechanism.getValue().asString() + " is not a valid base potion!");
-                }
+                getHelper().setBP(type, extended, upgraded);
             }
         }
 
@@ -541,7 +553,8 @@ public class EntityAreaEffectCloud implements Property {
         // @tags
         // <EntityTag.particle>
         // -->
-        if (mechanism.matches("particle") && mechanism.hasValue()) {
+        // TODO: some particles require additional data - need a new property that supports playeffect's special_data input
+        if (mechanism.matches("particle") && Utilities.requireEnumlike(mechanism, Particle.class)) {
             getHelper().setParticle(mechanism.getValue().asString().toUpperCase());
         }
 

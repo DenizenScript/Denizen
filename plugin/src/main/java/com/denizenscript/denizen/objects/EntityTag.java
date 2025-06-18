@@ -1975,15 +1975,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.is_sleeping>
         // @returns ElementTag(Boolean)
+        // @mechanism EntityTag.is_sleeping
         // @description
-        // Returns whether the player, NPC, or villager is currently sleeping.
+        // Returns whether a living entity is currently sleeping.
+        // If the entity is not a fox, player, or villager, this will always return 'false'.
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "is_sleeping", (attribute, object) -> {
-            if (object.getBukkitEntity() instanceof Player) {
-                return new ElementTag(((Player) object.getBukkitEntity()).isSleeping());
-            }
-            else if (object.getBukkitEntity() instanceof Villager) {
-                return new ElementTag(((Villager) object.getBukkitEntity()).isSleeping());
+            if (object.getBukkitEntity() instanceof LivingEntity livingEntity) {
+                return new ElementTag(livingEntity.isSleeping());
             }
             return null;
         });
@@ -3159,6 +3158,27 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
         });
 
+        // <--[mechanism]
+        // @object EntityTag
+        // @name is_sleeping
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether a fox is sleeping.
+        // The entity may wake up immediately after setting this to true. If this is not desired, disable <@link mechanism EntityTag.has_ai>.
+        // @tags
+        // <EntityTag.is_sleeping>
+        // -->
+        tagProcessor.registerMechanism("is_sleeping", false, ElementTag.class, (object, mechanism, input) -> {
+            if (!mechanism.requireBoolean()) {
+                return;
+            }
+            if (!(object.getBukkitEntity() instanceof Fox fox)) {
+                mechanism.echoError("'is_sleeping' mechanism is only valid for Fox entities.");
+                return;
+            }
+            fox.setSleeping(input.asBoolean());
+        });
+
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
 
             // <--[mechanism]
@@ -3874,12 +3894,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Makes a player-type entity interact with a block.
         // -->
         if (mechanism.matches("interact_with") && mechanism.requireObject(LocationTag.class)) {
-            if (!isPlayer()) {
+            Player player = getPlayer();
+            if (player == null) {
                 mechanism.echoError("Only player-type entities can interact with blocks!");
                 return;
             }
             LocationTag interactLocation = mechanism.valueAsType(LocationTag.class);
-            NMSHandler.entityHelper.forceInteraction(getPlayer(), interactLocation);
+            NMSHandler.entityHelper.forceInteraction(player, interactLocation);
         }
 
         if (mechanism.matches("play_death")) {

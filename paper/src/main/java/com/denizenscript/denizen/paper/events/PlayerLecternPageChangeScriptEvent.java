@@ -7,7 +7,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import io.papermc.paper.event.player.PlayerLecternPageChangeEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -57,6 +56,13 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
     public PlayerLecternPageChangeScriptEvent() {
         registerCouldMatcher("player flips lectern page");
         registerSwitches("book");
+        this.<PlayerLecternPageChangeScriptEvent, ElementTag>registerOptionalDetermination("page", ElementTag.class, (evt, context, page) -> {
+            if (page.isInt()) {
+                evt.event.setNewPage(page.asInt() - 1);
+                return true;
+            }
+            return false;
+        });
     }
 
     public PlayerLecternPageChangeEvent event;
@@ -87,21 +93,6 @@ public class PlayerLecternPageChangeScriptEvent extends BukkitScriptEvent implem
             case "flip_direction" -> new ElementTag(event.getPageChangeDirection());
             default -> super.getContext(name);
         };
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String lower = CoreUtilities.toLowerCase(determinationObj.toString());
-            if (lower.startsWith("page:")) {
-                ElementTag value = new ElementTag(lower.substring("page:".length()));
-                if (value.isInt()) {
-                    event.setNewPage(value.asInt() - 1);
-                    return true;
-                }
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
     }
     
     @EventHandler

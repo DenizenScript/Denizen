@@ -82,7 +82,7 @@ public class BukkitCommandRegistry {
     }
 
     public static void registerCommands() {
-        //core
+        // core
         registerCommand(CooldownCommand.class);
         registerCommand(ResetCommand.class);
         registerCommand(ZapCommand.class);

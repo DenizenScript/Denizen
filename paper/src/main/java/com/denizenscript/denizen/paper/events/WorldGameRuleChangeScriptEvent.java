@@ -10,7 +10,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -18,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
 
 public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -52,6 +50,13 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
     public WorldGameRuleChangeScriptEvent() {
         registerCouldMatcher("gamerule changes (in <world>)");
         registerSwitches("gamerule");
+        this.<WorldGameRuleChangeScriptEvent, ElementTag>registerOptionalDetermination("value", ElementTag.class, (evt, context, value) -> {
+            if (value.isBoolean() || value.isInt()) {
+                evt.event.setValue(value.toString());
+                return true;
+            }
+            return false;
+        });
     }
 
     public WorldGameRuleChangeEvent event;
@@ -72,30 +77,15 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "gamerule": return new ElementTag(event.getGameRule().getName());
-            case "value": return new ElementTag(event.getValue());
-            case "source_type": return getSourceType();
-            case "command_block_location": return getCommandBlock();
-            case "command_minecart": return getCommandMinecart();
-            case "world": return world;
-        }
-        return super.getContext(name);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String lower = CoreUtilities.toLowerCase(determinationObj.toString());
-            if (lower.startsWith("value:")) {
-                ElementTag value = new ElementTag(lower.substring("value:".length()));
-                if (value.isInt() || value.isBoolean()) {
-                    event.setValue(value.toString());
-                    return true;
-                }
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
+        return switch (name) {
+            case "gamerule" -> new ElementTag(event.getGameRule().getName(), true);
+            case "value" -> new ElementTag(event.getValue(), true);
+            case "source_type" -> getSourceType();
+            case "command_block_location" -> getCommandBlock();
+            case "command_minecart" -> getCommandMinecart();
+            case "world" -> world;
+            default -> super.getContext(name);
+        };
     }
 
     @Override

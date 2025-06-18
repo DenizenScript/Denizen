@@ -66,14 +66,14 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_21_R3.block.CraftCreatureSpawner;
-import org.bukkit.craftbukkit.v1_21_R3.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R3.entity.*;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R3.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R4.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R4.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_21_R4.block.CraftCreatureSpawner;
+import org.bukkit.craftbukkit.v1_21_R4.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R4.entity.*;
+import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R4.util.CraftLocation;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -166,9 +166,9 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void forceInteraction(Player player, Location location) {
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        ((CraftBlock) location.getBlock()).getNMS().useItemOn(craftPlayer.getHandle().getMainHandItem(), ((CraftWorld) location.getWorld()).getHandle(),
-                craftPlayer.getHandle(), InteractionHand.MAIN_HAND,
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        ((CraftBlock) location.getBlock()).getNMS().useItemOn(nmsPlayer.getMainHandItem(), ((CraftWorld) location.getWorld()).getHandle(),
+                nmsPlayer, InteractionHand.MAIN_HAND,
                 new BlockHitResult(new Vec3(0, 0, 0), null, CraftLocation.toBlockPosition(location), false));
     }
 

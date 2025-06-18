@@ -172,10 +172,9 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void forceInteraction(Player player, Location location) {
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        // TODO: 1.20.6: passing a null player isn't valid (and seemingly never was) - need to require HumanEntity in the mechanism
-        ((CraftBlock) location.getBlock()).getNMS().useItemOn(craftPlayer.getHandle().getMainHandItem(), ((CraftWorld) location.getWorld()).getHandle(),
-                craftPlayer.getHandle(), InteractionHand.MAIN_HAND,
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        ((CraftBlock) location.getBlock()).getNMS().useItemOn(nmsPlayer.getMainHandItem(), ((CraftWorld) location.getWorld()).getHandle(),
+                nmsPlayer, InteractionHand.MAIN_HAND,
                 new BlockHitResult(new Vec3(0, 0, 0), null, CraftLocation.toBlockPosition(location), false));
     }
 

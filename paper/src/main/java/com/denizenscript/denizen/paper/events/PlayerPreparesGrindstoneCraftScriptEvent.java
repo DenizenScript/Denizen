@@ -4,9 +4,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
@@ -48,6 +46,9 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
 
     public PlayerPreparesGrindstoneCraftScriptEvent() {
         registerCouldMatcher("player prepares grindstone craft <item>");
+        this.<PlayerPreparesGrindstoneCraftScriptEvent, ItemTag>registerDetermination("result", ItemTag.class, (evt, context, item) -> {
+            evt.event.setResult(item.getItemStack());
+        });
     }
 
     public PrepareResultEvent event;
@@ -62,20 +63,6 @@ public class PlayerPreparesGrindstoneCraftScriptEvent extends BukkitScriptEvent 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String determination = determinationObj.toString();
-            String lower = CoreUtilities.toLowerCase(determination);
-            if (lower.startsWith("result:")) {
-                ItemTag result = ItemTag.valueOf(determination.substring("result:".length()), path.container);
-                event.setResult(result.getItemStack());
-                return true;
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

@@ -393,4 +393,13 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     public boolean hasCustomName(PotionMeta meta) {
         return meta.hasCustomPotionName();
     }
+
+    @Override
+    public void setMaterialTags(Material type, Set<NamespacedKey> tags) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            super.setMaterialTags(type, tags);
+            return;
+        }
+        BlockTagsSetter.INSTANCE.setTags(type, tags);
+    }
 }

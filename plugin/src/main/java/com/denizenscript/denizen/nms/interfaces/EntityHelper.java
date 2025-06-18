@@ -394,7 +394,7 @@ public abstract class EntityHelper {
 
     public abstract void setBoundingBox(Entity entity, BoundingBox box);
 
-    public List<Player> getPlayersThatSee(Entity entity) { // TODO: once the minimum supported version is 1.20, remove from NMS
+    public List<Player> getPlayersThatSee(Entity entity) { // TODO: once 1.20 is the minimum supported version, remove from NMS
         return List.copyOf(entity.getTrackedBy());
     }
 
@@ -406,7 +406,7 @@ public abstract class EntityHelper {
 
     public abstract void setHeadAngle(LivingEntity entity, float angle);
 
-    public void setGhastAttacking(Ghast ghast, boolean attacking) { // TODO: once minimum version is 1.19 or higher, remove from NMS
+    public void setGhastAttacking(Ghast ghast, boolean attacking) { // TODO: once 1.19 is the minimum supported version, remove from NMS
         ghast.setCharging(attacking);
     }
 

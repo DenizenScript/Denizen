@@ -38,6 +38,7 @@ public class CustomNBT {
      * custom NBT.
      */
 
+    // TODO: once 1.20 is the minimum supported version, remove this
     public static List<Material> getNBTMaterials(ItemStack itemStack, String key) {
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
@@ -53,6 +54,7 @@ public class CustomNBT {
         return materials;
     }
 
+    // TODO: once 1.20 is the minimum supported version, remove this
     public static ItemStack setNBTMaterials(ItemStack itemStack, String key, List<Material> materials) {
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
@@ -82,6 +84,7 @@ public class CustomNBT {
         return NMSHandler.itemHelper.setCustomData(itemStack, customData);
     }
 
+    // TODO: once 1.20 is the minimum supported version, remove this
     public static ItemStack clearNBT(ItemStack itemStack, String key) {
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
