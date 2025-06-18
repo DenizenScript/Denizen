@@ -161,6 +161,10 @@ public class SwitchCommand extends AbstractCommand {
         Block block = interactLocation.getBlock();
         BlockData data1 = block.getBlockData();
         MaterialTag materialTag = new MaterialTag(data1);
+        if (!MaterialSwitchable.describes(materialTag)) {
+            Debug.echoError("Cannot switch block of type '" + materialTag.getMaterial().name() + "'");
+            return;
+        }
         MaterialSwitchable switchable = new MaterialSwitchable(materialTag);
         if (materialTag.getMaterial() == Material.BELL) {
             NMSHandler.blockHelper.ringBell((Bell) block.getState());

@@ -21,11 +21,9 @@ public class MaterialSnowable extends MaterialProperty<ElementTag> {
         return data instanceof Snowable;
     }
 
-    MaterialTag material;
-
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(isSnowy());
+        return new ElementTag(getSnowable().isSnowy());
     }
 
     @Override
@@ -45,10 +43,6 @@ public class MaterialSnowable extends MaterialProperty<ElementTag> {
     }
 
     public Snowable getSnowable() {
-        return (Snowable) material.getModernData();
-    }
-
-    public boolean isSnowy() {
-        return getSnowable().isSnowy();
+        return (Snowable) getBlockData();
     }
 }

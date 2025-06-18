@@ -26,8 +26,6 @@ public class MaterialSides extends MaterialProperty<ListTag> {
         return data instanceof Wall || data instanceof RedstoneWire;
     }
 
-    MaterialTag material;
-
     @Override
     public ListTag getPropertyValue() {
         return getSidesList();
@@ -91,19 +89,19 @@ public class MaterialSides extends MaterialProperty<ListTag> {
     }
 
     public boolean isWall() {
-        return material.getModernData() instanceof Wall;
+        return getBlockData() instanceof Wall;
     }
 
     public Wall getWall() {
-        return (Wall) material.getModernData();
+        return (Wall) getBlockData();
     }
 
     public boolean isWire() {
-        return material.getModernData() instanceof RedstoneWire;
+        return getBlockData() instanceof RedstoneWire;
     }
 
     public RedstoneWire getWire() {
-        return (RedstoneWire) material.getModernData();
+        return (RedstoneWire) getBlockData();
     }
 
     public ListTag getSidesList() {
