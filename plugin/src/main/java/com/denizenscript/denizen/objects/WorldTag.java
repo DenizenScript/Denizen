@@ -677,7 +677,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // Returns the relative in-game time of this world as a duration.
         // -->
         registerTag(DurationTag.class, "time_duration", (attribute, object) -> {
-            return new DurationTag(object1.getWorld().getTime());
+            return new DurationTag(object.getWorld().getTime());
         });
 
         // <--[tag]
@@ -712,7 +712,6 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             else {
                 period = "day";
             }
-
             return new ElementTag(period);
         });
 
