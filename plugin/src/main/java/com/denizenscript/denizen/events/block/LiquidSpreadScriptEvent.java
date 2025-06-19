@@ -68,9 +68,9 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
         if (event.getBlock().getType() == Material.DRAGON_EGG) { // BlockFromToEvent also fires with DragonEggMovesScriptEvent
             return;
         }
-        material = new MaterialTag(event.getBlock());
         destination = new LocationTag(event.getToBlock().getLocation());
         location = new LocationTag(event.getBlock().getLocation());
+        material = new MaterialTag(event.getBlock());
         this.event = event;
         fire(event);
     }

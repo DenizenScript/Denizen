@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.block;
 
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -49,6 +50,7 @@ public class DragonEggMovesScriptEvent extends BukkitScriptEvent implements List
         return switch (name) {
             case "location" -> location;
             case "destination" -> destination;
+            case "material" -> new MaterialTag(Material.DRAGON_EGG); // for historical compatibility reasons
             default -> super.getContext(name);
         };
     }
