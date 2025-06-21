@@ -1406,15 +1406,17 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.horse_armor>
         // @returns ItemTag
-        // @deprecated Use <@link tag body_armor>.
+        // @deprecated Use <@link tag body_armor> on MC 1.20+.
         // @group inventory
         // @description
-        // Deprecated in favor of <@link tag body_armor>.
+        // Deprecated in favor of <@link tag body_armor> on MC 1.20+.
         // -->
         registerSpawnedOnlyTag(ItemTag.class, "horse_armor", (attribute, object) -> {
-            if (object.getLivingEntity() instanceof Horse) {
-                BukkitImplDeprecations.horseArmorTag.warn();
-                return new ItemTag(((Horse) object.getLivingEntity()).getInventory().getArmor());
+            if (object.getLivingEntity() instanceof Horse horse) {
+                if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                    BukkitImplDeprecations.horseArmorTag.warn();
+                }
+                return new ItemTag(horse.getInventory().getArmor());
             }
             return null;
         }, "horse_armour");
