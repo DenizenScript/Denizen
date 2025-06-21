@@ -109,7 +109,8 @@ public class EquipCommand extends AbstractCommand {
                 equipment.put("horse_armor", ItemTag.valueOf(arg.getValue(), scriptEntry.getContext()));
             }
             else if (arg.matchesArgumentType(ItemTag.class)
-                    && arg.matchesPrefix("body")) {
+                    && arg.matchesPrefix("body")
+                    && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
                 equipment.put("body", ItemTag.valueOf(arg.getValue(), scriptEntry.getContext()));
             }
             else if (arg.matchesArgumentType(ItemTag.class)
