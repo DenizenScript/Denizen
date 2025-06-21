@@ -465,6 +465,12 @@ public class BukkitImplDeprecations {
     // Added 2025/04/27
     public static Warning playerChangesWorldSwitches = new FutureWarning("playerChangesWorldSwitches", "The 'from' and 'to' arguments in the 'player changes world' script event have been deprecated in favor of the 'from' and 'to' switches.");
 
+    // Added 2025/06/20
+    public static Warning horseArmorEquipCommand = new FutureWarning("horseArmorEquipCommand", "The 'horse_armor' argument in the 'equip' command has been deprecated in favor of 'body'.");
+
+    // Added 2025/06/20
+    public static Warning horseArmorTag = new FutureWarning("horseArmorTag", "The 'horse_armor' tag has been deprecated in favor of 'body_armor'.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2023/10/29 without warning.
