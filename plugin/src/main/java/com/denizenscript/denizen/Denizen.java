@@ -162,11 +162,24 @@ public class Denizen extends JavaPlugin {
             startedSuccessful = false;
             return;
         }
+        try {
+            if (Class.forName("com.destroystokyo.paper.PaperConfig") != null) {
+                supportsPaper = true;
+            }
+        }
+        catch (ClassNotFoundException ex) {
+            // Ignore.
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
         if (!NMSHandler.instance.isCorrectMappingsCode()) {
+            String serverSoftware = supportsPaper ? "Paper" : "Spigot";
             getLogger().warning("-------------------------------------");
-            getLogger().warning("This build of Denizen was built for a different Spigot revision! This may potentially cause issues."
-                    + " If you are experiencing trouble, update Denizen and Spigot both to latest builds!"
-                    + " If this message appears with both Denizen and Spigot fully up-to-date, contact the Denizen team (via GitHub, Spigot, or Discord) to request an update be built.");
+            getLogger().warning("""
+                    This build of Denizen was built for a different {} revision! This may potentially cause issues.
+                    If you are experiencing trouble, update Denizen and {} both to latest builds!
+                    If this message appears with both Denizen and {} fully up-to-date, contact the Denizen team (via Discord) to request an update be built.""".replace("{}", serverSoftware));
             getLogger().warning("-------------------------------------");
         }
         triggerRegistry = new TriggerRegistry();
@@ -204,17 +217,6 @@ public class Denizen extends JavaPlugin {
         }
         catch (Exception e) {
             Debug.echoError(e);
-        }
-        try {
-            if (Class.forName("com.destroystokyo.paper.PaperConfig") != null) {
-                supportsPaper = true;
-            }
-        }
-        catch (ClassNotFoundException ex) {
-            // Ignore.
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
         }
         // bstats.org
         try {
