@@ -173,7 +173,7 @@ public class Denizen extends JavaPlugin {
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
-        if (!NMSHandler.instance.isCorrectMappingsCode()) {
+        if (!NMSHandler.instance.isExactServerVersionMatch()) {
             String serverSoftware = supportsPaper ? "Paper" : "Spigot";
             getLogger().warning("-------------------------------------");
             getLogger().warning("""

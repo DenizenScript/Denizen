@@ -93,7 +93,7 @@ public abstract class NMSHandler {
     public static WorldHelper worldHelper;
     public static EnchantmentHelper enchantmentHelper;
 
-    public boolean isCorrectMappingsCode() {
+    public boolean isExactServerVersionMatch() {
         return true;
     }
 
