@@ -1500,7 +1500,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // <WorldTag.duration_since_created>
         // -->
         tagProcessor.registerMechanism("duration_since_created", false, DurationTag.class, (object, mechanism, input) -> {
-            NMSHandler.worldHelper.setGameTime(object.getWorld(), input.getTicksAsInt());
+            NMSHandler.worldHelper.setGameTime(object.getWorld(), input.getTicks());
         });
 
         // <--[mechanism]
