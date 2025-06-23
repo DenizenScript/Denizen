@@ -103,7 +103,7 @@ public class EquipCommand extends AbstractCommand {
             }
             else if (arg.matchesArgumentType(ItemTag.class)
                     && arg.matchesPrefix("horse_armor", "horse_armour")) {
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
                     BukkitImplDeprecations.horseArmorEquipCommand.warn();
                 }
                 equipment.put("horse_armor", ItemTag.valueOf(arg.getValue(), scriptEntry.getContext()));
