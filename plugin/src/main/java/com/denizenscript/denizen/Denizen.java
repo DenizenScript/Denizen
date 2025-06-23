@@ -175,12 +175,13 @@ public class Denizen extends JavaPlugin {
         }
         if (!NMSHandler.instance.isExactServerVersionMatch()) {
             String serverSoftware = supportsPaper ? "Paper" : "Spigot";
-            getLogger().warning("-------------------------------------");
             getLogger().warning("""
+                    \n-------------------------------------
                     This build of Denizen was built for a different <server> revision! This may potentially cause issues.
                     If you are experiencing trouble, update Denizen and <server> both to latest builds!
-                    If this message appears with both Denizen and <server> fully up-to-date, contact the Denizen team (via Discord) to request an update be built.""".replace("<server>", serverSoftware));
-            getLogger().warning("-------------------------------------");
+                    If this message appears with both Denizen and <server> fully up-to-date, contact the Denizen team (via Discord) to request an update be built.
+                    -------------------------------------""".replace("<server>", serverSoftware)
+            );
         }
         triggerRegistry = new TriggerRegistry();
         boolean citizensBork = false;
