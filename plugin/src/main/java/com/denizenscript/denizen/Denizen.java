@@ -177,7 +177,7 @@ public class Denizen extends JavaPlugin {
             String serverSoftware = supportsPaper ? "Paper" : "Spigot";
             getLogger().warning("""
                     \n-------------------------------------
-                    This build of Denizen was built for a different <server> revision! This may potentially cause issues.
+                    This build of Denizen was built for a different Minecraft version! This may potentially cause issues.
                     If you are experiencing trouble, update Denizen and <server> both to latest builds!
                     If this message appears with both Denizen and <server> fully up-to-date, contact the Denizen team (via Discord) to request an update be built.
                     -------------------------------------""".replace("<server>", serverSoftware)
