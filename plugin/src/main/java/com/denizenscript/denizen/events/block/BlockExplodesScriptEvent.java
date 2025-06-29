@@ -3,7 +3,6 @@ package com.denizenscript.denizen.events.block;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -44,19 +43,11 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
         this.<BlockExplodesScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
             String blocks = value.identify();
             if (blocks.contains(",") || blocks.startsWith("li@")) { // Raw ListTag check due to there not being a prefix for block strength previously
-                boolean valid = false;
+                evt.event.blockList().clear();
                 for (LocationTag newBlock : value.asType(ListTag.class, context).filter(LocationTag.class, context)) {
-                    if (newBlock != null) {
-                        if (!valid) {
-                            evt.event.blockList().clear();
-                        }
+                    if (newBlock.getWorld() != null) {
                         evt.event.blockList().add(newBlock.getBlock());
-                        valid = true;
                     }
-                }
-                if (!valid) {
-                    Debug.echoError("No blocks in the provided list were valid.");
-                    return false;
                 }
                 return true;
             }

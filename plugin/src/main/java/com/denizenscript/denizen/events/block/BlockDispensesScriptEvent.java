@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,16 +31,25 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Determine
     // LocationTag to set the velocity the item will be shot at.
-    // ItemTag to set the item being shot.
+    // "ITEM:<ItemTag>" to set the item being shot.
     //
     // -->
 
     public BlockDispensesScriptEvent() {
         registerCouldMatcher("<block> dispenses <item>");
-        this.<BlockDispensesScriptEvent, LocationTag>registerDetermination(null, LocationTag.class, (evt, context, value) -> {
-            evt.event.setVelocity(value.toVector());
+        this.<BlockDispensesScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            if (value instanceof LocationTag newLocation) {
+                evt.event.setVelocity(event.getVelocity().setX(newLocation.getX()).setY(newLocation.getY()).setZ(newLocation.getZ()));
+                return true;
+            }
+            else if (value instanceof ItemTag item) {
+                BukkitImplDeprecations.blockDispensesItemDetermination.warn();
+                evt.event.setItem(item.getItemStack());
+                return true;
+            }
+            return false;
         });
-        this.<BlockDispensesScriptEvent, ItemTag>registerDetermination(null, ItemTag.class, (evt, context, value) -> {
+        this.<BlockDispensesScriptEvent, ItemTag>registerDetermination("item", ItemTag.class, (evt, context, value) -> {
             evt.event.setItem(value.getItemStack());
         });
     }
