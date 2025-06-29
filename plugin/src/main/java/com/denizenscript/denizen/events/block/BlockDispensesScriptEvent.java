@@ -39,7 +39,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
         registerCouldMatcher("<block> dispenses <item>");
         this.<BlockDispensesScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
             if (value instanceof LocationTag newLocation) {
-                evt.event.setVelocity(event.getVelocity().setX(newLocation.getX()).setY(newLocation.getY()).setZ(newLocation.getZ()));
+                evt.event.setVelocity(newLocation.toVector());
                 return true;
             }
             else if (value instanceof ItemTag item) {
