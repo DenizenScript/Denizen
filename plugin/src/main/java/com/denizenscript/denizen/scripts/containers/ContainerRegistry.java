@@ -15,7 +15,7 @@ public class ContainerRegistry {
         if (Depends.vault != null) {
             ScriptRegistry._registerType("economy", EconomyScriptContainer.class);
         }
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20) || Depends.denizenEnchantmentFix != null) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) || Depends.denizenEnchantmentFix != null) {
             ScriptRegistry._registerType("enchantment", EnchantmentScriptContainer.class);
         }
         ScriptRegistry._registerType("entity", EntityScriptContainer.class);
