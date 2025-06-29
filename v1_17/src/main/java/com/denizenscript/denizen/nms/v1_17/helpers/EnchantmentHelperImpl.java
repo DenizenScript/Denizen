@@ -104,7 +104,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
                 @Override
                 public void doPostHurt(LivingEntity victim, Entity attacker, int level) {
-                    script.script.doPostHurt(victim.getBukkitEntity(), attacker.getBukkitEntity(), level);
+                    script.script.doPostHurt(attacker.getBukkitEntity(), victim.getBukkitEntity(), level);
                 }
                 @Override
                 public boolean isTreasureOnly() {

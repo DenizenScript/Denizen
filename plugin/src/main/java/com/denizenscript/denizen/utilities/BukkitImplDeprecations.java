@@ -355,6 +355,9 @@ public class BukkitImplDeprecations {
     // Bump once 1.21 is the minimum supported version (as that is where boat types were split)
     public static Warning gettingBoatType = new SlowWarning("gettingBoatType", "Getting boat wood types is deprecated, as separate boat types are separate entity types now: should check the entity type.");
 
+    // Added 2025/06/28
+    public static Warning enchantmentScriptContainers = new SlowWarning("enchantmentScriptContainers", "Enchantment script containers are deprecated due to extensive internal changes. We recommend utilizing datapacks (which also make the enchantments show up on the client like vanilla ones), see https://misode.github.io/enchantment.");
+
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
 

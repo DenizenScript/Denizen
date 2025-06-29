@@ -20,11 +20,13 @@ public class Depends {
     public static Permission permissions = null;
     public static Chat chat = null;
     public static Plugin vault = null;
+    public static Plugin denizenEnchantmentFix = null;
 
     public static void initialize() {
         setupBungee();
         setupVault();
         setupCitizens();
+        setupEnchantmentFix();
     }
 
     public static void setupVault() {
@@ -98,5 +100,14 @@ public class Depends {
         catch (Exception e) {
         }
         return citizens != null;
+    }
+
+    public static boolean setupEnchantmentFix() {
+        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("DenizenEnchantmentFix");
+        if (plugin == null || !plugin.isEnabled()) {
+            return false;
+        }
+        denizenEnchantmentFix = plugin;
+        return true;
     }
 }
