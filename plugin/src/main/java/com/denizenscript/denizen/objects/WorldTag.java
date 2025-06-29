@@ -4,6 +4,7 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -613,9 +614,11 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @attribute <WorldTag.time.duration>
             // @returns DurationTag
             // @description
-            // Returns the relative in-game time of this world as a duration.
+            // Deprecated in favor of <@link tag WorldTag.time_duration>
+            // @deprecated Use <@link tag WorldTag.time_duration> instead.
             // -->
             if (attribute.startsWith("duration", 2)) {
+                BukkitImplDeprecations.timeSubTags.warn(attribute.context);
                 attribute.fulfill(1);
                 return new DurationTag(object.getWorld().getTime());
             }
@@ -624,9 +627,11 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @attribute <WorldTag.time.full>
             // @returns DurationTag
             // @description
-            // Returns the in-game time of this world.
+            // Deprecated in favor of <@link tag WorldTag.time_full>
+            // @deprecated Use <@link tag WorldTag.time_full> instead.
             // -->
             else if (attribute.startsWith("full", 2)) {
+                BukkitImplDeprecations.timeSubTags.warn(attribute.context);
                 attribute.fulfill(1);
                 return new DurationTag(object.getWorld().getFullTime());
             }
@@ -635,9 +640,11 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             // @attribute <WorldTag.time.period>
             // @returns ElementTag
             // @description
-            // Returns the time as 'day', 'night', 'dawn', or 'dusk'.
+            // Deprecated in favor of <@link tag WorldTag.time_period>
+            // @deprecated Use <@link tag WorldTag.time_period> instead.
             // -->
             else if (attribute.startsWith("period", 2)) {
+                BukkitImplDeprecations.timeSubTags.warn(attribute.context);
                 attribute.fulfill(1);
 
                 long time = object.getWorld().getTime();
@@ -661,6 +668,51 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             else {
                 return new ElementTag(object.getWorld().getTime());
             }
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.time_duration>
+        // @returns DurationTag
+        // @description
+        // Returns the relative in-game time of this world as a duration.
+        // -->
+        registerTag(DurationTag.class, "time_duration", (attribute, object) -> {
+            return new DurationTag(object.getWorld().getTime());
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.time_full>
+        // @returns DurationTag
+        // @description
+        // Returns the in-game time of this world.
+        // -->
+        registerTag(DurationTag.class, "time_full", (attribute, object) -> {
+            return new DurationTag(object.getWorld().getFullTime());
+        });
+
+        // <--[tag]
+        // @attribute <WorldTag.time_period>
+        // @returns ElementTag
+        // @description
+        // Returns the time as 'day', 'night', 'dawn', or 'dusk'.
+        // -->
+        registerTag(ElementTag.class, "time_period", (attribute, object) -> {
+            long time = object.getWorld().getTime();
+            String period;
+
+            if (time >= 23000) {
+                period = "dawn";
+            }
+            else if (time >= 13500) {
+                period = "night";
+            }
+            else if (time >= 12500) {
+                period = "dusk";
+            }
+            else {
+                period = "day";
+            }
+            return new ElementTag(period);
         });
 
         // <--[tag]
@@ -1104,6 +1156,379 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
             });
         }
 
+        // <--[mechanism]
+        // @object WorldTag
+        // @name ambient_spawn_limit
+        // @input ElementTag(Number)
+        // @description
+        // Sets the limit for number of ambient mobs that can spawn in a chunk in this world.
+        // @tags
+        // <WorldTag.ambient_spawn_limit>
+        // -->
+        tagProcessor.registerMechanism("ambient_spawn_limit", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireInteger()) {
+                object.getWorld().setAmbientSpawnLimit(input.asInt());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name animal_spawn_limit
+        // @input ElementTag(Number)
+        // @description
+        // Sets the limit for number of animals that can spawn in a chunk in this world.
+        // @tags
+        // <WorldTag.animal_spawn_limit>
+        // -->
+        tagProcessor.registerMechanism("animal_spawn_limit", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireInteger()) {
+                object.getWorld().setAnimalSpawnLimit(input.asInt());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name auto_save
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the world will automatically save edits.
+        // @tags
+        // <WorldTag.auto_save>
+        // -->
+        tagProcessor.registerMechanism("auto_save", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getWorld().setAutoSave(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name difficulty
+        // @input ElementTag
+        // @description
+        // Sets the difficulty level of this world.
+        // Possible values: Peaceful, Easy, Normal, Hard.
+        // @tags
+        // <WorldTag.difficulty>
+        // -->
+        tagProcessor.registerMechanism("difficulty", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireEnum(Difficulty.class)) {
+                object.getWorld().setDifficulty(input.asEnum(Difficulty.class));
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name hardcore
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the world is hardcore mode.
+        // @tags
+        // <WorldTag.hardcore>
+        // -->
+        tagProcessor.registerMechanism("hardcore", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getWorld().setHardcore(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name save
+        // @input None
+        // @description
+        // Saves the world to file.
+        // -->
+        tagProcessor.registerMechanism("save", false, (object, mechanism) -> {
+            object.getWorld().save();
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name destroy
+        // @input None
+        // @description
+        // Unloads the world from the server without saving chunks, then destroys all data that is part of the world.
+        // Require config setting 'Commands.Delete.Allow file deletion'.
+        // -->
+        tagProcessor.registerMechanism("destroy", false, (object, mechanism) -> {
+            File folder = object.getWorld().getWorldFolder();
+            object.unloadWorldClean(mechanism, false);
+            if (object.getWorld() != null) {
+                return;
+            }
+            if (!CoreConfiguration.allowFileDeletion) {
+                mechanism.echoError("Unable to destroy world due to config setting, refer to 'WorldTag.destroy' meta documentation.");
+                return;
+            }
+            try {
+                CoreUtilities.deleteDirectory(folder);
+            }
+            catch (Exception ex) {
+                Debug.echoError(ex);
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name force_unload
+        // @input None
+        // @description
+        // Unloads the world from the server without saving chunks.
+        // -->
+        tagProcessor.registerMechanism("force_unload", false, (object, mechanism) -> {
+            object.unloadWorldClean(mechanism, false);
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name full_time
+        // @input ElementTag(Number)
+        // @description
+        // Sets the in-game time on the server.
+        // @tags
+        // <WorldTag.time.full>
+        // -->
+        tagProcessor.registerMechanism("full_time", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireInteger()) {
+                object.getWorld().setFullTime(input.asInt());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name keep_spawn
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the world's spawn area should be kept loaded into memory.
+        // @tags
+        // <WorldTag.keep_spawn>
+        // -->
+        tagProcessor.registerMechanism("keep_spawn", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getWorld().setKeepSpawnInMemory(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name monster_spawn_limit
+        // @input ElementTag(Number)
+        // @description
+        // Sets the limit for number of monsters that can spawn in a chunk in this world.
+        // @tags
+        // <WorldTag.monster_spawn_limit>
+        // -->
+        tagProcessor.registerMechanism("monster_spawn_limit", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireInteger()) {
+                object.getWorld().setMonsterSpawnLimit(input.asInt());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name allow_pvp
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether player versus player combat is allowed in this world.
+        // @tags
+        // <WorldTag.allows_pvp>
+        // -->
+        tagProcessor.registerMechanism("allow_pvp", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getWorld().setPVP(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name spawn_location
+        // @input LocationTag
+        // @description
+        // Sets the spawn location of this world. (This ignores the world value of the LocationTag.)
+        // @tags
+        // <WorldTag.spawn_location>
+        // -->
+        tagProcessor.registerMechanism("spawn_location", false, LocationTag.class, (object, mechanism, input) -> {
+            object.getWorld().setSpawnLocation(input.getBlockX(), input.getBlockY(), input.getBlockZ(), input.getYaw());
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name storming
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether there is a storm.
+        // @tags
+        // <WorldTag.has_storm>
+        // -->
+        tagProcessor.registerMechanism("storming", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getWorld().setStorm(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name thunder_duration
+        // @input DurationTag
+        // @description
+        // Sets the duration of thunder.
+        // @tags
+        // <WorldTag.thunder_duration>
+        // -->
+        tagProcessor.registerMechanism("thunder_duration", false, DurationTag.class, (object, mechanism, input) -> {
+            object.getWorld().setThunderDuration(input.getTicksAsInt());
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name thundering
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether it is thundering.
+        // @tags
+        // <WorldTag.thundering>
+        // -->
+        tagProcessor.registerMechanism("thundering", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getWorld().setThundering(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name ticks_per_animal_spawns
+        // @input DurationTag
+        // @description
+        // Sets the time between animal spawns.
+        // @tags
+        // <WorldTag.ticks_per_animal_spawn>
+        // -->
+        tagProcessor.registerMechanism("ticks_per_animal_spawns", false, DurationTag.class, (object, mechanism, input) -> {
+            object.getWorld().setTicksPerAnimalSpawns(input.getTicksAsInt());
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name ticks_per_monster_spawns
+        // @input DurationTag
+        // @description
+        // Sets the time between monster spawns.
+        // @tags
+        // <WorldTag.ticks_per_monster_spawn>
+        // -->
+        tagProcessor.registerMechanism("ticks_per_monster_spawns", false, DurationTag.class, (object, mechanism, input) -> {
+            object.getWorld().setTicksPerMonsterSpawns(input.getTicksAsInt());
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name time
+        // @input ElementTag(Number)
+        // @description
+        // Sets the relative in-game time on the server.
+        // @tags
+        // <WorldTag.time>
+        // -->
+        tagProcessor.registerMechanism("time", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireInteger()) {
+                object.getWorld().setTime(input.asInt());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name unload
+        // @input None
+        // @description
+        // Unloads the world from the server and saves chunks.
+        // -->
+        tagProcessor.registerMechanism("unload", false, (object, mechanism) -> {
+            object.unloadWorldClean(mechanism, true);
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name water_animal_spawn_limit
+        // @input ElementTag(Number)
+        // @description
+        // Sets the limit for number of water animals that can spawn in a chunk in this world.
+        // @tags
+        // <WorldTag.water_animal_spawn_limit>
+        // -->
+        tagProcessor.registerMechanism("water_animal_spawn_limit", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireInteger()) {
+                object.getWorld().setWaterAnimalSpawnLimit(input.asInt());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name weather_duration
+        // @input DurationTag
+        // @description
+        // Set the remaining time of the current conditions.
+        // @tags
+        // <WorldTag.weather_duration>
+        // -->
+        tagProcessor.registerMechanism("weather_duration", false, DurationTag.class, (object, mechanism, input) -> {
+            object.getWorld().setWeatherDuration(input.getTicksAsInt());
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name advance_ticks
+        // @input ElementTag(Number)
+        // @description
+        // Advances this world's day the specified number of ticks WITHOUT firing any events.
+        // Useful for manually adjusting the daylight cycle without firing an event every tick, for example.
+        // -->
+        tagProcessor.registerMechanism("advance_ticks", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireInteger()) {
+                NMSHandler.worldHelper.setDayTime(object.getWorld(), object.getWorld().getFullTime() + input.asInt());
+            }
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name duration_since_created
+        // @input DurationTag
+        // @description
+        // Changes the world's internal time-since-created value.
+        // @tags
+        // <WorldTag.duration_since_created>
+        // -->
+        tagProcessor.registerMechanism("duration_since_created", false, DurationTag.class, (object, mechanism, input) -> {
+            NMSHandler.worldHelper.setGameTime(object.getWorld(), input.getTicks());
+        });
+
+        // <--[mechanism]
+        // @object WorldTag
+        // @name skip_night
+        // @input None
+        // @description
+        // Skips to the next day as if enough players slept through the night.
+        // NOTE: This ignores the doDaylightCycle gamerule!
+        // -->
+        tagProcessor.registerMechanism("skip_night", false, (object, mechanism) -> {
+            // general logic from NMS world tick
+            World world = object.getWorld();
+            long worldTime = world.getFullTime();
+            long nextDay = worldTime + 24000L;
+            TimeSkipEvent event = new TimeSkipEvent(world, TimeSkipEvent.SkipReason.NIGHT_SKIP, nextDay - nextDay % 24000L - worldTime);
+            Bukkit.getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
+                NMSHandler.worldHelper.setDayTime(world, worldTime + event.getSkipAmount());
+            }
+            if (!event.isCancelled()) {
+                NMSHandler.worldHelper.wakeUpAllPlayers(world);
+            }
+            // minor change: prior to 1.18, hasStorm/isRaining was not checked
+            if (object.getGameRuleOrDefault(GameRule.DO_WEATHER_CYCLE) && world.hasStorm()) {
+                NMSHandler.worldHelper.clearWeather(world);
+            }
+        });
     }
 
     public static ObjectTagProcessor<WorldTag> tagProcessor = new ObjectTagProcessor<>();
@@ -1123,371 +1548,13 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         return tagProcessor.getObjectAttribute(this, attribute);
     }
 
-    public void applyProperty(Mechanism mechanism) {
-        mechanism.echoError("Cannot apply properties to a world!");
-    }
-
     @Override
     public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name ambient_spawn_limit
-        // @input ElementTag(Number)
-        // @description
-        // Sets the limit for number of ambient mobs that can spawn in a chunk in this world.
-        // @tags
-        // <WorldTag.ambient_spawn_limit>
-        // -->
-        if (mechanism.matches("ambient_spawn_limit")
-                && mechanism.requireInteger()) {
-            getWorld().setAmbientSpawnLimit(mechanism.getValue().asInt());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name animal_spawn_limit
-        // @input ElementTag(Number)
-        // @description
-        // Sets the limit for number of animals that can spawn in a chunk in this world.
-        // @tags
-        // <WorldTag.animal_spawn_limit>
-        // -->
-        if (mechanism.matches("animal_spawn_limit")
-                && mechanism.requireInteger()) {
-            getWorld().setAnimalSpawnLimit(mechanism.getValue().asInt());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name auto_save
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether the world will automatically save edits.
-        // @tags
-        // <WorldTag.auto_save>
-        // -->
-        if (mechanism.matches("auto_save")
-                && mechanism.requireBoolean()) {
-            getWorld().setAutoSave(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name difficulty
-        // @input ElementTag
-        // @description
-        // Sets the difficulty level of this world.
-        // Possible values: Peaceful, Easy, Normal, Hard.
-        // @tags
-        // <WorldTag.difficulty>
-        // -->
-        if (mechanism.matches("difficulty") && mechanism.requireEnum(Difficulty.class)) {
-            Difficulty diff = mechanism.getValue().asEnum(Difficulty.class);
-            if (diff != null) {
-                getWorld().setDifficulty(diff);
-            }
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name hardcore
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether the world is hardcore mode.
-        // @tags
-        // <WorldTag.hardcore>
-        // -->
-        if (mechanism.matches("hardcore") && mechanism.requireBoolean()) {
-            getWorld().setHardcore(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name save
-        // @input None
-        // @description
-        // Saves the world to file.
-        // -->
-        if (mechanism.matches("save")) {
-            getWorld().save();
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name destroy
-        // @input None
-        // @description
-        // Unloads the world from the server without saving chunks, then destroys all data that is part of the world.
-        // Require config setting 'Commands.Delete.Allow file deletion'.
-        // -->
-        if (mechanism.matches("destroy")) {
-            File folder = getWorld().getWorldFolder();
-            unloadWorldClean(mechanism, false);
-            if (getWorld() != null) {
-                return;
-            }
-            if (!CoreConfiguration.allowFileDeletion) {
-                mechanism.echoError("Unable to destroy world due to config setting, refer to 'WorldTag.destroy' meta documentation.");
-                return;
-            }
-            try {
-                CoreUtilities.deleteDirectory(folder);
-            }
-            catch (Exception ex) {
-                Debug.echoError(ex);
-            }
-            return;
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name force_unload
-        // @input None
-        // @description
-        // Unloads the world from the server without saving chunks.
-        // -->
-        if (mechanism.matches("force_unload")) {
-            unloadWorldClean(mechanism, false);
-            return;
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name full_time
-        // @input ElementTag(Number)
-        // @description
-        // Sets the in-game time on the server.
-        // @tags
-        // <WorldTag.time.full>
-        // -->
-        if (mechanism.matches("full_time") && mechanism.requireInteger()) {
-            getWorld().setFullTime(mechanism.getValue().asInt());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name keep_spawn
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether the world's spawn area should be kept loaded into memory.
-        // @tags
-        // <WorldTag.keep_spawn>
-        // -->
-        if (mechanism.matches("keep_spawn") && mechanism.requireBoolean()) {
-            getWorld().setKeepSpawnInMemory(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name monster_spawn_limit
-        // @input ElementTag(Number)
-        // @description
-        // Sets the limit for number of monsters that can spawn in a chunk in this world.
-        // @tags
-        // <WorldTag.monster_spawn_limit>
-        // -->
-        if (mechanism.matches("monster_spawn_limit") && mechanism.requireInteger()) {
-            getWorld().setMonsterSpawnLimit(mechanism.getValue().asInt());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name allow_pvp
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether player versus player combat is allowed in this world.
-        // @tags
-        // <WorldTag.allows_pvp>
-        // -->
-        if (mechanism.matches("allow_pvp") && mechanism.requireBoolean()) {
-            getWorld().setPVP(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name spawn_location
-        // @input LocationTag
-        // @description
-        // Sets the spawn location of this world. (This ignores the world value of the LocationTag.)
-        // @tags
-        // <WorldTag.spawn_location>
-        // -->
-        if (mechanism.matches("spawn_location") && mechanism.requireObject(LocationTag.class)) {
-            LocationTag loc = mechanism.valueAsType(LocationTag.class);
-            getWorld().setSpawnLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getYaw());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name storming
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether there is a storm.
-        // @tags
-        // <WorldTag.has_storm>
-        // -->
-        if (mechanism.matches("storming") && mechanism.requireBoolean()) {
-            getWorld().setStorm(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name thunder_duration
-        // @input DurationTag
-        // @description
-        // Sets the duration of thunder.
-        // @tags
-        // <WorldTag.thunder_duration>
-        // -->
-        if (mechanism.matches("thunder_duration") && mechanism.requireObject(DurationTag.class)) {
-            getWorld().setThunderDuration(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name thundering
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether it is thundering.
-        // @tags
-        // <WorldTag.thundering>
-        // -->
-        if (mechanism.matches("thundering") && mechanism.requireBoolean()) {
-            getWorld().setThundering(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name ticks_per_animal_spawns
-        // @input DurationTag
-        // @description
-        // Sets the time between animal spawns.
-        // @tags
-        // <WorldTag.ticks_per_animal_spawn>
-        // -->
-        if (mechanism.matches("ticks_per_animal_spawns") && mechanism.requireObject(DurationTag.class)) {
-            getWorld().setTicksPerAnimalSpawns(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name ticks_per_monster_spawns
-        // @input DurationTag
-        // @description
-        // Sets the time between monster spawns.
-        // @tags
-        // <WorldTag.ticks_per_monster_spawn>
-        // -->
-        if (mechanism.matches("ticks_per_monster_spawns") && mechanism.requireObject(DurationTag.class)) {
-            getWorld().setTicksPerMonsterSpawns(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name time
-        // @input ElementTag(Number)
-        // @description
-        // Sets the relative in-game time on the server.
-        // @tags
-        // <WorldTag.time>
-        // -->
-        if (mechanism.matches("time") && mechanism.requireInteger()) {
-            getWorld().setTime(mechanism.getValue().asInt());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name unload
-        // @input None
-        // @description
-        // Unloads the world from the server and saves chunks.
-        // -->
-        if (mechanism.matches("unload")) {
-            unloadWorldClean(mechanism, true);
-            return;
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name water_animal_spawn_limit
-        // @input ElementTag(Number)
-        // @description
-        // Sets the limit for number of water animals that can spawn in a chunk in this world.
-        // @tags
-        // <WorldTag.water_animal_spawn_limit>
-        // -->
-        if (mechanism.matches("water_animal_spawn_limit") && mechanism.requireInteger()) {
-            getWorld().setWaterAnimalSpawnLimit(mechanism.getValue().asInt());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name weather_duration
-        // @input DurationTag
-        // @description
-        // Set the remaining time of the current conditions.
-        // @tags
-        // <WorldTag.weather_duration>
-        // -->
-        if (mechanism.matches("weather_duration") && mechanism.requireObject(DurationTag.class)) {
-            getWorld().setWeatherDuration(mechanism.valueAsType(DurationTag.class).getTicksAsInt());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name advance_ticks
-        // @input ElementTag(Number)
-        // @description
-        // Advances this world's day the specified number of ticks WITHOUT firing any events.
-        // Useful for manually adjusting the daylight cycle without firing an event every tick, for example.
-        // -->
-        if (mechanism.matches("advance_ticks") && mechanism.requireInteger()) {
-            World world = getWorld();
-            NMSHandler.worldHelper.setDayTime(world, world.getFullTime() + mechanism.getValue().asInt());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name duration_since_created
-        // @input DurationTag
-        // @description
-        // Changes the world's internal time-since-created value.
-        // @tags
-        // <WorldTag.duration_since_created>
-        // -->
-        if (mechanism.matches("duration_since_created") && mechanism.requireObject(DurationTag.class)) {
-            NMSHandler.worldHelper.setGameTime(getWorld(), mechanism.valueAsType(DurationTag.class).getTicks());
-        }
-
-        // <--[mechanism]
-        // @object WorldTag
-        // @name skip_night
-        // @input None
-        // @description
-        // Skips to the next day as if enough players slept through the night.
-        // NOTE: This ignores the doDaylightCycle gamerule!
-        // -->
-        if (mechanism.matches("skip_night")) {
-            // general logic from NMS world tick
-            World world = getWorld();
-            long worldTime = world.getFullTime();
-            long nextDay = worldTime + 24000L;
-            TimeSkipEvent event = new TimeSkipEvent(world, TimeSkipEvent.SkipReason.NIGHT_SKIP, nextDay - nextDay % 24000L - worldTime);
-            Bukkit.getPluginManager().callEvent(event);
-            if (!event.isCancelled()) {
-                NMSHandler.worldHelper.setDayTime(world, worldTime + event.getSkipAmount());
-            }
-            if (!event.isCancelled()) {
-                NMSHandler.worldHelper.wakeUpAllPlayers(world);
-            }
-            // minor change: prior to 1.18, hasStorm/isRaining was not checked
-            if (getGameRuleOrDefault(GameRule.DO_WEATHER_CYCLE) && world.hasStorm()) {
-                NMSHandler.worldHelper.clearWeather(world);
-            }
-        }
-
         tagProcessor.processMechanism(this, mechanism);
+    }
+
+    public void applyProperty(Mechanism mechanism) {
+        mechanism.echoError("Cannot apply properties to a world!");
     }
 
     public void unloadWorldClean(Mechanism mechanism, boolean doSave) {

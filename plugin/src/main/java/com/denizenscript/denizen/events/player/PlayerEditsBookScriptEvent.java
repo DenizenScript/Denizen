@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -10,7 +9,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -51,10 +49,27 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     public PlayerEditsBookScriptEvent() {
         registerCouldMatcher("player edits book");
         registerCouldMatcher("player signs book");
+        this.<PlayerEditsBookScriptEvent>registerTextDetermination("not_signing", (evt) -> {
+            evt.event.setSigning(false);
+        });
+        this.<PlayerEditsBookScriptEvent, ScriptTag>registerOptionalDetermination(null, ScriptTag.class, (evt, context, value) -> {
+            if (value.getContainer() instanceof BookScriptContainer script) {
+                ItemTag dBook = script.getBookFrom(context);
+                BookMeta bookMeta = (BookMeta) dBook.getItemMeta();
+                if (dBook.getBukkitMaterial() == Material.WRITABLE_BOOK) {
+                    evt.event.setSigning(false);
+                }
+                evt.event.setNewBookMeta(bookMeta);
+                return true;
+            }
+            else {
+                Debug.echoError("Script '" + value + "' is valid, but not of type 'book'!");
+                return false;
+            }
+        });
     }
 
     public PlayerEditBookEvent event;
-    public PlayerTag player;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -62,65 +77,39 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
         if (!(action.equals("edits") && !event.isSigning()) && !(action.equals("signs") && event.isSigning())) {
             return false;
         }
-        if (!runInCheck(path, player.getLocation())) {
+        if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
         return super.matches(path);
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (CoreUtilities.toLowerCase(determination).equals("not_signing")) {
-            event.setSigning(false);
-            return true;
-        }
-        else if (ScriptTag.matches(determination)) {
-            ScriptTag script = ScriptTag.valueOf(determination, getTagContext(path));
-            if (script.getContainer() instanceof BookScriptContainer) {
-                ItemTag dBook = ((BookScriptContainer) script.getContainer()).getBookFrom(getScriptEntryData().getTagContext());
-                BookMeta bookMeta = (BookMeta) dBook.getItemMeta();
-                if (dBook.getMaterial().getMaterial() == Material.WRITABLE_BOOK) {
-                    event.setSigning(false);
-                }
-                event.setNewBookMeta(bookMeta);
-            }
-            else {
-                Debug.echoError("Script '" + determination + "' is valid, but not of type 'book'!");
-            }
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(player, null);
+        return new BukkitScriptEntryData(event.getPlayer());
     }
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "signing": return new ElementTag(event.isSigning());
-            case "title": return event.isSigning() ? new ElementTag(event.getNewBookMeta().getTitle()) : null;
-            case "pages": return new ElementTag(event.getNewBookMeta().getPageCount());
-            case "book": {
-                ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
+        return switch (name) {
+            case "signing" -> new ElementTag(event.isSigning());
+            case "title" -> event.isSigning() ? new ElementTag(event.getNewBookMeta().getTitle(), true) : null;
+            case "pages" -> new ElementTag(event.getNewBookMeta().getPageCount());
+            case "book" ->  {
+                ItemStack book = new ItemStack(event.isSigning() ? Material.WRITTEN_BOOK : Material.WRITABLE_BOOK);
                 book.setItemMeta(event.getNewBookMeta());
-                return new ItemTag(book);
+                yield new ItemTag(book);
             }
-            case "old_book": {
+            case "old_book" -> {
                 ItemStack book = new ItemStack(Material.WRITABLE_BOOK);
                 book.setItemMeta(event.getPreviousBookMeta());
-                return new ItemTag(book);
+                yield new ItemTag(book);
             }
-        }
-        return super.getContext(name);
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
     public void onPlayerEditsBook(PlayerEditBookEvent event) {
-        player = PlayerTag.mirrorBukkitPlayer(event.getPlayer());
         this.event = event;
         fire(event);
     }

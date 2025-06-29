@@ -12,28 +12,28 @@ public class ReflectionMappingsInfo {
     public static String MappedRegistry_unregisteredIntrusiveHolders = "m";
 
     // net.minecraft.world.entity.Entity
-    public static String Entity_onGround = "aH";
-    public static String Entity_DATA_SHARED_FLAGS_ID = "am";
-    public static String Entity_DATA_CUSTOM_NAME = "aR";
-    public static String Entity_DATA_CUSTOM_NAME_VISIBLE = "aS";
+    public static String Entity_onGround = "bb";
+    public static String Entity_DATA_SHARED_FLAGS_ID = "az";
+    public static String Entity_DATA_CUSTOM_NAME = "bl";
+    public static String Entity_DATA_CUSTOM_NAME_VISIBLE = "bm";
 
     // net.minecraft.world.entity.LivingEntity
-    public static String LivingEntity_attackStrengthTicker = "aS";
-    public static String LivingEntity_autoSpinAttackTicks = "bp";
+    public static String LivingEntity_attackStrengthTicker = "bo";
+    public static String LivingEntity_autoSpinAttackTicks = "bL";
     public static String LivingEntity_setLivingEntityFlag_method = "c";
 
     // net.minecraft.world.entity.player.Player
-    public static String Player_DATA_PLAYER_ABSORPTION_ID = "c";
-    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bK";
+    public static String Player_DATA_PLAYER_ABSORPTION_ID = "d";
+    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "cg";
 
     // net.minecraft.server.level.ServerPlayer
-    public static String ServerPlayer_respawnConfig = "dc";
+    public static String ServerPlayer_respawnConfig = "dA";
 
     // net.minecraft.world.entity.monster.EnderMan
-    public static String EnderMan_DATA_CREEPY = "bJ";
+    public static String EnderMan_DATA_CREEPY = "cl";
 
     // net.minecraft.world.entity.monster.Zombie
-    public static String Zombie_inWaterTime = "bY";
+    public static String Zombie_inWaterTime = "cA";
 
     // net.minecraft.world.item.Item
     public static String Item_components = "c";
@@ -104,9 +104,9 @@ public class ReflectionMappingsInfo {
     public static String SynchedEntityData_itemsById = "e";
 
     // net.minecraft.world.entity.projectile.FishingHook
-    public static String FishingHook_nibble = "i";
-    public static String FishingHook_timeUntilLured = "j";
-    public static String FishingHook_timeUntilHooked = "k";
+    public static String FishingHook_nibble = "j";
+    public static String FishingHook_timeUntilLured = "k";
+    public static String FishingHook_timeUntilHooked = "l";
 
     // net.minecraft.tags.TagNetworkSerialization$NetworkPayload
     public static String TagNetworkSerializationNetworkPayload_tags = "b";
@@ -118,12 +118,11 @@ public class ReflectionMappingsInfo {
     public static String HolderReference_bindTags_method = "a";
 
     // net.minecraft.server.level.ServerLevel
-    public static String ServerLevel_sleepStatus = "Q";
+    public static String ServerLevel_sleepStatus = "R";
 
     // net.minecraft.world.item.AdventureModePredicate
-    public static String AdventureModePredicate_predicates = "f";
+    public static String AdventureModePredicate_predicates = "g";
 
     // net.minecraft.stats.ServerRecipeBook
     public static String ServerRecipeBook_addHighlight_method = "e";
-
 }
