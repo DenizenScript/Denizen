@@ -162,12 +162,26 @@ public class Denizen extends JavaPlugin {
             startedSuccessful = false;
             return;
         }
-        if (!NMSHandler.instance.isCorrectMappingsCode()) {
-            getLogger().warning("-------------------------------------");
-            getLogger().warning("This build of Denizen was built for a different Spigot revision! This may potentially cause issues."
-                    + " If you are experiencing trouble, update Denizen and Spigot both to latest builds!"
-                    + " If this message appears with both Denizen and Spigot fully up-to-date, contact the Denizen team (via GitHub, Spigot, or Discord) to request an update be built.");
-            getLogger().warning("-------------------------------------");
+        try {
+            if (Class.forName("com.destroystokyo.paper.PaperConfig") != null) {
+                supportsPaper = true;
+            }
+        }
+        catch (ClassNotFoundException ex) {
+            // Ignore.
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        if (!NMSHandler.instance.isExactServerVersionMatch()) {
+            String serverSoftware = supportsPaper ? "Paper" : "Spigot";
+            getLogger().warning("""
+                    \n-------------------------------------
+                    This build of Denizen was built for a different Minecraft version! This may potentially cause issues.
+                    If you are experiencing trouble, update Denizen and <server> both to latest builds!
+                    If this message appears with both Denizen and <server> fully up-to-date, contact the Denizen team (via Discord) to request an update be built.
+                    -------------------------------------""".replace("<server>", serverSoftware)
+            );
         }
         triggerRegistry = new TriggerRegistry();
         boolean citizensBork = false;
@@ -204,17 +218,6 @@ public class Denizen extends JavaPlugin {
         }
         catch (Exception e) {
             Debug.echoError(e);
-        }
-        try {
-            if (Class.forName("com.destroystokyo.paper.PaperConfig") != null) {
-                supportsPaper = true;
-            }
-        }
-        catch (ClassNotFoundException ex) {
-            // Ignore.
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
         }
         // bstats.org
         try {
