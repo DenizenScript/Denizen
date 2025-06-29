@@ -9,14 +9,12 @@ import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.ContextSource;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
-import com.denizenscript.denizencore.tags.ParseableTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
@@ -269,16 +267,6 @@ public class EnchantmentScriptContainer extends ScriptContainer {
         TagContext context = new BukkitTagContext(null, new ScriptTag(this));
         context.contextSource = src;
         return TagManager.tag(value, context);
-    }
-
-    public ObjectTag autoTag(ParseableTag tag, ContextSource src) {
-        if (tag == null) {
-            return null;
-        }
-        validateThread();
-        TagContext context = new BukkitTagContext(null, new ScriptTag(this));
-        context.contextSource = src;
-        return tag.parse(context);
     }
 
     public String autoTagForLevel(String value, int level) {
