@@ -94,7 +94,7 @@ public class MapCommand extends AbstractCommand {
                                    @ArgName("reset_to_blank") boolean resetEmpty,
                                    @ArgName("scale") @ArgPrefixed @ArgDefaultNull MapView.Scale scale,
                                    @ArgName("tracking") boolean tracking,
-                                   @ArgName("image") @ArgPrefixed @ArgDefaultNull ElementTag image,
+                                   @ArgName("image") @ArgPrefixed @ArgDefaultNull String image,
                                    @ArgName("resize") boolean resize,
                                    @ArgName("script") @ArgPrefixed @ArgDefaultNull ScriptTag script,
                                    @ArgName("dot") @ArgPrefixed @ArgDefaultNull ColorTag dot,
@@ -145,10 +145,10 @@ public class MapCommand extends AbstractCommand {
         if (image != null) {
             width = formatSize(width, resize);
             height = formatSize(height, resize);
-            if (CoreUtilities.toLowerCase(image.asString()).endsWith(".gif")) {
+            if (CoreUtilities.toLowerCase(image).endsWith(".gif")) {
                 dmr.autoUpdate = true;
             }
-            dmr.addObject(new MapImage(dmr, String.valueOf(x), String.valueOf(y), "true", false, image.asString(), width, height));
+            dmr.addObject(new MapImage(dmr, String.valueOf(x), String.valueOf(y), "true", false, image, width, height));
             dmr.hasChanged = true;
         }
         if (dot != null) {
