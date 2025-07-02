@@ -63,6 +63,7 @@ import org.bukkit.craftbukkit.v1_21_R5.boss.CraftBossBar;
 import org.bukkit.craftbukkit.v1_21_R5.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R5.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_21_R5.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_21_R5.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
@@ -398,15 +399,15 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public Location getBedSpawnLocation(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        BlockPos spawnPosition = nmsPlayer.getRespawnConfig().pos();
-        if (spawnPosition == null) {
+        ServerPlayer.RespawnConfig nmsRespawnConfig = nmsPlayer.getRespawnConfig();
+        if (nmsRespawnConfig == null) {
             return null;
         }
-        Level nmsWorld = MinecraftServer.getServer().getLevel(nmsPlayer.getRespawnConfig().dimension());
+        Level nmsWorld = MinecraftServer.getServer().getLevel(nmsRespawnConfig.dimension() != null ? nmsRespawnConfig.dimension() : Level.OVERWORLD);
         if (nmsWorld == null) {
             return null;
         }
-        return new Location(nmsWorld.getWorld(), spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ(), nmsPlayer.getRespawnConfig().angle(), 0);
+        return CraftLocation.toBukkit(nmsRespawnConfig.pos(), nmsWorld.getWorld(), nmsRespawnConfig.angle(), 0);
     }
 
     @Override
