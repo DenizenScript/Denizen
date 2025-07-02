@@ -43,7 +43,7 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
 
     public static final Field ServerGamePacketListenerImpl_chunkSender = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_chunkSender);
 
-    public static final MethodHandle SERVER_COMMON_PACKET_LISTENER_IMPL_CREATE_COOKIE = ReflectionHelper.getMethodHandle(ServerCommonPacketListenerImpl.class, "createCookie", ClientInformation.class);
+    public static final MethodHandle SERVER_COMMON_PACKET_LISTENER_IMPL_CREATE_COOKIE = ReflectionHelper.getMethodHandle(ServerCommonPacketListenerImpl.class, ReflectionMappingsInfo.ServerCommonPacketListenerImpl_createCookie_method, ClientInformation.class);
 
     public static CommonListenerCookie createCookie(ServerPlayer nmsPlayer) {
         try {
