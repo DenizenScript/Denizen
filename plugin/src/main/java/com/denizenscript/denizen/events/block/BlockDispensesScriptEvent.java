@@ -38,14 +38,20 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     public BlockDispensesScriptEvent() {
         registerCouldMatcher("<block> dispenses <item>");
         this.<BlockDispensesScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value instanceof LocationTag newLocation) {
-                evt.event.setVelocity(newLocation.toVector());
-                return true;
+            if (value.canBeType(LocationTag.class)) {
+                LocationTag location = value.asType(LocationTag.class, context);
+                if (location != null) {
+                    evt.event.setVelocity(location.toVector());
+                    return true;
+                }
             }
-            else if (value instanceof ItemTag item) {
+            else if (value.canBeType(ItemTag.class)) {
                 BukkitImplDeprecations.blockDispensesItemDetermination.warn();
-                evt.event.setItem(item.getItemStack());
-                return true;
+                ItemTag item = value.asType(ItemTag.class, context);
+                if (item != null) {
+                    evt.event.setItem(item.getItemStack());
+                    return true;
+                }
             }
             return false;
         });
