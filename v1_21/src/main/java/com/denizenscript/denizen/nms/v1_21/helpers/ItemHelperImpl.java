@@ -26,10 +26,8 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.critereon.BlockPredicate;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.NonNullList;
+import net.minecraft.advancements.critereon.DataComponentMatchers;
+import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
@@ -537,13 +535,10 @@ public class ItemHelperImpl extends ItemHelper {
             nmsItemStack.remove(nmsComponent);
             return CraftItemStack.asBukkitCopy(nmsItemStack);
         }
-        // TODO: 1.21.5: upstream code change
-        /*
         BlockPredicate nmsPredicate = new BlockPredicate(Optional.of(
                 HolderSet.direct(material -> BuiltInRegistries.BLOCK.get(CraftNamespacedKey.toMinecraft(material.getKey())).orElseThrow(), materials)
-        ), Optional.empty(), Optional.empty());
-        nmsItemStack.set(nmsComponent, new AdventureModePredicate(List.of(nmsPredicate), nmsAdventurePredicate == null || nmsAdventurePredicate.showInTooltip()));
-        */
+        ), Optional.empty(), Optional.empty(), DataComponentMatchers.ANY);
+        nmsItemStack.set(nmsComponent, new AdventureModePredicate(List.of(nmsPredicate)));
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 

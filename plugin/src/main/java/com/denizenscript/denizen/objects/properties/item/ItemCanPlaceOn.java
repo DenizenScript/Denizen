@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO: this should be deprecated in favor of a new property that properly represents the underlying data
 public class ItemCanPlaceOn implements Property {
 
     public static boolean describes(ObjectTag item) {
