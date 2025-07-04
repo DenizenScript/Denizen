@@ -436,6 +436,10 @@ public abstract class CompoundTag extends Tag {
         }
     }
 
+    public String getString(String key, String defaultValue) {
+        return value.get(key) instanceof StringTag stringTag ? stringTag.getValue() : defaultValue;
+    }
+
     /**
      * Get a string named with the given key.
      * <p/>
@@ -446,13 +450,7 @@ public abstract class CompoundTag extends Tag {
      * @return a string
      */
     public String getString(String key) {
-        Tag tag = value.get(key);
-        if (tag instanceof StringTag) {
-            return ((StringTag) tag).getValue();
-        }
-        else {
-            return "";
-        }
+        return getString(key, "");
     }
 
     @Override
