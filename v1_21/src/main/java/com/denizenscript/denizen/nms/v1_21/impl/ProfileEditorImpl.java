@@ -53,7 +53,9 @@ public class ProfileEditorImpl extends ProfileEditor {
         if (isSkinChanging) {
             ((CraftServer) Bukkit.getServer()).getHandle().respawn(nmsPlayer, true, Entity.RemovalReason.CHANGED_DIMENSION, PlayerRespawnEvent.RespawnReason.PLUGIN);
         }
-        NMSHandler.playerHelper.refreshPlayer(player);
+        else {
+            NMSHandler.playerHelper.refreshPlayer(player);
+        }
         player.updateInventory();
     }
 
