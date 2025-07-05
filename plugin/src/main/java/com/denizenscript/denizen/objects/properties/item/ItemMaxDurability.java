@@ -14,7 +14,9 @@ public class ItemMaxDurability extends ItemProperty<ElementTag> {
     // @name max_durability
     // @input ElementTag
     // @description
-    // Controls the maximum durability of an item.
+    // Controls the maximum durability of an item, if it can have durability.
+    // If the item cannot have durability (e.g. is not a tool or armor), this will return null.
+    // If the item does not have a max durability item component set, this will return the default max durability for the item type.
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -24,9 +26,13 @@ public class ItemMaxDurability extends ItemProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        if (getItemMeta() instanceof Damageable damageable
-                && damageable.hasMaxDamage()) {
-            damageable.getMaxDamage();
+        if (getItemMeta() instanceof Damageable damageable) {
+            if (damageable.hasMaxDamage()) {
+                return new ElementTag(damageable.getMaxDamage());
+            }
+            else {
+                return new ElementTag(getItemStack().getType().getMaxDurability());
+            }
         }
         return null;
     }
@@ -35,7 +41,12 @@ public class ItemMaxDurability extends ItemProperty<ElementTag> {
     public void setPropertyValue(ElementTag element, Mechanism mechanism) {
         editMeta(ItemMeta.class, meta -> {
             if (meta instanceof Damageable damageable) {
-                damageable.setMaxDamage(element.asInt());
+                if (element == null) {
+                    damageable.setMaxDamage((int) getItemStack().getType().getMaxDurability());
+                }
+                if (mechanism.requireInteger()) {
+                    damageable.setMaxDamage(element.asInt());
+                }
             }
         });
     }
