@@ -141,6 +141,7 @@ public class PacketHelperImpl implements PacketHelper {
         send(player, new ClientboundAddEntityPacket(entity, 0, BlockPos.ZERO));
         send(player, new ClientboundSetCameraPacket(entity));
         NMSHandler.playerHelper.refreshPlayer(player);
+        send(player, new ClientboundRemoveEntitiesPacket(entity.getId()));
     }
 
     @Override
