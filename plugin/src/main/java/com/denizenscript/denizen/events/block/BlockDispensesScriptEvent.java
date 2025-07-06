@@ -61,6 +61,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     }
 
     public LocationTag location;
+    public ItemTag item;
     private MaterialTag material;
     public BlockDispenseEvent event;
 
@@ -69,7 +70,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
         if (!runInCheck(path, location)) {
             return false;
         }
-        if  (!path.tryArgObject(2, new ItemTag(event.getItem()))) {
+        if  (!path.tryArgObject(2, item)) {
             return false;
         }
         if (!path.tryArgObject(0, material)) {
@@ -82,7 +83,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "location" -> location;
-            case "item" -> new ItemTag(event.getItem());
+            case "item" -> item;
             case "velocity" -> new LocationTag(event.getVelocity());
             default -> super.getContext(name);
         };
@@ -92,6 +93,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     public void onBlockDispenses(BlockDispenseEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
         material = new MaterialTag(event.getBlock());
+        item = new ItemTag(event.getItem());
         this.event = event;
         fire(event);
     }

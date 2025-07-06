@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,6 +48,9 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
                 for (LocationTag newBlock : value.asType(ListTag.class, context).filter(LocationTag.class, context)) {
                     if (newBlock.getWorld() != null) {
                         evt.event.blockList().add(newBlock.getBlock());
+                    }
+                    else {
+                        Debug.echoError("Block input of " + newBlock + " does not contain a valid world.");
                     }
                 }
                 return true;
