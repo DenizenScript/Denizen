@@ -106,8 +106,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     public static void notePlayer(OfflinePlayer player) {
         UUID uuid = player.getUniqueId();
         Player onlinePlayer = player.getPlayer();
-        String name = onlinePlayer != null ? onlinePlayer.getName() : NMSHandler.playerHelper.getOfflineData(uuid).getName();
-        notePlayer(name, uuid);
+        notePlayer(onlinePlayer != null ? onlinePlayer.getName() : NMSHandler.playerHelper.getOfflineData(uuid).getName(), uuid);
     }
 
     public static void notePlayer(String name, UUID uuid) {
