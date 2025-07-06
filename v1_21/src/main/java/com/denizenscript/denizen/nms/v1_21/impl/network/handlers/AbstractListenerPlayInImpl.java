@@ -22,8 +22,10 @@ import net.minecraft.network.protocol.cookie.ServerboundCookieResponsePacket;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.protocol.ping.ServerboundPingRequestPacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.Relative;
@@ -32,6 +34,7 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
 import java.util.Set;
@@ -40,11 +43,22 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
 
     public static final Field ServerGamePacketListenerImpl_chunkSender = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_chunkSender);
 
+    public static final MethodHandle SERVER_COMMON_PACKET_LISTENER_IMPL_CREATE_COOKIE = ReflectionHelper.getMethodHandle(ServerCommonPacketListenerImpl.class, ReflectionMappingsInfo.ServerCommonPacketListenerImpl_createCookie_method, ClientInformation.class);
+
+    public static CommonListenerCookie createCookie(ServerPlayer nmsPlayer) {
+        try {
+            return (CommonListenerCookie) SERVER_COMMON_PACKET_LISTENER_IMPL_CREATE_COOKIE.invoke(nmsPlayer.connection, nmsPlayer.clientInformation());
+        }
+        catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public final ServerGamePacketListenerImpl oldListener;
     public final DenizenNetworkManagerImpl denizenNetworkManager;
 
-    public AbstractListenerPlayInImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer, ServerGamePacketListenerImpl oldListener, CommonListenerCookie cookie) {
-        super(MinecraftServer.getServer(), networkManager, entityPlayer, cookie);
+    public AbstractListenerPlayInImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer, ServerGamePacketListenerImpl oldListener) {
+        super(MinecraftServer.getServer(), networkManager, entityPlayer, createCookie(entityPlayer));
         this.oldListener = oldListener;
         this.denizenNetworkManager = networkManager;
         try {
