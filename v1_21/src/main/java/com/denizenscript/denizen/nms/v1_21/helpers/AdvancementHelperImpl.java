@@ -113,7 +113,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             AdvancementProgress progress = new AdvancementProgress();
             progress.update(new AdvancementRequirements(IMPOSSIBLE_REQUIREMENTS));
             progress.grantProgress(IMPOSSIBLE_KEY); // complete impossible criteria
-            PacketHelperImpl.send(player, new ClientboundUpdateAdvancementsPacket(false, List.of(nmsAdvancement), Set.of(), Map.of(nmsAdvancement.id(), progress), false));
+            PacketHelperImpl.send(player, new ClientboundUpdateAdvancementsPacket(false, List.of(nmsAdvancement), Set.of(), Map.of(nmsAdvancement.id(), progress), true));
         }
         else {
             AdvancementHolder nmsAdvancement = getNMSAdvancementManager().advancements.get(CraftNamespacedKey.toMinecraft(advancement.key));
