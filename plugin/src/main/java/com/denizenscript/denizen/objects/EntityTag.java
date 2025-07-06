@@ -3185,6 +3185,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
 
+            // <--[tag]
+            // @attribute <EntityTag.body_armor>
+            // @returns ItemTag
+            // @description
+            // Returns the item equipped on an entity's body slot.
+            // -->
+            registerSpawnedOnlyTag(ItemTag.class, "body_armor", (attribute, entity) -> {
+                return new ItemTag(entity.getLivingEntity().getEquipment().getItem(EquipmentSlot.BODY));
+            }, "body_armour");
+
             // <--[mechanism]
             // @object EntityTag
             // @name start_using_hand
