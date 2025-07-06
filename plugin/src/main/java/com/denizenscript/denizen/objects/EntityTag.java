@@ -1409,7 +1409,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @deprecated Use <@link tag EntityTag.body_armor> on MC 1.20+.
         // @group inventory
         // @description
-        // Deprecated in favor of <@link tag body_armor> on MC 1.20+.
+        // Deprecated in favor of <@link tag EntityTag.body_armor> on MC 1.20+.
         // -->
         registerSpawnedOnlyTag(ItemTag.class, "horse_armor", (attribute, object) -> {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {

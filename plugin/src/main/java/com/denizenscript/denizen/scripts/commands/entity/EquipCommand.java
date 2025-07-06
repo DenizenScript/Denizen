@@ -46,7 +46,6 @@ public class EquipCommand extends AbstractCommand {
     // @Tags
     // <EntityTag.equipment>
     // <InventoryTag.equipment>
-    // <EntityTag.body_armor>
     //
     // @Usage
     // Use to equip a stone block on the player's head.
@@ -108,9 +107,9 @@ public class EquipCommand extends AbstractCommand {
                 }
                 equipment.put("horse_armor", ItemTag.valueOf(arg.getValue(), scriptEntry.getContext()));
             }
-            else if (arg.matchesArgumentType(ItemTag.class)
-                    && arg.matchesPrefix("body")
-                    && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)
+                    && arg.matchesArgumentType(ItemTag.class)
+                    && arg.matchesPrefix("body")) {
                 equipment.put("body", ItemTag.valueOf(arg.getValue(), scriptEntry.getContext()));
             }
             else if (arg.matchesArgumentType(ItemTag.class)
@@ -173,15 +172,13 @@ public class EquipCommand extends AbstractCommand {
                     if (equipment.get("offhand") != null) {
                         trait.set(Equipment.EquipmentSlot.OFF_HAND, equipment.get("offhand").getItemStack());
                     }
+                    if (equipment.get("body") != null) {
+                        trait.set(Equipment.EquipmentSlot.BODY, equipment.get("body").getItemStack());
+                    }
                     if (npc.isSpawned()) {
                         LivingEntity livingEntity = npc.getLivingEntity();
                         // TODO: Citizens API for this blob?
-                        if (equipment.get("body") != null && (livingEntity instanceof Wolf
-                                || livingEntity instanceof AbstractHorse
-                                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && livingEntity instanceof HappyGhast))) {
-                            livingEntity.getEquipment().setItem(EquipmentSlot.BODY, equipment.get("body").getItemStack());
-                        }
-                        else if (livingEntity instanceof AbstractHorse abstractHorse) {
+                        if (livingEntity instanceof AbstractHorse abstractHorse) {
                             if (equipment.get("saddle") != null) {
                                 abstractHorse.getInventory().setSaddle(equipment.get("saddle").getItemStack());
                             }
@@ -202,9 +199,7 @@ public class EquipCommand extends AbstractCommand {
             else {
                 LivingEntity livingEntity = entity.getLivingEntity();
                 if (livingEntity != null) {
-                    if (equipment.get("body") != null && (livingEntity instanceof Wolf
-                            || livingEntity instanceof AbstractHorse
-                            || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && livingEntity instanceof HappyGhast))) {
+                    if (equipment.get("body") != null) {
                         livingEntity.getEquipment().setItem(EquipmentSlot.BODY, equipment.get("body").getItemStack());
                     }
                     else if (livingEntity instanceof AbstractHorse abstractHorse) {
