@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_19.impl;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
@@ -84,7 +85,8 @@ public class ProfileEditorImpl extends ProfileEditor {
                         patchedProfile.getProperties().putAll(ownProfile.getProperties());
                     }
                     else {
-                        patchedProfile.getProperties().putAll(baseProfile.getProperties());
+                        // On Paper 1.19+, we use Paper's PlayerProfile API instead of this system
+                        patchedProfile.getProperties().putAll(Denizen.supportsPaper ? data.profile().getProperties() : baseProfile.getProperties());
                     }
                     String listRename = RenameCommand.getCustomNameFor(data.profileId(), manager.player.getBukkitEntity(), true);
                     Component displayName = listRename != null ? Handler.componentToNMS(FormattedTextHelper.parse(listRename, ChatColor.WHITE)) : data.displayName();
