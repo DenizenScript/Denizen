@@ -104,13 +104,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
      * Notes that the player exists, for easy PlayerTag valueOf handling.
      */
     public static void notePlayer(OfflinePlayer player) {
-        if (player.getName() == null) {
-            Debug.echoError("Null named player " + player + " - may be file corruption, or player data imported from non-bukkit server?");
+        UUID uuid = player.getUniqueId();
+        Player onlinePlayer = player.getPlayer();
+        notePlayer(onlinePlayer != null ? onlinePlayer.getName() : NMSHandler.playerHelper.getOfflineData(uuid).getName(), uuid);
+    }
+
+    public static void notePlayer(String name, UUID uuid) {
+        if (name == null) {
+            Debug.echoError("Null named player " + uuid + " - may be file corruption, or player data imported from non-bukkit server?");
             return;
         }
-        if (!playerNames.containsKey(CoreUtilities.toLowerCase(player.getName()))) {
-            playerNames.put(CoreUtilities.toLowerCase(player.getName()), player.getUniqueId());
-        }
+        playerNames.putIfAbsent(CoreUtilities.toLowerCase(name), uuid);
     }
 
     public static boolean isNoted(OfflinePlayer player) {

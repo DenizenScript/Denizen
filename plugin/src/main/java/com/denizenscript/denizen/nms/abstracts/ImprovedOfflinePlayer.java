@@ -108,6 +108,15 @@ public abstract class ImprovedOfflinePlayer {
         this.exists = loadPlayerData(playeruuid);
     }
 
+    public CompoundTag getBukkitData() {
+        return this.compound.getCompound("bukkit");
+    }
+
+    public String getName() {
+        CompoundTag bukkitData = getBukkitData();
+        return bukkitData != null ? bukkitData.getString("lastKnownName", null) : null;
+    }
+
     public abstract PlayerInventory getInventory();
 
     public abstract void setInventory(PlayerInventory inventory);
