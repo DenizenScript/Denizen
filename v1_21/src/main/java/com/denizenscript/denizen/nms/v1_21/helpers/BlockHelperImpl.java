@@ -102,11 +102,16 @@ public class BlockHelperImpl implements BlockHelper {
         skull.update();
     }
 
+    public BlockEntity getBlockEntity(Block block) {
+        CraftBlock craftBlock = ((CraftBlock) block);
+        return craftBlock.getHandle().getBlockEntity(craftBlock.getPosition());
+    }
+
     @Override
     public CompoundTag getNbtData(Block block) {
-        BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(new BlockPos(block.getX(), block.getY(), block.getZ()), true);
-        if (te != null) {
-            net.minecraft.nbt.CompoundTag compound = te.saveWithFullMetadata(CraftRegistry.getMinecraftRegistry());
+        BlockEntity nmsBlockEntity = getBlockEntity(block);
+        if (nmsBlockEntity != null) {
+            net.minecraft.nbt.CompoundTag compound = nmsBlockEntity.saveWithFullMetadata(CraftRegistry.getMinecraftRegistry());
             return CompoundTagImpl.fromNMSTag(compound);
         }
         return null;
@@ -119,9 +124,7 @@ public class BlockHelperImpl implements BlockHelper {
         builder.putInt("y", block.getY());
         builder.putInt("z", block.getZ());
         ctag = builder.build();
-        BlockPos blockPos = new BlockPos(block.getX(), block.getY(), block.getZ());
-        BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(blockPos, true);
-        Handler.useValueInput(((CompoundTagImpl) ctag).toNMSTag(), te::loadWithComponents);
+        Handler.useValueInput(((CompoundTagImpl) ctag).toNMSTag(), getBlockEntity(block)::loadWithComponents);
     }
 
     @Override
