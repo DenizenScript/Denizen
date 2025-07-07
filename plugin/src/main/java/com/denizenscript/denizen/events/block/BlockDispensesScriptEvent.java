@@ -84,7 +84,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "location" -> location;
-            case "item" -> item;
+            case "item" -> new ItemTag(event.getItem());
             case "velocity" -> new LocationTag(event.getVelocity());
             default -> super.getContext(name);
         };
