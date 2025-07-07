@@ -49,6 +49,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
                 BukkitImplDeprecations.blockDispensesItemDetermination.warn();
                 ItemTag item = value.asType(ItemTag.class, context);
                 if (item != null) {
+                    this.item = item;
                     evt.event.setItem(item.getItemStack());
                     return true;
                 }
