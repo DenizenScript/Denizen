@@ -137,6 +137,12 @@
                                         <include>**</include>
                                     </includes>
                                 </filter>
+                                <filter>
+                                    <artifact>net.kyori:adventure-nbt</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
                             </filters>
                             <relocations>
                                 <relocation>
@@ -158,6 +164,10 @@
                                 <relocation>
                                     <pattern>org.apache</pattern>
                                     <shadedPattern>com.denizenscript.shaded.org.apache</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.kyori</pattern>
+                                    <shadedPattern>com.denizenscript.shaded.net.kyori</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

@@ -67,6 +67,11 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/Vault.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-nbt</artifactId>
+            <version>4.23.0</version>
+        </dependency>
         <!-- Contained by Spigot-server -->
         <dependency>
             <groupId>it.unimi.dsi</groupId>
