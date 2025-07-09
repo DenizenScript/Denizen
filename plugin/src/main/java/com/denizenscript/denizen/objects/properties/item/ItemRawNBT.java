@@ -161,70 +161,64 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
             }
             return CompoundBinaryTag.from(result);
         }
-        else if (object.startsWith("list:")) {
-            int nextColonIndex = object.indexOf(':', "list:".length() + 1);
-            int typeCode = Integer.parseInt(object.substring("list:".length(), nextColonIndex));
-            String listValue = object.substring(nextColonIndex + 1);
-            List<BinaryTag> result = new ArrayList<>();
-            ListTag listTag = ListTag.valueOf(listValue, context);
-            for (int i = 0; i < listTag.size(); i++) {
-                try {
-                    result.add(convertObjectToNbt(listTag.get(i), context, path + "[" + i + "]"));
-                }
-                catch (Exception ex) {
-                    Debug.echoError("Object NBT interpretation failed for list key '" + path + "' at index " + i + ".");
-                    Debug.echoError(ex);
-                    return null;
-                }
-            }
-            return ListBinaryTag.listBinaryTag(BY_ID[typeCode], result);
-        }
-        else if (object.startsWith("byte_array:")) {
-            ListTag numberStrings = ListTag.valueOf(object.substring("byte_array:".length()), context);
-            byte[] result = new byte[numberStrings.size()];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = Byte.parseByte(numberStrings.get(i));
-            }
-            return ByteArrayBinaryTag.byteArrayBinaryTag(result);
-        }
-        else if (object.startsWith("int_array:")) {
-            ListTag numberStrings = ListTag.valueOf(object.substring("int_array:".length()), context);
-            int[] result = new int[numberStrings.size()];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = Integer.parseInt(numberStrings.get(i));
-            }
-            return IntArrayBinaryTag.intArrayBinaryTag(result);
-        }
-        else if (object.startsWith("byte:")) {
-            return ByteBinaryTag.byteBinaryTag(Byte.parseByte(object.substring("byte:".length())));
-        }
-        else if (object.startsWith("short:")) {
-            return ShortBinaryTag.shortBinaryTag(Short.parseShort(object.substring("short:".length())));
-        }
-        else if (object.startsWith("int:")) {
-            return IntBinaryTag.intBinaryTag(Integer.parseInt(object.substring("int:".length())));
-        }
-        else if (object.startsWith("long:")) {
-            return LongBinaryTag.longBinaryTag(Long.parseLong(object.substring("long:".length())));
-        }
-        else if (object.startsWith("float:")) {
-            return FloatBinaryTag.floatBinaryTag(Float.parseFloat(object.substring("float:".length())));
-        }
-        else if (object.startsWith("double:")) {
-            return DoubleBinaryTag.doubleBinaryTag(Double.parseDouble(object.substring("double:".length())));
-        }
-        else if (object.startsWith("string:")) {
-            return StringBinaryTag.stringBinaryTag(object.substring("string:".length()));
-        }
-        else if (object.equals("end")) {
+        if (object.equals("end")) {
             return EndBinaryTag.endBinaryTag();
         }
-        else {
-            if (context == null || context.showErrors()) {
-                Debug.echoError("Unknown raw NBT value: " + object);
-            }
+        int colonIndex = object.indexOf(':');
+        if (colonIndex == -1) {
+            Debug.echoError("Object NBT interpretation failed for key '" + path + "': missing object type.");
             return null;
         }
+        String type = object.substring(0, colonIndex), value = object.substring(colonIndex + 1);
+        return switch (type) {
+            case "list" -> {
+                int nextColonIndex = value.indexOf(':');
+                int typeCode = Integer.parseInt(value.substring(0, nextColonIndex));
+                String listValue = value.substring(nextColonIndex + 1);
+                List<BinaryTag> result = new ArrayList<>();
+                ListTag listTag = ListTag.valueOf(listValue, context);
+                for (int i = 0; i < listTag.size(); i++) {
+                    try {
+                        result.add(convertObjectToNbt(listTag.get(i), context, path + "[" + i + "]"));
+                    }
+                    catch (Exception ex) {
+                        Debug.echoError("Object NBT interpretation failed for list key '" + path + "' at index " + i + ".");
+                        Debug.echoError(ex);
+                        yield null;
+                    }
+                }
+                yield ListBinaryTag.listBinaryTag(BY_ID[typeCode], result);
+            }
+            case "byte_array" -> {
+                ListTag numberStrings = ListTag.valueOf(value, context);
+                byte[] result = new byte[numberStrings.size()];
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = Byte.parseByte(numberStrings.get(i));
+                }
+                yield ByteArrayBinaryTag.byteArrayBinaryTag(result);
+            }
+            case "int_array" -> {
+                ListTag numberStrings = ListTag.valueOf(value, context);
+                int[] result = new int[numberStrings.size()];
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = Integer.parseInt(numberStrings.get(i));
+                }
+                yield IntArrayBinaryTag.intArrayBinaryTag(result);
+                }
+            case "byte" -> ByteBinaryTag.byteBinaryTag(Byte.parseByte(value));
+            case "short" -> ShortBinaryTag.shortBinaryTag(Short.parseShort(value));
+            case "int" -> IntBinaryTag.intBinaryTag(Integer.parseInt(value));
+            case "long" -> LongBinaryTag.longBinaryTag(Long.parseLong(value));
+            case "float" -> FloatBinaryTag.floatBinaryTag(Float.parseFloat(value));
+            case "double" -> DoubleBinaryTag.doubleBinaryTag(Double.parseDouble(value));
+            case "string" -> StringBinaryTag.stringBinaryTag(value);
+            default -> {
+                if (context == null || context.showErrors()) {
+                    Debug.echoError("Unknown raw NBT value: " + object);
+                }
+                yield null;
+            }
+        };
     }
 
     public static ObjectTag nbtTagToObject(BinaryTag tag) {
