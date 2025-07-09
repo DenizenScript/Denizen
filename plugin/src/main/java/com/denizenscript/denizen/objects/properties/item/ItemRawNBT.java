@@ -134,6 +134,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
     // -->
 
     public static final BinaryTagType<?>[] BY_ID;
+    public static final boolean HAS_NBT_LIST_TYPES = NMSHandler.getVersion().isAtMost(NMSVersion.v1_20);
 
     static {
         // TODO: adventure-nbt: get type by id
@@ -161,6 +162,15 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
             }
             return CompoundBinaryTag.from(result);
         }
+        else if (!HAS_NBT_LIST_TYPES && inputObject.shouldBeType(ListTag.class)) {
+            ListTag list = inputObject.asType(ListTag.class, context);
+            // TODO: adventure-nbt: builders initial size
+            List<BinaryTag> result = new ArrayList<>(list.size());
+            for (int i = 0; i < list.size(); i++) {
+                result.add(convertObjectToNbt(list.getObject(i), context, path + '[' + i + ']'));
+            }
+            return ListBinaryTag.listBinaryTag(BinaryTagTypes.LIST_WILDCARD, result);
+        }
         String input = inputObject.identify();
         if (input.equals("end")) {
             return EndBinaryTag.endBinaryTag();
@@ -180,10 +190,10 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
                 ListTag listTag = ListTag.valueOf(listValue, context);
                 for (int i = 0; i < listTag.size(); i++) {
                     try {
-                        result.add(convertObjectToNbt(listTag.getObject(i), context, path + "[" + i + "]"));
+                        result.add(convertObjectToNbt(listTag.getObject(i), context, path + '[' + i + ']'));
                     }
                     catch (Exception ex) {
-                        Debug.echoError("Object NBT interpretation failed for list key '" + path + "' at index " + i + ".");
+                        Debug.echoError("Object NBT interpretation failed for list key '" + path + "' at index " + i + '.');
                         Debug.echoError(ex);
                         yield null;
                     }
@@ -243,7 +253,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
             for (BinaryTag entry : listTag) {
                 result.addObject(nbtTagToObject(entry));
             }
-            return new ElementTag("list:" + listTag.elementType().id() + ':' + result.identify());
+            return HAS_NBT_LIST_TYPES ? new ElementTag("list:" + listTag.elementType().id() + ':' + result.identify()) : result;
         }
         else if (tag instanceof ByteArrayBinaryTag byteArrayTag) {
             byte[] data = byteArrayTag.value();
