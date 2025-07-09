@@ -1,8 +1,8 @@
 package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
@@ -19,9 +19,9 @@ public interface BlockHelper {
 
     void setPlayerProfile(Skull skull, PlayerProfile playerProfile);
 
-    CompoundTag getNbtData(Block block);
+    CompoundBinaryTag getNbtData(Block block);
 
-    void setNbtData(Block block, CompoundTag compoundTag);
+    void setNbtData(Block block, CompoundBinaryTag compoundTag);
 
     boolean setBlockResistance(Material material, float resistance);
 
