@@ -146,6 +146,10 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
         }
     }
 
+    public static CompoundBinaryTag compoundOrEmpty(CompoundBinaryTag compoundTag) {
+        return compoundTag != null ? compoundTag : CompoundBinaryTag.empty();
+    }
+
     public static BinaryTag convertObjectToNbt(ObjectTag inputObject, TagContext context, String path) {
         if (inputObject.canBeType(MapTag.class)) {
             MapTag map = inputObject.asType(MapTag.class, context);
