@@ -77,7 +77,7 @@ public class AssignmentCommand extends AbstractCommand {
     }
 
     public static void autoExecute(ScriptEntry scriptEntry,
-                                   @ArgName("action") @ArgLinear Action action,
+                                   @ArgName("action") Action action,
                                    @ArgName("script") @ArgPrefixed @ArgDefaultNull ScriptTag script,
                                    @ArgName("to") @ArgPrefixed @ArgDefaultNull @ArgSubType(NPCTag.class) List<NPCTag> to) {
         PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
