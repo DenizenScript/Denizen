@@ -34,7 +34,6 @@ import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.ProfileResult;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -45,7 +44,6 @@ import net.minecraft.core.Rotations;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -160,16 +158,6 @@ public class Handler extends NMSHandler {
     @Override
     public CompoundTag createCompoundTag(Map<String, Tag> value) {
         return new CompoundTagImpl(value);
-    }
-
-    @Override
-    public CompoundTag parseSNBT(String snbt) {
-        try {
-            return CompoundTagImpl.fromNMSTag(TagParser.parseTag(snbt));
-        }
-        catch (CommandSyntaxException e) {
-            return null;
-        }
     }
 
     @Override

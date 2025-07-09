@@ -18,8 +18,11 @@ import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
+import net.kyori.adventure.nbt.TagStringIO;
 import net.md_5.bungee.api.ChatColor;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class BukkitElementExtensions {
@@ -914,28 +917,27 @@ public class BukkitElementExtensions {
             return new ElementTag(res);
         });
 
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-
-            // <--[tag]
-            // @attribute <ElementTag.snbt_to_map>
-            // @returns MapTag
-            // @description
-            // Parses a raw SNBT string into an NBT MapTag.
-            // See <@link language Raw NBT Encoding> for more information on the returned MapTag.
-            // See <@link url https://minecraft.wiki/w/NBT_format#SNBT_format> for more information on SNBT.
-            // @example
-            // # Use to set certain SNBT data onto an entity.
-            // - adjust <[entity]> raw_nbt:<[snbt].snbt_to_map>
-            // -->
-            ElementTag.tagProcessor.registerStaticTag(MapTag.class, "snbt_to_map", (attribute, object) -> {
-                CompoundTag tag = NMSHandler.getInstance().parseSNBT(object.asString());
-                if (tag == null) {
-                    attribute.echoError("Element '<Y>" + object + "<W>' isn't valid SNBT.");
-                    return null;
-                }
-                return (MapTag) ItemRawNBT.jnbtTagToObject(tag);
-            });
-        }
+        // <--[tag]
+        // @attribute <ElementTag.snbt_to_map>
+        // @returns MapTag
+        // @description
+        // Parses a raw SNBT string into an NBT MapTag.
+        // See <@link language Raw NBT Encoding> for more information on the returned MapTag.
+        // See <@link url https://minecraft.wiki/w/NBT_format#SNBT_format> for more information on SNBT.
+        // @example
+        // # Use to set certain SNBT data onto an entity.
+        // - adjust <[entity]> raw_nbt:<[snbt].snbt_to_map>
+        // -->
+        ElementTag.tagProcessor.registerStaticTag(MapTag.class, "snbt_to_map", (attribute, object) -> {
+            try {
+                return (MapTag) ItemRawNBT.nbtTagToObject(ItemRawNBT.SNBT_PARSER.asCompound(object.asString()));
+            }
+            catch (IOException e) {
+                attribute.echoError("Element '<Y>" + object + "<W>' isn't valid SNBT:");
+                attribute.echoError(e);
+                return null;
+            }
+        });
     }
 
     public enum GradientStyle { RGB, HSB }

@@ -125,10 +125,6 @@ public abstract class NMSHandler {
 
     public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
 
-    public CompoundTag parseSNBT(String snbt) {
-        throw new UnsupportedOperationException();
-    }
-
     public abstract String getTitle(Inventory inventory);
 
     public void setInventoryTitle(InventoryView view, String title) {

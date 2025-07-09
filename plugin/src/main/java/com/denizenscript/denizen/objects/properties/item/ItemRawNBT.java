@@ -135,6 +135,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
 
     public static final BinaryTagType<?>[] BY_ID;
     public static final boolean HAS_NBT_LIST_TYPES = NMSHandler.getVersion().isAtMost(NMSVersion.v1_20);
+    public static final TagStringIO SNBT_PARSER = TagStringIO.builder().emitHeterogeneousLists(HAS_NBT_LIST_TYPES).acceptHeterogeneousLists(!HAS_NBT_LIST_TYPES).build();
 
     static {
         // TODO: adventure-nbt: get type by id
