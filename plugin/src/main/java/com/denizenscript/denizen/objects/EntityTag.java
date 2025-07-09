@@ -3298,7 +3298,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // <EntityTag.all_raw_nbt>
             // -->
             tagProcessor.registerMechanism("raw_nbt", false, MapTag.class, (object, mechanism, input) -> {
-                CompoundTag tag = (CompoundTag) ItemRawNBT.convertObjectToNbt(input.identify(), mechanism.context, "(entity).");
+                CompoundTag tag = (CompoundTag) ItemRawNBT.convertObjectToNbt(input, mechanism.context, "(entity).");
                 if (tag != null) {
                     NMSHandler.entityHelper.modifyRawNBT(object.getBukkitEntity(), tag);
                 }

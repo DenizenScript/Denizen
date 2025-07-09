@@ -124,7 +124,7 @@ public class Handler extends NMSHandler {
         registerConversion(LocationTag.class, Rotations.class, location -> new Rotations((float) location.getX(), (float) location.getY(), (float) location.getZ()));
         registerConversion(LocationTag.class, BlockPos.class, CraftLocation::toBlockPosition);
         registerConversion(MapTag.class, net.minecraft.nbt.CompoundTag.class, map ->
-                ItemRawNBT.convertObjectToNbt(map.identify(), CoreUtilities.noDebugContext, "(item).") instanceof CompoundTagImpl compoundTag ? compoundTag.toNMSTag() : null);
+                ItemRawNBT.convertObjectToNbt(map, CoreUtilities.noDebugContext, "(item).") instanceof CompoundTagImpl compoundTag ? compoundTag.toNMSTag() : null);
         registerConversion(LocationTag.class, Vector3f.class, location -> new Vector3f((float) location.getX(), (float) location.getY(), (float) location.getZ()));
         registerConversion(QuaternionTag.class, Quaternionf.class, quaternion -> new Quaternionf(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
     }

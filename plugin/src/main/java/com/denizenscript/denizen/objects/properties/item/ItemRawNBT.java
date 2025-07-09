@@ -144,14 +144,14 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
         }
     }
 
-    public static BinaryTag convertObjectToNbt(String object, TagContext context, String path) {
-        if (object.startsWith("map@")) {
-            MapTag map = MapTag.valueOf(object, context);
+    public static BinaryTag convertObjectToNbt(ObjectTag inputObject, TagContext context, String path) {
+        if (inputObject.canBeType(MapTag.class)) {
+            MapTag map = inputObject.asType(MapTag.class, context);
             // TODO: adventure-nbt: builders initial size
             Map<String, BinaryTag> result = new HashMap<>(map.size());
             for (Map.Entry<StringHolder, ObjectTag> entry : map.entrySet()) {
                 try {
-                    result.put(entry.getKey().str, convertObjectToNbt(entry.getValue().toString(), context, path + "." + entry.getKey().str));
+                    result.put(entry.getKey().str, convertObjectToNbt(entry.getValue(), context, path + "." + entry.getKey().str));
                 }
                 catch (Exception ex) {
                     Debug.echoError("Object NBT interpretation failed for key '" + path + "." + entry.getKey().str + "'.");
@@ -161,15 +161,16 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
             }
             return CompoundBinaryTag.from(result);
         }
-        if (object.equals("end")) {
+        String input = inputObject.identify();
+        if (input.equals("end")) {
             return EndBinaryTag.endBinaryTag();
         }
-        int colonIndex = object.indexOf(':');
+        int colonIndex = input.indexOf(':');
         if (colonIndex == -1) {
             Debug.echoError("Object NBT interpretation failed for key '" + path + "': missing object type.");
             return null;
         }
-        String type = object.substring(0, colonIndex), value = object.substring(colonIndex + 1);
+        String type = input.substring(0, colonIndex), value = input.substring(colonIndex + 1);
         return switch (type) {
             case "list" -> {
                 int nextColonIndex = value.indexOf(':');
@@ -179,7 +180,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
                 ListTag listTag = ListTag.valueOf(listValue, context);
                 for (int i = 0; i < listTag.size(); i++) {
                     try {
-                        result.add(convertObjectToNbt(listTag.get(i), context, path + "[" + i + "]"));
+                        result.add(convertObjectToNbt(listTag.getObject(i), context, path + "[" + i + "]"));
                     }
                     catch (Exception ex) {
                         Debug.echoError("Object NBT interpretation failed for list key '" + path + "' at index " + i + ".");
@@ -214,7 +215,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
             case "string" -> StringBinaryTag.stringBinaryTag(value);
             default -> {
                 if (context == null || context.showErrors()) {
-                    Debug.echoError("Unknown raw NBT value: " + object);
+                    Debug.echoError("Unknown raw NBT value: " + inputObject);
                 }
                 yield null;
             }
@@ -297,7 +298,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
         BukkitImplDeprecations.oldNbtProperty.warn(mechanism.context);
         CompoundBinaryTag oldNbtData;
         try {
-            oldNbtData = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(value.identify(), mechanism.context, "(item)");
+            oldNbtData = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(value, mechanism.context, "(item)");
         }
         catch (Exception ex) {
             mechanism.echoError("Invalid NBT data specified:");
@@ -374,7 +375,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
         CompoundBinaryTag.Builder compoundTagBuilder = currentTag != null ? CompoundBinaryTag.builder().put(currentTag) : CompoundBinaryTag.builder();
         for (Map.Entry<StringHolder, ObjectTag> entry : input.entrySet()) {
             try {
-                BinaryTag tag = convertObjectToNbt(entry.getValue().toString(), context, "(item).");
+                BinaryTag tag = convertObjectToNbt(entry.getValue(), context, "(item).");
                 if (tag != null) {
                     compoundTagBuilder.put(entry.getKey().str, tag);
                 }

@@ -29,7 +29,7 @@ public class BukkitMapExtensions {
         // -->
         MapTag.tagProcessor.registerStaticTag(BinaryTag.class, "map_to_nbt", (attribute, object) -> {
             try {
-                Tag tag = ItemRawNBT.convertObjectToNbt(object.toString(), attribute.context, "(root).");
+                Tag tag = ItemRawNBT.convertObjectToNbt(object, attribute.context, "(root).");
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                 NBTOutputStream nbtStream = new NBTOutputStream(output);
                 nbtStream.writeNamedTag("", tag);

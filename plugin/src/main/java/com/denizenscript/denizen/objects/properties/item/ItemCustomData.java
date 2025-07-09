@@ -63,7 +63,7 @@ public class ItemCustomData extends ItemProperty<MapTag> {
         }
         CompoundTag customData;
         try {
-            customData = (CompoundTag) ItemRawNBT.convertObjectToNbt(value.identify(), mechanism.context, "(data)");
+            customData = (CompoundTag) ItemRawNBT.convertObjectToNbt(value, mechanism.context, "(data)");
         }
         catch (Exception ex) {
             mechanism.echoError("Invalid custom data specified:");
