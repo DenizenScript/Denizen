@@ -205,7 +205,15 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
                     result[i] = Integer.parseInt(numberStrings.get(i));
                 }
                 yield IntArrayBinaryTag.intArrayBinaryTag(result);
+            }
+            case "long_array" -> {
+                ListTag numberStrings = ListTag.valueOf(value, context);
+                long[] result = new long[numberStrings.size()];
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = Integer.parseInt(numberStrings.get(i));
                 }
+                yield LongArrayBinaryTag.longArrayBinaryTag(result);
+            }
             case "byte" -> ByteBinaryTag.byteBinaryTag(Byte.parseByte(value));
             case "short" -> ShortBinaryTag.shortBinaryTag(Short.parseShort(value));
             case "int" -> IntBinaryTag.intBinaryTag(Integer.parseInt(value));
@@ -241,7 +249,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
             byte[] data = byteArrayTag.value();
             StringBuilder output = new StringBuilder(data.length * 4);
             for (byte value : data) {
-                output.append(value).append("|");
+                output.append(value).append('|');
             }
             return new ElementTag("byte_array:" + output);
         }
@@ -249,9 +257,17 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
             int[] data = intArrayTag.value();
             StringBuilder output = new StringBuilder(data.length * 4);
             for (int value : data) {
-                output.append(value).append("|");
+                output.append(value).append('|');
             }
             return new ElementTag("int_array:" + output);
+        }
+        else if (tag instanceof LongArrayBinaryTag longArrayTag) {
+            long[] data = longArrayTag.value();
+            StringBuilder output = new StringBuilder(data.length * 4);
+            for (long value : data) {
+                output.append(value).append('|');
+            }
+            return new ElementTag("long_array:" + output);
         }
         else if (tag instanceof ByteBinaryTag byteTag) {
             return new ElementTag("byte:" + byteTag.value());
