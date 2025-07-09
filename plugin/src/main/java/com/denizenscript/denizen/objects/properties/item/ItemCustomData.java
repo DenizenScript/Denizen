@@ -8,6 +8,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 
 public class ItemCustomData extends ItemProperty<MapTag> {
 
@@ -61,9 +62,9 @@ public class ItemCustomData extends ItemProperty<MapTag> {
             setItemStack(NMSHandler.itemHelper.setCustomData(getItemStack(), addDenizenKeys(null)));
             return;
         }
-        CompoundTag customData;
+        CompoundBinaryTag customData;
         try {
-            customData = (CompoundTag) ItemRawNBT.convertObjectToNbt(value, mechanism.context, "(data)");
+            customData = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(value, mechanism.context, "(data)");
         }
         catch (Exception ex) {
             mechanism.echoError("Invalid custom data specified:");
