@@ -13,8 +13,10 @@ import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
@@ -38,6 +40,8 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -644,5 +648,42 @@ public class Utilities {
             return false;
         }
         return true;
+    }
+
+    public static ServerLinks replaceServerLinks(ServerLinks serverLinks, ListTag list, TagContext context) {
+        serverLinks.getLinks().forEach(serverLinks::removeLink);
+        return fillServerLinks(serverLinks, list, context);
+    }
+
+    public static ServerLinks fillServerLinks(ServerLinks serverLinks, ListTag list, TagContext context) {
+        for (MapTag map : list.filter(MapTag.class, context)) {
+            if (!map.containsKey("uri")) {
+                Debug.echoError("Invalid ServerLink map: missing 'uri' key!");
+                continue;
+            }
+            URI uri;
+            try {
+                uri = new URI(map.getElement("uri").asString());
+            }
+            catch (URISyntaxException e) {
+                Debug.echoError("Invalid ServerLink map: invalid 'uri' key!");
+                continue;
+            }
+            if (map.containsKey("display")) {
+                PaperAPITools.instance.addLink(serverLinks, map.getElement("display").asString(), uri);
+            }
+            else if (map.containsKey("type")) {
+                ServerLinks.Type type = map.getElement("type").asEnum(ServerLinks.Type.class);
+                if (type == null) {
+                    Debug.echoError("Type doesnt match");
+                    continue;
+                }
+                serverLinks.addLink(type, uri);
+            }
+            else {
+                Debug.echoError("Invalid ServerLink map: missing 'display' or 'type' key!");
+            }
+        }
+        return serverLinks;
     }
 }

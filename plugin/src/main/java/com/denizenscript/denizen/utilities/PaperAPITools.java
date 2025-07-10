@@ -25,6 +25,7 @@ import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
 import java.lang.invoke.MethodHandle;
+import java.net.URI;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -227,5 +228,9 @@ public class PaperAPITools {
 
     public void setMaterialTags(Material type, Set<NamespacedKey> tags) {
         NMSHandler.blockHelper.setVanillaTags(type, tags);
+    }
+
+    public void addLink(ServerLinks links, String display, URI uri) {
+        links.addLink(display, uri);
     }
 }

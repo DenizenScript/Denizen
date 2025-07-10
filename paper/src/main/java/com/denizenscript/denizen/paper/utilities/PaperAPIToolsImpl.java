@@ -18,6 +18,7 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import io.papermc.paper.connection.PlayerConnection;
 import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.potion.PotionMix;
 import net.kyori.adventure.text.Component;
@@ -33,6 +34,7 @@ import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerLinksSendEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -40,6 +42,7 @@ import org.bukkit.potion.PotionBrewer;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
+import java.net.URI;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -401,5 +404,10 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             return;
         }
         BlockTagsSetter.INSTANCE.setTags(type, tags);
+    }
+
+    @Override
+    public void addLink(ServerLinks links, String display, URI uri) {
+        links.addLink(PaperModule.parseFormattedText(display, ChatColor.WHITE), uri);
     }
 }
