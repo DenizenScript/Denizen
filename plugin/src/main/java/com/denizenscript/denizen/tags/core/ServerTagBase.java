@@ -2022,6 +2022,22 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             }
         });
 
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+
+            // <--[mechanism]
+            // @object server
+            // @name set_links
+            // @input ListTag(MapTag)
+            // @description
+            // Sets the default server links.
+            // Each map needs to have "uri" key which represents URI address of this link and either display or a type.
+            // Valid types are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ServerLinks.Type.html>
+            // -->
+            tagProcessor.registerMechanism("set_links", false, ListTag.class, (object, mechanism, input) -> {
+                Utilities.replaceServerLinks(Bukkit.getServerLinks(), input, mechanism.context);
+            });
+        }
+
         // <--[mechanism]
         // @object server
         // @name default_colors

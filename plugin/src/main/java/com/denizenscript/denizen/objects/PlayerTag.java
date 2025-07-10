@@ -2679,6 +2679,22 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 object.getNBTEditor().setSpawnForced(input.asBoolean());
             }
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+
+            // <--[mechanism]
+            // @object PlayerTag
+            // @name send_links
+            // @input ListTag(MapTag)
+            // @description
+            // Sends list of server links to the player.
+            // Each map needs to have "uri" key which represents URI address of this link and either display or a type.
+            // Valid types are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ServerLinks.Type.html>
+            // -->
+            registerOnlineOnlyMechanism("send_links", ListTag.class, (player, mechanism, input) -> {
+                player.getPlayerEntity().sendLinks(Utilities.replaceServerLinks(Bukkit.getServerLinks().copy(), input, mechanism.context));
+            });
+        }
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
