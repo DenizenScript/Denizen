@@ -268,6 +268,9 @@ public class BukkitImplDeprecations {
     // Added 2025/03/14
     public static Warning settingBoatType = new Warning("settingBoatType", "As of MC 1.21, separate boat wood types are separate entity types, meaning the wood type of an existing boat entity cannot be changed without spawning a new one.");
 
+    // Added 2025/07/10
+    public static Warning entityKnockback = new Warning("entityKnockback", "The 'entity.knockback' property is deprecated. You should adjust knockback enchantment on the weapon itself.");
+
     // ==================== SLOW deprecations ====================
     // These aren't spammed, but will show up repeatedly until fixed. Server owners will probably notice them.
 
