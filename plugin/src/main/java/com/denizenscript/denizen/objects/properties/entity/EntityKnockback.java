@@ -36,22 +36,12 @@ public class EntityKnockback implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(getKnockbackStrength(this));
+        return String.valueOf(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) ? null : getAbstractArrow().getKnockbackStrength());
     }
 
     @Override
     public String getPropertyId() {
         return "knockback";
-    }
-
-    public static int getKnockbackStrength(EntityKnockback e) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            ItemStack is = e.getAbstractArrow().getWeapon();
-            return is == null ? 0 : is.getEnchantmentLevel(Enchantment.KNOCKBACK); // it is nullable even when it is marked as @NotNull, for example when you spawn an arrow
-        }
-        else {
-            return e.getAbstractArrow().getKnockbackStrength();
-        }
     }
 
     public static void register() {
@@ -66,7 +56,13 @@ public class EntityKnockback implements Property {
         // -->
         PropertyParser.registerTag(EntityKnockback.class, ElementTag.class, "knockback", (attribute, object) -> {
             BukkitImplDeprecations.entityKnockback.warn(attribute.context);
-            return new ElementTag(getKnockbackStrength(object));
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+                ItemStack is = object.getAbstractArrow().getWeapon();
+                return new ElementTag(is == null ? 0 : is.getEnchantmentLevel(Enchantment.KNOCKBACK)); // it is nullable even when it is marked as @NotNull, for example when you spawn an arrow
+            }
+            else {
+                return new ElementTag(object.getAbstractArrow().getKnockbackStrength());
+            }
         });
 
         // <--[mechanism]
