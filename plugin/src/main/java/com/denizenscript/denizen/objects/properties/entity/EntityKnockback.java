@@ -46,7 +46,7 @@ public class EntityKnockback implements Property {
         // @mechanism EntityTag.knockback
         // @group properties
         // @description
-        // Returns the knockback strength of an arrow or trident. This feature was removed in the 1.21 and you should instead set knockback enchant on the weapon itself.
+        // Returns the knockback strength of an arrow or trident.
         // -->
         PropertyParser.registerTag(EntityKnockback.class, ElementTag.class, "knockback", (attribute, object) -> {
             return new ElementTag(object.getAbstractArrow().getKnockbackStrength());
@@ -57,7 +57,7 @@ public class EntityKnockback implements Property {
         // @name knockback
         // @input ElementTag(Number)
         // @description
-        // Sets the knockback strength of an arrow or trident. This feature was removed in the 1.21 and you should instead set knockback enchant on the weapon itself.
+        // Sets the knockback strength of an arrow or trident.
         // @tags
         // <EntityTag.knockback>
         // -->
