@@ -128,7 +128,10 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         }
         else {
             AdvancementHolder nmsAdvancement = getNMSAdvancementManager().advancements.get(CraftNamespacedKey.toMinecraft(advancement.key));
-            ((CraftPlayer) player).getHandle().getAdvancements().revoke(nmsAdvancement, IMPOSSIBLE_KEY);
+            PlayerAdvancements advancements = ((CraftPlayer) player).getHandle().getAdvancements();
+            for (String criterion : nmsAdvancement.value().criteria().keySet()) {
+                advancements.revoke(nmsAdvancement, criterion);
+            }
         }
     }
 
