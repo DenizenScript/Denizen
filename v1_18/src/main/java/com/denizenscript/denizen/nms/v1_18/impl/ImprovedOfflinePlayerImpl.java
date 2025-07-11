@@ -58,7 +58,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     public org.bukkit.inventory.PlayerInventory getInventory() {
         if (inventory == null) {
             net.minecraft.world.entity.player.Inventory newInv = new OfflinePlayerInventory(null);
-            newInv.load((ListTag) NBTAdapter.toNMS(this.compound.getList("Inventory", BinaryTagTypes.COMPOUND)));
+            newInv.load(NBTAdapter.toNMS(this.compound.getList("Inventory", BinaryTagTypes.COMPOUND)));
             inventory = new OfflineCraftInventoryPlayer(newInv);
         }
         return inventory;
@@ -75,7 +75,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     public Inventory getEnderChest() {
         if (enderchest == null) {
             PlayerEnderChestContainer endchest = new PlayerEnderChestContainer(null);
-            endchest.fromTag((ListTag) NBTAdapter.toNMS(this.compound.getList("EnderItems", BinaryTagTypes.COMPOUND)));
+            endchest.fromTag(NBTAdapter.toNMS(this.compound.getList("EnderItems", BinaryTagTypes.COMPOUND)));
             enderchest = new CraftInventory(endchest);
         }
         return enderchest;
@@ -103,7 +103,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
 
     private AttributeMap getAttributes() {
         AttributeMap amb = new AttributeMap(DefaultAttributes.getSupplier(net.minecraft.world.entity.EntityType.PLAYER));
-        amb.load((ListTag) NBTAdapter.toNMS(this.compound.getList("Attributes", BinaryTagTypes.COMPOUND)));
+        amb.load(NBTAdapter.toNMS(this.compound.getList("Attributes", BinaryTagTypes.COMPOUND)));
         return amb;
     }
 

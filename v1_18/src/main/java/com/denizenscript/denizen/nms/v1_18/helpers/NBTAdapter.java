@@ -48,11 +48,7 @@ public class NBTAdapter {
             return StringTag.valueOf(stringTag.value());
         }
         else if (tag instanceof ListBinaryTag listTag) {
-            ListTag nmsListTag = new ListTag();
-            for (BinaryTag value : listTag) {
-                nmsListTag.add(toNMS(value));
-            }
-            return nmsListTag;
+            return toNMS(listTag);
         }
         else if (tag instanceof CompoundBinaryTag compoundTag) {
             return toNMS(compoundTag);
@@ -95,12 +91,7 @@ public class NBTAdapter {
             return StringBinaryTag.stringBinaryTag(nmsStringTag.getAsString());
         }
         else if (nmsTag instanceof ListTag nmsListTag) {
-            // TODO: adventure-nbt: builder initial capacity
-            ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.builder();
-            for (Tag nmsEntry : nmsListTag) {
-                builder.add(toAPI(nmsEntry));
-            }
-            return builder.build();
+            return toAPI(nmsListTag);
         }
         else if (nmsTag instanceof CompoundTag nmsCompoundTag) {
             return toAPI(nmsCompoundTag);
@@ -109,6 +100,23 @@ public class NBTAdapter {
             return EndBinaryTag.endBinaryTag();
         }
         throw new IllegalStateException("Unrecognized NMS tag of type '" + nmsTag.getClass().getName() + '/' + nmsTag.getType().getName() + "': " + nmsTag);
+    }
+
+    public static ListBinaryTag toAPI(ListTag nmsListTag) {
+        // TODO: adventure-nbt: builder initial capacity
+        ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.builder();
+        for (Tag nmsEntry : nmsListTag) {
+            builder.add(toAPI(nmsEntry));
+        }
+        return builder.build();
+    }
+
+    public static ListTag toNMS(ListBinaryTag listTag) {
+        ListTag nmsListTag = new ListTag();
+        for (BinaryTag value : listTag) {
+            nmsListTag.add(toNMS(value));
+        }
+        return nmsListTag;
     }
 
     public static CompoundBinaryTag toAPI(CompoundTag nmsCompoundTag) {
