@@ -28,7 +28,7 @@ public class BukkitBinaryTagExtensions {
         // -->
         BinaryTag.tagProcessor.registerStaticTag(ObjectTag.class, "nbt_to_map", (attribute, object) -> {
             try (ByteArrayInputStream input = new ByteArrayInputStream(object.data)) {
-                return ItemRawNBT.nbtTagToObject(BinaryTagIO.reader().read(input));
+                return ItemRawNBT.nbtTagToObject(BinaryTagIO.reader().read(input), true);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);

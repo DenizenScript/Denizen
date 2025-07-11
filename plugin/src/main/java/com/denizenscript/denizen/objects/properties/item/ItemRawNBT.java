@@ -246,17 +246,24 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
     }
 
     public static ObjectTag nbtTagToObject(BinaryTag tag) {
+        return nbtTagToObject(tag, false);
+    }
+
+    public static ObjectTag nbtTagToObject(BinaryTag tag, boolean unwrapLists) {
         if (tag instanceof CompoundBinaryTag compoundTag) {
             MapTag result = new MapTag();
             for (Map.Entry<String, ? extends BinaryTag> entry : compoundTag) {
-                result.putObject(entry.getKey(), nbtTagToObject(entry.getValue()));
+                result.putObject(entry.getKey(), nbtTagToObject(entry.getValue(), unwrapLists));
             }
             return result;
         }
         else if (tag instanceof ListBinaryTag listTag) {
+            if (!HAS_NBT_LIST_TYPES && unwrapLists) {
+                listTag = listTag.unwrapHeterogeneity();
+            }
             ListTag result = new ListTag(listTag.size());
             for (BinaryTag entry : listTag) {
-                result.addObject(nbtTagToObject(entry));
+                result.addObject(nbtTagToObject(entry, unwrapLists));
             }
             return HAS_NBT_LIST_TYPES ? new ElementTag("list:" + listTag.elementType().id() + ':' + result.identify()) : result;
         }
