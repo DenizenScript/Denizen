@@ -78,6 +78,8 @@ public class AssignmentCommand extends AbstractCommand {
 
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("action") Action action,
+                                   @ArgName("linearScript") @ArgLinear @ArgDefaultNull ScriptTag linearScript,
+                                   @ArgName("linearTo") @ArgLinear @ArgDefaultNull @ArgSubType(NPCTag.class) List<NPCTag> linearTo,
                                    @ArgName("script") @ArgPrefixed @ArgDefaultNull ScriptTag script,
                                    @ArgName("to") @ArgPrefixed @ArgDefaultNull @ArgSubType(NPCTag.class) List<NPCTag> to) {
         PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
@@ -86,6 +88,14 @@ public class AssignmentCommand extends AbstractCommand {
                 throw new InvalidArgumentsRuntimeException("This command requires a linked NPC!");
             }
             to = List.of(Utilities.getEntryNPC(scriptEntry));
+        }
+        if (linearScript != null) {
+            BukkitImplDeprecations.assignmentOptionalPrefixArgs.warn(scriptEntry);
+            script = linearScript;
+        }
+        if (linearTo != null) {
+            BukkitImplDeprecations.assignmentOptionalPrefixArgs.warn(scriptEntry);
+            to = linearTo;
         }
         switch (action) {
             case SET -> {
