@@ -83,12 +83,6 @@ public class AssignmentCommand extends AbstractCommand {
                                    @ArgName("script") @ArgPrefixed @ArgDefaultNull ScriptTag script,
                                    @ArgName("to") @ArgPrefixed @ArgDefaultNull @ArgSubType(NPCTag.class) List<NPCTag> to) {
         PlayerTag player = Utilities.getEntryPlayer(scriptEntry);
-        if (to == null) {
-            if (!Utilities.entryHasNPC(scriptEntry)) {
-                throw new InvalidArgumentsRuntimeException("This command requires a linked NPC!");
-            }
-            to = List.of(Utilities.getEntryNPC(scriptEntry));
-        }
         if (linearScript != null) {
             BukkitImplDeprecations.assignmentOptionalPrefixArgs.warn(scriptEntry);
             script = linearScript;
@@ -96,6 +90,12 @@ public class AssignmentCommand extends AbstractCommand {
         if (linearTo != null) {
             BukkitImplDeprecations.assignmentOptionalPrefixArgs.warn(scriptEntry);
             to = linearTo;
+        }
+        if (to == null) {
+            if (!Utilities.entryHasNPC(scriptEntry)) {
+                throw new InvalidArgumentsRuntimeException("This command requires a linked NPC!");
+            }
+            to = List.of(Utilities.getEntryNPC(scriptEntry));
         }
         switch (action) {
             case SET -> {
