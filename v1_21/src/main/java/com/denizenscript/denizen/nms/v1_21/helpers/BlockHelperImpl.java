@@ -111,14 +111,14 @@ public class BlockHelperImpl implements BlockHelper {
         BlockEntity nmsBlockEntity = getBlockEntity(block);
         if (nmsBlockEntity != null) {
             CompoundTag compound = nmsBlockEntity.saveWithFullMetadata(CraftRegistry.getMinecraftRegistry());
-            return NBTAdapter.compoundToAPI(compound);
+            return NBTAdapter.toAPI(compound);
         }
         return null;
     }
 
     @Override
     public void setNbtData(Block block, CompoundBinaryTag ctag) {
-        CompoundTag nmsData = NBTAdapter.compoundToNMS(ctag);
+        CompoundTag nmsData = NBTAdapter.toNMS(ctag);
         nmsData.putInt("x", block.getX());
         nmsData.putInt("y", block.getY());
         nmsData.putInt("z", block.getZ());

@@ -121,7 +121,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
             for (org.bukkit.World w : Bukkit.getWorlds()) {
                 this.file = new File(w.getWorldFolder(), "playerdata" + File.separator + this.player + ".dat");
                 if (this.file.exists()) {
-                    this.compound = NBTAdapter.compoundToAPI(NbtIo.readCompressed(new FileInputStream(this.file), NbtAccounter.unlimitedHeap()));
+                    this.compound = NBTAdapter.toAPI(NbtIo.readCompressed(new FileInputStream(this.file), NbtAccounter.unlimitedHeap()));
                     return true;
                 }
             }
@@ -135,7 +135,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     @Override
     public void saveInternal(CompoundBinaryTag compound) {
         try {
-            NbtIo.writeCompressed(NBTAdapter.compoundToNMS(compound), new FileOutputStream(this.file));
+            NbtIo.writeCompressed(NBTAdapter.toNMS(compound), new FileOutputStream(this.file));
         }
         catch (Exception e) {
             Debug.echoError(e);

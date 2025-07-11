@@ -167,7 +167,7 @@ public class PacketHelperImpl implements PacketHelper {
     public void showTileEntityData(Player player, Location location, int action, CompoundBinaryTag compoundTag) {
         BlockPos position = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         try {
-            ClientboundBlockEntityDataPacket packet = (ClientboundBlockEntityDataPacket) BLOCK_ENTITY_DATA_PACKET_CONSTRUCTOR.invoke(position, action, NBTAdapter.compoundToNMS(compoundTag));
+            ClientboundBlockEntityDataPacket packet = (ClientboundBlockEntityDataPacket) BLOCK_ENTITY_DATA_PACKET_CONSTRUCTOR.invoke(position, action, NBTAdapter.toNMS(compoundTag));
             send(player, packet);
         }
         catch (Throwable ex) {

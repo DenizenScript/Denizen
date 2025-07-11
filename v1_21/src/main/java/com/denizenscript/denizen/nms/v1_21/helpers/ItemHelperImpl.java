@@ -371,7 +371,7 @@ public class ItemHelperImpl extends ItemHelper {
     public CompoundBinaryTag getNbtData(ItemStack itemStack) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         if (nmsItemStack != null && !nmsItemStack.isEmpty()) {
-            return NBTAdapter.compoundToAPI(serializeNmsItem(nmsItemStack));
+            return NBTAdapter.toAPI(serializeNmsItem(nmsItemStack));
         }
         return CompoundBinaryTag.empty();
     }
@@ -379,13 +379,13 @@ public class ItemHelperImpl extends ItemHelper {
     // TODO: 1.20.6: same as getNbtData, ideally needs to only set custom NBT data and have specialized methods for other usages
     @Override
     public ItemStack setNbtData(ItemStack itemStack, CompoundBinaryTag compoundTag) {
-        return CraftItemStack.asBukkitCopy(parseNmsItem(NBTAdapter.compoundToNMS(compoundTag)));
+        return CraftItemStack.asBukkitCopy(parseNmsItem(NBTAdapter.toNMS(compoundTag)));
     }
 
     @Override
     public CompoundBinaryTag getCustomData(ItemStack item) {
         CustomData customData = CraftItemStack.asNMSCopy(item).get(DataComponents.CUSTOM_DATA);
-        return customData != null ? NBTAdapter.compoundToAPI(customData.getUnsafe()) : null;
+        return customData != null ? NBTAdapter.toAPI(customData.getUnsafe()) : null;
     }
 
     @Override
@@ -395,7 +395,7 @@ public class ItemHelperImpl extends ItemHelper {
             nmsItemStack.remove(DataComponents.CUSTOM_DATA);
         }
         else {
-            nmsItemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(NBTAdapter.compoundToNMS(data)));
+            nmsItemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(NBTAdapter.toNMS(data)));
         }
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
@@ -408,7 +408,7 @@ public class ItemHelperImpl extends ItemHelper {
         CompoundTag nmsOldTag = new CompoundTag();
         nmsOldTag.putString("id", item.getType().getKey().toString());
         nmsOldTag.putByte("Count", (byte) item.getAmount());
-        nmsOldTag.put("tag", NBTAdapter.compoundToNMS(oldTag));
+        nmsOldTag.put("tag", NBTAdapter.toNMS(oldTag));
         CompoundTag nmsUpdatedTag = (CompoundTag) MinecraftServer.getServer().fixerUpper.update(References.ITEM_STACK, new Dynamic<>(NbtOps.INSTANCE, nmsOldTag), DATA_VERSION_1_20_4, currentDataVersion).getValue();
         CompoundTag nmsCurrentTag = serializeNmsItem(CraftItemStack.asNMSCopy(item));
         CompoundTag nmsMergedTag = nmsCurrentTag.merge(nmsUpdatedTag);
@@ -418,7 +418,7 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public CompoundBinaryTag getEntityData(ItemStack item) {
         CustomData entityData = CraftItemStack.asNMSCopy(item).get(DataComponents.ENTITY_DATA);
-        return entityData != null ? NBTAdapter.compoundToAPI(entityData.getUnsafe()) : null;
+        return entityData != null ? NBTAdapter.toAPI(entityData.getUnsafe()) : null;
     }
 
     public static final CompoundTag EMPTY_TAG = new CompoundTag();
@@ -427,7 +427,7 @@ public class ItemHelperImpl extends ItemHelper {
     public ItemStack setEntityData(ItemStack item, CompoundBinaryTag entityNbt, EntityType entityType) {
         CompoundTag nmsEntityNbt = EMPTY_TAG;
         if (entityNbt != null && !entityNbt.isEmpty() && (!entityNbt.keySet().contains("id") || entityNbt.size() > 1)) {
-            nmsEntityNbt = NBTAdapter.compoundToNMS(entityNbt);
+            nmsEntityNbt = NBTAdapter.toNMS(entityNbt);
             nmsEntityNbt.putString("id", entityType.getKey().toString());
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
@@ -450,7 +450,7 @@ public class ItemHelperImpl extends ItemHelper {
         }
         RegistryOps<net.minecraft.nbt.Tag> registryOps = CraftRegistry.getMinecraftRegistry().createSerializationContext(NbtOps.INSTANCE);
         CompoundTag nmsPatch = (CompoundTag) DataComponentPatch.CODEC.encodeStart(registryOps, patch).getOrThrow();
-        MapTag rawComponents = (MapTag) ItemRawNBT.nbtTagToObject(NBTAdapter.compoundToAPI(nmsPatch));
+        MapTag rawComponents = (MapTag) ItemRawNBT.nbtTagToObject(NBTAdapter.toAPI(nmsPatch));
         rawComponents.putObject(ItemComponentsPatch.DATA_VERSION_KEY, new ElementTag(CraftMagicNumbers.INSTANCE.getDataVersion()));
         return rawComponents;
     }
@@ -459,7 +459,7 @@ public class ItemHelperImpl extends ItemHelper {
     public ItemStack setRawComponentsPatch(ItemStack item, MapTag rawComponentsMap, int dataVersion, Consumer<String> errorHandler) {
         int currentDataVersion = CraftMagicNumbers.INSTANCE.getDataVersion();
         CompoundBinaryTag rawComponents = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(rawComponentsMap, CoreUtilities.errorButNoDebugContext, "");
-        CompoundTag nmsRawComponents = NBTAdapter.compoundToNMS(rawComponents);
+        CompoundTag nmsRawComponents = NBTAdapter.toNMS(rawComponents);
         RegistryOps<net.minecraft.nbt.Tag> registryOps = CraftRegistry.getMinecraftRegistry().createSerializationContext(NbtOps.INSTANCE);
         if (dataVersion < currentDataVersion) {
             CompoundTag legacyItemData = new CompoundTag();

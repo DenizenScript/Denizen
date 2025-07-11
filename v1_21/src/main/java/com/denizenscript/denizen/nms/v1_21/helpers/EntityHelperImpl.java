@@ -176,12 +176,12 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public CompoundBinaryTag getNbtData(Entity entity) {
         CompoundTag nmsTag = Handler.useValueOutput(((CraftEntity) entity).getHandle()::saveAsPassenger);
-        return NBTAdapter.compoundToAPI(nmsTag);
+        return NBTAdapter.toAPI(nmsTag);
     }
 
     @Override
     public void setNbtData(Entity entity, CompoundBinaryTag compoundTag) {
-        Handler.useValueInput(NBTAdapter.compoundToNMS(compoundTag), ((CraftEntity) entity).getHandle()::load);
+        Handler.useValueInput(NBTAdapter.toNMS(compoundTag), ((CraftEntity) entity).getHandle()::load);
     }
 
     /*
@@ -831,13 +831,13 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public CompoundBinaryTag getRawNBT(Entity entity) {
-        return NBTAdapter.compoundToAPI(getRawEntityNBT(((CraftEntity) entity).getHandle()));
+        return NBTAdapter.toAPI(getRawEntityNBT(((CraftEntity) entity).getHandle()));
     }
 
     @Override
     public void modifyRawNBT(Entity entity, CompoundBinaryTag tag) {
         net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        CompoundTag nmsTag = NBTAdapter.compoundToNMS(tag);
+        CompoundTag nmsTag = NBTAdapter.toNMS(tag);
         CompoundTag nmsMergedTag = getRawEntityNBT(nmsEntity).merge(nmsTag);
         UUID uuid = nmsEntity.getUUID();
         Handler.useValueInput(nmsMergedTag, nmsEntity::load);

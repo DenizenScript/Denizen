@@ -57,7 +57,7 @@ public class NBTAdapter {
             return new ListTag(nmsTags);
         }
         else if (tag instanceof CompoundBinaryTag compoundTag) {
-            return compoundToNMS(compoundTag);
+            return toNMS(compoundTag);
         }
         else if (tag instanceof EndBinaryTag) {
             return EndTag.INSTANCE;
@@ -104,7 +104,7 @@ public class NBTAdapter {
             return ListBinaryTag.listBinaryTag(BinaryTagTypes.LIST_WILDCARD, tags);
         }
         else if (nmsTag instanceof CompoundTag nmsCompoundTag) {
-            return compoundToAPI(nmsCompoundTag);
+            return toAPI(nmsCompoundTag);
         }
         else if (nmsTag instanceof EndTag) {
             return EndBinaryTag.endBinaryTag();
@@ -112,7 +112,7 @@ public class NBTAdapter {
         throw new IllegalStateException("Unrecognized NMS tag of type '" + nmsTag.getClass().getName() + '/' + nmsTag.getType().getName() + "': " + nmsTag);
     }
 
-    public static CompoundBinaryTag compoundToAPI(CompoundTag nmsCompoundTag) {
+    public static CompoundBinaryTag toAPI(CompoundTag nmsCompoundTag) {
         Map<String, BinaryTag> tags = new HashMap<>(nmsCompoundTag.size());
         for (Map.Entry<String, Tag> nmsEntry : nmsCompoundTag.entrySet()) {
             tags.put(nmsEntry.getKey(), toAPI(nmsEntry.getValue()));
@@ -120,7 +120,7 @@ public class NBTAdapter {
         return CompoundBinaryTag.from(tags);
     }
 
-    public static CompoundTag compoundToNMS(CompoundBinaryTag compoundTag) {
+    public static CompoundTag toNMS(CompoundBinaryTag compoundTag) {
         Map<String, Tag> nmsTags = new HashMap<>(compoundTag.size());
         for (Map.Entry<String, ? extends BinaryTag> entry : compoundTag) {
             nmsTags.put(entry.getKey(), toNMS(entry.getValue()));

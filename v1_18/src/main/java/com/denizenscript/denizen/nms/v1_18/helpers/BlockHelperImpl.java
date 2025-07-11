@@ -119,14 +119,14 @@ public class BlockHelperImpl implements BlockHelper {
         BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(new BlockPos(block.getX(), block.getY(), block.getZ()), true);
         if (te != null) {
             CompoundTag nmsData = te.saveWithFullMetadata();
-            return NBTAdapter.compoundToAPI(nmsData);
+            return NBTAdapter.toAPI(nmsData);
         }
         return null;
     }
 
     @Override
     public void setNbtData(Block block, CompoundBinaryTag ctag) {
-        CompoundTag nmsData = NBTAdapter.compoundToNMS(ctag);
+        CompoundTag nmsData = NBTAdapter.toNMS(ctag);
         nmsData.putInt("x", block.getX());
         nmsData.putInt("y", block.getY());
         nmsData.putInt("z", block.getZ());

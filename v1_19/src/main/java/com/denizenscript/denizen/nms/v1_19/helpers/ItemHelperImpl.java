@@ -223,7 +223,7 @@ public class ItemHelperImpl extends ItemHelper {
     public CompoundBinaryTag getNbtData(ItemStack itemStack) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         if (nmsItemStack != null && nmsItemStack.hasTag()) {
-            return NBTAdapter.compoundToAPI(nmsItemStack.getTag());
+            return NBTAdapter.toAPI(nmsItemStack.getTag());
         }
         return CompoundBinaryTag.empty();
     }
@@ -231,7 +231,7 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public ItemStack setNbtData(ItemStack itemStack, CompoundBinaryTag compoundTag) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        nmsItemStack.setTag(NBTAdapter.compoundToNMS(compoundTag));
+        nmsItemStack.setTag(NBTAdapter.toNMS(compoundTag));
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 

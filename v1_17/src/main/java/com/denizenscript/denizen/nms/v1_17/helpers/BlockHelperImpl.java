@@ -109,14 +109,14 @@ public class BlockHelperImpl implements BlockHelper {
         if (te != null) {
             CompoundTag nmsData = new CompoundTag();
             te.save(nmsData);
-            return NBTAdapter.compoundToAPI(nmsData);
+            return NBTAdapter.toAPI(nmsData);
         }
         return null;
     }
 
     @Override
     public void setNbtData(Block block, CompoundBinaryTag ctag) {
-        CompoundTag nmsData = NBTAdapter.compoundToNMS(ctag);
+        CompoundTag nmsData = NBTAdapter.toNMS(ctag);
         nmsData.putInt("x", block.getX());
         nmsData.putInt("y", block.getY());
         nmsData.putInt("z", block.getZ());

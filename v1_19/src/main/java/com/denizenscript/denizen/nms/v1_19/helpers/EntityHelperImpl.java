@@ -188,12 +188,12 @@ public class EntityHelperImpl extends EntityHelper {
     public CompoundBinaryTag getNbtData(Entity entity) {
         CompoundTag compound = new CompoundTag();
         ((CraftEntity) entity).getHandle().saveAsPassenger(compound);
-        return NBTAdapter.compoundToAPI(compound);
+        return NBTAdapter.toAPI(compound);
     }
 
     @Override
     public void setNbtData(Entity entity, CompoundBinaryTag compoundTag) {
-        ((CraftEntity) entity).getHandle().load(NBTAdapter.compoundToNMS(compoundTag));
+        ((CraftEntity) entity).getHandle().load(NBTAdapter.toNMS(compoundTag));
     }
 
     /*

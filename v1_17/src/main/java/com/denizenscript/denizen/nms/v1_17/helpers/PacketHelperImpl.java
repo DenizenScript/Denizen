@@ -206,7 +206,7 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void showTileEntityData(Player player, Location location, int action, CompoundBinaryTag compoundTag) {
         BlockPos position = new BlockPos(location.getX(), location.getY(), location.getZ());
-        send(player, new ClientboundBlockEntityDataPacket(position, action, NBTAdapter.compoundToNMS(compoundTag)));
+        send(player, new ClientboundBlockEntityDataPacket(position, action, NBTAdapter.toNMS(compoundTag)));
     }
 
     @Override
