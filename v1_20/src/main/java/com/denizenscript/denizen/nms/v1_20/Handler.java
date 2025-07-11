@@ -7,14 +7,11 @@ import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_20.helpers.*;
 import com.denizenscript.denizen.nms.v1_20.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.blocks.BlockLightImpl;
-import com.denizenscript.denizen.nms.v1_20.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
@@ -153,11 +150,6 @@ public class Handler extends NMSHandler {
     @Override
     public double[] getRecentTps() {
         return ((CraftServer) Bukkit.getServer()).getServer().recentTps;
-    }
-
-    @Override
-    public CompoundTag createCompoundTag(Map<String, Tag> value) {
-        return new CompoundTagImpl(value);
     }
 
     @Override
