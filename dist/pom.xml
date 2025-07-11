@@ -166,8 +166,12 @@
                                     <shadedPattern>com.denizenscript.shaded.org.apache</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>net.kyori</pattern>
-                                    <shadedPattern>com.denizenscript.shaded.net.kyori</shadedPattern>
+                                    <pattern>net.kyori.option</pattern>
+                                    <shadedPattern>com.denizenscript.shaded.net.kyori.option</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.kyori.adventure.nbt</pattern>
+                                    <shadedPattern>com.denizenscript.shaded.net.adventure.nbt</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
