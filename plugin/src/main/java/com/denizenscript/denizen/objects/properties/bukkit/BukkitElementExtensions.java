@@ -13,6 +13,7 @@ import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.md_5.bungee.api.ChatColor;
@@ -928,8 +929,10 @@ public class BukkitElementExtensions {
                 return (MapTag) ItemRawNBT.nbtTagToObject(ItemRawNBT.SNBT_PARSER.asCompound(object.asString()));
             }
             catch (IOException e) {
-                attribute.echoError("Element '<Y>" + object + "<W>' isn't valid SNBT:");
-                attribute.echoError(e);
+                attribute.echoError("Element '<Y>" + object + "<W>' isn't valid SNBT: " + e.getMessage());
+                if (CoreConfiguration.debugVerbose) {
+                    attribute.echoError(e);
+                }
                 return null;
             }
         });
