@@ -3,12 +3,12 @@ package com.denizenscript.denizen.nms.interfaces;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.google.gson.JsonObject;
+import net.kyori.adventure.nbt.BinaryTag;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -60,40 +60,40 @@ public abstract class ItemHelper {
 
     public abstract ItemStack setSkullSkin(ItemStack itemStack, PlayerProfile playerProfile);
 
-    public abstract ItemStack addNbtData(ItemStack itemStack, String key, Tag value);
+    public abstract ItemStack addNbtData(ItemStack itemStack, String key, BinaryTag value);
 
-    public abstract CompoundTag getNbtData(ItemStack itemStack);
+    public abstract CompoundBinaryTag getNbtData(ItemStack itemStack);
 
-    public abstract ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag);
+    public abstract ItemStack setNbtData(ItemStack itemStack, CompoundBinaryTag compoundTag);
 
-    public CompoundTag getCustomData(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
+    public CompoundBinaryTag getCustomData(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
         return getNbtData(item);
     }
 
-    public ItemStack setCustomData(ItemStack item, CompoundTag data) { // TODO: once 1.20 is the minimum supported version, remove default impl
+    public ItemStack setCustomData(ItemStack item, CompoundBinaryTag data) { // TODO: once 1.20 is the minimum supported version, remove default impl
         return setNbtData(item, data);
     }
 
-    public ItemStack setPartialOldNbt(ItemStack item, CompoundTag oldTag) {
+    public ItemStack setPartialOldNbt(ItemStack item, CompoundBinaryTag oldTag) {
         throw new UnsupportedOperationException();
     }
 
-    public CompoundTag getEntityData(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
-        CompoundTag nbt = getNbtData(item);
-        return nbt != null && nbt.getValue().get("EntityTag") instanceof CompoundTag entityNbt ? entityNbt : null;
+    public CompoundBinaryTag getEntityData(ItemStack item) { // TODO: once 1.20 is the minimum supported version, remove default impl
+        return getNbtData(item).getCompound("EntityTag", null);
     }
 
-    public ItemStack setEntityData(ItemStack item, CompoundTag entityNbt, EntityType entityType) { // TODO: once 1.20 is the minimum supported version, remove default impl
+    public ItemStack setEntityData(ItemStack item, CompoundBinaryTag entityNbt, EntityType entityType) { // TODO: once 1.20 is the minimum supported version, remove default impl
         boolean shouldRemove = entityNbt == null || entityNbt.isEmpty();
-        CompoundTag nbt = getNbtData(item);
-        if (shouldRemove && !nbt.containsKey("EntityTag")) {
+        CompoundBinaryTag nbt = getNbtData(item);
+        // TODO: adventure-nbt: contains
+        if (shouldRemove && !nbt.keySet().contains("EntityTag")) {
             return item;
         }
         if (shouldRemove) {
-            nbt = nbt.createBuilder().remove("EntityTag").build();
+            nbt = nbt.remove("EntityTag");
         }
         else {
-            nbt = nbt.createBuilder().put("EntityTag", entityNbt).build();
+            nbt = nbt.put("EntityTag", entityNbt);
         }
         return setNbtData(item, nbt);
     }
@@ -182,7 +182,7 @@ public abstract class ItemHelper {
         }
         // TODO: once 1.20 is the minimum supported version, remove legacy code ↓
         if (color == null) {
-            CompoundTag noStateNbt = getNbtData(item).createBuilder().remove("BlockEntityTag").build();
+            CompoundBinaryTag noStateNbt = getNbtData(item).remove("BlockEntityTag");
             return setNbtData(item, noStateNbt);
         }
         BlockStateMeta stateMeta = (BlockStateMeta) item.getItemMeta();

@@ -41,13 +41,16 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.server.players.ServerOpList;
 import net.minecraft.server.players.ServerOpListEntry;
 import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagNetworkSerialization;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Leashable;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -63,6 +66,7 @@ import org.bukkit.craftbukkit.v1_21_R5.boss.CraftBossBar;
 import org.bukkit.craftbukkit.v1_21_R5.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R5.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_21_R5.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_21_R5.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
@@ -398,15 +402,15 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public Location getBedSpawnLocation(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        BlockPos spawnPosition = nmsPlayer.getRespawnConfig().pos();
-        if (spawnPosition == null) {
+        ServerPlayer.RespawnConfig nmsRespawnConfig = nmsPlayer.getRespawnConfig();
+        if (nmsRespawnConfig == null) {
             return null;
         }
-        Level nmsWorld = MinecraftServer.getServer().getLevel(nmsPlayer.getRespawnConfig().dimension());
+        Level nmsWorld = MinecraftServer.getServer().getLevel(nmsRespawnConfig.dimension() != null ? nmsRespawnConfig.dimension() : Level.OVERWORLD);
         if (nmsWorld == null) {
             return null;
         }
-        return new Location(nmsWorld.getWorld(), spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ(), nmsPlayer.getRespawnConfig().angle(), 0);
+        return CraftLocation.toBukkit(nmsRespawnConfig.pos(), nmsWorld.getWorld(), nmsRespawnConfig.angle(), 0);
     }
 
     @Override
@@ -455,18 +459,18 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void refreshPlayer(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        ServerLevel nmsWorld = (ServerLevel) nmsPlayer.level();
+        ServerLevel nmsWorld = nmsPlayer.level();
         nmsPlayer.connection.send(new ClientboundRespawnPacket(nmsPlayer.createCommonSpawnInfo(nmsWorld), ClientboundRespawnPacket.KEEP_ALL_DATA));
-        nmsPlayer.connection.teleport(player.getLocation());
+        nmsPlayer.connection.internalTeleport(PositionMoveRotation.of(nmsPlayer), Set.of());
         if (nmsPlayer.isPassenger()) {
            nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer.getVehicle()));
         }
         if (nmsPlayer.isVehicle()) {
             nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer));
         }
-        AABB boundingBox = new AABB(nmsPlayer.position(), nmsPlayer.position()).inflate(10);
-        for (Mob nmsMob : nmsWorld.getEntitiesOfClass(Mob.class, boundingBox, nmsMob -> nmsPlayer.equals(nmsMob.getLeashHolder()))) {
-            nmsPlayer.connection.send(new ClientboundSetEntityLinkPacket(nmsMob, nmsPlayer));
+        AABB boundingBox = AABB.ofSize(nmsPlayer.getBoundingBox().getCenter(), 32, 32, 32);
+        for (net.minecraft.world.entity.Entity nmsEntity : nmsWorld.getEntitiesOfClass(net.minecraft.world.entity.Entity.class, boundingBox, nmsEntity -> nmsEntity instanceof Leashable nmsLeashable && nmsPlayer.equals(nmsLeashable.getLeashHolder()))) {
+            nmsPlayer.connection.send(new ClientboundSetEntityLinkPacket(nmsEntity, nmsPlayer));
         }
         if (!nmsPlayer.getCooldowns().cooldowns.isEmpty()) {
             int tickCount = nmsPlayer.getCooldowns().tickCount;
@@ -474,9 +478,14 @@ public class PlayerHelperImpl extends PlayerHelper {
                 nmsPlayer.connection.send(new ClientboundCooldownPacket(entry.getKey(), entry.getValue().endTime - tickCount));
             }
         }
+        nmsPlayer.connection.send(new ClientboundSetExperiencePacket(nmsPlayer.experienceProgress, nmsPlayer.totalExperience, nmsPlayer.experienceLevel));
+        for (MobEffectInstance nmsEffect : nmsPlayer.getActiveEffects()) {
+            nmsPlayer.connection.send(new ClientboundUpdateMobEffectPacket(nmsPlayer.getId(), nmsEffect, false));
+        }
         nmsPlayer.onUpdateAbilities();
-        nmsPlayer.server.getPlayerList().sendPlayerPermissionLevel(nmsPlayer);
-        nmsPlayer.server.getPlayerList().sendLevelInfo(nmsPlayer, nmsWorld);
-        nmsPlayer.server.getPlayerList().sendAllPlayerInfo(nmsPlayer);
+        PlayerList nmsPlayerList = nmsPlayer.getServer().getPlayerList();
+        nmsPlayerList.sendPlayerPermissionLevel(nmsPlayer);
+        nmsPlayerList.sendLevelInfo(nmsPlayer, nmsWorld);
+        nmsPlayerList.sendAllPlayerInfo(nmsPlayer);
     }
 }

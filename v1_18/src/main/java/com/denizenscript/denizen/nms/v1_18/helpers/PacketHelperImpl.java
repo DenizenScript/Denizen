@@ -2,12 +2,9 @@ package com.denizenscript.denizen.nms.v1_18.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.JNBTListTag;
 import com.denizenscript.denizen.nms.v1_18.Handler;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_18.impl.SidebarImpl;
-import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.v1_18.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
@@ -22,6 +19,9 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
+import net.kyori.adventure.nbt.BinaryTagTypes;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
+import net.kyori.adventure.nbt.ListBinaryTag;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -177,10 +177,10 @@ public class PacketHelperImpl implements PacketHelper {
     }
 
     @Override
-    public void showTileEntityData(Player player, Location location, int action, CompoundTag compoundTag) {
+    public void showTileEntityData(Player player, Location location, int action, CompoundBinaryTag compoundTag) {
         BlockPos position = new BlockPos(location.getX(), location.getY(), location.getZ());
         try {
-            ClientboundBlockEntityDataPacket packet = (ClientboundBlockEntityDataPacket) BLOCK_ENTITY_DATA_PACKET_CONSTRUCTOR.invoke(position, action, ((CompoundTagImpl) compoundTag).toNMSTag());
+            ClientboundBlockEntityDataPacket packet = (ClientboundBlockEntityDataPacket) BLOCK_ENTITY_DATA_PACKET_CONSTRUCTOR.invoke(position, action, NBTAdapter.toNMS(compoundTag));
             send(player, packet);
         }
         catch (Throwable ex) {
@@ -190,19 +190,14 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showBannerUpdate(Player player, Location location, List<Pattern> patterns) {
-        List<CompoundTag> nbtPatterns = new ArrayList<>();
+        ListBinaryTag.Builder<CompoundBinaryTag> nbtPatterns = ListBinaryTag.builder(BinaryTagTypes.COMPOUND);
         for (Pattern pattern : patterns) {
-            nbtPatterns.add(NMSHandler.instance
-                    .createCompoundTag(new HashMap<>())
-                    .createBuilder()
+            nbtPatterns.add(CompoundBinaryTag.builder()
                     .putInt("Color", pattern.getColor().getDyeData())
                     .putString("Pattern", pattern.getPattern().getIdentifier())
                     .build());
         }
-        CompoundTag compoundTag = NMSHandler.blockHelper.getNbtData(location.getBlock())
-                .createBuilder()
-                .put("Patterns", new JNBTListTag(CompoundTag.class, nbtPatterns))
-                .build();
+        CompoundBinaryTag compoundTag = NMSHandler.blockHelper.getNbtData(location.getBlock()).put("Patterns", nbtPatterns.build());
         showTileEntityData(player, location, 3, compoundTag);
     }
 

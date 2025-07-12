@@ -74,6 +74,7 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.server.network.ServerCommonPacketListenerImpl
     public static String ServerCommonPacketListenerImpl_connection = "e";
+    public static String ServerCommonPacketListenerImpl_createCookie_method = "a";
 
     // net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket
     public static String ClientboundPlayerAbilitiesPacket_walkingSpeed = "k";
