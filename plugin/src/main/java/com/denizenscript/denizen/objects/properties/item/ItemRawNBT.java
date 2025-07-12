@@ -172,7 +172,14 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
             // TODO: adventure-nbt: builders initial size
             List<BinaryTag> result = new ArrayList<>(list.size());
             for (int i = 0; i < list.size(); i++) {
-                result.add(convertObjectToNbt(list.getObject(i), context, path + '[' + i + ']'));
+                try {
+                    result.add(convertObjectToNbt(list.getObject(i), context, path + '[' + i + ']'));
+                }
+                catch (Exception ex) {
+                    Debug.echoError("Object NBT interpretation failed for list key '" + path + "' at index " + i + '.');
+                    Debug.echoError(ex);
+                    return null;
+                }
             }
             return ListBinaryTag.listBinaryTag(BinaryTagTypes.LIST_WILDCARD, result);
         }
@@ -225,7 +232,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
                 ListTag numberStrings = ListTag.valueOf(value, context);
                 long[] result = new long[numberStrings.size()];
                 for (int i = 0; i < result.length; i++) {
-                    result[i] = Integer.parseInt(numberStrings.get(i));
+                    result[i] = Long.parseLong(numberStrings.get(i));
                 }
                 yield LongArrayBinaryTag.longArrayBinaryTag(result);
             }

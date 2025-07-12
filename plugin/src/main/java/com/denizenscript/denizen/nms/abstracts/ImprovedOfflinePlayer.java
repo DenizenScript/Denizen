@@ -404,11 +404,11 @@ public abstract class ImprovedOfflinePlayer {
     }
 
     public void setVelocity(Vector vector) {
-        ListBinaryTag.Builder<DoubleBinaryTag> builder = ListBinaryTag.builder(BinaryTagTypes.DOUBLE);
-        builder.add(DoubleBinaryTag.doubleBinaryTag(vector.getX()));
-        builder.add(DoubleBinaryTag.doubleBinaryTag(vector.getY()));
-        builder.add(DoubleBinaryTag.doubleBinaryTag(vector.getZ()));
-        this.compound = compound.put("Motion", builder.build());
+        ListBinaryTag.Builder<DoubleBinaryTag> motionBuilder = ListBinaryTag.builder(BinaryTagTypes.DOUBLE);
+        motionBuilder.add(DoubleBinaryTag.doubleBinaryTag(vector.getX()));
+        motionBuilder.add(DoubleBinaryTag.doubleBinaryTag(vector.getY()));
+        motionBuilder.add(DoubleBinaryTag.doubleBinaryTag(vector.getZ()));
+        this.compound = compound.put("Motion", motionBuilder.build());
         markModified();
     }
 
