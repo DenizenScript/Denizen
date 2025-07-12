@@ -98,6 +98,7 @@ public class ReflectionMappingsInfo {
     public static String ClientboundSetPassengersPacket_passengers = "c";
 
     // net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData$BlockEntityInfo
+    public static String ClientboundLevelChunkPacketDataBlockEntityInfo_create_method = "a";
     public static String ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ = "c";
     public static String ClientboundLevelChunkPacketDataBlockEntityInfo_y = "d";
 
@@ -126,4 +127,7 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.stats.ServerRecipeBook
     public static String ServerRecipeBook_addHighlight_method = "e";
+
+    // net.minecraft.world.level.block.entity.BlockEntityType
+    public static String BlockEntityType_validBlocks = "Y";
 }
