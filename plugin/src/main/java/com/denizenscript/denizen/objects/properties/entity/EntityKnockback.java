@@ -13,6 +13,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.inventory.ItemStack;
 
+@Deprecated
 public class EntityKnockback implements Property {
 
     public static boolean describes(ObjectTag object) {
@@ -36,7 +37,7 @@ public class EntityKnockback implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) ? null : getAbstractArrow().getKnockbackStrength());
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) ? null : String.valueOf(getAbstractArrow().getKnockbackStrength());
     }
 
     @Override
@@ -52,7 +53,8 @@ public class EntityKnockback implements Property {
         // @mechanism EntityTag.knockback
         // @group properties
         // @description
-        // Returns the knockback strength of an arrow or trident.
+        // Deprecated you should instead set the knockback on the weapon itself on MC 1.21+.
+        // @deprecated you should instead set the knockback on the weapon itself on MC 1.21+.
         // -->
         PropertyParser.registerTag(EntityKnockback.class, ElementTag.class, "knockback", (attribute, object) -> {
             BukkitImplDeprecations.entityKnockback.warn(attribute.context);
@@ -70,7 +72,8 @@ public class EntityKnockback implements Property {
         // @name knockback
         // @input ElementTag(Number)
         // @description
-        // Sets the knockback strength of an arrow or trident.
+        // Deprecated you should instead set the knockback on the weapon itself on MC 1.21+.
+        // @deprecated you should instead set the knockback on the weapon itself on MC 1.21+.
         // @tags
         // <EntityTag.knockback>
         // -->
