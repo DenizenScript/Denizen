@@ -97,6 +97,10 @@ public class ReflectionMappingsInfo {
     // net.minecraft.network.protocol.game.ClientboundSetPassengersPacket
     public static String ClientboundSetPassengersPacket_passengers = "c";
 
+    // net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData
+    public static String ClientboundLevelChunkPacketData_buffer = "d";
+    public static String ClientboundLevelChunkPacketData_blockEntitiesData = "e";
+
     // net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData$BlockEntityInfo
     public static String ClientboundLevelChunkPacketDataBlockEntityInfo_create_method = "a";
     public static String ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ = "c";
@@ -112,12 +116,6 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.tags.TagNetworkSerialization$NetworkPayload
     public static String TagNetworkSerializationNetworkPayload_tags = "b";
-
-    // net.minecraft.core.HolderSet$Named
-    public static String HolderSetNamed_bind_method = "b";
-
-    // net.minecraft.core.Holder$Reference
-    public static String HolderReference_bindTags_method = "a";
 
     // net.minecraft.server.level.ServerLevel
     public static String ServerLevel_sleepStatus = "R";

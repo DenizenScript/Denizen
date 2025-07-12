@@ -11,7 +11,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
@@ -32,29 +31,25 @@ import org.bukkit.craftbukkit.v1_21_R5.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_21_R5.util.CraftLocation;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class FakeBlockHelper {
 
-    public static Field CHUNKDATA_BLOCK_ENTITIES = ReflectionHelper.getFields(ClientboundLevelChunkPacketData.class).getFirstOfType(List.class);
-    public static Class CHUNKDATA_BLOCKENTITYINFO_CLASS = ClientboundLevelChunkPacketData.class.getDeclaredClasses()[0];
-    public static MethodHandle CHUNKDATA_BLOCK_ENTITY_CONSTRUCTOR = ReflectionHelper.getConstructor(ClientboundLevelChunkPacketData.class.getDeclaredClasses()[0], int.class, int.class, BlockEntityType.class, CompoundTag.class);
-    public static final MethodHandle CHUNK_DATA_BLOCK_ENTITY_CREATE = ReflectionHelper.getMethodHandle(CHUNKDATA_BLOCKENTITYINFO_CLASS, ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_create_method, BlockEntity.class);
-    public static MethodHandle CHUNKDATA_BUFFER_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(ClientboundLevelChunkPacketData.class, byte[].class);
-    public static Field CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).get(ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ);
-    public static Field CHUNKDATA_BLOCKENTITYINFO_Y = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).get(ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_y);
-    public static MethodHandle CHUNKPACKET_CHUNKDATA_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(ClientboundLevelChunkWithLightPacket.class, ClientboundLevelChunkPacketData.class);
-    public static Constructor<?> PALETTEDCONTAINER_CTOR = Arrays.stream(PalettedContainer.class.getConstructors()).filter(c -> c.getParameterCount() == 3).findFirst().get();
-    public static Field BLOCK_ENTITY_TYPE_VALID_BLOCKS = ReflectionHelper.getFields(BlockEntityType.class).get(ReflectionMappingsInfo.BlockEntityType_validBlocks, Set.class);
+    public static final MethodHandle CHUNKDATA_BLOCK_ENTITIES = ReflectionHelper.getFields(ClientboundLevelChunkPacketData.class).getGetter(ReflectionMappingsInfo.ClientboundLevelChunkPacketData_blockEntitiesData, List.class);
+    public static final MethodHandle CHUNKDATA_BUFFER_SETTER = ReflectionHelper.getFields(ClientboundLevelChunkPacketData.class).getSetter(ReflectionMappingsInfo.ClientboundLevelChunkPacketData_buffer, byte[].class);
+    public static final Class<?> CHUNKDATA_BLOCKENTITYINFO_CLASS = ClientboundLevelChunkPacketData.class.getDeclaredClasses()[0];
+    public static final MethodHandle CHUNKDATA_BLOCK_ENTITY_CREATE = ReflectionHelper.getMethodHandle(CHUNKDATA_BLOCKENTITYINFO_CLASS, ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_create_method, BlockEntity.class);
+    public static final MethodHandle CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).getGetter(ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ);
+    public static final MethodHandle CHUNKDATA_BLOCKENTITYINFO_Y = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).getGetter(ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_y);
+    public static final MethodHandle BLOCK_ENTITY_TYPE_VALID_BLOCKS = ReflectionHelper.getFields(BlockEntityType.class).getGetter(ReflectionMappingsInfo.BlockEntityType_validBlocks, Set.class);
 
     public static final Map<Material, BlockEntityType<?>> MATERIAL_BLOCK_ENTITY_TYPES = new EnumMap<>(Material.class);
 
     static {
         try {
             for (BlockEntityType<?> nmsBlockEntityType : BuiltInRegistries.BLOCK_ENTITY_TYPE) {
-                Set<Block> validBlocks = (Set<Block>) BLOCK_ENTITY_TYPE_VALID_BLOCKS.get(nmsBlockEntityType);
+                Set<Block> validBlocks = (Set<Block>) BLOCK_ENTITY_TYPE_VALID_BLOCKS.invokeExact(nmsBlockEntityType);
                 for (Block validBlock : validBlocks) {
                     MATERIAL_BLOCK_ENTITY_TYPES.put(CraftBlockType.minecraftToBukkit(validBlock), nmsBlockEntityType);
                 }
@@ -111,13 +106,13 @@ public class FakeBlockHelper {
         ClientboundLevelChunkWithLightPacket copiedChunkPacket = DenizenNetworkManagerImpl.copyPacket(originalChunkPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC);
         copyPacketPaperPatch(copiedChunkPacket);
         // A list of block entities sent with the chunk data
-        List<Object> blockEntities = (List<Object>) CHUNKDATA_BLOCK_ENTITIES.get(copiedChunkPacket.getChunkData());
+        List<Object> blockEntities = (List<Object>) CHUNKDATA_BLOCK_ENTITIES.invoke(copiedChunkPacket.getChunkData());
         LocationTag location = new LocationTag(world, 0, 0, 0);
         ListIterator<Object> blockEntitiesIterator = blockEntities.listIterator();
         while (blockEntitiesIterator.hasNext()) {
             Object blockEnt = blockEntitiesIterator.next();
-            int xz = CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ.getInt(blockEnt);
-            int y = CHUNKDATA_BLOCKENTITYINFO_Y.getInt(blockEnt);
+            int xz = (int) CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ.invoke(blockEnt);
+            int y = (int) CHUNKDATA_BLOCKENTITYINFO_Y.invoke(blockEnt);
             int relativeX = SectionPos.sectionRelative(xz >> 4);
             int relativeZ = SectionPos.sectionRelative(xz);
             int x = SectionPos.sectionToBlockCoord(chunkX) + relativeX;
@@ -168,7 +163,7 @@ public class FakeBlockHelper {
                         }
                         BlockEntity createdBlockEntity = nmsBlockEntityType.create(CraftLocation.toBlockPosition(block.location), newState);
                         createdBlockEntity.setLevel(((CraftWorld) world).getHandle());
-                        Object packetBlockEntityData = CHUNK_DATA_BLOCK_ENTITY_CREATE.invoke(createdBlockEntity);
+                        Object packetBlockEntityData = CHUNKDATA_BLOCK_ENTITY_CREATE.invoke(createdBlockEntity);
                         blockEntities.add(packetBlockEntityData);
                     }
                 }
