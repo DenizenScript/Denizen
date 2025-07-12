@@ -1,14 +1,13 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
@@ -42,7 +41,7 @@ public class ItemFrameInvisible implements Property {
     ItemTag item;
 
     public boolean isInvisible() {
-        CompoundTag entityNbt = NMSHandler.itemHelper.getEntityData(item.getItemStack());
+        CompoundBinaryTag entityNbt = NMSHandler.itemHelper.getEntityData(item.getItemStack());
         if (entityNbt == null) {
             return false;
         }
@@ -95,17 +94,16 @@ public class ItemFrameInvisible implements Property {
         // <ItemTag.invisible>
         // -->
         if (mechanism.matches("invisible") && mechanism.requireBoolean()) {
-            CompoundTag entityNbt = NMSHandler.itemHelper.getEntityData(item.getItemStack());
+            CompoundBinaryTag entityNbt = NMSHandler.itemHelper.getEntityData(item.getItemStack());
             boolean invisible = mechanism.getValue().asBoolean();
             if (!invisible && entityNbt == null) {
                 return;
             }
             if (invisible) {
-                CompoundTagBuilder builder = entityNbt != null ? entityNbt.createBuilder() : CompoundTagBuilder.create();
-                entityNbt = builder.putByte("Invisible", (byte) 1).build();
+                entityNbt = ItemRawNBT.compoundOrEmpty(entityNbt).putByte("Invisible", (byte) 1);
             }
             else {
-                entityNbt = entityNbt.createBuilder().remove("Invisible").build();
+                entityNbt = entityNbt.remove("Invisible");
             }
             item.setItemStack(NMSHandler.itemHelper.setEntityData(item.getItemStack(), entityNbt, item.getBukkitMaterial() == Material.ITEM_FRAME ? EntityType.ITEM_FRAME : EntityType.GLOW_ITEM_FRAME));
         }

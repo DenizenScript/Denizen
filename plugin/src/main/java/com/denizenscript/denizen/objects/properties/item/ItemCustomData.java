@@ -1,13 +1,12 @@
 package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
-import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.kyori.adventure.nbt.BinaryTag;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 
 public class ItemCustomData extends ItemProperty<MapTag> {
 
@@ -41,14 +40,14 @@ public class ItemCustomData extends ItemProperty<MapTag> {
 
     @Override
     public MapTag getPropertyValue() {
-        CompoundTag customData = NMSHandler.itemHelper.getCustomData(getItemStack());
+        CompoundBinaryTag customData = NMSHandler.itemHelper.getCustomData(getItemStack());
         if (customData == null) {
             return null;
         }
         if (customData.isEmpty()) {
             return new MapTag();
         }
-        MapTag dataMap = (MapTag) ItemRawNBT.jnbtTagToObject(customData);
+        MapTag dataMap = (MapTag) ItemRawNBT.nbtTagToObject(customData);
         for (String denizenKey : DENIZEN_DATA) {
             dataMap.remove(denizenKey);
         }
@@ -61,9 +60,9 @@ public class ItemCustomData extends ItemProperty<MapTag> {
             setItemStack(NMSHandler.itemHelper.setCustomData(getItemStack(), addDenizenKeys(null)));
             return;
         }
-        CompoundTag customData;
+        CompoundBinaryTag customData;
         try {
-            customData = (CompoundTag) ItemRawNBT.convertObjectToNbt(value.identify(), mechanism.context, "(data)");
+            customData = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(value, mechanism.context, "(data)");
         }
         catch (Exception ex) {
             mechanism.echoError("Invalid custom data specified:");
@@ -77,17 +76,18 @@ public class ItemCustomData extends ItemProperty<MapTag> {
         setItemStack(NMSHandler.itemHelper.setCustomData(getItemStack(), addDenizenKeys(customData)));
     }
 
-    private CompoundTag addDenizenKeys(CompoundTag tag) {
-        CompoundTag currentData = NMSHandler.itemHelper.getCustomData(getItemStack());
+    private CompoundBinaryTag addDenizenKeys(CompoundBinaryTag tag) {
+        CompoundBinaryTag currentData = NMSHandler.itemHelper.getCustomData(getItemStack());
         if (currentData == null || currentData.isEmpty()) {
             return tag;
         }
-        CompoundTagBuilder tagBuilder = null;
+        CompoundBinaryTag.Builder tagBuilder = null;
         for (String denizenKey : DENIZEN_DATA) {
-            Tag denizenValue = currentData.getValue().get(denizenKey);
+            BinaryTag denizenValue = currentData.get(denizenKey);
             if (denizenValue != null) {
                 if (tagBuilder == null) {
-                    tagBuilder = tag != null ? tag.createBuilder() : CompoundTagBuilder.create();
+                    // TODO: adventure-nbt: compound tag builder
+                    tagBuilder = tag != null ? CompoundBinaryTag.builder().put(tag) : CompoundBinaryTag.builder();
                 }
                 tagBuilder.put(denizenKey, denizenValue);
             }

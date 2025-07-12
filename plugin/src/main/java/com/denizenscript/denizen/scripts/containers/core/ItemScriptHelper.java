@@ -5,7 +5,6 @@ import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.MaterialTag;
@@ -26,6 +25,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
@@ -382,17 +382,17 @@ public class ItemScriptHelper implements Listener {
         if (item == null) {
             return null;
         }
-        CompoundTag tag = NMSHandler.itemHelper.getCustomData(item);
+        CompoundBinaryTag tag = NMSHandler.itemHelper.getCustomData(item);
         if (tag == null) {
             return null;
         }
-        String scriptName = tag.getString("DenizenItemScript");
-        if (scriptName != null && !scriptName.equals("")) {
+        String scriptName = tag.getString("DenizenItemScript", null);
+        if (scriptName != null) {
             return scriptName;
         }
         // NOTE: Legacy hashed format
-        String nbt = tag.getString("Denizen Item Script");
-        if (nbt != null && !nbt.equals("")) {
+        String nbt = tag.getString("Denizen Item Script", null);
+        if (nbt != null) {
             ItemScriptContainer container = item_scripts_by_hash_id.get(nbt);
             if (container != null) {
                 return container.getName();
@@ -405,17 +405,17 @@ public class ItemScriptHelper implements Listener {
         if (item == null) {
             return null;
         }
-        CompoundTag tag = NMSHandler.itemHelper.getCustomData(item);
+        CompoundBinaryTag tag = NMSHandler.itemHelper.getCustomData(item);
         if (tag == null) {
             return null;
         }
-        String scriptName = tag.getString("DenizenItemScript");
-        if (scriptName != null && !scriptName.equals("")) {
+        String scriptName = tag.getString("DenizenItemScript", null);
+        if (scriptName != null) {
             return item_scripts.get(scriptName);
         }
         // NOTE: Legacy hashed format
-        String nbt = tag.getString("Denizen Item Script");
-        if (nbt != null && !nbt.equals("")) {
+        String nbt = tag.getString("Denizen Item Script", null);
+        if (nbt != null) {
             return item_scripts_by_hash_id.get(nbt);
         }
         return null;

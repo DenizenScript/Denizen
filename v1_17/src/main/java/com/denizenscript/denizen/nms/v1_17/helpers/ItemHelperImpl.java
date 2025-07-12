@@ -2,11 +2,7 @@ package com.denizenscript.denizen.nms.v1_17.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.IntArrayTag;
-import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
-import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -17,6 +13,8 @@ import com.google.common.collect.Multiset;
 import com.google.common.collect.Multisets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.kyori.adventure.nbt.BinaryTag;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -53,7 +51,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ItemHelperImpl extends ItemHelper {
 
@@ -211,27 +211,25 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public ItemStack addNbtData(ItemStack itemStack, String key, Tag value) {
+    public ItemStack addNbtData(ItemStack itemStack, String key, BinaryTag value) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        net.minecraft.nbt.CompoundTag tag = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new net.minecraft.nbt.CompoundTag();
-        CompoundTag compound = CompoundTagImpl.fromNMSTag(tag).createBuilder().put(key, value).build();
-        nmsItemStack.setTag(((CompoundTagImpl) compound).toNMSTag());
+        nmsItemStack.getOrCreateTag().put(key, NBTAdapter.toNMS(value));
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 
     @Override
-    public CompoundTag getNbtData(ItemStack itemStack) {
+    public CompoundBinaryTag getNbtData(ItemStack itemStack) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         if (nmsItemStack != null && nmsItemStack.hasTag()) {
-            return CompoundTagImpl.fromNMSTag(nmsItemStack.getTag());
+            return NBTAdapter.toAPI(nmsItemStack.getTag());
         }
-        return new CompoundTagImpl(new HashMap<>());
+        return CompoundBinaryTag.empty();
     }
 
     @Override
-    public ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag) {
+    public ItemStack setNbtData(ItemStack itemStack, CompoundBinaryTag compoundTag) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        nmsItemStack.setTag(((CompoundTagImpl) compoundTag).toNMSTag());
+        nmsItemStack.setTag(NBTAdapter.toNMS(compoundTag));
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 

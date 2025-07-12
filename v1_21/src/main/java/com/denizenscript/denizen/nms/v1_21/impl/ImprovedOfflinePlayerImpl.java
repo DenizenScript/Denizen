@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.nms.v1_21.impl;
 
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.v1_21.Handler;
-import com.denizenscript.denizen.nms.v1_21.impl.jnbt.CompoundTagImpl;
+import com.denizenscript.denizen.nms.v1_21.helpers.NBTAdapter;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.MinecraftServer;
@@ -82,7 +82,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     }
 
     public void editData(Consumer<ValueOutput> editor) {
-        this.compound = CompoundTagImpl.fromNMSTag(Handler.useValueOutput(((CompoundTagImpl) this.compound).toNMSTag(), editor));
+        this.compound = NBTAdapter.toAPI(Handler.useValueOutput(NBTAdapter.toNMS(this.compound), editor));
         markModified();
     }
 
@@ -90,7 +90,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     public org.bukkit.inventory.PlayerInventory getInventory() {
         if (inventory == null) {
             net.minecraft.world.entity.player.Inventory newInv = new OfflinePlayerInventory(getFakeNmsPlayer());
-            Handler.useValueInput(((CompoundTagImpl) this.compound).toNMSTag(), valueInput -> newInv.load(valueInput.listOrEmpty("Inventory", ItemStackWithSlot.CODEC)));
+            Handler.useValueInput(NBTAdapter.toNMS(this.compound), valueInput -> newInv.load(valueInput.listOrEmpty("Inventory", ItemStackWithSlot.CODEC)));
             inventory = new OfflineCraftInventoryPlayer(newInv);
         }
         return inventory;
@@ -106,7 +106,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     public Inventory getEnderChest() {
         if (enderchest == null) {
             PlayerEnderChestContainer endchest = new PlayerEnderChestContainer(null);
-            Handler.useValueInput(((CompoundTagImpl) this.compound).toNMSTag(), valueInput -> endchest.fromSlots(valueInput.listOrEmpty("EnderItems", ItemStackWithSlot.CODEC)));
+            Handler.useValueInput(NBTAdapter.toNMS(this.compound), valueInput -> endchest.fromSlots(valueInput.listOrEmpty("EnderItems", ItemStackWithSlot.CODEC)));
             enderchest = new CraftInventory(endchest);
         }
         return enderchest;
@@ -133,7 +133,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
 
     private AttributeMap getAttributes() {
         AttributeMap amb = new AttributeMap(DefaultAttributes.getSupplier(net.minecraft.world.entity.EntityType.PLAYER));
-        Handler.useValueInput(((CompoundTagImpl) this.compound).toNMSTag(), valueInput -> valueInput.read("attributes", AttributeInstance.Packed.LIST_CODEC).ifPresent(amb::apply));
+        Handler.useValueInput(NBTAdapter.toNMS(this.compound), valueInput -> valueInput.read("attributes", AttributeInstance.Packed.LIST_CODEC).ifPresent(amb::apply));
         return amb;
     }
 
@@ -148,7 +148,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
             for (org.bukkit.World w : Bukkit.getWorlds()) {
                 this.file = new File(w.getWorldFolder(), "playerdata" + File.separator + this.player + ".dat");
                 if (this.file.exists()) {
-                    this.compound = CompoundTagImpl.fromNMSTag(NbtIo.readCompressed(new FileInputStream(this.file), NbtAccounter.unlimitedHeap()));
+                    this.compound = NBTAdapter.toAPI(NbtIo.readCompressed(new FileInputStream(this.file), NbtAccounter.unlimitedHeap()));
                     return true;
                 }
             }
@@ -160,9 +160,9 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     }
 
     @Override
-    public void saveInternal(CompoundTag compound) {
+    public void saveInternal(CompoundBinaryTag compound) {
         try {
-            NbtIo.writeCompressed(((CompoundTagImpl) compound).toNMSTag(), new FileOutputStream(this.file));
+            NbtIo.writeCompressed(NBTAdapter.toNMS(compound), new FileOutputStream(this.file));
         }
         catch (Exception e) {
             Debug.echoError(e);

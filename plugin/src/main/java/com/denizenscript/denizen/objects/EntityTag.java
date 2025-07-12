@@ -6,7 +6,6 @@ import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.interfaces.EntityAnimation;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.npc.traits.MirrorTrait;
 import com.denizenscript.denizen.objects.properties.entity.EntityAge;
 import com.denizenscript.denizen.objects.properties.entity.EntityColor;
@@ -44,6 +43,7 @@ import com.denizenscript.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.ai.NPCHolder;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -3282,8 +3282,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // See <@link language Raw NBT Encoding> for more information.
             // -->
             tagProcessor.registerTag(MapTag.class, "all_raw_nbt", (attribute, object) -> {
-                CompoundTag tag = NMSHandler.entityHelper.getRawNBT(object.getBukkitEntity());
-                return (MapTag) ItemRawNBT.jnbtTagToObject(tag);
+                CompoundBinaryTag tag = NMSHandler.entityHelper.getRawNBT(object.getBukkitEntity());
+                return (MapTag) ItemRawNBT.nbtTagToObject(tag);
             });
 
             // <--[mechanism]
@@ -3298,7 +3298,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // <EntityTag.all_raw_nbt>
             // -->
             tagProcessor.registerMechanism("raw_nbt", false, MapTag.class, (object, mechanism, input) -> {
-                CompoundTag tag = (CompoundTag) ItemRawNBT.convertObjectToNbt(input.identify(), mechanism.context, "(entity).");
+                CompoundBinaryTag tag = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(input, mechanism.context, "(entity).");
                 if (tag != null) {
                     NMSHandler.entityHelper.modifyRawNBT(object.getBukkitEntity(), tag);
                 }
