@@ -40,6 +40,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Rotations;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -112,7 +113,7 @@ public class Handler extends NMSHandler {
         registerConversion(MaterialTag.class, BlockState.class, material -> ((CraftBlockData) material.getModernData()).getState());
         registerConversion(LocationTag.class, Rotations.class, location -> new Rotations((float) location.getX(), (float) location.getY(), (float) location.getZ()));
         registerConversion(LocationTag.class, BlockPos.class, CraftLocation::toBlockPosition);
-        registerConversion(MapTag.class, net.minecraft.nbt.CompoundTag.class, map -> {
+        registerConversion(MapTag.class, CompoundTag.class, map -> {
             CompoundBinaryTag compoundTag = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(map, CoreUtilities.noDebugContext, "(item).");
             return compoundTag != null ? NBTAdapter.toNMS(compoundTag) : null;
         });

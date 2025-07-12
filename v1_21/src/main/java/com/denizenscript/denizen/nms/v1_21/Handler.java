@@ -42,6 +42,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Rotations;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
@@ -118,7 +119,7 @@ public class Handler extends NMSHandler {
         registerConversion(MaterialTag.class, BlockState.class, material -> ((CraftBlockData) material.getModernData()).getState());
         registerConversion(LocationTag.class, Rotations.class, location -> new Rotations((float) location.getX(), (float) location.getY(), (float) location.getZ()));
         registerConversion(LocationTag.class, BlockPos.class, CraftLocation::toBlockPosition);
-        registerConversion(MapTag.class, net.minecraft.nbt.CompoundTag.class, map -> {
+        registerConversion(MapTag.class, CompoundTag.class, map -> {
             CompoundBinaryTag compoundTag = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(map, CoreUtilities.noDebugContext, "(item).");
             return compoundTag != null ? NBTAdapter.toNMS(compoundTag) : null;
         });
@@ -379,9 +380,9 @@ public class Handler extends NMSHandler {
         return CraftChatMessage.fromJSONOrNull(FormattedTextHelper.componentToJson(spigot));
     }
 
-    public static final MethodHandle TAG_VALUE_OUTPUT_CONSTRUCTOR = ReflectionHelper.getConstructor(TagValueOutput.class, ProblemReporter.class, DynamicOps.class, net.minecraft.nbt.CompoundTag.class);
+    public static final MethodHandle TAG_VALUE_OUTPUT_CONSTRUCTOR = ReflectionHelper.getConstructor(TagValueOutput.class, ProblemReporter.class, DynamicOps.class, CompoundTag.class);
 
-    public static net.minecraft.nbt.CompoundTag useValueOutput(Consumer<ValueOutput> handler) {
+    public static CompoundTag useValueOutput(Consumer<ValueOutput> handler) {
         ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
         TagValueOutput nmsValueOutput = TagValueOutput.createWithContext(nmsProblemReporter, CraftRegistry.getMinecraftRegistry());
         handler.accept(nmsValueOutput);
@@ -389,7 +390,7 @@ public class Handler extends NMSHandler {
         return nmsValueOutput.buildResult();
     }
 
-    public static net.minecraft.nbt.CompoundTag useValueOutput(net.minecraft.nbt.CompoundTag nmsExistingValue, Consumer<ValueOutput> handler) {
+    public static CompoundTag useValueOutput(CompoundTag nmsExistingValue, Consumer<ValueOutput> handler) {
         ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
         TagValueOutput nmsValueOutput;
         try {
@@ -404,7 +405,7 @@ public class Handler extends NMSHandler {
         return nmsValueOutput.buildResult();
     }
 
-    public static void useValueInput(net.minecraft.nbt.CompoundTag nmsTag, Consumer<ValueInput> handler) {
+    public static void useValueInput(CompoundTag nmsTag, Consumer<ValueInput> handler) {
         ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
         ValueInput nmsValueInput = TagValueInput.create(nmsProblemReporter, CraftRegistry.getMinecraftRegistry(), nmsTag);
         handler.accept(nmsValueInput);
