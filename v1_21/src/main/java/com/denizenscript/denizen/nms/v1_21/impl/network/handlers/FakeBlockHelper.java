@@ -108,83 +108,77 @@ public class FakeBlockHelper {
         }
     }
 
-    public static ClientboundLevelChunkWithLightPacket handleMapChunkPacket(World world, ClientboundLevelChunkWithLightPacket originalChunkPacket, int chunkX, int chunkZ, List<FakeBlock> blocksInChunk, FakeBlock.FakeBlockMap fakeBlockMap) {
-        try {
-            ClientboundLevelChunkWithLightPacket copiedChunkPacket = DenizenNetworkManagerImpl.copyPacket(originalChunkPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC);
-            copyPacketPaperPatch(copiedChunkPacket);
-            // A list of block entities sent with the chunk data
-            List<Object> blockEntities = (List<Object>) CHUNKDATA_BLOCK_ENTITIES.get(copiedChunkPacket.getChunkData());
-            LocationTag location = new LocationTag(world, 0, 0, 0);
-            ListIterator<Object> blockEntitiesIterator = blockEntities.listIterator();
-            while (blockEntitiesIterator.hasNext()) {
-                Object blockEnt = blockEntitiesIterator.next();
-                int xz = CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ.getInt(blockEnt);
-                int y = CHUNKDATA_BLOCKENTITYINFO_Y.getInt(blockEnt);
-                int relativeX = SectionPos.sectionRelative(xz >> 4);
-                int relativeZ = SectionPos.sectionRelative(xz);
-                int x = SectionPos.sectionToBlockCoord(chunkX) + relativeX;
-                int z = SectionPos.sectionToBlockCoord(chunkZ) + relativeZ;
-                location.setX(x);
-                location.setY(y);
-                location.setZ(z);
-                if (fakeBlockMap.byLocation.containsKey(location)) {
-                    blockEntitiesIterator.remove();
-                }
+    public static ClientboundLevelChunkWithLightPacket handleMapChunkPacket(World world, ClientboundLevelChunkWithLightPacket originalChunkPacket, int chunkX, int chunkZ, List<FakeBlock> blocksInChunk, FakeBlock.FakeBlockMap fakeBlockMap) throws Throwable {
+        ClientboundLevelChunkWithLightPacket copiedChunkPacket = DenizenNetworkManagerImpl.copyPacket(originalChunkPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC);
+        copyPacketPaperPatch(copiedChunkPacket);
+        // A list of block entities sent with the chunk data
+        List<Object> blockEntities = (List<Object>) CHUNKDATA_BLOCK_ENTITIES.get(copiedChunkPacket.getChunkData());
+        LocationTag location = new LocationTag(world, 0, 0, 0);
+        ListIterator<Object> blockEntitiesIterator = blockEntities.listIterator();
+        while (blockEntitiesIterator.hasNext()) {
+            Object blockEnt = blockEntitiesIterator.next();
+            int xz = CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ.getInt(blockEnt);
+            int y = CHUNKDATA_BLOCKENTITYINFO_Y.getInt(blockEnt);
+            int relativeX = SectionPos.sectionRelative(xz >> 4);
+            int relativeZ = SectionPos.sectionRelative(xz);
+            int x = SectionPos.sectionToBlockCoord(chunkX) + relativeX;
+            int z = SectionPos.sectionToBlockCoord(chunkZ) + relativeZ;
+            location.setX(x);
+            location.setY(y);
+            location.setZ(z);
+            if (fakeBlockMap.byLocation.containsKey(location)) {
+                blockEntitiesIterator.remove();
             }
-            // Get the original chunk data to read, and a buf of the same size to write
-            FriendlyByteBuf rawChunkData = originalChunkPacket.getChunkData().getReadBuffer();
-            FriendlyByteBuf newChunkData = new FriendlyByteBuf(Unpooled.buffer(rawChunkData.readableBytes()));
-            int worldMinY = world.getMinHeight();
-            int worldMaxY = world.getMaxHeight();
-            int minChunkY = SectionPos.blockToSectionCoord(worldMinY);
-            int maxChunkY = SectionPos.blockToSectionCoord(worldMaxY);
-            Registry<Biome> biomeRegistry = CraftRegistry.getMinecraftRegistry(Registries.BIOME);
-            // These are section coords, iterating through every chunk section
-            for (int y = minChunkY; y < maxChunkY; y++) {
-                int blockCount = rawChunkData.readShort();
-                PalettedContainer<BlockState> states = new PalettedContainer<>(Blocks.AIR.defaultBlockState(), Strategy.createForBlockStates(Block.BLOCK_STATE_REGISTRY);
-                states.read(rawChunkData);
-                PalettedContainer<Biome> biomes = new PalettedContainer<>(biomeRegistry.getValueOrThrow(Biomes.PLAINS), Strategy.createForBiomes(biomeRegistry));
-                biomes.read(rawChunkData);
-                if (anyBlocksInSection(blocksInChunk, y)) {
-                    int minY = SectionPos.sectionToBlockCoord(y);
-                    int maxY = minY + 16;
-                    for (FakeBlock block : blocksInChunk) {
-                        int blockY = block.location.getBlockY();
-                        if (blockY >= minY && blockY < maxY && block.material != null) {
-                            int relativeX = SectionPos.sectionRelative(block.location.getBlockX());
-                            int relativeY = SectionPos.sectionRelative(blockY);
-                            int relativeZ = SectionPos.sectionRelative(block.location.getBlockZ());
-                            BlockState oldState = states.get(relativeX, relativeY, relativeZ);
-                            BlockState newState = getNMSState(block);
-                            if (oldState.isAir() && !newState.isAir()) {
-                                blockCount++;
-                            }
-                            else if (newState.isAir() && !oldState.isAir()) {
-                                blockCount--;
-                            }
-                            states.set(relativeX, relativeY, relativeZ, newState);
-                            BlockEntityType<?> nmsBlockEntityType = MATERIAL_BLOCK_ENTITY_TYPES.get(block.material.getMaterial());
-                            if (nmsBlockEntityType == null) {
-                                continue;
-                            }
-                            BlockEntity createdBlockEntity = nmsBlockEntityType.create(CraftLocation.toBlockPosition(block.location), newState);
-                            createdBlockEntity.setLevel(((CraftWorld) world).getHandle());
-                            Object packetBlockEntityData = CHUNK_DATA_BLOCK_ENTITY_CREATE.invoke(createdBlockEntity);
-                            blockEntities.add(packetBlockEntityData);
+        }
+        // Get the original chunk data to read, and a buf of the same size to write
+        FriendlyByteBuf rawChunkData = originalChunkPacket.getChunkData().getReadBuffer();
+        FriendlyByteBuf newChunkData = new FriendlyByteBuf(Unpooled.buffer(rawChunkData.readableBytes()));
+        int worldMinY = world.getMinHeight();
+        int worldMaxY = world.getMaxHeight();
+        int minChunkY = SectionPos.blockToSectionCoord(worldMinY);
+        int maxChunkY = SectionPos.blockToSectionCoord(worldMaxY);
+        Registry<Biome> biomeRegistry = CraftRegistry.getMinecraftRegistry(Registries.BIOME);
+        // These are section coords, iterating through every chunk section
+        for (int y = minChunkY; y < maxChunkY; y++) {
+            int blockCount = rawChunkData.readShort();
+            PalettedContainer<BlockState> states = new PalettedContainer<>(Block.BLOCK_STATE_REGISTRY, Blocks.AIR.defaultBlockState(), PalettedContainer.Strategy.SECTION_STATES);
+            states.read(rawChunkData);
+            PalettedContainer<Biome> biomes = new PalettedContainer<>(biomeRegistry, biomeRegistry.getValueOrThrow(Biomes.PLAINS), PalettedContainer.Strategy.SECTION_BIOMES);
+            biomes.read(rawChunkData);
+            if (anyBlocksInSection(blocksInChunk, y)) {
+                int minY = SectionPos.sectionToBlockCoord(y);
+                int maxY = minY + 16;
+                for (FakeBlock block : blocksInChunk) {
+                    int blockY = block.location.getBlockY();
+                    if (blockY >= minY && blockY < maxY && block.material != null) {
+                        int relativeX = SectionPos.sectionRelative(block.location.getBlockX());
+                        int relativeY = SectionPos.sectionRelative(blockY);
+                        int relativeZ = SectionPos.sectionRelative(block.location.getBlockZ());
+                        BlockState oldState = states.get(relativeX, relativeY, relativeZ);
+                        BlockState newState = getNMSState(block);
+                        if (oldState.isAir() && !newState.isAir()) {
+                            blockCount++;
                         }
+                        else if (newState.isAir() && !oldState.isAir()) {
+                            blockCount--;
+                        }
+                        states.set(relativeX, relativeY, relativeZ, newState);
+                        BlockEntityType<?> nmsBlockEntityType = MATERIAL_BLOCK_ENTITY_TYPES.get(block.material.getMaterial());
+                        if (nmsBlockEntityType == null) {
+                            continue;
+                        }
+                        BlockEntity createdBlockEntity = nmsBlockEntityType.create(CraftLocation.toBlockPosition(block.location), newState);
+                        createdBlockEntity.setLevel(((CraftWorld) world).getHandle());
+                        Object packetBlockEntityData = CHUNK_DATA_BLOCK_ENTITY_CREATE.invoke(createdBlockEntity);
+                        blockEntities.add(packetBlockEntityData);
                     }
                 }
-                newChunkData.writeShort(blockCount);
-                states.write(newChunkData);
-                biomes.write(newChunkData);
             }
-            CHUNKDATA_BUFFER_SETTER.invoke(copiedChunkPacket.getChunkData(), newChunkData.array());
-            return copiedChunkPacket;
+            newChunkData.writeShort(blockCount);
+            states.write(newChunkData);
+            biomes.write(newChunkData);
         }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
-        return null;
+        CHUNKDATA_BUFFER_SETTER.invoke(copiedChunkPacket.getChunkData(), newChunkData.array());
+        return copiedChunkPacket;
     }
 }
