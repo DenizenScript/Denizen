@@ -3,63 +3,58 @@ package com.denizenscript.denizen.nms.v1_21.impl.network.handlers;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.shorts.ShortArraySet;
-import it.unimi.dsi.fastutil.shorts.ShortObjectPair;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LightBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.DataLayer;
 import net.minecraft.world.level.chunk.PalettedContainer;
-import net.minecraft.world.level.chunk.Strategy;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R6.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R6.block.CraftBlockType;
-import org.bukkit.craftbukkit.v1_21_R6.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R6.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R5.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R5.block.CraftBlockType;
+import org.bukkit.craftbukkit.v1_21_R5.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R5.util.CraftLocation;
 
 import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class FakeBlockHelper {
 
-    public static final MethodHandle CHUNKDATA_BLOCK_ENTITIES = ReflectionHelper.getFields(ClientboundLevelChunkPacketData.class).getGetter(ReflectionMappingsInfo.ClientboundLevelChunkPacketData_blockEntitiesData, List.class);
-    public static final MethodHandle CHUNKDATA_BUFFER_SETTER = ReflectionHelper.getFields(ClientboundLevelChunkPacketData.class).getSetter(ReflectionMappingsInfo.ClientboundLevelChunkPacketData_buffer, byte[].class);
-    public static final Class<?> CHUNKDATA_BLOCKENTITYINFO_CLASS = ClientboundLevelChunkPacketData.class.getDeclaredClasses()[0];
-    public static final MethodHandle CHUNKDATA_BLOCK_ENTITY_CREATE = ReflectionHelper.getMethodHandle(CHUNKDATA_BLOCKENTITYINFO_CLASS, ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_create_method, BlockEntity.class);
-    public static final MethodHandle CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).getGetter(ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ);
-    public static final MethodHandle CHUNKDATA_BLOCKENTITYINFO_Y = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).getGetter(ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_y);
-    public static final MethodHandle BLOCK_ENTITY_TYPE_VALID_BLOCKS = ReflectionHelper.getFields(BlockEntityType.class).getGetter(ReflectionMappingsInfo.BlockEntityType_validBlocks, Set.class);
+    public static Field CHUNKDATA_BLOCK_ENTITIES = ReflectionHelper.getFields(ClientboundLevelChunkPacketData.class).getFirstOfType(List.class);
+    public static Class CHUNKDATA_BLOCKENTITYINFO_CLASS = ClientboundLevelChunkPacketData.class.getDeclaredClasses()[0];
+    public static MethodHandle CHUNKDATA_BLOCK_ENTITY_CONSTRUCTOR = ReflectionHelper.getConstructor(ClientboundLevelChunkPacketData.class.getDeclaredClasses()[0], int.class, int.class, BlockEntityType.class, CompoundTag.class);
+    public static final MethodHandle CHUNK_DATA_BLOCK_ENTITY_CREATE = ReflectionHelper.getMethodHandle(CHUNKDATA_BLOCKENTITYINFO_CLASS, ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_create_method, BlockEntity.class);
+    public static MethodHandle CHUNKDATA_BUFFER_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(ClientboundLevelChunkPacketData.class, byte[].class);
+    public static Field CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).get(ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ);
+    public static Field CHUNKDATA_BLOCKENTITYINFO_Y = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).get(ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_y);
+    public static MethodHandle CHUNKPACKET_CHUNKDATA_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(ClientboundLevelChunkWithLightPacket.class, ClientboundLevelChunkPacketData.class);
+    public static Constructor<?> PALETTEDCONTAINER_CTOR = Arrays.stream(PalettedContainer.class.getConstructors()).filter(c -> c.getParameterCount() == 3).findFirst().get();
+    public static Field BLOCK_ENTITY_TYPE_VALID_BLOCKS = ReflectionHelper.getFields(BlockEntityType.class).get(ReflectionMappingsInfo.BlockEntityType_validBlocks, Set.class);
 
-    public static final PalettedContainer<BlockState> EMPTY_BLOCKS_CONTAINER = new PalettedContainer<>(Blocks.AIR.defaultBlockState(), Strategy.createForBlockStates(Block.BLOCK_STATE_REGISTRY));
-    public static final Map<Material, BlockEntityType<?>> MATERIAL_BLOCK_ENTITY_TYPES = new HashMap<>();
-    public static final BlockState MAX_LIGHT_LIGHT_BLOCK = Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 15), AIR = Blocks.AIR.defaultBlockState();
-    public static final byte[] MAX_LIGHT_SECTION = new DataLayer(15).getData(), MIN_LIGHT_SECTION = new DataLayer(0).getData();
+    public static final Map<Material, BlockEntityType<?>> MATERIAL_BLOCK_ENTITY_TYPES = new EnumMap<>(Material.class);
 
     static {
         try {
             for (BlockEntityType<?> nmsBlockEntityType : BuiltInRegistries.BLOCK_ENTITY_TYPE) {
-                Set<Block> validBlocks = (Set<Block>) BLOCK_ENTITY_TYPE_VALID_BLOCKS.invokeExact(nmsBlockEntityType);
+                Set<Block> validBlocks = (Set<Block>) BLOCK_ENTITY_TYPE_VALID_BLOCKS.get(nmsBlockEntityType);
                 for (Block validBlock : validBlocks) {
                     MATERIAL_BLOCK_ENTITY_TYPES.put(CraftBlockType.minecraftToBukkit(validBlock), nmsBlockEntityType);
                 }
@@ -112,174 +107,83 @@ public class FakeBlockHelper {
         }
     }
 
-    public static Packet<ClientGamePacketListener> handleMapChunkPacket(World world, ClientboundLevelChunkWithLightPacket originalChunkPacket, int chunkX, int chunkZ, Int2ObjectMap<List<FakeBlock>> blocksBySection, FakeBlock.FakeBlockMap fakeBlockMap) throws Throwable {
-        ClientboundLevelChunkWithLightPacket copiedChunkPacket = DenizenNetworkManagerImpl.copyPacket(originalChunkPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC);
-        copyPacketPaperPatch(copiedChunkPacket);
-        // TODO pass coord?
-        boolean isNaturalLoad = !FakeBlock.scheduled.containsKey(new ChunkCoordinate(chunkX, chunkZ, world.getName()));
-        // A list of ClientboundLevelChunkPacketData$BlockEntityInfo
-        List<Object> blockEntities = (List<Object>) CHUNKDATA_BLOCK_ENTITIES.invokeExact(copiedChunkPacket.getChunkData());
-        LocationTag location = new LocationTag(world, 0, 0, 0);
-        ListIterator<Object> blockEntitiesIterator = blockEntities.listIterator();
-        while (blockEntitiesIterator.hasNext()) {
-            Object blockEnt = blockEntitiesIterator.next();
-            int xz = (int) CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ.invoke(blockEnt);
-            int y = (int) CHUNKDATA_BLOCKENTITYINFO_Y.invoke(blockEnt);
-            int relativeX = SectionPos.sectionRelative(xz >> 4);
-            int relativeZ = SectionPos.sectionRelative(xz);
-            int x = SectionPos.sectionToBlockCoord(chunkX, relativeX);
-            int z = SectionPos.sectionToBlockCoord(chunkZ, relativeZ);
-            location.setX(x);
-            location.setY(y);
-            location.setZ(z);
-            if (fakeBlockMap.byLocation.containsKey(location)) {
-                blockEntitiesIterator.remove();
+    public static ClientboundLevelChunkWithLightPacket handleMapChunkPacket(World world, ClientboundLevelChunkWithLightPacket originalChunkPacket, int chunkX, int chunkZ, List<FakeBlock> blocksInChunk, FakeBlock.FakeBlockMap fakeBlockMap) {
+        try {
+            ClientboundLevelChunkWithLightPacket copiedChunkPacket = DenizenNetworkManagerImpl.copyPacket(originalChunkPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC);
+            copyPacketPaperPatch(copiedChunkPacket);
+            // A list of block entities sent with the chunk data
+            List<Object> blockEntities = (List<Object>) CHUNKDATA_BLOCK_ENTITIES.get(copiedChunkPacket.getChunkData());
+            LocationTag location = new LocationTag(world, 0, 0, 0);
+            ListIterator<Object> blockEntitiesIterator = blockEntities.listIterator();
+            while (blockEntitiesIterator.hasNext()) {
+                Object blockEnt = blockEntitiesIterator.next();
+                int xz = CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ.getInt(blockEnt);
+                int y = CHUNKDATA_BLOCKENTITYINFO_Y.getInt(blockEnt);
+                int relativeX = SectionPos.sectionRelative(xz >> 4);
+                int relativeZ = SectionPos.sectionRelative(xz);
+                int x = SectionPos.sectionToBlockCoord(chunkX) + relativeX;
+                int z = SectionPos.sectionToBlockCoord(chunkZ) + relativeZ;
+                location.setX(x);
+                location.setY(y);
+                location.setZ(z);
+                if (fakeBlockMap.byLocation.containsKey(location)) {
+                    blockEntitiesIterator.remove();
+                }
             }
-        }
-        List<Packet<? super ClientGamePacketListener>> packets = new ArrayList<>(blocksBySection.size() + 1);
-        packets.add(copiedChunkPacket);
-
-        // Get the original chunk data to read, and a new buf of the same size to write
-        FriendlyByteBuf rawChunkData = originalChunkPacket.getChunkData().getReadBuffer();
-        FriendlyByteBuf newChunkData = new FriendlyByteBuf(Unpooled.buffer(rawChunkData.readableBytes()));
-        final int minChunkY = SectionPos.blockToSectionCoord(world.getMinHeight());
-        final int maxChunkY = SectionPos.blockToSectionCoord(world.getMaxHeight());
-        Registry<Biome> biomeRegistry = CraftRegistry.getMinecraftRegistry(Registries.BIOME);
-        ClientboundLightUpdatePacketData lightData = copiedChunkPacket.getLightData();
-        BitSet blockLightMask = lightData.getBlockYMask(), blockNoLightMask = lightData.getEmptyBlockYMask(), skyLightMask = lightData.getSkyYMask(), skyNoLightMask = lightData.getEmptySkyYMask();
-        int blockLitSections = 0, skyLitSections = 0;
-        boolean foundFirstSkyLight = false;
-        for (int chunkY = minChunkY; chunkY < maxChunkY; chunkY++) {
-            int blockCount = rawChunkData.readShort();
-            PalettedContainer<BlockState> states = new PalettedContainer<>(Blocks.AIR.defaultBlockState(), Strategy.createForBlockStates(Block.BLOCK_STATE_REGISTRY));
-            states.read(rawChunkData);
-            PalettedContainer<Holder<Biome>> biomes = new PalettedContainer<>(biomeRegistry.getOrThrow(Biomes.PLAINS), Strategy.createForBiomes(biomeRegistry.asHolderIdMap()));
-            biomes.read(rawChunkData);
-            List<FakeBlock> fakeBlocksInSection = blocksBySection.get(chunkY);
-            // The light data counts up from 0 instead of minChunkY, and has a buffer of 1 extra section above and below the world (hence + 1)
-            int sectionIndex = chunkY - minChunkY + 1;
-            boolean hasBlockLight = false, hasSkyLight = false;
-            if (blockLightMask.get(sectionIndex)) {
-                hasBlockLight = true;
-            }
-            if (skyLightMask.get(sectionIndex)) {
-                hasSkyLight = true;
-            }
-            if (fakeBlocksInSection != null) {
-                List<ShortObjectPair<BlockState>> lightPatch = new ArrayList<>();
-                DataLayer blockLayer = null, skyLayer = null;
-                Debug.log("--------------");
-                Debug.log("Has block light: " + hasBlockLight);
-                Debug.log("Has sky light: " + hasSkyLight);
-                if (hasSkyLight) {
-                    skyLightMask.clear(sectionIndex);
-                    skyLayer = new DataLayer(lightData.getSkyUpdates().remove(skyLitSections));
-                    hasSkyLight = false;
-                    if (!foundFirstSkyLight) {
-                        Debug.log(">>> Found first sky light");
-                    }
-                    foundFirstSkyLight = true;
-                }
-                else {
-                    skyNoLightMask.clear(sectionIndex);
-                }
-                if (isNaturalLoad) {
-                    Debug.log(">>> Adding " + (foundFirstSkyLight ? "bright" : "dark") + " sky light");
-                    lightData.getSkyUpdates().add(skyLitSections, foundFirstSkyLight ? MAX_LIGHT_SECTION : MIN_LIGHT_SECTION);
-                    skyLightMask.set(sectionIndex);
-                    hasSkyLight = true;
-                    skyLayer = new DataLayer(lightData.getSkyUpdates().get(skyLitSections));
-                }
-                if (hasBlockLight) {
-                    blockLightMask.clear(sectionIndex);
-                    blockLayer = new DataLayer(lightData.getBlockUpdates().remove(blockLitSections));
-                    hasBlockLight = false;
-                }
-                else {
-                    blockNoLightMask.clear(sectionIndex);
-                }
-                Debug.log("Post has block light: " + blockLightMask.get(sectionIndex));
-                Debug.log("Post has sky light: " + skyLightMask.get(sectionIndex));
-                Debug.log("--------------");
-                if (blockLayer != null || skyLayer != null) {
-                    for (int x = 0; x < 16; x++) {
-                        for (int y = 0; y < 16; y++) {
-                            for (int z = 0; z < 16; z++) {
-                                BlockState state = states.get(x, y, z);
-                                boolean isAir = state.isAir();
-                                if (isAir && (y == 0 || states.get(x, y - 1, z).isAir())) {
-                                    continue;
-                                }
-                                if (!isAir && (blockLayer == null || blockLayer.get(x, y, z) == 0)) {
-                                    continue;
-                                }
-                                // Based on SectionPos#sectionRelativePos
-                                short offset = (short) (x << 8 | z << 4 | y << 0);
-                                lightPatch.add(ShortObjectPair.of(offset, isAir ? MAX_LIGHT_LIGHT_BLOCK : AIR));
-                                lightPatch.add(ShortObjectPair.of(offset, state));
-                                if (!isAir) {
-                                    blockCount--;
-                                    states.set(x, y, z, AIR);
-                                }
+            // Get the original chunk data to read, and a buf of the same size to write
+            FriendlyByteBuf rawChunkData = originalChunkPacket.getChunkData().getReadBuffer();
+            FriendlyByteBuf newChunkData = new FriendlyByteBuf(Unpooled.buffer(rawChunkData.readableBytes()));
+            int worldMinY = world.getMinHeight();
+            int worldMaxY = world.getMaxHeight();
+            int minChunkY = SectionPos.blockToSectionCoord(worldMinY);
+            int maxChunkY = SectionPos.blockToSectionCoord(worldMaxY);
+            Registry<Biome> biomeRegistry = CraftRegistry.getMinecraftRegistry(Registries.BIOME);
+            // These are section coords, iterating through every chunk section
+            for (int y = minChunkY; y < maxChunkY; y++) {
+                int blockCount = rawChunkData.readShort();
+                PalettedContainer<BlockState> states = new PalettedContainer<>(Block.BLOCK_STATE_REGISTRY, Blocks.AIR.defaultBlockState(), PalettedContainer.Strategy.SECTION_STATES);
+                states.read(rawChunkData);
+                PalettedContainer<Biome> biomes = new PalettedContainer<>(biomeRegistry, biomeRegistry.getValueOrThrow(Biomes.PLAINS), PalettedContainer.Strategy.SECTION_BIOMES);
+                biomes.read(rawChunkData);
+                if (anyBlocksInSection(blocksInChunk, y)) {
+                    int minY = SectionPos.sectionToBlockCoord(y);
+                    int maxY = minY + 16;
+                    for (FakeBlock block : blocksInChunk) {
+                        int blockY = block.location.getBlockY();
+                        if (blockY >= minY && blockY < maxY && block.material != null) {
+                            int relativeX = SectionPos.sectionRelative(block.location.getBlockX());
+                            int relativeY = SectionPos.sectionRelative(blockY);
+                            int relativeZ = SectionPos.sectionRelative(block.location.getBlockZ());
+                            BlockState oldState = states.get(relativeX, relativeY, relativeZ);
+                            BlockState newState = getNMSState(block);
+                            if (oldState.isAir() && !newState.isAir()) {
+                                blockCount++;
                             }
+                            else if (newState.isAir() && !oldState.isAir()) {
+                                blockCount--;
+                            }
+                            states.set(relativeX, relativeY, relativeZ, newState);
+                            BlockEntityType<?> nmsBlockEntityType = MATERIAL_BLOCK_ENTITY_TYPES.get(block.material.getMaterial());
+                            if (nmsBlockEntityType == null) {
+                                continue;
+                            }
+                            BlockEntity createdBlockEntity = nmsBlockEntityType.create(CraftLocation.toBlockPosition(block.location), newState);
+                            createdBlockEntity.setLevel(((CraftWorld) world).getHandle());
+                            Object packetBlockEntityData = CHUNK_DATA_BLOCK_ENTITY_CREATE.invoke(createdBlockEntity);
+                            blockEntities.add(packetBlockEntityData);
                         }
                     }
                 }
-                int size = fakeBlocksInSection.size();
-                short[] offsets = new short[size];
-                BlockState[] statesArr = new BlockState[size];
-                for (int blockIndex = 0; blockIndex < size; blockIndex++) {
-                    FakeBlock fakeBlock = fakeBlocksInSection.get(blockIndex);
-                    int relativeX = SectionPos.sectionRelative(fakeBlock.location.getBlockX());
-                    int relativeY = SectionPos.sectionRelative(fakeBlock.location.getBlockY());
-                    int relativeZ = SectionPos.sectionRelative(fakeBlock.location.getBlockZ());
-                    BlockState oldState = states.get(relativeX, relativeY, relativeZ);
-                    BlockState newState = ((CraftBlockData) fakeBlock.material.getModernData()).getState();
-                    short sectionRelativePos = SectionPos.sectionRelativePos(CraftLocation.toBlockPosition(fakeBlock.location));
-                    offsets[blockIndex] = sectionRelativePos;
-                    statesArr[blockIndex] = newState;
-                    int maxLight = Math.max(
-                            skyLayer != null ? skyLayer.get(relativeX, relativeY, relativeZ) : 0,
-                            blockLayer != null ? blockLayer.get(relativeX, relativeY, relativeZ) : 0
-                    );
-                    if (!oldState.isAir()) {
-                        blockCount--;
-                        states.set(relativeX, relativeY, relativeZ, Blocks.AIR.defaultBlockState());
-                        if (maxLight <= 0 && !newState.isSolidRender()) {
-                            lightPatch.add(ShortObjectPair.of(sectionRelativePos, MAX_LIGHT_LIGHT_BLOCK));
-                        }
-                    }
-                }
-                SectionPos sectionPos = SectionPos.of(chunkX, chunkY, chunkZ);
-                if (!lightPatch.isEmpty()) {
-                    int lightCount = lightPatch.size();
-                    short[] lightOffsets = new short[lightCount];
-                    BlockState[] lightStates = new BlockState[lightCount];
-                    for (int i = 0; i < lightCount; i++) {
-                        ShortObjectPair<BlockState> pair = lightPatch.get(i);
-                        lightOffsets[i] = pair.leftShort();
-                        lightStates[i] = pair.right();
-                    }
-                    packets.add(new ClientboundSectionBlocksUpdatePacket(sectionPos, new ShortArraySet(lightOffsets), lightStates));
-                }
-                packets.add(new ClientboundSectionBlocksUpdatePacket(sectionPos, new ShortArraySet(offsets), statesArr));
-            }
-            if (hasBlockLight) {
-                blockLitSections++;
-            }
-            if (hasSkyLight) {
-                skyLitSections++;
-            }
-            newChunkData.writeShort(blockCount);
-            if (blockCount > 0) {
+                newChunkData.writeShort(blockCount);
                 states.write(newChunkData);
+                biomes.write(newChunkData);
             }
-            else {
-                EMPTY_BLOCKS_CONTAINER.write(newChunkData);
-            }
-            biomes.write(newChunkData);
+            CHUNKDATA_BUFFER_SETTER.invoke(copiedChunkPacket.getChunkData(), newChunkData.array());
+            return copiedChunkPacket;
         }
-        CHUNKDATA_BUFFER_SETTER.invokeExact(copiedChunkPacket.getChunkData(), newChunkData.array());
-        return new ClientboundBundlePacket(packets);
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        return null;
     }
 }
