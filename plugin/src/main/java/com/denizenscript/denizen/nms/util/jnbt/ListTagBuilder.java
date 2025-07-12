@@ -51,9 +51,10 @@ public class ListTagBuilder {
      */
     public ListTagBuilder add(Tag value) {
         checkNotNull(value);
-        if (!type.isInstance(value)) {
+        // Denizen - list tags are no longer necessarily single-typed. This API is old enough to probably need replacement.
+        /*if (!type.isInstance(value)) {
             throw new IllegalArgumentException(value.getClass().getCanonicalName() + " is not of expected type " + type.getCanonicalName());
-        }
+        }*/
         entries.add(value);
         return this;
     }
@@ -103,11 +104,11 @@ public class ListTagBuilder {
         }
 
         Class<? extends Tag> type = entries[0].getClass();
-        for (int i = 1; i < entries.length; i++) {
+        /*for (int i = 1; i < entries.length; i++) { // Denizen - disable check
             if (!type.isInstance(entries[i])) {
                 throw new IllegalArgumentException("An array of different tag types was provided");
             }
-        }
+        }*/
 
         ListTagBuilder builder = new ListTagBuilder(type);
         builder.addAll(Arrays.asList(entries));
