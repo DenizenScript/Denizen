@@ -3189,7 +3189,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @attribute <EntityTag.body_armor>
             // @returns ItemTag
             // @description
-            // Returns the item equipped on an entity's body slot.
+            // Returns the item equipped on an entity's body slot, or "air" if none.
             // -->
             registerSpawnedOnlyTag(ItemTag.class, "body_armor", (attribute, entity) -> {
                 return new ItemTag(entity.getLivingEntity().getEquipment().getItem(EquipmentSlot.BODY));
