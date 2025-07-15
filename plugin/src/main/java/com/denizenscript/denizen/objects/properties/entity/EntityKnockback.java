@@ -53,8 +53,8 @@ public class EntityKnockback implements Property {
         // @mechanism EntityTag.knockback
         // @group properties
         // @description
-        // Deprecated you should instead set the knockback on the weapon itself on MC 1.21+.
-        // @deprecated you should instead set the knockback on the weapon itself on MC 1.21+.
+        // Deprecated in favor of setting the knockback enchantment on the weapon itself on MC 1.21+.
+        // @deprecated use the knockback enchantment on the weapon itself on MC 1.21+.
         // -->
         PropertyParser.registerTag(EntityKnockback.class, ElementTag.class, "knockback", (attribute, object) -> {
             BukkitImplDeprecations.entityKnockback.warn(attribute.context);
@@ -72,8 +72,8 @@ public class EntityKnockback implements Property {
         // @name knockback
         // @input ElementTag(Number)
         // @description
-        // Deprecated you should instead set the knockback on the weapon itself on MC 1.21+.
-        // @deprecated you should instead set the knockback on the weapon itself on MC 1.21+.
+        // Deprecated in favor of setting the knockback enchantment on the weapon itself on MC 1.21+.
+        // @deprecated use the knockback enchantment on the weapon itself on MC 1.21+.
         // @tags
         // <EntityTag.knockback>
         // -->
