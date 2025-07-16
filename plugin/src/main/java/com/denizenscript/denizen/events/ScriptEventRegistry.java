@@ -218,9 +218,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerLeashesEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerLeavesBedScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerLevelsUpScriptEvent.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            ScriptEvent.registerScriptEvent(PlayerLinksSendScriptEvent.class);
-        }
         ScriptEvent.registerScriptEvent(PlayerLocaleChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerLoginScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerMendsItemScriptEvent.class);

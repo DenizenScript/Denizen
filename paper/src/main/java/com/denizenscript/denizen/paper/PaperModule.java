@@ -66,6 +66,9 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerItemTakesDamageScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerLecternPageChangeScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(PlayerLinksSendScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(PlayerLoomPatternSelectScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerNameEntityScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
