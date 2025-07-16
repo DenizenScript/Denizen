@@ -1406,10 +1406,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.horse_armor>
         // @returns ItemTag
-        // @deprecated Use <@link tag EntityTag.body_armor> on MC 1.20+.
+        // @deprecated Use <@link tag EntityTag.equipment_map> with the 'body' key on MC 1.20+.
         // @group inventory
         // @description
-        // Deprecated in favor of <@link tag EntityTag.body_armor> on MC 1.20+.
+        // Deprecated in favor of <@link tag EntityTag.equipment_map> with the 'body' key on MC 1.20+.
         // -->
         registerSpawnedOnlyTag(ItemTag.class, "horse_armor", (attribute, object) -> {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
@@ -3184,16 +3184,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-
-            // <--[tag]
-            // @attribute <EntityTag.body_armor>
-            // @returns ItemTag
-            // @description
-            // Returns the item equipped on an entity's body slot, or "air" if none.
-            // -->
-            registerSpawnedOnlyTag(ItemTag.class, "body_armor", (attribute, entity) -> {
-                return new ItemTag(entity.getLivingEntity().getEquipment().getItem(EquipmentSlot.BODY));
-            }, "body_armour");
 
             // <--[mechanism]
             // @object EntityTag
