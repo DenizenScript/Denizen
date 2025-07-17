@@ -1,12 +1,17 @@
 package com.denizenscript.denizen.nms.v1_21.impl.network.handlers;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -14,6 +19,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
+import net.minecraft.network.protocol.game.ClientboundLightUpdatePacketData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
@@ -21,7 +29,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.DataLayer;
 import net.minecraft.world.level.chunk.PalettedContainer;
+import net.minecraft.world.level.lighting.LevelLightEngine;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_21_R5.CraftRegistry;
@@ -132,8 +143,20 @@ public class FakeBlockHelper {
         int minChunkY = SectionPos.blockToSectionCoord(worldMinY);
         int maxChunkY = SectionPos.blockToSectionCoord(worldMaxY);
         Registry<Biome> biomeRegistry = CraftRegistry.getMinecraftRegistry(Registries.BIOME);
+        int blocksLit = 0, skyLit = 0;
         // These are section coords, iterating through every chunk section
+        ClientboundLightUpdatePacketData lightData = copiedChunkPacket.getLightData();
+        Long2ObjectMap<SectionLightCache> sectionLightCache = new Long2ObjectOpenHashMap<>();
         for (int y = minChunkY; y < maxChunkY; y++) {
+            SectionPos sectionPos = SectionPos.of(chunkX, y, chunkZ);
+            int sectionIndex = y + Math.abs(minChunkY) + 1;
+            boolean hasSky = false, hasBlock = false;
+            if (lightData.getBlockYMask().get(sectionIndex)) {
+                hasBlock = true;
+            }
+            if (lightData.getSkyYMask().get(sectionIndex)) {
+                hasSky = true;
+            }
             int blockCount = rawChunkData.readShort();
             PalettedContainer<BlockState> states = new PalettedContainer<>(Block.BLOCK_STATE_REGISTRY, Blocks.AIR.defaultBlockState(), PalettedContainer.Strategy.SECTION_STATES);
             states.read(rawChunkData);
@@ -165,8 +188,28 @@ public class FakeBlockHelper {
                         createdBlockEntity.setLevel(((CraftWorld) world).getHandle());
                         Object packetBlockEntityData = CHUNKDATA_BLOCK_ENTITY_CREATE.invoke(createdBlockEntity);
                         blockEntities.add(packetBlockEntityData);
+                        DataLayer blockLights;
+                        if (!hasBlock) {
+                            Debug.log(">>>>>>>>>>>>>>>>>>> No light data, adding");
+                            blockLights = new DataLayer();
+                            lightData.getBlockUpdates().add(blocksLit, blockLights.getData());
+                            lightData.getBlockYMask().set(sectionIndex);
+                            lightData.getEmptyBlockYMask().clear(sectionIndex);
+                            hasBlock = true;
+                        }
+                        else {
+                            blockLights = new DataLayer(lightData.getBlockUpdates().get(blocksLit));
+                        }
+                        DataLayer skyLights = hasSky ? new DataLayer(lightData.getSkyUpdates().get(skyLit)) : new DataLayer();
+                        blockLights.set(relativeX, relativeY, relativeZ, getEstimatedLightLevel(relativeX, relativeY, relativeZ, blockLights, skyLights, lightData, world, sectionPos, sectionLightCache, sectionIndex, blocksLit, skyLit));
                     }
                 }
+            }
+            if (hasBlock) {
+                blocksLit++;
+            }
+            if (hasSky) {
+                skyLit++;
             }
             newChunkData.writeShort(blockCount);
             states.write(newChunkData);
@@ -174,5 +217,106 @@ public class FakeBlockHelper {
         }
         CHUNKDATA_BUFFER_SETTER.invoke(copiedChunkPacket.getChunkData(), newChunkData.array());
         return copiedChunkPacket;
+    }
+
+    public static final int[][] directions = {
+            {0, -1, 0},
+            {0, 1, 0},
+            {-1, 0, 0},
+            {1, 0, 0},
+            {0, 0, -1},
+            {0, 0, 1}
+    };
+
+    public static int getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightPacket, World world, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
+        int maxLight = Math.max(blockLights.get(relativeX, relativeY, relativeZ), skyLights.get(relativeX, relativeY, relativeZ));
+        if (maxLight == 15) {
+            return 15;
+        }
+        List<BlockPos> blockLookups = null;
+        for (int[] direction : directions) {
+            int yOffest = direction[1];
+            int neighborX = relativeX + direction[0];
+            int neighborY = relativeY + yOffest;
+            int neighborZ = relativeZ + direction[2];
+            if (coordOutOfSection(neighborX) || coordOutOfSection(neighborZ)) {
+                if (blockLookups == null) {
+                    blockLookups = new ArrayList<>(2);
+                }
+                blockLookups.add(new BlockPos(sectionPos.minBlockX() + neighborX, sectionPos.minBlockY() + neighborY, sectionPos.minBlockZ() + neighborZ));
+                continue;
+            }
+            int light;
+            if (coordOutOfSection(neighborY)) {
+                int adjacentSectionIndex = sectionIndex + yOffest;
+                boolean hasSkyLights = lightPacket.getSkyYMask().get(adjacentSectionIndex);
+                boolean hasBlockLights = lightPacket.getBlockYMask().get(adjacentSectionIndex);
+                if (!hasBlockLights && !hasSkyLights) {
+                    Debug.log("No lights in adjacent section");
+                    continue;
+                }
+                int wrappedNeighborY = SectionPos.sectionRelative(neighborY);
+                light = Math.max(
+                        hasSkyLights ? new DataLayer(lightPacket.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ) : 0,
+                        hasBlockLights ? new DataLayer(lightPacket.getBlockUpdates().get(blocksLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ) : 0
+                );
+                Debug.log("Adjacent packet light: " + light);
+            }
+            else {
+                light = Math.max(blockLights.get(neighborX, neighborY, neighborZ), skyLights.get(neighborX, neighborY, neighborZ));
+                Debug.log("Packet light: " + light);
+            }
+            if (light == 15) {
+                return 15;
+            }
+            if (light > maxLight) {
+                maxLight = light;
+            }
+        }
+        if (blockLookups == null) {
+            return maxLight;
+        }
+        ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
+        for (BlockPos blockPos : blockLookups) {
+            SectionPos containingSection = SectionPos.of(blockPos);
+            SectionLightCache sectionLight = sectionLightsCache.computeIfAbsent(containingSection.asLong(), k -> {
+                Debug.log("Getting section to cache");
+                LevelLightEngine lightEngine = nmsWorld.getLightEngine();
+                DataLayer sectionBlockLights = lightEngine.getLayerListener(LightLayer.BLOCK).getDataLayerData(containingSection);
+                DataLayer sectionSkyLights = lightEngine.getLayerListener(LightLayer.SKY).getDataLayerData(containingSection);
+                return new SectionLightCache(sectionBlockLights, sectionSkyLights);
+            });
+            int light = sectionLight.getLight(blockPos);
+            Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), () -> {
+                NMSHandler.packetHelper.showDebugTestMarker(Bukkit.getOnlinePlayers().iterator().next(), CraftLocation.toBukkit(blockPos), ColorTag.valueOf("red", null), "", 4000);
+            }, 1);
+            Debug.log("Block light: " + light);
+            if (light == 15) {
+                return 15;
+            }
+            if (light > maxLight) {
+                maxLight = light;
+            }
+        }
+        return maxLight;
+    }
+
+    public record SectionLightCache(DataLayer blockLights, DataLayer skyLights) {
+
+        public int getLight(BlockPos blockPos) {
+            int relativeX = SectionPos.sectionRelative(blockPos.getX());
+            int relativeY = SectionPos.sectionRelative(blockPos.getY());
+            int relativeZ = SectionPos.sectionRelative(blockPos.getZ());
+            int skyLight = skyLights != null ? skyLights.get(relativeX, relativeY, relativeZ) : 0;
+            if (skyLight == 15) {
+                return skyLight;
+            }
+            int blockLight = blockLights != null ? blockLights.get(relativeX, relativeY, relativeZ) : 0;
+            return Math.max(skyLight, blockLight);
+        }
+    }
+
+    public static boolean coordOutOfSection(int relativeCoord) {
+        return relativeCoord < 0 || relativeCoord > 15;
     }
 }

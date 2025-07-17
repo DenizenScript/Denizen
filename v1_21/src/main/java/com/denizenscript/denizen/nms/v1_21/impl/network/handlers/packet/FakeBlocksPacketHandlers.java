@@ -47,8 +47,7 @@ public class FakeBlocksPacketHandlers {
                 if (blocks == null || blocks.isEmpty()) {
                     return packet;
                 }
-                ClientboundLevelChunkWithLightPacket newPacket = FakeBlockHelper.handleMapChunkPacket(networkManager.player.getBukkitEntity().getWorld(), (ClientboundLevelChunkWithLightPacket) packet, chunkX, chunkZ, blocks, map);
-                return newPacket;
+                return FakeBlockHelper.handleMapChunkPacket(networkManager.player.getBukkitEntity().getWorld(), (ClientboundLevelChunkWithLightPacket) packet, chunkX, chunkZ, blocks, map);
             }
             else if (packet instanceof ClientboundSectionBlocksUpdatePacket sectionBlocksUpdatePacket) {
                 FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(networkManager.player.getUUID());
