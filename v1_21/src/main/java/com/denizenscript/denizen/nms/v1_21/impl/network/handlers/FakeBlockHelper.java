@@ -256,7 +256,6 @@ public class FakeBlockHelper {
     };
 
     public static BlockLightData getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightPacket, ServerLevel nmsWorld, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
-        int ambientDarkness = 0;
         int maxSky = getLight(skyLights, relativeX, relativeY, relativeZ);
         int maxBlock = getLight(blockLights, relativeX, relativeY, relativeZ);
         List<BlockPos> blockLookups = null;
@@ -283,7 +282,7 @@ public class FakeBlockHelper {
                 }
                 int wrappedNeighborY = SectionPos.sectionRelative(neighborY);
                 if (hasSkyLights) {
-                    skyLight = new DataLayer(lightPacket.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ) - ambientDarkness;
+                    skyLight = new DataLayer(lightPacket.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
                 }
                 if (hasBlockLights) {
                     blockLight = new DataLayer(lightPacket.getBlockUpdates().get(blocksLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
@@ -314,8 +313,8 @@ public class FakeBlockHelper {
                 DataLayer sectionSkyLights = lightEngine.getLayerListener(LightLayer.SKY).getDataLayerData(containingSection);
                 return new SectionLightCache(sectionBlockLights, sectionSkyLights);
             });
-            int skyLight = sectionLight.getSkyLight(blockPos, ambientDarkness);
-            int blockLight = sectionLight.getBlockLight(blockPos);
+            int skyLight = getLight(sectionLight.skyLights(), blockPos);
+            int blockLight = getLight(sectionLight.blockLights(), blockPos);
             if (skyLight > maxSky) {
                 maxSky = skyLight;
             }
@@ -337,16 +336,7 @@ public class FakeBlockHelper {
         return lightData != null ? lightData.get(relativeX, relativeY, relativeZ) : -1;
     }
 
-    public record SectionLightCache(DataLayer blockLights, DataLayer skyLights) {
-
-        public int getSkyLight(BlockPos blockPos, int ambientDarkness) {
-            return getLight(skyLights, blockPos) - ambientDarkness;
-        }
-
-        public int getBlockLight(BlockPos blockPos) {
-            return getLight(blockLights, blockPos);
-        }
-    }
+    public record SectionLightCache(DataLayer blockLights, DataLayer skyLights) {}
 
     public static boolean coordOutOfSection(int relativeCoord) {
         return relativeCoord < 0 || relativeCoord > 15;
