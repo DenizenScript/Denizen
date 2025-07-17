@@ -189,20 +189,32 @@ public class FakeBlockHelper {
                         createdBlockEntity.setLevel(nmsWorld);
                         Object packetBlockEntityData = CHUNKDATA_BLOCK_ENTITY_CREATE.invoke(createdBlockEntity);
                         blockEntities.add(packetBlockEntityData);
-                        DataLayer blockLights;
-                        if (!hasBlock) {
-                            Debug.log(">>>>>>>>>>>>>>>>>>> No light data, adding");
-                            blockLights = new DataLayer();
-                            lightData.getBlockUpdates().add(blocksLit, blockLights.getData());
-                            lightData.getBlockYMask().set(sectionIndex);
-                            lightData.getEmptyBlockYMask().clear(sectionIndex);
-                            hasBlock = true;
+                        BlockLightData estimatedLights = getEstimatedLightLevel(relativeX, relativeY, relativeZ,
+                                getLayer(hasBlock, lightData.getBlockUpdates(), blocksLit), getLayer(hasSky, lightData.getSkyUpdates(), skyLit),
+                                lightData, nmsWorld, sectionPos, sectionLightCache, sectionIndex, blocksLit, skyLit);
+                        Debug.log("Final data: " + estimatedLights);
+                        if (estimatedLights.block() > 0) {
+                            DataLayer blockLights;
+                            if (!hasBlock) {
+                                blockLights = addLayer(lightData.getBlockUpdates(), blocksLit, lightData.getBlockYMask(), lightData.getEmptyBlockYMask(), sectionIndex);
+                                hasBlock = true;
+                            }
+                            else {
+                                blockLights = new DataLayer(lightData.getBlockUpdates().get(blocksLit));
+                            }
+                            blockLights.set(relativeX, relativeY, relativeZ, estimatedLights.block());
                         }
-                        else {
-                            blockLights = new DataLayer(lightData.getBlockUpdates().get(blocksLit));
+                        if (estimatedLights.sky() > 0) {
+                            DataLayer skyLights;
+                            if (!hasSky) {
+                                skyLights = addLayer(lightData.getSkyUpdates(), skyLit, lightData.getSkyYMask(), lightData.getEmptySkyYMask(), sectionIndex);
+                                hasSky = true;
+                            }
+                            else {
+                                skyLights = new DataLayer(lightData.getSkyUpdates().get(skyLit));
+                            }
+                            skyLights.set(relativeX, relativeY, relativeZ, estimatedLights.sky());
                         }
-                        DataLayer skyLights = hasSky ? new DataLayer(lightData.getSkyUpdates().get(skyLit)) : new DataLayer();
-                        blockLights.set(relativeX, relativeY, relativeZ, getEstimatedLightLevel(relativeX, relativeY, relativeZ, blockLights, skyLights, lightData, nmsWorld, sectionPos, sectionLightCache, sectionIndex, blocksLit, skyLit));
                     }
                 }
             }
@@ -220,6 +232,20 @@ public class FakeBlockHelper {
         return copiedChunkPacket;
     }
 
+    public static DataLayer addLayer(List<byte[]> layers, int index, BitSet litSections, BitSet unlitSections, int sectionIndex) {
+        DataLayer newLayer = new DataLayer();
+        layers.add(index, newLayer.getData());
+        litSections.set(sectionIndex);
+        unlitSections.clear(sectionIndex);
+        return newLayer;
+    }
+
+    public static DataLayer getLayer(boolean has, List<byte[]> layers, int index) {
+        return has ? new DataLayer(layers.get(index)) : null;
+    }
+
+    public record BlockLightData(int sky, int block) {}
+
     public static final int[][] directions = {
             {0, -1, 0},
             {0, 1, 0},
@@ -229,12 +255,10 @@ public class FakeBlockHelper {
             {0, 0, 1}
     };
 
-    public static int getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightPacket, ServerLevel nmsWorld, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
-        int ambientDarkness = nmsWorld.getSkyDarken();
-        int maxLight = maxLight(relativeX, relativeY, relativeZ, blockLights, skyLights, ambientDarkness);
-        if (maxLight == 15) {
-            return 15;
-        }
+    public static BlockLightData getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightPacket, ServerLevel nmsWorld, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
+        int ambientDarkness = 0;
+        int maxSky = getLight(skyLights, relativeX, relativeY, relativeZ);
+        int maxBlock = getLight(blockLights, relativeX, relativeY, relativeZ);
         List<BlockPos> blockLookups = null;
         for (int[] direction : directions) {
             int yOffest = direction[1];
@@ -248,7 +272,7 @@ public class FakeBlockHelper {
                 blockLookups.add(new BlockPos(sectionPos.minBlockX() + neighborX, sectionPos.minBlockY() + neighborY, sectionPos.minBlockZ() + neighborZ));
                 continue;
             }
-            int light;
+            int blockLight = -1, skyLight = -1;
             if (coordOutOfSection(neighborY)) {
                 int adjacentSectionIndex = sectionIndex + yOffest;
                 boolean hasSkyLights = lightPacket.getSkyYMask().get(adjacentSectionIndex);
@@ -258,27 +282,28 @@ public class FakeBlockHelper {
                     continue;
                 }
                 int wrappedNeighborY = SectionPos.sectionRelative(neighborY);
-                int skyLight = hasSkyLights ? new DataLayer(lightPacket.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ) - ambientDarkness : 0;
-                if (skyLight == 15 || !hasBlockLights) {
-                    return skyLight;
+                if (hasSkyLights) {
+                    skyLight = new DataLayer(lightPacket.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ) - ambientDarkness;
                 }
-                int blockLight = new DataLayer(lightPacket.getBlockUpdates().get(blocksLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
-                light = Math.max(skyLight, blockLight);
-                Debug.log("Adjacent packet light: " + light);
+                if (hasBlockLights) {
+                    blockLight = new DataLayer(lightPacket.getBlockUpdates().get(blocksLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
+                }
+                Debug.log("Adjacent packet light, Block(" + blockLight + ") Sky(" + skyLight + ')');
             }
             else {
-                light = maxLight(neighborX, neighborY, neighborZ, blockLights, skyLights, ambientDarkness);
-                Debug.log("Packet light: " + light);
+                skyLight = getLight(skyLights, neighborX, neighborY, neighborZ);
+                blockLight = getLight(blockLights, neighborX, neighborY, neighborZ);
+                Debug.log("Packet light, Block(" + blockLight + ") Sky(" + skyLight + ')');
             }
-            if (light == 15) {
-                return 15;
+            if (skyLight > maxSky) {
+                maxSky = skyLight;
             }
-            if (light > maxLight) {
-                maxLight = light;
+            if (blockLight > maxBlock) {
+                maxBlock = blockLight;
             }
         }
         if (blockLookups == null) {
-            return maxLight;
+            return new BlockLightData(maxSky, maxBlock);
         }
         for (BlockPos blockPos : blockLookups) {
             SectionPos containingSection = SectionPos.of(blockPos);
@@ -289,42 +314,37 @@ public class FakeBlockHelper {
                 DataLayer sectionSkyLights = lightEngine.getLayerListener(LightLayer.SKY).getDataLayerData(containingSection);
                 return new SectionLightCache(sectionBlockLights, sectionSkyLights);
             });
-            int light = sectionLight.getLight(blockPos, ambientDarkness);
+            int skyLight = sectionLight.getSkyLight(blockPos, ambientDarkness);
+            int blockLight = sectionLight.getBlockLight(blockPos);
+            if (skyLight > maxSky) {
+                maxSky = skyLight;
+            }
+            if (blockLight > maxBlock) {
+                maxBlock = blockLight;
+            }
             Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), () -> {
                 NMSHandler.packetHelper.showDebugTestMarker(Bukkit.getOnlinePlayers().iterator().next(), CraftLocation.toBukkit(blockPos), ColorTag.valueOf("red", null), "", 4000);
             }, 1);
-            Debug.log("Block light: " + light);
-            if (light == 15) {
-                return 15;
-            }
-            if (light > maxLight) {
-                maxLight = light;
-            }
         }
-        return maxLight;
+        return new BlockLightData(maxSky, maxBlock);
     }
 
-    public static int maxLight(int relativeX, int relativeY, int relativeZ, DataLayer blockLightData, DataLayer skyLightData, int ambientDarkness) {
-        int skyLight = skyLightData.get(relativeX, relativeY, relativeZ) - ambientDarkness;
-        if (skyLight == 15) {
-            return 15;
-        }
-        int blockLight = blockLightData.get(relativeX, relativeY, relativeZ);
-        return Math.max(skyLight, blockLight);
+    public static int getLight(DataLayer lightData, BlockPos blockPos) {
+        return lightData != null ? lightData.get(SectionPos.sectionRelative(blockPos.getX()), SectionPos.sectionRelative(blockPos.getY()), SectionPos.sectionRelative(blockPos.getZ())) : -1;
+    }
+
+    public static int getLight(DataLayer lightData, int relativeX, int relativeY, int relativeZ) {
+        return lightData != null ? lightData.get(relativeX, relativeY, relativeZ) : -1;
     }
 
     public record SectionLightCache(DataLayer blockLights, DataLayer skyLights) {
 
-        public int getLight(BlockPos blockPos, int ambientDarkness) {
-            int relativeX = SectionPos.sectionRelative(blockPos.getX());
-            int relativeY = SectionPos.sectionRelative(blockPos.getY());
-            int relativeZ = SectionPos.sectionRelative(blockPos.getZ());
-            int skyLight = skyLights != null ? skyLights.get(relativeX, relativeY, relativeZ) - ambientDarkness : 0;
-            if (skyLight == 15 || blockLights == null) {
-                return skyLight;
-            }
-            int blockLight = blockLights.get(relativeX, relativeY, relativeZ);
-            return Math.max(skyLight, blockLight);
+        public int getSkyLight(BlockPos blockPos, int ambientDarkness) {
+            return getLight(skyLights, blockPos) - ambientDarkness;
+        }
+
+        public int getBlockLight(BlockPos blockPos) {
+            return getLight(blockLights, blockPos);
         }
     }
 
