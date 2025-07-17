@@ -151,7 +151,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isExactServerVersionMatch() {
-        return Denizen.supportsPaper ? SharedConstants.getCurrentVersion().id().equals("1.21.7") : CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("98b42190c84edaa346fd96106ee35d6f");
+        return Denizen.supportsPaper ? SharedConstants.getCurrentVersion().id().equals("1.21.8") : CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("98b42190c84edaa346fd96106ee35d6f");
     }
 
     @Override
