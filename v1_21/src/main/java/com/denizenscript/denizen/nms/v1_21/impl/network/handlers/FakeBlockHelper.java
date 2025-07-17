@@ -230,7 +230,8 @@ public class FakeBlockHelper {
     };
 
     public static int getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightPacket, ServerLevel nmsWorld, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
-        int maxLight = maxLight(relativeX, relativeY, relativeZ, blockLights, skyLights);
+        int ambientDarkness = nmsWorld.getSkyDarken();
+        int maxLight = maxLight(relativeX, relativeY, relativeZ, blockLights, skyLights, ambientDarkness);
         if (maxLight == 15) {
             return 15;
         }
@@ -257,7 +258,7 @@ public class FakeBlockHelper {
                     continue;
                 }
                 int wrappedNeighborY = SectionPos.sectionRelative(neighborY);
-                int skyLight = hasSkyLights ? new DataLayer(lightPacket.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ) : 0;
+                int skyLight = hasSkyLights ? new DataLayer(lightPacket.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ) - ambientDarkness : 0;
                 if (skyLight == 15 || !hasBlockLights) {
                     return skyLight;
                 }
@@ -266,7 +267,7 @@ public class FakeBlockHelper {
                 Debug.log("Adjacent packet light: " + light);
             }
             else {
-                light = maxLight(neighborX, neighborY, neighborZ, blockLights, skyLights);
+                light = maxLight(neighborX, neighborY, neighborZ, blockLights, skyLights, ambientDarkness);
                 Debug.log("Packet light: " + light);
             }
             if (light == 15) {
@@ -288,7 +289,7 @@ public class FakeBlockHelper {
                 DataLayer sectionSkyLights = lightEngine.getLayerListener(LightLayer.SKY).getDataLayerData(containingSection);
                 return new SectionLightCache(sectionBlockLights, sectionSkyLights);
             });
-            int light = sectionLight.getLight(blockPos);
+            int light = sectionLight.getLight(blockPos, ambientDarkness);
             Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), () -> {
                 NMSHandler.packetHelper.showDebugTestMarker(Bukkit.getOnlinePlayers().iterator().next(), CraftLocation.toBukkit(blockPos), ColorTag.valueOf("red", null), "", 4000);
             }, 1);
@@ -303,8 +304,8 @@ public class FakeBlockHelper {
         return maxLight;
     }
 
-    public static int maxLight(int relativeX, int relativeY, int relativeZ, DataLayer blockLightData, DataLayer skyLightData) {
-        int skyLight = skyLightData.get(relativeX, relativeY, relativeZ);
+    public static int maxLight(int relativeX, int relativeY, int relativeZ, DataLayer blockLightData, DataLayer skyLightData, int ambientDarkness) {
+        int skyLight = skyLightData.get(relativeX, relativeY, relativeZ) - ambientDarkness;
         if (skyLight == 15) {
             return 15;
         }
@@ -314,15 +315,15 @@ public class FakeBlockHelper {
 
     public record SectionLightCache(DataLayer blockLights, DataLayer skyLights) {
 
-        public int getLight(BlockPos blockPos) {
+        public int getLight(BlockPos blockPos, int ambientDarkness) {
             int relativeX = SectionPos.sectionRelative(blockPos.getX());
             int relativeY = SectionPos.sectionRelative(blockPos.getY());
             int relativeZ = SectionPos.sectionRelative(blockPos.getZ());
-            int skyLight = skyLights != null ? skyLights.get(relativeX, relativeY, relativeZ) : 0;
-            if (skyLight == 15) {
+            int skyLight = skyLights != null ? skyLights.get(relativeX, relativeY, relativeZ) - ambientDarkness : 0;
+            if (skyLight == 15 || blockLights == null) {
                 return skyLight;
             }
-            int blockLight = blockLights != null ? blockLights.get(relativeX, relativeY, relativeZ) : 0;
+            int blockLight = blockLights.get(relativeX, relativeY, relativeZ);
             return Math.max(skyLight, blockLight);
         }
     }
