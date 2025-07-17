@@ -229,7 +229,7 @@ public class FakeBlockHelper {
     };
 
     public static int getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightPacket, World world, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
-        int maxLight = Math.max(blockLights.get(relativeX, relativeY, relativeZ), skyLights.get(relativeX, relativeY, relativeZ));
+        int maxLight = maxLight(relativeX, relativeY, relativeZ, blockLights, skyLights);
         if (maxLight == 15) {
             return 15;
         }
@@ -256,14 +256,16 @@ public class FakeBlockHelper {
                     continue;
                 }
                 int wrappedNeighborY = SectionPos.sectionRelative(neighborY);
-                light = Math.max(
-                        hasSkyLights ? new DataLayer(lightPacket.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ) : 0,
-                        hasBlockLights ? new DataLayer(lightPacket.getBlockUpdates().get(blocksLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ) : 0
-                );
+                int skyLight = hasSkyLights ? new DataLayer(lightPacket.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ) : 0;
+                if (skyLight == 15 || !hasBlockLights) {
+                    return skyLight;
+                }
+                int blockLight = new DataLayer(lightPacket.getBlockUpdates().get(blocksLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
+                light = Math.max(skyLight, blockLight);
                 Debug.log("Adjacent packet light: " + light);
             }
             else {
-                light = Math.max(blockLights.get(neighborX, neighborY, neighborZ), skyLights.get(neighborX, neighborY, neighborZ));
+                light = maxLight(neighborX, neighborY, neighborZ, blockLights, skyLights);
                 Debug.log("Packet light: " + light);
             }
             if (light == 15) {
@@ -299,6 +301,15 @@ public class FakeBlockHelper {
             }
         }
         return maxLight;
+    }
+
+    public static int maxLight(int relativeX, int relativeY, int relativeZ, DataLayer blockLightData, DataLayer skyLightData) {
+        int skyLight = skyLightData.get(relativeX, relativeY, relativeZ);
+        if (skyLight == 15) {
+            return 15;
+        }
+        int blockLight = blockLightData.get(relativeX, relativeY, relativeZ);
+        return Math.max(skyLight, blockLight);
     }
 
     public record SectionLightCache(DataLayer blockLights, DataLayer skyLights) {
