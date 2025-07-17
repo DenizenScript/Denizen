@@ -185,7 +185,8 @@ public class FakeBlockHelper {
                             continue;
                         }
                         BlockEntity createdBlockEntity = nmsBlockEntityType.create(CraftLocation.toBlockPosition(block.location), newState);
-                        createdBlockEntity.setLevel(((CraftWorld) world).getHandle());
+                        ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
+                        createdBlockEntity.setLevel(nmsWorld);
                         Object packetBlockEntityData = CHUNKDATA_BLOCK_ENTITY_CREATE.invoke(createdBlockEntity);
                         blockEntities.add(packetBlockEntityData);
                         DataLayer blockLights;
@@ -201,7 +202,7 @@ public class FakeBlockHelper {
                             blockLights = new DataLayer(lightData.getBlockUpdates().get(blocksLit));
                         }
                         DataLayer skyLights = hasSky ? new DataLayer(lightData.getSkyUpdates().get(skyLit)) : new DataLayer();
-                        blockLights.set(relativeX, relativeY, relativeZ, getEstimatedLightLevel(relativeX, relativeY, relativeZ, blockLights, skyLights, lightData, world, sectionPos, sectionLightCache, sectionIndex, blocksLit, skyLit));
+                        blockLights.set(relativeX, relativeY, relativeZ, getEstimatedLightLevel(relativeX, relativeY, relativeZ, blockLights, skyLights, lightData, nmsWorld, sectionPos, sectionLightCache, sectionIndex, blocksLit, skyLit));
                     }
                 }
             }
@@ -228,7 +229,7 @@ public class FakeBlockHelper {
             {0, 0, 1}
     };
 
-    public static int getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightPacket, World world, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
+    public static int getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightPacket, ServerLevel nmsWorld, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
         int maxLight = maxLight(relativeX, relativeY, relativeZ, blockLights, skyLights);
         if (maxLight == 15) {
             return 15;
@@ -278,7 +279,6 @@ public class FakeBlockHelper {
         if (blockLookups == null) {
             return maxLight;
         }
-        ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
         for (BlockPos blockPos : blockLookups) {
             SectionPos containingSection = SectionPos.of(blockPos);
             SectionLightCache sectionLight = sectionLightsCache.computeIfAbsent(containingSection.asLong(), k -> {
