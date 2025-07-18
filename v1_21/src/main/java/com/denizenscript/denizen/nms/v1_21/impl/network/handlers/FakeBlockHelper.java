@@ -244,7 +244,10 @@ public class FakeBlockHelper {
         return has ? new DataLayer(layers.get(index)) : null;
     }
 
-    public record BlockLightData(int sky, int block) {}
+    public record BlockLightData(int sky, int block) {
+        public static final BlockLightData MAX_BLOCK_LIGHT = new BlockLightData(0, 15);
+        public static final BlockLightData MAX_SKY_LIGHT = new BlockLightData(15, 0);
+    }
 
     public static final int[][] directions = {
             {0, -1, 0},
@@ -256,8 +259,15 @@ public class FakeBlockHelper {
     };
 
     public static BlockLightData getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightPacket, ServerLevel nmsWorld, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
+        boolean isSkyBright = nmsWorld.getSkyDarken() == 0;
         int maxSky = getLight(skyLights, relativeX, relativeY, relativeZ);
         int maxBlock = getLight(blockLights, relativeX, relativeY, relativeZ);
+        if (isSkyBright && maxSky == 15) {
+            return BlockLightData.MAX_SKY_LIGHT;
+        }
+        if (maxBlock == 15) {
+            return BlockLightData.MAX_BLOCK_LIGHT;
+        }
         List<BlockPos> blockLookups = null;
         for (int[] direction : directions) {
             int yOffest = direction[1];
@@ -277,7 +287,6 @@ public class FakeBlockHelper {
                 boolean hasSkyLights = lightPacket.getSkyYMask().get(adjacentSectionIndex);
                 boolean hasBlockLights = lightPacket.getBlockYMask().get(adjacentSectionIndex);
                 if (!hasBlockLights && !hasSkyLights) {
-                    Debug.log("No lights in adjacent section");
                     continue;
                 }
                 int wrappedNeighborY = SectionPos.sectionRelative(neighborY);
@@ -287,12 +296,16 @@ public class FakeBlockHelper {
                 if (hasBlockLights) {
                     blockLight = new DataLayer(lightPacket.getBlockUpdates().get(blocksLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
                 }
-                Debug.log("Adjacent packet light, Block(" + blockLight + ") Sky(" + skyLight + ')');
             }
             else {
                 skyLight = getLight(skyLights, neighborX, neighborY, neighborZ);
                 blockLight = getLight(blockLights, neighborX, neighborY, neighborZ);
-                Debug.log("Packet light, Block(" + blockLight + ") Sky(" + skyLight + ')');
+            }
+            if (isSkyBright && skyLight == 15) {
+                return BlockLightData.MAX_SKY_LIGHT;
+            }
+            if (blockLight == 15) {
+                return BlockLightData.MAX_BLOCK_LIGHT;
             }
             if (skyLight > maxSky) {
                 maxSky = skyLight;
@@ -307,7 +320,7 @@ public class FakeBlockHelper {
         for (BlockPos blockPos : blockLookups) {
             SectionPos containingSection = SectionPos.of(blockPos);
             SectionLightCache sectionLight = sectionLightsCache.computeIfAbsent(containingSection.asLong(), k -> {
-                Debug.log("Getting section to cache");
+                Debug.log(">>>>>>>> Getting section to cache");
                 LevelLightEngine lightEngine = nmsWorld.getLightEngine();
                 DataLayer sectionBlockLights = lightEngine.getLayerListener(LightLayer.BLOCK).getDataLayerData(containingSection);
                 DataLayer sectionSkyLights = lightEngine.getLayerListener(LightLayer.SKY).getDataLayerData(containingSection);
@@ -315,6 +328,12 @@ public class FakeBlockHelper {
             });
             int skyLight = getLight(sectionLight.skyLights(), blockPos);
             int blockLight = getLight(sectionLight.blockLights(), blockPos);
+            if (isSkyBright && skyLight == 15) {
+                return BlockLightData.MAX_SKY_LIGHT;
+            }
+            if (blockLight == 15) {
+                return BlockLightData.MAX_BLOCK_LIGHT;
+            }
             if (skyLight > maxSky) {
                 maxSky = skyLight;
             }
