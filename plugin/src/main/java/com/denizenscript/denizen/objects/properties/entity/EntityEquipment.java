@@ -23,12 +23,12 @@ public class EntityEquipment implements Property {
                 && ((EntityTag) entity).isLivingEntity();
     }
 
-    public static EntityEquipment getFrom(EntityTag entity) {
+    public static EntityEquipment getFrom(ObjectTag entity) {
         if (!describes(entity)) {
             return null;
         }
         else {
-            return new EntityEquipment(entity);
+            return new EntityEquipment((EntityTag) entity);
         }
     }
 
