@@ -1,16 +1,16 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.containers.core.FormatScriptContainer;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

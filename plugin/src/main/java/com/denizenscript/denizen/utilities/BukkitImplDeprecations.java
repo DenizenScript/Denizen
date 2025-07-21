@@ -294,12 +294,6 @@ public class BukkitImplDeprecations {
     // 2024-year-end commonality: #15
     public static Warning oldNbtProperty = new SlowWarning("oldNbtProperty", "'ItemTag.raw_nbt' is deprecated in favor of 'ItemTag.custom_data', as item NBT was removed by Mojang in favor of item components.");
 
-    // In multiple places, Added 2021/11/20, made very-slow 2022/12/31, made slow 2025/01/15.
-    // 2022-year-end commonality: #15
-    // 2023-year-end commonality: #23
-    // Safe to remove now.
-    public static Warning pseudoTagBases = new SlowWarning("pseudoTagBases", "Pseudo-tags like '<text>', '<name>', '<amount>', and '<permission>' are deprecated in favor of definitions: just replace <text> with <[text]> or similar.");
-
     // Added 2021/10/18, made very-slow 2022/12/31, made slow 2025/01/15.
     // 2022-year-end commonality: #10
     // Safe to remove now.

@@ -1,19 +1,21 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
-import com.denizenscript.denizen.utilities.Settings;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.Settings;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizencore.utilities.*;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.DefinitionProvider;
+import com.denizenscript.denizencore.utilities.SimpleDefinitionProvider;
+import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -106,10 +108,6 @@ public class EconomyScriptContainer extends ScriptContainer {
             }
             DefinitionProvider defProvider = new SimpleDefinitionProvider();
             defProvider.addDefinition("amount", new ElementTag(amountText));
-            if (value.contains("<amount")) {
-                BukkitImplDeprecations.pseudoTagBases.warn(backingScript);
-                value = value.replace("<amount", "<element[" + amountText + "]");
-            }
             return autoTag(value, player, defProvider);
         }
 
@@ -426,5 +424,7 @@ public class EconomyScriptContainer extends ScriptContainer {
         if (shouldEnable()) {
             providersRegistered.add(register());
         }
+        handlePseudoTagBasesDeprecation("format", "<amount");
+        handlePseudoTagBasesDeprecation("has", "<amount");
     }
 }

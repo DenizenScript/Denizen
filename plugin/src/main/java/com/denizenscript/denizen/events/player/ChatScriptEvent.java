@@ -1,18 +1,21 @@
 package com.denizenscript.denizen.events.player;
 
-import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
-import com.denizenscript.denizencore.utilities.CoreConfiguration;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizen.utilities.Settings;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
+import com.denizenscript.denizencore.scripts.containers.core.FormatScriptContainer;
+import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -107,6 +110,12 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         return event;
     }
 
+    public String getFormatText(FormatScriptContainer formatScript) {
+        String text = formatScript.getRawFormat().replace("<[text]>", String.valueOf((char) 0x00)).replace("<[name]>", String.valueOf((char) 0x04));
+        return TagManager.tag(text, new BukkitTagContext(player, null, new ScriptTag(formatScript)))
+                .replace("%", "%%").replace(String.valueOf((char) 0x00), "%2$s").replace(String.valueOf((char) 0x04), "%1$s");
+    }
+
     @Override
     public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
         if (determinationObj instanceof ElementTag) {
@@ -119,7 +128,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                     Debug.echoError("Could not find format script matching '" + name + '\'');
                 }
                 else {
-                    String formatstr = formatscr.getFormatText(null, player);
+                    String formatstr = getFormatText(formatscr);
                     if (CoreConfiguration.debugVerbose) {
                         Debug.log("Setting format to " + formatstr);
                     }
