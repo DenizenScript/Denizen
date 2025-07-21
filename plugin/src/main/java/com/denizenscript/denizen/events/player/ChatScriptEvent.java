@@ -110,10 +110,12 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         return event;
     }
 
+    public static final String TEXT_CHAR = String.valueOf((char) 0x00), NAME_CHAR = String.valueOf((char) 0x04);
+
     public String getFormatText(FormatScriptContainer formatScript) {
-        String text = formatScript.getRawFormat().replace("<[text]>", String.valueOf((char) 0x00)).replace("<[name]>", String.valueOf((char) 0x04));
+        String text = formatScript.getRawFormat().replace("<[text]>", TEXT_CHAR).replace("<[name]>", NAME_CHAR);
         return TagManager.tag(text, new BukkitTagContext(player, null, new ScriptTag(formatScript)))
-                .replace("%", "%%").replace(String.valueOf((char) 0x00), "%2$s").replace(String.valueOf((char) 0x04), "%1$s");
+                .replace("%", "%%").replace(TEXT_CHAR, "%2$s").replace(NAME_CHAR, "%1$s");
     }
 
     @Override

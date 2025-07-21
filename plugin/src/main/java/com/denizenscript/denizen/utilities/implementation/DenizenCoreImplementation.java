@@ -404,7 +404,7 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     // @description
     // '<[name]>' is available as a special def as well for use with the 'on player chats' event to fill the player's name properly.
     // Note that 'special' means special: these tags behave a little funny in certain circumstances.
-    // In particular, these can't be used as real tags in some cases, including for example when using a format script as a determine in the 'player chats' event.
+    // In particular, these can't be used as real tags in some cases, including for example when determining a format script in the 'player chats' event.
     // -->
     @Override
     public void addFormatScriptDefinitions(DefinitionProvider definitionProvider, TagContext context) {
