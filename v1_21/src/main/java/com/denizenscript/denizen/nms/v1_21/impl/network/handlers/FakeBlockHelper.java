@@ -1,11 +1,9 @@
 package com.denizenscript.denizen.nms.v1_21.impl.network.handlers;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
-import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
@@ -32,7 +30,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.DataLayer;
 import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraft.world.level.lighting.LevelLightEngine;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_21_R5.CraftRegistry;
@@ -180,19 +177,19 @@ public class FakeBlockHelper {
                             blockCount--;
                         }
                         states.set(relativeX, relativeY, relativeZ, newState);
-                        BlockEntityType<?> nmsBlockEntityType = MATERIAL_BLOCK_ENTITY_TYPES.get(block.material.getMaterial());
-                        if (nmsBlockEntityType == null) {
+                        BlockEntityType<?> blockEntityType = MATERIAL_BLOCK_ENTITY_TYPES.get(block.material.getMaterial());
+                        if (blockEntityType != null) {
+                            BlockEntity createdBlockEntity = blockEntityType.create(CraftLocation.toBlockPosition(block.location), newState);
+                            createdBlockEntity.setLevel(((CraftWorld) world).getHandle());
+                            Object packetBlockEntityData = CHUNKDATA_BLOCK_ENTITY_CREATE.invoke(createdBlockEntity);
+                            blockEntities.add(packetBlockEntityData);
+                        }
+                        if (blockEntityType == null && newState.isSolidRender()) {
                             continue;
                         }
-                        BlockEntity createdBlockEntity = nmsBlockEntityType.create(CraftLocation.toBlockPosition(block.location), newState);
-                        ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
-                        createdBlockEntity.setLevel(nmsWorld);
-                        Object packetBlockEntityData = CHUNKDATA_BLOCK_ENTITY_CREATE.invoke(createdBlockEntity);
-                        blockEntities.add(packetBlockEntityData);
                         BlockLightData estimatedLights = getEstimatedLightLevel(relativeX, relativeY, relativeZ,
                                 getLayer(hasBlock, lightData.getBlockUpdates(), blocksLit), getLayer(hasSky, lightData.getSkyUpdates(), skyLit),
-                                lightData, nmsWorld, sectionPos, sectionLightCache, sectionIndex, blocksLit, skyLit);
-                        Debug.log("Final data: " + estimatedLights);
+                                lightData, ((CraftWorld) world).getHandle(), sectionPos, sectionLightCache, sectionIndex, blocksLit, skyLit);
                         if (estimatedLights.block() > 0) {
                             DataLayer blockLights;
                             if (!hasBlock) {
@@ -274,7 +271,7 @@ public class FakeBlockHelper {
             int neighborX = relativeX + direction[0];
             int neighborY = relativeY + yOffest;
             int neighborZ = relativeZ + direction[2];
-            if (coordOutOfSection(neighborX) || coordOutOfSection(neighborZ)) {
+            if (posOutOfSection(neighborX) || posOutOfSection(neighborZ)) {
                 if (blockLookups == null) {
                     blockLookups = new ArrayList<>(2);
                 }
@@ -282,7 +279,7 @@ public class FakeBlockHelper {
                 continue;
             }
             int blockLight = -1, skyLight = -1;
-            if (coordOutOfSection(neighborY)) {
+            if (posOutOfSection(neighborY)) {
                 int adjacentSectionIndex = sectionIndex + yOffest;
                 boolean hasSkyLights = lightPacket.getSkyYMask().get(adjacentSectionIndex);
                 boolean hasBlockLights = lightPacket.getBlockYMask().get(adjacentSectionIndex);
@@ -320,7 +317,6 @@ public class FakeBlockHelper {
         for (BlockPos blockPos : blockLookups) {
             SectionPos containingSection = SectionPos.of(blockPos);
             SectionLightCache sectionLight = sectionLightsCache.computeIfAbsent(containingSection.asLong(), k -> {
-                Debug.log(">>>>>>>> Getting section to cache");
                 LevelLightEngine lightEngine = nmsWorld.getLightEngine();
                 DataLayer sectionBlockLights = lightEngine.getLayerListener(LightLayer.BLOCK).getDataLayerData(containingSection);
                 DataLayer sectionSkyLights = lightEngine.getLayerListener(LightLayer.SKY).getDataLayerData(containingSection);
@@ -340,9 +336,6 @@ public class FakeBlockHelper {
             if (blockLight > maxBlock) {
                 maxBlock = blockLight;
             }
-            Bukkit.getScheduler().runTaskLater(Denizen.getInstance(), () -> {
-                NMSHandler.packetHelper.showDebugTestMarker(Bukkit.getOnlinePlayers().iterator().next(), CraftLocation.toBukkit(blockPos), ColorTag.valueOf("red", null), "", 4000);
-            }, 1);
         }
         return new BlockLightData(maxSky, maxBlock);
     }
@@ -357,7 +350,7 @@ public class FakeBlockHelper {
 
     public record SectionLightCache(DataLayer blockLights, DataLayer skyLights) {}
 
-    public static boolean coordOutOfSection(int relativeCoord) {
-        return relativeCoord < 0 || relativeCoord > 15;
+    public static boolean posOutOfSection(int relativePos) {
+        return relativePos < 0 || relativePos > 15;
     }
 }
