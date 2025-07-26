@@ -358,6 +358,9 @@ public class BukkitImplDeprecations {
     // Added 2025/06/28
     public static Warning enchantmentScriptContainers = new SlowWarning("enchantmentScriptContainers", "Enchantment script containers are deprecated due to extensive internal changes. We recommend utilizing datapacks (which also make the enchantments show up on the client like vanilla ones), see https://misode.github.io/enchantment.");
 
+    // Added 2025/07/11
+    public static Warning assignmentOptionalPrefixArgs = new SlowWarning("assignmentOptionalPrefixArgs", "Deprecated usage of optional prefixes 'script' or 'to' in favor of just using proper prefixes (refer to documentation).");
+
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
 

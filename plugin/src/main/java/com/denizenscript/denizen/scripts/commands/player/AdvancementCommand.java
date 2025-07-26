@@ -269,7 +269,12 @@ public class AdvancementCommand extends AbstractCommand {
             for (PlayerTag target : revoke.filter(PlayerTag.class, scriptEntry)) {
                 Player player = target.getPlayerEntity();
                 if (player != null) {
-                    NMSHandler.advancementHelper.revoke(advancement, player);
+                    if (progressLength == null) {
+                        NMSHandler.advancementHelper.revoke(advancement, player);
+                    }
+                    else {
+                        NMSHandler.advancementHelper.revokePartial(advancement, player, progressLength.asInt());
+                    }
                 }
             }
         }
