@@ -1,11 +1,13 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -18,15 +20,19 @@ import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EnchantmentScriptContainer extends ScriptContainer {
 
@@ -172,10 +178,19 @@ public class EnchantmentScriptContainer extends ScriptContainer {
     // -->
     public static AsciiMatcher descriptionCharsAllowed = new AsciiMatcher(AsciiMatcher.LETTERS_LOWER + "_");
 
-    public static HashMap<String, EnchantmentReference> registeredEnchantmentContainers = new HashMap<>();
+    public static Map<String, EnchantmentReference> registeredEnchantmentContainers = new ConcurrentHashMap<>();
 
     public static class EnchantmentReference {
         public EnchantmentScriptContainer script;
+    }
+
+    public static EnchantmentScriptContainer getScriptFromEnchantment(Enchantment enchantment) {
+        NamespacedKey key = enchantment.getKey();
+        if (!key.getNamespace().equals("denizen")) {
+            return null;
+        }
+        EnchantmentReference reference = registeredEnchantmentContainers.get(key.getKey());
+        return reference != null ? reference.script : null;
     }
 
     public EnchantmentScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
@@ -214,6 +229,9 @@ public class EnchantmentScriptContainer extends ScriptContainer {
             else {
                 enchantment = old.enchantment;
             }
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            BukkitImplDeprecations.enchantmentScriptContainers.warn(this);
         }
     }
 
@@ -335,7 +353,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
         runSubScript("after attack", attacker, victim, attacker, level);
     }
 
-    public void doPostHurt(Entity victim, Entity attacker, int level) {
+    public void doPostHurt(Entity attacker, Entity victim, int level) {
         runSubScript("after hurt", attacker, victim, victim, level);
     }
 
@@ -359,5 +377,9 @@ public class EnchantmentScriptContainer extends ScriptContainer {
         cost = Integer.valueOf(autoTagForLevel(maxCostTaggable, level));
         maxCosts.put(level, cost);
         return cost;
+    }
+
+    public NamespacedKey getKey() {
+        return new NamespacedKey(Denizen.getInstance(), id);
     }
 }

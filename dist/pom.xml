@@ -162,10 +162,6 @@
                                     <shadedPattern>com.denizenscript.shaded.org.objectweb</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.apache</pattern>
-                                    <shadedPattern>com.denizenscript.shaded.org.apache</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>net.kyori.option</pattern>
                                     <shadedPattern>com.denizenscript.shaded.net.kyori.option</shadedPattern>
                                 </relocation>
