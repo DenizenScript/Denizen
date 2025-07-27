@@ -183,7 +183,7 @@ public class FakeBlockHelper {
                             Object packetBlockEntityData = CHUNKDATA_BLOCK_ENTITY_CREATE.invoke(createdBlockEntity);
                             blockEntities.add(packetBlockEntityData);
                         }
-                        if (blockEntityType == null && newState.isSolidRender()) {
+                        if (!oldState.isSolidRender() || (blockEntityType == null && newState.isSolidRender())) {
                             continue;
                         }
                         BlockLightData estimatedLights = getEstimatedLightLevel(relativeX, relativeY, relativeZ,
