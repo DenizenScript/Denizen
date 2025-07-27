@@ -113,7 +113,7 @@ public class FakeBlockHelper {
     public static ClientboundLevelChunkWithLightPacket handleMapChunkPacket(World world, ClientboundLevelChunkWithLightPacket originalChunkPacket, int chunkX, int chunkZ, List<FakeBlock> blocksInChunk, FakeBlock.FakeBlockMap fakeBlockMap) throws Throwable {
         ClientboundLevelChunkWithLightPacket copiedChunkPacket = DenizenNetworkManagerImpl.copyPacket(originalChunkPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC);
         copyPacketPaperPatch(copiedChunkPacket);
-        // A list of block entities sent with the chunk data
+        // A list of ClientboundLevelChunkPacketData$BlockEntityInfo
         List<Object> blockEntities = (List<Object>) CHUNKDATA_BLOCK_ENTITIES.invoke(copiedChunkPacket.getChunkData());
         LocationTag location = new LocationTag(world, 0, 0, 0);
         ListIterator<Object> blockEntitiesIterator = blockEntities.listIterator();
@@ -132,27 +132,26 @@ public class FakeBlockHelper {
                 blockEntitiesIterator.remove();
             }
         }
-        // Get the original chunk data to read, and a buf of the same size to write
+        // Get the original chunk data to read, and a new buf of the same size to write
         FriendlyByteBuf rawChunkData = originalChunkPacket.getChunkData().getReadBuffer();
         FriendlyByteBuf newChunkData = new FriendlyByteBuf(Unpooled.buffer(rawChunkData.readableBytes()));
-        int worldMinY = world.getMinHeight();
-        int worldMaxY = world.getMaxHeight();
-        int minChunkY = SectionPos.blockToSectionCoord(worldMinY);
-        int maxChunkY = SectionPos.blockToSectionCoord(worldMaxY);
+        final int minChunkY = SectionPos.blockToSectionCoord(world.getMinHeight());
+        final int maxChunkY = SectionPos.blockToSectionCoord(world.getMaxHeight());
         Registry<Biome> biomeRegistry = CraftRegistry.getMinecraftRegistry(Registries.BIOME);
         int blocksLit = 0, skyLit = 0;
-        // These are section coords, iterating through every chunk section
         ClientboundLightUpdatePacketData lightData = copiedChunkPacket.getLightData();
         Long2ObjectMap<SectionLightCache> sectionLightCache = new Long2ObjectOpenHashMap<>();
+        // These are section coords, iterating through every chunk section
         for (int y = minChunkY; y < maxChunkY; y++) {
             SectionPos sectionPos = SectionPos.of(chunkX, y, chunkZ);
+            // The light data counts up from 0 instead of minChunkY, and has a buffer of 1 extra section above and below the world (hence + 1)
             int sectionIndex = y + Math.abs(minChunkY) + 1;
-            boolean hasSky = false, hasBlock = false;
+            boolean hasSkyLight = false, hasBlockLight = false;
             if (lightData.getBlockYMask().get(sectionIndex)) {
-                hasBlock = true;
+                hasBlockLight = true;
             }
             if (lightData.getSkyYMask().get(sectionIndex)) {
-                hasSky = true;
+                hasSkyLight = true;
             }
             int blockCount = rawChunkData.readShort();
             PalettedContainer<BlockState> states = new PalettedContainer<>(Block.BLOCK_STATE_REGISTRY, Blocks.AIR.defaultBlockState(), PalettedContainer.Strategy.SECTION_STATES);
@@ -188,13 +187,13 @@ public class FakeBlockHelper {
                             continue;
                         }
                         BlockLightData estimatedLights = getEstimatedLightLevel(relativeX, relativeY, relativeZ,
-                                getLayer(hasBlock, lightData.getBlockUpdates(), blocksLit), getLayer(hasSky, lightData.getSkyUpdates(), skyLit),
+                                getLayer(hasBlockLight, lightData.getBlockUpdates(), blocksLit), getLayer(hasSkyLight, lightData.getSkyUpdates(), skyLit),
                                 lightData, ((CraftWorld) world).getHandle(), sectionPos, sectionLightCache, sectionIndex, blocksLit, skyLit);
                         if (estimatedLights.block() > 0) {
                             DataLayer blockLights;
-                            if (!hasBlock) {
+                            if (!hasBlockLight) {
                                 blockLights = addLayer(lightData.getBlockUpdates(), blocksLit, lightData.getBlockYMask(), lightData.getEmptyBlockYMask(), sectionIndex);
-                                hasBlock = true;
+                                hasBlockLight = true;
                             }
                             else {
                                 blockLights = new DataLayer(lightData.getBlockUpdates().get(blocksLit));
@@ -203,9 +202,9 @@ public class FakeBlockHelper {
                         }
                         if (estimatedLights.sky() > 0) {
                             DataLayer skyLights;
-                            if (!hasSky) {
+                            if (!hasSkyLight) {
                                 skyLights = addLayer(lightData.getSkyUpdates(), skyLit, lightData.getSkyYMask(), lightData.getEmptySkyYMask(), sectionIndex);
-                                hasSky = true;
+                                hasSkyLight = true;
                             }
                             else {
                                 skyLights = new DataLayer(lightData.getSkyUpdates().get(skyLit));
@@ -215,10 +214,10 @@ public class FakeBlockHelper {
                     }
                 }
             }
-            if (hasBlock) {
+            if (hasBlockLight) {
                 blocksLit++;
             }
-            if (hasSky) {
+            if (hasSkyLight) {
                 skyLit++;
             }
             newChunkData.writeShort(blockCount);
@@ -246,6 +245,8 @@ public class FakeBlockHelper {
         public static final BlockLightData MAX_SKY_LIGHT = new BlockLightData(15, 0);
     }
 
+    public record SectionLightCache(DataLayer blockLights, DataLayer skyLights) {}
+
     public static final int[][] directions = {
             {0, -1, 0},
             {0, 1, 0},
@@ -255,14 +256,14 @@ public class FakeBlockHelper {
             {0, 0, 1}
     };
 
-    public static BlockLightData getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightPacket, ServerLevel nmsWorld, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
+    public static BlockLightData getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightData, ServerLevel nmsWorld, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
         boolean isSkyBright = nmsWorld.getSkyDarken() == 0;
-        int maxSky = getLight(skyLights, relativeX, relativeY, relativeZ);
-        int maxBlock = getLight(blockLights, relativeX, relativeY, relativeZ);
-        if (isSkyBright && maxSky == 15) {
+        int maxSkyLight = getLight(skyLights, relativeX, relativeY, relativeZ);
+        int maxBlockLight = getLight(blockLights, relativeX, relativeY, relativeZ);
+        if (isSkyBright && maxSkyLight == 15) {
             return BlockLightData.MAX_SKY_LIGHT;
         }
-        if (maxBlock == 15) {
+        if (maxBlockLight == 15) {
             return BlockLightData.MAX_BLOCK_LIGHT;
         }
         List<BlockPos> blockLookups = null;
@@ -281,17 +282,17 @@ public class FakeBlockHelper {
             int blockLight = -1, skyLight = -1;
             if (posOutOfSection(neighborY)) {
                 int adjacentSectionIndex = sectionIndex + yOffest;
-                boolean hasSkyLights = lightPacket.getSkyYMask().get(adjacentSectionIndex);
-                boolean hasBlockLights = lightPacket.getBlockYMask().get(adjacentSectionIndex);
-                if (!hasBlockLights && !hasSkyLights) {
+                boolean hasSkyLight = lightData.getSkyYMask().get(adjacentSectionIndex);
+                boolean hasBlockLight = lightData.getBlockYMask().get(adjacentSectionIndex);
+                if (!hasBlockLight && !hasSkyLight) {
                     continue;
                 }
                 int wrappedNeighborY = SectionPos.sectionRelative(neighborY);
-                if (hasSkyLights) {
-                    skyLight = new DataLayer(lightPacket.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
+                if (hasSkyLight) {
+                    skyLight = new DataLayer(lightData.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
                 }
-                if (hasBlockLights) {
-                    blockLight = new DataLayer(lightPacket.getBlockUpdates().get(blocksLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
+                if (hasBlockLight) {
+                    blockLight = new DataLayer(lightData.getBlockUpdates().get(blocksLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
                 }
             }
             else {
@@ -304,15 +305,15 @@ public class FakeBlockHelper {
             if (blockLight == 15) {
                 return BlockLightData.MAX_BLOCK_LIGHT;
             }
-            if (skyLight > maxSky) {
-                maxSky = skyLight;
+            if (skyLight > maxSkyLight) {
+                maxSkyLight = skyLight;
             }
-            if (blockLight > maxBlock) {
-                maxBlock = blockLight;
+            if (blockLight > maxBlockLight) {
+                maxBlockLight = blockLight;
             }
         }
         if (blockLookups == null) {
-            return new BlockLightData(maxSky, maxBlock);
+            return new BlockLightData(maxSkyLight, maxBlockLight);
         }
         for (BlockPos blockPos : blockLookups) {
             SectionPos containingSection = SectionPos.of(blockPos);
@@ -330,14 +331,14 @@ public class FakeBlockHelper {
             if (blockLight == 15) {
                 return BlockLightData.MAX_BLOCK_LIGHT;
             }
-            if (skyLight > maxSky) {
-                maxSky = skyLight;
+            if (skyLight > maxSkyLight) {
+                maxSkyLight = skyLight;
             }
-            if (blockLight > maxBlock) {
-                maxBlock = blockLight;
+            if (blockLight > maxBlockLight) {
+                maxBlockLight = blockLight;
             }
         }
-        return new BlockLightData(maxSky, maxBlock);
+        return new BlockLightData(maxSkyLight, maxBlockLight);
     }
 
     public static int getLight(DataLayer lightData, BlockPos blockPos) {
@@ -347,8 +348,6 @@ public class FakeBlockHelper {
     public static int getLight(DataLayer lightData, int relativeX, int relativeY, int relativeZ) {
         return lightData != null ? lightData.get(relativeX, relativeY, relativeZ) : -1;
     }
-
-    public record SectionLightCache(DataLayer blockLights, DataLayer skyLights) {}
 
     public static boolean posOutOfSection(int relativePos) {
         return relativePos < 0 || relativePos > 15;
