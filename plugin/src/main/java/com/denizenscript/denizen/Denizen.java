@@ -5,6 +5,7 @@ import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
 import com.denizenscript.denizen.events.server.ServerPrestartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStartScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.FakeArrow;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
@@ -347,7 +348,10 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(e);
         }
         try {
-            new CommandEvents();
+            // TODO: temporary patch, should switch to custom click events
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) {
+                new CommandEvents();
+            }
             if (Settings.cache_packetInterceptAutoInit) {
                 NetworkInterceptHelper.enable();
             }
