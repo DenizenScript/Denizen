@@ -1406,7 +1406,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.horse_armor>
         // @returns ItemTag
-        // @deprecated Use <@link tag EntityTag.equipment_map> with the 'body' key on MC 1.20+.
+        // @deprecated Use 'EntityTag.equipment_map.get[body]' on MC 1.20+.
         // @group inventory
         // @description
         // Deprecated in favor of <@link tag EntityTag.equipment_map> with the 'body' key on MC 1.20+.
