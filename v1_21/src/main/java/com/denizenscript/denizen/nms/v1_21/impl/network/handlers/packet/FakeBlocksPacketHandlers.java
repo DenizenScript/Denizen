@@ -15,7 +15,7 @@ import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.network.protocol.game.ClientboundSectionBlocksUpdatePacket;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.lang.reflect.Field;
+import java.lang.invoke.MethodHandle;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,9 +27,9 @@ public class FakeBlocksPacketHandlers {
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundBlockUpdatePacket.class, FakeBlocksPacketHandlers::processBlockUpdatePacket);
     }
 
-    public static Field SECTIONPOS_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_sectionPos, SectionPos.class);
-    public static Field OFFSETARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_positions, short[].class);
-    public static Field BLOCKARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_states, BlockState[].class);
+    public static final MethodHandle SECTIONPOS_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).getGetter(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_sectionPos, SectionPos.class);
+    public static final MethodHandle OFFSETARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).getGetter(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_positions, short[].class);
+    public static final MethodHandle BLOCKARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).getGetter(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_states, BlockState[].class);
 
     public static ClientboundLevelChunkWithLightPacket processLevelChunkWithLightPacket(DenizenNetworkManagerImpl networkManager, ClientboundLevelChunkWithLightPacket chunkPacket) throws Throwable {
         if (FakeBlock.blocks.isEmpty()) {
@@ -49,7 +49,7 @@ public class FakeBlocksPacketHandlers {
         return FakeBlockHelper.handleMapChunkPacket(networkManager.player.getBukkitEntity().getWorld(), chunkPacket, chunkX, chunkZ, blocks, map);
     }
 
-    public static ClientboundSectionBlocksUpdatePacket processSectionBlocksUpdatePacket(DenizenNetworkManagerImpl networkManager, ClientboundSectionBlocksUpdatePacket sectionUpdatePacket) throws IllegalAccessException {
+    public static ClientboundSectionBlocksUpdatePacket processSectionBlocksUpdatePacket(DenizenNetworkManagerImpl networkManager, ClientboundSectionBlocksUpdatePacket sectionUpdatePacket) throws Throwable {
         if (FakeBlock.blocks.isEmpty()) {
             return sectionUpdatePacket;
         }
@@ -57,13 +57,13 @@ public class FakeBlocksPacketHandlers {
         if (map == null) {
             return sectionUpdatePacket;
         }
-        SectionPos coord = (SectionPos) SECTIONPOS_MULTIBLOCKCHANGE.get(sectionUpdatePacket);
+        SectionPos coord = (SectionPos) SECTIONPOS_MULTIBLOCKCHANGE.invokeExact(sectionUpdatePacket);
         ChunkCoordinate coordinateDenizen = new ChunkCoordinate(coord.getX(), coord.getZ(), networkManager.player.level().getWorld().getName());
         if (!map.byChunk.containsKey(coordinateDenizen)) {
             return sectionUpdatePacket;
         }
-        short[] originalOffsetArray = (short[])OFFSETARRAY_MULTIBLOCKCHANGE.get(sectionUpdatePacket);
-        BlockState[] originalStatesArray = (BlockState[])BLOCKARRAY_MULTIBLOCKCHANGE.get(sectionUpdatePacket);
+        short[] originalOffsetArray = (short[]) OFFSETARRAY_MULTIBLOCKCHANGE.invokeExact(sectionUpdatePacket);
+        BlockState[] originalStatesArray = (BlockState[]) BLOCKARRAY_MULTIBLOCKCHANGE.invokeExact(sectionUpdatePacket);
         BlockState[] statesArray = Arrays.copyOf(originalStatesArray, originalStatesArray.length);
         LocationTag location = new LocationTag(networkManager.player.level().getWorld(), 0, 0, 0);
         boolean hasAny = false;
