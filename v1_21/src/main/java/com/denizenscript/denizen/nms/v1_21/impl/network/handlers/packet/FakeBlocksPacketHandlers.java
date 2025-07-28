@@ -66,6 +66,7 @@ public class FakeBlocksPacketHandlers {
         BlockState[] originalStatesArray = (BlockState[])BLOCKARRAY_MULTIBLOCKCHANGE.get(sectionUpdatePacket);
         BlockState[] statesArray = Arrays.copyOf(originalStatesArray, originalStatesArray.length);
         LocationTag location = new LocationTag(networkManager.player.level().getWorld(), 0, 0, 0);
+        boolean hasAny = false;
         for (int i = 0; i < originalOffsetArray.length; i++) {
             short offset = originalOffsetArray[i];
             location.setX(coord.relativeToBlockX(offset));
@@ -74,7 +75,11 @@ public class FakeBlocksPacketHandlers {
             FakeBlock block = map.byLocation.get(location);
             if (block != null) {
                 statesArray[i] = FakeBlockHelper.getNMSState(block);
+                hasAny = true;
             }
+        }
+        if (!hasAny) {
+            return sectionUpdatePacket;
         }
         return new ClientboundSectionBlocksUpdatePacket(coord, new ShortArraySet(originalOffsetArray), statesArray);
     }
