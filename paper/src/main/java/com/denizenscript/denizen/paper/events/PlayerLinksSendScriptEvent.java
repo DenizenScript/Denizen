@@ -17,14 +17,15 @@ public class PlayerLinksSendScriptEvent extends BukkitScriptEvent implements Lis
     // @Events
     // player links send
     //
-    // @Group Player
+    // @Group Paper
     //
     // @Plugin Paper
     //
     // @Triggers when the list of links is sent to the player
     //
     // @Determine
-    // "LINKS:<ListTag(MapTag)>" to change what links should player see. Each map needs to have "uri" key which represents URI address of this link and either display or a type. Valid types are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ServerLinks.Type.html>
+    // "SET_LINKS:<ListTag(MapTag)>" to set the links sent to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
+    // "ADD_LINKS:<ListTag(MapTag)>" to add the links sent to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
     //
     // @Player when the event part of player game connection
     //
@@ -35,8 +36,11 @@ public class PlayerLinksSendScriptEvent extends BukkitScriptEvent implements Lis
 
     public PlayerLinksSendScriptEvent() {
         registerCouldMatcher("player links send");
-        this.<PlayerLinksSendScriptEvent, ListTag>registerDetermination("links", ListTag.class, (evt, context, value) -> {
+        this.<PlayerLinksSendScriptEvent, ListTag>registerDetermination("set_links", ListTag.class, (evt, context, value) -> {
             Utilities.replaceServerLinks(evt.event.getLinks(), value, context);
+        });
+        this.<PlayerLinksSendScriptEvent, ListTag>registerDetermination("add_links", ListTag.class, (evt, context, value) -> {
+            Utilities.fillServerLinks(evt.event.getLinks(), value, context);
         });
     }
 

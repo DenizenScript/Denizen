@@ -2687,9 +2687,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @name send_links
             // @input ListTag(MapTag)
             // @description
-            // Sends list of server links to the player.
-            // Each map needs to have "uri" key which represents URI address of this link and either display or a type.
-            // Valid types are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ServerLinks.Type.html>
+            // Sends list of server links to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
             // -->
             registerOnlineOnlyMechanism("send_links", ListTag.class, (player, mechanism, input) -> {
                 player.getPlayerEntity().sendLinks(Utilities.replaceServerLinks(Bukkit.getServerLinks().copy(), input, mechanism.context));

@@ -2029,9 +2029,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             // @name set_links
             // @input ListTag(MapTag)
             // @description
-            // Sets the default server links.
-            // Each map needs to have "uri" key which represents URI address of this link and either display or a type.
-            // Valid types are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ServerLinks.Type.html>
+            // Sets the default server links. Each item in the list must be a MapTag in <@link language Server Links Format>.
             // -->
             tagProcessor.registerMechanism("set_links", false, ListTag.class, (object, mechanism, input) -> {
                 Utilities.replaceServerLinks(Bukkit.getServerLinks(), input, mechanism.context);
