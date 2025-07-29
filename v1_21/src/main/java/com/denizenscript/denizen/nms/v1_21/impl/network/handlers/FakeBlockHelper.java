@@ -143,7 +143,6 @@ public class FakeBlockHelper {
         Long2ObjectMap<SectionLightCache> sectionLightCache = new Long2ObjectOpenHashMap<>();
         // These are section coords, iterating through every chunk section
         for (int y = minChunkY; y < maxChunkY; y++) {
-            SectionPos sectionPos = SectionPos.of(chunkX, y, chunkZ);
             // The light data counts up from 0 instead of minChunkY, and has a buffer of 1 extra section above and below the world (hence + 1)
             int sectionIndex = y + Math.abs(minChunkY) + 1;
             boolean hasSkyLight = false, hasBlockLight = false;
@@ -159,6 +158,7 @@ public class FakeBlockHelper {
             PalettedContainer<Biome> biomes = new PalettedContainer<>(biomeRegistry, biomeRegistry.getValueOrThrow(Biomes.PLAINS), PalettedContainer.Strategy.SECTION_BIOMES);
             biomes.read(rawChunkData);
             if (anyBlocksInSection(blocksInChunk, y)) {
+                SectionPos sectionPos = SectionPos.of(chunkX, y, chunkZ);
                 int minY = SectionPos.sectionToBlockCoord(y);
                 int maxY = minY + 16;
                 for (FakeBlock block : blocksInChunk) {
