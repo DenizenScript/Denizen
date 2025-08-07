@@ -78,8 +78,11 @@ public abstract class DataComponentAdapter<TD extends ObjectTag, TP> {
             TP internalValue = material.getDefaultData(adapter.componentType);
             return internalValue != null ? adapter.toDenizen(internalValue) : null;
         });
-        COMPONENTS_BY_PROPERTY.put(adapter.name, adapter.componentType);
-        ItemComponentsPatch.registerHandledComponent(adapter.componentType.key().value());
+        String componentName = adapter.componentType.key().value();
+        ItemComponentsPatch.registerHandledComponent(componentName);
+        if (!adapter.name.equals(componentName)) {
+            COMPONENTS_BY_PROPERTY.put(adapter.name, adapter.componentType);
+        }
     }
 
     static {
