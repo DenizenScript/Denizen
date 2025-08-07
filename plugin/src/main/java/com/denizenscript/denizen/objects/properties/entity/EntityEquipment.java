@@ -58,7 +58,7 @@ public class EntityEquipment implements Property {
         // @attribute <EntityTag.equipment>
         // @returns ListTag(ItemTag)
         // @mechanism EntityTag.equipment
-        // @deprecated Use <@link tag EntityTag.equipment_map>.
+        // @deprecated Use 'EntityTag.equipment_map'.
         // @group inventory
         // @description
         // Deprecated in favor of <@link tag EntityTag.equipment_map>.
