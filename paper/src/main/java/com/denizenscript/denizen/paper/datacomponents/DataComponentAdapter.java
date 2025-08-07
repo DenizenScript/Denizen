@@ -30,14 +30,14 @@ public abstract class DataComponentAdapter<TP, TD extends ObjectTag> {
     // Minecraft item components (see <@link url https://minecraft.wiki/w/Data_component_format>) are managed as follows:
     // Each item type has a default set of component values; a food item will have food components by default, a tool item will have tool components by default, etc.
     // Different items can override their type's default components, either by setting values that weren't there previously (e.g. making an inedible item edible), or by removing values that are there by default (e.g. making a shield item that can't block).
-    // Item's overrides can later be reset, so that their type's default value is used again.
+    // Items' overrides can later be reset, making them use their type's default values again.
     //
     // In Denizen, different item components are represented by item properties.
-    // These properties allow both setting a component override on an item, and clearing it by providing no input.
+    // These properties allow both setting a component override on an item, and clearing/resetting it by providing no input.
     // Item properties' name will generally match their respective item component's name, but not always!
     // Due to this, features that take item component names as input (such as <@link tag ItemTag.is_overridden>) accept both Minecraft component names and Denizen property names.
     //
-    // Here is an example of applying all of this in Denizen:
+    // Here is an example of applying all of this in a script:
     // <code>
     // # We define a default apple item
     // - define apple <item[apple]>
