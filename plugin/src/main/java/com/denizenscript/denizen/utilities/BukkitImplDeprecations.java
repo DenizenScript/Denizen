@@ -468,7 +468,7 @@ public class BukkitImplDeprecations {
     public static Warning horseArmorEquipCommand = new FutureWarning("horseArmorEquipCommand", "The 'horse_armor' argument in the 'equip' command has been deprecated in favor of 'body'.");
 
     // Added 2025/08/06
-    public static Warning horseArmorTag = new FutureWarning("horseArmorTag", "The 'EntityTag.horse_armor' tag has been deprecated in favor of 'equipment_map.get[body]'.");
+    public static Warning horseArmorTag = new FutureWarning("horseArmorTag", "The 'EntityTag.horse_armor' tag has been deprecated in favor of 'EntityTag.equipment_map.get[body]'.");
 
     // Added 2025/08/06
     public static Warning entityEquipmentListTag = new FutureWarning("entityEquipmentListTag", "The ListTag 'EntityTag.equipment' has been deprecated in favor of the MapTag 'EntityTag.equipment_map'.");
