@@ -103,9 +103,9 @@ public abstract class DataComponentAdapter<TD extends ObjectTag, TP> {
         });
     }
 
-    DataComponentType.Valued<TP> componentType;
-    Class<TD> denizenType;
-    String name;
+    public final DataComponentType.Valued<TP> componentType;
+    public final Class<TD> denizenType;
+    public final String name;
 
     public DataComponentAdapter(DataComponentType.Valued<TP> componentType, Class<TD> denizenType, String name) {
         this.componentType = componentType;
