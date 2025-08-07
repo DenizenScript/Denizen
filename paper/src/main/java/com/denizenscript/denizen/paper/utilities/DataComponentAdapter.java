@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public abstract class DataComponentAdapter<TD extends ObjectTag, TP> {
+public abstract class DataComponentAdapter<TP, TD extends ObjectTag> {
     
     // <--[language]
     // @name Item Components
@@ -63,7 +63,7 @@ public abstract class DataComponentAdapter<TD extends ObjectTag, TP> {
         return componentType;
     }
 
-    public static <TD extends ObjectTag, TP>void register(DataComponentAdapter<TD, TP> adapter) {
+    public static <TP, TD extends ObjectTag> void register(DataComponentAdapter<TP, TD> adapter) {
         DataComponentAdapter.Property.currentlyRegisteringComponentAdapter = adapter;
         PropertyParser.registerPropertyGetter(
                 item -> !item.getItemStack().isEmpty() ? adapter.new Property(item) : null,

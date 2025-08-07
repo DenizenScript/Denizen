@@ -7,7 +7,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.FoodProperties;
 
-public class FoodAdapter extends DataComponentAdapter<MapTag, FoodProperties> {
+public class FoodAdapter extends DataComponentAdapter<FoodProperties, MapTag> {
 
     // <--[property]
     // @object ItemTag
