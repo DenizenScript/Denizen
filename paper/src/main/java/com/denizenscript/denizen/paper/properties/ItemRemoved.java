@@ -2,7 +2,7 @@ package com.denizenscript.denizen.paper.properties;
 
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.item.ItemProperty;
-import com.denizenscript.denizen.paper.utilities.DataComponentAdapter;
+import com.denizenscript.denizen.paper.datacomponents.DataComponentAdapter;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;

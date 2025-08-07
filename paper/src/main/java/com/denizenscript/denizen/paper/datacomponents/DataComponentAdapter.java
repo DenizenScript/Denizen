@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.paper.utilities;
+package com.denizenscript.denizen.paper.datacomponents;
 
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.MaterialTag;

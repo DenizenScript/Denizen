@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.paper.datacomponents;
 
-import com.denizenscript.denizen.paper.utilities.DataComponentAdapter;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
