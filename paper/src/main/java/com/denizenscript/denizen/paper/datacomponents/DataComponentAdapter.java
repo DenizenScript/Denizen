@@ -72,7 +72,7 @@ public abstract class DataComponentAdapter<TP, TD extends ObjectTag> {
         MaterialTag.tagProcessor.registerTag(adapter.denizenType, adapter.name, (attribute, materialTag) -> {
             Material material = materialTag.getMaterial();
             if (!material.isItem()) {
-                attribute.echoError("Cannot get item component value from a block material.");
+                attribute.echoError("Cannot get item component values from a block material.");
                 return null;
             }
             TP internalValue = material.getDefaultData(adapter.componentType);
