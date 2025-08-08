@@ -4,6 +4,8 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -21,6 +23,7 @@ import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Type;
+import java.util.UUID;
 
 public class HoverFormatHelper {
 
@@ -39,18 +42,25 @@ public class HoverFormatHelper {
             }
         }
         else if (action == HoverEvent.Action.SHOW_ENTITY) {
-            EntityTag entity = EntityTag.valueOf(FormattedTextHelper.unescape(input), CoreUtilities.basicContext);
-            if (entity == null) {
-                return true;
-            }
-            BaseComponent name = null;
-            if (entity.getBukkitEntity() != null && entity.getBukkitEntity().isCustomNameVisible()) {
-                name = new TextComponent();
-                for (BaseComponent component : FormattedTextHelper.parse(entity.getBukkitEntity().getCustomName(), ChatColor.WHITE)) {
-                    name.addExtra(component);
+            String rawInput = FormattedTextHelper.unescape(input);
+            if (rawInput.startsWith("e@")) {
+                content = parseLegacyEntityHover(rawInput);
+                if (content == null) {
+                    return true;
                 }
             }
-            content = new Entity(entity.getBukkitEntityType().getKey().toString(), entity.getUUID().toString(), name);
+            MapTag entityHoverData = MapTag.valueOf(rawInput, CoreUtilities.noDebugContext);
+            if (entityHoverData == null) {
+                return true;
+            }
+            ElementTag uuid = entityHoverData.getElement("uuid");
+            if (uuid == null) {
+                return true;
+            }
+            ElementTag type = entityHoverData.getElement("type");
+            ElementTag rawName = entityHoverData.getElement("name");
+            BaseComponent name = rawName != null ? new TextComponent(FormattedTextHelper.parse(rawName.asString(), ChatColor.WHITE)) : null;
+            content = new Entity(type != null ? type.asString() : null, uuid.asString(), name);
         }
         else {
             content = new Text(FormattedTextHelper.parse(FormattedTextHelper.unescape(input), ChatColor.WHITE));
@@ -83,13 +93,42 @@ public class HoverFormatHelper {
             }
             return new ItemTag(item).identify();
         }
-        else if (contentObject instanceof net.md_5.bungee.api.chat.hover.content.Entity entityHover) {
-            // TODO: Maybe a stabler way of doing this?
-            return "e@" + entityHover.getId();
+        else if (contentObject instanceof Entity entityHover) {
+            MapTag entityHoverData = new MapTag();
+            entityHoverData.putObject("uuid", new ElementTag(entityHover.getId(), true));
+            if (entityHover.getType() != null) {
+                entityHoverData.putObject("type", new ElementTag(entityHover.getType(), true));
+            }
+            else {
+                // This isn't even optional, but is in Bungee for some reason - try our best to have a value
+                org.bukkit.entity.Entity found = EntityTag.getEntityForID(UUID.fromString(entityHover.getId()));
+                if (found != null) {
+                    entityHoverData.putObject("type", new ElementTag(found.getType().getKey().toString(), true));
+                }
+            }
+            if (entityHover.getName() != null) {
+                entityHoverData.putObject("name", new ElementTag(FormattedTextHelper.stringify(entityHover.getName()), true));
+            }
+            return entityHoverData.savable();
         }
         else {
             throw new UnsupportedOperationException();
         }
+    }
+
+    private static Entity parseLegacyEntityHover(String input) {
+        EntityTag entity = EntityTag.valueOf(input, CoreUtilities.basicContext);
+        if (entity == null) {
+            return null;
+        }
+        BaseComponent name = null;
+        if (entity.getBukkitEntity() != null && entity.getBukkitEntity().isCustomNameVisible()) {
+            name = new TextComponent();
+            for (BaseComponent component : FormattedTextHelper.parse(entity.getBukkitEntity().getCustomName(), ChatColor.WHITE)) {
+                name.addExtra(component);
+            }
+        }
+        return new Entity(entity.getBukkitEntityType().getKey().toString(), entity.getUUID().toString(), name);
     }
 
     public static void tryInitializeItemHoverFix() {
