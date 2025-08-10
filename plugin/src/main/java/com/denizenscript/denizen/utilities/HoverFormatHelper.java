@@ -45,24 +45,26 @@ public class HoverFormatHelper {
         }
         else if (action == HoverEvent.Action.SHOW_ENTITY) {
             String rawInput = FormattedTextHelper.unescape(input);
-            if (rawInput.startsWith("e@")) {
+            if (!rawInput.startsWith("map@")) {
                 content = parseLegacyEntityHover(rawInput);
                 if (content == null) {
                     return true;
                 }
             }
-            MapTag entityHoverData = MapTag.valueOf(rawInput, CoreUtilities.noDebugContext);
-            if (entityHoverData == null) {
-                return true;
+            else {
+                MapTag entityHoverData = MapTag.valueOf(rawInput, CoreUtilities.noDebugContext);
+                if (entityHoverData == null) {
+                    return true;
+                }
+                ElementTag uuid = entityHoverData.getElement("uuid");
+                if (uuid == null) {
+                    return true;
+                }
+                ElementTag type = entityHoverData.getElement("type");
+                ElementTag rawName = entityHoverData.getElement("name");
+                BaseComponent name = rawName != null ? new TextComponent(FormattedTextHelper.parse(rawName.asString(), ChatColor.WHITE)) : null;
+                content = new Entity(type != null ? type.asString() : null, uuid.asString(), name);
             }
-            ElementTag uuid = entityHoverData.getElement("uuid");
-            if (uuid == null) {
-                return true;
-            }
-            ElementTag type = entityHoverData.getElement("type");
-            ElementTag rawName = entityHoverData.getElement("name");
-            BaseComponent name = rawName != null ? new TextComponent(FormattedTextHelper.parse(rawName.asString(), ChatColor.WHITE)) : null;
-            content = new Entity(type != null ? type.asString() : null, uuid.asString(), name);
         }
         else {
             content = new Text(FormattedTextHelper.parse(FormattedTextHelper.unescape(input), ChatColor.WHITE));
