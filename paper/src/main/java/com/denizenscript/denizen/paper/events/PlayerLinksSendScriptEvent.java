@@ -1,12 +1,13 @@
 package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
+import io.papermc.paper.connection.PlayerConfigurationConnection;
 import io.papermc.paper.connection.PlayerGameConnection;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLinksSendEvent;
@@ -27,12 +28,12 @@ public class PlayerLinksSendScriptEvent extends BukkitScriptEvent implements Lis
     // "SET_LINKS:<ListTag(MapTag)>" to set the links sent to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
     // "ADD_LINKS:<ListTag(MapTag)>" to add the links sent to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
     //
-    // @Player when the event part of player game connection
+    // @Player Always.
     //
     // -->
 
     public PlayerLinksSendEvent event;
-    public Player player;
+    public PlayerTag player;
 
     public PlayerLinksSendScriptEvent() {
         registerCouldMatcher("player links send");
@@ -46,12 +47,20 @@ public class PlayerLinksSendScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(player);
+        return new BukkitScriptEntryData(player, null);
     }
 
     @EventHandler
     public void onPlayerLinksSend(PlayerLinksSendEvent event) {
-        player = event.getConnection() instanceof PlayerGameConnection connection ? connection.getPlayer() : null;
+        if (event.getConnection() instanceof PlayerGameConnection connection) {
+            player = new PlayerTag(connection.getPlayer());
+        }
+        else if (event.getConnection() instanceof PlayerConfigurationConnection connection) {
+            player = new PlayerTag(connection.getProfile().getId());
+        }
+        else {
+            player = null;
+        }
         this.event = event;
         fire(event);
     }
