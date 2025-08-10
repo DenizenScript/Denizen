@@ -8,8 +8,7 @@ public class ReflectionMappingsInfo {
     public static String BlockBehaviour_explosionResistance = "G";
 
     // net.minecraft.core.MappedRegistry
-    public static String MappedRegistry_frozen = "l";
-    public static String MappedRegistry_unregisteredIntrusiveHolders = "m";
+    public static String MappedRegistry_registrationInfos = "h";
 
     // net.minecraft.world.entity.Entity
     public static String Entity_onGround = "bb";
