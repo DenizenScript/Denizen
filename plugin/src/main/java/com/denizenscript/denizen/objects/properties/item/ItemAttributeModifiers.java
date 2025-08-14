@@ -4,6 +4,8 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityAttributeModifiers;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -12,18 +14,20 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class ItemAttributeModifiers extends ItemProperty<MapTag> {
 
@@ -41,6 +45,67 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
     public static boolean describes(ItemTag item) {
         return true;
     }
+    
+    public static final boolean MODERN_ATTRIBUTE_FORMAT = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21);
+
+    public static void parseAttributeModifiers(MapTag input, Mechanism mechanism, BiConsumer<org.bukkit.attribute.Attribute, AttributeModifier> handler) {
+        parseAttributeModifiers(input, mechanism, Function.identity(), handler);
+    }
+
+    public static <T> void parseAttributeModifiers(MapTag input, Mechanism mechanism, Function<org.bukkit.attribute.Attribute, T> attrToHolder, BiConsumer<@NotNull T, @NotNull AttributeModifier> handler) {
+        final Map<org.bukkit.attribute.Attribute, ObjectTag> unappliedLegacyValues = MODERN_ATTRIBUTE_FORMAT && Settings.cache_legacySpigotNamesSupport ? new HashMap<>() : null;
+        for (Map.Entry<StringHolder, ObjectTag> mapEntry : input.entrySet()) {
+            org.bukkit.attribute.Attribute attr;
+            String keyLow = mapEntry.getKey().low;
+            if (!MODERN_ATTRIBUTE_FORMAT) {
+                attr = ElementTag.asEnum(org.bukkit.attribute.Attribute.class, keyLow);
+                Debug.log("Got old attribute " + attr);
+            }
+            else {
+                attr = Registry.ATTRIBUTE.get(Utilities.parseNamespacedKey(keyLow));
+                if (unappliedLegacyValues != null) {
+                    if (attr != null) {
+                        Debug.log("Got modern attribute " + attr);
+                        if (unappliedLegacyValues.remove(attr) != null) {
+                            Debug.log("Cleared legacy attribute " + attr);
+                        }
+                    }
+                    else if (keyLow.startsWith("generic_") || keyLow.startsWith("player_") || keyLow.startsWith("zombie_")) {
+                        org.bukkit.attribute.Attribute attribute = Utilities.elementToEnumlike(new ElementTag(keyLow, true), org.bukkit.attribute.Attribute.class, false);
+                        if (attribute != null) {
+                            unappliedLegacyValues.put(attribute, mapEntry.getValue());
+                            continue;
+                        }
+                    }
+                }
+            }
+            if (attr == null) {
+                mechanism.echoError("Invalid attribute specified: " + mapEntry.getKey() + '.');
+                continue;
+            }
+            T holder = attrToHolder.apply(attr);
+            if (holder == null) {
+                continue;
+            }
+            for (ObjectTag listValue : CoreUtilities.objectToList(mapEntry.getValue(), mechanism.context)) {
+                handler.accept(holder, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue, mechanism.context));
+            }
+        }
+        if (unappliedLegacyValues != null && !unappliedLegacyValues.isEmpty()) {
+            BukkitImplDeprecations.oldSpigotNames.warn(mechanism.context);
+            for (Map.Entry<org.bukkit.attribute.Attribute, ObjectTag> unappliedEntry : unappliedLegacyValues.entrySet()) {
+                org.bukkit.attribute.Attribute attribute = unappliedEntry.getKey();
+                T holder = attrToHolder.apply(attribute);
+                if (holder == null) {
+                    continue;
+                }
+                Debug.log("Applying legacy attribute " + attribute);
+                for (ObjectTag listValue : CoreUtilities.objectToList(unappliedEntry.getValue(), mechanism.context)) {
+                    handler.accept(holder, EntityAttributeModifiers.modiferForMap(attribute, (MapTag) listValue, mechanism.context));
+                }
+            }
+        }
+    }
 
     @Override
     public boolean isDefaultValue(MapTag map) {
@@ -49,23 +114,18 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
 
     @Override
     public MapTag getPropertyValue() {
-        ItemMeta meta = getItemMeta();
-        if (meta == null) {
-            return null;
-        }
-        Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = meta.getAttributeModifiers();
-        return getAttributeModifiersFor(metaMap);
+        return getItemMeta() != null ? getAttributeModifiersFor(getItemMeta().getAttributeModifiers(), false) : null;
+    }
+
+    @Override
+    public MapTag getTagValue(com.denizenscript.denizencore.tags.Attribute attribute) {
+        return getItemMeta() != null ? getAttributeModifiersFor(getItemMeta().getAttributeModifiers(), true) : null;
     }
 
     @Override
     public void setPropertyValue(MapTag param, Mechanism mechanism) {
         Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = LinkedHashMultimap.create();
-        for (Map.Entry<StringHolder, ObjectTag> mapEntry : param.entrySet()) {
-            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(mapEntry.getKey().str.toUpperCase());
-            for (ObjectTag listValue : CoreUtilities.objectToList(mapEntry.getValue(), mechanism.context)) {
-                metaMap.put(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue, mechanism.context));
-            }
-        }
+        parseAttributeModifiers(param, mechanism, metaMap::put);
         ItemMeta meta = getItemMeta();
         meta.setAttributeModifiers(metaMap);
         setItemMeta(meta);
@@ -76,7 +136,30 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
         return "attribute_modifiers";
     }
 
-    public static MapTag getAttributeModifiersFor(Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap) {
+    public static String legacyAttributeName(org.bukkit.attribute.Attribute attribute) {
+        if (!MODERN_ATTRIBUTE_FORMAT) {
+            return attribute.toString(); // Enum on older versions, #toString == #name
+        }
+        String nameLower = attribute.getKey().getKey();
+        return switch (nameLower) {
+            case "block_interaction_range", "entity_interaction_range", "block_break_speed" -> "player_" + nameLower;
+            case "spawn_reinforcements" -> "zombie_" + nameLower;
+            default -> "generic_" + nameLower;
+        };
+    }
+
+    public static void addAttributeToMap(MapTag map, org.bukkit.attribute.Attribute attribute, ListTag value, boolean includeDeprecated) {
+        if (!MODERN_ATTRIBUTE_FORMAT) {
+            map.putObject(attribute.toString(), value);
+            return;
+        }
+        if (includeDeprecated && Settings.cache_legacySpigotNamesSupport) {
+            map.putObject(legacyAttributeName(attribute), value);
+        }
+        map.putObject(Utilities.namespacedKeyToString(attribute.getKey()), value);
+    }
+
+    public static MapTag getAttributeModifiersFor(Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap, boolean includeDeprecated) {
         MapTag map = new MapTag();
         if (metaMap == null) {
             return map;
@@ -86,11 +169,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
             if (modifiers.isEmpty()) {
                 continue;
             }
-            ListTag subList = new ListTag();
-            for (AttributeModifier modifier : modifiers) {
-                subList.addObject(EntityAttributeModifiers.mapify(modifier));
-            }
-            map.putObject(attribute.name(), subList);
+            addAttributeToMap(map, attribute, new ListTag(modifiers, EntityAttributeModifiers::mapify), includeDeprecated);
         }
         return map;
     }
@@ -116,7 +195,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
                 attribute.echoError("Invalid slot specified: " + attribute.getParam());
                 return null;
             }
-            return getAttributeModifiersFor(prop.getMaterial().getDefaultAttributeModifiers(slot));
+            return getAttributeModifiersFor(prop.getMaterial().getDefaultAttributeModifiers(slot), true);
         });
 
         // <--[mechanism]
@@ -131,12 +210,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
         // -->
         PropertyParser.registerMechanism(ItemAttributeModifiers.class, MapTag.class, "add_attribute_modifiers", (prop, mechanism, param) -> {
             ItemMeta meta = prop.getItemMeta();
-            for (Map.Entry<StringHolder, ObjectTag> subValue : param.entrySet()) {
-                org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
-                for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
-                    meta.addAttributeModifier(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue, mechanism.context));
-                }
-            }
+            parseAttributeModifiers(param, mechanism, meta::addAttributeModifier);
             prop.setItemMeta(meta);
         });
 
@@ -154,9 +228,9 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
             ItemMeta meta = prop.getItemMeta();
             ArrayList<String> inputList = new ArrayList<>(param);
             for (String toRemove : new ArrayList<>(inputList)) {
-                if (Utilities.matchesEnumlike(new ElementTag(toRemove), org.bukkit.attribute.Attribute.class)) {
+                org.bukkit.attribute.Attribute attr = Utilities.elementToEnumlike(new ElementTag(toRemove, true), org.bukkit.attribute.Attribute.class);
+                if (attr != null) {
                     inputList.remove(toRemove);
-                    org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(toRemove.toUpperCase());
                     meta.removeAttributeModifier(attr);
                 }
             }
