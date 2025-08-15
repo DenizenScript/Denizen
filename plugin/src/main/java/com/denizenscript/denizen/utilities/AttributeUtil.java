@@ -172,22 +172,24 @@ public class AttributeUtil {
         }
     }
 
-    public static MapTag modifierToMap(AttributeModifier modifier) {
+    public static MapTag modifierToMap(AttributeModifier modifier, boolean includeDeprecated) {
         MapTag result = new MapTag();
-        result.putObject("name", new ElementTag(modifier.getName()));
         result.putObject("amount", new ElementTag(modifier.getAmount()));
         result.putObject("operation", new ElementTag(modifier.getOperation()));
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             result.putObject("slot", new ElementTag(modifier.getSlotGroup().toString(), true));
         }
         else {
-            result.putObject("slot", new ElementTag(modifier.getSlot() == null ? "any" : modifier.getSlot().name()));
+            result.putObject("slot", new ElementTag(modifier.getSlot() == null ? "any" : modifier.getSlot().name(), true));
         }
-        if (AttributeUtil.MODERN_ATTRIBUTE_FORMAT) {
+        if (MODERN_ATTRIBUTE_FORMAT) {
             result.putObject("key", new ElementTag(Utilities.namespacedKeyToString(modifier.getKey()), true));
         }
-        // TODO: remove/deprecate the UUID key
-        result.putObject("id", new ElementTag(modifier.getUniqueId().toString()));
+        // TODO: remove/deprecate these
+        if (!MODERN_ATTRIBUTE_FORMAT || includeDeprecated) {
+            result.putObject("id", new ElementTag(modifier.getUniqueId().toString(), true));
+            result.putObject("name", new ElementTag(modifier.getName(), true));
+        }
         return result;
     }
 

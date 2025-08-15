@@ -77,7 +77,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
             if (modifiers.isEmpty()) {
                 continue;
             }
-            AttributeUtil.addToMap(map, attribute, new ListTag(modifiers, AttributeUtil::modifierToMap), includeDeprecated);
+            AttributeUtil.addToMap(map, attribute, new ListTag(modifiers, modifier -> AttributeUtil.modifierToMap(modifier, includeDeprecated)), includeDeprecated);
         }
         return map;
     }
