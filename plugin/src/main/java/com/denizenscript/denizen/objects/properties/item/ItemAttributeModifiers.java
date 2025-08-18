@@ -27,10 +27,10 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
     // @name attribute_modifiers
     // @input MapTag
     // @description
-    // Controls the attribute modifiers of an item, with key as the attribute name and value as a list of modifiers,
-    // where each modifier is a MapTag containing keys 'name', 'amount', 'slot', 'operation', and 'id'.
-    // For use as a mechanism, this is a SET operation, meaning pre-existing modifiers are removed.
-    // For format details, refer to <@link language attribute modifiers>.
+    // Controls the attribute modifiers of an item, with keys as the attribute names and values as a list of modifiers,
+    // see <@link language attribute modifiers> for how modifiers are formatted.
+    // @mechanism
+    // This is a SET operation, meaning pre-existing modifiers are removed.
     // -->
 
     public static boolean describes(ItemTag item) {
