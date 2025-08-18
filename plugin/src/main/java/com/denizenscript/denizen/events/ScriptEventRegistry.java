@@ -17,7 +17,6 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.events.ScriptEventCouldMatcher;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 
 import java.util.Arrays;
 
