@@ -42,8 +42,8 @@ public class AttributeUtil {
     // These can be modified by such mechanisms as <@link mechanism EntityTag.attribute_base_values>, <@link mechanism EntityTag.attribute_modifiers>, <@link mechanism EntityTag.add_attribute_modifiers>,
     // <@link mechanism EntityTag.remove_attribute_modifiers>, <@link mechanism ItemTag.attribute_modifiers>, <@link mechanism ItemTag.add_attribute_modifiers>, <@link mechanism ItemTag.remove_attribute_modifiers>, ...
     //
-    // The input format of each of the 'add' and set mechanisms is slightly complicated: a MapTag where the keys are attribute names, and values are a ListTag of modifiers,
-    // where each modifier is itself a MapTag with required keys 'operation' and 'amount', and additionally:
+    // The input format of each of the 'add' and 'set' mechanisms is slightly complicated: a MapTag where the keys are attribute names, and values are a ListTag of modifiers.
+    // Modifiers are MapTags with required keys 'operation' and 'amount', and additionally:
     // Before MC 1.21: optional 'name', 'slot', and 'id' keys.
     // The default ID will be randomly generated, the default name will be the attribute name.
     // After MC 1.21: required 'key' key, and optional 'slot'.
@@ -73,14 +73,14 @@ public class AttributeUtil {
     // - determine <[y]>
     // </code>
     //
-    // See also <@link url https://minecraft.wiki/w/Attribute#Modifiers>
+    // See also <@link url https://minecraft.wiki/w/Attribute#Modifiers>.
     //
-    // For a quick and dirty in-line input, you can do for example: [generic_max_health=<list[<map[key=my_project:add_health;operation=ADD_NUMBER;amount=20;slot=HEAD]>]>]
+    // For a quick and dirty in-line input, you can do for example: [max_health=<list[<map[key=my_project:add_health;operation=ADD_NUMBER;amount=20;slot=HEAD]>]>]
     //
     // For more clean/proper input, instead do something like:
     // <code>
     // - definemap attributes:
-    //     generic_max_health:
+    //     max_health:
     //         1:
     //             key: my_project:add_health
     //             operation: ADD_NUMBER
@@ -209,7 +209,7 @@ public class AttributeUtil {
             Debug.echoError("Attribute modifier amount '" + amount + "' is not a valid decimal number.");
             return null;
         }
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+        if (!MODERN_ATTRIBUTE_FORMAT) {
             return parseLegacyModifier(attr, map, amountValue, operationValue);
         }
         ElementTag key = map.getElement("key");

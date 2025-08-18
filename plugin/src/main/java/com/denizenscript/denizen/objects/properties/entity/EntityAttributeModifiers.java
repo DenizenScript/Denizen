@@ -114,10 +114,9 @@ public class EntityAttributeModifiers implements Property {
         // @mechanism EntityTag.attribute_modifiers
         // @group properties
         // @description
-        // Returns a map of all attribute modifiers on the entity, with key as the attribute name and value as a list of modifiers,
-        // where each modifier is a MapTag containing keys 'name', 'amount', 'slot', 'operation', and 'id'.
+        // Returns a map of all attribute modifiers on the entity, with keys as attribute names and values as a list of modifiers,
+        // see <@link language attribute modifiers> for how modifiers are formatted.
         // This is formatted in a way that can be sent back into the 'attribute_modifiers' mechanism.
-        // See also <@link language attribute modifiers>.
         // -->
         PropertyParser.registerTag(EntityAttributeModifiers.class, MapTag.class, "attribute_modifiers", (attribute, object) -> {
             return object.getAttributeModifiers(true);
