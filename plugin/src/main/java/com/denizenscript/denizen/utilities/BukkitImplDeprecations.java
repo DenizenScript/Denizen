@@ -355,9 +355,6 @@ public class BukkitImplDeprecations {
     // Bump once 1.21 is the minimum supported version (as that is where boat types were split)
     public static Warning gettingBoatType = new SlowWarning("gettingBoatType", "Getting boat wood types is deprecated, as separate boat types are separate entity types now: should check the entity type.");
 
-    // Added 2025/07/11
-    public static Warning assignmentOptionalPrefixArgs = new SlowWarning("assignmentOptionalPrefixArgs", "Deprecated usage of optional prefixes 'script' or 'to' in favor of just using proper prefixes (refer to documentation).");
-
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
 
@@ -464,12 +461,15 @@ public class BukkitImplDeprecations {
 
     // Added 2025/03/29
     public static Warning areaEffectCloudControls = new FutureWarning("areaEffectCloudControls", "Several tags/mechanisms for controlling area effect clouds have been merged into existing properties, check relevant meta docs for more information.");
-  
+
     // Added 2025/04/27
     public static Warning playerChangesWorldSwitches = new FutureWarning("playerChangesWorldSwitches", "The 'from' and 'to' arguments in the 'player changes world' script event have been deprecated in favor of the 'from' and 'to' switches.");
 
     // Added 2025/05/02
     public static Warning timeSubTags = new FutureWarning("timeSubTags", pointlessSubtagPrefix + "'time.*' tags are now just 'time_*'.");
+
+    // Added 2025/07/11
+    public static Warning assignmentOptionalPrefixArgs = new FutureWarning("assignmentOptionalPrefixArgs", "For the 'assignment' command, the args 'script' and 'to' now require a prefix to use.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 

@@ -16,6 +16,9 @@ import java.util.UUID;
 
 public abstract class ProfileEditor {
 
+    public static final String EMPTY_NAME = "";
+    public static final UUID NIL_UUID = new UUID(0L, 0L);
+
     public final static Map<UUID, PlayerProfile> fakeProfiles = new HashMap<>();
 
     public final static HashSet<UUID> mirrorUUIDs = new HashSet<>();
