@@ -22,7 +22,6 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,23 +68,12 @@ public class EntityAttributeModifiers implements Property {
         return list;
     }
 
-    public ListTag getAttributeModifierList(AttributeInstance instance, boolean includeDeprecated) {
-        if (instance == null) {
-            return null;
-        }
-        Collection<AttributeModifier> modifiers = instance.getModifiers();
-        if (modifiers.isEmpty()) {
-            return null;
-        }
-        return new ListTag(modifiers, modifier -> AttributeUtil.modifierToMap(modifier, includeDeprecated));
-    }
-
     public MapTag getAttributeModifiers(boolean includeDeprecated) {
         MapTag map = new MapTag();
         for (Attribute attribute : Utilities.listTypesRaw(Attribute.class)) {
-            ListTag list = getAttributeModifierList(getAttributable().getAttribute(attribute), includeDeprecated);
-            if (list != null) {
-                AttributeUtil.addToMap(map, attribute, list, includeDeprecated);
+            AttributeInstance attributeInstance = getAttributable().getAttribute(attribute);
+            if (attributeInstance != null) {
+                AttributeUtil.addToMap(map, attribute, attributeInstance.getModifiers(), includeDeprecated);
             }
         }
         return map;

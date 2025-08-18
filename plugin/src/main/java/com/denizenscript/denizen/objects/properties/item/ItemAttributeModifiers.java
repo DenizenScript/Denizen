@@ -18,7 +18,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.UUID;
 
 public class ItemAttributeModifiers extends ItemProperty<MapTag> {
@@ -73,11 +72,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
             return map;
         }
         for (org.bukkit.attribute.Attribute attribute : metaMap.keys()) {
-            Collection<AttributeModifier> modifiers = metaMap.get(attribute);
-            if (modifiers.isEmpty()) {
-                continue;
-            }
-            AttributeUtil.addToMap(map, attribute, new ListTag(modifiers, modifier -> AttributeUtil.modifierToMap(modifier, includeDeprecated)), includeDeprecated);
+            AttributeUtil.addToMap(map, attribute, metaMap.get(attribute), includeDeprecated);
         }
         return map;
     }

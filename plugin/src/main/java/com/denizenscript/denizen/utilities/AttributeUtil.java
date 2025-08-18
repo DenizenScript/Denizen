@@ -19,6 +19,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -107,7 +108,11 @@ public class AttributeUtil {
         };
     }
 
-    public static void addToMap(MapTag map, Attribute attribute, ListTag value, boolean includeDeprecated) {
+    public static void addToMap(MapTag map, Attribute attribute, Collection<AttributeModifier> modifiers, boolean includeDeprecated) {
+        if (modifiers.isEmpty()) {
+            return;
+        }
+        ListTag value = new ListTag(modifiers, modifier -> modifierToMap(modifier, includeDeprecated));
         if (!MODERN_ATTRIBUTE_FORMAT) {
             map.putObject(String.valueOf(attribute), value);
             return;
