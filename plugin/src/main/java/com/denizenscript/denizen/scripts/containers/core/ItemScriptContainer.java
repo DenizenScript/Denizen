@@ -273,41 +273,6 @@ public class ItemScriptContainer extends ScriptContainer {
                 Debug.echoError("Item script '" + getName() + "' contains an invalid or incorrect material '" + material + "' (did you spell the material name wrong?). Script cannot function.");
                 return null;
             }
-            // Handle listed mechanisms
-            if (contains("mechanisms", Map.class)) {
-                YamlConfiguration mechs = getConfigurationSection("mechanisms");
-                for (StringHolder key : mechs.getKeys(false)) {
-                    ObjectTag obj = CoreUtilities.objectToTagForm(mechs.get(key.low), context, true, true);
-                    stack.safeAdjust(new Mechanism(key.low, obj, context));
-                }
-            }
-            // Set Display Name
-            if (contains("display name", String.class)) {
-                String displayName = TagManager.tag(getString("display name"), context);
-                NMSHandler.itemHelper.setDisplayName(stack, displayName);
-            }
-            // Set if the object is bound to the player
-            if (contains("bound", String.class)) {
-                BukkitImplDeprecations.boundWarning.warn(context);
-            }
-            // Set Lore
-            if (contains("lore", List.class)) {
-                List<String> lore = NMSHandler.itemHelper.getLore(stack);
-                if (lore == null) {
-                    lore = new ArrayList<>();
-                }
-                for (String line : getStringList("lore")) {
-                    line = TagManager.tag(line, context);
-                    lore.add(line);
-                }
-                CoreUtilities.fixNewLinesToListSeparation(lore);
-                NMSHandler.itemHelper.setLore(stack, lore);
-            }
-            // Set Durability
-            if (contains("durability", String.class)) {
-                short durability = Short.parseShort(getString("durability"));
-                stack.setDurability(durability);
-            }
             // Set Enchantments
             if (contains("enchantments", List.class)) {
                 for (String enchantment : getStringList("enchantments")) {
@@ -344,6 +309,41 @@ public class ItemScriptContainer extends ScriptContainer {
                         Debug.echoError(ex);
                     }
                 }
+            }
+            // Handle listed mechanisms
+            if (contains("mechanisms", Map.class)) {
+                YamlConfiguration mechs = getConfigurationSection("mechanisms");
+                for (StringHolder key : mechs.getKeys(false)) {
+                    ObjectTag obj = CoreUtilities.objectToTagForm(mechs.get(key.low), context, true, true);
+                    stack.safeAdjust(new Mechanism(key.low, obj, context));
+                }
+            }
+            // Set Display Name
+            if (contains("display name", String.class)) {
+                String displayName = TagManager.tag(getString("display name"), context);
+                NMSHandler.itemHelper.setDisplayName(stack, displayName);
+            }
+            // Set if the object is bound to the player
+            if (contains("bound", String.class)) {
+                BukkitImplDeprecations.boundWarning.warn(context);
+            }
+            // Set Lore
+            if (contains("lore", List.class)) {
+                List<String> lore = NMSHandler.itemHelper.getLore(stack);
+                if (lore == null) {
+                    lore = new ArrayList<>();
+                }
+                for (String line : getStringList("lore")) {
+                    line = TagManager.tag(line, context);
+                    lore.add(line);
+                }
+                CoreUtilities.fixNewLinesToListSeparation(lore);
+                NMSHandler.itemHelper.setLore(stack, lore);
+            }
+            // Set Durability
+            if (contains("durability", String.class)) {
+                short durability = Short.parseShort(getString("durability"));
+                stack.setDurability(durability);
             }
             // Set Color
             if (contains("color", String.class)) {
