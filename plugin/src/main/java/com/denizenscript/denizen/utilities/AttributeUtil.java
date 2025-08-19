@@ -53,7 +53,7 @@ public class AttributeUtil {
     // Valid operations: ADD_NUMBER, ADD_SCALAR, and MULTIPLY_SCALAR_1
     // Valid slots (used up to MC 1.20.6): HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
     // Valid slot groups (used on MC 1.20.6+): <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlotGroup.html>
-    // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
+    // Valid attribute names are listed at <@link url https://minecraft.wiki/w/Attribute#Attributes>
     // The default slot/slot group is "any".
     //
     // Operation names are based on the Bukkit enum.
