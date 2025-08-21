@@ -22,13 +22,13 @@ public class PlayerInputScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when a player sends updated input to the server.
     //
     // @Context
-    // <context.is_backward> returns an ElementTag(Boolean) that signifies whether the player moves backward
-    // <context.is_forward> returns an ElementTag(Boolean) that signifies whether the player moves forward
-    // <context.is_left> returns an ElementTag(Boolean) that signifies whether the player moves left
-    // <context.is_right> returns an ElementTag(Boolean) that signifies whether the player moves right
-    // <context.is_jump> returns an ElementTag(Boolean) that signifies whether the player jumps
-    // <context.is_sneak> returns an ElementTag(Boolean) that signifies whether the player sneaks
-    // <context.is_sprint> returns an ElementTag(Boolean) that signifies whether the player sprints
+    // <context.is_backward> returns whether the player moves backward
+    // <context.is_forward> returns whether the player moves forward
+    // <context.is_left> returns whether the player moves left
+    // <context.is_right> returns whether the player moves right
+    // <context.is_jump> returns whether the player jumps
+    // <context.is_sneak> returns whether the player sneaks
+    // <context.is_sprint> returns whether the player sprints
     //
     // @Player Always.
     //
