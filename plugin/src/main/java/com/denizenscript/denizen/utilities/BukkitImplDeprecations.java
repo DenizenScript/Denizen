@@ -181,10 +181,6 @@ public class BukkitImplDeprecations {
     // Safe to remove now.
     public static Warning attachToMech = new StrongWarning("attachToMech", "The entity 'attach_to' mechanism is deprecated: use the new 'attach' command instead!");
 
-    // Added 2020/07/12, made slow 2022/12/31, made normal 2024/01/02, made strong 2025/01/15.
-    // Safe to remove now.
-    public static Warning entityEquipmentSubtags = new StrongWarning("entityEquipmentSubtags", pointlessSubtagPrefix + " 'entity.equipment.slotname' is deprecated: use 'entity.equipment_map.get[slotname]' instead.");
-
     // Added 2021/04/13, made slow 2022/12/31, made normal 2024/01/02, made strong 2025/01/15.
     // Safe to remove now.
     public static Warning materialHasDataPackTag = new StrongWarning("materialHasDataPackTag", "The tag 'MaterialTag.has_vanilla_data_tag[...]' is deprecated in favor of MaterialTag.vanilla_tags.contains[<name>]");
@@ -467,6 +463,15 @@ public class BukkitImplDeprecations {
 
     // Added 2025/05/02
     public static Warning timeSubTags = new FutureWarning("timeSubTags", pointlessSubtagPrefix + "'time.*' tags are now just 'time_*'.");
+  
+    // Added 2025/08/06
+    public static Warning horseArmorEquipCommand = new FutureWarning("horseArmorEquipCommand", "The 'horse_armor' argument in the 'equip' command has been deprecated in favor of 'body'.");
+
+    // Added 2025/08/06
+    public static Warning horseArmorTag = new FutureWarning("horseArmorTag", "The 'EntityTag.horse_armor' tag has been deprecated in favor of 'EntityTag.equipment_map.get[body]'.");
+
+    // Added 2025/08/06
+    public static Warning entityEquipmentListTag = new FutureWarning("entityEquipmentListTag", "The ListTag 'EntityTag.equipment' has been deprecated in favor of the MapTag 'EntityTag.equipment_map'.");
 
     // Added 2025/07/11
     public static Warning assignmentOptionalPrefixArgs = new FutureWarning("assignmentOptionalPrefixArgs", "For the 'assignment' command, the args 'script' and 'to' now require a prefix to use.");
