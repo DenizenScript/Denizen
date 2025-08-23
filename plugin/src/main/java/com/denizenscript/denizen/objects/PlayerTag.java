@@ -2843,11 +2843,12 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Note: This is powered by a bug in Minecraft that has been present for a long time, but may at some point be 'fixed' by Mojang.
         // -->
         if (mechanism.matches("vision")) {
-            if (mechanism.hasValue() && mechanism.requireEnum(EntityType.class)) {
-                NMSHandler.packetHelper.setVision(getPlayerEntity(), EntityType.valueOf(mechanism.getValue().asString().toUpperCase()));
-            }
-            else {
+            if (!mechanism.hasValue()) {
                 NMSHandler.packetHelper.forceSpectate(getPlayerEntity(), getPlayerEntity());
+                return;
+            }
+            if (Utilities.requireEnumlike(mechanism, EntityType.class)) {
+                NMSHandler.packetHelper.setVision(getPlayerEntity(), Utilities.elementToEnumlike(mechanism.getValue(), EntityType.class));
             }
         }
 
