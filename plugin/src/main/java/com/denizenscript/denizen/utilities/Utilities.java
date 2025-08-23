@@ -587,7 +587,7 @@ public class Utilities {
     }
 
     public static <T> T elementToEnumlike(ElementTag element, Class<T> type, boolean showWarning) {
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) {
             return element.asEnum(type);
         }
         Registry<?> registry = Bukkit.getRegistry((Class<? extends Keyed>) type);

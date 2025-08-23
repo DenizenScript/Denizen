@@ -4610,7 +4610,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             String updatedType = NMSHandler.instance.updateLegacyName(EntityType.class, text);
             if (!CoreUtilities.equalsIgnoreCase(text, updatedType)) {
                 BukkitImplDeprecations.oldSpigotNames.warn(context);
-                return getBukkitEntityType().name().equals(updatedType);
+                return getEntityType().getName().equals(updatedType);
             }
         }
         return false;
