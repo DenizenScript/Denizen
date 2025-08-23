@@ -1,11 +1,13 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.Advancement;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -13,6 +15,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -177,7 +180,7 @@ public class AdvancementCommand extends AbstractCommand {
         scriptEntry.defaultObject("icon", new ItemTag(Material.AIR));
         scriptEntry.defaultObject("title", new ElementTag(""));
         scriptEntry.defaultObject("description", new ElementTag(""));
-        scriptEntry.defaultObject("background", new ElementTag("minecraft:textures/gui/advancements/backgrounds/stone.png"));
+        scriptEntry.defaultObject("background", new ElementTag(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) ? "minecraft:gui/advancements/backgrounds/stone" : "minecraft:textures/gui/advancements/backgrounds/stone.png", true));
         scriptEntry.defaultObject("frame", new ElementTag("TASK"));
         scriptEntry.defaultObject("toast", new ElementTag(true));
         scriptEntry.defaultObject("announce", new ElementTag(true));
@@ -226,12 +229,11 @@ public class AdvancementCommand extends AbstractCommand {
                 }
             }
             else if (background != null) {
-                List<String> backgroundSplit = CoreUtilities.split(background.asString(), ':', 2);
-                if (backgroundSplit.size() == 1) {
-                    backgroundKey = NamespacedKey.minecraft(backgroundSplit.get(0));
-                }
-                else {
-                    backgroundKey = new NamespacedKey(CoreUtilities.toLowerCase(backgroundSplit.get(0)), CoreUtilities.toLowerCase(backgroundSplit.get(1)));
+                backgroundKey = Utilities.parseNamespacedKey(background.asString());
+                String path = backgroundKey.getKey();
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && path.startsWith("textures/") && path.endsWith(".png")) {
+                    BukkitImplDeprecations.advancementBackgroundFormat.warn(scriptEntry);
+                    backgroundKey = new NamespacedKey(backgroundKey.getNamespace(), path.substring("textures/".length(), path.length() - ".png".length()));
                 }
             }
             final Advancement advancement = new Advancement(false, key, parentKey,
