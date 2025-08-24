@@ -71,6 +71,11 @@ public class PaperAPITools {
         return entity.getCustomName();
     }
 
+    public BaseComponent[] getCustomNameComponent(Entity entity) {
+        String customName = entity.getCustomName();
+        return customName != null ? FormattedTextHelper.parseSimpleColorsOnly(customName) : null;
+    }
+
     public void setPlayerListName(Player player, String name) {
         player.setPlayerListName(name);
     }
