@@ -2,15 +2,16 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
-import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.core.CustomColorTagBase;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.TextWidthHelper;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.core.*;
+import com.denizenscript.denizencore.objects.core.ColorTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
@@ -263,25 +264,6 @@ public class BukkitElementExtensions {
             Deprecations.asXTags.warn(attribute.context);
             return ElementTag.handleNull(object.asString(), WorldTag.valueOf(object.asString(), attribute.context), "WorldTag", attribute.hasAlternative());
         }, "asworld");
-
-        // <--[tag]
-        // @attribute <ElementTag.format[<format_script>]>
-        // @returns ElementTag
-        // @group text manipulation
-        // @description
-        // Returns the text re-formatted according to a format script.
-        // -->
-        ElementTag.tagProcessor.registerTag(ElementTag.class, ScriptTag.class, "format", (attribute, object, format) -> {
-            if (!(format.getContainer() instanceof FormatScriptContainer)) {
-                attribute.echoError("Script '" + format + "' is not a format script.");
-                return null;
-            }
-            else {
-                return new ElementTag(((FormatScriptContainer) format.getContainer()).getFormattedText(object.asString(),
-                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC() : null,
-                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer() : null));
-            }
-        });
 
         // <--[tag]
         // @attribute <ElementTag.split_lines_by_width[<#>]>

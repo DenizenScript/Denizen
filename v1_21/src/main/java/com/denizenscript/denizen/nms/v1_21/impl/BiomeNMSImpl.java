@@ -7,6 +7,8 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -29,19 +31,25 @@ import org.bukkit.entity.EntityType;
 import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class BiomeNMSImpl extends BiomeNMS {
 
     public static final MethodHandle BIOME_CLIMATESETTINGS_CONSTRUCTOR = ReflectionHelper.getConstructor(Biome.ClimateSettings.class, boolean.class, float.class, Biome.TemperatureModifier.class, float.class);
+    public static final MethodHandle MAPPED_REGISTRY_REGISTRATION_INFOS = ReflectionHelper.getFields(MappedRegistry.class).getGetter(ReflectionMappingsInfo.MappedRegistry_registrationInfos);
 
-    public Holder<Biome> biomeHolder;
+    public Holder.Reference<Biome> biomeHolder;
     public ServerLevel world;
 
     public BiomeNMSImpl(ServerLevel world, NamespacedKey key) {
         super(world.getWorld(), key);
         this.world = world;
-        biomeHolder = world.registryAccess().lookupOrThrow(Registries.BIOME).get(ResourceKey.create(Registries.BIOME, CraftNamespacedKey.toMinecraft(key))).orElse(null);
+        this.biomeHolder = getBiomeRegistry().get(ResourceKey.create(Registries.BIOME, CraftNamespacedKey.toMinecraft(key))).orElse(null);
+    }
+
+    private MappedRegistry<Biome> getBiomeRegistry() {
+        return (MappedRegistry<Biome>) world.registryAccess().lookupOrThrow(Registries.BIOME);
     }
 
     @Override
@@ -115,6 +123,7 @@ public class BiomeNMSImpl extends BiomeNMS {
         try {
             Object newClimate = BIOME_CLIMATESETTINGS_CONSTRUCTOR.invoke(hasPrecipitation, temperature, temperatureModifier, downfall);
             ReflectionHelper.setFieldValue(Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeHolder.value(), newClimate);
+            setNetworkedRegistrationInfo();
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -139,6 +148,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setFoliageColor(int color) {
         ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_foliageColorOverride, biomeHolder.value().getSpecialEffects(), Optional.of(color));
+        setNetworkedRegistrationInfo();
     }
 
     @Override
@@ -149,6 +159,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setFogColor(int color) {
         ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_fogColor, biomeHolder.value().getSpecialEffects(), color);
+        setNetworkedRegistrationInfo();
     }
 
     @Override
@@ -159,6 +170,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     @Override
     public void setWaterFogColor(int color) {
         ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_waterFogColor, biomeHolder.value().getSpecialEffects(), color);
+        setNetworkedRegistrationInfo();
     }
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {
@@ -193,5 +205,16 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     public Biome.TemperatureModifier getTemperatureModifier() {
         return biomeHolder.value().climateSettings.temperatureModifier();
+    }
+
+    private void setNetworkedRegistrationInfo() {
+        try {
+            Map<ResourceKey<Biome>, RegistrationInfo> registrationInfos = (Map<ResourceKey<Biome>, RegistrationInfo>) MAPPED_REGISTRY_REGISTRATION_INFOS.invokeExact(getBiomeRegistry());
+            registrationInfos.put(biomeHolder.key(), RegistrationInfo.BUILT_IN);
+        }
+        catch (Throwable e) {
+            Debug.echoError("Failed to set biome registration info, changes may not be synced correctly.");
+            Debug.echoError(e);
+        }
     }
 }
