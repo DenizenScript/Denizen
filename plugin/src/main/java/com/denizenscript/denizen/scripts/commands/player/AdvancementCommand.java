@@ -54,7 +54,7 @@ public class AdvancementCommand extends AbstractCommand {
     // The title argument sets the title that will show on toasts and in the advancements menu.
     // The description argument sets the information that will show when scrolling over a chat announcement or in the advancements menu.
     // The background argument sets the image to use if the advancement goes to a new tab.
-    // If the background is unspecified, defaults to "minecraft:textures/gui/advancements/backgrounds/stone.png".
+    // If the background is unspecified, defaults to "minecraft:gui/advancements/backgrounds/stone".
     // The frame argument sets the type of advancement - valid arguments are CHALLENGE, GOAL, and TASK.
     // The toast argument sets whether the advancement should display a toast message when a player completes it. Default is true.
     // The announce argument sets whether the advancement should display a chat message to the server when a player completes it. Default is true.
