@@ -15,7 +15,6 @@ public class ContainerRegistry {
         }
         ScriptRegistry._registerType("enchantment", EnchantmentScriptContainer.class);
         ScriptRegistry._registerType("entity", EntityScriptContainer.class);
-        ScriptRegistry._registerType("format", FormatScriptContainer.class);
         ScriptRegistry._registerType("interact", InteractScriptContainer.class);
         ScriptRegistry._registerType("inventory", InventoryScriptContainer.class);
         ScriptRegistry._registerType("item", ItemScriptContainer.class);
