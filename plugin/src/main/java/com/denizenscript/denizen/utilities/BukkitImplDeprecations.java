@@ -476,6 +476,12 @@ public class BukkitImplDeprecations {
     // Added 2025/07/11
     public static Warning assignmentOptionalPrefixArgs = new FutureWarning("assignmentOptionalPrefixArgs", "For the 'assignment' command, the args 'script' and 'to' now require a prefix to use.");
 
+    // Added 2025/06/29
+    public static Warning blockExplodesStrengthDetermination = new FutureWarning("blockExplodesStrengthDetermination", "The determination to control strength in the 'block explodes' script event has been changed into the 'STRENGTH:<ElementTag(Decimal)>' format.");
+
+    // Added 2025/06/29
+    public static Warning blockDispensesItemDetermination = new FutureWarning("blockDispensesItemDetermination", "The determination to control the item in the 'block dispenses' script event has been changed into the 'ITEM:<ItemTag>' format.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2023/10/29 without warning.
