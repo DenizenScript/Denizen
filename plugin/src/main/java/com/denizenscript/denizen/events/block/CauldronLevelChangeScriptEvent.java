@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.CauldronLevelChangeEvent;
@@ -39,10 +40,20 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
     public CauldronLevelChangeScriptEvent() {
         registerCouldMatcher("cauldron level changes|raises|lowers");
         registerSwitches("cause");
+        this.<CauldronLevelChangeScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, level) -> {
+            if (level.isInt()) {
+                evt.newLevel = level.asInt();
+                ((Levelled) evt.event.getNewState().getBlockData()).setLevel(newLevel);
+                return true;
+            }
+            return false;
+        });
     }
 
     public LocationTag location;
     public CauldronLevelChangeEvent event;
+    public int oldLevel;
+    public int newLevel;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -54,12 +65,12 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
         }
         String changeType = path.eventArgLowerAt(2);
         if (changeType.equals("raises")) {
-            if (event.getNewLevel() <= event.getOldLevel()) {
+            if (newLevel <= oldLevel) {
                 return false;
             }
         }
         else if (changeType.equals("lowers")) {
-            if (event.getNewLevel() >= event.getOldLevel()) {
+            if (newLevel >= oldLevel) {
                 return false;
             }
         }
@@ -70,32 +81,22 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            event.setNewLevel(element.asInt());
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "cause": return new ElementTag(event.getReason());
-            case "old_level": return new ElementTag(event.getOldLevel());
-            case "new_level": return new ElementTag(event.getNewLevel());
-            case "entity":
-                if (event.getEntity() != null) {
-                    return new EntityTag(event.getEntity()).getDenizenObject();
-                }
-                break;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "cause" -> new ElementTag(event.getReason());
+            case "old_level" -> new ElementTag(oldLevel);
+            case "new_level" -> new ElementTag(newLevel);
+            case "entity" -> event.getEntity() != null ? new EntityTag(event.getEntity()).getDenizenObject() : null;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
     public void onCauldronLevelChange(CauldronLevelChangeEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
+        oldLevel = ((Levelled) event.getBlock().getBlockData()).getLevel();
+        newLevel = ((Levelled) event.getNewState().getBlockData()).getLevel();
         this.event = event;
         fire(event);
     }

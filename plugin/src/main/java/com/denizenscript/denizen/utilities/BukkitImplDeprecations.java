@@ -482,6 +482,9 @@ public class BukkitImplDeprecations {
     // Added 2025/08/23
     public static Warning advancementBackgroundFormat = new FutureWarning("advancementBackgroundFormat", "The 'background:' input in the advancement command no longer uses the 'textures/' path or '.png' suffix, so for example 'minecraft:textures/gui/advancements/backgrounds/stone.png' would be 'minecraft:gui/advancements/backgrounds/stone'.");
 
+    // Added 2025/08/25
+    public static Warning brewingStandConsumeDetermination = new FutureWarning("brewingStandConsumeDetermination", "The 'consuming' and 'not_consuming' determinations in the 'brewing stand fueled' event have been deprecated in favor of 'CONSUME:<ElementTag(Boolean)>'.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2023/10/29 without warning.

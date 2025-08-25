@@ -5,7 +5,6 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
@@ -35,6 +34,9 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
 
     public FurnaceBurnsItemScriptEvent() {
         registerCouldMatcher("furnace burns <item>");
+        this.<FurnaceBurnsItemScriptEvent, DurationTag>registerDetermination(null, DurationTag.class, (evt, context, time) -> {
+            evt.event.setBurnTime(time.getTicksAsInt());
+        });
     }
 
     public ItemTag item;
@@ -53,25 +55,12 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            event.setBurnTime(element.asInt());
-            return true;
-        }
-        else if (determinationObj.canBeType(DurationTag.class)) {
-            event.setBurnTime(determinationObj.asType(DurationTag.class, getTagContext(path)).getTicksAsInt());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "item": return item;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "item" -> item;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
