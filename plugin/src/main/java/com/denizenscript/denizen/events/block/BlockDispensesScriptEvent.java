@@ -4,6 +4,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,12 +31,35 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Determine
     // LocationTag to set the velocity the item will be shot at.
-    // ItemTag to set the item being shot.
+    // "ITEM:<ItemTag>" to set the item being shot.
     //
     // -->
 
     public BlockDispensesScriptEvent() {
         registerCouldMatcher("<block> dispenses <item>");
+        this.<BlockDispensesScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            if (value.canBeType(LocationTag.class)) {
+                LocationTag location = value.asType(LocationTag.class, context);
+                if (location != null) {
+                    evt.event.setVelocity(location.toVector());
+                    return true;
+                }
+            }
+            else if (value.canBeType(ItemTag.class)) {
+                BukkitImplDeprecations.blockDispensesItemDetermination.warn();
+                ItemTag item = value.asType(ItemTag.class, context);
+                if (item != null) {
+                    evt.item = item;
+                    evt.event.setItem(item.getItemStack());
+                    return true;
+                }
+            }
+            return false;
+        });
+        this.<BlockDispensesScriptEvent, ItemTag>registerDetermination("item", ItemTag.class, (evt, context, value) -> {
+            evt.item = value;
+            evt.event.setItem(value.getItemStack());
+        });
     }
 
     public LocationTag location;
@@ -58,33 +82,13 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj.canBeType(LocationTag.class)) {
-            LocationTag vel = determinationObj.asType(LocationTag.class, getTagContext(path));
-            if (vel != null) {
-                event.setVelocity(vel.toVector());
-                return true;
-            }
-        }
-        if (determinationObj.canBeType(ItemTag.class)) {
-            ItemTag it = determinationObj.asType(ItemTag.class, getTagContext(path));
-            if (it != null) {
-                item = it;
-                event.setItem(item.getItemStack());
-                return true;
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "item": return item;
-            case "velocity": return new LocationTag(event.getVelocity());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "item" -> new ItemTag(event.getItem());
+            case "velocity" -> new LocationTag(event.getVelocity());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

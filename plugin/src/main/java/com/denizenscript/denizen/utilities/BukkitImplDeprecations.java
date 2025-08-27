@@ -264,6 +264,9 @@ public class BukkitImplDeprecations {
     // Added 2025/03/14
     public static Warning settingBoatType = new Warning("settingBoatType", "As of MC 1.21, separate boat wood types are separate entity types, meaning the wood type of an existing boat entity cannot be changed without spawning a new one.");
 
+    // Added 2025/07/10
+    public static Warning entityKnockback = new Warning("entityKnockback", "The 'EntityTag.knockback' property is deprecated. You should adjust the knockback enchantment on the weapon itself.");
+
     // ==================== SLOW deprecations ====================
     // These aren't spammed, but will show up repeatedly until fixed. Server owners will probably notice them.
 
@@ -289,12 +292,6 @@ public class BukkitImplDeprecations {
     // Added 2024/05/31
     // 2024-year-end commonality: #15
     public static Warning oldNbtProperty = new SlowWarning("oldNbtProperty", "'ItemTag.raw_nbt' is deprecated in favor of 'ItemTag.custom_data', as item NBT was removed by Mojang in favor of item components.");
-
-    // In multiple places, Added 2021/11/20, made very-slow 2022/12/31, made slow 2025/01/15.
-    // 2022-year-end commonality: #15
-    // 2023-year-end commonality: #23
-    // Safe to remove now.
-    public static Warning pseudoTagBases = new SlowWarning("pseudoTagBases", "Pseudo-tags like '<text>', '<name>', '<amount>', and '<permission>' are deprecated in favor of definitions: just replace <text> with <[text]> or similar.");
 
     // Added 2021/10/18, made very-slow 2022/12/31, made slow 2025/01/15.
     // 2022-year-end commonality: #10
@@ -475,6 +472,15 @@ public class BukkitImplDeprecations {
 
     // Added 2025/07/11
     public static Warning assignmentOptionalPrefixArgs = new FutureWarning("assignmentOptionalPrefixArgs", "For the 'assignment' command, the args 'script' and 'to' now require a prefix to use.");
+
+    // Added 2025/06/29
+    public static Warning blockExplodesStrengthDetermination = new FutureWarning("blockExplodesStrengthDetermination", "The determination to control strength in the 'block explodes' script event has been changed into the 'STRENGTH:<ElementTag(Decimal)>' format.");
+
+    // Added 2025/06/29
+    public static Warning blockDispensesItemDetermination = new FutureWarning("blockDispensesItemDetermination", "The determination to control the item in the 'block dispenses' script event has been changed into the 'ITEM:<ItemTag>' format.");
+
+    // Added 2025/08/23
+    public static Warning advancementBackgroundFormat = new FutureWarning("advancementBackgroundFormat", "The 'background:' input in the advancement command no longer uses the 'textures/' path or '.png' suffix, so for example 'minecraft:textures/gui/advancements/backgrounds/stone.png' would be 'minecraft:gui/advancements/backgrounds/stone'.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
