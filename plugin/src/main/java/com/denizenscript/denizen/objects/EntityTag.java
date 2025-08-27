@@ -1255,12 +1255,47 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.entity_type>
         // @returns ElementTag
+        // @deprecated Use 'EntityTag.type' on MC 1.20+.
+        // @description
+        // Deprecated in favor of <@link tag EntityTag.type> on MC 1.20+, which returns entity type names as specified by Mojang (scripts using this may need an update when switching).
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "entity_type", (attribute, object) -> {
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                return new ElementTag(object.getEntityType().getName(), true);
+            }
+            BukkitImplDeprecations.oldSpigotNames.warn(attribute.context);
+            return new ElementTag(switch (object.getEntityType().getName()) {
+                case "ITEM" -> "DROPPED_ITEM";
+                case "LEASH_KNOT" -> "LEASH_HITCH";
+                case "EYE_OF_ENDER" -> "ENDER_SIGNAL";
+                case "POTION" -> "SPLASH_POTION";
+                case "EXPERIENCE_BOTTLE" -> "THROWN_EXP_BOTTLE";
+                case "TNT" -> "PRIMED_TNT";
+                case "FIREWORK_ROCKET" -> "FIREWORK";
+                case "COMMAND_BLOCK_MINECART" -> "MINECART_COMMAND";
+                case "CHEST_MINECART" -> "MINECART_CHEST";
+                case "FURNACE_MINECART" -> "MINECART_FURNACE";
+                case "TNT_MINECART" -> "MINECART_TNT";
+                case "HOPPER_MINECART" -> "MINECART_HOPPER";
+                case "SPAWNER_MINECART" -> "MINECART_MOB_SPAWNER";
+                case "MOOSHROOM" -> "MUSHROOM_COW";
+                case "SNOW_GOLEM" -> "SNOWMAN";
+                case "END_CRYSTAL" -> "ENDER_CRYSTAL";
+                case "FISHING_BOBBER" -> "FISHING_HOOK";
+                case "LIGHTNING_BOLT" -> "LIGHTNING";
+                default -> object.getEntityType().getName();
+            }, true);
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.type>
+        // @returns ElementTag
         // @group data
         // @description
         // Returns the type of the entity.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "entity_type", (attribute, object) -> {
-            return new ElementTag(object.entity_type.getName());
+        tagProcessor.registerTag(ElementTag.class, "type", (attribute, object) -> {
+            return new ElementTag(object.getEntityType().getLowercaseName(), true);
         });
 
         // <--[tag]

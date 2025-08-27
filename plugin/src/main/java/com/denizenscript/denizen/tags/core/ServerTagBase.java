@@ -787,10 +787,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns a list of all entity types known to the server.
         // Generally used with <@link objecttype EntityTag>.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html>.
+        // For the default ("vanilla") entity types, see <@link url https://minecraft.wiki/w/Java_Edition_data_values#Entities>.
         // -->
         tagProcessor.registerStaticTag(ListTag.class, "entity_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                return Utilities.registryKeys(Registry.ENTITY_TYPE);
+            }
             ListTag entityTypes = new ListTag();
             for (EntityType entityType : EntityType.values()) {
                 if (entityType != EntityType.UNKNOWN) {
