@@ -296,6 +296,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialLightable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialMode.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialNote.class, MaterialTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            PropertyParser.registerProperty(MaterialOminous.class, MaterialTag.class);
+        }
         PropertyParser.registerProperty(MaterialPersistent.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialPower.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialShape.class, MaterialTag.class);
@@ -303,6 +306,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialSnowable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialSwitchable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialUnstable.class, MaterialTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            PropertyParser.registerProperty(MaterialVaultState.class, MaterialTag.class);
+        }
         PropertyParser.registerProperty(MaterialWaterlogged.class, MaterialTag.class);
 
         // register core TradeTag properties
