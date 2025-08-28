@@ -17,6 +17,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.events.ScriptEventCouldMatcher;
+import org.bukkit.event.entity.TrialSpawnerSpawnEvent;
 
 import java.util.Arrays;
 
@@ -99,8 +100,9 @@ public class ScriptEventRegistry {
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            ScriptEvent.registerScriptEvent(VaultDisplayItemScriptEvent.class);
             ScriptEvent.registerScriptEvent(CrafterCraftsScriptEvent.class);
+            ScriptEvent.registerScriptEvent(EntityTrialSpawnerSpawnScriptEvent.class);
+            ScriptEvent.registerScriptEvent(VaultDisplayItemScriptEvent.class);
         }
 
         // Entity events
