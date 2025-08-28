@@ -99,6 +99,7 @@ public class ScriptEventRegistry {
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(VaultDisplayItemScriptEvent.class);
             ScriptEvent.registerScriptEvent(CrafterCraftsScriptEvent.class);
         }
 
