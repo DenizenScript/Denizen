@@ -268,9 +268,6 @@ public class BukkitImplDeprecations {
     // Added 2025/03/14
     public static Warning settingBoatType = new Warning("settingBoatType", "As of MC 1.21, separate boat wood types are separate entity types, meaning the wood type of an existing boat entity cannot be changed without spawning a new one.");
 
-    // Added 2025/08/18
-    public static Warning playerSteerEntityEvent = new Warning("playerSteerEntityEvent", "The 'player steers <entity>' event is deprecated in favor of the 'player input' event.");
-
     // ==================== SLOW deprecations ====================
     // These aren't spammed, but will show up repeatedly until fixed. Server owners will probably notice them.
 
@@ -357,6 +354,9 @@ public class BukkitImplDeprecations {
     // Added 2025/03/16
     // Bump once 1.21 is the minimum supported version (as that is where boat types were split)
     public static Warning gettingBoatType = new SlowWarning("gettingBoatType", "Getting boat wood types is deprecated, as separate boat types are separate entity types now: should check the entity type.");
+
+    // Added 2025/08/18
+    public static Warning playerSteerEntityEvent = new SlowWarning("playerSteerEntityEvent", "The 'player steers <entity>' event is deprecated in favor of the 'player input' event.");
 
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
