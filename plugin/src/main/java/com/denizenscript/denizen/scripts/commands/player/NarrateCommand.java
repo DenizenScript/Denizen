@@ -1,21 +1,23 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
-import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.ScriptFormattingContext;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -26,6 +28,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class NarrateCommand extends AbstractCommand {
+
+    public static final String NARRATE_FORMAT_TYPE = ScriptFormattingContext.registerFormatType("narrate");
 
     public NarrateCommand() {
         setName("narrate");
@@ -46,7 +50,7 @@ public class NarrateCommand extends AbstractCommand {
     // @Description
     // Prints some text into the target's chat area. If no target is specified it will default to the attached player or the console.
     //
-    // Accepts the 'format:<script>' argument, which will reformat the text according to the specified format script. See <@link language Format Script Containers>.
+    // You can format the text with <@link language Format Script Containers> using the 'format' argument, or with the "narrate" format type (see <@link language Script Formats>).
     //
     // Optionally use 'per_player' with a list of player targets, to have the tags in the text input be reparsed for each and every player.
     // So, for example, "- narrate 'hello <player.name>' targets:<server.online_players>"
@@ -138,9 +142,16 @@ public class NarrateCommand extends AbstractCommand {
                 fromId = UUID.fromString(from.asString());
             }
         }
-        FormatScriptContainer format = formatObj == null ? null : (FormatScriptContainer) formatObj.getContainer();
+        ScriptFormattingContext formattingContext;
+        if (formatObj != null) {
+            formattingContext = ((FormatScriptContainer) formatObj.getContainer()).getAsFormattingContext();
+        }
+        else {
+            ScriptContainer scriptContainer = scriptEntry.getScriptContainer();
+            formattingContext = scriptContainer != null ? scriptContainer.getFormattingContext() : null;
+        }
         if (targets == null) {
-            Bukkit.getServer().getConsoleSender().spigot().sendMessage(FormattedTextHelper.parse(format != null ? format.getFormattedText(text, scriptEntry) : text, ChatColor.WHITE));
+            Bukkit.getServer().getConsoleSender().spigot().sendMessage(FormattedTextHelper.parse(formattingContext != null ? formattingContext.format(NARRATE_FORMAT_TYPE, text, scriptEntry) : text, ChatColor.WHITE));
             return;
         }
         for (PlayerTag player : targets) {
@@ -154,7 +165,7 @@ public class NarrateCommand extends AbstractCommand {
                     context.player = player;
                     personalText = TagManager.tag(personalText, context);
                 }
-                BaseComponent[] component = FormattedTextHelper.parse(format != null ? format.getFormattedText(personalText, scriptEntry) : personalText, ChatColor.WHITE);
+                BaseComponent[] component = FormattedTextHelper.parse(formattingContext != null ? formattingContext.format(NARRATE_FORMAT_TYPE, personalText, scriptEntry) : personalText, ChatColor.WHITE);
                 if (fromId == null) {
                     player.getPlayerEntity().spigot().sendMessage(component);
                 }

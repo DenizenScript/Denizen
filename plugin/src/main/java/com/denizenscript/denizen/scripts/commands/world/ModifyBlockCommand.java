@@ -432,30 +432,34 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
         location = location.getBlockLocation();
         World world = location.getWorld();
+        Block block = location.getBlock();
+        int xpToDrop = natural != null && material.getMaterial() == Material.AIR ? NMSHandler.blockHelper.getExpDrop(block, natural.getItemStack()) : 0;
         if (source != null) {
             if (material.getMaterial() == Material.AIR) {
-                if (callEvent(new BlockBreakEvent(location.getBlock(), source), entry)) {
+                BlockBreakEvent breakEvent = new BlockBreakEvent(block, source);
+                breakEvent.setExpToDrop(xpToDrop);
+                if (callEvent(breakEvent, entry)) {
                     return;
                 }
-                setBlock(location, material, doPhysics, natural);
+                setBlock(location, material, doPhysics, breakEvent.isDropItems() ? natural : null, breakEvent.getExpToDrop());
             }
             else {
-                Block block = location.getBlock();
                 BlockState originalState = block.getState();
-                setBlock(location, material, doPhysics, natural);
-                if (callEvent(new BlockPlaceEvent(block, originalState, block, new ItemStack(material.getMaterial()), source, true, EquipmentSlot.HAND), entry)) {
+                setBlock(location, material, doPhysics, natural, xpToDrop);
+                BlockPlaceEvent placeEvent = new BlockPlaceEvent(block, originalState, block, new ItemStack(material.getMaterial()), source, true, EquipmentSlot.HAND);
+                if (callEvent(placeEvent, entry) || !placeEvent.canBuild()) {
                     originalState.update(true, doPhysics);
                     return;
                 }
             }
         }
         else {
-            setBlock(location, material, doPhysics, natural);
+            setBlock(location, material, doPhysics, natural, xpToDrop);
         }
         if (radius != 0) {
             for (int x = 0; x < 2 * radius + 1; x++) {
                 for (int z = 0; z < 2 * radius + 1; z++) {
-                    setBlock(new Location(world, location.getX() + x - radius, location.getY(), location.getZ() + z - radius), material, doPhysics, natural);
+                    setBlock(new Location(world, location.getX() + x - radius, location.getY(), location.getZ() + z - radius), material, doPhysics, natural, xpToDrop);
                 }
             }
         }
@@ -463,7 +467,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             for (int x = 0; x < 2 * radius + 1; x++) {
                 for (int z = 0; z < 2 * radius + 1; z++) {
                     for (int y = 1; y < height + 1; y++) {
-                        setBlock(new Location(world, location.getX() + x - radius, location.getY() + y, location.getZ() + z - radius), material, doPhysics, natural);
+                        setBlock(new Location(world, location.getX() + x - radius, location.getY() + y, location.getZ() + z - radius), material, doPhysics, natural, xpToDrop);
                     }
                 }
             }
@@ -472,14 +476,14 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             for (int x = 0; x < 2 * radius + 1; x++) {
                 for (int z = 0; z < 2 * radius + 1; z++) {
                     for (int y = 1; y < depth + 1; y++) {
-                        setBlock(new Location(world, location.getX() + x - radius, location.getY() - y, location.getZ() + z - radius), material, doPhysics, natural);
+                        setBlock(new Location(world, location.getX() + x - radius, location.getY() - y, location.getZ() + z - radius), material, doPhysics, natural, xpToDrop);
                     }
                 }
             }
         }
     }
 
-    public static void setBlock(Location location, MaterialTag material, boolean physics, ItemTag natural) {
+    public static void setBlock(Location location, MaterialTag material, boolean physics, ItemTag natural, int xpToDrop) {
         if (physics) {
             block_physics.remove(location);
         }
@@ -491,12 +495,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             Debug.echoError("Invalid modifyblock location: " + new LocationTag(location));
             return;
         }
+        if (xpToDrop > 0) {
+            location.getWorld().spawn(location, ExperienceOrb.class, orb -> orb.setExperience(xpToDrop));
+        }
         if (natural != null && material.getMaterial() == Material.AIR) {
-            int xp = NMSHandler.blockHelper.getExpDrop(location.getBlock(), natural.getItemStack());
-            if (xp > 0) {
-                ExperienceOrb orb = (ExperienceOrb) location.getWorld().spawnEntity(location, EntityType.EXPERIENCE_ORB);
-                orb.setExperience(xp);
-            }
             location.getBlock().breakNaturally(natural.getItemStack());
         }
         else {

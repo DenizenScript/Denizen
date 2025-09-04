@@ -23,6 +23,7 @@ import io.papermc.paper.potion.PotionMix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
@@ -81,6 +82,12 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     @Override
     public String getCustomName(Entity entity) {
         return PaperModule.stringifyComponent(entity.customName());
+    }
+
+    @Override
+    public BaseComponent[] getCustomNameComponent(Entity entity) {
+        Component customName = entity.customName();
+        return customName != null ? FormattedTextHelper.parseJson(PaperModule.componentToJson(customName)) : null;
     }
 
     @Override
