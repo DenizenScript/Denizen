@@ -4,47 +4,34 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.PaperAPITools;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.google.gson.*;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.*;
-import net.md_5.bungee.chat.ChatVersion;
-import net.md_5.bungee.chat.ComponentSerializer;
-import net.md_5.bungee.chat.VersionedComponentSerializer;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventSource;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Type;
 import java.util.UUID;
 
 public class HoverFormatHelper {
 
-    public static boolean processHoverInput(HoverEvent.Action action, TextComponent hoverableText, String input) {
-        Content content;
+    public static boolean processHoverInput(HoverEvent.Action<?> action, TextComponent.Builder hoverableText, String input) {
+        HoverEventSource<?> content;
         if (action == HoverEvent.Action.SHOW_ITEM) {
             ItemTag item = ItemTag.valueOf(com.denizenscript.denizen.utilities.FormattedTextHelper.unescape(input), CoreUtilities.noDebugContext);
             if (item == null) {
                 return true;
             }
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                content = new com.denizenscript.denizen.utilities.HoverFormatHelper.FixedItemHover(item.getBukkitMaterial().getKey().toString(), item.getAmount(), NMSHandler.itemHelper.getRawHoverComponentsJson(item.getItemStack()));
-            }
-            else {
-                content = new Item(item.getBukkitMaterial().getKey().toString(), item.getAmount(), net.md_5.bungee.api.chat.ItemTag.ofNbt(NMSHandler.itemHelper.getLegacyHoverNbt(item)));
-            }
+            content = item.getItemStack();
         }
         else if (action == HoverEvent.Action.SHOW_ENTITY) {
             String rawInput = com.denizenscript.denizen.utilities.FormattedTextHelper.unescape(input);
@@ -59,183 +46,98 @@ public class HoverFormatHelper {
                 if (entityHoverData == null) {
                     return true;
                 }
-                ElementTag uuid = entityHoverData.getElement("uuid");
+                ElementTag uuidElement = entityHoverData.getElement("uuid");
+                if (uuidElement == null) {
+                    return true;
+                }
+                UUID uuid = CoreUtilities.tryParseUUID(uuidElement.asString());
                 if (uuid == null) {
                     return true;
                 }
                 ElementTag type = entityHoverData.getElement("type");
+                if (type == null) {
+                    return true;
+                }
                 ElementTag rawName = entityHoverData.getElement("name");
-                BaseComponent name = rawName != null ? new TextComponent(com.denizenscript.denizen.utilities.FormattedTextHelper.parse(rawName.asString(), ChatColor.WHITE)) : null;
-                content = new Entity(type != null ? type.asString() : null, uuid.asString(), name);
+                Component name = rawName != null ? FormattedTextHelper.parse(rawName.asString(), NamedTextColor.WHITE) : null;
+                content = HoverEvent.showEntity(Key.key(type.asString()), uuid, name);
             }
         }
         else {
-            content = new Text(com.denizenscript.denizen.utilities.FormattedTextHelper.parse(com.denizenscript.denizen.utilities.FormattedTextHelper.unescape(input), ChatColor.WHITE));
+            content = FormattedTextHelper.parse(FormattedTextHelper.unescape(input), NamedTextColor.WHITE);
         }
-        hoverableText.setHoverEvent(new HoverEvent(action, content));
+        hoverableText.hoverEvent(content);
         return false;
     }
 
-    public static String stringForHover(HoverEvent hover) {
-        if (hover.getContents().isEmpty()) {
-            return "";
+    public static String stringForHover(HoverEvent<?> hover) {
+        if (hover.value() instanceof Component textHover) {
+            return FormattedTextHelper.stringify(textHover);
         }
-        Content contentObject = hover.getContents().get(0);
-        if (contentObject instanceof Text textHover) {
-            Object value = textHover.getValue();
-            if (value instanceof BaseComponent[] componentsValue) {
-                return com.denizenscript.denizen.utilities.FormattedTextHelper.stringify(componentsValue);
+        else if (hover.value() instanceof HoverEvent.ShowItem itemHover) {
+            Debug.log("Item hover: " + itemHover.dataComponents());
+            ItemStack item = new ItemStack(Registry.MATERIAL.get(itemHover.item()), itemHover.count());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+//                item = NMSHandler.itemHelper.applyRawHoverComponentsJson(item, fixedItemHover.getComponents()); TODO
             }
-            else {
-                return value.toString();
-            }
-        }
-        else if (contentObject instanceof Item itemHover) {
-            ItemStack item = new ItemStack(Registry.MATERIAL.get(Utilities.parseNamespacedKey(itemHover.getId())), itemHover.getCount() == -1 ? 1 : itemHover.getCount());
-            if (itemHover instanceof com.denizenscript.denizen.utilities.HoverFormatHelper.FixedItemHover fixedItemHover && fixedItemHover.getComponents() != null) {
-                item = NMSHandler.itemHelper.applyRawHoverComponentsJson(item, fixedItemHover.getComponents());
-            }
-            else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19) && itemHover.getTag() != null && itemHover.getTag().getNbt() != null) {
-                item = Bukkit.getUnsafe().modifyItemStack(item, itemHover.getTag().getNbt());
+            else if (itemHover.nbt() != null) {
+                item = Bukkit.getUnsafe().modifyItemStack(item, itemHover.nbt().string());
             }
             return new ItemTag(item).identify();
         }
-        else if (contentObject instanceof Entity entityHover) {
-            return createEntityHoverData(entityHover.getId(), entityHover.getType(), entityHover.getName()).savable();
+        else if (hover.value() instanceof HoverEvent.ShowEntity entityHover) {
+            return createEntityHoverData(entityHover.id(), entityHover.type(), entityHover.name()).savable();
         }
         else {
             throw new UnsupportedOperationException();
         }
     }
 
-    public static MapTag createEntityHoverData(String uuid, String type, BaseComponent name) {
+    public static MapTag createEntityHoverData(UUID uuid, Key type, Component name) {
         MapTag entityHoverData = new MapTag();
-        entityHoverData.putObject("uuid", new ElementTag(uuid, true));
-        if (type != null) {
-            entityHoverData.putObject("type", new ElementTag(type, true));
-        }
-        else {
-            try {
-                // This isn't even optional, but is in Bungee for some reason - try our best to have a value
-                org.bukkit.entity.Entity found = EntityTag.getEntityForID(UUID.fromString(uuid));
-                if (found != null) {
-                    entityHoverData.putObject("type", new ElementTag(found.getType().getKey().toString(), true));
-                }
-            }
-            catch (IllegalArgumentException ignore) {}
-        }
+        entityHoverData.putObject("uuid", new ElementTag(uuid.toString(), true));
+        entityHoverData.putObject("type", new ElementTag(type.asString(), true));
         if (name != null) {
-            entityHoverData.putObject("name", new ElementTag(com.denizenscript.denizen.utilities.FormattedTextHelper.stringify(name), true));
+            entityHoverData.putObject("name", new ElementTag(FormattedTextHelper.stringify(name), true));
         }
         return entityHoverData;
     }
 
-    public static String parseObjectToHover(ObjectTag object, HoverEvent.Action action, Attribute attribute) {
-        return switch (action) {
-            case SHOW_ENTITY -> {
-                EntityTag toShow = object.asType(EntityTag.class, attribute.context);
-                if (toShow == null) {
-                    attribute.echoError("Invalid hover object '" + object + "' specified for type 'SHOW_ENTITY': must be an EntityTag.");
-                    yield null;
-                }
-                BaseComponent[] customName = PaperAPITools.instance.getCustomNameComponent(toShow.getBukkitEntity());
-                yield createEntityHoverData(toShow.getUUID().toString(), toShow.getBukkitEntityType().getKey().toString(), customName != null ? new TextComponent(customName) : null).savable();
+    public static String parseObjectToHover(ObjectTag object, HoverEvent.Action<?> action, Attribute attribute) {
+        if (action == HoverEvent.Action.SHOW_ENTITY) {
+            EntityTag toShow = object.asType(EntityTag.class, attribute.context);
+            if (toShow == null) {
+                attribute.echoError("Invalid hover object '" + object + "' specified for type 'SHOW_ENTITY': must be an EntityTag.");
+                return null;
             }
-            case SHOW_ITEM -> {
-                ItemTag toShow = object.asType(ItemTag.class, attribute.context);
-                if (toShow == null) {
-                    attribute.echoError("Invalid hover object '" + object + "' specified for type 'SHOW_ITEM': must be an ItemTag.");
-                    yield null;
-                }
-                yield toShow.identify();
+            return createEntityHoverData(toShow.getUUID(), toShow.getBukkitEntityType().key(), toShow.getBukkitEntity() != null ? toShow.getBukkitEntity().customName() : null).savable();
+        }
+        else if (action == HoverEvent.Action.SHOW_ITEM) {
+            ItemTag toShow = object.asType(ItemTag.class, attribute.context);
+            if (toShow == null) {
+                attribute.echoError("Invalid hover object '" + object + "' specified for type 'SHOW_ITEM': must be an ItemTag.");
+                return null;
             }
-            case SHOW_TEXT -> object.toString();
-            default -> {
-                attribute.echoError("Using unsupported hover type: " + action + '.');
-                yield null;
-            }
-        };
+            return toShow.identify();
+        }
+        else if (action == HoverEvent.Action.SHOW_TEXT) {
+            return object.identify();
+        }
+        else {
+            attribute.echoError("Using unsupported hover type: " + action + '.');
+            return null;
+        }
     }
 
-    private static Entity parseLegacyEntityHover(String input) {
+    private static HoverEventSource<HoverEvent.ShowEntity> parseLegacyEntityHover(String input) {
         EntityTag entity = EntityTag.valueOf(input, CoreUtilities.basicContext);
         if (entity == null) {
             return null;
         }
-        BaseComponent name = null;
+        Component name = null;
         if (entity.getBukkitEntity() != null && entity.getBukkitEntity().isCustomNameVisible()) {
-            name = new TextComponent();
-            for (BaseComponent component : com.denizenscript.denizen.utilities.FormattedTextHelper.parse(entity.getBukkitEntity().getCustomName(), ChatColor.WHITE)) {
-                name.addExtra(component);
-            }
+            name = entity.getBukkitEntity().customName();
         }
-        return new Entity(entity.getBukkitEntityType().getKey().toString(), entity.getUUID().toString(), name);
-    }
-
-    public static void tryInitializeItemHoverFix() {
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            return;
-        }
-        Gson bungeeGson = FormattedTextHelper.getBungeeGson();
-        if (bungeeGson == null) {
-            return;
-        }
-        Gson fixedGson = bungeeGson.newBuilder()
-                .registerTypeAdapter(com.denizenscript.denizen.utilities.HoverFormatHelper.FixedItemHover.class, new com.denizenscript.denizen.utilities.HoverFormatHelper.FixedItemHoverSerializer())
-                .registerTypeAdapter(Item.class, new com.denizenscript.denizen.utilities.HoverFormatHelper.FixedItemHoverSerializer())
-                .create();
-        try {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                ReflectionHelper.setFieldValue(VersionedComponentSerializer.class, "gson", VersionedComponentSerializer.forVersion(ChatVersion.V1_21_5), fixedGson);
-            }
-            else {
-                ReflectionHelper.getFinalSetter(ComponentSerializer.class, "gson").invoke(fixedGson);
-            }
-        }
-        catch (Throwable e) {
-            Debug.echoError(e);
-        }
-    }
-
-    public static class FixedItemHover extends Item {
-
-        private final JsonObject components;
-
-        public FixedItemHover(String id, int count, JsonObject components) {
-            super(id, count, null);
-            this.components = components;
-        }
-
-        public JsonObject getComponents() {
-            return components;
-        }
-    }
-
-    public static class FixedItemHoverSerializer extends ItemSerializer {
-
-        @Override
-        public Item deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-            Item deserialized = super.deserialize(element, type, context);
-            if (deserialized.getTag() != null) {
-                return deserialized;
-            }
-            JsonObject componentsObject = element.getAsJsonObject().getAsJsonObject("components");
-            if (componentsObject == null) {
-                return deserialized;
-            }
-            return new com.denizenscript.denizen.utilities.HoverFormatHelper.FixedItemHover(deserialized.getId(), deserialized.getCount(), componentsObject);
-        }
-
-        @Override
-        public JsonElement serialize(Item content, Type type, JsonSerializationContext context) {
-            JsonElement serialized = super.serialize(content, type, context);
-            if (!(content instanceof com.denizenscript.denizen.utilities.HoverFormatHelper.FixedItemHover fixedItemHover) || fixedItemHover.getComponents() == null) {
-                return serialized;
-            }
-            JsonObject serializedObject = serialized.getAsJsonObject();
-            serializedObject.remove("tag");
-            serializedObject.add("components", fixedItemHover.getComponents());
-            return serializedObject;
-        }
+        return HoverEvent.showEntity(entity.getBukkitEntityType(), entity.getUUID(), name);
     }
 }
