@@ -14,10 +14,7 @@ import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.EntityScriptHelper;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
-import com.denizenscript.denizen.utilities.MultiVersionHelper1_19;
-import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizen.utilities.VanillaTagHelper;
+import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
@@ -311,8 +308,16 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return entity;
         }
         List<String> data = CoreUtilities.split(string, ',');
+        String typeStr = data.get(0);
         // Handle custom DenizenEntityTypes
-        DenizenEntityType type = DenizenEntityType.getByName(data.get(0));
+        DenizenEntityType type = DenizenEntityType.getByName(typeStr);
+        if (type == null && Settings.cache_legacySpigotNamesSupport && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            String updatedTypeStr = NMSHandler.instance.updateLegacyName(EntityType.class, typeStr);
+            if (!CoreUtilities.equalsIgnoreCase(typeStr, updatedTypeStr)) {
+                BukkitImplDeprecations.oldSpigotNames.warn(context);
+                type = DenizenEntityType.getByName(updatedTypeStr);
+            }
+        }
         if (type != null && type.getBukkitEntityType() != EntityType.UNKNOWN) {
             EntityTag entity = new EntityTag(type, data.size() > 1 ? data.get(1) : null);
             entity.uuid = id;
@@ -1250,12 +1255,47 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <EntityTag.entity_type>
         // @returns ElementTag
+        // @deprecated Use 'EntityTag.type' on MC 1.20+.
+        // @description
+        // Deprecated in favor of <@link tag EntityTag.type> on MC 1.20+, which returns entity type names as specified by Mojang (scripts using this may need an update when switching).
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "entity_type", (attribute, object) -> {
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                return new ElementTag(object.getEntityType().getName(), true);
+            }
+            BukkitImplDeprecations.oldSpigotNames.warn(attribute.context);
+            return new ElementTag(switch (object.getEntityType().getName()) {
+                case "ITEM" -> "DROPPED_ITEM";
+                case "LEASH_KNOT" -> "LEASH_HITCH";
+                case "EYE_OF_ENDER" -> "ENDER_SIGNAL";
+                case "POTION" -> "SPLASH_POTION";
+                case "EXPERIENCE_BOTTLE" -> "THROWN_EXP_BOTTLE";
+                case "TNT" -> "PRIMED_TNT";
+                case "FIREWORK_ROCKET" -> "FIREWORK";
+                case "COMMAND_BLOCK_MINECART" -> "MINECART_COMMAND";
+                case "CHEST_MINECART" -> "MINECART_CHEST";
+                case "FURNACE_MINECART" -> "MINECART_FURNACE";
+                case "TNT_MINECART" -> "MINECART_TNT";
+                case "HOPPER_MINECART" -> "MINECART_HOPPER";
+                case "SPAWNER_MINECART" -> "MINECART_MOB_SPAWNER";
+                case "MOOSHROOM" -> "MUSHROOM_COW";
+                case "SNOW_GOLEM" -> "SNOWMAN";
+                case "END_CRYSTAL" -> "ENDER_CRYSTAL";
+                case "FISHING_BOBBER" -> "FISHING_HOOK";
+                case "LIGHTNING_BOLT" -> "LIGHTNING";
+                default -> object.getEntityType().getName();
+            }, true);
+        });
+
+        // <--[tag]
+        // @attribute <EntityTag.type>
+        // @returns ElementTag
         // @group data
         // @description
         // Returns the type of the entity.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "entity_type", (attribute, object) -> {
-            return new ElementTag(object.entity_type.getName());
+        tagProcessor.registerTag(ElementTag.class, "type", (attribute, object) -> {
+            return new ElementTag(object.getEntityType().getLowercaseName(), true);
         });
 
         // <--[tag]
@@ -1266,8 +1306,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "translated_name", (attribute, object) -> {
-            String key = object.getEntityType().getBukkitEntityType().getKey().getKey();
-            return new ElementTag(ChatColor.COLOR_CHAR + "[translate=entity.minecraft." + key + "]");
+            String key = object.getBukkitEntityType().getKey().getKey();
+            return new ElementTag(ChatColor.COLOR_CHAR + "[translate=entity.minecraft." + key + "]", true);
         });
 
         // <--[tag]
@@ -1315,7 +1355,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Works with offline players.
         // -->
         tagProcessor.registerTag(ElementTag.class, "uuid", (attribute, object) -> {
-            return new ElementTag(object.getUUID().toString());
+            return new ElementTag(object.getUUID().toString(), true);
         });
 
         // <--[tag]
@@ -4600,6 +4640,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         }
         if (matcher.doesMatch(getEntityType().getLowercaseName(), this::tryExactMatcher)) {
             return true;
+        }
+        if (Settings.cache_legacySpigotNamesSupport && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            String updatedType = NMSHandler.instance.updateLegacyName(EntityType.class, text);
+            if (!CoreUtilities.equalsIgnoreCase(text, updatedType)) {
+                BukkitImplDeprecations.oldSpigotNames.warn(context);
+                return getEntityType().getName().equals(updatedType);
+            }
         }
         return false;
     }

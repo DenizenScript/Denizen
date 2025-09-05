@@ -27,6 +27,7 @@ import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -70,11 +71,9 @@ import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftInventoryCustom;
 import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftInventoryView;
 import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R4.legacy.FieldRename;
 import org.bukkit.craftbukkit.v1_20_R4.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.v1_20_R4.util.CraftChatMessage;
-import org.bukkit.craftbukkit.v1_20_R4.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_20_R4.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_20_R4.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_20_R4.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -372,5 +371,10 @@ public class Handler extends NMSHandler {
             return null;
         }
         return CraftChatMessage.fromJSONOrNull(FormattedTextHelper.componentToJson(spigot));
+    }
+
+    @Override
+    public String updateLegacyName(Class<?> type, String legacyName) {
+        return FieldRename.rename(ApiVersion.FIELD_NAME_PARITY, DebugInternals.getFullClassNameOpti(type).replace('.', '/'), legacyName);
     }
 }
