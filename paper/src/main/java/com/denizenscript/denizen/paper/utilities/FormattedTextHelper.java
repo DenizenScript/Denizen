@@ -603,8 +603,6 @@ public class FormattedTextHelper {
             base = Component.text();
             base.content(str.substring(0, firstChar));
         }
-        // TODO immutable
-        root.append(base);
         str = str.substring(firstChar);
         char[] chars = str.toCharArray();
         int started = 0;
@@ -889,7 +887,7 @@ public class FormattedTextHelper {
         if (!nextText.content().isEmpty()) {
             base.append(nextText);
         }
-        return cleanBase && !optimize ? root.build() : base.build();
+        return cleanBase && !optimize ? root.append(base).build() : base.build();
     }
 
     public static int indexOfLastColorBlockStart(String text) {
