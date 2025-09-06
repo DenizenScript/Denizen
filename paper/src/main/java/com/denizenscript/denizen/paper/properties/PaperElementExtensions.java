@@ -3,7 +3,6 @@ package com.denizenscript.denizen.paper.properties;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.paper.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.paper.utilities.HoverFormatHelper;
@@ -18,8 +17,13 @@ import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+
+import static com.denizenscript.denizen.paper.utilities.FormattedTextHelper.LegacyColor;
+import static com.denizenscript.denizen.paper.utilities.FormattedTextHelper.LegacyFormatting;
 
 public class PaperElementExtensions {
 
@@ -36,9 +40,8 @@ public class PaperElementExtensions {
         // This will automatically translate translatable sections
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "strip_color", (attribute, object) -> {
-            return new ElementTag(FormattedTextHelper.parse(object.asString(), ChatColor.WHITE)[0].toPlainText());
+            return new ElementTag(PlainTextComponentSerializer.plainText().serialize(FormattedTextHelper.parse(object.asString(), NamedTextColor.WHITE)), true);
         });
-
 
         // <--[tag]
         // @attribute <ElementTag.to_raw_json>
@@ -49,7 +52,7 @@ public class PaperElementExtensions {
         // Inverts <@link tag ElementTag.from_raw_json>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "to_raw_json", (attribute, object) -> {
-            return new ElementTag(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(object.asString(), ChatColor.WHITE)));
+            return new ElementTag(PaperModule.componentToJson(FormattedTextHelper.parse(object.asString(), NamedTextColor.WHITE)), true);
         });
 
         // <--[tag]
@@ -61,7 +64,7 @@ public class PaperElementExtensions {
         // Inverts <@link tag ElementTag.to_raw_json>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "from_raw_json", (attribute, object) -> {
-            return new ElementTag(FormattedTextHelper.stringify(FormattedTextHelper.parseJson(object.asString())));
+            return new ElementTag(FormattedTextHelper.stringify(PaperModule.jsonToComponent(object.asString())));
         });
 
         // <--[tag]
@@ -76,7 +79,7 @@ public class PaperElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "optimize_json", (attribute, object) -> {
-            String opti = ChatColor.COLOR_CHAR + "[optimize=true]";
+            String opti = FormattedTextHelper.LEGACY_SECTION + "[optimize=true]";
             if (object.asString().contains(opti)) {
                 return object;
             }
@@ -94,7 +97,7 @@ public class PaperElementExtensions {
         // - narrate "You can <element[hover here].custom_color[emphasis].hover_item[<player.item_in_hand>]> to see what you held!"
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ItemTag.class, "hover_item", (attribute, object, item) -> {
-            return new ElementTag(ChatColor.COLOR_CHAR + "[hover=SHOW_ITEM;" + FormattedTextHelper.escape(item.identify()) + "]" + object.asString() + ChatColor.COLOR_CHAR + "[/hover]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[hover=SHOW_ITEM;" + FormattedTextHelper.escape(item.identify()) + "]" + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[/hover]", true);
         });
 
         // <--[tag]
@@ -106,7 +109,7 @@ public class PaperElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerTag(ElementTag.class, ObjectTag.class, "on_hover", (attribute, object, hover) -> { // non-static due to hacked sub-tag
-            HoverEvent.Action type = HoverEvent.Action.SHOW_TEXT;
+            HoverEvent.Action<?> type = HoverEvent.Action.SHOW_TEXT;
 
             // <--[tag]
             // @attribute <ElementTag.on_hover[<message>].type[<type>]>
@@ -122,7 +125,11 @@ public class PaperElementExtensions {
             // -->
             if (attribute.startsWith("type", 2)) {
                 attribute.fulfill(1);
-                type = ElementTag.asEnum(HoverEvent.Action.class, attribute.getParam());
+                if (!attribute.hasParam()) {
+                    attribute.echoError("Must specify an hover type.");
+                    return null;
+                }
+                type = HoverEvent.Action.NAMES.value(CoreUtilities.toLowerCase(attribute.getParam()));
                 if (type == null) {
                     attribute.echoError("Invalid hover type specified.");
                     return null;
@@ -132,8 +139,8 @@ public class PaperElementExtensions {
             if (hoverData == null) {
                 return null;
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[hover=" + type + ';' + FormattedTextHelper.escape(hoverData) + ']'
-                    + object.asString() + ChatColor.COLOR_CHAR + "[/hover]", true);
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[hover=" + type + ';' + FormattedTextHelper.escape(hoverData) + ']'
+                    + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[/hover]", true);
         });
 
         // <--[tag]
@@ -147,7 +154,7 @@ public class PaperElementExtensions {
         // - narrate "You can <element[click here].custom_color[emphasis].on_hover[Click me!].click_url[https://denizenscript.com]> to learn about Denizen!"
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "click_url", (attribute, object, url) -> {
-            return new ElementTag(ChatColor.COLOR_CHAR + "[click=OPEN_URL;" + FormattedTextHelper.escape(url.toString()) + "]" + object.asString() + ChatColor.COLOR_CHAR + "[/click]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[click=OPEN_URL;" + FormattedTextHelper.escape(url.asString()) + "]" + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[/click]", true);
         });
 
         // <--[tag]
@@ -162,7 +169,7 @@ public class PaperElementExtensions {
         // - narrate "You can <element[click here].click_chat[hello]> to say hello to an NPC's interact script!"
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "click_chat", (attribute, object, chat) -> {
-            return new ElementTag(ChatColor.COLOR_CHAR + "[click=RUN_COMMAND;/denizenclickable chat " + FormattedTextHelper.escape(chat.toString()) + "]" + object.asString() + ChatColor.COLOR_CHAR + "[/click]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[click=RUN_COMMAND;/denizenclickable chat " + FormattedTextHelper.escape(chat.asString()) + "]" + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[/click]", true);
         });
 
         // <--[tag]
@@ -200,8 +207,8 @@ public class PaperElementExtensions {
                 type = attribute.getContext(2);
                 attribute.fulfill(1);
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[click=" + type + ";" + FormattedTextHelper.escape(command.asString()) + "]"
-                    + object.asString() + ChatColor.COLOR_CHAR + "[/click]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[click=" + type + ";" + FormattedTextHelper.escape(command.asString()) + "]"
+                    + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[/click]", true);
         });
 
         // <--[tag]
@@ -213,8 +220,8 @@ public class PaperElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "with_insertion", (attribute, object, insertion) -> {
-            return new ElementTag(ChatColor.COLOR_CHAR + "[insertion="  + FormattedTextHelper.escape(insertion.asString()) + "]"
-                    + object.asString() + ChatColor.COLOR_CHAR + "[/insertion]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[insertion="  + FormattedTextHelper.escape(insertion.asString()) + "]"
+                    + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[/insertion]", true);
         });
 
         // <--[tag]
@@ -227,8 +234,8 @@ public class PaperElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "no_reset", (attribute, object) -> {
-            if (object.asString().length() == 2 && object.asString().charAt(0) == ChatColor.COLOR_CHAR) {
-                return new ElementTag(ChatColor.COLOR_CHAR + "[color=" + object.asString().charAt(1) + "]");
+            if (object.asString().length() == 2 && object.asString().charAt(0) == FormattedTextHelper.LEGACY_SECTION) {
+                return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[color=" + object.asString().charAt(1) + "]", true);
             }
             return null;
         });
@@ -243,11 +250,11 @@ public class PaperElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "end_format", (attribute, object) -> {
-            if (object.asString().length() == 2 && object.asString().charAt(0) == ChatColor.COLOR_CHAR) {
-                return new ElementTag(ChatColor.COLOR_CHAR + "[reset=" + object.asString().charAt(1) + "]");
+            if (object.asString().length() == 2 && object.asString().charAt(0) == FormattedTextHelper.LEGACY_SECTION) {
+                return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[reset=" + object.asString().charAt(1) + "]", true);
             }
-            else if (object.asString().startsWith(ChatColor.COLOR_CHAR + "[font=") && object.asString().endsWith("]")) {
-                return new ElementTag(ChatColor.COLOR_CHAR + "[reset=font]");
+            else if (object.asString().startsWith(FormattedTextHelper.LEGACY_SECTION + "[font=") && object.asString().endsWith("]")) {
+                return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[reset=font]", true);
             }
             return null;
         });
@@ -261,7 +268,7 @@ public class PaperElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "italicize", (attribute, object) -> {
-            return new ElementTag(ChatColor.ITALIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=o]");
+            return new ElementTag(LegacyFormatting.ITALIC + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=o]", true);
         });
 
         // <--[tag]
@@ -273,7 +280,7 @@ public class PaperElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "bold", (attribute, object) -> {
-            return new ElementTag(ChatColor.BOLD + object.asString() + ChatColor.COLOR_CHAR + "[reset=l]");
+            return new ElementTag(LegacyFormatting.BOLD + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=l]", true);
         });
 
         // <--[tag]
@@ -285,7 +292,7 @@ public class PaperElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "underline", (attribute, object) -> {
-            return new ElementTag(ChatColor.UNDERLINE + object.asString() + ChatColor.COLOR_CHAR + "[reset=n]");
+            return new ElementTag(LegacyFormatting.UNDERLINE + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=n]", true);
         });
 
         // <--[tag]
@@ -297,7 +304,7 @@ public class PaperElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "strikethrough", (attribute, object) -> {
-            return new ElementTag(ChatColor.STRIKETHROUGH + object.asString() + ChatColor.COLOR_CHAR + "[reset=m]");
+            return new ElementTag(LegacyFormatting.STRIKETHROUGH + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=m]", true);
         });
 
         // <--[tag]
@@ -309,7 +316,7 @@ public class PaperElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "obfuscate", (attribute, object) -> {
-            return new ElementTag(ChatColor.MAGIC + object.asString() + ChatColor.COLOR_CHAR + "[reset=k]");
+            return new ElementTag(LegacyFormatting.OBFUSCATED + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=k]", true);
         });
 
         // <--[tag]
@@ -327,7 +334,7 @@ public class PaperElementExtensions {
             if (color == null) {
                 return null;
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[color=f]" + color + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[color=f]" + color + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=color]", true);
         });
 
         // <--[tag]
@@ -343,16 +350,16 @@ public class PaperElementExtensions {
             String colorName = colorElement.asString();
             String colorOut = null;
             if (colorName.length() == 1) {
-                ChatColor color = ChatColor.getByChar(colorName.charAt(0));
+                TextColor color = LegacyColor.fromChar(colorName.charAt(0));
                 if (color != null) {
                     colorOut = color.toString();
                 }
             }
             else if (colorName.length() == 7 && colorName.startsWith("#")) {
-                return new ElementTag(ChatColor.COLOR_CHAR + "[color=" + colorName + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
+                return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[color=" + colorName + "]" + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=color]", true);
             }
-            else if (colorName.length() == 14 && colorName.startsWith(ChatColor.COLOR_CHAR + "x")) {
-                return new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + CoreUtilities.replace(colorName.substring(2), String.valueOf(ChatColor.COLOR_CHAR), "") + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
+            else if (colorName.length() == 14 && colorName.startsWith(FormattedTextHelper.LEGACY_SECTION + "x")) {
+                return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[color=#" + CoreUtilities.replace(colorName.substring(2), String.valueOf(FormattedTextHelper.LEGACY_SECTION), "") + "]" + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=color]", true);
             }
             else if (colorName.startsWith("co@")) {
                 ColorTag color = ColorTag.valueOf(colorName, attribute.context);
@@ -363,36 +370,28 @@ public class PaperElementExtensions {
                 while (hex.length() < 6) {
                     hex.insert(0, "0");
                 }
-                return new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + hex + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
+                return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[color=#" + hex + "]" + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=color]", true);
             }
             if (colorOut == null) {
-                try {
-                    ChatColor color = ChatColor.of(colorName.toUpperCase());
-                    if (color.getColor() == null) {
-                        if (!TagManager.isStaticParsing) {
-                            attribute.echoError("Color '" + colorName + "' is valid but is a format code not a real color (for ElementTag.color[...]).");
-                        }
-                        return null;
-                    }
-                    String colorStr = color.toString().replace(String.valueOf(ChatColor.COLOR_CHAR), "").replace("x", "#");
-                    colorOut = ChatColor.COLOR_CHAR + "[color=" + colorStr + "]";
-                }
-                catch (IllegalArgumentException ex) {
+                NamedTextColor namedColor = NamedTextColor.NAMES.value(CoreUtilities.toLowerCase(colorName));
+                if (namedColor == null) {
                     ColorTag color = ColorTag.valueOf(colorName, attribute.context);
                     if (color != null) {
                         StringBuilder hex = new StringBuilder(Integer.toHexString(color.asRGB()));
                         while (hex.length() < 6) {
                             hex.insert(0, "0");
                         }
-                        return new ElementTag(ChatColor.COLOR_CHAR + "[color=#" + hex + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
+                        return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[color=#" + hex + "]" + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=color]", true);
                     }
                     if (!TagManager.isStaticParsing) {
                         attribute.echoError("Color '" + colorName + "' doesn't exist (for ElementTag.color[...]).");
                     }
                     return null;
                 }
+                colorOut = FormattedTextHelper.LEGACY_SECTION + "[color=" + LegacyColor.fromModern(namedColor).colorChar + "]";
+
             }
-            return new ElementTag(colorOut + object.asString() + ChatColor.COLOR_CHAR + "[reset=color]");
+            return new ElementTag(colorOut + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=color]", true);
         });
 
         // <--[tag]
@@ -405,7 +404,7 @@ public class PaperElementExtensions {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, ElementTag.class, "font", (attribute, object, fontName) -> {
-            return new ElementTag(ChatColor.COLOR_CHAR + "[font=" + fontName + "]" + object.asString() + ChatColor.COLOR_CHAR + "[reset=font]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[font=" + fontName + "]" + object.asString() + FormattedTextHelper.LEGACY_SECTION + "[reset=font]", true);
         });
 
         // <--[tag]
@@ -425,9 +424,9 @@ public class PaperElementExtensions {
             }
             StringBuilder output = new StringBuilder(str.length() * 3);
             for (int i = 0; i < str.length(); i++) {
-                output.append(ChatColor.COLOR_CHAR).append(pattern.charAt(i % pattern.length())).append(str.charAt(i));
+                output.append(FormattedTextHelper.LEGACY_SECTION).append(pattern.charAt(i % pattern.length())).append(str.charAt(i));
             }
-            return new ElementTag(output.toString());
+            return new ElementTag(output.toString(), true);
         });
 
         // <--[tag]
@@ -442,7 +441,7 @@ public class PaperElementExtensions {
         ElementTag.tagProcessor.registerStaticTag(ElementTag.class, "hex_rainbow", (attribute, object) -> {
             String str = object.asString();
             int[] HSB = new int[] { 0, 255, 255 };
-            if (str.startsWith(ChatColor.COLOR_CHAR + "x") && str.length() > 14) {
+            if (str.startsWith(FormattedTextHelper.LEGACY_SECTION + "x") && str.length() > 14) {
                 char[] colors = new char[6];
                 for (int i = 0; i < 6; i++) {
                     colors[i] = str.charAt(3 + (i * 2));
@@ -452,9 +451,9 @@ public class PaperElementExtensions {
                 str = str.substring(14);
             }
             float hue = HSB[0] / 255f;
-            int length = ChatColor.stripColor(str).length();
+            int length = PlainTextComponentSerializer.plainText().serialize(FormattedTextHelper.parse(str, NamedTextColor.WHITE)).length();
             if (length == 0) {
-                return new ElementTag("");
+                return new ElementTag("", true);
             }
             if (attribute.hasParam()) {
                 length = attribute.getIntParam();
@@ -464,10 +463,10 @@ public class PaperElementExtensions {
             StringBuilder output = new StringBuilder(str.length() * 8);
             for (int i = 0; i < str.length(); i++) {
                 char c = str.charAt(i);
-                if (c == ChatColor.COLOR_CHAR && i + 1 < str.length()) {
+                if (c == FormattedTextHelper.LEGACY_SECTION && i + 1 < str.length()) {
                     char c2 = str.charAt(i + 1);
                     if (FORMAT_CODES_MATCHER.isMatch(c2)) {
-                        addedFormat += String.valueOf(ChatColor.COLOR_CHAR) + c2;
+                        addedFormat += String.valueOf(FormattedTextHelper.LEGACY_SECTION) + c2;
                     }
                     else {
                         addedFormat = "";
@@ -480,7 +479,7 @@ public class PaperElementExtensions {
                 hue += increment;
                 HSB[0] = Math.round(hue * 255f);
             }
-            return new ElementTag(output.toString());
+            return new ElementTag(output.toString(), true);
         });
 
         // <--[tag]
@@ -509,7 +508,7 @@ public class PaperElementExtensions {
             if (fromColor == null || toColor == null) {
                 return null;
             }
-            if (!style.matchesEnum(BukkitElementExtensions.GradientStyle.class)) {
+            if (!style.matchesEnum(GradientStyle.class)) {
                 attribute.echoError("Invalid gradient style '" + style + "'");
                 return null;
             }
@@ -517,7 +516,7 @@ public class PaperElementExtensions {
             if (res == null) {
                 return null;
             }
-            return new ElementTag(res);
+            return new ElementTag(res, true);
         });
 
         // <--[tag]
@@ -539,7 +538,7 @@ public class PaperElementExtensions {
             if (res == null) {
                 return null;
             }
-            return new ElementTag(res);
+            return new ElementTag(res, true);
         });
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
@@ -575,7 +574,7 @@ public class PaperElementExtensions {
     public enum GradientStyle { RGB, HSB }
 
     public static String doGradient(String str, ColorTag fromColor, ColorTag toColor, GradientStyle style) {
-        int length = FormattedTextHelper.parse(str, ChatColor.WHITE)[0].toPlainText().length();
+        int length = PlainTextComponentSerializer.plainText().serialize(FormattedTextHelper.parse(str, NamedTextColor.WHITE)).length();
         if (length == 0) {
             return "";
         }
@@ -612,10 +611,10 @@ public class PaperElementExtensions {
         StringBuilder output = new StringBuilder(str.length() * 15);
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
-            if (c == ChatColor.COLOR_CHAR && i + 1 < str.length()) {
+            if (c == FormattedTextHelper.LEGACY_SECTION && i + 1 < str.length()) {
                 char c2 = str.charAt(i + 1);
                 if (FORMAT_CODES_MATCHER.isMatch(c2)) {
-                    addedFormat += String.valueOf(ChatColor.COLOR_CHAR) + c2;
+                    addedFormat += String.valueOf(FormattedTextHelper.LEGACY_SECTION) + c2;
                 }
                 else if (c2 == '[') {
                     int endBracket = str.indexOf(']', i);

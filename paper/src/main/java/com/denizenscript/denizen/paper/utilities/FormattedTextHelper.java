@@ -2,7 +2,7 @@ package com.denizenscript.denizen.paper.utilities;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
+import com.denizenscript.denizen.paper.properties.PaperElementExtensions;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -70,30 +70,49 @@ public class FormattedTextHelper {
         YELLOW('e', NamedTextColor.YELLOW),
         WHITE('f', NamedTextColor.WHITE);
 
-        public final String formatString;
+        public final char colorChar;
+        public final String colorString;
         public final NamedTextColor color;
 
-        LegacyColor(char formatChar, NamedTextColor color) {
-            this.formatString = new String(new char[]{LEGACY_SECTION, formatChar});
+        LegacyColor(char colorChar, NamedTextColor color) {
+            this.colorChar = colorChar;
+            this.colorString = new String(new char[]{LEGACY_SECTION, colorChar});
             this.color = color;
         }
 
         @Override
         public String toString() {
-            return formatString;
+            return colorString;
+        }
+
+        private static int calculateIndex(char colorChar) {
+            if (colorChar >= '0' && colorChar <= '9') {
+                return colorChar - '0';
+            }
+            else if (colorChar >= 'a' && colorChar <= 'f') {
+                return colorChar - 'a' + 10;
+            }
+            else {
+                return -1;
+            }
+        }
+
+        public static NamedTextColor fromChar(char colorChar) {
+            int index = calculateIndex(colorChar);
+            return index != -1 ? FROM_LEGACY[index] : null;
         }
 
         public static LegacyColor fromModern(NamedTextColor textColor) {
             return TO_LEGACY.get(textColor);
         }
 
-        private static final Map<NamedTextColor, LegacyColor> TO_LEGACY;
+        private static final Map<NamedTextColor, LegacyColor> TO_LEGACY = new IdentityHashMap<>(16);
+        private static final NamedTextColor[] FROM_LEGACY = new NamedTextColor[16];
 
         static {
-            LegacyColor[] legacyColors = values();
-            TO_LEGACY = new IdentityHashMap<>(legacyColors.length);
-            for (LegacyColor legacyColor : legacyColors) {
+            for (LegacyColor legacyColor : values()) {
                 TO_LEGACY.put(legacyColor.color, legacyColor);
+                FROM_LEGACY[calculateIndex(legacyColor.colorChar)] = legacyColor.color;
             }
         }
     }
@@ -470,7 +489,7 @@ public class FormattedTextHelper {
                         root.append(nextText);
                     }
                     nextText = getCleanRef();
-                    nextText.color(LegacyComponentSerializer.parseChar(c).color());
+                    nextText.color(LegacyColor.fromChar(c));
                     lastStart = firstChar + 2;
                 }
                 else { // format code
@@ -583,7 +602,7 @@ public class FormattedTextHelper {
             if (str.length() > 3 && str.startsWith((LEGACY_SECTION + "")) && hexMatcher.isMatch(str.charAt(1))
                     && str.startsWith(LEGACY_SECTION + "[translate=", 2) && str.indexOf(']') == str.length() - 1) { // eg "&6&[translate=block.minecraft.ominous_banner]"
                 Component component = parseTranslatable(str.substring("&[translate=".length() + 2, str.length() - 1), baseColor, optimize);
-                component.color(LegacyComponentSerializer.parseChar(str.charAt(1)).color());
+                component.color(LegacyColor.fromChar(str.charAt(1)));
                 return component;
             }
         }
@@ -720,7 +739,7 @@ public class FormattedTextHelper {
                             String colorChar = innardBase.get(1);
                             TextColor color = null;
                             if (colorChar.length() == 1) {
-                                color = LegacyComponentSerializer.parseChar(colorChar.charAt(0)).color();
+                                color = LegacyColor.fromChar(colorChar.charAt(0));
                             }
                             else if (colorChar.length() == 7) {
                                 color = TextColor.fromHexString(CoreUtilities.toUpperCase(colorChar));
@@ -746,7 +765,7 @@ public class FormattedTextHelper {
                             String from = innardBase.get(1), to = innardParts.get(0), style = innardParts.get(1);
                             ColorTag fromColor = ColorTag.valueOf(from, CoreUtilities.noDebugContext);
                             ColorTag toColor = ColorTag.valueOf(to, CoreUtilities.noDebugContext);
-                            BukkitElementExtensions.GradientStyle styleEnum = new ElementTag(style).asEnum(BukkitElementExtensions.GradientStyle.class);
+                            PaperElementExtensions.GradientStyle styleEnum = new ElementTag(style).asEnum(PaperElementExtensions.GradientStyle.class);
                             if (fromColor == null || toColor == null || styleEnum == null) {
                                 if (CoreConfiguration.debugVerbose) {
                                     Debug.echoError("Text parse issue: cannot interpret gradient input '" + innards + "'.");
@@ -757,7 +776,7 @@ public class FormattedTextHelper {
                                 if (endIndex == -1) {
                                     endIndex = str.length();
                                 }
-                                String gradientText = BukkitElementExtensions.doGradient(str.substring(endBracket + 1, endIndex), fromColor, toColor, styleEnum);
+                                String gradientText = PaperElementExtensions.doGradient(str.substring(endBracket + 1, endIndex), fromColor, toColor, styleEnum);
                                 lastText.append(parseInternal(gradientText, baseColor, false, optimize));
                                 endBracket = endIndex - 1;
                             }
@@ -802,7 +821,7 @@ public class FormattedTextHelper {
                         base.append(nextText);
                     }
                     nextText = Component.text();
-                    nextText.color(LegacyComponentSerializer.parseChar(code).color());
+                    nextText.color(LegacyColor.fromChar(code));
                 }
                 else if (code == 'x') {
                     if (i + 13 >= chars.length) {
