@@ -4138,14 +4138,15 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // If the entity is a firework, creeper, or wind charge, detonates it.
         // -->
         if (mechanism.matches("detonate")) {
-            if (getBukkitEntity() instanceof Firework) {
-                ((Firework) getBukkitEntity()).detonate();
+            if (getBukkitEntity() instanceof Firework firework) {
+                firework.detonate();
             }
-            else if (getBukkitEntity() instanceof Creeper) {
-                ((Creeper) getBukkitEntity()).explode();
+            else if (getBukkitEntity() instanceof Creeper creeper) {
+               creeper.explode();
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBukkitEntity() instanceof WindCharge)
-                ((WindCharge) getBukkitEntity()).explode();
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBukkitEntity() instanceof WindCharge windCharge) {
+                windCharge.explode();
+            }
             else {
                 Debug.echoError("Cannot detonate entity of type '" + getBukkitEntityType().name() + "'.");
             }
