@@ -36,7 +36,7 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean matches(ScriptPath path) {
-        if (!path.tryObjectSwitch("world", new WorldTag(event.getWorld()))) {
+        if (!path.tryObjectSwitch("for", new WorldTag(event.getWorld()))) {
             return false;
         }
         return super.matches(path);
@@ -44,15 +44,12 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "world":
-                return new WorldTag(event.getWorld());
-            case "old_location":
-                return new LocationTag(event.getPreviousLocation());
-            case "new_location":
-                return new LocationTag(event.getWorld().getSpawnLocation());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "world" -> new WorldTag(event.getWorld());
+            case "old_location" -> new LocationTag(event.getPreviousLocation());
+            case "new_location" -> new LocationTag(event.getWorld().getSpawnLocation());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
