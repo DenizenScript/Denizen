@@ -9,6 +9,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
+import com.denizenscript.denizen.paper.tags.TextFormattingTags;
 import com.denizenscript.denizen.paper.utilities.PaperAPIToolsImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
@@ -135,6 +136,7 @@ public class PaperModule {
         PaperWorldExtensions.register();
         // Paper Tags
         new PaperTagBase();
+        new TextFormattingTags();
 
         // Other helpers
         Bukkit.getPluginManager().registerEvents(new PaperEventHelpers(), Denizen.getInstance());
