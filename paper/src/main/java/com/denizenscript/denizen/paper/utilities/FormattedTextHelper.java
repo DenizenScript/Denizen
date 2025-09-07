@@ -99,6 +99,11 @@ public class FormattedTextHelper {
 
         public static NamedTextColor fromChar(char colorChar) {
             int index = calculateIndex(colorChar);
+            return index != -1 ? FROM_LEGACY[index].color : null;
+        }
+
+        public static LegacyColor legacyFromChar(char colorChar) {
+            int index = calculateIndex(colorChar);
             return index != -1 ? FROM_LEGACY[index] : null;
         }
 
@@ -107,12 +112,12 @@ public class FormattedTextHelper {
         }
 
         private static final Map<NamedTextColor, LegacyColor> TO_LEGACY = new IdentityHashMap<>(16);
-        private static final NamedTextColor[] FROM_LEGACY = new NamedTextColor[16];
+        private static final LegacyColor[] FROM_LEGACY = new LegacyColor[16];
 
         static {
             for (LegacyColor legacyColor : values()) {
                 TO_LEGACY.put(legacyColor.color, legacyColor);
-                FROM_LEGACY[calculateIndex(legacyColor.colorChar)] = legacyColor.color;
+                FROM_LEGACY[calculateIndex(legacyColor.colorChar)] = legacyColor;
             }
         }
     }

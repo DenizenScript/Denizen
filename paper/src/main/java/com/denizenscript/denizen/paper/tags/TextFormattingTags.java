@@ -1,9 +1,10 @@
 package com.denizenscript.denizen.paper.tags;
 
-import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
+import com.denizenscript.denizen.paper.properties.PaperElementExtensions;
+import com.denizenscript.denizen.paper.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.paper.utilities.FormattedTextHelper.LegacyColor;
+import com.denizenscript.denizen.paper.utilities.HoverFormatHelper;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.HoverFormatHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -12,8 +13,8 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import net.md_5.bungee.api.chat.HoverEvent;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class TextFormattingTags {
 
@@ -22,6 +23,7 @@ public class TextFormattingTags {
         // <--[tag]
         // @attribute <&hover[<hover_text>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a special chat code that makes the following text display the input hover text when the mouse is left over it.
         // This tag must be followed by an <&end_hover> tag.
@@ -33,6 +35,7 @@ public class TextFormattingTags {
             // <--[tag]
             // @attribute <&hover[<hover_text>].type[<type>]>
             // @returns ElementTag
+            // @Plugin Paper
             // @description
             // Returns a special chat code that makes the following text display the input hover text when the mouse is left over it.
             // This tag must be followed by an <&end_hover> tag.
@@ -41,10 +44,14 @@ public class TextFormattingTags {
             // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
             // -->
-            HoverEvent.Action type = HoverEvent.Action.SHOW_TEXT;
+            HoverEvent.Action<?> type = HoverEvent.Action.SHOW_TEXT;
             if (attribute.startsWith("type", 2)) {
                 attribute.fulfill(1);
-                type = ElementTag.asEnum(HoverEvent.Action.class, attribute.getParam());
+                if (!attribute.hasParam()) {
+                    attribute.echoError("Must specify an hover type.");
+                    return null;
+                }
+                type = HoverEvent.Action.NAMES.value(CoreUtilities.toLowerCase(attribute.getParam()));
                 if (type == null) {
                     attribute.echoError("Invalid hover type specified.");
                     return null;
@@ -54,12 +61,13 @@ public class TextFormattingTags {
             if (hoverData == null) {
                 return null;
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[hover=" + type + ';' + FormattedTextHelper.escape(hoverData) + ']', true);
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[hover=" + type + ';' + FormattedTextHelper.escape(hoverData) + ']', true);
         });
 
         // <--[tag]
         // @attribute <&click[<click_command>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a special chat code that makes the following text execute the input command line value when clicked.
         // To execute a command "/" should be used at the start. Otherwise, it will display as chat.
@@ -77,6 +85,7 @@ public class TextFormattingTags {
             // <--[tag]
             // @attribute <&click[<click_command>].type[<type>]>
             // @returns ElementTag
+            // @Plugin Paper
             // @description
             // Returns a special chat code that makes the following text execute the input command when clicked.
             // This tag must be followed by an <&end_click> tag.
@@ -89,12 +98,13 @@ public class TextFormattingTags {
                 type = attribute.getContext(2);
                 attribute.fulfill(1);
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[click=" + type + ";" + FormattedTextHelper.escape(clickText) + "]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[click=" + type + ";" + FormattedTextHelper.escape(clickText) + "]", true);
         });
 
         // <--[tag]
         // @attribute <&insertion[<message>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a special chat code that makes the following text insert the input message to chat when shift-clicked.
         // This tag must be followed by an <&end_insertion> tag.
@@ -106,45 +116,49 @@ public class TextFormattingTags {
                 return null;
             }
             String insertText = attribute.getParam();
-            return new ElementTag(ChatColor.COLOR_CHAR + "[insertion=" + FormattedTextHelper.escape(insertText) + "]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[insertion=" + FormattedTextHelper.escape(insertText) + "]", true);
         });
 
         // <--[tag]
         // @attribute <&end_click>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a special chat code that ends a '&click' tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_click", (attribute) -> {
-            return new ElementTag(ChatColor.COLOR_CHAR + "[/click]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[/click]", true);
         });
 
         // <--[tag]
         // @attribute <&end_hover>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a special chat code that ends a '&hover' tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_hover", (attribute) -> {
-            return new ElementTag(ChatColor.COLOR_CHAR + "[/hover]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[/hover]", true);
         });
 
         // <--[tag]
         // @attribute <&end_insertion>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a special chat code that ends an '&insertion' tag.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&end_insertion", (attribute) -> {
-            return new ElementTag(ChatColor.COLOR_CHAR + "[/insertion]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[/insertion]", true);
         });
 
         // <--[tag]
         // @attribute <&keybind[<key>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a special chat code that displays a keybind.
         // For example: - narrate "Press your <&keybind[key.jump]> key!"
@@ -155,12 +169,13 @@ public class TextFormattingTags {
                 return null;
             }
             String keybindText = attribute.getParam();
-            return new ElementTag(ChatColor.COLOR_CHAR + "[keybind=" + FormattedTextHelper.escape(keybindText) + "]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[keybind=" + FormattedTextHelper.escape(keybindText) + "]", true);
         });
 
         // <--[tag]
         // @attribute <&selector[<key>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a special chat code that displays a vanilla selector.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
@@ -170,12 +185,13 @@ public class TextFormattingTags {
                 return null;
             }
             String selectorText = attribute.getParam();
-            return new ElementTag(ChatColor.COLOR_CHAR + "[selector=" + FormattedTextHelper.escape(selectorText) + "]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[selector=" + FormattedTextHelper.escape(selectorText) + "]", true);
         });
 
         // <--[tag]
         // @attribute <&translate[key=<key>;(fallback=<fallback>);(with=<text>|...)]>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a special chat code that is read by the client to display an auto-translated message.
         // "key" is the translation key.
@@ -204,6 +220,7 @@ public class TextFormattingTags {
                 // <--[tag]
                 // @attribute <&translate[<key>].with[<text>|...]>
                 // @returns ElementTag
+                // @Plugin Paper
                 // @deprecated Use '<&translate[key=<key>;with=<text>|...]>'.
                 // @description
                 // Deprecated in favor of <@link tag &translate>.
@@ -213,12 +230,13 @@ public class TextFormattingTags {
                     attribute.fulfill(1);
                 }
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[translate=" + FormattedTextHelper.escape(translateMap.savable()) + ']', true);
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[translate=" + FormattedTextHelper.escape(translateMap.savable()) + ']', true);
         });
 
         // <--[tag]
         // @attribute <&score[<name>|<objective>(|<value>)]>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a special chat code that displays a scoreboard entry. Input is an escaped list of:
         // Name of the relevant entity, name of the objective, then optionally a value (if unspecified, will use current scoreboard value).
@@ -236,12 +254,13 @@ public class TextFormattingTags {
             String name = FormattedTextHelper.escape(EscapeTagUtil.unEscape(scoreList.get(0)));
             String objective = FormattedTextHelper.escape(EscapeTagUtil.unEscape(scoreList.get(1)));
             String value = scoreList.size() >= 3 ? FormattedTextHelper.escape(EscapeTagUtil.unEscape(scoreList.get(2))) : "";
-            return new ElementTag(ChatColor.COLOR_CHAR + "[score=" + name + ";" + objective + ";" + value + "]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[score=" + name + ";" + objective + ";" + value + "]", true);
         });
 
         // <--[tag]
         // @attribute <&color[<color>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a chat code that makes the following text be the specified color.
         // Color can be a color name, color code, hex, or ColorTag... that is: "&color[gold]", "&color[6]", and "&color[#AABB00]" are all valid.
@@ -254,7 +273,7 @@ public class TextFormattingTags {
             String colorName = attribute.getParam();
             String colorOut = null;
             if (colorName.length() == 1) {
-                ChatColor color = ChatColor.getByChar(colorName.charAt(0));
+                LegacyColor color = LegacyColor.legacyFromChar(colorName.charAt(0));
                 if (color != null) {
                     colorOut = color.toString();
                 }
@@ -271,21 +290,20 @@ public class TextFormattingTags {
                 colorOut = FormattedTextHelper.stringifyRGBSpigot(hex);
             }
             if (colorOut == null) {
-                try {
-                    ChatColor color = ChatColor.valueOf(CoreUtilities.toUpperCase(colorName));
-                    colorOut = color.toString();
-                }
-                catch (IllegalArgumentException ex) {
+                NamedTextColor color = NamedTextColor.NAMES.value(CoreUtilities.toLowerCase(colorName));
+                if (color == null) {
                     attribute.echoError("Color '" + colorName + "' doesn't exist (for tag &color[...]).");
                     return null;
                 }
+                colorOut = LegacyColor.fromModern(color).toString();
             }
-            return new ElementTag(colorOut);
+            return new ElementTag(colorOut, true);
         });
 
         // <--[tag]
         // @attribute <&gradient[from=<color>;to=<color>;(style={RGB}/HSB)]>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a chat code that makes the following text be the specified color.
         // Input works equivalently to <@link tag ElementTag.color_gradient>, return to that tag for more documentation detail and input examples.
@@ -301,16 +319,17 @@ public class TextFormattingTags {
             if (fromColor == null || toColor == null) {
                 return null;
             }
-            if (!style.matchesEnum(BukkitElementExtensions.GradientStyle.class)) {
+            if (!style.matchesEnum(PaperElementExtensions.GradientStyle.class)) {
                 attribute.echoError("Invalid gradient style '" + style + "'");
                 return null;
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[gradient=" + fromColor + ";" + toColor + ";" + style + "]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[gradient=" + fromColor + ";" + toColor + ";" + style + "]", true);
         });
 
         // <--[tag]
         // @attribute <&font[<font>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a chat code that makes the following text display with the specified font.
         // The default font is "minecraft:default".
@@ -320,12 +339,13 @@ public class TextFormattingTags {
             if (!attribute.hasParam()) {
                 return null;
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[font=" + attribute.getParam() + "]");
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[font=" + attribute.getParam() + "]", true);
         });
 
         // <--[tag]
         // @attribute <&optimize>
         // @returns ElementTag
+        // @Plugin Paper
         // @description
         // Returns a chat code that tells the formatted text parser to try to produce mininalist JSON text.
         // This is useful in particular for very long text or where text is being sent rapidly/repeatedly.
@@ -334,7 +354,7 @@ public class TextFormattingTags {
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
         TagManager.registerStaticTagBaseHandler(ElementTag.class, "&optimize", (attribute) -> {
-            return new ElementTag(ChatColor.COLOR_CHAR + "[optimize=true]", true);
+            return new ElementTag(FormattedTextHelper.LEGACY_SECTION + "[optimize=true]", true);
         });
     }
 }

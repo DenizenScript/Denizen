@@ -5,6 +5,8 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.paper.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.paper.utilities.FormattedTextHelper.LegacyColor;
+import com.denizenscript.denizen.paper.utilities.FormattedTextHelper.LegacyFormatting;
 import com.denizenscript.denizen.paper.utilities.HoverFormatHelper;
 import com.denizenscript.denizen.tags.core.CustomColorTagBase;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
@@ -18,12 +20,8 @@ import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-
-import static com.denizenscript.denizen.paper.utilities.FormattedTextHelper.LegacyColor;
-import static com.denizenscript.denizen.paper.utilities.FormattedTextHelper.LegacyFormatting;
 
 public class PaperElementExtensions {
 
@@ -33,6 +31,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.strip_color>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Returns the element with all color encoding stripped.
@@ -46,6 +45,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.to_raw_json>
         // @returns ElementTag
+        // @Plugin Paper
         // @group conversion
         // @description
         // Converts normal colored text to Minecraft-style "raw JSON" format.
@@ -58,6 +58,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.from_raw_json>
         // @returns ElementTag
+        // @Plugin Paper
         // @group conversion
         // @description
         // Un-hides the element's text from invisible color codes back to normal text.
@@ -70,6 +71,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.optimize_json>
         // @returns ElementTag
+        // @Plugin Paper
         // @group conversion
         // @description
         // Tells the formatted text parser to try to produce mininalist JSON text.
@@ -89,6 +91,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.hover_item[<item>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Adds a hover message to the element, which makes the element display the input ItemTag when the mouse is left over it.
@@ -103,6 +106,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.on_hover[<message>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Adds a hover message to the element, which makes the element display the input hover text when the mouse is left over it.
@@ -114,6 +118,7 @@ public class PaperElementExtensions {
             // <--[tag]
             // @attribute <ElementTag.on_hover[<message>].type[<type>]>
             // @returns ElementTag
+            // @Plugin Paper
             // @group text manipulation
             // @description
             // Adds a hover message to the element, which makes the element display the input hover text when the mouse is left over it.
@@ -146,6 +151,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.click_url[<url>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Adds a click command to the element, which makes the element open the given URL when clicked.
@@ -160,6 +166,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.click_chat[<message>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Adds a click command to the element, which makes the element pseudo-chat the input message when clicked, for activating interact script chat triggers (<@link language Chat Triggers>).
@@ -175,6 +182,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.on_click[<command>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Adds a click command to the element, which makes the element execute the input command when clicked.
@@ -193,6 +201,7 @@ public class PaperElementExtensions {
             // <--[tag]
             // @attribute <ElementTag.on_click[<message>].type[<type>]>
             // @returns ElementTag
+            // @Plugin Paper
             // @group text manipulation
             // @description
             // Adds a click command to the element, which makes the element execute the input command when clicked.
@@ -214,6 +223,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.with_insertion[<message>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Adds an insertion message to the element, which makes the element insert the input message to chat when shift-clicked.
@@ -227,6 +237,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.no_reset>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Makes a color code (&0123456789abcdef) not reset other formatting details.
@@ -243,6 +254,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.end_format>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Makes a chat format code (&klmno, or &[font=...]) be the end of a format, as opposed to the start.
@@ -262,6 +274,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.italicize>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Makes the input text italic. Equivalent to "<&o><ELEMENT_HERE><&o.end_format>"
@@ -274,6 +287,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.bold>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Makes the input text bold. Equivalent to "<&l><ELEMENT_HERE><&l.end_format>"
@@ -286,6 +300,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.underline>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Makes the input text underlined. Equivalent to "<&n><ELEMENT_HERE><&n.end_format>"
@@ -298,6 +313,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.strikethrough>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Makes the input text struck-through. Equivalent to "<&m><ELEMENT_HERE><&m.end_format>"
@@ -310,6 +326,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.obfuscate>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Makes the input text obfuscated. Equivalent to "<&k><ELEMENT_HERE><&k.end_format>"
@@ -322,6 +339,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.custom_color[<custom_color_name>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Makes the input text colored by the custom color value based on the common base color names defined in the Denizen config file.
@@ -340,6 +358,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.color[<color>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Makes the input text colored by the input color. Equivalent to "<COLOR><ELEMENT_HERE><COLOR.end_format>"
@@ -350,7 +369,7 @@ public class PaperElementExtensions {
             String colorName = colorElement.asString();
             String colorOut = null;
             if (colorName.length() == 1) {
-                TextColor color = LegacyColor.fromChar(colorName.charAt(0));
+                LegacyColor color = LegacyColor.legacyFromChar(colorName.charAt(0));
                 if (color != null) {
                     colorOut = color.toString();
                 }
@@ -397,6 +416,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.font[<font>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Makes the input text display with the input font name. Equivalent to "<&font[new-font]><ELEMENT_HERE><&font[new-font].end_format>"
@@ -410,6 +430,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.rainbow[(<pattern>)]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Returns the element with rainbow colors applied.
@@ -432,6 +453,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.hex_rainbow[(<length>)]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Returns the element with RGB rainbow colors applied.
@@ -485,6 +507,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.color_gradient[from=<color>;to=<color>;(style={RGB}/HSB)]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @description
         // Returns the element with an RGB color gradient applied, with a unique color per character.
@@ -522,6 +545,7 @@ public class PaperElementExtensions {
         // <--[tag]
         // @attribute <ElementTag.hsb_color_gradient[from=<color>;to=<color>]>
         // @returns ElementTag
+        // @Plugin Paper
         // @group text manipulation
         // @deprecated use color_gradient[from=color;to=color;style=HSB]
         // @description
