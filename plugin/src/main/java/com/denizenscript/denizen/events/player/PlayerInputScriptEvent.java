@@ -22,13 +22,13 @@ public class PlayerInputScriptEvent extends BukkitScriptEvent implements Listene
     // @Triggers when a player sends updated input to the server.
     //
     // @Context
-    // <context.backward> returns whether the player provided backwards movement input
-    // <context.forward> returns whether the player provided forward movement input
-    // <context.left> returns whether the player provided left movement input
-    // <context.right> returns whether the player provided right movement input
-    // <context.jump> returns whether the player provided jump input
-    // <context.sneak> returns whether the player provided sneak input
-    // <context.sprint> returns whether the player provided sprint input
+    // <context.backward> returns whether the player is providing backwards movement input (normally this means they are pressing S).
+    // <context.forward> returns whether the player is providing forwards movement input (normally this means they are pressing W).
+    // <context.left> returns whether the player is providing left movement input (normally this means they are pressing A).
+    // <context.right> returns whether the player is providing right movement input (normally this means they are pressing D).
+    // <context.jump> returns whether the player is providing jump input (normally this means they are pressing SPACEBAR).
+    // <context.sneak> returns whether the player is providing sneak input (normally this means they are pressing SHIFT).
+    // <context.sprint> returns whether the player is providing sprint input (normally this means they are pressing CONTROL).
     //
     // @Player Always.
     //
