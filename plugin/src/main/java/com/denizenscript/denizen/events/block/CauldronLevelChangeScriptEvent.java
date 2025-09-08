@@ -63,13 +63,17 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
         if (!runGenericSwitchCheck(path, "cause", event.getReason().name())) {
             return false;
         }
-        if (path.eventArgLowerAt(2).equals("raises") && newLevel <= oldLevel) {
-            return false;
+        if (path.eventArgLowerAt(2).equals("raises")) {
+            if (newLevel <= oldLevel) {
+                return false;
+            }
         }
-        if (path.eventArgLowerAt(2).equals("lowers") && newLevel >= oldLevel) {
-            return false;
+        else if (path.eventArgLowerAt(2).equals("lowers")) {
+            if (newLevel >= oldLevel) {
+                return false;
+            }
         }
-        if (!path.eventArgLowerAt(2).equals("changes")) {
+        else if (!path.eventArgLowerAt(2).equals("changes")) {
             return false;
         }
         return super.matches(path);
