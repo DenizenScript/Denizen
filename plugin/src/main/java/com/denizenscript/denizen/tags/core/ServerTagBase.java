@@ -2034,6 +2034,17 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             tagProcessor.registerMechanism("set_links", false, ListTag.class, (object, mechanism, input) -> {
                 Utilities.replaceServerLinks(Bukkit.getServerLinks(), input, mechanism.context);
             });
+
+            // <--[mechanism]
+            // @object server
+            // @name add_links
+            // @input ListTag(MapTag)
+            // @description
+            // Adds links to the default server links. Each item in the list must be a MapTag in <@link language Server Links Format>.
+            // -->
+            tagProcessor.registerMechanism("add_links", false, ListTag.class, (object, mechanism, input) -> {
+                Utilities.fillServerLinks(Bukkit.getServerLinks(), input, mechanism.context);
+            });
         }
 
         // <--[mechanism]
