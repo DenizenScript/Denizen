@@ -62,7 +62,7 @@ public class HoverFormatHelper {
                 }
                 ElementTag type = entityHoverData.getElement("type");
                 ElementTag rawName = entityHoverData.getElement("name");
-                BaseComponent name = rawName != null ? new TextComponent(FormattedTextHelper.parse(rawName.asString(), ChatColor.WHITE)) : null;
+                BaseComponent name = rawName != null ? TextComponent.fromArray(FormattedTextHelper.parse(rawName.asString(), ChatColor.WHITE)) : null;
                 content = new Entity(type != null ? type.asString() : null, uuid.asString(), name);
             }
         }

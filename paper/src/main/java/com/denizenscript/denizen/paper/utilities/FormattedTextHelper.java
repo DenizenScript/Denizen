@@ -591,7 +591,7 @@ public class FormattedTextHelper {
                 firstChar = 0;
             }
             else {
-                // This is for compat with how Spigot does parsing of plaintext.
+                // This is for compact with how Spigot does parsing of plaintext.
                 return Component.textOfChildren(Component.text(str));
             }
         }
@@ -650,7 +650,6 @@ public class FormattedTextHelper {
                     String innardType = CoreUtilities.toLowerCase(innardBase.get(0));
                     if (innardBase.size() == 2) {
                         nextText.content(nextText.content() + str.substring(started, i));
-                        base.append(nextText);
                         lastText = nextText;
                         nextText = copyFormatToNewText(lastText, optimize);
                         nextText.content("");
@@ -807,6 +806,7 @@ public class FormattedTextHelper {
                                 Debug.echoError("Text parse issue: cannot interpret type '" + innardType + "' with " + innardParts.size() + " parts.");
                             }
                         }
+                        base.append(lastText);
                     }
                     i = endBracket;
                     started = endBracket + 1;
@@ -893,7 +893,6 @@ public class FormattedTextHelper {
                     }
                     String url = str.substring(i, nextSpace);
                     nextText.content(nextText.content() + str.substring(started, i));
-                    base.append(nextText);
                     lastText = nextText;
                     // TODO builder copying
                     nextText = lastText.build().toBuilder();
@@ -901,6 +900,7 @@ public class FormattedTextHelper {
                     TextComponent.Builder clickableText = Component.text().content(url);
                     clickableText.clickEvent(ClickEvent.openUrl(url));
                     lastText.append(clickableText);
+                    base.append(lastText);
                     i = nextSpace - 1;
                     started = nextSpace;
                     continue;
