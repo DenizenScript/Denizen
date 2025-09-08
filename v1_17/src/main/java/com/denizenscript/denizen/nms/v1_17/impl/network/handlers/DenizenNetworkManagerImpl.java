@@ -3,13 +3,14 @@ package com.denizenscript.denizen.nms.v1_17.impl.network.handlers;
 import com.denizenscript.denizen.events.player.PlayerHearsSoundScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerReceivesActionbarScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_17.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v1_17.impl.network.packets.*;
 import com.denizenscript.denizen.nms.v1_17.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.entities.EntityFakePlayerImpl;
+import com.denizenscript.denizen.nms.v1_17.impl.network.packets.PacketOutChatImpl;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
@@ -17,6 +18,7 @@ import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
 import com.denizenscript.denizen.scripts.commands.entity.SneakCommand;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
@@ -26,16 +28,14 @@ import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.SectionPos;
@@ -271,10 +271,10 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (packet instanceof ClientboundSetActionBarTextPacket) {
             ClientboundSetActionBarTextPacket actionbarPacket = (ClientboundSetActionBarTextPacket) packet;
             PlayerReceivesActionbarScriptEvent event = PlayerReceivesActionbarScriptEvent.instance;
-            Component baseComponent = actionbarPacket.getText();
+            String rawJson = Component.Serializer.toJson(actionbarPacket.getText());
             event.reset();
-            event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent)));
-            event.rawJson = new ElementTag(Component.Serializer.toJson(baseComponent));
+            event.message = new ElementTag(PaperAPITools.instance.parseJsonToText(rawJson), true);
+            event.rawJson = new ElementTag(rawJson, true);
             event.system = new ElementTag(false);
             event.player = PlayerTag.mirrorBukkitPlayer(player.getBukkitEntity());
             event = (PlayerReceivesActionbarScriptEvent) event.triggerNow();
@@ -282,8 +282,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 return true;
             }
             if (event.modified) {
-                Component component = Handler.componentToNMS(event.altMessageDetermination);
-                ClientboundSetActionBarTextPacket newPacket = new ClientboundSetActionBarTextPacket(component);
+                ClientboundSetActionBarTextPacket newPacket = new ClientboundSetActionBarTextPacket(Component.Serializer.fromJson(event.rawJson.asString()));
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
@@ -949,7 +948,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                     return true;
                 }
                 if (result.modified) {
-                    packetHelper.setRawJson(ComponentSerializer.toString(result.altMessageDetermination));
+                    packetHelper.setRawJson(result.rawJson.asString());
                 }
             }
         }

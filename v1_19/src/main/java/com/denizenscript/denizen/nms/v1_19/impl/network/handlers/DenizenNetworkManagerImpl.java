@@ -15,6 +15,7 @@ import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.entity.*;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
@@ -464,10 +465,10 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (packet instanceof ClientboundSetActionBarTextPacket) {
             ClientboundSetActionBarTextPacket actionbarPacket = (ClientboundSetActionBarTextPacket) packet;
             PlayerReceivesActionbarScriptEvent event = PlayerReceivesActionbarScriptEvent.instance;
-            Component baseComponent = actionbarPacket.getText();
+            String rawJson = Component.Serializer.toJson(actionbarPacket.getText());
             event.reset();
-            event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent)));
-            event.rawJson = new ElementTag(Component.Serializer.toJson(baseComponent));
+            event.message = new ElementTag(PaperAPITools.instance.parseJsonToText(rawJson), true);
+            event.rawJson = new ElementTag(rawJson, true);
             event.system = new ElementTag(false);
             event.player = PlayerTag.mirrorBukkitPlayer(player.getBukkitEntity());
             event = (PlayerReceivesActionbarScriptEvent) event.triggerNow();
@@ -475,8 +476,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 return true;
             }
             if (event.modified) {
-                Component component = Handler.componentToNMS(event.altMessageDetermination);
-                ClientboundSetActionBarTextPacket newPacket = new ClientboundSetActionBarTextPacket(component);
+                ClientboundSetActionBarTextPacket newPacket = new ClientboundSetActionBarTextPacket(Component.Serializer.fromJson(event.rawJson.asString()));
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
@@ -1237,7 +1237,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                         return true;
                     }
                     if (result.modified) {
-                        oldManager.send(new ClientboundSystemChatPacket(result.altMessageDetermination, isActionbar), genericfuturelistener);
+                        oldManager.send(new ClientboundSystemChatPacket(result.rawJson.asString(), isActionbar), genericfuturelistener);
                         return true;
                     }
                 }

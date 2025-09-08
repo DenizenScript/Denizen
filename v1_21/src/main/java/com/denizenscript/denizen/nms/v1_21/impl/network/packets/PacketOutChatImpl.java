@@ -1,7 +1,7 @@
 package com.denizenscript.denizen.nms.v1_21.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
@@ -18,14 +18,14 @@ public class PacketOutChatImpl extends PacketOutChat {
     public PacketOutChatImpl(ClientboundSystemChatPacket internal) {
         systemPacket = internal;
         rawJson = CraftChatMessage.toJSON(internal.content());
-        message = FormattedTextHelper.stringify(FormattedTextHelper.parseJson(rawJson));
+        message = PaperAPITools.instance.parseJsonToText(rawJson);
         isOverlayActionbar = internal.overlay();
     }
 
     public PacketOutChatImpl(ClientboundPlayerChatPacket internal) {
         playerPacket = internal;
         rawJson = ComponentSerializer.toString(internal.body().content());
-        message = FormattedTextHelper.stringify(FormattedTextHelper.parseJson(rawJson));
+        message = PaperAPITools.instance.parseJsonToText(rawJson);
     }
 
     @Override

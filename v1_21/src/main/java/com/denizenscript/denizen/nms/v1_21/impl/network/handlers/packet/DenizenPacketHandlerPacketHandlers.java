@@ -8,6 +8,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
+import org.bukkit.craftbukkit.v1_21_R5.util.CraftChatMessage;
 
 public class DenizenPacketHandlerPacketHandlers {
 
@@ -37,7 +38,7 @@ public class DenizenPacketHandlerPacketHandlers {
                         return null;
                     }
                     if (result.modified) {
-                        return new ClientboundSystemChatPacket(result.altMessageDetermination, isActionbar);
+                        return new ClientboundSystemChatPacket(CraftChatMessage.fromJSON(result.rawJson.asString()), isActionbar);
                     }
                 }
             }

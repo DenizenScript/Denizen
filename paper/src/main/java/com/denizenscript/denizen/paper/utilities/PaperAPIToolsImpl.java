@@ -8,7 +8,6 @@ import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -21,9 +20,9 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.potion.PotionMix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
@@ -82,12 +81,6 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     @Override
     public String getCustomName(Entity entity) {
         return PaperModule.stringifyComponent(entity.customName());
-    }
-
-    @Override
-    public BaseComponent[] getCustomNameComponent(Entity entity) {
-        Component customName = entity.customName();
-        return customName != null ? FormattedTextHelper.parseJson(PaperModule.componentToJson(customName)) : null;
     }
 
     @Override
@@ -361,8 +354,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             List<String> lines = CoreUtilities.split(text, '\n');
             return lines.stream().map(l -> convertTextToMiniMessage(l, false)).collect(Collectors.joining("\n"));
         }
-        Component parsed = PaperModule.jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(text, ChatColor.WHITE, false)));
-        return MiniMessage.miniMessage().serialize(parsed);
+        return MiniMessage.miniMessage().serialize(FormattedTextHelper.parse(text, NamedTextColor.WHITE, false));
     }
 
     @Override
@@ -408,5 +400,15 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             return;
         }
         BlockTagsSetter.INSTANCE.setTags(type, tags);
+    }
+
+    @Override
+    public String parseTextToJson(String formattedText, BaseColor baseColor) {
+        return PaperModule.componentToJson(FormattedTextHelper.parse(formattedText, baseColor == BaseColor.WHITE ? NamedTextColor.WHITE : NamedTextColor.BLACK));
+    }
+
+    @Override
+    public String parseJsonToText(String json) {
+        return FormattedTextHelper.stringify(PaperModule.jsonToComponent(json));
     }
 }

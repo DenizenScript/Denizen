@@ -7,7 +7,10 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
@@ -232,5 +235,25 @@ public class PaperAPITools {
 
     public void setMaterialTags(Material type, Set<NamespacedKey> tags) {
         NMSHandler.blockHelper.setVanillaTags(type, tags);
+    }
+
+    public enum BaseColor { WHITE, BLACK }
+
+    public String parseTextToJson(String formattedText, BaseColor baseColor) {
+        TextComponent textComponent = new TextComponent(formattedText);
+        textComponent.setBold(false);
+        textComponent.setItalic(false);
+        textComponent.setStrikethrough(false);
+        textComponent.setUnderlined(false);
+        textComponent.setObfuscated(false);
+        textComponent.setColor(baseColor == BaseColor.WHITE ? ChatColor.WHITE : ChatColor.BLACK);
+        TextComponent base = new TextComponent();
+        base.addExtra(textComponent);
+        return ComponentSerializer.toString(base);
+    }
+
+    public String parseJsonToText(String json) {
+        BaseComponent[] components = ComponentSerializer.parse(json);
+        return components.length == 1 ? components[0].toLegacyText() : new TextComponent(components).toLegacyText();
     }
 }
