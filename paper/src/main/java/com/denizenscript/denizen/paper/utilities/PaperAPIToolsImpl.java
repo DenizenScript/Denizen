@@ -11,6 +11,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -35,6 +36,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionBrewer;
 import org.bukkit.scoreboard.Team;
@@ -400,6 +402,34 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             return;
         }
         BlockTagsSetter.INSTANCE.setTags(type, tags);
+    }
+
+    @Override
+    public String getPage(BookMeta meta, int page) {
+        return FormattedTextHelper.stringify(meta.page(page));
+    }
+
+    @Override
+    public ListTag getPages(BookMeta meta) {
+        return new ListTag(meta.pages(), page -> new ElementTag(FormattedTextHelper.stringify(page), true));
+    }
+
+    @Override
+    public void setPages(BookMeta meta, List<String> pages) {
+        List<Component> parsedPages = new ArrayList<>(pages.size());
+        for (String page : pages) {
+            parsedPages.add(FormattedTextHelper.parse(page, NamedTextColor.BLACK));
+        }
+        meta.pages(parsedPages);
+    }
+
+    @Override
+    public void setJsonPages(BookMeta meta, List<String> jsonPages) {
+        List<Component> parsedPages = new ArrayList<>(jsonPages.size());
+        for (String jsonPage : jsonPages) {
+            parsedPages.add(PaperModule.jsonToComponent(jsonPage));
+        }
+        meta.pages(parsedPages);
     }
 
     @Override

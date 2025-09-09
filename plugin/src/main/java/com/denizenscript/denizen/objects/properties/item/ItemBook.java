@@ -2,7 +2,7 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -10,13 +10,8 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemBook implements Property {
 
@@ -89,12 +84,7 @@ public class ItemBook implements Property {
         // Returns the plain-text pages of the book as a ListTag.
         // -->
         PropertyParser.registerTag(ItemBook.class, ListTag.class, "book_pages", (attribute, object) -> {
-            List<BaseComponent[]> pages = object.getBookMeta().spigot().getPages();
-            ListTag pageList = new ListTag(pages.size());
-            for (BaseComponent[] page : pages) {
-                pageList.addObject(new ElementTag(FormattedTextHelper.stringify(page), true));
-            }
-            return pageList;
+            return PaperAPITools.instance.getPages(object.getBookMeta());
         });
 
         // <--[tag]
@@ -129,15 +119,11 @@ public class ItemBook implements Property {
             }
             if ((attribute.startsWith("page", 2) || attribute.startsWith("get_page", 2)) && attribute.hasContext(2)) {
                 attribute.fulfill(1);
-                return new ElementTag(FormattedTextHelper.stringify(bookMeta.spigot().getPage(attribute.getIntParam())));
+                return new ElementTag(PaperAPITools.instance.getPage(bookMeta, attribute.getIntParam()));
             }
             if (attribute.startsWith("pages", 2)) {
                 attribute.fulfill(1);
-                ListTag output = new ListTag();
-                for (BaseComponent[] page : bookMeta.spigot().getPages()) {
-                    output.add(FormattedTextHelper.stringify(page));
-                }
-                return output;
+                return PaperAPITools.instance.getPages(bookMeta);
             }
             String output = object.getOutputString();
             if (output == null) {
@@ -157,11 +143,7 @@ public class ItemBook implements Property {
         // -->
         PropertyParser.registerMechanism(ItemBook.class, ListTag.class, "book_pages", (object, mechanism, input) -> {
             BookMeta bookMeta = object.getBookMeta();
-            List<BaseComponent[]> newPages = new ArrayList<>(input.size());
-            for (String page : input) {
-                newPages.add(FormattedTextHelper.parse(page, ChatColor.BLACK));
-            }
-            bookMeta.spigot().setPages(newPages);
+            PaperAPITools.instance.setPages(bookMeta, input);
             object.item.setItemMeta(bookMeta);
         });
 
@@ -242,11 +224,7 @@ public class ItemBook implements Property {
                 }
                 ListTag pages = bookMap.getObjectAs("pages", ListTag.class, mechanism.context);
                 if (pages != null) {
-                    List<BaseComponent[]> newPages = new ArrayList<>(pages.size());
-                    for (String page : pages) {
-                        newPages.add(FormattedTextHelper.parse(page, ChatColor.BLACK));
-                    }
-                    bookMeta.spigot().setPages(newPages);
+                    PaperAPITools.instance.setPages(bookMeta, pages);
                 }
                 object.item.setItemMeta(bookMeta);
                 return;
@@ -274,18 +252,10 @@ public class ItemBook implements Property {
                 }
             }
             if (data.get(0).equalsIgnoreCase("raw_pages")) {
-                List<BaseComponent[]> newPages = new ArrayList<>(data.size());
-                for (int i = 1; i < data.size(); i++) {
-                    newPages.add(FormattedTextHelper.parseJson(EscapeTagUtil.unEscape(data.get(i))));
-                }
-                bookMeta.spigot().setPages(newPages);
+                PaperAPITools.instance.setJsonPages(bookMeta, data.stream().skip(1).map(EscapeTagUtil::unEscape).toList());
             }
             else if (data.get(0).equalsIgnoreCase("pages")) {
-                List<BaseComponent[]> newPages = new ArrayList<>(data.size());
-                for (int i = 1; i < data.size(); i++) {
-                    newPages.add(FormattedTextHelper.parse(EscapeTagUtil.unEscape(data.get(i)), ChatColor.BLACK));
-                }
-                bookMeta.spigot().setPages(newPages);
+                PaperAPITools.instance.setPages(bookMeta, data.stream().skip(1).map(EscapeTagUtil::unEscape).toList());
             }
             else {
                 mechanism.echoError("Invalid book input!");
@@ -304,12 +274,7 @@ public class ItemBook implements Property {
             bookMap.putObject("title", new ElementTag(bookMeta.getTitle(), true));
         }
         if (bookMeta.hasPages()) {
-            List<BaseComponent[]> pages = bookMeta.spigot().getPages();
-            ListTag pageList = new ListTag(pages.size());
-            for (BaseComponent[] page : pages) {
-                pageList.addObject(new ElementTag(FormattedTextHelper.stringify(page), true));
-            }
-            bookMap.putObject("pages", pageList);
+            bookMap.putObject("pages", PaperAPITools.instance.getPages(bookMeta));
         }
         return bookMap;
     }
@@ -332,8 +297,8 @@ public class ItemBook implements Property {
         }
         output.append("pages|");
         if (bookMeta.hasPages()) {
-            for (BaseComponent[] page : bookMeta.spigot().getPages()) {
-                output.append(EscapeTagUtil.escape(FormattedTextHelper.stringify(page))).append("|");
+            for (String page : PaperAPITools.instance.getPages(bookMeta)) {
+                output.append(EscapeTagUtil.escape(page)).append("|");
             }
         }
         return output.substring(0, output.length() - 1);

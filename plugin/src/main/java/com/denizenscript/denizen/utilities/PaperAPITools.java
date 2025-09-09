@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
@@ -23,11 +24,13 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
 import java.lang.invoke.MethodHandle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -235,6 +238,26 @@ public class PaperAPITools {
 
     public void setMaterialTags(Material type, Set<NamespacedKey> tags) {
         NMSHandler.blockHelper.setVanillaTags(type, tags);
+    }
+
+    public String getPage(BookMeta meta, int page) {
+        return meta.getPage(page);
+    }
+
+    public ListTag getPages(BookMeta meta) {
+        return new ListTag(meta.getPages());
+    }
+
+    public void setPages(BookMeta meta, List<String> pages) {
+        meta.setPages(pages);
+    }
+
+    public void setJsonPages(BookMeta meta, List<String> jsonPages) {
+        List<BaseComponent[]> parsedPages = new ArrayList<>(jsonPages.size());
+        for (String jsonPage : jsonPages) {
+            parsedPages.add(ComponentSerializer.parse(jsonPage));
+        }
+        meta.spigot().setPages(parsedPages);
     }
 
     public enum BaseColor { WHITE, BLACK }
