@@ -410,11 +410,11 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void addFormatScriptDefinitions(DefinitionProvider definitionProvider, TagContext context) {
         BukkitTagContext bukkitContext = (BukkitTagContext) context;
         String name = null;
-        if (bukkitContext.player != null) {
-            name = bukkitContext.player.getName();
-        }
-        else if (bukkitContext.npc != null) {
+        if (bukkitContext.npc != null) {
             name = bukkitContext.npc.getName();
+        }
+        else if (bukkitContext.player != null) {
+            name = bukkitContext.player.getName();
         }
         if (name != null) {
             definitionProvider.addDefinition("name", name);
