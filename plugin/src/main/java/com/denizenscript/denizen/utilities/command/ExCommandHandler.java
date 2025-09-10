@@ -3,7 +3,7 @@ package com.denizenscript.denizen.utilities.command;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -94,7 +94,7 @@ public class ExCommandHandler implements CommandExecutor, TabCompleter {
         List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null, new BukkitScriptEntryData(sender instanceof Player player ? new PlayerTag(player) : null, npc));
         queue.addEntries(scriptEntries);
         if (!quiet && sender instanceof Player) {
-            queue.debugOutput = s -> sender.spigot().sendMessage(FormattedTextHelper.parse(s.replace("<FORCE_ALIGN>", ""), net.md_5.bungee.api.ChatColor.WHITE));
+            queue.debugOutput = s -> PaperAPITools.instance.sendMessage(sender, s.replace("<FORCE_ALIGN>", ""));
         }
         queue.start();
         return true;
