@@ -250,6 +250,10 @@ public class PaperAPITools {
         return new ListTag(meta.getPages());
     }
 
+    public void addPage(BookMeta meta, String page) {
+        meta.addPage(page);
+    }
+
     public void setPages(BookMeta meta, List<String> pages) {
         meta.setPages(pages);
     }

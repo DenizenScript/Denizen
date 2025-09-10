@@ -416,6 +416,11 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
+    public void addPage(BookMeta meta, String page) {
+        meta.addPages(FormattedTextHelper.parse(page, NamedTextColor.BLACK));
+    }
+
+    @Override
     public void setPages(BookMeta meta, List<String> pages) {
         List<Component> parsedPages = new ArrayList<>(pages.size());
         for (String page : pages) {
