@@ -176,12 +176,11 @@ public class FormattedTextHelper {
         return hasRootFormat(children.get(0));
     }
 
-    // TODO stringification methods?
     public static String stringify(Component component) {
         if (component == null) {
             return null;
         }
-        String output = stringifySub(component, null);
+        String output = stringifySub(component);
         if (hasRootFormat(component)) {
             output = RESET + output;
         }
@@ -209,10 +208,9 @@ public class FormattedTextHelper {
         return outColor.toString();
     }
 
-    // TODO stringification methods?
-//    public static String stringify(Component component) {
-//        return stringifySub(component, null);
-//    }
+    public static String stringifySub(Component component) {
+        return stringifySub(component, null);
+    }
 
     public static String stringifySub(Component component, TextColor parentColor) {
         if (component == null) {
@@ -275,7 +273,7 @@ public class FormattedTextHelper {
                 map.putObject("fallback", new ElementTag(translatableComponent.fallback(), true));
             }
             if (!translatableComponent.arguments().isEmpty()) {
-                map.putObject("with", new ListTag(translatableComponent.arguments(), argument -> new ElementTag(stringify(argument.asComponent()), true)));
+                map.putObject("with", new ListTag(translatableComponent.arguments(), argument -> new ElementTag(stringifySub(argument.asComponent()), true)));
             }
             builder.append(LEGACY_SECTION).append("[translate=").append(escape(map.savable())).append(']');
         }
@@ -604,11 +602,10 @@ public class FormattedTextHelper {
             if (str.startsWith(LEGACY_SECTION + "[translate=") && str.indexOf(']') == str.length() - 1) {
                 return parseTranslatable(str.substring("&[translate=".length(), str.length() - 1), baseColor, optimize);
             }
-            if (str.length() > 3 && str.startsWith((LEGACY_SECTION + "")) && hexMatcher.isMatch(str.charAt(1))
+            if (str.length() > 3 && str.startsWith(LEGACY_SECTION + "") && hexMatcher.isMatch(str.charAt(1))
                     && str.startsWith(LEGACY_SECTION + "[translate=", 2) && str.indexOf(']') == str.length() - 1) { // eg "&6&[translate=block.minecraft.ominous_banner]"
                 Component component = parseTranslatable(str.substring("&[translate=".length() + 2, str.length() - 1), baseColor, optimize);
-                component.color(LegacyColor.fromChar(str.charAt(1)));
-                return component;
+                return component.color(LegacyColor.fromChar(str.charAt(1)));
             }
         }
         if (!optimize) {
