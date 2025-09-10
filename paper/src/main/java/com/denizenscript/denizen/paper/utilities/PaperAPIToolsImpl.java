@@ -433,6 +433,11 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
+    public void sendActionBar(Player player, String text) {
+        player.sendActionBar(FormattedTextHelper.parse(text, NamedTextColor.WHITE));
+    }
+
+    @Override
     public String parseTextToJson(String formattedText, BaseColor baseColor) {
         return PaperModule.componentToJson(FormattedTextHelper.parse(formattedText, baseColor == BaseColor.WHITE ? NamedTextColor.WHITE : NamedTextColor.BLACK));
     }

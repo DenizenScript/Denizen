@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -258,6 +259,10 @@ public class PaperAPITools {
             parsedPages.add(ComponentSerializer.parse(jsonPage));
         }
         meta.spigot().setPages(parsedPages);
+    }
+
+    public void sendActionBar(Player player, String text) {
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(text));
     }
 
     public enum BaseColor { WHITE, BLACK }
