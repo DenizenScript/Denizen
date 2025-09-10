@@ -34,6 +34,7 @@ import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 public class PaperAPITools {
@@ -259,6 +260,14 @@ public class PaperAPITools {
             parsedPages.add(ComponentSerializer.parse(jsonPage));
         }
         meta.spigot().setPages(parsedPages);
+    }
+
+    public void sendMessage(CommandSender sender, String text) {
+        sender.sendMessage(text);
+    }
+
+    public void sendMessage(CommandSender sender, String text, UUID senderId) {
+        sender.sendMessage(senderId, text);
     }
 
     public void sendActionBar(Player player, String text) {

@@ -20,6 +20,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.potion.PotionMix;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -430,6 +431,16 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             parsedPages.add(PaperModule.jsonToComponent(jsonPage));
         }
         meta.pages(parsedPages);
+    }
+
+    @Override
+    public void sendMessage(CommandSender sender, String text) {
+        sender.sendMessage(FormattedTextHelper.parse(text, NamedTextColor.WHITE));
+    }
+
+    @Override
+    public void sendMessage(CommandSender sender, String text, UUID senderId) {
+        sender.sendMessage(Identity.identity(senderId), FormattedTextHelper.parse(text, NamedTextColor.WHITE));
     }
 
     @Override

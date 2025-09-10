@@ -2,7 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
@@ -18,9 +18,6 @@ import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 
 import java.util.Collections;
@@ -133,6 +130,7 @@ public class NarrateCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), db("Narrating", text), db("Targets", targets), formatObj, perPlayerObj, from);
         }
+        // TODO: as of signed chat, this has no effect. Either add proper signed chat support or deprecate.
         UUID fromId = null;
         if (from != null) {
             if (from.asString().startsWith("p@")) {
@@ -151,7 +149,7 @@ public class NarrateCommand extends AbstractCommand {
             formattingContext = scriptContainer != null ? scriptContainer.getFormattingContext() : null;
         }
         if (targets == null) {
-            Bukkit.getServer().getConsoleSender().spigot().sendMessage(FormattedTextHelper.parse(formattingContext != null ? formattingContext.format(NARRATE_FORMAT_TYPE, text, scriptEntry) : text, ChatColor.WHITE));
+            PaperAPITools.instance.sendMessage(Bukkit.getServer().getConsoleSender(), formattingContext != null ? formattingContext.format(NARRATE_FORMAT_TYPE, text, scriptEntry) : text);
             return;
         }
         for (PlayerTag player : targets) {
@@ -165,12 +163,12 @@ public class NarrateCommand extends AbstractCommand {
                     context.player = player;
                     personalText = TagManager.tag(personalText, context);
                 }
-                BaseComponent[] component = FormattedTextHelper.parse(formattingContext != null ? formattingContext.format(NARRATE_FORMAT_TYPE, personalText, scriptEntry) : personalText, ChatColor.WHITE);
+                String formattedText = formattingContext != null ? formattingContext.format(NARRATE_FORMAT_TYPE, personalText, scriptEntry) : personalText;
                 if (fromId == null) {
-                    player.getPlayerEntity().spigot().sendMessage(component);
+                    PaperAPITools.instance.sendMessage(player.getPlayerEntity(), formattedText);
                 }
                 else {
-                    player.getPlayerEntity().spigot().sendMessage(ChatMessageType.CHAT, fromId, component);
+                    PaperAPITools.instance.sendMessage(player.getPlayerEntity(), formattedText, fromId);
                 }
             }
             else {
