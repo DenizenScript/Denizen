@@ -444,6 +444,19 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
+    public void broadcast(String text, Predicate<Player> filter) {
+        Component message = null;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (filter == null || filter.test(player)) {
+                if (message == null) {
+                    message = FormattedTextHelper.parse(text, NamedTextColor.WHITE);
+                }
+                player.sendMessage(message);
+            }
+        }
+    }
+
+    @Override
     public void sendActionBar(Player player, String text) {
         player.sendActionBar(FormattedTextHelper.parse(text, NamedTextColor.WHITE));
     }

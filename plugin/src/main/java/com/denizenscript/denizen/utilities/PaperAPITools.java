@@ -270,6 +270,14 @@ public class PaperAPITools {
         sender.sendMessage(senderId, text);
     }
 
+    public void broadcast(String text, Predicate<Player> filter) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (filter == null || filter.test(player)) {
+                player.sendMessage(text);
+            }
+        }
+    }
+
     public void sendActionBar(Player player, String text) {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(text));
     }
