@@ -4,8 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
@@ -18,8 +17,7 @@ import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -225,7 +223,7 @@ public class EnchantmentScriptContainer extends ScriptContainer {
 
     public List<String> slots;
 
-    public HashMap<Integer, BaseComponent[]> fullNamePerLevel = new HashMap<>();
+    public HashMap<Integer, String> fullNamePerLevel = new HashMap<>();
 
     public Enchantment enchantment;
 
@@ -280,13 +278,13 @@ public class EnchantmentScriptContainer extends ScriptContainer {
         return CoreUtilities.toLowerCase(res).equals("true");
     }
 
-    public BaseComponent[] getFullName(int level) {
-        BaseComponent[] result = fullNamePerLevel.get(level);
+    public String getFullName(int level) {
+        String result = fullNamePerLevel.get(level);
         if (result != null) {
             return result;
         }
         String tagged = autoTagForLevel(fullNameTaggable, level);
-        result = FormattedTextHelper.parse(tagged, ChatColor.GRAY);
+        result = PaperAPITools.instance.parseTextToJson(tagged, PaperAPITools.BaseColor.GRAY);
         fullNamePerLevel.put(level, result);
         return result;
     }

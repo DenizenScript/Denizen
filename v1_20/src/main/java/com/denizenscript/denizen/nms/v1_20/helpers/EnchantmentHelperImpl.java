@@ -22,6 +22,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R4.enchantments.CraftEnchantment;
 import org.bukkit.craftbukkit.v1_20_R4.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R4.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_20_R4.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -106,7 +107,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
                 @Override
                 public Component getFullname(int level) {
-                    return Handler.componentToNMS(script.script.getFullName(level));
+                    return CraftChatMessage.fromJSON(script.script.getFullName(level));
                 }
                 @Override
                 public boolean canEnchant(net.minecraft.world.item.ItemStack var0) {

@@ -286,7 +286,7 @@ public class PaperAPITools {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(text));
     }
 
-    public enum BaseColor { WHITE, BLACK }
+    public enum BaseColor { WHITE, BLACK, GRAY }
 
     public String parseTextToJson(String formattedText, BaseColor baseColor) {
         TextComponent textComponent = new TextComponent(formattedText);
@@ -295,7 +295,11 @@ public class PaperAPITools {
         textComponent.setStrikethrough(false);
         textComponent.setUnderlined(false);
         textComponent.setObfuscated(false);
-        textComponent.setColor(baseColor == BaseColor.WHITE ? ChatColor.WHITE : ChatColor.BLACK);
+        textComponent.setColor(switch (baseColor) {
+            case WHITE -> ChatColor.WHITE;
+            case BLACK -> ChatColor.BLACK;
+            case GRAY -> ChatColor.GRAY;
+        });
         TextComponent base = new TextComponent();
         base.addExtra(textComponent);
         return ComponentSerializer.toString(base);

@@ -468,7 +468,11 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public String parseTextToJson(String formattedText, BaseColor baseColor) {
-        return PaperModule.componentToJson(FormattedTextHelper.parse(formattedText, baseColor == BaseColor.WHITE ? NamedTextColor.WHITE : NamedTextColor.BLACK));
+        return PaperModule.componentToJson(FormattedTextHelper.parse(formattedText, switch (baseColor) {
+            case WHITE -> NamedTextColor.WHITE;
+            case BLACK -> NamedTextColor.BLACK;
+            case GRAY -> NamedTextColor.GRAY;
+        }));
     }
 
     @Override
