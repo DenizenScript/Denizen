@@ -12,7 +12,6 @@ import com.denizenscript.denizen.nms.v1_19.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_19.impl.blocks.BlockLightImpl;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -21,9 +20,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteArrayTag;
@@ -197,7 +193,7 @@ public class Handler extends NMSHandler {
     public void setInventoryTitle(InventoryView view, String title) {
         AbstractContainerMenu menu = ((CraftInventoryView) view).getHandle();
         try {
-            AbstractContainerMenu_title_SETTER.invoke(menu, componentToNMS(FormattedTextHelper.parse(title, ChatColor.DARK_GRAY)));
+            AbstractContainerMenu_title_SETTER.invoke(menu, parseNMSComponent(title, PaperAPITools.BaseColor.DARK_GRAY));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -316,19 +312,17 @@ public class Handler extends NMSHandler {
         }
     }
 
-    public static BaseComponent[] componentToSpigot(Component nms) {
+    public static String stringifyNMSComponent(Component nms) {
         if (nms == null) {
             return null;
         }
-        String json = Component.Serializer.toJson(nms);
-        return ComponentSerializer.parse(json);
+        return PaperAPITools.instance.parseJsonToText(Component.Serializer.toJson(nms));
     }
 
-    public static MutableComponent componentToNMS(BaseComponent[] spigot) {
-        if (spigot == null) {
+    public static MutableComponent parseNMSComponent(String formattedText, PaperAPITools.BaseColor baseColor) {
+        if (formattedText == null) {
             return null;
         }
-        String json = FormattedTextHelper.componentToJson(spigot);
-        return Component.Serializer.fromJson(json);
+        return Component.Serializer.fromJson(PaperAPITools.instance.parseTextToJson(formattedText, baseColor));
     }
 }

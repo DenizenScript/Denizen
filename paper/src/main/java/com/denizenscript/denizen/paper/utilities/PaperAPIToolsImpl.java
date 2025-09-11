@@ -474,6 +474,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             case WHITE -> NamedTextColor.WHITE;
             case BLACK -> NamedTextColor.BLACK;
             case GRAY -> NamedTextColor.GRAY;
+            case DARK_GRAY -> NamedTextColor.DARK_GRAY;
         }));
     }
 

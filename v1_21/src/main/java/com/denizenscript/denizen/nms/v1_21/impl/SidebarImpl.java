@@ -3,9 +3,8 @@ package com.denizenscript.denizen.nms.v1_21.impl;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.nms.v1_21.Handler;
 import com.denizenscript.denizen.nms.v1_21.helpers.PacketHelperImpl;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.numbers.StyledFormat;
 import net.minecraft.network.protocol.game.ClientboundSetDisplayObjectivePacket;
@@ -47,7 +46,7 @@ public class SidebarImpl extends Sidebar {
 
     public SidebarImpl(Player player) {
         super(player);
-        Component chatComponentTitle = Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE));
+        Component chatComponentTitle = Handler.parseNMSComponent(title, PaperAPITools.BaseColor.WHITE);
         this.obj1 = new Objective(dummyScoreboard, "dummy_1", dummyCriteria, chatComponentTitle, ObjectiveCriteria.RenderType.INTEGER, false, StyledFormat.SIDEBAR_DEFAULT);
         this.obj2 = new Objective(dummyScoreboard, "dummy_2", dummyCriteria, chatComponentTitle, ObjectiveCriteria.RenderType.INTEGER, false, StyledFormat.SIDEBAR_DEFAULT);
     }
@@ -55,7 +54,7 @@ public class SidebarImpl extends Sidebar {
     @Override
     protected void setDisplayName(String title) {
         if (this.obj1 != null) {
-            Component chatComponentTitle = Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE));
+            Component chatComponentTitle = Handler.parseNMSComponent(title, PaperAPITools.BaseColor.WHITE);
             this.obj1.setDisplayName(chatComponentTitle);
             this.obj2.setDisplayName(chatComponentTitle);
         }
@@ -77,7 +76,7 @@ public class SidebarImpl extends Sidebar {
             String lineId = ids[i];
             PlayerTeam team = new PlayerTeam(dummyScoreboard, lineId);
             team.getPlayers().add(lineId);
-            team.setPlayerPrefix(Handler.componentToNMS(FormattedTextHelper.parse(line, ChatColor.WHITE)));
+            team.setPlayerPrefix(Handler.parseNMSComponent(line, PaperAPITools.BaseColor.WHITE));
             generatedTeams.add(team);
             PacketHelperImpl.send(player, ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
             PacketHelperImpl.send(player, new ClientboundSetScorePacket(lineId, obj1.getName(), this.scores[i], Optional.empty(), Optional.of(StyledFormat.SIDEBAR_DEFAULT)));

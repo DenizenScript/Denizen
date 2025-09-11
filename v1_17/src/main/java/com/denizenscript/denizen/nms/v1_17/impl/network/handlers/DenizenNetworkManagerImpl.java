@@ -17,7 +17,6 @@ import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
 import com.denizenscript.denizen.scripts.commands.entity.SneakCommand;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
@@ -35,7 +34,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.SectionPos;
@@ -608,7 +606,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                     any = true;
                 }
                 else if (watcherId == 2 && nameToApply != null) { // 2: Custom name metadata
-                    Optional<Component> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)));
+                    Optional<Component> name = Optional.of(Handler.parseNMSComponent(nameToApply, PaperAPITools.BaseColor.WHITE));
                     data.set(i, new SynchedEntityData.DataItem(watcherObject, name));
                     any = true;
                 }

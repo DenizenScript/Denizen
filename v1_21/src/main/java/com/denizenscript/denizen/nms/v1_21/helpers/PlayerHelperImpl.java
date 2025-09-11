@@ -17,7 +17,7 @@ import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -26,8 +26,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.md_5.bungee.api.ChatColor;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.ClientboundUpdateTagsPacket;
@@ -377,7 +375,7 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public void setBossBarTitle(BossBar bar, String title) {
-        ((CraftBossBar) bar).getHandle().name = Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE));
+        ((CraftBossBar) bar).getHandle().name = Handler.parseNMSComponent(title, PaperAPITools.BaseColor.WHITE);
         ((CraftBossBar) bar).getHandle().broadcast(ClientboundBossEventPacket::createUpdateNamePacket);
     }
 
@@ -435,7 +433,7 @@ public class PlayerHelperImpl extends PlayerHelper {
             profile.getProperties().put("textures", new Property("textures", texture, signature));
         }
         // TODO: 1.21.3: Player list order and hat visibility support
-        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(id, profile, listed, latency, gameMode == null ? null : GameType.byId(gameMode.getValue()), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE)), true, player.getPlayerListOrder(), null);
+        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(id, profile, listed, latency, gameMode == null ? null : GameType.byId(gameMode.getValue()), display == null ? null : Handler.parseNMSComponent(display, PaperAPITools.BaseColor.WHITE), true, player.getPlayerListOrder(), null);
         PacketHelperImpl.send(player, ProfileEditorImpl.createInfoPacket(actions, List.of(entry)));
     }
 

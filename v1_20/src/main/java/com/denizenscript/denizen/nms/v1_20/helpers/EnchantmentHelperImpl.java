@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.interfaces.EnchantmentHelper;
 import com.denizenscript.denizen.nms.v1_20.Handler;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
 import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContainer;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -193,7 +192,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
 
     @Override
     public String getFullName(Enchantment enchantment, int level) {
-        return FormattedTextHelper.stringify(Handler.componentToSpigot(((CraftEnchantment) enchantment).getHandle().getFullname(level)));
+        return Handler.stringifyNMSComponent(((CraftEnchantment) enchantment).getHandle().getFullname(level));
     }
 
     // TODO: 1.20.6: MobType was removed in favor of using the entity type directly - deprecate + potentially backsupport with vanilla tags

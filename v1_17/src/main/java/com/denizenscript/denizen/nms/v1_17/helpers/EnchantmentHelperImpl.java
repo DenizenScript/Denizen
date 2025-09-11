@@ -3,7 +3,6 @@ package com.denizenscript.denizen.nms.v1_17.helpers;
 import com.denizenscript.denizen.nms.interfaces.EnchantmentHelper;
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContainer;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.Registry;
@@ -174,7 +173,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
 
     @Override
     public String getFullName(Enchantment enchantment, int level) {
-        return FormattedTextHelper.stringify(Handler.componentToSpigot(((CraftEnchantment) enchantment).getHandle().getFullname(level)));
+        return Handler.stringifyNMSComponent(((CraftEnchantment) enchantment).getHandle().getFullname(level));
     }
 
     @Override

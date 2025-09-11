@@ -2,9 +2,8 @@ package com.denizenscript.denizen.nms.v1_21.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.nms.v1_21.Handler;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.google.common.collect.ImmutableMap;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.core.ClientAsset;
@@ -175,7 +174,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                 ? getNMSAdvancementManager().advancements.get(CraftNamespacedKey.toMinecraft(advancement.parent))
                 : null;
         DisplayInfo display = new DisplayInfo(CraftItemStack.asNMSCopy(advancement.icon),
-                Handler.componentToNMS(FormattedTextHelper.parse(advancement.title, ChatColor.WHITE)), Handler.componentToNMS(FormattedTextHelper.parse(advancement.description, ChatColor.WHITE)),
+                Handler.parseNMSComponent(advancement.title, PaperAPITools.BaseColor.WHITE), Handler.parseNMSComponent(advancement.description, PaperAPITools.BaseColor.WHITE),
                 Optional.ofNullable(advancement.background).map(CraftNamespacedKey::toMinecraft).map(ClientAsset::new), AdvancementType.valueOf(advancement.frame.name()),
                 advancement.toast, advancement.announceToChat, advancement.hidden);
         display.setLocation(advancement.xOffset, advancement.yOffset);

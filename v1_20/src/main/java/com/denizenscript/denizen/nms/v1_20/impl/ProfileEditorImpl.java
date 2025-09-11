@@ -8,12 +8,11 @@ import com.denizenscript.denizen.nms.v1_20.Handler;
 import com.denizenscript.denizen.nms.v1_20.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
@@ -94,7 +93,7 @@ public class ProfileEditorImpl extends ProfileEditor {
                 modifiedProfile.getProperties().putAll(Denizen.supportsPaper ? entry.profile().getProperties() : baseProfile.getProperties());
             }
             String listRename = RenameCommand.getCustomNameFor(entry.profileId(), networkManager.player.getBukkitEntity(), true);
-            Component displayName = listRename != null ? Handler.componentToNMS(FormattedTextHelper.parse(listRename, ChatColor.WHITE)) : entry.displayName();
+            Component displayName = listRename != null ? Handler.parseNMSComponent(listRename, PaperAPITools.BaseColor.WHITE) : entry.displayName();
             ClientboundPlayerInfoUpdatePacket.Entry modifiedEntry = new ClientboundPlayerInfoUpdatePacket.Entry(entry.profileId(), modifiedProfile, entry.listed(), entry.latency(), entry.gameMode(), displayName, entry.chatSession());
             modifiedEntries.add(modifiedEntry);
         }

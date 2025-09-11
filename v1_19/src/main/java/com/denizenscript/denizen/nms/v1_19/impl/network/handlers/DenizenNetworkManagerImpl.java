@@ -14,7 +14,6 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.entity.*;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
@@ -36,7 +35,6 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.SectionPos;
@@ -410,7 +408,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 }
                 String modeText = update.gameMode() == null ? null : update.gameMode().name();
                 PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.getId(), update.listed(), profile.getName(),
-                        update.displayName() == null ? null : FormattedTextHelper.stringify(Handler.componentToSpigot(update.displayName())), modeText, texture, signature, update.latency());
+                        update.displayName() == null ? null : Handler.stringifyNMSComponent(update.displayName()), modeText, texture, signature, update.latency());
                 PlayerReceivesTablistUpdateScriptEvent.fire(player.getBukkitEntity(), data);
                 if (data.modified) {
                     if (!isOverriding) {
@@ -428,7 +426,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                             newProfile.getProperties().put("textures", new Property("textures", data.texture, data.signature));
                         }
                         ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(newProfile.getId(), newProfile, data.isListed, data.latency, data.gamemode == null ? null : GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
-                                data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE)), update.chatSession());
+                                data.display == null ? null : Handler.parseNMSComponent(data.display, PaperAPITools.BaseColor.WHITE), update.chatSession());
                         oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(entry)), genericfuturelistener);
                     }
                 }
@@ -840,7 +838,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_FLAGS, flags));
             }
             if (nameToApply != null) {
-                data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_CUSTOM_NAME, Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)))));
+                data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_CUSTOM_NAME, Optional.of(Handler.parseNMSComponent(nameToApply, PaperAPITools.BaseColor.WHITE))));
                 data.add(SynchedEntityData.DataValue.create(PacketHelperImpl.ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE, true));
             }
             return new ClientboundSetEntityDataPacket(metadataPacket.id(), data);

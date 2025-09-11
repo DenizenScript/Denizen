@@ -4,7 +4,7 @@ import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
@@ -15,9 +15,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -250,8 +247,7 @@ public class ItemHelperImpl extends ItemHelper {
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
         String jsonText = ((net.minecraft.nbt.CompoundTag) nmsItemStack.getTag().get("display")).getString("Name");
-        BaseComponent[] nameComponent = ComponentSerializer.parse(jsonText);
-        return FormattedTextHelper.stringify(nameComponent);
+        return PaperAPITools.instance.parseJsonToText(jsonText);
     }
 
     @Override
@@ -263,8 +259,7 @@ public class ItemHelperImpl extends ItemHelper {
         ListTag list = ((net.minecraft.nbt.CompoundTag) nmsItemStack.getTag().get("display")).getList("Lore", 8);
         List<String> outList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            BaseComponent[] lineComponent = ComponentSerializer.parse(list.getString(i));
-            outList.add(FormattedTextHelper.stringify(lineComponent));
+            outList.add(PaperAPITools.instance.parseJsonToText(list.getString(i)));
         }
         return outList;
     }
@@ -281,8 +276,7 @@ public class ItemHelperImpl extends ItemHelper {
             display.put("Name", null);
             return;
         }
-        BaseComponent[] components = FormattedTextHelper.parse(name, ChatColor.WHITE);
-        display.put("Name", net.minecraft.nbt.StringTag.valueOf(ComponentSerializer.toString(components)));
+        display.put("Name", net.minecraft.nbt.StringTag.valueOf(PaperAPITools.instance.parseTextToJson(name, PaperAPITools.BaseColor.WHITE)));
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }
 
@@ -300,7 +294,7 @@ public class ItemHelperImpl extends ItemHelper {
         else {
             ListTag tagList = new ListTag();
             for (String line : lore) {
-                tagList.add(net.minecraft.nbt.StringTag.valueOf(ComponentSerializer.toString(FormattedTextHelper.parse(line, ChatColor.WHITE))));
+                tagList.add(net.minecraft.nbt.StringTag.valueOf(PaperAPITools.instance.parseTextToJson(line, PaperAPITools.BaseColor.WHITE)));
             }
             display.put("Lore", tagList);
         }

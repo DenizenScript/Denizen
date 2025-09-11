@@ -8,7 +8,6 @@ import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.item.ItemComponentsPatch;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
@@ -23,7 +22,6 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentMap;
@@ -446,7 +444,7 @@ public class ItemHelperImpl extends ItemHelper {
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
         Component nmsDisplayName = nmsItemStack.get(DataComponents.CUSTOM_NAME);
-        return FormattedTextHelper.stringify(Handler.componentToSpigot(nmsDisplayName));
+        return Handler.stringifyNMSComponent(nmsDisplayName);
     }
 
     @Override
@@ -458,7 +456,7 @@ public class ItemHelperImpl extends ItemHelper {
         ItemLore nmsLore = nmsItemStack.get(DataComponents.LORE);
         List<String> outList = new ArrayList<>(nmsLore.lines().size());
         for (Component nmsLoreLine : nmsLore.lines()) {
-            outList.add(FormattedTextHelper.stringify(Handler.componentToSpigot(nmsLoreLine)));
+            outList.add(Handler.stringifyNMSComponent(nmsLoreLine));
         }
         return outList;
     }
@@ -470,7 +468,7 @@ public class ItemHelperImpl extends ItemHelper {
             nmsItemStack.remove(DataComponents.CUSTOM_NAME);
         }
         else {
-            nmsItemStack.set(DataComponents.CUSTOM_NAME, Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)));
+            nmsItemStack.set(DataComponents.CUSTOM_NAME, Handler.parseNMSComponent(name, PaperAPITools.BaseColor.WHITE));
         }
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }
@@ -484,7 +482,7 @@ public class ItemHelperImpl extends ItemHelper {
         else {
             List<Component> nmsLore = new ArrayList<>(lore.size());
             for (String loreLine : lore) {
-                nmsLore.add(Handler.componentToNMS(FormattedTextHelper.parse(loreLine, ChatColor.WHITE)));
+                nmsLore.add(Handler.parseNMSComponent(loreLine, PaperAPITools.BaseColor.WHITE));
             }
             nmsItemStack.set(DataComponents.LORE, new ItemLore(nmsLore));
         }
