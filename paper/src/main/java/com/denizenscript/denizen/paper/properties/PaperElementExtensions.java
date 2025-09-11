@@ -577,7 +577,7 @@ public class PaperElementExtensions {
             // This may be useful for reading data from external plugins, but should not be used in normal scripts.
             // -->
             ElementTag.tagProcessor.registerTag(ElementTag.class, "parse_minimessage", (attribute, object) -> {
-                return new ElementTag(PaperModule.stringifyComponent(MiniMessage.miniMessage().deserialize(object.asString())));
+                return new ElementTag(FormattedTextHelper.stringify(MiniMessage.miniMessage().deserialize(object.asString())));
             });
 
             // <--[tag]

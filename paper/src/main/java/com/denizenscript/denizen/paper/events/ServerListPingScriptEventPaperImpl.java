@@ -5,7 +5,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.paper.PaperModule;
+import com.denizenscript.denizen.paper.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -14,7 +14,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.profile.PlayerTextures;
@@ -124,13 +124,13 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
 
     @Override
     public void setMotd(String text) {
-        event.motd(PaperModule.parseFormattedText(text, ChatColor.WHITE));
+        event.motd(FormattedTextHelper.parse(text, NamedTextColor.WHITE));
     }
 
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "motd" -> new ElementTag(PaperModule.stringifyComponent(event.motd()), true);
+            case "motd" -> new ElementTag(FormattedTextHelper.stringify(event.motd()), true);
             case "protocol_version" -> new ElementTag(getEvent().getProtocolVersion());
             case "version_name" -> new ElementTag(getEvent().getVersion(), true);
             case "client_protocol_version" -> new ElementTag(getEvent().getClient().getProtocolVersion());

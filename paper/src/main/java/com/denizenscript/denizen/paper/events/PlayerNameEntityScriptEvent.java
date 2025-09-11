@@ -2,14 +2,14 @@ package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.paper.PaperModule;
+import com.denizenscript.denizen.paper.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import io.papermc.paper.event.player.PlayerNameEntityEvent;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -53,7 +53,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
             return false;
         });
         this.<PlayerNameEntityScriptEvent, ElementTag>registerDetermination("name", ElementTag.class, (evt, context, determination) -> {
-            evt.event.setName(PaperModule.parseFormattedText(determination.toString(), ChatColor.WHITE));
+            evt.event.setName(FormattedTextHelper.parse(determination.asString(), NamedTextColor.WHITE));
         });
     }
 
@@ -81,7 +81,7 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "entity" -> entity.getDenizenObject();
-            case "name" -> new ElementTag(PaperModule.stringifyComponent(event.getName()), true);
+            case "name" -> new ElementTag(FormattedTextHelper.stringify(event.getName()), true);
             case "old_name" -> oldName;
             case "persistent" -> new ElementTag(event.isPersistent());
             default -> super.getContext(name);

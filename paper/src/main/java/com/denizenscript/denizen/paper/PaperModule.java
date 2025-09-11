@@ -11,14 +11,12 @@ import com.denizenscript.denizen.paper.properties.*;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
 import com.denizenscript.denizen.paper.tags.TextFormattingTags;
 import com.denizenscript.denizen.paper.utilities.PaperAPIToolsImpl;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 
 public class PaperModule {
@@ -142,26 +140,6 @@ public class PaperModule {
         Bukkit.getPluginManager().registerEvents(new PaperEventHelpers(), Denizen.getInstance());
         PaperAPITools.instance = new PaperAPIToolsImpl();
         PacketOutChat.convertComponentToJsonString = (o) -> componentToJson((Component) o);
-    }
-
-    public static Component parseFormattedText(String text, ChatColor baseColor) {
-        if (text == null) {
-            return null;
-        }
-        try {
-            return jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(text, baseColor)));
-        }
-        catch (Exception ex) {
-            Debug.verboseLog("Failed to parse formatted text: " + text.replace(ChatColor.COLOR_CHAR, '&'));
-            throw ex;
-        }
-    }
-
-    public static String stringifyComponent(Component component) {
-        if (component == null) {
-            return null;
-        }
-        return FormattedTextHelper.stringify(FormattedTextHelper.parseJson(componentToJson(component)));
     }
 
     public static Component jsonToComponent(String json) {
