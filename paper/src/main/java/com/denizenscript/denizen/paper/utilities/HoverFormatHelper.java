@@ -27,14 +27,14 @@ public class HoverFormatHelper {
     public static boolean processHoverInput(HoverEvent.Action<?> action, TextComponent.Builder hoverableText, String input) {
         HoverEventSource<?> content;
         if (action == HoverEvent.Action.SHOW_ITEM) {
-            ItemTag item = ItemTag.valueOf(com.denizenscript.denizen.utilities.FormattedTextHelper.unescape(input), CoreUtilities.noDebugContext);
+            ItemTag item = ItemTag.valueOf(FormattedTextHelper.unescape(input), CoreUtilities.noDebugContext);
             if (item == null) {
                 return true;
             }
             content = item.getItemStack();
         }
         else if (action == HoverEvent.Action.SHOW_ENTITY) {
-            String rawInput = com.denizenscript.denizen.utilities.FormattedTextHelper.unescape(input);
+            String rawInput = FormattedTextHelper.unescape(input);
             if (!rawInput.startsWith("map@")) {
                 content = parseLegacyEntityHover(rawInput);
                 if (content == null) {

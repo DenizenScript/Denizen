@@ -12,7 +12,9 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ChatVersion;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.md_5.bungee.chat.VersionedComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
@@ -53,14 +55,14 @@ public class PaperAPITools {
         if (input == null) {
             return null;
         }
-        if (input instanceof String) {
-            return (String) input;
+        if (input instanceof String str) {
+            return str;
         }
-        else if (input instanceof BaseComponent[]) {
-            return FormattedTextHelper.stringify((BaseComponent[]) input);
+        else if (input instanceof BaseComponent[] components) {
+            return components.length == 1 ? components[0].toLegacyText() : new TextComponent(components).toLegacyText();
         }
-        else if (input instanceof BaseComponent) {
-            return FormattedTextHelper.stringify((BaseComponent) input);
+        else if (input instanceof BaseComponent component) {
+            return component.toLegacyText();
         }
         else {
             return input.toString();
@@ -77,11 +79,6 @@ public class PaperAPITools {
 
     public String getCustomName(Entity entity) {
         return entity.getCustomName();
-    }
-
-    public BaseComponent[] getCustomNameComponent(Entity entity) {
-        String customName = entity.getCustomName();
-        return customName != null ? FormattedTextHelper.parseSimpleColorsOnly(customName) : null;
     }
 
     public void setPlayerListName(Player player, String name) {
@@ -118,10 +115,6 @@ public class PaperAPITools {
 
     public void setCustomName(Nameable object, String name) {
         object.setCustomName(name);
-    }
-
-    public void sendConsoleMessage(CommandSender sender, String text) {
-        sender.spigot().sendMessage(FormattedTextHelper.parse(text, net.md_5.bungee.api.ChatColor.WHITE));
     }
 
     public InventoryView openAnvil(Player player, Location loc) {
@@ -261,7 +254,7 @@ public class PaperAPITools {
     public void setJsonPages(BookMeta meta, List<String> jsonPages) {
         List<BaseComponent[]> parsedPages = new ArrayList<>(jsonPages.size());
         for (String jsonPage : jsonPages) {
-            parsedPages.add(ComponentSerializer.parse(jsonPage));
+            parsedPages.add(jsonToBungee(jsonPage));
         }
         meta.spigot().setPages(parsedPages);
     }
@@ -302,11 +295,25 @@ public class PaperAPITools {
         });
         TextComponent base = new TextComponent();
         base.addExtra(textComponent);
-        return ComponentSerializer.toString(base);
+        return bungeeToJson(base);
     }
 
     public String parseJsonToText(String json) {
-        BaseComponent[] components = ComponentSerializer.parse(json);
+        BaseComponent[] components = jsonToBungee(json);
         return components.length == 1 ? components[0].toLegacyText() : new TextComponent(components).toLegacyText();
+    }
+
+    protected String bungeeToJson(BaseComponent component) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) {
+            return ComponentSerializer.toString(component);
+        }
+        return VersionedComponentSerializer.forVersion(ChatVersion.V1_21_5).toString(component);
+    }
+
+    protected BaseComponent[] jsonToBungee(String json) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) {
+            return ComponentSerializer.parse(json);
+        }
+        return VersionedComponentSerializer.forVersion(ChatVersion.V1_21_5).parse(json);
     }
 }
