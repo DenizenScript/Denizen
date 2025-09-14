@@ -348,6 +348,9 @@ public class BukkitImplDeprecations {
     // Bump once 1.21 is the minimum supported version (as that is where boat types were split)
     public static Warning gettingBoatType = new SlowWarning("gettingBoatType", "Getting boat wood types is deprecated, as separate boat types are separate entity types now: should check the entity type.");
 
+    // Added 2025/09/14
+    public static Warning lookCommandNoEntities = new SlowWarning("lookCommandNoEntities", "The 'look' command now requires both the entity and location inputs.");
+
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
 
@@ -460,7 +463,7 @@ public class BukkitImplDeprecations {
 
     // Added 2025/05/02
     public static Warning timeSubTags = new FutureWarning("timeSubTags", pointlessSubtagPrefix + "'time.*' tags are now just 'time_*'.");
-  
+
     // Added 2025/08/06
     public static Warning horseArmorEquipCommand = new FutureWarning("horseArmorEquipCommand", "The 'horse_armor' argument in the 'equip' command has been deprecated in favor of 'body'.");
 

@@ -5,7 +5,9 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.PaperAPITools;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
@@ -36,8 +38,8 @@ public class LookCommand extends AbstractCommand {
 
     public LookCommand() {
         setName("look");
-        setSyntax("look (<entity>|...) [<location>/cancel/yaw:<yaw> pitch:<pitch>] (duration:<duration>) (offthread_repeat:<#>)");
-        setRequiredArguments(1, 5);
+        setSyntax("look [<entity>|...] [<location>/cancel/yaw:<yaw> pitch:<pitch>] (duration:<duration>) (offthread_repeat:<#>)");
+        setRequiredArguments(1, 5); // 1 instead of 2 for due to deprecated optional entity input
         isProcedural = false;
         addRemappedPrefixes("duration", "d");
         autoCompile();
@@ -45,8 +47,8 @@ public class LookCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Look
-    // @Syntax look (<entity>|...) [<location>/cancel/yaw:<yaw> pitch:<pitch>] (duration:<duration>) (offthread_repeat:<#>)
-    // @Required 1
+    // @Syntax look [<entity>|...] [<location>/cancel/yaw:<yaw> pitch:<pitch>] (duration:<duration>) (offthread_repeat:<#>)
+    // @Required 2
     // @Maximum 5
     // @Short Causes the NPC or other entity to look at a target location.
     // @Synonyms Turn,Face
@@ -70,7 +72,7 @@ public class LookCommand extends AbstractCommand {
     // <LocationTag.pitch>
     //
     // @Usage
-    // Use to point an npc towards a spot.
+    // Use to point an NPC towards a spot.
     // - look <npc> <player.location>
     //
     // @Usage
@@ -96,7 +98,14 @@ public class LookCommand extends AbstractCommand {
                 locationObj = swap;
             }
         }
-        List<EntityTag> entities = entitiesObj.asType(ListTag.class, scriptEntry.context).filter(EntityTag.class, scriptEntry);
+        List<EntityTag> entities = entitiesObj == null ? null : entitiesObj.asType(ListTag.class, scriptEntry.context).filter(EntityTag.class, scriptEntry);
+        if (entities == null) {
+            BukkitImplDeprecations.lookCommandNoEntities.warn(scriptEntry);
+            entities = Utilities.entryDefaultEntityList(scriptEntry, false);
+            if (entities == null) {
+                return;
+            }
+        }
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
                 BukkitTask task = lookTasks.remove(entity.getUUID());
