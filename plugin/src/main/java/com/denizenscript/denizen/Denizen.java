@@ -51,7 +51,6 @@ import com.denizenscript.denizencore.scripts.commands.queue.RunLaterCommand;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import com.denizenscript.denizencore.utilities.debugging.StrongWarning;
 import com.denizenscript.denizencore.utilities.text.ConfigUpdater;
 import org.bukkit.Bukkit;
@@ -132,7 +131,6 @@ public class Denizen extends JavaPlugin {
         if (!PlayerFlagHandler.dataFolder.exists()) {
             PlayerFlagHandler.dataFolder.mkdir();
         }
-        DebugInternals.alternateTrimLogic = FormattedTextHelper::bukkitSafeDebugTrimming;
         String javaVersion = System.getProperty("java.version");
         Debug.log("Running on java version: " + javaVersion);
         if (javaVersion.startsWith("8") || javaVersion.startsWith("1.8") || javaVersion.startsWith("9") || javaVersion.startsWith("1.9")

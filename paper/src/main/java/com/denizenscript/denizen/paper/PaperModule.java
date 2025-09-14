@@ -10,11 +10,13 @@ import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
 import com.denizenscript.denizen.paper.tags.TextFormattingTags;
+import com.denizenscript.denizen.paper.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.paper.utilities.PaperAPIToolsImpl;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.Bukkit;
@@ -138,6 +140,7 @@ public class PaperModule {
 
         // Other helpers
         Bukkit.getPluginManager().registerEvents(new PaperEventHelpers(), Denizen.getInstance());
+        DebugInternals.alternateTrimLogic = FormattedTextHelper::bukkitSafeDebugTrimming;
         PaperAPITools.instance = new PaperAPIToolsImpl();
         PacketOutChat.convertComponentToJsonString = (o) -> componentToJson((Component) o);
     }
