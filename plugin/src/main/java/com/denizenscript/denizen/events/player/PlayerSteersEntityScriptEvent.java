@@ -29,7 +29,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     //
     // @Cancellable true
     //
-    // @Triggers use <@link event player input> on versions above 1.21.
+    // @Triggers use <@link event player input> on MC 1.21+.
     //
     // @Context
     // <context.entity> returns the EntityTag being steered by the player.
@@ -40,7 +40,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     //
     // @Player Always.
     //
-    // @deprecated Use the 'player input' on versions above 1.21.
+    // @deprecated Use the 'player input' event on MC 1.21+.
     //
     // -->
 
