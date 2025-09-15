@@ -1,21 +1,25 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.ScriptFormattingContext;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.scripts.containers.core.FormatScriptContainer;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class AnnounceCommand extends AbstractCommand {
+
+    public static final String ANNOUNCE_FORMAT_TYPE = ScriptFormattingContext.registerFormatType("announce");
 
     public AnnounceCommand() {
         setName("announce");
@@ -40,7 +44,7 @@ public class AnnounceCommand extends AbstractCommand {
     // Or, using the 'to_flagged' argument will send the message to only players that have the specified flag.
     // You can also use the 'to_console' argument to make it so it only shows in the server console.
     //
-    // Announce can also utilize a format script with the 'format' argument. See <@link language Format Script Containers>.
+    // You can format the announcement with <@link language Format Script Containers> using the 'format' argument, or with the "announce" format type (see <@link language Script Formats>).
     //
     // Note that the default announce mode (that shows for all players) relies on the Spigot broadcast system, which requires the permission "bukkit.broadcast.user" to see broadcasts.
     //
@@ -122,7 +126,14 @@ public class AnnounceCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             Debug.report(scriptEntry, getName(), db("message", text), (format != null ? db("format", format.getName()) : ""), db("type", type.name()), flag);
         }
-        String message = format != null ? format.getFormattedText(text.asString(), scriptEntry) : text.asString();
+        String message;
+        if (format != null) {
+            message = format.getFormattedText(text.asString(), scriptEntry);
+        }
+        else {
+            ScriptContainer scriptContainer = scriptEntry.getScriptContainer();
+            message = scriptContainer != null && scriptContainer.getFormattingContext() != null ? scriptContainer.getFormattingContext().format(ANNOUNCE_FORMAT_TYPE, text.asString(), scriptEntry) : text.asString();
+        }
         // Use Bukkit to broadcast the message to everybody in the server.
         switch (type) {
             case ALL:

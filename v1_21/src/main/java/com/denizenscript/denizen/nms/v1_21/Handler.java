@@ -7,14 +7,11 @@ import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_21.helpers.*;
 import com.denizenscript.denizen.nms.v1_21.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.blocks.BlockLightImpl;
-import com.denizenscript.denizen.nms.v1_21.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
@@ -35,8 +32,8 @@ import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.ProfileResult;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.DynamicOps;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.SharedConstants;
@@ -45,9 +42,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Rotations;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -97,7 +94,6 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -123,8 +119,10 @@ public class Handler extends NMSHandler {
         registerConversion(MaterialTag.class, BlockState.class, material -> ((CraftBlockData) material.getModernData()).getState());
         registerConversion(LocationTag.class, Rotations.class, location -> new Rotations((float) location.getX(), (float) location.getY(), (float) location.getZ()));
         registerConversion(LocationTag.class, BlockPos.class, CraftLocation::toBlockPosition);
-        registerConversion(MapTag.class, net.minecraft.nbt.CompoundTag.class, map ->
-                ItemRawNBT.convertObjectToNbt(map.identify(), CoreUtilities.noDebugContext, "(item).") instanceof CompoundTagImpl compoundTag ? compoundTag.toNMSTag() : null);
+        registerConversion(MapTag.class, CompoundTag.class, map -> {
+            CompoundBinaryTag compoundTag = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(map, CoreUtilities.noDebugContext, "(item).");
+            return compoundTag != null ? NBTAdapter.toNMS(compoundTag) : null;
+        });
         registerConversion(LocationTag.class, Vector3f.class, location -> new Vector3f((float) location.getX(), (float) location.getY(), (float) location.getZ()));
         registerConversion(QuaternionTag.class, Quaternionf.class, quaternion -> new Quaternionf(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
     }
@@ -153,27 +151,12 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isExactServerVersionMatch() {
-        return Denizen.supportsPaper ? SharedConstants.getCurrentVersion().id().equals("1.21.7") : CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("98b42190c84edaa346fd96106ee35d6f");
+        return Denizen.supportsPaper ? SharedConstants.getCurrentVersion().id().equals("1.21.8") : CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("98b42190c84edaa346fd96106ee35d6f");
     }
 
     @Override
     public double[] getRecentTps() {
         return ((CraftServer) Bukkit.getServer()).getServer().recentTps;
-    }
-
-    @Override
-    public CompoundTag createCompoundTag(Map<String, Tag> value) {
-        return new CompoundTagImpl(value);
-    }
-
-    @Override
-    public CompoundTag parseSNBT(String snbt) {
-        try {
-            return CompoundTagImpl.fromNMSTag(TagParser.parseCompoundFully(snbt));
-        }
-        catch (CommandSyntaxException e) {
-            return null;
-        }
     }
 
     @Override
@@ -397,9 +380,9 @@ public class Handler extends NMSHandler {
         return CraftChatMessage.fromJSONOrNull(FormattedTextHelper.componentToJson(spigot));
     }
 
-    public static final MethodHandle TAG_VALUE_OUTPUT_CONSTRUCTOR = ReflectionHelper.getConstructor(TagValueOutput.class, ProblemReporter.class, DynamicOps.class, net.minecraft.nbt.CompoundTag.class);
+    public static final MethodHandle TAG_VALUE_OUTPUT_CONSTRUCTOR = ReflectionHelper.getConstructor(TagValueOutput.class, ProblemReporter.class, DynamicOps.class, CompoundTag.class);
 
-    public static net.minecraft.nbt.CompoundTag useValueOutput(Consumer<ValueOutput> handler) {
+    public static CompoundTag useValueOutput(Consumer<ValueOutput> handler) {
         ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
         TagValueOutput nmsValueOutput = TagValueOutput.createWithContext(nmsProblemReporter, CraftRegistry.getMinecraftRegistry());
         handler.accept(nmsValueOutput);
@@ -407,7 +390,7 @@ public class Handler extends NMSHandler {
         return nmsValueOutput.buildResult();
     }
 
-    public static net.minecraft.nbt.CompoundTag useValueOutput(net.minecraft.nbt.CompoundTag nmsExistingValue, Consumer<ValueOutput> handler) {
+    public static CompoundTag useValueOutput(CompoundTag nmsExistingValue, Consumer<ValueOutput> handler) {
         ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
         TagValueOutput nmsValueOutput;
         try {
@@ -422,7 +405,7 @@ public class Handler extends NMSHandler {
         return nmsValueOutput.buildResult();
     }
 
-    public static void useValueInput(net.minecraft.nbt.CompoundTag nmsTag, Consumer<ValueInput> handler) {
+    public static void useValueInput(CompoundTag nmsTag, Consumer<ValueInput> handler) {
         ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
         ValueInput nmsValueInput = TagValueInput.create(nmsProblemReporter, CraftRegistry.getMinecraftRegistry(), nmsTag);
         handler.accept(nmsValueInput);

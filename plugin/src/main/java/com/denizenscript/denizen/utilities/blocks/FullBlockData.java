@@ -1,24 +1,20 @@
 package com.denizenscript.denizen.utilities.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.flags.MapTagBasedFlagTracker;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import org.bukkit.Axis;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
-import org.bukkit.block.data.type.RedstoneWire;
-import org.bukkit.block.data.type.Wall;
-import org.bukkit.block.data.type.Door;
-import org.bukkit.block.data.type.Stairs;
-import org.bukkit.block.data.type.Chest;
+import org.bukkit.block.data.type.*;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -91,7 +87,7 @@ public class FullBlockData {
         this.data = data;
     }
 
-    public FullBlockData(BlockData data, CompoundTag tileEntityData, MapTag flags) {
+    public FullBlockData(BlockData data, CompoundBinaryTag tileEntityData, MapTag flags) {
         this.data = data;
         this.tileEntityData = tileEntityData;
         this.flags = flags;
@@ -588,7 +584,7 @@ public class FullBlockData {
 
     public BlockData data;
 
-    public CompoundTag tileEntityData;
+    public CompoundBinaryTag tileEntityData;
 
     public MapTag flags;
 

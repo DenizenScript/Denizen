@@ -1,12 +1,11 @@
 package com.denizenscript.denizen.scripts.containers.core;
 
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
@@ -16,6 +15,7 @@ import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 
 import java.util.ArrayList;
@@ -168,6 +168,7 @@ public class CommandScriptContainer extends ScriptContainer {
                 }
             }
         }
+        handlePseudoTagBasesDeprecation("permission message", "<permission");
     }
 
     public boolean hasProcStyleTabComplete = false;
@@ -177,7 +178,7 @@ public class CommandScriptContainer extends ScriptContainer {
     public String getCommandName() {
         String name = getString("name", null);
         if (name == null) {
-            Debug.echoError("Command script '" + getName() + "' is missing required 'name'' key!");
+            Debug.echoError("Command script '" + getName() + "' is missing required 'name' key!");
             return null;
         }
         return CoreUtilities.toLowerCase(name);

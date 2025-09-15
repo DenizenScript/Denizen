@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.InventoryTag;
 import com.denizenscript.denizen.objects.ItemTag;
@@ -11,7 +13,7 @@ import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import net.citizensnpcs.api.trait.trait.Equipment;
-import org.bukkit.Material;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class EntityEquipment implements Property {
@@ -56,37 +58,13 @@ public class EntityEquipment implements Property {
         // @attribute <EntityTag.equipment>
         // @returns ListTag(ItemTag)
         // @mechanism EntityTag.equipment
+        // @deprecated Use 'EntityTag.equipment_map'.
         // @group inventory
         // @description
-        // Returns a ListTag containing the entity's equipment.
-        // Output list is boots|leggings|chestplate|helmet
+        // Deprecated in favor of <@link tag EntityTag.equipment_map>.
         // -->
         PropertyParser.registerTag(EntityEquipment.class, ObjectTag.class, "equipment", (attribute, object) -> {
-            org.bukkit.inventory.EntityEquipment equipment = object.entity.getLivingEntity().getEquipment();
-            if (attribute.startsWith("equipment.boots")) {
-                BukkitImplDeprecations.entityEquipmentSubtags.warn(attribute.context);
-                attribute.fulfill(1);
-                ItemStack boots = equipment.getBoots();
-                return new ItemTag(boots != null ? boots : new ItemStack(Material.AIR));
-            }
-            else if (attribute.startsWith("equipment.chestplate") || attribute.startsWith("equipment.chest")) {
-                BukkitImplDeprecations.entityEquipmentSubtags.warn(attribute.context);
-                attribute.fulfill(1);
-                ItemStack chestplate = equipment.getChestplate();
-                return new ItemTag(chestplate != null ? chestplate : new ItemStack(Material.AIR));
-            }
-            else if (attribute.startsWith("equipment.helmet") || attribute.startsWith("equipment.head")) {
-                BukkitImplDeprecations.entityEquipmentSubtags.warn(attribute.context);
-                attribute.fulfill(1);
-                ItemStack helmet = equipment.getHelmet();
-                return new ItemTag(helmet != null ? helmet : new ItemStack(Material.AIR));
-            }
-            else if (attribute.startsWith("equipment.leggings") || attribute.startsWith("equipment.legs")) {
-                BukkitImplDeprecations.entityEquipmentSubtags.warn(attribute.context);
-                attribute.fulfill(1);
-                ItemStack leggings = equipment.getLeggings();
-                return new ItemTag(leggings != null ? leggings : new ItemStack(Material.AIR));
-            }
+            BukkitImplDeprecations.entityEquipmentListTag.warn();
             return object.entity.getEquipment();
         });
 
@@ -97,7 +75,7 @@ public class EntityEquipment implements Property {
         // @group inventory
         // @description
         // Returns a MapTag containing the entity's equipment.
-        // Output keys are boots, leggings, chestplate, helmet.
+        // Output keys are boots, leggings, chestplate, helmet, and body.
         // Air items will be left out of the map.
         // -->
         PropertyParser.registerTag(EntityEquipment.class, MapTag.class, "equipment_map", (attribute, object) -> {
@@ -107,6 +85,9 @@ public class EntityEquipment implements Property {
             InventoryTag.addToMapIfNonAir(output, "leggings", equip.getLeggings());
             InventoryTag.addToMapIfNonAir(output, "chestplate", equip.getChestplate());
             InventoryTag.addToMapIfNonAir(output, "helmet", equip.getHelmet());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                InventoryTag.addToMapIfNonAir(output, "body", equip.getItem(EquipmentSlot.BODY));
+            }
             return output;
         });
     }
@@ -120,7 +101,7 @@ public class EntityEquipment implements Property {
         // @input MapTag
         // @description
         // Sets the entity's worn equipment.
-        // Input keys are boots, leggings, chestplate, and helmet.
+        // Input keys are boots, leggings, chestplate, helmet, and body.
         // @tags
         // <EntityTag.equipment>
         // <EntityTag.equipment_map>
@@ -167,6 +148,18 @@ public class EntityEquipment implements Property {
                     }
                     else {
                         equip.setHelmet(helmetItem);
+                    }
+                }
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                    ItemTag body = map.getObjectAs("body", ItemTag.class, mechanism.context);
+                    if (body != null) {
+                        ItemStack bodyItem = body.getItemStack();
+                        if (entity.isCitizensNPC()) {
+                            entity.getDenizenNPC().getEquipmentTrait().set(Equipment.EquipmentSlot.BODY, bodyItem);
+                        }
+                        else {
+                            equip.setItem(EquipmentSlot.BODY, bodyItem);
+                        }
                     }
                 }
             }
