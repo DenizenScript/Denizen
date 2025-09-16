@@ -14,7 +14,7 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
     // @Events
     // spawn changes
     //
-    // @Switch for:<world> to only process the event when a specified world's spawn changes.
+    // @Switch world:<world> to only process the event when a specified world's spawn changes.
     //
     // @Group World
     //
@@ -29,7 +29,7 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
 
     public SpawnChangeScriptEvent() {
         registerCouldMatcher("spawn changes");
-        registerSwitches("for");
+        registerSwitches("world");
     }
 
     public SpawnChangeEvent event;
@@ -44,15 +44,12 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "world":
-                return new WorldTag(event.getWorld());
-            case "old_location":
-                return new LocationTag(event.getPreviousLocation());
-            case "new_location":
-                return new LocationTag(event.getWorld().getSpawnLocation());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "world" -> new WorldTag(event.getWorld());
+            case "old_location" -> new LocationTag(event.getPreviousLocation());
+            case "new_location" -> new LocationTag(event.getWorld().getSpawnLocation());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
