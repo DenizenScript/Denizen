@@ -2202,7 +2202,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns how long the entity has lived.
         // -->
         registerSpawnedOnlyTag(DurationTag.class, "time_lived", (attribute, object) -> {
-            return new DurationTag(object.getBukkitEntity().getTicksLived() / 20);
+            return new DurationTag((long) object.getBukkitEntity().getTicksLived());
         });
 
         // <--[tag]
