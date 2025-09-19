@@ -36,7 +36,7 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     public FurnaceBurnsItemScriptEvent() {
         registerCouldMatcher("furnace burns <item>");
         this.<FurnaceBurnsItemScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, time) -> {
-            if (time instanceof ElementTag elementTag && time.asElement().isInt()) {
+            if (time instanceof ElementTag elementTag && elementTag.isInt()) {
                 evt.event.setBurnTime(elementTag.asInt());
                 return true;
             }
