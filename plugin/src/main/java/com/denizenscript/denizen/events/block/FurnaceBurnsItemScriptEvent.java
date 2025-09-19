@@ -5,6 +5,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
@@ -34,8 +35,16 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
 
     public FurnaceBurnsItemScriptEvent() {
         registerCouldMatcher("furnace burns <item>");
-        this.<FurnaceBurnsItemScriptEvent, DurationTag>registerDetermination(null, DurationTag.class, (evt, context, time) -> {
-            evt.event.setBurnTime(time.getTicksAsInt());
+        this.<FurnaceBurnsItemScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, time) -> {
+            if (time instanceof ElementTag elementTag && time.asElement().isInt()) {
+                evt.event.setBurnTime(elementTag.asInt());
+                return true;
+            }
+            else if (time.canBeType(DurationTag.class)) {
+                evt.event.setBurnTime(time.asType(DurationTag.class, context).getTicksAsInt());
+                return true;
+            }
+            return false;
         });
     }
 
@@ -64,7 +73,7 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @EventHandler
-    public void onBrews(FurnaceBurnEvent event) {
+    public void onFurnaceBurns(FurnaceBurnEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
         item = new ItemTag(event.getFuel());
         this.event = event;
