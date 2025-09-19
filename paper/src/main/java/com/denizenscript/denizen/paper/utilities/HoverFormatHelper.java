@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -17,9 +18,13 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.invoke.MethodHandle;
+import java.util.Map;
 import java.util.UUID;
 
 public class HoverFormatHelper {
@@ -70,26 +75,48 @@ public class HoverFormatHelper {
         return false;
     }
 
+    public static final MethodHandle ADVENTURE_COMPONENTS_TO_NMS = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ?
+            ReflectionHelper.getMethodHandle(
+                    ReflectionHelper.getClassOrThrow("io.papermc.paper.adventure.PaperAdventure"), "asVanilla", Map.class
+            ) : null;
+
     public static String stringForHover(HoverEvent<?> hover) {
         if (hover.value() instanceof Component textHover) {
             return FormattedTextHelper.stringify(textHover);
         }
         else if (hover.value() instanceof HoverEvent.ShowItem itemHover) {
-            Debug.log("Item hover: " + itemHover.dataComponents());
-            ItemStack item = new ItemStack(Registry.MATERIAL.get(itemHover.item()), itemHover.count());
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-//                item = NMSHandler.itemHelper.applyRawHoverComponentsJson(item, fixedItemHover.getComponents()); TODO
+            Material material = Registry.MATERIAL.get(new NamespacedKey(itemHover.item().namespace(), itemHover.item().value()));
+            if (material == null || !material.isItem()) {
+                Debug.echoError("Invalid hover item type '" + itemHover.item() + "', please report this to the developers! See the stacktrace below for more information:");
+                Debug.echoError(new RuntimeException());
+                return null;
             }
-            else if (itemHover.nbt() != null) {
-                item = Bukkit.getUnsafe().modifyItemStack(item, itemHover.nbt().string());
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                ItemStack item = new ItemStack(material, itemHover.count());
+                if (itemHover.nbt() != null) {
+                    item = Bukkit.getUnsafe().modifyItemStack(item, itemHover.nbt().string());
+                }
+                return new ItemTag(item).identify();
             }
-            return new ItemTag(item).identify();
+            if (itemHover.dataComponents().isEmpty()) {
+                return new ItemTag(material, itemHover.count()).identify();
+            }
+            try {
+                Object nmsPatch = ADVENTURE_COMPONENTS_TO_NMS.invoke(itemHover.dataComponents());
+                ItemStack item = NMSHandler.itemHelper.createItemWithNMSComponents(material, itemHover.count(), nmsPatch);
+                return new ItemTag(item).identify();
+            }
+            catch (Throwable e) {
+                Debug.echoError(e);
+                return null;
+            }
         }
         else if (hover.value() instanceof HoverEvent.ShowEntity entityHover) {
             return createEntityHoverData(entityHover.id(), entityHover.type(), entityHover.name()).savable();
         }
         else {
-            throw new UnsupportedOperationException();
+            Debug.echoError("Unrecognized hover event: " + hover);
+            return null;
         }
     }
 

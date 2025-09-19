@@ -6,7 +6,6 @@ import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.nbt.CustomNBT;
 import com.denizenscript.denizencore.objects.core.MapTag;
-import com.google.gson.JsonObject;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import org.bukkit.DyeColor;
@@ -44,15 +43,7 @@ public abstract class ItemHelper {
 
     public abstract String getJsonString(ItemStack itemStack);
 
-    public String getLegacyHoverNbt(ItemTag item) { // TODO: once 1.20 is the minimum supported version, remove this
-        return item.getItemMeta().getAsString();
-    }
-
-    public JsonObject getRawHoverComponentsJson(ItemStack item) {
-        throw new UnsupportedOperationException();
-    }
-
-    public ItemStack applyRawHoverComponentsJson(ItemStack item, JsonObject components) {
+    public ItemStack createItemWithNMSComponents(Material type, int count, Object nmsPatch) {
         throw new UnsupportedOperationException();
     }
 

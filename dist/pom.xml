@@ -172,6 +172,9 @@
                                 <relocation>
                                     <pattern>net.kyori.adventure.nbt</pattern>
                                     <shadedPattern>com.denizenscript.shaded.net.adventure.nbt</shadedPattern>
+                                    <excludes>
+                                        <exclude>net.kyori.adventure.nbt.api.*</exclude>
+                                    </excludes>
                                 </relocation>
                             </relocations>
                         </configuration>

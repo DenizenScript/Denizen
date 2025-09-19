@@ -255,7 +255,13 @@ public class FormattedTextHelper {
         boolean hasHover = component.hoverEvent() != null;
         if (hasHover) {
             HoverEvent<?> hover = component.hoverEvent();
-            builder.append(LEGACY_SECTION).append("[hover=").append(hover.action()).append(";").append(escape(HoverFormatHelper.stringForHover(hover))).append("]");
+            String hoverString = HoverFormatHelper.stringForHover(hover);
+            if (hoverString != null) {
+                builder.append(LEGACY_SECTION).append("[hover=").append(hover.action()).append(";").append(escape(hoverString)).append("]");
+            }
+            else {
+                hasHover = false;
+            }
         }
         boolean hasClick = component.clickEvent() != null;
         if (hasClick) {
