@@ -1,15 +1,15 @@
 package com.denizenscript.denizen.utilities.entity;
 
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.enums.CustomEntityType;
 import com.denizenscript.denizen.nms.interfaces.CustomEntity;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -71,10 +71,10 @@ public class DenizenEntityType {
             }
         }
         this.bukkitEntityType = bukkitEntityType;
-        this.name = name.toUpperCase();
+        this.name = CoreUtilities.toUpperCase(name);
         this.lowercaseName = CoreUtilities.toLowerCase(name);
         this.gravity = gravity;
-        this.customEntityType = CustomEntityType.valueOf(name.toUpperCase());
+        this.customEntityType = CustomEntityType.valueOf(CoreUtilities.toUpperCase(name));
     }
 
     public Entity spawnNewEntity(Location location, ArrayList<Mechanism> mechanisms, String scriptName, CreatureSpawnEvent.SpawnReason reason) {
@@ -157,15 +157,15 @@ public class DenizenEntityType {
     }
 
     public static void registerEntityType(String name, Class<? extends CustomEntity> entityType) {
-        registeredTypes.put(name.toUpperCase(), new DenizenEntityType(name, entityType));
+        registeredTypes.put(CoreUtilities.toUpperCase(name), new DenizenEntityType(name, entityType));
     }
 
     public static boolean isRegistered(String name) {
-        return registeredTypes.containsKey(name.toUpperCase());
+        return registeredTypes.containsKey(CoreUtilities.toUpperCase(name));
     }
 
     public static DenizenEntityType getByName(String name) {
-        return registeredTypes.get(name.toUpperCase());
+        return registeredTypes.get(CoreUtilities.toUpperCase(name));
     }
 
     public static DenizenEntityType getByEntity(Entity entity) {
