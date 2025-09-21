@@ -58,7 +58,7 @@ public abstract class DataComponentAdapter<TP, TD extends ObjectTag> {
         String nameLower = CoreUtilities.toLowerCase(name);
         DataComponentType componentType = Registry.DATA_COMPONENT_TYPE.get(Utilities.parseNamespacedKey(nameLower));
         if (componentType == null) {
-            componentType = DataComponentAdapter.COMPONENTS_BY_PROPERTY.get(nameLower);
+            componentType = COMPONENTS_BY_PROPERTY.get(nameLower);
         }
         return componentType;
     }

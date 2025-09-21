@@ -16,7 +16,7 @@ public class ItemRemoved extends ItemProperty<ListTag> {
     // @input ListTag
     // @description
     // Controls the properties explicitly removed from an item.
-    // This can be used to remove item's default behavior, such as making consumable items un-consumable.
+    // This can be used to remove item's default behavior, such as making consumable items non-consumable.
     // See also <@link language Item Components>.
     // -->
 

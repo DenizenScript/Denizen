@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v1_21.helpers;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.v1_21.Handler;
@@ -450,7 +451,7 @@ public class ItemHelperImpl extends ItemHelper {
         }
         RegistryOps<net.minecraft.nbt.Tag> registryOps = CraftRegistry.getMinecraftRegistry().createSerializationContext(NbtOps.INSTANCE);
         CompoundTag nmsPatch = (CompoundTag) DataComponentPatch.CODEC.encodeStart(registryOps, patch).getOrThrow();
-        if (excludeHandled) {
+        if (excludeHandled && Denizen.supportsPaper) {
             nmsPatch.keySet().removeIf(s -> s.charAt(0) == '!');
             if (nmsPatch.isEmpty()) {
                 return new MapTag();
