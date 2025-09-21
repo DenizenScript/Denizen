@@ -33,9 +33,6 @@ import java.util.UUID;
 
 public class ProfileEditorImpl extends ProfileEditor {
 
-    public static final String EMPTY_NAME = "";
-    public static final UUID NIL_UUID = new UUID(0L, 0L);
-
     @Override
     protected void updatePlayer(final Player player, final boolean isSkinChanging) {
         final ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();

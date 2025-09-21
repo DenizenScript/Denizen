@@ -2,21 +2,25 @@ package com.denizenscript.denizen.objects.properties.bukkit;
 
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
-import com.denizenscript.denizen.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.tags.core.CustomColorTagBase;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.HoverFormatHelper;
 import com.denizenscript.denizen.utilities.TextWidthHelper;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
-import com.denizenscript.denizencore.objects.core.*;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ColorTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.HoverEvent;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -265,25 +269,6 @@ public class BukkitElementExtensions {
         }, "asworld");
 
         // <--[tag]
-        // @attribute <ElementTag.format[<format_script>]>
-        // @returns ElementTag
-        // @group text manipulation
-        // @description
-        // Returns the text re-formatted according to a format script.
-        // -->
-        ElementTag.tagProcessor.registerTag(ElementTag.class, ScriptTag.class, "format", (attribute, object, format) -> {
-            if (!(format.getContainer() instanceof FormatScriptContainer)) {
-                attribute.echoError("Script '" + format + "' is not a format script.");
-                return null;
-            }
-            else {
-                return new ElementTag(((FormatScriptContainer) format.getContainer()).getFormattedText(object.asString(),
-                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC() : null,
-                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer() : null));
-            }
-        });
-
-        // <--[tag]
         // @attribute <ElementTag.split_lines_by_width[<#>]>
         // @returns ElementTag
         // @group element manipulation
@@ -484,8 +469,8 @@ public class BukkitElementExtensions {
         // Adds a hover message to the element, which makes the element display the input hover text when the mouse is left over it.
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        ElementTag.tagProcessor.registerTag(ElementTag.class, ElementTag.class, "on_hover", (attribute, object, hoverText) -> { // non-static due to hacked sub-tag
-            String type = "SHOW_TEXT";
+        ElementTag.tagProcessor.registerTag(ElementTag.class, ObjectTag.class, "on_hover", (attribute, object, hover) -> { // non-static due to hacked sub-tag
+            HoverEvent.Action type = HoverEvent.Action.SHOW_TEXT;
 
             // <--[tag]
             // @attribute <ElementTag.on_hover[<message>].type[<type>]>
@@ -493,18 +478,26 @@ public class BukkitElementExtensions {
             // @group text manipulation
             // @description
             // Adds a hover message to the element, which makes the element display the input hover text when the mouse is left over it.
-            // Available hover types: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
+            // Available hover types: SHOW_TEXT, SHOW_ITEM, or SHOW_ENTITY.
             // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
             // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
             // For show_text, prefer <@link tag ElementTag.on_hover>
             // For show_item, prefer <@link tag ElementTag.hover_item>
             // -->
             if (attribute.startsWith("type", 2)) {
-                type = attribute.getContext(2);
                 attribute.fulfill(1);
+                type = ElementTag.asEnum(HoverEvent.Action.class, attribute.getParam());
+                if (type == null) {
+                    attribute.echoError("Invalid hover type specified.");
+                    return null;
+                }
             }
-            return new ElementTag(ChatColor.COLOR_CHAR + "[hover=" + type + ";" + FormattedTextHelper.escape(hoverText.toString()) + "]"
-                    + object.asString() + ChatColor.COLOR_CHAR + "[/hover]");
+            String hoverData = HoverFormatHelper.parseObjectToHover(hover, type, attribute);
+            if (hoverData == null) {
+                return null;
+            }
+            return new ElementTag(ChatColor.COLOR_CHAR + "[hover=" + type + ';' + FormattedTextHelper.escape(hoverData) + ']'
+                    + object.asString() + ChatColor.COLOR_CHAR + "[/hover]", true);
         });
 
         // <--[tag]

@@ -2,11 +2,11 @@ package com.denizenscript.denizen.events.block;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,12 +35,40 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Determine
     // ListTag(LocationTag) to set a new lists of blocks that are to be affected by the explosion.
-    // ElementTag(Decimal) to change the strength of the explosion.
+    // "STRENGTH:<ElementTag(Decimal)>" to change the strength of the explosion.
     //
     // -->
 
     public BlockExplodesScriptEvent() {
         registerCouldMatcher("<block> explodes");
+        this.<BlockExplodesScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            String blocks = value.identify();
+            if (blocks.contains(",") || blocks.startsWith("li@")) { // Raw ListTag check due to there not being a prefix for block strength previously
+                evt.event.blockList().clear();
+                for (LocationTag newBlock : value.asType(ListTag.class, context).filter(LocationTag.class, context)) {
+                    if (newBlock.getWorld() != null) {
+                        evt.event.blockList().add(newBlock.getBlock());
+                    }
+                    else {
+                        Debug.echoError("Block input of " + newBlock + " does not contain a valid world.");
+                    }
+                }
+                return true;
+            }
+            else if (value.asElement().isFloat()) {
+                BukkitImplDeprecations.blockExplodesStrengthDetermination.warn();
+                evt.event.setYield(value.asElement().asFloat());
+                return true;
+            }
+            return false;
+        });
+        this.<BlockExplodesScriptEvent, ElementTag>registerOptionalDetermination("strength", ElementTag.class, (evt, context, value) -> {
+            if (value.isFloat()) {
+                evt.event.setYield(value.asFloat());
+                return true;
+            }
+            return false;
+        });
     }
 
     public BlockExplodeEvent event;
@@ -59,42 +87,13 @@ public class BlockExplodesScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ArgumentHelper.matchesDouble(determination)) {
-            event.setYield(Float.parseFloat(determination));
-            return true;
-        }
-        if (determination.contains(",") || determination.startsWith("li@")) { // Loose "contains any location-like value" check
-            event.blockList().clear();
-            for (String loc : ListTag.valueOf(determination, getTagContext(path))) {
-                LocationTag location = LocationTag.valueOf(loc, getTagContext(path));
-                if (location == null) {
-                    Debug.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + path.container.getName());
-                }
-                else {
-                    event.blockList().add(location.getWorld().getBlockAt(location));
-                }
-            }
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "block": return location;
-            case "blocks": {
-                ListTag blocks = new ListTag();
-                for (Block block : this.blocks) {
-                    blocks.addObject(new LocationTag(block.getLocation()));
-                }
-                return blocks;
-            }
-            case "strength": return new ElementTag(event.getYield());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "block" -> location;
+            case "blocks" -> new ListTag(this.blocks, block -> new LocationTag(block.getLocation()));
+            case "strength" -> new ElementTag(event.getYield());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
