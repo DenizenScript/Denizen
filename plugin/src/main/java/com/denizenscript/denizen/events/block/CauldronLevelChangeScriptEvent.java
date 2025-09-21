@@ -47,9 +47,12 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
                 return false;
             }
             BlockState cauldronState = evt.event.getNewState();
-            if (level.asInt() == 0) {
+            if (level.asInt() <= 0) {
                 cauldronState.setType(Material.CAULDRON);
                 return true;
+            }
+            if (level.asInt() > 3) {
+                return false;
             }
             Material cauldronType = cauldronState.getType();
             if (cauldronType != Material.WATER_CAULDRON && cauldronType != Material.LAVA_CAULDRON) {
