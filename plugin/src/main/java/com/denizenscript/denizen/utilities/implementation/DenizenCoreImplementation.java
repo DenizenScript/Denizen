@@ -285,6 +285,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     // @target_type language
     // @target_name Flag System
     // @description
+    // ItemTags, rather than using the flag command, are primarily flagged via <@link command inventory> with the 'flag' argument, or via <@link tag ItemTag.with_flag>, or via the item script container.
+    //
     // Additionally, flags be searched for with tags like <@link tag server.online_players_flagged>, <@link tag server.players_flagged>, <@link tag server.spawned_npcs_flagged>, <@link tag server.npcs_flagged>, ...
     // Flags can also be required by script event lines, as explained at <@link language Script Event Switches>.
     // Item flags can also be used as a requirement in <@link command take>.
