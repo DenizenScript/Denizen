@@ -6,7 +6,6 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.Input;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInputEvent;
@@ -19,7 +18,7 @@ public class PlayerInputScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Group Player
     //
-    // @Triggers when a player sends updated input to the server.
+    // @Triggers when a player sends updated keyboard/gamepad movement control input to the server.
     //
     // @Context
     // <context.backward> returns whether the player is providing backwards movement input (normally this means they are pressing S).

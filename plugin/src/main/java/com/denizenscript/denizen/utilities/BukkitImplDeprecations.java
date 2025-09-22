@@ -348,9 +348,6 @@ public class BukkitImplDeprecations {
     // Bump once 1.21 is the minimum supported version (as that is where boat types were split)
     public static Warning gettingBoatType = new SlowWarning("gettingBoatType", "Getting boat wood types is deprecated, as separate boat types are separate entity types now: should check the entity type.");
 
-    // Added 2025/08/18
-    public static Warning playerSteerEntityEvent = new SlowWarning("playerSteerEntityEvent", "The 'player steers <entity>' event is deprecated in favor of the 'player input' event.");
-
     // Added 2025/09/14
     public static Warning lookCommandNoEntities = new SlowWarning("lookCommandNoEntities", "The 'look' command now requires both the entity and location inputs.");
 
@@ -487,6 +484,9 @@ public class BukkitImplDeprecations {
 
     // Added 2025/08/23
     public static Warning advancementBackgroundFormat = new FutureWarning("advancementBackgroundFormat", "The 'background:' input in the advancement command no longer uses the 'textures/' path or '.png' suffix, so for example 'minecraft:textures/gui/advancements/backgrounds/stone.png' would be 'minecraft:gui/advancements/backgrounds/stone'.");
+
+    // Added 2025/09/22
+    public static Warning playerSteerEntityEvent = new FutureWarning("playerSteerEntityEvent", "The 'player steers <entity>' event is deprecated in favor of the 'player input' event in MC 1.21+.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 

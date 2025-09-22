@@ -29,7 +29,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     //
     // @Cancellable true
     //
-    // @Triggers use <@link event player input> on MC 1.21+.
+    // @Triggers every tick that a player is controlling a vehicle. Use <@link event player input> on MC 1.21+.
     //
     // @Context
     // <context.entity> returns the EntityTag being steered by the player.
