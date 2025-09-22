@@ -207,6 +207,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerFlyingScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerHearsSoundScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerIncreasesExhaustionLevelScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(PlayerInputScriptEvent.class);
+        }
         if (!Denizen.supportsPaper) {
             ScriptEvent.registerScriptEvent(PlayerItemTakesDamageScriptEvent.class);
         }

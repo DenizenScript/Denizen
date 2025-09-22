@@ -348,6 +348,9 @@ public class BukkitImplDeprecations {
     // Bump once 1.21 is the minimum supported version (as that is where boat types were split)
     public static Warning gettingBoatType = new SlowWarning("gettingBoatType", "Getting boat wood types is deprecated, as separate boat types are separate entity types now: should check the entity type.");
 
+    // Added 2025/08/18
+    public static Warning playerSteerEntityEvent = new SlowWarning("playerSteerEntityEvent", "The 'player steers <entity>' event is deprecated in favor of the 'player input' event.");
+
     // Added 2025/09/14
     public static Warning lookCommandNoEntities = new SlowWarning("lookCommandNoEntities", "The 'look' command now requires both the entity and location inputs.");
 
