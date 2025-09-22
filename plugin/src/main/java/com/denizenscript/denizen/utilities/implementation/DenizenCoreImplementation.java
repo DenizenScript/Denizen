@@ -290,6 +290,14 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     // Additionally, flags be searched for with tags like <@link tag server.online_players_flagged>, <@link tag server.players_flagged>, <@link tag server.spawned_npcs_flagged>, <@link tag server.npcs_flagged>, ...
     // Flags can also be required by script event lines, as explained at <@link language Script Event Switches>.
     // Item flags can also be used as a requirement in <@link command take>.
+    //
+    // Note that some internal flags exist, and are prefixed with '__' to avoid conflict with normal user flags.
+    // This includes:
+    // - '__raw' and '__clear' which are part of a fake-flag system used for forcibly setting raw data to a flaggable object,
+    // - '__scripts', '__time', etc. which is where some object-type flags are stored inside of server flags,
+    // - '__interact_step' which is used for interact script steps, related to <@link command zap>,
+    // - '__interact_cooldown' which is used for interact script cooldowns, related to <@link command cooldown>.
+    //
     // -->
 
     // <--[extension]
