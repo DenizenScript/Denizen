@@ -280,6 +280,27 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         return Denizen.getInstance().getDataFolder();
     }
 
+    // <--[extension]
+    // @name Flag System Extension
+    // @target_type language
+    // @target_name Flag System
+    // @description
+    // Additionally, flags be searched for with tags like <@link tag server.online_players_flagged>, <@link tag server.players_flagged>, <@link tag server.spawned_npcs_flagged>, <@link tag server.npcs_flagged>, ...
+    // Flags can also be required by script event lines, as explained at <@link language Script Event Switches>.
+    // Item flags can also be used as a requirement in <@link command take>.
+    // -->
+
+    // <--[extension]
+    // @name Flag Command Extension
+    // @target_type command
+    // @target_name Flag
+    // @Tags
+    // <server.online_players_flagged[<flag_name>]>
+    // <server.players_flagged[<flag_name>]>
+    // <server.spawned_npcs_flagged[<flag_name>]>
+    // <server.npcs_flagged[<flag_name>]>
+    // -->
+
     @Override
     public FlaggableObject simpleWordToFlaggable(String word, ScriptEntry entry) {
         if (CoreUtilities.equalsIgnoreCase(word, "player")) {
