@@ -224,7 +224,7 @@ public class FakeBlockHelper {
             states.write(newChunkData);
             biomes.write(newChunkData);
         }
-        CHUNKDATA_BUFFER_SETTER.invoke(copiedChunkPacket.getChunkData(), newChunkData.array());
+        CHUNKDATA_BUFFER_SETTER.invokeExact(copiedChunkPacket.getChunkData(), newChunkData.array());
         return copiedChunkPacket;
     }
 
