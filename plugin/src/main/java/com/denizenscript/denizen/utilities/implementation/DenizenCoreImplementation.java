@@ -280,6 +280,37 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         return Denizen.getInstance().getDataFolder();
     }
 
+    // <--[extension]
+    // @name Flag System Extension
+    // @target_type language
+    // @target_name Flag System
+    // @description
+    // ItemTags, rather than using the flag command, are primarily flagged via <@link command inventory> with the 'flag' argument, or via <@link tag ItemTag.with_flag>, or via the item script container.
+    //
+    // Additionally, flags be searched for with tags like <@link tag server.online_players_flagged>, <@link tag server.players_flagged>, <@link tag server.spawned_npcs_flagged>, <@link tag server.npcs_flagged>, ...
+    // Flags can also be required by script event lines, as explained at <@link language Script Event Switches>.
+    // Item flags can also be used as a requirement in <@link command take>.
+    //
+    // Note that some internal flags exist, and are prefixed with '__' to avoid conflict with normal user flags.
+    // This includes:
+    // - '__raw' and '__clear' which are part of a fake-flag system used for forcibly setting raw data to a flaggable object,
+    // - '__scripts', '__time', etc. which is where some object-type flags are stored inside of server flags,
+    // - '__interact_step' which is used for interact script steps, related to <@link command zap>,
+    // - '__interact_cooldown' which is used for interact script cooldowns, related to <@link command cooldown>.
+    //
+    // -->
+
+    // <--[extension]
+    // @name Flag Command Extension
+    // @target_type command
+    // @target_name Flag
+    // @Tags
+    // <server.online_players_flagged[<flag_name>]>
+    // <server.players_flagged[<flag_name>]>
+    // <server.spawned_npcs_flagged[<flag_name>]>
+    // <server.npcs_flagged[<flag_name>]>
+    // -->
+
     @Override
     public FlaggableObject simpleWordToFlaggable(String word, ScriptEntry entry) {
         if (CoreUtilities.equalsIgnoreCase(word, "player")) {
@@ -410,11 +441,11 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void addFormatScriptDefinitions(DefinitionProvider definitionProvider, TagContext context) {
         BukkitTagContext bukkitContext = (BukkitTagContext) context;
         String name = null;
-        if (bukkitContext.player != null) {
-            name = bukkitContext.player.getName();
-        }
-        else if (bukkitContext.npc != null) {
+        if (bukkitContext.npc != null) {
             name = bukkitContext.npc.getName();
+        }
+        else if (bukkitContext.player != null) {
+            name = bukkitContext.player.getName();
         }
         if (name != null) {
             definitionProvider.addDefinition("name", name);
