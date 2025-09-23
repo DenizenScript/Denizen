@@ -180,7 +180,7 @@ public class SwitchCommand extends AbstractCommand {
                 block.setBlockData(switchable.material.getModernData());
             }
             else {
-                ModifyBlockCommand.setBlock(block.getLocation(), materialTag, false, null);
+                ModifyBlockCommand.setBlock(block.getLocation(), materialTag, false, null, 0);
             }
             if (data1 instanceof Bisected && !(data1 instanceof TrapDoor)) { // TrapDoor implements Bisected, but is not actually bisected???
                 Location other = interactLocation.clone();

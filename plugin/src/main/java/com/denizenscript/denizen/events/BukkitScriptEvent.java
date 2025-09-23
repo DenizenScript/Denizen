@@ -86,6 +86,66 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     //
     // -->
 
+    // <--[extension]
+    // @name Advanced Object Matching Extension
+    // @target_type language
+    // @target_name Advanced Object Matching
+    // @description
+    // Object types have their own special supported matchable inputs, refer to <@link language Advanced Object Matchables>.
+    // -->
+
+    // <--[language]
+    // @name Script Event Switches
+    // @group Script Events
+    // @description
+    // Modern script events support the concept of 'switches'.
+    // A switch is a specification of additional requirements in an event line other than what's in the event label it.
+    //
+    // A switch consists of a name and a value input, and are can be added anywhere in an event line as "name:<value>".
+    // For example, "on delta time secondly every:5:" is a valid event, where "delta time secondly" is the event itself, and "every:<#>" is a switch available to the event.
+    //
+    // A traditional Denizen event might look like "on <entity> damaged",
+    // where "<entity>" can be filled with "entity" or any entity type (like "player").
+    // A switch-using event would instead take the format "on entity damaged" with switch "type:<entity type>"
+    // meaning you can do "on entity damaged" for any entity, or "on entity damaged type:player:" for players specifically.
+    // This is both more efficient to process and more explicit in what's going on, however it is less clear/readable to the average user, so it is not often used.
+    // Some events may have switches for less-often specified data, and use the event line for other options.
+    //
+    // There are also some standard switches available to every script event, and some available to an entire category of script events.
+    //
+    // One switch available to every event is "server_flagged:<flag_name>", which requires that there be a server flag under the given name.
+    // For example, "on console output server_flagged:recording:" will only run the handler for console output when the "recording" flag is set on the server.
+    // This can also be used to require the server does NOT have a flag with "server_flagged:!<flag_name>"
+    //
+    // "chance:<percent>" is also a globally available switch.
+    // For example, "on player breaks diamond_ore chance:25:" will only fire on average one in every four times that a player breaks a diamond ore block.
+    //
+    // Events that have a player linked have the "flagged" and "permission" switches available.
+    //
+    // If the switch is specified, and an event doesn't have a linked player, the event will automatically fail to match.
+    // The "flagged:<flag_name>" switch will limit the event to only fire when the player has the flag with the specified name.
+    // It can be used like "on player breaks block flagged:nobreak:" (that would be used alongside "- flag player nobreak").
+    // You can also use "flagged:!<flag_name>" to require the player does NOT have the flag, like "on player breaks block flagged:!griefbypass:"
+    //
+    // The "permission:<perm key>" will limit the event to only fire when the player has the specified permission key.
+    // It can be used like "on player breaks block permission:denizen.my.perm:"
+    // For multiple flag or permission requirements, just list them separated by '|' pipes, like "flagged:a|b|c". This will require all named flags/permissions to be present, not just one.
+    //
+    // Events that have an NPC linked have the "assigned" switch available.
+    // If the switch is specified, and an event doesn't have a linked NPC, the event will automatically fail to match.
+    // The "assigned:<script name>" switch will limit the event to only fire when the NPC has an assignment script that matches the given advanced matcher.
+    //
+    // Events that occur at a specific location have the "in:<area>" and "location_flagged" switches.
+    // This switches will be ignored (not counted one way or the other) for events that don't have a known location.
+    // For "in:<area>" switches, 'area' is any area-defining tag type - refer to <@link language Advanced Object Matchables>.
+    // "location_flagged:<flag name>" works just like "server_flagged" or the player "flagged" switches, but for locations.
+    //
+    // All script events have priority switches (see <@link language script event priority>),
+    // All Bukkit events have bukkit priority switches (see <@link language bukkit event priority>),
+    // All cancellable script events have cancellation switches (see <@link language script event cancellation>).
+    //
+    // See also <@link language Advanced Object Matching>.
+    // -->
 
     public static boolean couldMatchLegacyInArea(String lower) {
         int index = CoreUtilities.split(lower, ' ').indexOf("in");
@@ -930,6 +990,26 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         return true;
     }
+
+    // <--[language]
+    // @name Script Event After vs On
+    // @group Script Events
+    // @description
+    // Modern ScriptEvents let you choose between "on" and "after".
+    // An "on" event looks like "on player breaks block:" while an "after" event looks like "after player breaks block:".
+    //
+    // An "on" event fires *before* the event actually happens in the world. This means some relevant data won't be updated
+    // (for example, "<context.location.material>" would still show the block type that is going to be broken)
+    // and the result of the event can be changed (eg the event can be cancelled to stop it from actually going through).
+    //
+    // An "after" event, as the name implies, fires *after* the event actually happens. This means data will be already updated to the new state
+    // (so "<context.location.material>" would now show air) but could potentially contain an arbitrary new state from unrelated changes
+    // (for example "<context.location.material>" might now show a different block type, or the original one, if the event was changed,
+    // or another thing happened right after the event but before the 'after' event ran).
+    // This also means you cannot affect the outcome of the event at all (you can't cancel it or anything else - the "determine" command does nothing).
+    //
+    // See also <@link language Safety In Events>
+    // -->
 
     // <--[language]
     // @name Safety In Events

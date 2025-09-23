@@ -36,7 +36,6 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
         registerCouldMatcher("<block> falls");
     }
 
-
     public LocationTag location;
     public MaterialTag material;
     public EntityChangeBlockEvent event;
@@ -54,13 +53,13 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "entity": return new EntityTag(event.getEntity()).getDenizenObject();
-            case "old_material": return material;
-            case "new_material": return new MaterialTag(event.getBlockData());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "entity" -> new EntityTag(event.getEntity()).getDenizenObject();
+            case "old_material" -> material;
+            case "new_material" -> new MaterialTag(event.getBlockData());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
