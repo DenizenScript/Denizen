@@ -1,24 +1,23 @@
 package com.denizenscript.denizen.nms.v1_17.impl;
 
+import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
+import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.nms.v1_17.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.util.PlayerProfile;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.md_5.bungee.api.ChatColor;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundAddPlayerPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
@@ -104,7 +103,7 @@ public class ProfileEditorImpl extends ProfileEditor {
                         patchedProfile.getProperties().putAll(data.getProfile().getProperties());
                     }
                     String listRename = RenameCommand.getCustomNameFor(data.getProfile().getId(), manager.player.getBukkitEntity(), true);
-                    Component displayName = listRename != null ? Handler.componentToNMS(FormattedTextHelper.parse(listRename, ChatColor.WHITE)) : data.getDisplayName();
+                    Component displayName = listRename != null ? Handler.parseNMSComponent(listRename, PaperAPITools.BaseColor.WHITE) : data.getDisplayName();
                     ClientboundPlayerInfoPacket.PlayerUpdate newData = new ClientboundPlayerInfoPacket.PlayerUpdate(patchedProfile, data.getLatency(), data.getGameMode(), displayName);
                     newPacketDataList.add(newData);
                     manager.oldManager.send(newPacket);

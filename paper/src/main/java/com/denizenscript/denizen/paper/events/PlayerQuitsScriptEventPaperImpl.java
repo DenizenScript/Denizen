@@ -1,10 +1,10 @@
 package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.player.PlayerQuitsScriptEvent;
-import com.denizenscript.denizen.paper.PaperModule;
+import com.denizenscript.denizen.paper.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 
 public class PlayerQuitsScriptEventPaperImpl extends PlayerQuitsScriptEvent {
@@ -15,7 +15,7 @@ public class PlayerQuitsScriptEventPaperImpl extends PlayerQuitsScriptEvent {
             event.quitMessage(null);
         });
         this.<PlayerQuitsScriptEventPaperImpl, ElementTag>registerDetermination(null, ElementTag.class, (evt, context, determination) -> {
-            event.quitMessage(PaperModule.parseFormattedText(determination.toString(), ChatColor.WHITE));
+            event.quitMessage(FormattedTextHelper.parse(determination.asString(), NamedTextColor.WHITE));
         });
     }
 
@@ -30,7 +30,7 @@ public class PlayerQuitsScriptEventPaperImpl extends PlayerQuitsScriptEvent {
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "message" -> new ElementTag(PaperModule.stringifyComponent(event.quitMessage()));
+            case "message" -> new ElementTag(FormattedTextHelper.stringify(event.quitMessage()), true);
             case "cause" -> new ElementTag(event.getReason());
             default -> super.getContext(name);
         };

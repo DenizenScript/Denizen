@@ -1,8 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.server;
 
-import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -13,7 +12,6 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.containers.core.FormatScriptContainer;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -137,30 +135,18 @@ public class AnnounceCommand extends AbstractCommand {
         // Use Bukkit to broadcast the message to everybody in the server.
         switch (type) {
             case ALL:
-                Denizen.getInstance().getServer().spigot().broadcast(FormattedTextHelper.parse(message, ChatColor.WHITE));
+                PaperAPITools.instance.broadcast(message, null);
                 break;
             case TO_OPS:
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (player.isOp()) {
-                        player.spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
-                    }
-                }
+                PaperAPITools.instance.broadcast(message, Player::isOp);
                 break;
             case TO_PERMISSION:
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (player.hasPermission(flag.asString())) {
-                        player.spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
-                    }
-                }
+                PaperAPITools.instance.broadcast(message, player -> player.hasPermission(flag.asString()));
             case TO_FLAGGED:
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (new PlayerTag(player).getFlagTracker().hasFlag(flag.asString())) {
-                        player.spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
-                    }
-                }
+                PaperAPITools.instance.broadcast(message, player -> new PlayerTag(player).getFlagTracker().hasFlag(flag.asString()));
                 break;
             case TO_CONSOLE:
-                Bukkit.getServer().getConsoleSender().spigot().sendMessage(FormattedTextHelper.parse(message, ChatColor.WHITE));
+                PaperAPITools.instance.sendMessage(Bukkit.getServer().getConsoleSender(), message);
                 break;
         }
     }

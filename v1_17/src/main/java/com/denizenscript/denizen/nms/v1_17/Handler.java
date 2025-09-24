@@ -11,6 +11,7 @@ import com.denizenscript.denizen.nms.v1_17.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_17.impl.blocks.BlockLightImpl;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -18,8 +19,6 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.StringTag;
@@ -271,13 +270,17 @@ public class Handler extends NMSHandler {
         return null;
     }
 
-    public static BaseComponent[] componentToSpigot(Component nms) {
-        String json = Component.Serializer.toJson(nms);
-        return ComponentSerializer.parse(json);
+    public static String stringifyNMSComponent(Component nms) {
+        if (nms == null) {
+            return null;
+        }
+        return PaperAPITools.instance.parseJsonToText(Component.Serializer.toJson(nms));
     }
 
-    public static MutableComponent componentToNMS(BaseComponent[] spigot) {
-        String json = ComponentSerializer.toString(spigot);
-        return Component.Serializer.fromJson(json);
+    public static MutableComponent parseNMSComponent(String formattedText, PaperAPITools.BaseColor baseColor) {
+        if (formattedText == null) {
+            return null;
+        }
+        return Component.Serializer.fromJson(PaperAPITools.instance.parseTextToJson(formattedText, baseColor));
     }
 }

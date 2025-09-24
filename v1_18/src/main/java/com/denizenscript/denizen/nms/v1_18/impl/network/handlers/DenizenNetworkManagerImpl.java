@@ -16,7 +16,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.entity.*;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
@@ -37,8 +37,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.SectionPos;
@@ -350,7 +348,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 }
                 String modeText = update.getGameMode() == null ? null : update.getGameMode().name();
                 PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.getId(), true, profile.getName(),
-                        update.getDisplayName() == null ? null : FormattedTextHelper.stringify(Handler.componentToSpigot(update.getDisplayName())), modeText, texture, signature, update.getLatency());
+                        update.getDisplayName() == null ? null : Handler.stringifyNMSComponent(update.getDisplayName()), modeText, texture, signature, update.getLatency());
                 PlayerReceivesTablistUpdateScriptEvent.fire(player.getBukkitEntity(), data);
                 if (data.modified) {
                     if (!isOverriding) {
@@ -373,7 +371,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                             newProfile.getProperties().put("textures", new Property("textures", data.texture, data.signature));
                         }
                         newPacket.getEntries().add(new ClientboundPlayerInfoPacket.PlayerUpdate(newProfile, data.latency, data.gamemode == null ? null : GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
-                                data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE))));
+                                data.display == null ? null : Handler.parseNMSComponent(data.display, PaperAPITools.BaseColor.WHITE)));
                         oldManager.send(newPacket, genericfuturelistener);
                     }
                 }
@@ -395,10 +393,10 @@ public class DenizenNetworkManagerImpl extends Connection {
         if (packet instanceof ClientboundSetActionBarTextPacket) {
             ClientboundSetActionBarTextPacket actionbarPacket = (ClientboundSetActionBarTextPacket) packet;
             PlayerReceivesActionbarScriptEvent event = PlayerReceivesActionbarScriptEvent.instance;
-            Component baseComponent = actionbarPacket.getText();
+            String rawJson = Component.Serializer.toJson(actionbarPacket.getText());
             event.reset();
-            event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent)));
-            event.rawJson = new ElementTag(Component.Serializer.toJson(baseComponent));
+            event.message = new ElementTag(PaperAPITools.instance.parseJsonToText(rawJson), true);
+            event.rawJson = new ElementTag(rawJson, true);
             event.system = new ElementTag(false);
             event.player = PlayerTag.mirrorBukkitPlayer(player.getBukkitEntity());
             event = (PlayerReceivesActionbarScriptEvent) event.triggerNow();
@@ -406,8 +404,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 return true;
             }
             if (event.modified) {
-                Component component = Handler.componentToNMS(event.altMessageDetermination);
-                ClientboundSetActionBarTextPacket newPacket = new ClientboundSetActionBarTextPacket(component);
+                ClientboundSetActionBarTextPacket newPacket = new ClientboundSetActionBarTextPacket(Component.Serializer.fromJson(event.rawJson.asString()));
                 oldManager.send(newPacket, genericfuturelistener);
                 return true;
             }
@@ -758,7 +755,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                     any = true;
                 }
                 else if (watcherId == 2 && nameToApply != null) { // 2: Custom name metadata
-                    Optional<Component> name = Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(nameToApply, ChatColor.WHITE)));
+                    Optional<Component> name = Optional.of(Handler.parseNMSComponent(nameToApply, PaperAPITools.BaseColor.WHITE));
                     data.set(i, new SynchedEntityData.DataItem(watcherObject, name));
                     any = true;
                 }
@@ -1118,7 +1115,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                     return true;
                 }
                 if (result.modified) {
-                    packetHelper.setRawJson(ComponentSerializer.toString(result.altMessageDetermination));
+                    packetHelper.setRawJson(result.rawJson.asString());
                 }
             }
         }

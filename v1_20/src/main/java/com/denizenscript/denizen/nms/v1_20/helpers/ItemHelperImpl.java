@@ -8,7 +8,6 @@ import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.item.ItemComponentsPatch;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
@@ -16,14 +15,11 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.*;
-import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.JsonOps;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentMap;
@@ -70,6 +66,7 @@ import org.bukkit.craftbukkit.v1_20_R4.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_20_R4.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemType;
 import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftRecipe;
 import org.bukkit.craftbukkit.v1_20_R4.map.CraftMapView;
 import org.bukkit.craftbukkit.v1_20_R4.util.CraftMagicNumbers;
@@ -203,26 +200,13 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     @Override
-    public JsonObject getRawHoverComponentsJson(ItemStack item) {
-        DataComponentPatch nmsComponents = CraftItemStack.asNMSCopy(item).getComponentsPatch();
-        if (nmsComponents.isEmpty()) {
-            return null;
+    public ItemStack createItemWithNMSComponents(Material type, int count, Object nmsPatchObject) {
+        if (!(nmsPatchObject instanceof DataComponentPatch nmsPatch)) {
+            throw new IllegalArgumentException(nmsPatchObject + " is not a DataComponentPatch");
         }
-        return DataComponentPatch.CODEC.encodeStart(CraftRegistry.getMinecraftRegistry().createSerializationContext(JsonOps.INSTANCE), nmsComponents).getOrThrow().getAsJsonObject();
-    }
-
-    @Override
-    public ItemStack applyRawHoverComponentsJson(ItemStack item, JsonObject components) {
-        return DataComponentPatch.CODEC.parse(CraftRegistry.getMinecraftRegistry().createSerializationContext(JsonOps.INSTANCE), components).mapOrElse(
-                nmsComponents -> {
-                    net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
-                    nmsItem.applyComponents(nmsComponents);
-                    return CraftItemStack.asCraftMirror(nmsItem);
-                },
-                error -> {
-                    Debug.echoError("Invalid hover item data '" + components + "': " + error.message());
-                    return item;
-                });
+        return CraftItemStack.asCraftMirror(new net.minecraft.world.item.ItemStack(
+                BuiltInRegistries.ITEM.wrapAsHolder(CraftItemType.bukkitToMinecraft(type)), count, nmsPatch
+        ));
     }
 
     @Override
@@ -446,7 +430,7 @@ public class ItemHelperImpl extends ItemHelper {
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item.getItemStack());
         Component nmsDisplayName = nmsItemStack.get(DataComponents.CUSTOM_NAME);
-        return FormattedTextHelper.stringify(Handler.componentToSpigot(nmsDisplayName));
+        return Handler.stringifyNMSComponent(nmsDisplayName);
     }
 
     @Override
@@ -458,7 +442,7 @@ public class ItemHelperImpl extends ItemHelper {
         ItemLore nmsLore = nmsItemStack.get(DataComponents.LORE);
         List<String> outList = new ArrayList<>(nmsLore.lines().size());
         for (Component nmsLoreLine : nmsLore.lines()) {
-            outList.add(FormattedTextHelper.stringify(Handler.componentToSpigot(nmsLoreLine)));
+            outList.add(Handler.stringifyNMSComponent(nmsLoreLine));
         }
         return outList;
     }
@@ -470,7 +454,7 @@ public class ItemHelperImpl extends ItemHelper {
             nmsItemStack.remove(DataComponents.CUSTOM_NAME);
         }
         else {
-            nmsItemStack.set(DataComponents.CUSTOM_NAME, Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)));
+            nmsItemStack.set(DataComponents.CUSTOM_NAME, Handler.parseNMSComponent(name, PaperAPITools.BaseColor.WHITE));
         }
         item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
     }
@@ -484,7 +468,7 @@ public class ItemHelperImpl extends ItemHelper {
         else {
             List<Component> nmsLore = new ArrayList<>(lore.size());
             for (String loreLine : lore) {
-                nmsLore.add(Handler.componentToNMS(FormattedTextHelper.parse(loreLine, ChatColor.WHITE)));
+                nmsLore.add(Handler.parseNMSComponent(loreLine, PaperAPITools.BaseColor.WHITE));
             }
             nmsItemStack.set(DataComponents.LORE, new ItemLore(nmsLore));
         }

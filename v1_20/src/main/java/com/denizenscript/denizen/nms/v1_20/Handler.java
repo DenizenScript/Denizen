@@ -16,7 +16,6 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -33,9 +32,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Rotations;
@@ -108,7 +104,7 @@ public class Handler extends NMSHandler {
         enchantmentHelper = new EnchantmentHelperImpl();
 
         registerConversion(ItemTag.class, ItemStack.class, item -> CraftItemStack.asNMSCopy(item.getItemStack()));
-        registerConversion(ElementTag.class, Component.class, element -> componentToNMS(FormattedTextHelper.parse(element.asString(), ChatColor.WHITE)));
+        registerConversion(ElementTag.class, Component.class, element -> parseNMSComponent(element.asString(), PaperAPITools.BaseColor.WHITE));
         registerConversion(MaterialTag.class, BlockState.class, material -> ((CraftBlockData) material.getModernData()).getState());
         registerConversion(LocationTag.class, Rotations.class, location -> new Rotations((float) location.getX(), (float) location.getY(), (float) location.getZ()));
         registerConversion(LocationTag.class, BlockPos.class, CraftLocation::toBlockPosition);
@@ -240,7 +236,7 @@ public class Handler extends NMSHandler {
     public void setInventoryTitle(InventoryView view, String title) {
         AbstractContainerMenu menu = ((CraftInventoryView) view).getHandle();
         try {
-            AbstractContainerMenu_title_SETTER.invoke(menu, componentToNMS(FormattedTextHelper.parse(title, ChatColor.DARK_GRAY)));
+            AbstractContainerMenu_title_SETTER.invoke(menu, parseNMSComponent(title, PaperAPITools.BaseColor.DARK_GRAY));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -359,22 +355,22 @@ public class Handler extends NMSHandler {
         }
     }
 
-    public static BaseComponent[] componentToSpigot(Component nms) {
-        if (nms == null) {
-            return null;
-        }
-        return ComponentSerializer.parse(CraftChatMessage.toJSON(nms));
-    }
-
-    public static Component componentToNMS(BaseComponent[] spigot) {
-        if (spigot == null) {
-            return null;
-        }
-        return CraftChatMessage.fromJSONOrNull(FormattedTextHelper.componentToJson(spigot));
-    }
-
     @Override
     public String updateLegacyName(Class<?> type, String legacyName) {
         return FieldRename.rename(ApiVersion.FIELD_NAME_PARITY, DebugInternals.getFullClassNameOpti(type).replace('.', '/'), legacyName);
+    }
+
+    public static String stringifyNMSComponent(Component nms) {
+        if (nms == null) {
+            return null;
+        }
+        return PaperAPITools.instance.parseJsonToText(CraftChatMessage.toJSON(nms));
+    }
+
+    public static Component parseNMSComponent(String formattedText, PaperAPITools.BaseColor baseColor) {
+        if (formattedText == null) {
+            return null;
+        }
+        return CraftChatMessage.fromJSON(PaperAPITools.instance.parseTextToJson(formattedText, baseColor));
     }
 }

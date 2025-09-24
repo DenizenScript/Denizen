@@ -1,18 +1,18 @@
 package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.player.PlayerCompletesAdvancementScriptEvent;
-import com.denizenscript.denizen.paper.PaperModule;
-import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizen.paper.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerCompletesAdvancementScriptEventPaperImpl extends PlayerCompletesAdvancementScriptEvent {
 
     @Override
     public ObjectTag getContext(String name) {
         switch (name) {
-            case "message": return new ElementTag(PaperModule.stringifyComponent(event.message()));
+            case "message": return new ElementTag(FormattedTextHelper.stringify(event.message()), true);
         }
         return super.getContext(name);
     }
@@ -26,7 +26,7 @@ public class PlayerCompletesAdvancementScriptEventPaperImpl extends PlayerComple
                 event.message(null);
                 return true;
             }
-            event.message(PaperModule.parseFormattedText(determination, ChatColor.WHITE));
+            event.message(FormattedTextHelper.parse(determination, NamedTextColor.WHITE));
             return true;
         }
         else {

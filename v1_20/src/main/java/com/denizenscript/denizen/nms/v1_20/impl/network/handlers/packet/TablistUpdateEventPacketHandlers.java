@@ -4,13 +4,12 @@ import com.denizenscript.denizen.events.player.PlayerReceivesTablistUpdateScript
 import com.denizenscript.denizen.nms.v1_20.Handler;
 import com.denizenscript.denizen.nms.v1_20.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.base.Joiner;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
@@ -80,7 +79,7 @@ public class TablistUpdateEventPacketHandlers {
                 }
                 String modeText = update.gameMode() == null ? null : update.gameMode().name();
                 PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.getId(), update.listed(), profile.getName(),
-                        update.displayName() == null ? null : FormattedTextHelper.stringify(Handler.componentToSpigot(update.displayName())), modeText, texture, signature, update.latency());
+                        update.displayName() == null ? null : Handler.stringifyNMSComponent(update.displayName()), modeText, texture, signature, update.latency());
                 PlayerReceivesTablistUpdateScriptEvent.fire(networkManager.player.getBukkitEntity(), data);
                 if (data.modified) {
                     if (!isOverriding) {
@@ -98,7 +97,7 @@ public class TablistUpdateEventPacketHandlers {
                             newProfile.getProperties().put("textures", new Property("textures", data.texture, data.signature));
                         }
                         ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(newProfile.getId(), newProfile, data.isListed, data.latency, data.gamemode == null ? null : GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
-                                data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE)), update.chatSession());
+                                data.display == null ? null : Handler.parseNMSComponent(data.display, PaperAPITools.BaseColor.WHITE), update.chatSession());
                         networkManager.oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(entry)));
                     }
                 }

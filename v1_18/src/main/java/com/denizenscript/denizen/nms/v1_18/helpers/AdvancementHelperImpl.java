@@ -1,11 +1,10 @@
 package com.denizenscript.denizen.nms.v1_18.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
-import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizen.nms.v1_18.Handler;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import net.md_5.bungee.api.ChatColor;
+import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
+import com.denizenscript.denizen.utilities.PaperAPITools;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
@@ -178,7 +177,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                 ? getAdvancementDataWorld().advancements.advancements.get(asResourceLocation(advancement.parent))
                 : null;
         DisplayInfo display = new DisplayInfo(CraftItemStack.asNMSCopy(advancement.icon),
-                Handler.componentToNMS(FormattedTextHelper.parse(advancement.title, ChatColor.WHITE)), Handler.componentToNMS(FormattedTextHelper.parse(advancement.description, ChatColor.WHITE)),
+                Handler.parseNMSComponent(advancement.title, PaperAPITools.BaseColor.WHITE), Handler.parseNMSComponent(advancement.description, PaperAPITools.BaseColor.WHITE),
                 asResourceLocation(advancement.background), FrameType.valueOf(advancement.frame.name()),
                 advancement.toast, advancement.announceToChat, advancement.hidden);
         display.setLocation(advancement.xOffset, advancement.yOffset);

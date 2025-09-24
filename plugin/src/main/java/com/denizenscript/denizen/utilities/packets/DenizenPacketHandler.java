@@ -113,8 +113,8 @@ public class DenizenPacketHandler {
         if (event.loaded) {
             Callable<PlayerReceivesMessageScriptEvent> eventCall = () -> {
                 event.reset();
-                event.message = new ElementTag(chat.getMessage());
-                event.rawJson = new ElementTag(chat.getRawJson());
+                event.message = new ElementTag(chat.getMessage(), true);
+                event.rawJson = new ElementTag(chat.getRawJson(), true);
                 event.system = new ElementTag(chat.isSystem());
                 event.player = PlayerTag.mirrorBukkitPlayer(player);
                 return event.triggerNow();

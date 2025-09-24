@@ -9,7 +9,7 @@ import com.denizenscript.denizen.nms.v1_19.impl.network.handlers.DenizenNetworkM
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizen.utilities.maps.MapImage;
@@ -21,7 +21,6 @@ import io.netty.buffer.Unpooled;
 import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -190,8 +189,8 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showTabListHeaderFooter(Player player, String header, String footer) {
-        Component cHeader = Handler.componentToNMS(FormattedTextHelper.parse(header, ChatColor.WHITE));
-        Component cFooter = Handler.componentToNMS(FormattedTextHelper.parse(footer, ChatColor.WHITE));
+        Component cHeader = Handler.parseNMSComponent(header, PaperAPITools.BaseColor.WHITE);
+        Component cFooter = Handler.parseNMSComponent(footer, PaperAPITools.BaseColor.WHITE);
         ClientboundTabListPacket packet = new ClientboundTabListPacket(cHeader, cFooter);
         send(player, packet);
     }
@@ -200,10 +199,10 @@ public class PacketHelperImpl implements PacketHelper {
     public void showTitle(Player player, String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
         send(player, new ClientboundSetTitlesAnimationPacket(fadeInTicks, stayTicks, fadeOutTicks));
         if (title != null) {
-            send(player, new ClientboundSetTitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE))));
+            send(player, new ClientboundSetTitleTextPacket(Handler.parseNMSComponent(title, PaperAPITools.BaseColor.WHITE)));
         }
         if (subtitle != null) {
-            send(player, new ClientboundSetSubtitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE))));
+            send(player, new ClientboundSetSubtitleTextPacket(Handler.parseNMSComponent(subtitle, PaperAPITools.BaseColor.WHITE)));
         }
     }
 
@@ -278,7 +277,7 @@ public class PacketHelperImpl implements PacketHelper {
             }
             SynchedEntityData fakeData = new SynchedEntityData(((CraftEntity) entity).getHandle());
             List<SynchedEntityData.DataValue<?>> list = new ArrayList<>();
-            list.add(new SynchedEntityData.DataValue<>(ENTITY_DATA_ACCESSOR_CUSTOM_NAME.getId(), ENTITY_DATA_ACCESSOR_CUSTOM_NAME.getSerializer(), Optional.of(Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)))));
+            list.add(new SynchedEntityData.DataValue<>(ENTITY_DATA_ACCESSOR_CUSTOM_NAME.getId(), ENTITY_DATA_ACCESSOR_CUSTOM_NAME.getSerializer(), Optional.of(Handler.parseNMSComponent(name, PaperAPITools.BaseColor.WHITE))));
             list.add(new SynchedEntityData.DataValue<>(ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE.getId(), ENTITY_DATA_ACCESSOR_CUSTOM_NAME_VISIBLE.getSerializer(), true));
             send(player, new ClientboundSetEntityDataPacket(entity.getEntityId(), list));
         }

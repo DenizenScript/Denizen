@@ -1,10 +1,9 @@
 package com.denizenscript.denizen.nms.v1_21.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.events.player.PlayerReceivesActionbarScriptEvent;
-import com.denizenscript.denizen.nms.v1_21.Handler;
 import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
@@ -22,9 +21,9 @@ public class ActionBarEventPacketHandlers {
             return actionbarPacket;
         }
         event.reset();
-        Component actionbarText = actionbarPacket.text();
-        event.message = new ElementTag(FormattedTextHelper.stringify(Handler.componentToSpigot(actionbarText)), true);
-        event.rawJson = new ElementTag(CraftChatMessage.toJSON(actionbarText), true);
+        String rawJson = CraftChatMessage.toJSON(actionbarPacket.text());
+        event.message = new ElementTag(PaperAPITools.instance.parseJsonToText(rawJson), true);
+        event.rawJson = new ElementTag(rawJson, true);
         event.system = new ElementTag(false);
         event.player = PlayerTag.mirrorBukkitPlayer(networkManager.player.getBukkitEntity());
         event = (PlayerReceivesActionbarScriptEvent) event.triggerNow();
@@ -32,7 +31,7 @@ public class ActionBarEventPacketHandlers {
             return null;
         }
         if (event.modified) {
-            return new ClientboundSetActionBarTextPacket(Handler.componentToNMS(event.altMessageDetermination));
+            return new ClientboundSetActionBarTextPacket(CraftChatMessage.fromJSON(event.rawJson.asString()));
         }
         return actionbarPacket;
     }

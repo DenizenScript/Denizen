@@ -1,9 +1,8 @@
 package com.denizenscript.denizen.nms.v1_17.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizen.nms.v1_17.Handler;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.network.chat.ChatType;
@@ -25,13 +24,13 @@ public class PacketOutChatImpl extends PacketOutChat {
         try {
             Component baseComponent = (Component) MESSAGE.get(internal);
             if (baseComponent != null) {
-                message = FormattedTextHelper.stringify(Handler.componentToSpigot(baseComponent));
                 rawJson = Component.Serializer.toJson(baseComponent);
+                message = PaperAPITools.instance.parseJsonToText(rawJson);
             }
             else {
                 if (internal.components != null) {
-                    message = FormattedTextHelper.stringify(internal.components);
                     rawJson = ComponentSerializer.toString(internal.components);
+                    message = PaperAPITools.instance.parseJsonToText(rawJson);
                 }
                 bungee = true;
             }

@@ -8,10 +8,10 @@ import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -20,10 +20,12 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.potion.PotionMix;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
@@ -36,6 +38,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionBrewer;
 import org.bukkit.scoreboard.Team;
@@ -49,12 +52,12 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public Inventory createInventory(InventoryHolder holder, int slots, String title) {
-        return Bukkit.getServer().createInventory(holder, slots, PaperModule.parseFormattedText(title, ChatColor.BLACK));
+        return Bukkit.getServer().createInventory(holder, slots, FormattedTextHelper.parse(title, NamedTextColor.BLACK));
     }
 
     @Override
     public Inventory createInventory(InventoryHolder holder, InventoryType type, String title) {
-        return Bukkit.getServer().createInventory(holder, type, PaperModule.parseFormattedText(title, ChatColor.BLACK));
+        return Bukkit.getServer().createInventory(holder, type, FormattedTextHelper.parse(title, NamedTextColor.BLACK));
     }
 
     @Override
@@ -62,8 +65,14 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         if (input == null) {
             return null;
         }
-        if (input instanceof Component) {
-            return PaperModule.stringifyComponent((Component) input);
+        if (input instanceof Component component) {
+            return FormattedTextHelper.stringify(component);
+        }
+        else if (input instanceof BaseComponent[] components) {
+            return FormattedTextHelper.stringify(PaperModule.jsonToComponent(bungeeToJson(components.length == 1 ? components[0] : new TextComponent(components))));
+        }
+        else if (input instanceof BaseComponent component) {
+            return FormattedTextHelper.stringify(PaperModule.jsonToComponent(bungeeToJson(component)));
         }
         return super.parseComponent(input);
     }
@@ -76,28 +85,22 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public void setCustomName(Entity entity, String name) {
-        entity.customName(PaperModule.parseFormattedText(name, ChatColor.WHITE));
+        entity.customName(FormattedTextHelper.parse(name, NamedTextColor.WHITE));
     }
 
     @Override
     public String getCustomName(Entity entity) {
-        return PaperModule.stringifyComponent(entity.customName());
-    }
-
-    @Override
-    public BaseComponent[] getCustomNameComponent(Entity entity) {
-        Component customName = entity.customName();
-        return customName != null ? FormattedTextHelper.parseJson(PaperModule.componentToJson(customName)) : null;
+        return FormattedTextHelper.stringify(entity.customName());
     }
 
     @Override
     public void setPlayerListName(Player player, String name) {
-        player.playerListName(PaperModule.parseFormattedText(name, ChatColor.WHITE));
+        player.playerListName(FormattedTextHelper.parse(name, NamedTextColor.WHITE));
     }
 
     @Override
     public String getPlayerListName(Player player) {
-        return PaperModule.stringifyComponent(player.playerListName());
+        return FormattedTextHelper.stringify(player.playerListName());
     }
 
     @Override
@@ -105,14 +108,14 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         String[] output = new String[4];
         int i = 0;
         for (Component component : sign.lines()) {
-            output[i++] = PaperModule.stringifyComponent(component);
+            output[i++] = FormattedTextHelper.stringify(component);
         }
         return output;
     }
 
     @Override
     public void setSignLine(Sign sign, int line, String text) {
-        sign.line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
+        sign.line(line, FormattedTextHelper.parse(text == null ? "" : text, NamedTextColor.BLACK));
     }
 
     @Override
@@ -121,7 +124,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             super.sendResourcePack(player, url, hash, false, null);
         }
         else {
-            player.setResourcePack(url, CoreUtilities.toLowerCase(hash), forced, PaperModule.parseFormattedText(prompt, ChatColor.WHITE));
+            player.setResourcePack(url, CoreUtilities.toLowerCase(hash), forced, FormattedTextHelper.parse(prompt, NamedTextColor.WHITE));
         }
     }
 
@@ -129,24 +132,19 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     public void sendSignUpdate(Player player, Location loc, String[] text) {
         List<Component> components = new ArrayList<>();
         for (String line : text) {
-            components.add(PaperModule.parseFormattedText(line, ChatColor.BLACK));
+            components.add(FormattedTextHelper.parse(line, NamedTextColor.BLACK));
         }
         player.sendSignChange(loc, components);
     }
 
     @Override
     public String getCustomName(Nameable object) {
-        return PaperModule.stringifyComponent(object.customName());
+        return FormattedTextHelper.stringify(object.customName());
     }
 
     @Override
     public void setCustomName(Nameable object, String name) {
-        object.customName(PaperModule.parseFormattedText(name, ChatColor.BLACK));
-    }
-
-    @Override
-    public void sendConsoleMessage(CommandSender sender, String text) {
-        sender.sendMessage(PaperModule.parseFormattedText(text, ChatColor.WHITE));
+        object.customName(FormattedTextHelper.parse(name, NamedTextColor.BLACK));
     }
 
     @Override
@@ -249,12 +247,12 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public String getDeathMessage(PlayerDeathEvent event) {
-        return PaperModule.stringifyComponent(event.deathMessage());
+        return FormattedTextHelper.stringify(event.deathMessage());
     }
 
     @Override
     public void setDeathMessage(PlayerDeathEvent event, String message) {
-        event.deathMessage(PaperModule.parseFormattedText(message, ChatColor.WHITE));
+        event.deathMessage(FormattedTextHelper.parse(message, NamedTextColor.WHITE));
     }
 
     public Set<UUID> modifiedTextures = new HashSet<>();
@@ -337,22 +335,22 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public void setTeamPrefix(Team team, String prefix) {
-        team.prefix(PaperModule.parseFormattedText(prefix, ChatColor.WHITE));
+        team.prefix(FormattedTextHelper.parse(prefix, NamedTextColor.WHITE));
     }
 
     @Override
     public void setTeamSuffix(Team team, String suffix) {
-        team.suffix(PaperModule.parseFormattedText(suffix, ChatColor.WHITE));
+        team.suffix(FormattedTextHelper.parse(suffix, NamedTextColor.WHITE));
     }
 
     @Override
     public String getTeamPrefix(Team team) {
-        return PaperModule.stringifyComponent(team.prefix());
+        return FormattedTextHelper.stringify(team.prefix());
     }
 
     @Override
     public String getTeamSuffix(Team team) {
-        return PaperModule.stringifyComponent(team.suffix());
+        return FormattedTextHelper.stringify(team.suffix());
     }
 
     @Override
@@ -361,28 +359,27 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             List<String> lines = CoreUtilities.split(text, '\n');
             return lines.stream().map(l -> convertTextToMiniMessage(l, false)).collect(Collectors.joining("\n"));
         }
-        Component parsed = PaperModule.jsonToComponent(FormattedTextHelper.componentToJson(FormattedTextHelper.parse(text, ChatColor.WHITE, false)));
-        return MiniMessage.miniMessage().serialize(parsed);
+        return MiniMessage.miniMessage().serialize(FormattedTextHelper.parse(text, NamedTextColor.WHITE, false));
     }
 
     @Override
     public Merchant createMerchant(String title) {
-        return Bukkit.createMerchant(PaperModule.parseFormattedText(title, ChatColor.BLACK));
+        return Bukkit.createMerchant(FormattedTextHelper.parse(title, NamedTextColor.BLACK));
     }
 
     @Override
     public String getText(TextDisplay textDisplay) {
-        return PaperModule.stringifyComponent(textDisplay.text());
+        return FormattedTextHelper.stringify(textDisplay.text());
     }
 
     @Override
     public void setText(TextDisplay textDisplay, String text) {
-        textDisplay.text(PaperModule.parseFormattedText(text, ChatColor.WHITE));
+        textDisplay.text(FormattedTextHelper.parse(text, NamedTextColor.WHITE));
     }
 
     @Override
     public void kickPlayer(Player player, String message) {
-        player.kick(PaperModule.parseFormattedText(message, ChatColor.WHITE));
+        player.kick(FormattedTextHelper.parse(message, NamedTextColor.WHITE));
     }
 
     @Override
@@ -408,5 +405,81 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             return;
         }
         BlockTagsSetter.INSTANCE.setTags(type, tags);
+    }
+
+    @Override
+    public String getPage(BookMeta meta, int page) {
+        return FormattedTextHelper.stringify(meta.page(page));
+    }
+
+    @Override
+    public ListTag getPages(BookMeta meta) {
+        return new ListTag(meta.pages(), page -> new ElementTag(FormattedTextHelper.stringify(page), true));
+    }
+
+    @Override
+    public void addPage(BookMeta meta, String page) {
+        meta.addPages(FormattedTextHelper.parse(page, NamedTextColor.BLACK));
+    }
+
+    @Override
+    public void setPages(BookMeta meta, List<String> pages) {
+        List<Component> parsedPages = new ArrayList<>(pages.size());
+        for (String page : pages) {
+            parsedPages.add(FormattedTextHelper.parse(page, NamedTextColor.BLACK));
+        }
+        meta.pages(parsedPages);
+    }
+
+    @Override
+    public void setJsonPages(BookMeta meta, List<String> jsonPages) {
+        List<Component> parsedPages = new ArrayList<>(jsonPages.size());
+        for (String jsonPage : jsonPages) {
+            parsedPages.add(PaperModule.jsonToComponent(jsonPage));
+        }
+        meta.pages(parsedPages);
+    }
+
+    @Override
+    public void sendMessage(CommandSender sender, String text) {
+        sender.sendMessage(FormattedTextHelper.parse(text, NamedTextColor.WHITE));
+    }
+
+    @Override
+    public void sendMessage(CommandSender sender, String text, UUID senderId) {
+        sender.sendMessage(Identity.identity(senderId), FormattedTextHelper.parse(text, NamedTextColor.WHITE));
+    }
+
+    @Override
+    public void broadcast(String text, Predicate<Player> filter) {
+        Component message = null;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (filter == null || filter.test(player)) {
+                if (message == null) {
+                    message = FormattedTextHelper.parse(text, NamedTextColor.WHITE);
+                }
+                player.sendMessage(message);
+            }
+        }
+    }
+
+    @Override
+    public void sendActionBar(Player player, String text) {
+        player.sendActionBar(FormattedTextHelper.parse(text, NamedTextColor.WHITE));
+    }
+
+    @Override
+    public String parseTextToJson(String formattedText, BaseColor baseColor) {
+        return PaperModule.componentToJson(FormattedTextHelper.parse(formattedText, switch (baseColor) {
+            case WHITE -> NamedTextColor.WHITE;
+            case BLACK -> NamedTextColor.BLACK;
+            case GRAY -> NamedTextColor.GRAY;
+            case DARK_GRAY -> NamedTextColor.DARK_GRAY;
+        }));
+    }
+
+    @Override
+    public String parseJsonToText(String json) {
+        return FormattedTextHelper.stringify(PaperModule.jsonToComponent(json));
     }
 }

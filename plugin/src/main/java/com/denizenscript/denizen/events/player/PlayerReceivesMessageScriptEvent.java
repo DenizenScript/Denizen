@@ -2,15 +2,13 @@ package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
 
 public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
 
@@ -49,7 +47,6 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     public ElementTag message;
     public ElementTag rawJson;
     public boolean didModify;
-    public BaseComponent[] altMessageDetermination;
     public ElementTag system;
     public boolean modified;
     public PlayerTag player;
@@ -62,7 +59,6 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
         system = null;
         cancelled = false;
         modified = false;
-        altMessageDetermination = null;
         didModify = false;
     }
 
@@ -89,14 +85,13 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
             String lower = CoreUtilities.toLowerCase(determination);
             if (lower.startsWith("message:")) {
                 message = new ElementTag(determination.substring("message:".length()), true);
-                altMessageDetermination = FormattedTextHelper.parse(message.asString(), ChatColor.WHITE);
+                rawJson = new ElementTag(PaperAPITools.instance.parseTextToJson(message.asString(), PaperAPITools.BaseColor.WHITE), true);
                 modified = true;
                 return true;
             }
             if (lower.startsWith("raw_json:")) {
-                rawJson = new ElementTag(determination.substring("raw_json:".length()));
-                altMessageDetermination = null;
-                message = new ElementTag(FormattedTextHelper.stringify(FormattedTextHelper.parseJson(rawJson.asString())), true);
+                rawJson = new ElementTag(determination.substring("raw_json:".length()), true);
+                message = new ElementTag(PaperAPITools.instance.parseJsonToText(rawJson.asString()), true);
                 modified = true;
                 return true;
             }
@@ -114,20 +109,12 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
         switch (name) {
             case "message": return message;
             case "system_message": return system;
-            case "raw_json":
-                if (altMessageDetermination != null) {
-                    return new ElementTag(FormattedTextHelper.componentToJson(altMessageDetermination), true);
-                }
-                return rawJson;
+            case "raw_json": return rawJson;
         }
         return super.getContext(name);
     }
 
     public PlayerReceivesMessageScriptEvent triggerNow() {
-        PlayerReceivesMessageScriptEvent event = (PlayerReceivesMessageScriptEvent) fire();
-        if (event.modified && event.altMessageDetermination == null) {
-            event.altMessageDetermination = FormattedTextHelper.parseJson(event.rawJson.asString());
-        }
-        return event;
+        return (PlayerReceivesMessageScriptEvent) fire();
     }
 }

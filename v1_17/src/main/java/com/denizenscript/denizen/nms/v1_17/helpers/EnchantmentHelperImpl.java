@@ -3,9 +3,8 @@ package com.denizenscript.denizen.nms.v1_17.helpers;
 import com.denizenscript.denizen.nms.interfaces.EnchantmentHelper;
 import com.denizenscript.denizen.nms.v1_17.Handler;
 import com.denizenscript.denizen.scripts.containers.core.EnchantmentScriptContainer;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -92,7 +91,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
                 }
                 @Override
                 public Component getFullname(int level) {
-                    return Handler.componentToNMS(script.script.getFullName(level));
+                    return Component.Serializer.fromJson(script.script.getFullName(level));
                 }
                 @Override
                 public boolean canEnchant(net.minecraft.world.item.ItemStack var0) {
@@ -174,7 +173,7 @@ public class EnchantmentHelperImpl extends EnchantmentHelper {
 
     @Override
     public String getFullName(Enchantment enchantment, int level) {
-        return FormattedTextHelper.stringify(Handler.componentToSpigot(((CraftEnchantment) enchantment).getHandle().getFullname(level)));
+        return Handler.stringifyNMSComponent(((CraftEnchantment) enchantment).getHandle().getFullname(level));
     }
 
     @Override

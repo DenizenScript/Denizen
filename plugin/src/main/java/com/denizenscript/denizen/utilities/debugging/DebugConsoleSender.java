@@ -19,7 +19,7 @@ public class DebugConsoleSender {
         //                                                                       "[HH:mm:ss INFO]: "
         string = CoreConfiguration.debugPrefix + string.replace("<FORCE_ALIGN>", "                 ");
         if (showColor) {
-            PaperAPITools.instance.sendConsoleMessage(commandSender, string);
+            PaperAPITools.instance.sendMessage(commandSender, string);
         }
         else {
             commandSender.sendMessage(ChatColor.stripColor(string));

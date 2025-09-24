@@ -4,14 +4,14 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.paper.PaperModule;
+import com.denizenscript.denizen.paper.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.CommandMinecart;
@@ -55,7 +55,7 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
     public UnknownCommandScriptEvent() {
         registerCouldMatcher("command unknown");
         this.<UnknownCommandScriptEvent, ElementTag>registerDetermination(null, ElementTag.class, (evt, context, text) -> {
-            evt.event.message(PaperModule.parseFormattedText(text.toString(), ChatColor.WHITE));
+            evt.event.message(FormattedTextHelper.parse(text.asString(), NamedTextColor.WHITE));
         });
         this.<UnknownCommandScriptEvent>registerTextDetermination("none", (evt) -> {
             evt.event.message(null);
@@ -82,7 +82,7 @@ public class UnknownCommandScriptEvent extends BukkitScriptEvent implements List
             case "source_type" -> new ElementTag(sourceType, true);
             case "command_block_location" -> sourceType.equals("command_block") ? new LocationTag(((BlockCommandSender) event.getSender()).getBlock().getLocation()) : null;
             case "command_minecart" -> sourceType.equals("command_minecart") ? new EntityTag((CommandMinecart) event.getSender()) : null;
-            case "message" -> new ElementTag(PaperModule.stringifyComponent(event.message()), true);
+            case "message" -> new ElementTag(FormattedTextHelper.stringify(event.message()), true);
             default -> super.getContext(name);
         };
     }

@@ -2,13 +2,12 @@ package com.denizenscript.denizen.scripts.containers.core;
 
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
 
@@ -94,8 +93,7 @@ public class BookScriptContainer extends ScriptContainer {
         if (contains("text", List.class)) {
             List<String> pages = getStringList("text");
             for (String page : pages) {
-                page = TagManager.tag(page, context);
-                bookInfo.spigot().addPage(FormattedTextHelper.parse(page, ChatColor.BLACK));
+                PaperAPITools.instance.addPage(bookInfo, TagManager.tag(page, context));
             }
         }
         book.setItemMeta(bookInfo);
