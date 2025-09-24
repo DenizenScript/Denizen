@@ -2,6 +2,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
@@ -29,9 +30,10 @@ public class SidebarCommand extends AbstractCommand {
         setName("sidebar");
         setSyntax("sidebar (add/remove/{set}/set_line) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)");
         setRequiredArguments(1, 8);
-        setParseArgs(false);
+        setParseArgs(true);
         Denizen.getInstance().getServer().getPluginManager().registerEvents(new SidebarEvents(), Denizen.getInstance());
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -101,7 +103,149 @@ public class SidebarCommand extends AbstractCommand {
 
     // TODO: Clean me!
 
-    private enum Action {ADD, REMOVE, SET, SET_LINE}
+    public enum Action { ADD, REMOVE, SET, SET_LINE }
+
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("action") @ArgDefaultText("set") Action action,
+                                   @ArgName("title") @ArgPrefixed @ArgDefaultNull String title, // String due to unparsed value?
+                                   @ArgName("scores") @ArgPrefixed @ArgDefaultNull String scores, // done
+                                   @ArgName("values") @ArgPrefixed @ArgDefaultNull String values, // done
+                                   @ArgName("start") @ArgPrefixed @ArgDefaultNull String start, //
+                                   @ArgName("increment") @ArgPrefixed @ArgDefaultText("-1") String increment,
+                                   @ArgName("players") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> players,
+                                   @ArgName("per_player") boolean perPlayer) {
+
+        ElementTag parsedTitle = (perPlayer || title == null) ? null : new ElementTag(TagManager.tag(title, scriptEntry.getContext()));
+        ListTag parsedValues = (perPlayer || values == null) ? null : ListTag.valueOf(TagManager.tag(values, scriptEntry.getContext()), scriptEntry.getContext());
+        ListTag parsedScores = (perPlayer || scores == null) ? null : ListTag.valueOf(TagManager.tag(scores, scriptEntry.getContext()), scriptEntry.getContext());
+        ElementTag parsedStart = (perPlayer || start == null) ? null : new ElementTag(TagManager.tag(start, scriptEntry.getContext()));
+        ElementTag parsedIncrement = (perPlayer) ? null : new ElementTag(TagManager.tag(increment, scriptEntry.getContext()));
+
+        Map<PlayerTag, PlayerSidebarData> sidebarData = new HashMap<>();
+        PlayerSidebarData parsedData = new PlayerSidebarData(parsedTitle, parsedScores, parsedValues, parsedStart, parsedIncrement);
+        for (PlayerTag player : players) {
+            if (player == null || !player.isValid()) {
+                Debug.echoError("Invalid player!");
+                continue;
+            }
+            if (perPlayer) {
+                sidebarData.put(player, parsedData);
+            }
+            else {
+                sidebarData.put(player, new PlayerSidebarData(new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry), scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript()), title, scores, values, start, increment));
+            }
+        }
+        switch (action) {
+            case ADD -> {
+                for (Map.Entry<PlayerTag, PlayerSidebarData> entry : sidebarData.entrySet()) {
+                    Sidebar sidebar = createSidebar(entry.getKey());
+                    if (sidebar == null) {
+                        continue;
+                    }
+                    List<Sidebar.SidebarLine> current = sidebar.getLines();
+                    // todo use PSD
+                    try {
+                        int index = entry.getValue().getStart().asInt();
+                        //int index = start != null ? start.asInt() : (!current.isEmpty() ? current.get(current.size() - 1).score : entry.getValue().getValues().size());
+                        int incr = entry.getValue().getIncrement().asInt();
+                        for (int i = 0; i < entry.getValue().getValues().size(); i++, index += incr) {
+                            int score = (entry.getValue().getScores() != null && i < entry.getValue().getScores().size()) ? Integer.parseInt(entry.getValue().getScores().get(i)) : index;
+                            while (hasScoreAlready(current, score)) {
+                                score += (incr == 0 ? 1 : incr);
+                            }
+                            current.add(new Sidebar.SidebarLine(entry.getValue().getValues().get(i), score));
+                        }
+                    } catch (NumberFormatException e) {
+                        Debug.echoError(e);
+                        continue;
+                    }
+                    sidebar.setLines(current);
+                    sidebar.sendUpdate();
+                }
+            }
+            case REMOVE -> {
+                for (Map.Entry<PlayerTag, PlayerSidebarData> entry : sidebarData.entrySet()) {
+                    Sidebar sidebar = createSidebar(entry.getKey());
+                    if (sidebar == null) {
+                        continue;
+                    }
+                    List<Sidebar.SidebarLine> current = sidebar.getLines();
+                    if (entry.getValue().getScores() != null) {
+                        for (String scoreString : entry.getValue().getScores()) {
+                            int score = Integer.parseInt(scoreString);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static class PlayerSidebarData {
+        BukkitTagContext context;
+
+        String rawTitle = null;
+        String rawScores = null;
+        String rawValues = null;
+        String rawStart = null;
+        String rawIncrement = null;
+
+        ElementTag parsedTitle = null;
+        ListTag parsedScores = null;
+        ListTag parsedValues = null;
+        ElementTag parsedStart = null;
+        ElementTag parsedIncrement = null;
+
+        PlayerSidebarData(BukkitTagContext context, String rawTitle, String rawScores, String rawValues, String rawStart, String rawIncrement) {
+            this.context = context;
+            this.rawTitle = rawTitle;
+            this.rawScores = rawScores;
+            this.rawValues = rawValues;
+            this.rawStart = rawStart;
+            this.rawIncrement = rawIncrement;
+        }
+
+        PlayerSidebarData(ElementTag title, ListTag scores, ListTag values, ElementTag start, ElementTag increment) {
+            this.parsedTitle = title;
+            this.parsedScores = scores;
+            this.parsedValues = values;
+            this.parsedStart = start;
+            this.parsedIncrement = increment;
+        }
+
+        public ElementTag getTitle() {
+            if (parsedTitle == null) {
+                parsedTitle = new ElementTag(TagManager.tag(rawTitle, context));
+            }
+            return parsedTitle;
+        }
+
+        public ListTag getScores() {
+            if (parsedScores == null) {
+                parsedScores = ListTag.getListFor(TagManager.tagObject(rawScores, context), context);
+            }
+            return parsedScores;
+        }
+
+        public ListTag getValues() {
+            if (parsedValues == null) {
+                parsedValues = ListTag.getListFor(TagManager.tagObject(rawValues, context), context);
+            }
+            return parsedValues;
+        }
+
+        public ElementTag getIncrement() {
+            if (parsedIncrement == null) {
+                parsedIncrement = new ElementTag(TagManager.tag(rawIncrement, context));
+            }
+            return parsedIncrement;
+        }
+        public ElementTag getStart() {
+            if (parsedStart == null) {
+                parsedStart = new ElementTag(TagManager.tag(rawStart, context));
+            }
+            return parsedStart;
+        }
+    }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
