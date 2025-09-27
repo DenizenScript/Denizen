@@ -188,7 +188,7 @@ public class FakeBlockHelper {
                         }
                         BlockLightData estimatedLights = getEstimatedLightLevel(relativeX, relativeY, relativeZ,
                                 getLayer(hasBlockLight, lightData.getBlockUpdates(), blocksLit), getLayer(hasSkyLight, lightData.getSkyUpdates(), skyLit),
-                                lightData, ((CraftWorld) world).getHandle(), sectionPos, sectionLightCache, sectionIndex, blocksLit, skyLit);
+                                lightData, ((CraftWorld) world).getHandle(), sectionPos, sectionLightCache, sectionIndex, blocksLit, skyLit, fakeBlockMap);
                         if (estimatedLights.block() > 0) {
                             DataLayer blockLights;
                             if (!hasBlockLight) {
@@ -199,6 +199,7 @@ public class FakeBlockHelper {
                                 blockLights = new DataLayer(lightData.getBlockUpdates().get(blocksLit));
                             }
                             blockLights.set(relativeX, relativeY, relativeZ, estimatedLights.block());
+                            block.lastBlockLight = estimatedLights.block();
                         }
                         if (estimatedLights.sky() > 0) {
                             DataLayer skyLights;
@@ -210,6 +211,7 @@ public class FakeBlockHelper {
                                 skyLights = new DataLayer(lightData.getSkyUpdates().get(skyLit));
                             }
                             skyLights.set(relativeX, relativeY, relativeZ, estimatedLights.sky());
+                            block.lastSkyLight = estimatedLights.sky();
                         }
                     }
                 }
@@ -256,13 +258,13 @@ public class FakeBlockHelper {
             {0, 0, 1}
     };
 
-    public static BlockLightData getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightData, ServerLevel nmsWorld, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit) {
+    public static BlockLightData getEstimatedLightLevel(int relativeX, int relativeY, int relativeZ, DataLayer blockLights, DataLayer skyLights, ClientboundLightUpdatePacketData lightData, ServerLevel nmsWorld, SectionPos sectionPos, Long2ObjectMap<SectionLightCache> sectionLightsCache, int sectionIndex, int blocksLit, int skyLit, FakeBlock.FakeBlockMap fakeBlockMap) {
         boolean isSkyBright = nmsWorld.getSkyDarken() == 0;
         int maxSkyLight = getLight(skyLights, relativeX, relativeY, relativeZ);
-        int maxBlockLight = getLight(blockLights, relativeX, relativeY, relativeZ);
         if (isSkyBright && maxSkyLight == 15) {
             return BlockLightData.MAX_SKY_LIGHT;
         }
+        int maxBlockLight = getLight(blockLights, relativeX, relativeY, relativeZ);
         if (maxBlockLight == 15) {
             return BlockLightData.MAX_BLOCK_LIGHT;
         }
@@ -290,20 +292,26 @@ public class FakeBlockHelper {
                 int wrappedNeighborY = SectionPos.sectionRelative(neighborY);
                 if (hasSkyLight) {
                     skyLight = new DataLayer(lightData.getSkyUpdates().get(skyLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
+                    if (isSkyBright && skyLight == 15) {
+                        return BlockLightData.MAX_SKY_LIGHT;
+                    }
                 }
                 if (hasBlockLight) {
                     blockLight = new DataLayer(lightData.getBlockUpdates().get(blocksLit + yOffest)).get(neighborX, wrappedNeighborY, neighborZ);
+                    if (blockLight == 15) {
+                        return BlockLightData.MAX_BLOCK_LIGHT;
+                    }
                 }
             }
             else {
                 skyLight = getLight(skyLights, neighborX, neighborY, neighborZ);
+                if (isSkyBright && skyLight == 15) {
+                    return BlockLightData.MAX_SKY_LIGHT;
+                }
                 blockLight = getLight(blockLights, neighborX, neighborY, neighborZ);
-            }
-            if (isSkyBright && skyLight == 15) {
-                return BlockLightData.MAX_SKY_LIGHT;
-            }
-            if (blockLight == 15) {
-                return BlockLightData.MAX_BLOCK_LIGHT;
+                if (blockLight == 15) {
+                    return BlockLightData.MAX_BLOCK_LIGHT;
+                }
             }
             if (skyLight > maxSkyLight) {
                 maxSkyLight = skyLight;
@@ -324,12 +332,25 @@ public class FakeBlockHelper {
                 return new SectionLightCache(sectionBlockLights, sectionSkyLights);
             });
             int skyLight = getLight(sectionLight.skyLights(), blockPos);
-            int blockLight = getLight(sectionLight.blockLights(), blockPos);
             if (isSkyBright && skyLight == 15) {
                 return BlockLightData.MAX_SKY_LIGHT;
             }
+            int blockLight = getLight(sectionLight.blockLights(), blockPos);
             if (blockLight == 15) {
                 return BlockLightData.MAX_BLOCK_LIGHT;
+            }
+            FakeBlock fakeBlock = fakeBlockMap.byLocation.get(new LocationTag(nmsWorld.getWorld(), blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+            if (fakeBlock.lastSkyLight > skyLight) {
+                skyLight = fakeBlock.lastSkyLight;
+                if (isSkyBright && skyLight == 15) {
+                    return BlockLightData.MAX_SKY_LIGHT;
+                }
+            }
+            if (fakeBlock.lastBlockLight > blockLight) {
+                blockLight = fakeBlock.lastBlockLight;
+                if (blockLight == 15) {
+                    return BlockLightData.MAX_BLOCK_LIGHT;
+                }
             }
             if (skyLight > maxSkyLight) {
                 maxSkyLight = skyLight;
