@@ -75,6 +75,8 @@ public class FakeBlock {
     public final ChunkCoordinate chunkCoord;
     public MaterialTag material;
     public BukkitTask currentTask = null;
+    public int lastBlockLight = -1;
+    public int lastSkyLight = -1;
 
     private FakeBlock(PlayerTag player, LocationTag location) {
         this.player = player;
