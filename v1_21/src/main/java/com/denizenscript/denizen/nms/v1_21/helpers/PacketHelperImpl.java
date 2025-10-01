@@ -21,8 +21,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.BrandPayload;
-import net.minecraft.network.protocol.common.custom.GameTestAddMarkerDebugPayload;
-import net.minecraft.network.protocol.common.custom.GameTestClearMarkersDebugPayload;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -354,15 +352,12 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showDebugTestMarker(Player player, Location location, ColorTag color, String name, int time) {
-        int colorInt = color.blue | (color.green << 8) | (color.red << 16) | (color.alpha << 24);
-        GameTestAddMarkerDebugPayload payload = new GameTestAddMarkerDebugPayload(CraftLocation.toBlockPosition(location), colorInt, name, time);
-        send(player, new ClientboundCustomPayloadPacket(payload));
+        BlockPos nmsPos = CraftLocation.toBlockPosition(location);
+        send(player, new ClientboundGameTestHighlightPosPacket(nmsPos, nmsPos));
     }
 
     @Override
     public void clearDebugTestMarker(Player player) {
-        GameTestClearMarkersDebugPayload payload = new GameTestClearMarkersDebugPayload();
-        send(player, new ClientboundCustomPayloadPacket(payload));
     }
 
     @Override

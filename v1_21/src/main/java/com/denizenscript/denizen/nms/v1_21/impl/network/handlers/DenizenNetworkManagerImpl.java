@@ -272,7 +272,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         else if (packet instanceof ClientboundSetEntityMotionPacket) {
             ClientboundSetEntityMotionPacket velPacket = (ClientboundSetEntityMotionPacket) packet;
-            doPacketOutput("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getXa() + "," + velPacket.getYa() + "," + velPacket.getZa());
+            doPacketOutput("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getMovement());
         }
         else if (packet instanceof ClientboundAddEntityPacket) {
             ClientboundAddEntityPacket addEntityPacket = (ClientboundAddEntityPacket) packet;
@@ -290,8 +290,8 @@ public class DenizenNetworkManagerImpl extends Connection {
         else if (packet instanceof ClientboundPlayerInfoUpdatePacket) {
             ClientboundPlayerInfoUpdatePacket playerInfoPacket = (ClientboundPlayerInfoUpdatePacket) packet;
             doPacketOutput("Packet: ClientboundPlayerInfoPacket sent to " + player.getScoreboardName() + " of types " + playerInfoPacket.actions() + " for player profiles: " +
-                    playerInfoPacket.entries().stream().map(p -> "mode=" + p.gameMode() + "/latency=" + p.latency() + "/display=" + p.displayName() + "/name=" + p.profile().getName() + "/id=" + p.profile().getId() + "/"
-                            + p.profile().getProperties().asMap().entrySet().stream().map(e -> e.getKey() + "=" + e.getValue().stream().map(v -> v.value() + ";" + v.signature()).collect(Collectors.joining(";;;"))).collect(Collectors.joining("/"))).collect(Collectors.joining(", ")));
+                    playerInfoPacket.entries().stream().map(p -> "mode=" + p.gameMode() + "/latency=" + p.latency() + "/display=" + p.displayName() + "/name=" + p.profile().name() + "/id=" + p.profile().id() + "/"
+                            + p.profile().properties().asMap().entrySet().stream().map(e -> e.getKey() + "=" + e.getValue().stream().map(v -> v.value() + ";" + v.signature()).collect(Collectors.joining(";;;"))).collect(Collectors.joining("/"))).collect(Collectors.joining(", ")));
         }
         else {
             doPacketOutput("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());

@@ -176,7 +176,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                 : null;
         DisplayInfo display = new DisplayInfo(CraftItemStack.asNMSCopy(advancement.icon),
                 Handler.componentToNMS(FormattedTextHelper.parse(advancement.title, ChatColor.WHITE)), Handler.componentToNMS(FormattedTextHelper.parse(advancement.description, ChatColor.WHITE)),
-                Optional.ofNullable(advancement.background).map(CraftNamespacedKey::toMinecraft).map(ClientAsset::new), AdvancementType.valueOf(advancement.frame.name()),
+                Optional.ofNullable(advancement.background).map(CraftNamespacedKey::toMinecraft).map(ClientAsset.ResourceTexture::new), AdvancementType.valueOf(advancement.frame.name()),
                 advancement.toast, advancement.announceToChat, advancement.hidden);
         display.setLocation(advancement.xOffset, advancement.yOffset);
         Map<String, Criterion<?>> criteria = IMPOSSIBLE_CRITERIA;

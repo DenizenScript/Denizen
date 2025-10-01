@@ -23,7 +23,6 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.world.entity.player.Player
     public static String Player_DATA_PLAYER_ABSORPTION_ID = "b";
-    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = ERROR_UNKNOWN_TARGET;
 
     // net.minecraft.server.level.ServerPlayer
     public static String ServerPlayer_respawnConfig = "dq";
@@ -36,6 +35,12 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.world.item.Item
     public static String Item_components = "c";
+
+    // net.minecraft.world.item.component.ResolvableProfile
+    public static String ResolvableProfile_unpack_method = "a";
+
+    // net.minecraft.world.item.component.ResolvableProfile$Partial
+    public static String ResolvableProfilePartial_id = "d";
 
     // net.minecraft.world.level.Level
     public static String Level_isClientSide = "E";

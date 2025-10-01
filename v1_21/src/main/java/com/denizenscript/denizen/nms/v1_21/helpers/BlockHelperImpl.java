@@ -85,15 +85,15 @@ public class BlockHelperImpl implements BlockHelper {
         if (profile == null) {
             return null;
         }
-        com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.properties().get("textures"), null);
-        return new PlayerProfile(profile.name().orElse(null), profile.id().orElse(null), property != null ? property.value() : null);
+        com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.partialProfile().properties().get("textures"), null);
+        return new PlayerProfile(profile.name().orElse(null), ProfileEditorImpl.getUUID(profile), property != null ? property.value() : null);
     }
 
     @Override
     public void setPlayerProfile(Skull skull, PlayerProfile playerProfile) {
         GameProfile gameProfile = ProfileEditorImpl.getGameProfile(playerProfile);
         try {
-            craftSkull_profile.set(skull, new ResolvableProfile(gameProfile));
+            craftSkull_profile.set(skull, ResolvableProfile.createResolved(gameProfile));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

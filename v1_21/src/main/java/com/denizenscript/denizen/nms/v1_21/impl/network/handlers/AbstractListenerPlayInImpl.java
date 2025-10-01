@@ -608,9 +608,9 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void handleDebugSampleSubscription(ServerboundDebugSampleSubscriptionPacket packet) {
+    public void handleDebugSubscriptionRequest(ServerboundDebugSubscriptionRequestPacket packet) {
         if (handlePacketIn(packet)) { return; }
-        oldListener.handleDebugSampleSubscription(packet);
+        oldListener.handleDebugSubscriptionRequest(packet);
     }
 
     @Override
