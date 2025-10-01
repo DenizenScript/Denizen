@@ -13,6 +13,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.core.ColorTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
@@ -353,7 +354,8 @@ public class PacketHelperImpl implements PacketHelper {
     @Override
     public void showDebugTestMarker(Player player, Location location, ColorTag color, String name, int time) {
         BlockPos nmsPos = CraftLocation.toBlockPosition(location);
-        send(player, new ClientboundGameTestHighlightPosPacket(nmsPos, nmsPos));
+        LocationTag displayPos = !name.isEmpty() ? LocationTag.valueOf(name, CoreUtilities.noDebugContext) : null;
+        send(player, new ClientboundGameTestHighlightPosPacket(nmsPos, displayPos != null ? CraftLocation.toBlockPosition(displayPos) : nmsPos));
     }
 
     @Override
