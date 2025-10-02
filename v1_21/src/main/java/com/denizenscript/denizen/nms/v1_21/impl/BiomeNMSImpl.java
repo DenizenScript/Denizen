@@ -22,10 +22,10 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftEntityType;
-import org.bukkit.craftbukkit.v1_21_R5.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_21_R5.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_21_R6.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftEntityType;
+import org.bukkit.craftbukkit.v1_21_R6.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R6.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 
 import java.lang.invoke.MethodHandle;

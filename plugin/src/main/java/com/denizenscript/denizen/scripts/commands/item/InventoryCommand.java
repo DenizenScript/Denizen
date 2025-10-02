@@ -92,6 +92,16 @@ public class InventoryCommand extends AbstractCommand implements Listener {
     //
     // -->
 
+    // <--[extension]
+    // @name Inventory Adjust Extension
+    // @target_type command
+    // @target_name Adjust
+    // @description
+    // To adjust an item in an inventory, use <@link command inventory>, as '- inventory adjust slot:<#> <mechanism>:<value>'.
+    // Note that that is only for items, not actual inventories.
+    // To adjust an actual InventoryTag mechanism, you should still use the normal 'adjust' command, not 'inventory adjust'.
+    // -->
+
     // <--[command]
     // @Name Inventory
     // @Syntax inventory [open/close/copy/move/swap/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>/flag <name>(:<action>)[:<value>] (expire:<time>)] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)

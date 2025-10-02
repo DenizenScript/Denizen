@@ -31,7 +31,6 @@ import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.yggdrasil.ProfileResult;
 import com.mojang.serialization.DynamicOps;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.md_5.bungee.api.ChatColor;
@@ -68,19 +67,19 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R5.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R5.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R5.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R5.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftInventoryView;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R5.legacy.FieldRename;
-import org.bukkit.craftbukkit.v1_21_R5.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.v1_21_R5.util.*;
+import org.bukkit.craftbukkit.v1_21_R6.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R6.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R6.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R6.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R6.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R6.legacy.FieldRename;
+import org.bukkit.craftbukkit.v1_21_R6.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_21_R6.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -151,7 +150,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isExactServerVersionMatch() {
-        return Denizen.supportsPaper ? SharedConstants.getCurrentVersion().id().equals("1.21.8") : CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("98b42190c84edaa346fd96106ee35d6f");
+        return Denizen.supportsPaper ? SharedConstants.getCurrentVersion().id().equals("1.21.9") : CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("614efe5192cd0510bc2ddc5feefa155d");
     }
 
     @Override
@@ -184,24 +183,23 @@ public class Handler extends NMSHandler {
             GameProfile profile = null;
             MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
             if (playerProfile.getUniqueId() != null) {
-                profile = minecraftServer.getProfileCache().get(playerProfile.getUniqueId()).orElse(null);
+                profile = minecraftServer.services().nameToIdCache().get(playerProfile.getUniqueId()).map(result -> new GameProfile(result.id(), result.name())).orElse(null);
             }
             if (profile == null && playerProfile.getName() != null) {
-                profile = minecraftServer.getProfileCache().get(playerProfile.getName()).orElse(null);
+                profile = minecraftServer.services().nameToIdCache().get(playerProfile.getName()).map(result -> new GameProfile(result.id(), result.name())).orElse(null);
             }
             if (profile == null) {
                 profile = ProfileEditorImpl.getGameProfileNoProperties(playerProfile);
             }
-            Property textures = profile.getProperties().containsKey("textures") ? Iterables.getFirst(profile.getProperties().get("textures"), null) : null;
-            if (textures == null || !textures.hasSignature() || profile.getName() == null || profile.getId() == null) {
-                ProfileResult actualProfile = minecraftServer.getSessionService().fetchProfile(profile.getId(), true);
-                if (actualProfile == null) {
+            Property textures = profile.properties().containsKey("textures") ? Iterables.getFirst(profile.properties().get("textures"), null) : null;
+            if (textures == null || !textures.hasSignature() || profile.name() == null || profile.id() == null) {
+                profile = minecraftServer.services().profileResolver().fetchById(profile.id()).orElse(null);
+                if (profile == null) {
                     return null;
                 }
-                profile = actualProfile.profile();
-                textures = profile.getProperties().containsKey("textures") ? Iterables.getFirst(profile.getProperties().get("textures"), null) : null;
+                textures = profile.properties().containsKey("textures") ? Iterables.getFirst(profile.properties().get("textures"), null) : null;
             }
-            return new PlayerProfile(profile.getName(), profile.getId(), textures == null ? null : textures.value(), textures == null ? null : textures.signature());
+            return new PlayerProfile(profile.name(), profile.id(), textures == null ? null : textures.value(), textures == null ? null : textures.signature());
         }
         catch (Exception e) {
             if (CoreConfiguration.debugVerbose) {
@@ -281,8 +279,8 @@ public class Handler extends NMSHandler {
     @Override
     public PlayerProfile getPlayerProfile(Player player) {
         GameProfile gameProfile = ((CraftPlayer) player).getProfile();
-        Property property = Iterables.getFirst(gameProfile.getProperties().get("textures"), null);
-        return new PlayerProfile(gameProfile.getName(), gameProfile.getId(),
+        Property property = Iterables.getFirst(gameProfile.properties().get("textures"), null);
+        return new PlayerProfile(gameProfile.name(), gameProfile.id(),
                 property != null ? property.value() : null,
                 property != null ? property.signature() : null);
     }
