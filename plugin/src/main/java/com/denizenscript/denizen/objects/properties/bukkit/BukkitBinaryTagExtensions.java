@@ -1,11 +1,10 @@
 package com.denizenscript.denizen.objects.properties.bukkit;
 
-import com.denizenscript.denizen.nms.util.jnbt.NBTInputStream;
-import com.denizenscript.denizen.nms.util.jnbt.NamedTag;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.BinaryTag;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.kyori.adventure.nbt.BinaryTagIO;
 
 import java.io.ByteArrayInputStream;
 
@@ -28,13 +27,8 @@ public class BukkitBinaryTagExtensions {
         // # Now do something with "<[data]>"
         // -->
         BinaryTag.tagProcessor.registerStaticTag(ObjectTag.class, "nbt_to_map", (attribute, object) -> {
-            try {
-                ByteArrayInputStream stream = new ByteArrayInputStream(object.data);
-                NBTInputStream nbtStream = new NBTInputStream(stream);
-                NamedTag tag = nbtStream.readNamedTag();
-                nbtStream.close();
-                stream.close();
-                return ItemRawNBT.jnbtTagToObject(tag.getTag());
+            try (ByteArrayInputStream input = new ByteArrayInputStream(object.data)) {
+                return ItemRawNBT.nbtTagToObject(BinaryTagIO.reader().read(input), true);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);

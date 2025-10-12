@@ -1,11 +1,13 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.util.Advancement;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -13,6 +15,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -51,7 +54,7 @@ public class AdvancementCommand extends AbstractCommand {
     // The title argument sets the title that will show on toasts and in the advancements menu.
     // The description argument sets the information that will show when scrolling over a chat announcement or in the advancements menu.
     // The background argument sets the image to use if the advancement goes to a new tab.
-    // If the background is unspecified, defaults to "minecraft:textures/gui/advancements/backgrounds/stone.png".
+    // If the background is unspecified, defaults to "minecraft:gui/advancements/backgrounds/stone".
     // The frame argument sets the type of advancement - valid arguments are CHALLENGE, GOAL, and TASK.
     // The toast argument sets whether the advancement should display a toast message when a player completes it. Default is true.
     // The announce argument sets whether the advancement should display a chat message to the server when a player completes it. Default is true.
@@ -177,7 +180,7 @@ public class AdvancementCommand extends AbstractCommand {
         scriptEntry.defaultObject("icon", new ItemTag(Material.AIR));
         scriptEntry.defaultObject("title", new ElementTag(""));
         scriptEntry.defaultObject("description", new ElementTag(""));
-        scriptEntry.defaultObject("background", new ElementTag("minecraft:textures/gui/advancements/backgrounds/stone.png"));
+        scriptEntry.defaultObject("background", new ElementTag(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) ? "minecraft:gui/advancements/backgrounds/stone" : "minecraft:textures/gui/advancements/backgrounds/stone.png", true));
         scriptEntry.defaultObject("frame", new ElementTag("TASK"));
         scriptEntry.defaultObject("toast", new ElementTag(true));
         scriptEntry.defaultObject("announce", new ElementTag(true));
@@ -226,12 +229,11 @@ public class AdvancementCommand extends AbstractCommand {
                 }
             }
             else if (background != null) {
-                List<String> backgroundSplit = CoreUtilities.split(background.asString(), ':', 2);
-                if (backgroundSplit.size() == 1) {
-                    backgroundKey = NamespacedKey.minecraft(backgroundSplit.get(0));
-                }
-                else {
-                    backgroundKey = new NamespacedKey(CoreUtilities.toLowerCase(backgroundSplit.get(0)), CoreUtilities.toLowerCase(backgroundSplit.get(1)));
+                backgroundKey = Utilities.parseNamespacedKey(background.asString());
+                String path = backgroundKey.getKey();
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && path.startsWith("textures/") && path.endsWith(".png")) {
+                    BukkitImplDeprecations.advancementBackgroundFormat.warn(scriptEntry);
+                    backgroundKey = new NamespacedKey(backgroundKey.getNamespace(), path.substring("textures/".length(), path.length() - ".png".length()));
                 }
             }
             final Advancement advancement = new Advancement(false, key, parentKey,
@@ -269,7 +271,12 @@ public class AdvancementCommand extends AbstractCommand {
             for (PlayerTag target : revoke.filter(PlayerTag.class, scriptEntry)) {
                 Player player = target.getPlayerEntity();
                 if (player != null) {
-                    NMSHandler.advancementHelper.revoke(advancement, player);
+                    if (progressLength == null) {
+                        NMSHandler.advancementHelper.revoke(advancement, player);
+                    }
+                    else {
+                        NMSHandler.advancementHelper.revokePartial(advancement, player, progressLength.asInt());
+                    }
                 }
             }
         }

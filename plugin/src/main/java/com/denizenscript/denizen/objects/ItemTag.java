@@ -5,7 +5,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
-import com.denizenscript.denizen.nms.util.jnbt.StringTag;
 import com.denizenscript.denizen.objects.properties.item.*;
 import com.denizenscript.denizen.scripts.containers.core.BookScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
@@ -31,6 +30,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.PropertyMatchHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.debugging.Debuggable;
+import net.kyori.adventure.nbt.StringBinaryTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
@@ -368,7 +368,7 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
     }
 
     public void setItemScriptName(String name) {
-        setItemStack(NMSHandler.itemHelper.addNbtData(getItemStack(), "DenizenItemScript", new StringTag(CoreUtilities.toLowerCase(name))));
+        setItemStack(NMSHandler.itemHelper.addNbtData(getItemStack(), "DenizenItemScript", StringBinaryTag.stringBinaryTag(CoreUtilities.toLowerCase(name))));
     }
 
     public void setItemScript(ItemScriptContainer script) {

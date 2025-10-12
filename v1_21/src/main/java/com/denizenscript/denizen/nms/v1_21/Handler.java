@@ -7,14 +7,11 @@ import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import com.denizenscript.denizen.nms.v1_21.helpers.*;
 import com.denizenscript.denizen.nms.v1_21.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.SidebarImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.blocks.BlockLightImpl;
-import com.denizenscript.denizen.nms.v1_21.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
@@ -34,9 +31,8 @@ import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.yggdrasil.ProfileResult;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.DynamicOps;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.SharedConstants;
@@ -45,9 +41,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Rotations;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -71,19 +67,19 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R5.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R5.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R5.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R5.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftInventoryView;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R5.legacy.FieldRename;
-import org.bukkit.craftbukkit.v1_21_R5.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.v1_21_R5.util.*;
+import org.bukkit.craftbukkit.v1_21_R6.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R6.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R6.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R6.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R6.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R6.legacy.FieldRename;
+import org.bukkit.craftbukkit.v1_21_R6.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_21_R6.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -97,7 +93,6 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -123,8 +118,10 @@ public class Handler extends NMSHandler {
         registerConversion(MaterialTag.class, BlockState.class, material -> ((CraftBlockData) material.getModernData()).getState());
         registerConversion(LocationTag.class, Rotations.class, location -> new Rotations((float) location.getX(), (float) location.getY(), (float) location.getZ()));
         registerConversion(LocationTag.class, BlockPos.class, CraftLocation::toBlockPosition);
-        registerConversion(MapTag.class, net.minecraft.nbt.CompoundTag.class, map ->
-                ItemRawNBT.convertObjectToNbt(map.identify(), CoreUtilities.noDebugContext, "(item).") instanceof CompoundTagImpl compoundTag ? compoundTag.toNMSTag() : null);
+        registerConversion(MapTag.class, CompoundTag.class, map -> {
+            CompoundBinaryTag compoundTag = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(map, CoreUtilities.noDebugContext, "(item).");
+            return compoundTag != null ? NBTAdapter.toNMS(compoundTag) : null;
+        });
         registerConversion(LocationTag.class, Vector3f.class, location -> new Vector3f((float) location.getX(), (float) location.getY(), (float) location.getZ()));
         registerConversion(QuaternionTag.class, Quaternionf.class, quaternion -> new Quaternionf(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
     }
@@ -153,27 +150,12 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isExactServerVersionMatch() {
-        return Denizen.supportsPaper ? SharedConstants.getCurrentVersion().id().equals("1.21.7") : CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("98b42190c84edaa346fd96106ee35d6f");
+        return Denizen.supportsPaper ? SharedConstants.getCurrentVersion().id().equals("1.21.10") : CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("614efe5192cd0510bc2ddc5feefa155d");
     }
 
     @Override
     public double[] getRecentTps() {
         return ((CraftServer) Bukkit.getServer()).getServer().recentTps;
-    }
-
-    @Override
-    public CompoundTag createCompoundTag(Map<String, Tag> value) {
-        return new CompoundTagImpl(value);
-    }
-
-    @Override
-    public CompoundTag parseSNBT(String snbt) {
-        try {
-            return CompoundTagImpl.fromNMSTag(TagParser.parseCompoundFully(snbt));
-        }
-        catch (CommandSyntaxException e) {
-            return null;
-        }
     }
 
     @Override
@@ -201,24 +183,23 @@ public class Handler extends NMSHandler {
             GameProfile profile = null;
             MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
             if (playerProfile.getUniqueId() != null) {
-                profile = minecraftServer.getProfileCache().get(playerProfile.getUniqueId()).orElse(null);
+                profile = minecraftServer.services().nameToIdCache().get(playerProfile.getUniqueId()).map(result -> new GameProfile(result.id(), result.name())).orElse(null);
             }
             if (profile == null && playerProfile.getName() != null) {
-                profile = minecraftServer.getProfileCache().get(playerProfile.getName()).orElse(null);
+                profile = minecraftServer.services().nameToIdCache().get(playerProfile.getName()).map(result -> new GameProfile(result.id(), result.name())).orElse(null);
             }
             if (profile == null) {
                 profile = ProfileEditorImpl.getGameProfileNoProperties(playerProfile);
             }
-            Property textures = profile.getProperties().containsKey("textures") ? Iterables.getFirst(profile.getProperties().get("textures"), null) : null;
-            if (textures == null || !textures.hasSignature() || profile.getName() == null || profile.getId() == null) {
-                ProfileResult actualProfile = minecraftServer.getSessionService().fetchProfile(profile.getId(), true);
-                if (actualProfile == null) {
+            Property textures = profile.properties().containsKey("textures") ? Iterables.getFirst(profile.properties().get("textures"), null) : null;
+            if (textures == null || !textures.hasSignature() || profile.name() == null || profile.id() == null) {
+                profile = minecraftServer.services().profileResolver().fetchById(profile.id()).orElse(null);
+                if (profile == null) {
                     return null;
                 }
-                profile = actualProfile.profile();
-                textures = profile.getProperties().containsKey("textures") ? Iterables.getFirst(profile.getProperties().get("textures"), null) : null;
+                textures = profile.properties().containsKey("textures") ? Iterables.getFirst(profile.properties().get("textures"), null) : null;
             }
-            return new PlayerProfile(profile.getName(), profile.getId(), textures == null ? null : textures.value(), textures == null ? null : textures.signature());
+            return new PlayerProfile(profile.name(), profile.id(), textures == null ? null : textures.value(), textures == null ? null : textures.signature());
         }
         catch (Exception e) {
             if (CoreConfiguration.debugVerbose) {
@@ -298,8 +279,8 @@ public class Handler extends NMSHandler {
     @Override
     public PlayerProfile getPlayerProfile(Player player) {
         GameProfile gameProfile = ((CraftPlayer) player).getProfile();
-        Property property = Iterables.getFirst(gameProfile.getProperties().get("textures"), null);
-        return new PlayerProfile(gameProfile.getName(), gameProfile.getId(),
+        Property property = Iterables.getFirst(gameProfile.properties().get("textures"), null);
+        return new PlayerProfile(gameProfile.name(), gameProfile.id(),
                 property != null ? property.value() : null,
                 property != null ? property.signature() : null);
     }
@@ -397,9 +378,9 @@ public class Handler extends NMSHandler {
         return CraftChatMessage.fromJSONOrNull(FormattedTextHelper.componentToJson(spigot));
     }
 
-    public static final MethodHandle TAG_VALUE_OUTPUT_CONSTRUCTOR = ReflectionHelper.getConstructor(TagValueOutput.class, ProblemReporter.class, DynamicOps.class, net.minecraft.nbt.CompoundTag.class);
+    public static final MethodHandle TAG_VALUE_OUTPUT_CONSTRUCTOR = ReflectionHelper.getConstructor(TagValueOutput.class, ProblemReporter.class, DynamicOps.class, CompoundTag.class);
 
-    public static net.minecraft.nbt.CompoundTag useValueOutput(Consumer<ValueOutput> handler) {
+    public static CompoundTag useValueOutput(Consumer<ValueOutput> handler) {
         ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
         TagValueOutput nmsValueOutput = TagValueOutput.createWithContext(nmsProblemReporter, CraftRegistry.getMinecraftRegistry());
         handler.accept(nmsValueOutput);
@@ -407,7 +388,7 @@ public class Handler extends NMSHandler {
         return nmsValueOutput.buildResult();
     }
 
-    public static net.minecraft.nbt.CompoundTag useValueOutput(net.minecraft.nbt.CompoundTag nmsExistingValue, Consumer<ValueOutput> handler) {
+    public static CompoundTag useValueOutput(CompoundTag nmsExistingValue, Consumer<ValueOutput> handler) {
         ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
         TagValueOutput nmsValueOutput;
         try {
@@ -422,7 +403,7 @@ public class Handler extends NMSHandler {
         return nmsValueOutput.buildResult();
     }
 
-    public static void useValueInput(net.minecraft.nbt.CompoundTag nmsTag, Consumer<ValueInput> handler) {
+    public static void useValueInput(CompoundTag nmsTag, Consumer<ValueInput> handler) {
         ProblemReporter.Collector nmsProblemReporter = new ProblemReporter.Collector();
         ValueInput nmsValueInput = TagValueInput.create(nmsProblemReporter, CraftRegistry.getMinecraftRegistry(), nmsTag);
         handler.accept(nmsValueInput);

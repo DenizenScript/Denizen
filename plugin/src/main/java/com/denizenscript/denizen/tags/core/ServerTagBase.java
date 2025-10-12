@@ -678,7 +678,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns a list of all known art types.
         // Generally used with <@link tag EntityTag.painting> and <@link mechanism EntityTag.painting>.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Art.html>.
+        // For the default ("vanilla") art types, see the "Resource location" column in <@link url https://minecraft.wiki/w/Painting#Canvases>.
         // -->
         registerEnumListTag("art_types", Art.class);
 
@@ -703,7 +703,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns a list of all registered attribute names.
         // Generally used with <@link tag EntityTag.has_attribute>.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>.
+        // For the default ("vanilla") attribute types, see <@link url https://minecraft.wiki/w/Attribute#Attributes>.
         // -->
         registerEnumListTag("nbt_attribute_types", org.bukkit.attribute.Attribute.class, "list_nbt_attribute_types");
 
@@ -787,10 +787,13 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns a list of all entity types known to the server.
         // Generally used with <@link objecttype EntityTag>.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html>.
+        // For the default ("vanilla") entity types, see <@link url https://minecraft.wiki/w/Java_Edition_data_values#Entities>.
         // -->
         tagProcessor.registerStaticTag(ListTag.class, "entity_types", (attribute, object) -> {
             listDeprecateWarn(attribute);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                return Utilities.registryKeys(Registry.ENTITY_TYPE);
+            }
             ListTag entityTypes = new ListTag();
             for (EntityType entityType : EntityType.values()) {
                 if (entityType != EntityType.UNKNOWN) {
@@ -852,7 +855,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns a list of all particle effect types known to the server.
         // Generally used with <@link command playeffect>.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html>.
+        // For the default ("vanilla") particle types, see <@link url https://minecraft.wiki/w/Particles_(Java_Edition)#Types_of_particles>.
         // Refer also to <@link tag server.effect_types>.
         // -->
         registerEnumListTag("particle_types", Particle.class, "list_particles");
@@ -874,7 +877,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns a list of all banner patterns known to the server.
         // Generally used with <@link tag ItemTag.patterns>.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/banner/PatternType.html>.
+        // For the default ("vanilla") pattern types, see the "Resource name" column in <@link url https://minecraft.wiki/w/Banner/Patterns>.
         // -->
         registerEnumListTag("pattern_types", PatternType.class, "list_patterns");
 
@@ -906,8 +909,8 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @attribute <server.potion_types>
         // @returns ListTag
         // @description
-        // Returns a list of all potion types known to the server.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html>.
+        // Returns a list of all potion types known to the server, including their "strong" and extended variants.
+        // For the default ("vanilla") potion types, see the table in <@link url https://minecraft.wiki/w/Potion#Item_data>.
         // Refer also to <@link tag server.potion_effect_types>.
         // -->
         registerEnumListTag("potion_types", PotionType.class, "list_potion_types");
@@ -928,7 +931,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // @description
         // Returns a list of all map cursor types known to the server.
         // Generally used with <@link command map> and <@link language Map Script Containers>.
-        // This is only their Bukkit enum names, as seen at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/map/MapCursor.Type.html>.
+        // For the default ("vanilla") map cursor types, see the "Text ID" column in <@link url https://minecraft.wiki/w/Map#Map_icons>.
         // -->
         // TODO once 1.20 is the minimum supported version, replace with direct registry-based handling
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
@@ -938,7 +941,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
             }, "list_map_cursor_types");
         }
         else {
-            registerEnumListTag("map_cursor_types", (Class<? extends Enum<?>>) (Class<?>) MapCursor.Type.class, "list_map_cursor_types");
+            registerEnumListTag("map_cursor_types", MapCursor.Type.class, "list_map_cursor_types");
         }
 
         // <--[tag]

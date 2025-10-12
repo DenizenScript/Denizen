@@ -117,7 +117,7 @@ public class AdjustBlockCommand extends AbstractCommand {
                 applyPhysicsAt(location);
             }
             else {
-                ModifyBlockCommand.setBlock(block.getLocation(), specialMaterial, false, null);
+                ModifyBlockCommand.setBlock(block.getLocation(), specialMaterial, false, null, 0);
             }
         }
     }
