@@ -1,6 +1,9 @@
 package com.denizenscript.denizen.paper.events;
 
 import com.denizenscript.denizen.events.server.ListPingScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -26,39 +29,65 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
     public ServerListPingScriptEventPaperImpl() {
         this.<ServerListPingScriptEventPaperImpl, ElementTag>registerOptionalDetermination("protocol_version", ElementTag.class, (evt, context, version) -> {
             if (version.isInt()) {
-                ((PaperServerListPingEvent) evt.event).setProtocolVersion(version.asInt());
+                evt.getEvent().setProtocolVersion(version.asInt());
                 return true;
             }
             return false;
         });
         this.<ServerListPingScriptEventPaperImpl, ElementTag>registerDetermination("version_name", ElementTag.class, (evt, context, name) -> {
-            ((PaperServerListPingEvent) evt.event).setVersion(name.toString());
+            evt.getEvent().setVersion(name.asString());
         });
         this.<ServerListPingScriptEventPaperImpl, ListTag>registerDetermination("exclude_players", ListTag.class, (evt, context, list) -> {
             HashSet<UUID> exclusions = new HashSet<>();
             for (PlayerTag player : list.filter(PlayerTag.class, context)) {
                 exclusions.add(player.getUUID());
             }
-            Iterator<Player> players = ((PaperServerListPingEvent) evt.event).iterator();
-            while (players.hasNext()) {
-                if (exclusions.contains(players.next().getUniqueId())) {
-                    players.remove();
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                Iterator<Player> players = evt.getEvent().iterator();
+                while (players.hasNext()) {
+                    if (exclusions.contains(players.next().getUniqueId())) {
+                        players.remove();
+                    }
                 }
+                return;
             }
+            ListedPlayersEditor.excludeListedPlayers(evt.getEvent(), exclusions);
         });
         this.<ServerListPingScriptEventPaperImpl, ListTag>registerOptionalDetermination("alternate_player_text", ListTag.class, (evt, context, text) -> {
             if (!CoreConfiguration.allowRestrictedActions) {
                 Debug.echoError("Cannot use 'alternate_player_text' in list ping event: 'Allow restricted actions' is disabled in Denizen config.yml.");
                 return false;
             }
-            ((PaperServerListPingEvent) evt.event).getPlayerSample().clear();
-            for (String line : text) {
-                FakeProfile lineProf = new FakeProfile();
-                lineProf.setName(line);
-                ((PaperServerListPingEvent) evt.event).getPlayerSample().add(lineProf);
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+                evt.getEvent().getPlayerSample().clear();
+                for (String line : text) {
+                    FakeProfile lineProf = new FakeProfile();
+                    lineProf.setName(line);
+                    evt.getEvent().getPlayerSample().add(lineProf);
+                }
+                return true;
             }
+            ListedPlayersEditor.setListedPlayerInfo(evt.getEvent(), text);
             return true;
         });
+    }
+
+    public PaperServerListPingEvent getEvent() {
+        return (PaperServerListPingEvent) event;
+    }
+
+    // TODO: workaround for Java trying to load ListedPlayerInfo on old versions, remove once 1.20 is the minimum supported version
+    public static class ListedPlayersEditor {
+        public static void setListedPlayerInfo(PaperServerListPingEvent event, List<String> lines) {
+            event.getListedPlayers().clear();
+            for (String line : lines) {
+                event.getListedPlayers().add(new PaperServerListPingEvent.ListedPlayerInfo(line, ProfileEditor.NIL_UUID));
+            }
+        }
+
+        public static void excludeListedPlayers(PaperServerListPingEvent event, Set<UUID> exclude) {
+            event.getListedPlayers().removeIf(listedPlayerInfo -> exclude.contains(listedPlayerInfo.id()));
+        }
     }
 
     public static class FakeProfile implements PlayerProfile {
@@ -84,7 +113,7 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
         @Override public void clearProperties() { }
         @Override public boolean isComplete() { return false; }
         @Override public @NotNull CompletableFuture<PlayerProfile> update() { return null; }
-        @Override public org.bukkit.profile.@NotNull PlayerProfile clone() { return null; }
+        @Override public com.destroystokyo.paper.profile.@NotNull PlayerProfile clone() { return null; }
         @Override public boolean completeFromCache() { return false; }
         @Override public boolean completeFromCache(boolean b) { return false; }
         @Override public boolean completeFromCache(boolean b, boolean b1) { return false; }
@@ -101,10 +130,10 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "motd" -> new ElementTag(PaperModule.stringifyComponent(event.motd()));
-            case "protocol_version" -> new ElementTag(((PaperServerListPingEvent) event).getProtocolVersion());
-            case "version_name" -> new ElementTag(((PaperServerListPingEvent) event).getVersion());
-            case "client_protocol_version" -> new ElementTag(((PaperServerListPingEvent) event).getClient().getProtocolVersion());
+            case "motd" -> new ElementTag(PaperModule.stringifyComponent(event.motd()), true);
+            case "protocol_version" -> new ElementTag(getEvent().getProtocolVersion());
+            case "version_name" -> new ElementTag(getEvent().getVersion(), true);
+            case "client_protocol_version" -> new ElementTag(getEvent().getClient().getProtocolVersion());
             default -> super.getContext(name);
         };
     }

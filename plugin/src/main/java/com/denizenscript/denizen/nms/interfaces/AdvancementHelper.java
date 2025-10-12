@@ -21,6 +21,10 @@ public abstract class AdvancementHelper {
 
     public abstract void grant(Advancement advancement, Player player);
 
+    public void revokePartial(Advancement advancement, Player player, int len) {
+        throw new UnsupportedOperationException();
+    }
+
     public abstract void revoke(Advancement advancement, Player player);
 
     public abstract void update(Player player);

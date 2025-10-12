@@ -2,7 +2,6 @@ package com.denizenscript.denizen.objects.properties.item;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -12,12 +11,14 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
+import net.kyori.adventure.nbt.*;
 import org.bukkit.Material;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -104,8 +105,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
     }
 
     public MapTag getFullNBTMap() {
-        CompoundTag compoundTag = NMSHandler.itemHelper.getNbtData(getItemStack());
-        return (MapTag) jnbtTagToObject(compoundTag);
+        return (MapTag) nbtTagToObject(NMSHandler.itemHelper.getNbtData(getItemStack()));
     }
 
     // <--[language]
@@ -133,13 +133,31 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
     //
     // -->
 
-    public static Tag convertObjectToNbt(String object, TagContext context, String path) {
-        if (object.startsWith("map@")) {
-            MapTag map = MapTag.valueOf(object, context);
-            Map<String, Tag> result = new LinkedHashMap<>();
+    public static final BinaryTagType<?>[] BY_ID;
+    public static final boolean HAS_NBT_LIST_TYPES = NMSHandler.getVersion().isAtMost(NMSVersion.v1_20);
+    public static final TagStringIO SNBT_PARSER = TagStringIO.builder().emitHeterogeneousLists(HAS_NBT_LIST_TYPES).acceptHeterogeneousLists(!HAS_NBT_LIST_TYPES).build();
+
+    static {
+        // TODO: adventure-nbt: get type by id
+        List<BinaryTagType<?>> allTypes = ReflectionHelper.getFieldValue(BinaryTagType.class, "TYPES", null);
+        BY_ID = new BinaryTagType[allTypes.size()];
+        for (BinaryTagType<?> type : allTypes) {
+            BY_ID[type.id()] = type;
+        }
+    }
+
+    public static CompoundBinaryTag compoundOrEmpty(CompoundBinaryTag compoundTag) {
+        return compoundTag != null ? compoundTag : CompoundBinaryTag.empty();
+    }
+
+    public static BinaryTag convertObjectToNbt(ObjectTag inputObject, TagContext context, String path) {
+        if (inputObject.canBeType(MapTag.class)) {
+            MapTag map = inputObject.asType(MapTag.class, context);
+            // TODO: adventure-nbt: builders initial size
+            Map<String, BinaryTag> result = new HashMap<>(map.size());
             for (Map.Entry<StringHolder, ObjectTag> entry : map.entrySet()) {
                 try {
-                    result.put(entry.getKey().str, convertObjectToNbt(entry.getValue().toString(), context, path + "." + entry.getKey().str));
+                    result.put(entry.getKey().str, convertObjectToNbt(entry.getValue(), context, path + "." + entry.getKey().str));
                 }
                 catch (Exception ex) {
                     Debug.echoError("Object NBT interpretation failed for key '" + path + "." + entry.getKey().str + "'.");
@@ -147,132 +165,164 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
                     return null;
                 }
             }
-            return NMSHandler.instance.createCompoundTag(result);
+            return CompoundBinaryTag.from(result);
         }
-        else if (object.startsWith("list:")) {
-            int nextColonIndex = object.indexOf(':', "list:".length() + 1);
-            int typeCode = Integer.parseInt(object.substring("list:".length(), nextColonIndex));
-            String listValue = object.substring(nextColonIndex + 1);
-            List<Tag> result = new ArrayList<>();
-            ListTag listTag = ListTag.valueOf(listValue, context);
-            for (int i = 0; i < listTag.size(); i++) {
+        else if (!HAS_NBT_LIST_TYPES && inputObject.shouldBeType(ListTag.class)) {
+            ListTag list = inputObject.asType(ListTag.class, context);
+            // TODO: adventure-nbt: builders initial size
+            List<BinaryTag> result = new ArrayList<>(list.size());
+            for (int i = 0; i < list.size(); i++) {
                 try {
-                    result.add(convertObjectToNbt(listTag.get(i), context, path + "[" + i + "]"));
+                    result.add(convertObjectToNbt(list.getObject(i), context, path + '[' + i + ']'));
                 }
                 catch (Exception ex) {
-                    Debug.echoError("Object NBT interpretation failed for list key '" + path + "' at index " + i + ".");
+                    Debug.echoError("Object NBT interpretation failed for list key '" + path + "' at index " + i + '.');
                     Debug.echoError(ex);
                     return null;
                 }
             }
-            return new JNBTListTag(NBTUtils.getTypeClass(typeCode), result);
+            return ListBinaryTag.listBinaryTag(BinaryTagTypes.LIST_WILDCARD, result);
         }
-        else if (object.startsWith("byte_array:")) {
-            ListTag numberStrings = ListTag.valueOf(object.substring("byte_array:".length()), context);
-            byte[] result = new byte[numberStrings.size()];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = Byte.parseByte(numberStrings.get(i));
-            }
-            return new ByteArrayTag(result);
+        String input = inputObject.identify();
+        if (input.equals("end")) {
+            return EndBinaryTag.endBinaryTag();
         }
-        else if (object.startsWith("int_array:")) {
-            ListTag numberStrings = ListTag.valueOf(object.substring("int_array:".length()), context);
-            int[] result = new int[numberStrings.size()];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = Integer.parseInt(numberStrings.get(i));
-            }
-            return new IntArrayTag(result);
-        }
-        else if (object.startsWith("byte:")) {
-            return new ByteTag(Byte.parseByte(object.substring("byte:".length())));
-        }
-        else if (object.startsWith("short:")) {
-            return new ShortTag(Short.parseShort(object.substring("short:".length())));
-        }
-        else if (object.startsWith("int:")) {
-            return new IntTag(Integer.parseInt(object.substring("int:".length())));
-        }
-        else if (object.startsWith("long:")) {
-            return new LongTag(Long.parseLong(object.substring("long:".length())));
-        }
-        else if (object.startsWith("float:")) {
-            return new FloatTag(Float.parseFloat(object.substring("float:".length())));
-        }
-        else if (object.startsWith("double:")) {
-            return new DoubleTag(Double.parseDouble(object.substring("double:".length())));
-        }
-        else if (object.startsWith("string:")) {
-            return new StringTag(object.substring("string:".length()));
-        }
-        else if (object.equals("end")) {
-            return new EndTag();
-        }
-        else {
-            if (context == null || context.showErrors()) {
-                Debug.echoError("Unknown raw NBT value: " + object);
-            }
+        int colonIndex = input.indexOf(':');
+        if (colonIndex == -1) {
+            Debug.echoError("Object NBT interpretation failed for key '" + path + "': missing object type.");
             return null;
         }
+        String type = input.substring(0, colonIndex), value = input.substring(colonIndex + 1);
+        return switch (type) {
+            case "list" -> {
+                int nextColonIndex = value.indexOf(':');
+                int typeCode = Integer.parseInt(value.substring(0, nextColonIndex));
+                String listValue = value.substring(nextColonIndex + 1);
+                List<BinaryTag> result = new ArrayList<>();
+                ListTag listTag = ListTag.valueOf(listValue, context);
+                for (int i = 0; i < listTag.size(); i++) {
+                    try {
+                        result.add(convertObjectToNbt(listTag.getObject(i), context, path + '[' + i + ']'));
+                    }
+                    catch (Exception ex) {
+                        Debug.echoError("Object NBT interpretation failed for list key '" + path + "' at index " + i + '.');
+                        Debug.echoError(ex);
+                        yield null;
+                    }
+                }
+                yield ListBinaryTag.listBinaryTag(BY_ID[typeCode], result);
+            }
+            case "byte_array" -> {
+                ListTag numberStrings = ListTag.valueOf(value, context);
+                byte[] result = new byte[numberStrings.size()];
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = Byte.parseByte(numberStrings.get(i));
+                }
+                yield ByteArrayBinaryTag.byteArrayBinaryTag(result);
+            }
+            case "int_array" -> {
+                ListTag numberStrings = ListTag.valueOf(value, context);
+                int[] result = new int[numberStrings.size()];
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = Integer.parseInt(numberStrings.get(i));
+                }
+                yield IntArrayBinaryTag.intArrayBinaryTag(result);
+            }
+            case "long_array" -> {
+                ListTag numberStrings = ListTag.valueOf(value, context);
+                long[] result = new long[numberStrings.size()];
+                for (int i = 0; i < result.length; i++) {
+                    result[i] = Long.parseLong(numberStrings.get(i));
+                }
+                yield LongArrayBinaryTag.longArrayBinaryTag(result);
+            }
+            case "byte" -> ByteBinaryTag.byteBinaryTag(Byte.parseByte(value));
+            case "short" -> ShortBinaryTag.shortBinaryTag(Short.parseShort(value));
+            case "int" -> IntBinaryTag.intBinaryTag(Integer.parseInt(value));
+            case "long" -> LongBinaryTag.longBinaryTag(Long.parseLong(value));
+            case "float" -> FloatBinaryTag.floatBinaryTag(Float.parseFloat(value));
+            case "double" -> DoubleBinaryTag.doubleBinaryTag(Double.parseDouble(value));
+            case "string" -> StringBinaryTag.stringBinaryTag(value);
+            default -> {
+                if (context == null || context.showErrors()) {
+                    Debug.echoError("Unknown raw NBT value: " + inputObject);
+                }
+                yield null;
+            }
+        };
     }
 
-    public static ObjectTag jnbtTagToObject(Tag tag) {
-        if (tag instanceof CompoundTag) {
+    public static ObjectTag nbtTagToObject(BinaryTag tag) {
+        return nbtTagToObject(tag, false);
+    }
+
+    public static ObjectTag nbtTagToObject(BinaryTag tag, boolean unwrapLists) {
+        if (tag instanceof CompoundBinaryTag compoundTag) {
             MapTag result = new MapTag();
-            for (Map.Entry<String, Tag> entry : ((CompoundTag) tag).getValue().entrySet()) {
-                result.putObject(entry.getKey(), jnbtTagToObject(entry.getValue()));
+            for (Map.Entry<String, ? extends BinaryTag> entry : compoundTag) {
+                result.putObject(entry.getKey(), nbtTagToObject(entry.getValue(), unwrapLists));
             }
             return result;
         }
-        else if (tag instanceof JNBTListTag) {
-            ListTag result = new ListTag();
-            for (Tag entry : ((JNBTListTag) tag).getValue()) {
-                result.addObject(jnbtTagToObject(entry));
+        else if (tag instanceof ListBinaryTag listTag) {
+            if (!HAS_NBT_LIST_TYPES && unwrapLists) {
+                listTag = listTag.unwrapHeterogeneity();
             }
-            return new ElementTag("list:" + NBTUtils.getTypeCode(((JNBTListTag) tag).getType()) + ":" + result.identify());
+            ListTag result = new ListTag(listTag.size());
+            for (BinaryTag entry : listTag) {
+                result.addObject(nbtTagToObject(entry, unwrapLists));
+            }
+            return HAS_NBT_LIST_TYPES ? new ElementTag("list:" + listTag.elementType().id() + ':' + result.identify()) : result;
         }
-        else if (tag instanceof ByteArrayTag) {
-            byte[] data = ((ByteArrayTag) tag).getValue();
+        else if (tag instanceof ByteArrayBinaryTag byteArrayTag) {
+            byte[] data = byteArrayTag.value();
             StringBuilder output = new StringBuilder(data.length * 4);
-            for (int i = 0; i < data.length; i++) {
-                output.append(data[i]).append("|");
+            for (byte value : data) {
+                output.append(value).append('|');
             }
             return new ElementTag("byte_array:" + output);
         }
-        else if (tag instanceof IntArrayTag) {
-            int[] data = ((IntArrayTag) tag).getValue();
+        else if (tag instanceof IntArrayBinaryTag intArrayTag) {
+            int[] data = intArrayTag.value();
             StringBuilder output = new StringBuilder(data.length * 4);
-            for (int i = 0; i < data.length; i++) {
-                output.append(data[i]).append("|");
+            for (int value : data) {
+                output.append(value).append('|');
             }
             return new ElementTag("int_array:" + output);
         }
-        else if (tag instanceof ByteTag) {
-            return new ElementTag("byte:" + ((ByteTag) tag).getValue());
+        else if (tag instanceof LongArrayBinaryTag longArrayTag) {
+            long[] data = longArrayTag.value();
+            StringBuilder output = new StringBuilder(data.length * 4);
+            for (long value : data) {
+                output.append(value).append('|');
+            }
+            return new ElementTag("long_array:" + output);
         }
-        else if (tag instanceof ShortTag) {
-            return new ElementTag("short:" + ((ShortTag) tag).getValue());
+        else if (tag instanceof ByteBinaryTag byteTag) {
+            return new ElementTag("byte:" + byteTag.value());
         }
-        else if (tag instanceof IntTag) {
-            return new ElementTag("int:" + ((IntTag) tag).getValue());
+        else if (tag instanceof ShortBinaryTag shortTag) {
+            return new ElementTag("short:" + shortTag.value());
         }
-        else if (tag instanceof LongTag) {
-            return new ElementTag("long:" + ((LongTag) tag).getValue());
+        else if (tag instanceof IntBinaryTag intTag) {
+            return new ElementTag("int:" + intTag.value());
         }
-        else if (tag instanceof FloatTag) {
-            return new ElementTag("float:" + ((FloatTag) tag).getValue());
+        else if (tag instanceof LongBinaryTag longTag) {
+            return new ElementTag("long:" + longTag.value());
         }
-        else if (tag instanceof DoubleTag) {
-            return new ElementTag("double:" + ((DoubleTag) tag).getValue());
+        else if (tag instanceof FloatBinaryTag floatTag) {
+            return new ElementTag("float:" + floatTag.value());
         }
-        else if (tag instanceof StringTag) {
-            return new ElementTag("string:" + ((StringTag) tag).getValue());
+        else if (tag instanceof DoubleBinaryTag doubleTag) {
+            return new ElementTag("double:" + doubleTag.value());
         }
-        else if (tag instanceof EndTag) {
+        else if (tag instanceof StringBinaryTag stringTag) {
+            return new ElementTag("string:" + stringTag.value());
+        }
+        else  if (tag instanceof EndBinaryTag) {
             return new ElementTag("end");
         }
-        else {
-            return new ElementTag("unknown:" + tag.getValue());
-        }
+        throw new IllegalStateException("Unrecognized API tag of type '" + tag.type() + "': " + tag);
     }
 
     @Override
@@ -291,9 +341,9 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
             return;
         }
         BukkitImplDeprecations.oldNbtProperty.warn(mechanism.context);
-        CompoundTag oldNbtData;
+        CompoundBinaryTag oldNbtData;
         try {
-            oldNbtData = (CompoundTag) ItemRawNBT.convertObjectToNbt(value.identify(), mechanism.context, "(item)");
+            oldNbtData = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(value, mechanism.context, "(item)");
         }
         catch (Exception ex) {
             mechanism.echoError("Invalid NBT data specified:");
@@ -365,13 +415,14 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
     }
 
     public void setFullNBT(ItemTag item, MapTag input, TagContext context, boolean retainOld) {
-        CompoundTag compoundTag = retainOld ? NMSHandler.itemHelper.getNbtData(item.getItemStack()) : null;
-        Map<String, Tag> result = compoundTag == null ? new LinkedHashMap<>() : new LinkedHashMap<>(compoundTag.getValue());
+        CompoundBinaryTag currentTag = retainOld ? NMSHandler.itemHelper.getNbtData(item.getItemStack()) : null;
+        // TODO: adventure-nbt: compound to builder
+        CompoundBinaryTag.Builder compoundTagBuilder = currentTag != null ? CompoundBinaryTag.builder().put(currentTag) : CompoundBinaryTag.builder();
         for (Map.Entry<StringHolder, ObjectTag> entry : input.entrySet()) {
             try {
-                Tag tag = convertObjectToNbt(entry.getValue().toString(), context, "(item).");
+                BinaryTag tag = convertObjectToNbt(entry.getValue(), context, "(item).");
                 if (tag != null) {
-                    result.put(entry.getKey().str, tag);
+                    compoundTagBuilder.put(entry.getKey().str, tag);
                 }
             }
             catch (Exception ex) {
@@ -380,7 +431,6 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
                 return;
             }
         }
-        compoundTag = NMSHandler.instance.createCompoundTag(result);
-        item.setItemStack(NMSHandler.itemHelper.setNbtData(item.getItemStack(), compoundTag));
+        item.setItemStack(NMSHandler.itemHelper.setNbtData(item.getItemStack(), compoundTagBuilder.build()));
     }
 }

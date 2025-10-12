@@ -8,38 +8,42 @@ public class ReflectionMappingsInfo {
     public static String BlockBehaviour_explosionResistance = "G";
 
     // net.minecraft.core.MappedRegistry
-    public static String MappedRegistry_frozen = "l";
-    public static String MappedRegistry_unregisteredIntrusiveHolders = "m";
+    public static String MappedRegistry_registrationInfos = "h";
 
     // net.minecraft.world.entity.Entity
-    public static String Entity_onGround = "bb";
-    public static String Entity_DATA_SHARED_FLAGS_ID = "az";
-    public static String Entity_DATA_CUSTOM_NAME = "bl";
-    public static String Entity_DATA_CUSTOM_NAME_VISIBLE = "bm";
+    public static String Entity_onGround = "bc";
+    public static String Entity_DATA_SHARED_FLAGS_ID = "aA";
+    public static String Entity_DATA_CUSTOM_NAME = "bm";
+    public static String Entity_DATA_CUSTOM_NAME_VISIBLE = "bn";
 
     // net.minecraft.world.entity.LivingEntity
-    public static String LivingEntity_attackStrengthTicker = "bo";
-    public static String LivingEntity_autoSpinAttackTicks = "bL";
+    public static String LivingEntity_attackStrengthTicker = "by";
+    public static String LivingEntity_autoSpinAttackTicks = "bV";
     public static String LivingEntity_setLivingEntityFlag_method = "c";
 
     // net.minecraft.world.entity.player.Player
-    public static String Player_DATA_PLAYER_ABSORPTION_ID = "d";
-    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "cg";
+    public static String Player_DATA_PLAYER_ABSORPTION_ID = "b";
 
     // net.minecraft.server.level.ServerPlayer
-    public static String ServerPlayer_respawnConfig = "dA";
+    public static String ServerPlayer_respawnConfig = "dq";
 
     // net.minecraft.world.entity.monster.EnderMan
-    public static String EnderMan_DATA_CREEPY = "cl";
+    public static String EnderMan_DATA_CREEPY = "cu";
 
     // net.minecraft.world.entity.monster.Zombie
-    public static String Zombie_inWaterTime = "cA";
+    public static String Zombie_inWaterTime = "cJ";
 
     // net.minecraft.world.item.Item
     public static String Item_components = "c";
 
+    // net.minecraft.world.item.component.ResolvableProfile
+    public static String ResolvableProfile_unpack_method = "a";
+
+    // net.minecraft.world.item.component.ResolvableProfile$Partial
+    public static String ResolvableProfilePartial_id = "d";
+
     // net.minecraft.world.level.Level
-    public static String Level_isClientSide = "C";
+    public static String Level_isClientSide = "E";
 
     // net.minecraft.server.level.ThreadedLevelLightEngine
     public static String ThreadedLevelLightEngine_addTask_method = "a";
@@ -119,7 +123,7 @@ public class ReflectionMappingsInfo {
     public static String HolderReference_bindTags_method = "a";
 
     // net.minecraft.server.level.ServerLevel
-    public static String ServerLevel_sleepStatus = "R";
+    public static String ServerLevel_sleepStatus = "O";
 
     // net.minecraft.world.item.AdventureModePredicate
     public static String AdventureModePredicate_predicates = "g";

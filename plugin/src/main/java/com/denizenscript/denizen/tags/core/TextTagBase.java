@@ -3,6 +3,7 @@ package com.denizenscript.denizen.tags.core;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitElementExtensions;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizen.utilities.HoverFormatHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -11,6 +12,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.ChatColor;
 
 public class TextTagBase {
@@ -39,11 +41,7 @@ public class TextTagBase {
         // For example: - narrate "There is a <&hover[you found it!]>secret<&end_hover> in this message!"
         // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
         // -->
-        TagManager.registerTagHandler(ElementTag.class, "&hover", (attribute) -> { // Cannot be static due to hacked sub-tag
-              if (!attribute.hasParam()) {
-                  return null;
-              }
-              String hoverText = attribute.getParam();
+        TagManager.registerTagHandler(ElementTag.class, ObjectTag.class, "&hover", (attribute, hover) -> { // Cannot be static due to hacked sub-tag
 
               // <--[tag]
               // @attribute <&hover[<hover_text>].type[<type>]>
@@ -51,17 +49,25 @@ public class TextTagBase {
               // @description
               // Returns a special chat code that makes the following text display the input hover text when the mouse is left over it.
               // This tag must be followed by an <&end_hover> tag.
-              // Available hover types: SHOW_TEXT, SHOW_ACHIEVEMENT, SHOW_ITEM, or SHOW_ENTITY.
+              // Available hover types: SHOW_TEXT, SHOW_ITEM, or SHOW_ENTITY.
               // For example: - narrate "There is a <&hover[you found it!].type[SHOW_TEXT]>secret<&end_hover> in this message!"
               // Note: for "SHOW_ITEM", replace the text with a valid ItemTag. For "SHOW_ENTITY", replace the text with a valid spawned EntityTag (requires F3+H to see entities).
               // Note that this is a magic Denizen tool - refer to <@link language Denizen Text Formatting>.
               // -->
-              String type = "SHOW_TEXT";
+              HoverEvent.Action type = HoverEvent.Action.SHOW_TEXT;
               if (attribute.startsWith("type", 2)) {
-                  type = attribute.getContext(2);
                   attribute.fulfill(1);
+                  type = ElementTag.asEnum(HoverEvent.Action.class, attribute.getParam());
+                  if (type == null) {
+                      attribute.echoError("Invalid hover type specified.");
+                      return null;
+                  }
               }
-              return new ElementTag(ChatColor.COLOR_CHAR + "[hover=" + type + ";" + FormattedTextHelper.escape(hoverText) + "]");
+              String hoverData = HoverFormatHelper.parseObjectToHover(hover, type, attribute);
+              if (hoverData == null) {
+                  return null;
+              }
+              return new ElementTag(ChatColor.COLOR_CHAR + "[hover=" + type + ';' + FormattedTextHelper.escape(hoverData) + ']', true);
           });
 
         // <--[tag]

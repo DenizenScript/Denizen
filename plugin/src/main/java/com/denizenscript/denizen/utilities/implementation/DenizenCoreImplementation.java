@@ -1,24 +1,25 @@
 package com.denizenscript.denizen.utilities.implementation;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.events.bukkit.ScriptReloadEvent;
-import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.*;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.debugging.DebugConsoleSender;
-import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
-import com.denizenscript.denizencore.objects.core.VectorObject;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.maps.DenizenMapManager;
 import com.denizenscript.denizencore.DenizenImplementation;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.VectorObject;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
@@ -28,6 +29,8 @@ import com.denizenscript.denizencore.scripts.queues.ScriptQueue;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.DefinitionProvider;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.debugging.StrongWarning;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -277,6 +280,37 @@ public class DenizenCoreImplementation implements DenizenImplementation {
         return Denizen.getInstance().getDataFolder();
     }
 
+    // <--[extension]
+    // @name Flag System Extension
+    // @target_type language
+    // @target_name Flag System
+    // @description
+    // ItemTags, rather than using the flag command, are primarily flagged via <@link command inventory> with the 'flag' argument, or via <@link tag ItemTag.with_flag>, or via the item script container.
+    //
+    // Additionally, flags be searched for with tags like <@link tag server.online_players_flagged>, <@link tag server.players_flagged>, <@link tag server.spawned_npcs_flagged>, <@link tag server.npcs_flagged>, ...
+    // Flags can also be required by script event lines, as explained at <@link language Script Event Switches>.
+    // Item flags can also be used as a requirement in <@link command take>.
+    //
+    // Note that some internal flags exist, and are prefixed with '__' to avoid conflict with normal user flags.
+    // This includes:
+    // - '__raw' and '__clear' which are part of a fake-flag system used for forcibly setting raw data to a flaggable object,
+    // - '__scripts', '__time', etc. which is where some object-type flags are stored inside of server flags,
+    // - '__interact_step' which is used for interact script steps, related to <@link command zap>,
+    // - '__interact_cooldown' which is used for interact script cooldowns, related to <@link command cooldown>.
+    //
+    // -->
+
+    // <--[extension]
+    // @name Flag Command Extension
+    // @target_type command
+    // @target_name Flag
+    // @Tags
+    // <server.online_players_flagged[<flag_name>]>
+    // <server.players_flagged[<flag_name>]>
+    // <server.spawned_npcs_flagged[<flag_name>]>
+    // <server.npcs_flagged[<flag_name>]>
+    // -->
+
     @Override
     public FlaggableObject simpleWordToFlaggable(String word, ScriptEntry entry) {
         if (CoreUtilities.equalsIgnoreCase(word, "player")) {
@@ -392,6 +426,30 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     @Override
     public void doFinalDebugOutput(String rawText) {
         DebugConsoleSender.sendMessage(rawText);
+    }
+
+    // <--[extension]
+    // @name Format Script Definitions
+    // @target_type language
+    // @target_name Format Script Containers
+    // @description
+    // '<[name]>' is available as a special def as well for use with the 'on player chats' event to fill the player's name properly.
+    // Note that 'special' means special: these tags behave a little funny in certain circumstances.
+    // In particular, these can't be used as real tags in some cases, including for example when determining a format script in the 'player chats' event.
+    // -->
+    @Override
+    public void addFormatScriptDefinitions(DefinitionProvider definitionProvider, TagContext context) {
+        BukkitTagContext bukkitContext = (BukkitTagContext) context;
+        String name = null;
+        if (bukkitContext.npc != null) {
+            name = bukkitContext.npc.getName();
+        }
+        else if (bukkitContext.player != null) {
+            name = bukkitContext.player.getName();
+        }
+        if (name != null) {
+            definitionProvider.addDefinition("name", name);
+        }
     }
 
     @Override
