@@ -152,10 +152,10 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         else if (isFarmland()) {
             return getFarmland().getMoisture();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
+        else if (isBrushable()) {
             return ((Brushable) getBlockData()).getDusted();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && isDriedGhast()) {
+        else if (isDriedGhast()) {
             return ((DriedGhast) getBlockData()).getHydration();
         }
         return getLevelled().getLevel();
@@ -174,10 +174,10 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         else if (isFarmland()) {
             return getFarmland().getMaximumMoisture();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
+        else if (isBrushable()) {
             return ((Brushable) getBlockData()).getMaximumDusted();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && isDriedGhast()) {
+        else if (isDriedGhast()) {
             return ((DriedGhast) getBlockData()).getMaximumHydration();
         }
         return getLevelled().getMaximumLevel();
@@ -207,11 +207,11 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
             getFarmland().setMoisture(level);
             return;
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
+        else if (isBrushable()) {
             ((Brushable) getBlockData()).setDusted(level);
             return;
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && isDriedGhast()) {
+        else if (isDriedGhast()) {
             ((DriedGhast) getBlockData()).setHydration(level);
             return;
         }
