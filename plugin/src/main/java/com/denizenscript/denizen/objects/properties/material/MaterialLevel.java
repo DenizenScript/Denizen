@@ -9,10 +9,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Brushable;
 import org.bukkit.block.data.Levelled;
-import org.bukkit.block.data.type.Beehive;
-import org.bukkit.block.data.type.Cake;
-import org.bukkit.block.data.type.Farmland;
-import org.bukkit.block.data.type.Snow;
+import org.bukkit.block.data.type.*;
 
 public class MaterialLevel extends MaterialProperty<ElementTag> {
 
@@ -32,6 +29,7 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
     // For farmland, this is the moisture level.
     // For composters, this is the amount of compost.
     // For brushable blocks (also referred to as "suspicious blocks"), this is the level of dusting. 1.20+ only.
+    // For dried ghasts, this is the level of hydration. 1.21+ only.
     // See also <@link tag MaterialTag.maximum_level> and <@link tag MaterialTag.minimum_level>.
     // -->
 
@@ -42,7 +40,8 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
                 || data instanceof Snow 
                 || data instanceof Farmland 
                 || data instanceof Beehive 
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && data instanceof Brushable);
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && data instanceof Brushable)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && data instanceof DriedGhast);
     }
 
     @Override
@@ -136,6 +135,10 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && getBlockData() instanceof Brushable;
     }
 
+    public boolean isDriedGhast() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof DriedGhast;
+    }
+
     public int getCurrent() {
         if (isCake()) {
             return getCake().getBites();
@@ -151,6 +154,9 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
             return ((Brushable) getBlockData()).getDusted();
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && isDriedGhast()) {
+            return ((DriedGhast) getBlockData()).getHydration();
         }
         return getLevelled().getLevel();
     }
@@ -170,6 +176,9 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
             return ((Brushable) getBlockData()).getMaximumDusted();
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && isDriedGhast()) {
+            return ((DriedGhast) getBlockData()).getMaximumHydration();
         }
         return getLevelled().getMaximumLevel();
     }
@@ -200,6 +209,10 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
             ((Brushable) getBlockData()).setDusted(level);
+            return;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && isDriedGhast()) {
+            ((DriedGhast) getBlockData()).setHydration(level);
             return;
         }
         getLevelled().setLevel(level);
