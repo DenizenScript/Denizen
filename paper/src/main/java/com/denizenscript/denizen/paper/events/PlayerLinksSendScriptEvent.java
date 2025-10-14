@@ -26,11 +26,11 @@ public class PlayerLinksSendScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Determine
     // "LINKS:<ListTag(MapTag)>" to set the links sent to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
-    // "ADD_LINKS:<ListTag(MapTag)>" to add the links sent to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
+    // "ADD_LINKS:<ListTag(MapTag)>" to add to the links sent to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
     //
     // @Player Always.
     //
-    // @Warning this may fire early in the player login process and thus the linked player is essentially an offline player
+    // @Warning this may fire early in the player login process, during which the linked player is essentially an offline player
     //
     // -->
 
@@ -39,7 +39,7 @@ public class PlayerLinksSendScriptEvent extends BukkitScriptEvent implements Lis
 
     public PlayerLinksSendScriptEvent() {
         registerCouldMatcher("player receives links");
-        this.<PlayerLinksSendScriptEvent, ListTag>registerDetermination("set_links", ListTag.class, (evt, context, value) -> {
+        this.<PlayerLinksSendScriptEvent, ListTag>registerDetermination("links", ListTag.class, (evt, context, value) -> {
             Utilities.replaceServerLinks(evt.event.getLinks(), value, context);
         });
         this.<PlayerLinksSendScriptEvent, ListTag>registerDetermination("add_links", ListTag.class, (evt, context, value) -> {

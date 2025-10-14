@@ -693,7 +693,7 @@ public class Utilities {
                 serverLinks.addLink(type, uri);
             }
             else {
-                Debug.echoError("Invalid server links map '" + map + "': must have either 'display' or 'type' key!");
+                Debug.echoError("Invalid server links map '" + map + "': must have either a 'display' or 'type' key!");
             }
         }
         return serverLinks;

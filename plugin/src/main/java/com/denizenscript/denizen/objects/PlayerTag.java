@@ -2687,7 +2687,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @name set_links
             // @input ListTag(MapTag)
             // @description
-            // Sends list of server links to the player. This will override existing links player has.
+            // Sends the specified list of server links to the player. This will override existing links player has.
             // Each item in the list must be a MapTag in <@link language Server Links Format>.
             // -->
             registerOnlineOnlyMechanism("set_links", ListTag.class, (player, mechanism, input) -> {
@@ -2699,7 +2699,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @name add_links
             // @input ListTag(MapTag)
             // @description
-            // Adds list of server links to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
+            // Adds the specified list of server links to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
             // -->
             registerOnlineOnlyMechanism("add_links", ListTag.class, (player, mechanism, input) -> {
                 player.getPlayerEntity().sendLinks(Utilities.fillServerLinks(Bukkit.getServerLinks().copy(), input, mechanism.context));
