@@ -3,15 +3,13 @@ package com.denizenscript.denizen.objects.properties.entity;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import org.bukkit.entity.Chicken;
-import org.bukkit.entity.Cow;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Wolf;
+import org.bukkit.entity.*;
 
 import java.lang.invoke.MethodHandle;
 
@@ -37,8 +35,9 @@ public class EntityVariant extends EntityProperty<ElementTag> {
     // @name variant
     // @input ElementTag
     // @description
-    // Controls which variant a chicken, cow, pig, or wolf is.
+    // Controls which variant a chicken, copper golem, cow, pig, or wolf is.
     // A list of valid chicken variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Chicken.Variant.html>.
+    // A list of valid copper golem variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/CopperGolem.CopperWeatherState.html>.
     // A list of valid cow variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Cow.Variant.html>.
     // A list of valid pig variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Pig.Variant.html>.
     // A list of valid wolf variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Wolf.Variant.html>.
@@ -47,6 +46,7 @@ public class EntityVariant extends EntityProperty<ElementTag> {
     public static boolean describes(EntityTag entity) {
         return entity.getBukkitEntity() instanceof Wolf
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity.getBukkitEntity() instanceof Chicken)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity.getBukkitEntity() instanceof CopperGolem)
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity.getBukkitEntity() instanceof Cow)
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity.getBukkitEntity() instanceof Pig);
     }
@@ -58,6 +58,9 @@ public class EntityVariant extends EntityProperty<ElementTag> {
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Chicken chicken) {
             return new ElementTag(Utilities.namespacedKeyToString(chicken.getVariant().getKey()), true);
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof CopperGolem copperGolem) {
+            return new ElementTag(PaperAPITools.instance.getCopperGolemState(copperGolem));
         }
         else if (COW_GET_VARIANT != null && getEntity() instanceof Cow cow) {
             try {
@@ -87,6 +90,9 @@ public class EntityVariant extends EntityProperty<ElementTag> {
             if (chickenVariant != null) {
                 chicken.setVariant(chickenVariant);
             }
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof CopperGolem copperGolem) {
+            PaperAPITools.instance.setCopperGolemState(variant, mechanism, copperGolem);
         }
         else if (COW_SET_VARIANT != null && getEntity() instanceof Cow cow) {
             Cow.Variant cowVariant = Utilities.elementToRequiredEnumLike(variant, Cow.Variant.class, mechanism);

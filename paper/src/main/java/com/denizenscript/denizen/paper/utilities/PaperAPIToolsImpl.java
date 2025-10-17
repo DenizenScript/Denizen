@@ -10,7 +10,9 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -20,6 +22,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.potion.PotionMix;
+import io.papermc.paper.world.WeatheringCopperState;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
@@ -27,10 +30,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -408,5 +408,18 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             return;
         }
         BlockTagsSetter.INSTANCE.setTags(type, tags);
+    }
+
+    @Override
+    public String getCopperGolemState(CopperGolem copperGolem) {
+        return copperGolem.getWeatheringState().name();
+    }
+
+    @Override
+    public void setCopperGolemState(ElementTag variant, Mechanism mechanism, CopperGolem copperGolem) {
+        WeatheringCopperState state = Utilities.elementToRequiredEnumLike(variant, WeatheringCopperState.class, mechanism);
+        if (state != null) {
+            copperGolem.setWeatheringState(state);
+        }
     }
 }

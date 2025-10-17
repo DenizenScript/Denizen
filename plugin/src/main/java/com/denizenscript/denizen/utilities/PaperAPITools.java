@@ -5,16 +5,15 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
+import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -232,5 +231,16 @@ public class PaperAPITools {
 
     public void setMaterialTags(Material type, Set<NamespacedKey> tags) {
         NMSHandler.blockHelper.setVanillaTags(type, tags);
+    }
+
+    public String getCopperGolemState(CopperGolem copperGolem) {
+        return copperGolem.getWeatherState().name();
+    }
+
+    public void setCopperGolemState(ElementTag variant, Mechanism mechanism, CopperGolem copperGolem) {
+        CopperGolem.CopperWeatherState copperGolemVariant = Utilities.elementToRequiredEnumLike(variant, CopperGolem.CopperWeatherState.class, mechanism);
+        if (copperGolemVariant != null) {
+            copperGolem.setWeatherState(copperGolemVariant);
+        }
     }
 }
