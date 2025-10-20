@@ -233,4 +233,8 @@ public class PaperAPITools {
     public void setMaterialTags(Material type, Set<NamespacedKey> tags) {
         NMSHandler.blockHelper.setVanillaTags(type, tags);
     }
+
+    public double[] getRecentTps() {
+        return NMSHandler.instance.getRecentTps();
+    }
 }
