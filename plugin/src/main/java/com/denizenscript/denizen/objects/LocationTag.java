@@ -40,6 +40,7 @@ import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.type.CreakingHeart;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.block.structure.UsageMode;
@@ -4506,6 +4507,48 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                     return null;
                 }
                 return new ElementTag(chiseledBookshelf.getSlot(input.toVector()) + 1);
+            });
+        }
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+
+            // <--[tag]
+            // @attribute <LocationTag.heart_state>
+            // @returns ElementTag
+            // @mechanism LocationTag.heart_state
+            // @group world
+            // @description
+            // Returns the state of a creaking heart.
+            // Valid values are "AWAKE", "DORMANT", and "UPROOTED".
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "heart_state", (attribute, object) -> {
+                if (!(object.getBlockState().getBlockData() instanceof CreakingHeart heart)) {
+                    Debug.echoError("The 'LocationTag.heart_state' tag can only be called on a creaking heart block.");
+                    return null;
+                }
+                return Utilities.enumlikeToElement(heart.getCreakingHeartState());
+            });
+
+            // <--[mechanism]
+            // @object LocationTag
+            // @name heart_state
+            // @input ElementTag
+            // @description
+            // Sets the state of a creaking heart.
+            // Valid values are "AWAKE", "DORMANT", and "UPROOTED".
+            // @tags
+            // <LocationTag.heart_state>
+            // -->
+            tagProcessor.registerMechanism("heart_state", false, ElementTag.class, (object, mechanism, input) -> {
+                if (!(object.getBlockState().getBlockData() instanceof CreakingHeart heart)) {
+                    mechanism.echoError("The 'LocationTag.heart_state' mechanism can only be called on a creaking heart block.");
+                    return;
+                }
+                CreakingHeart.State heartState = Utilities.elementToRequiredEnumLike(input, CreakingHeart.State.class, mechanism);
+                if (heartState != null) {
+                    heart.setCreakingHeartState(heartState);
+                    object.getBlock().setBlockData(heart);
+                }
             });
         }
 
