@@ -4553,8 +4553,11 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 }
                 for (String slot : input) {
                     ElementTag element = new ElementTag(slot);
-                    if (element.isInt() && element.asInt() > 0 && element.asInt() <= 9) {
-                        crafter.setSlotDisabled(element.asInt() - 1, true);
+                    if (element.isInt()) {
+                        int value = element.asInt();
+                        if (value > 0 && value <= 9) {
+                            crafter.setSlotDisabled(value - 1, true);
+                        }
                     }
                     else {
                         mechanism.echoError("'" + slot + "' is not a valid slot for the 'crafter_disabled_slots' mechanism.");
