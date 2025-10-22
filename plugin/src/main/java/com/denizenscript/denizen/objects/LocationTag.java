@@ -4541,14 +4541,14 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // <LocationTag.crafter_disabled_slots>
             // @example
             // # Disables the slots in the top left and middle right
-            // - adjustblock <[block]> crafter_disabled_slots:1|6
+            // - adjustblock <[location]> crafter_disabled_slots:1|6
             // -->
             tagProcessor.registerMechanism("crafter_disabled_slots", false, ListTag.class, (object, mechanism, input) -> {
                 if (!(object.getBlockState() instanceof Crafter crafter)) {
                     mechanism.echoError("The 'LocationTag.crafter_disabled_slots' mechanism can only be called on a crafter block.");
                     return;
                 }
-                for (int i = 0; i < 9; i++) {
+                for (int i = 0; i <= 8; i++) {
                     crafter.setSlotDisabled(i, false);
                 }
                 for (String slot : input) {
