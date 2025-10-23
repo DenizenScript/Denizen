@@ -57,11 +57,11 @@ public class MaterialCount extends MaterialProperty<ElementTag> {
             else if (isCandle()) {
                 getCandle().setCandles(count);
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed flowerBed) {
-                flowerBed.setFlowerAmount(count);
-            }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals pinkPetals) {
                 pinkPetals.setFlowerAmount(count);
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed flowerBed) {
+                flowerBed.setFlowerAmount(count);
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof LeafLitter leafLitter) {
                 leafLitter.setSegmentAmount(count);
@@ -148,11 +148,11 @@ public class MaterialCount extends MaterialProperty<ElementTag> {
         else if (isCandle()) {
             return getCandle().getCandles();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed flowerBed) {
-            return flowerBed.getFlowerAmount();
-        }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals pinkPetals) {
             return pinkPetals.getFlowerAmount();
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed flowerBed) {
+            return flowerBed.getFlowerAmount();
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof LeafLitter leafLitter) {
             return leafLitter.getSegmentAmount();
@@ -173,11 +173,11 @@ public class MaterialCount extends MaterialProperty<ElementTag> {
         else if (isCandle()) {
             return getCandle().getMaximumCandles();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed flowerBed) {
-            return flowerBed.getMaximumFlowerAmount();
-        }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals pinkPetals) {
             return pinkPetals.getMaximumFlowerAmount();
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed flowerBed) {
+            return flowerBed.getMaximumFlowerAmount();
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof LeafLitter leafLitter) {
             return leafLitter.getMaximumSegmentAmount();
