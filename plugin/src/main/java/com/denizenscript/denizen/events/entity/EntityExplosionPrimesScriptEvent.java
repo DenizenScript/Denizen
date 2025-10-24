@@ -2,6 +2,7 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.event.EventHandler;
@@ -35,6 +36,11 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     public EntityExplosionPrimesScriptEvent() {
         registerCouldMatcher("<entity> explosion primes");
         this.<EntityExplosionPrimesScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isBoolean()) {
+                BukkitImplDeprecations.explosionPrimeDetermination.warn();
+                evt.event.setFire(value.asBoolean());
+                return true;
+            }
             if (value.isFloat()) {
                 evt.event.setRadius(value.asFloat());
                 return true;
