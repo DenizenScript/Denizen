@@ -42,25 +42,26 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
     public CauldronLevelChangeScriptEvent() {
         registerCouldMatcher("cauldron level changes|raises|lowers");
         registerSwitches("cause");
-        this.<CauldronLevelChangeScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, level) -> {
-            if (!level.isInt()) {
+        this.<CauldronLevelChangeScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (!value.isInt()) {
                 return false;
             }
+            int level = value.asInt();
             BlockState cauldronState = evt.event.getNewState();
-            if (level.asInt() <= 0) {
+            if (level <= 0) {
                 cauldronState.setType(Material.CAULDRON);
                 return true;
             }
-            if (level.asInt() > 3) {
+            if (level > 3) {
                 return false;
             }
-            Material cauldronType = cauldronState.getType();
             if (cauldronType != Material.WATER_CAULDRON && cauldronType != Material.LAVA_CAULDRON) {
-                cauldronState.setType(event.getBlock().getType());
+                cauldronState.setType(cauldronType);
             }
             if (cauldronState.getBlockData() instanceof Levelled levelled) {
-                levelled.setLevel(level.asInt());
+                levelled.setLevel(level);
                 cauldronState.setBlockData(levelled);
+                newLevel = level;
                 return true;
             }
             return false;
@@ -69,6 +70,9 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
 
     public LocationTag location;
     public CauldronLevelChangeEvent event;
+    public Material cauldronType;
+    public int oldLevel;
+    public int newLevel;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -79,8 +83,6 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
             return false;
         }
         String changeType = path.eventArgLowerAt(2);
-        int oldLevel = event.getBlock().getBlockData() instanceof Levelled levelled ? levelled.getLevel() : 0;
-        int newLevel = event.getNewState().getBlockData() instanceof Levelled levelled ? levelled.getLevel() : 0;
         if (changeType.equals("raises")) {
             if (newLevel <= oldLevel) {
                 return false;
@@ -102,8 +104,8 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
         return switch (name) {
             case "location" -> location;
             case "cause" -> new ElementTag(event.getReason());
-            case "old_level" -> new ElementTag(event.getBlock().getBlockData() instanceof Levelled levelled ? levelled.getLevel() : 0);
-            case "new_level" -> new ElementTag(event.getNewState().getBlockData() instanceof Levelled levelled ? levelled.getLevel() : 0);
+            case "old_level" -> new ElementTag(oldLevel);
+            case "new_level" -> new ElementTag(newLevel);
             case "entity" -> event.getEntity() != null ? new EntityTag(event.getEntity()).getDenizenObject() : null;
             default -> super.getContext(name);
         };
@@ -112,6 +114,9 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
     @EventHandler
     public void onCauldronLevelChange(CauldronLevelChangeEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
+        cauldronType = event.getBlock().getType();
+        oldLevel = event.getBlock().getBlockData() instanceof Levelled levelled ? levelled.getLevel() : 0;
+        newLevel = event.getNewState().getBlockData() instanceof Levelled levelled ? levelled.getLevel() : 0;
         this.event = event;
         fire(event);
     }
