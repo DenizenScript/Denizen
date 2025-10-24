@@ -409,4 +409,9 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         }
         BlockTagsSetter.INSTANCE.setTags(type, tags);
     }
+
+    @Override
+    public double[] getRecentTps() {
+        return Bukkit.getTPS();
+    }
 }
