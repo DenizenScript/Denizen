@@ -232,6 +232,10 @@ public class PaperAPITools {
         NMSHandler.blockHelper.setVanillaTags(type, tags);
     }
 
+    public double[] getRecentTps() {
+        return NMSHandler.instance.getRecentTps();
+    }
+
     public String getCopperGolemState(CopperGolem copperGolem) {
         return copperGolem.getWeatherState().name();
     }

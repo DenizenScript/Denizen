@@ -409,6 +409,11 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
+    public double[] getRecentTps() {
+        return Bukkit.getTPS();
+    }
+
+    @Override
     public String getCopperGolemState(CopperGolem copperGolem) {
         return copperGolem.getWeatheringState().name();
     }
@@ -418,6 +423,5 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         WeatheringCopperState state = variant.asEnum(WeatheringCopperState.class);
         if (state != null) {
             copperGolem.setWeatheringState(state);
-        }
     }
 }
