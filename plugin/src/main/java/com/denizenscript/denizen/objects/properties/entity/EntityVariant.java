@@ -60,7 +60,7 @@ public class EntityVariant extends EntityProperty<ElementTag> {
             return new ElementTag(Utilities.namespacedKeyToString(chicken.getVariant().getKey()), true);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof CopperGolem copperGolem) {
-            return new ElementTag(PaperAPITools.instance.getCopperGolemState(copperGolem));
+            return new ElementTag(PaperAPITools.instance.getCopperGolemState(copperGolem), true);
         }
         else if (COW_GET_VARIANT != null && getEntity() instanceof Cow cow) {
             try {
@@ -92,7 +92,7 @@ public class EntityVariant extends EntityProperty<ElementTag> {
             }
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof CopperGolem copperGolem) {
-            PaperAPITools.instance.setCopperGolemState(variant, mechanism, copperGolem);
+            PaperAPITools.instance.setCopperGolemState(variant, copperGolem);
         }
         else if (COW_SET_VARIANT != null && getEntity() instanceof Cow cow) {
             Cow.Variant cowVariant = Utilities.elementToRequiredEnumLike(variant, Cow.Variant.class, mechanism);

@@ -10,9 +10,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.DenizenCore;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -416,8 +414,8 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
-    public void setCopperGolemState(ElementTag variant, Mechanism mechanism, CopperGolem copperGolem) {
-        WeatheringCopperState state = Utilities.elementToRequiredEnumLike(variant, WeatheringCopperState.class, mechanism);
+    public void setCopperGolemState(ElementTag variant, CopperGolem copperGolem) {
+        WeatheringCopperState state = variant.asEnum(WeatheringCopperState.class);
         if (state != null) {
             copperGolem.setWeatheringState(state);
         }
