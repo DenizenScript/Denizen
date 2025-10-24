@@ -423,5 +423,6 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         WeatheringCopperState state = variant.asEnum(WeatheringCopperState.class);
         if (state != null) {
             copperGolem.setWeatheringState(state);
+        }
     }
 }
