@@ -92,7 +92,7 @@ public class EntityVariant extends EntityProperty<ElementTag> {
             }
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof CopperGolem copperGolem) {
-            PaperAPITools.instance.setCopperGolemState(variant, copperGolem);
+            PaperAPITools.instance.setCopperGolemState(variant, copperGolem, mechanism);
         }
         else if (COW_SET_VARIANT != null && getEntity() instanceof Cow cow) {
             Cow.Variant cowVariant = Utilities.elementToRequiredEnumLike(variant, Cow.Variant.class, mechanism);
