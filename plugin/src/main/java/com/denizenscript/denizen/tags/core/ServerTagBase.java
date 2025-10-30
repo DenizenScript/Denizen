@@ -1660,7 +1660,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerTag(ListTag.class, "recent_tps", (attribute, object) -> {
             ListTag recentTPS = new ListTag(3);
-            for (double tps : NMSHandler.instance.getRecentTps()) {
+            for (double tps : PaperAPITools.instance.getRecentTps()) {
                 recentTPS.addObject(new ElementTag(tps));
             }
             return recentTPS;

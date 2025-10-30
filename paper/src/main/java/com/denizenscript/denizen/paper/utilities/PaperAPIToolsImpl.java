@@ -415,4 +415,9 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     public void addLink(ServerLinks links, String display, URI uri) {
         links.addLink(PaperModule.parseFormattedText(display, ChatColor.WHITE), uri);
     }
+  
+    @Override
+    public double[] getRecentTps() {
+        return Bukkit.getTPS();
+    }
 }
