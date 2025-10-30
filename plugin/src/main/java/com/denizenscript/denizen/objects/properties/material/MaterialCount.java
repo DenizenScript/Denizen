@@ -10,8 +10,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.*;
 
 public class MaterialCount extends MaterialProperty<ElementTag> {
-    // TODO The PinkPetals interface was deprecated in 1.21.5 and merged into the FlowerBed interface.
-    //  All references and checks involving them can be removed once 1.21 is the minimum supported version.
+    // TODO: once 1.21 is the minimum supported version, remove PinkPetals interface in favor of FlowerBed
 
     // <--[property]
     // @object MaterialTag
@@ -28,13 +27,34 @@ public class MaterialCount extends MaterialProperty<ElementTag> {
                 || data instanceof RespawnAnchor
                 || data instanceof Candle
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && data instanceof PinkPetals)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && data instanceof FlowerBed)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && data instanceof LeafLitter);
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (data instanceof FlowerBed
+                                                                        || data instanceof LeafLitter));
     }
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(getCurrent());
+        if (getBlockData() instanceof SeaPickle seaPickle) {
+            return new ElementTag(seaPickle.getPickles());
+        }
+        else if (getBlockData() instanceof TurtleEgg turtleEgg) {
+            return new ElementTag(turtleEgg.getEggs());
+        }
+        else if (getBlockData() instanceof RespawnAnchor respawnAnchor) {
+            return new ElementTag(respawnAnchor.getCharges());
+        }
+        else if (getBlockData() instanceof Candle candle) {
+            return new ElementTag(candle.getCandles());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals pinkPetals) {
+            return new ElementTag(pinkPetals.getFlowerAmount());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed flowerBed) {
+            return new ElementTag(flowerBed.getFlowerAmount());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof LeafLitter leafLitter) {
+            return new ElementTag(leafLitter.getSegmentAmount());
+        }
+        return null;
     }
 
     @Override
@@ -45,17 +65,17 @@ public class MaterialCount extends MaterialProperty<ElementTag> {
                 mechanism.echoError("Material count mechanism value '" + count + "' is not valid. Must be between " + getMin() + " and " + getMax() + ".");
                 return;
             }
-            if (isSeaPickle()) {
-                getSeaPickle().setPickles(count);
+            if (getBlockData() instanceof SeaPickle seaPickle) {
+                seaPickle.setPickles(count);
             }
-            else if (isTurtleEgg()) {
-                getTurtleEgg().setEggs(count);
+            else if (getBlockData() instanceof TurtleEgg turtleEgg) {
+                turtleEgg.setEggs(count);
             }
-            else if (isRespawnAnchor()) {
-                getRespawnAnchor().setCharges(count);
+            else if (getBlockData() instanceof RespawnAnchor respawnAnchor) {
+                respawnAnchor.setCharges(count);
             }
-            else if (isCandle()) {
-                getCandle().setCandles(count);
+            else if (getBlockData() instanceof Candle candle) {
+                candle.setCandles(count);
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals pinkPetals) {
                 pinkPetals.setFlowerAmount(count);
@@ -103,75 +123,18 @@ public class MaterialCount extends MaterialProperty<ElementTag> {
         autoRegister("count", MaterialCount.class, ElementTag.class, false, "pickle_count");
     }
 
-    public boolean isSeaPickle() {
-        return getBlockData() instanceof SeaPickle;
-    }
-
-    public boolean isTurtleEgg() {
-        return getBlockData() instanceof TurtleEgg;
-    }
-
-    public boolean isRespawnAnchor() {
-        return getBlockData() instanceof RespawnAnchor;
-    }
-
-    public boolean isCandle() {
-        return getBlockData() instanceof Candle;
-    }
-
-    public TurtleEgg getTurtleEgg() {
-        return (TurtleEgg) getBlockData();
-    }
-
-    public SeaPickle getSeaPickle() {
-        return (SeaPickle) getBlockData();
-    }
-
-    public RespawnAnchor getRespawnAnchor() {
-        return (RespawnAnchor) getBlockData();
-    }
-
-    public Candle getCandle() {
-        return (Candle) getBlockData();
-    }
-
-    public int getCurrent() {
-        if (isSeaPickle()) {
-            return getSeaPickle().getPickles();
-        }
-        else if (isTurtleEgg()) {
-            return getTurtleEgg().getEggs();
-        }
-        else if (isRespawnAnchor()) {
-            return getRespawnAnchor().getCharges();
-        }
-        else if (isCandle()) {
-            return getCandle().getCandles();
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals pinkPetals) {
-            return pinkPetals.getFlowerAmount();
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed flowerBed) {
-            return flowerBed.getFlowerAmount();
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof LeafLitter leafLitter) {
-            return leafLitter.getSegmentAmount();
-        }
-        throw new UnsupportedOperationException();
-    }
-
     public int getMax() {
-        if (isSeaPickle()) {
-            return getSeaPickle().getMaximumPickles();
+        if (getBlockData() instanceof SeaPickle seaPickle) {
+            return seaPickle.getMaximumPickles();
         }
-        else if (isTurtleEgg()) {
-            return getTurtleEgg().getMaximumEggs();
+        else if (getBlockData() instanceof TurtleEgg turtleEgg) {
+            return turtleEgg.getMaximumEggs();
         }
-        else if (isRespawnAnchor()) {
-            return getRespawnAnchor().getMaximumCharges();
+        else if (getBlockData() instanceof RespawnAnchor respawnAnchor) {
+            return respawnAnchor.getMaximumCharges();
         }
-        else if (isCandle()) {
-            return getCandle().getMaximumCandles();
+        else if (getBlockData() instanceof Candle candle) {
+            return candle.getMaximumCandles();
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals pinkPetals) {
             return pinkPetals.getMaximumFlowerAmount();
@@ -186,18 +149,18 @@ public class MaterialCount extends MaterialProperty<ElementTag> {
     }
 
     public int getMin() {
-        if (isSeaPickle()) {
-            return getSeaPickle().getMinimumPickles();
+        if (getBlockData() instanceof SeaPickle seaPickle) {
+            return seaPickle.getMinimumPickles();
         }
-        else if (isTurtleEgg()) {
-            return getTurtleEgg().getMinimumEggs();
+        else if (getBlockData() instanceof TurtleEgg turtleEgg) {
+            return turtleEgg.getMinimumEggs();
         }
-        else if (isRespawnAnchor()) {
+        else if (getBlockData() instanceof RespawnAnchor) {
             return 0;
         }
         else if ((NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals)
             || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (getBlockData() instanceof FlowerBed) || getBlockData() instanceof LeafLitter)
-            || isCandle()) {
+            || getBlockData() instanceof Candle) {
             return 1;
         }
         throw new UnsupportedOperationException();
