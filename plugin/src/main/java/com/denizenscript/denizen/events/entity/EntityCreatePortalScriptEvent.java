@@ -8,7 +8,6 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCreatePortalEvent;
@@ -61,19 +60,12 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "entity":
-                return entity;
-            case "portal_type":
-                return new ElementTag(event.getPortalType().toString());
-            case "blocks":
-                ListTag blocks = new ListTag();
-                for (BlockState block : event.getBlocks()) {
-                    blocks.add(new LocationTag(block.getBlock().getLocation()).identifySimple());
-                }
-                return blocks;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity;
+            case "portal_type" -> new ElementTag(event.getPortalType().toString());
+            case "blocks" -> new ListTag(event.getBlocks(), block -> new LocationTag(block.getLocation()));
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

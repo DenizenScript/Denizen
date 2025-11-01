@@ -63,12 +63,10 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("cause")) {
-            return cause;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity;
+            case "cause" -> cause;
+            default -> super.getContext(name);
+        };
     }
 }
