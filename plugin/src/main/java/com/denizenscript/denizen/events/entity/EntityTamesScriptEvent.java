@@ -31,7 +31,7 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     // <context.entity> returns a EntityTag of the tamed entity.
     // <context.owner> returns a EntityTag of the owner.
     //
-    // @Player when a player tames an entity and using the 'players tames entity' event.
+    // @Player when a player is what tamed the entity.
     //
     // -->
 
@@ -66,8 +66,8 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "entity" -> entity.getDenizenObject();
-            case "owner" -> owner;
+            case "entity" -> entity;
+            case "owner" -> owner.getDenizenObject();
             default -> super.getContext(name);
         };
     }
