@@ -79,19 +79,13 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("reason")) {
-            return reason;
-        }
-        else if (name.equals("spawner_location") && event instanceof SpawnerSpawnEvent) {
-            return new LocationTag(((SpawnerSpawnEvent) event).getSpawner().getLocation());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity.getDenizenObject();
+            case "location" -> location;
+            case "reason" -> reason;
+            case "spawner_location" -> event instanceof SpawnerSpawnEvent spawner ? new LocationTag(spawner.getSpawner().getLocation()) : null;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
