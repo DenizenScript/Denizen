@@ -79,7 +79,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "entity" -> entity;
+            case "entity" -> entity.getDenizenObject();
             case "location" -> location;
             case "new_material" -> new_material;
             case "old_material" -> old_material;

@@ -90,7 +90,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "cause" -> cause;
-            case "breaker" -> breaker;
+            case "breaker" -> breaker.getDenizenObject();
             case "hanging" -> hanging;
             case "location" -> location;
             default -> super.getContext(name);
