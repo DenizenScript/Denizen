@@ -63,12 +63,12 @@ public class EntityGoesIntoBlockScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "entity": return entity.getDenizenObject();
-            case "location": return location;
-            case "material": return material;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity.getDenizenObject();
+            case "location" -> location;
+            case "material" -> material;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
