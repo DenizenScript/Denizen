@@ -80,7 +80,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "vehicle" -> vehicle.getDenizenObject();
+            case "vehicle" -> vehicle;
             case "entity" -> entity.getDenizenObject();
             default -> super.getContext(name);
         };
