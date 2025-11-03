@@ -128,5 +128,5 @@ public class ReflectionMappingsInfo {
     public static String ServerRecipeBook_addHighlight_method = "e";
 
     // net.minecraft.world.level.block.entity.BlockEntityType
-    public static String BlockEntityType_validBlocks = "Y";
+    public static String BlockEntityType_validBlocks = "aa";
 }

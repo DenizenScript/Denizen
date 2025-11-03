@@ -8,6 +8,8 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.core.DurationTag;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,7 +26,7 @@ public class FakeBlock {
 
         public Map<LocationTag, FakeBlock> byLocation = new HashMap<>();
 
-        public Map<ChunkCoordinate, List<FakeBlock>> byChunk = new HashMap<>();
+        public Map<ChunkCoordinate, Int2ObjectMap<List<FakeBlock>>> byChunk = new HashMap<>();
 
         public FakeBlock getOrAdd(PlayerTag player, LocationTag location) {
             location = new LocationTag(location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorldName());
@@ -34,19 +36,27 @@ public class FakeBlock {
             }
             block = new FakeBlock(player, location);
             byLocation.put(location, block);
-            List<FakeBlock> chunkBlocks = byChunk.computeIfAbsent(block.chunkCoord, k -> new ArrayList<>());
+            List<FakeBlock> chunkBlocks = byChunk.computeIfAbsent(block.chunkCoord, k -> new Int2ObjectOpenHashMap<>()).computeIfAbsent(block.sectionY, k -> new ArrayList<>());
             chunkBlocks.add(block);
             return block;
         }
 
         public void remove(FakeBlock block) {
             if (byLocation.remove(block.location) != null) {
-                List<FakeBlock> chunkBlocks = byChunk.get(block.chunkCoord);
-                if (chunkBlocks != null) {
-                    chunkBlocks.remove(block);
-                    if (chunkBlocks.isEmpty()) {
-                        byChunk.remove(block.chunkCoord);
-                    }
+                Int2ObjectMap<List<FakeBlock>> chunkBlocks = byChunk.get(block.chunkCoord);
+                if (chunkBlocks == null) {
+                    return;
+                }
+                List<FakeBlock> sectionBlocks = chunkBlocks.get(block.sectionY);
+                if (sectionBlocks == null) {
+                    return;
+                }
+                sectionBlocks.remove(block);
+                if (sectionBlocks.isEmpty()) {
+                    chunkBlocks.remove(block.sectionY);
+                }
+                if (chunkBlocks.isEmpty()) {
+                    byChunk.remove(block.chunkCoord);
                 }
             }
         }
@@ -67,21 +77,27 @@ public class FakeBlock {
         if (map == null) {
             return null;
         }
-        return map.byChunk.get(chunkCoord);
+        Int2ObjectMap<List<FakeBlock>> chunkMap = map.byChunk.get(chunkCoord);
+        if (chunkMap == null) {
+            return null;
+        }
+        List<FakeBlock> blocks = new ArrayList<>();
+        chunkMap.values().forEach(blocks::addAll);
+        return blocks;
     }
 
     public final PlayerTag player;
     public final LocationTag location;
     public final ChunkCoordinate chunkCoord;
+    public final int sectionY;
     public MaterialTag material;
     public BukkitTask currentTask = null;
-    public int lastBlockLight = -1;
-    public int lastSkyLight = -1;
 
     private FakeBlock(PlayerTag player, LocationTag location) {
         this.player = player;
         this.location = location;
         this.chunkCoord = new ChunkCoordinate(location);
+        this.sectionY = ChunkCoordinate.blockToChunkCoord(location.getBlockY());
     }
 
     public static void showFakeBlockTo(List<PlayerTag> players, LocationTag location, MaterialTag material, DurationTag duration, boolean sendNow) {

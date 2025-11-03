@@ -1,19 +1,27 @@
 package com.denizenscript.denizen.nms.v1_21.impl.network.handlers.packet;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.FakeBlockHelper;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.ShortArraySet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.network.protocol.game.ClientboundSectionBlocksUpdatePacket;
 import net.minecraft.world.level.block.state.BlockState;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 import java.lang.invoke.MethodHandle;
 import java.util.Arrays;
@@ -31,7 +39,7 @@ public class FakeBlocksPacketHandlers {
     public static final MethodHandle OFFSETARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).getGetter(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_positions, short[].class);
     public static final MethodHandle BLOCKARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).getGetter(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_states, BlockState[].class);
 
-    public static ClientboundLevelChunkWithLightPacket processLevelChunkWithLightPacket(DenizenNetworkManagerImpl networkManager, ClientboundLevelChunkWithLightPacket chunkPacket) throws Throwable {
+    public static Packet<ClientGamePacketListener> processLevelChunkWithLightPacket(DenizenNetworkManagerImpl networkManager, ClientboundLevelChunkWithLightPacket chunkPacket) throws Throwable {
         if (FakeBlock.blocks.isEmpty()) {
             return chunkPacket;
         }
@@ -41,12 +49,28 @@ public class FakeBlocksPacketHandlers {
         }
         int chunkX = chunkPacket.getX();
         int chunkZ = chunkPacket.getZ();
-        ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, networkManager.player.level().getWorld().getName());
-        List<FakeBlock> blocks = FakeBlock.getFakeBlocksFor(networkManager.player.getUUID(), chunkCoord);
-        if (blocks == null || blocks.isEmpty()) {
+        World world = networkManager.player.level().getWorld();
+        ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, world.getName());
+        Int2ObjectMap<List<FakeBlock>> blocksBySection = map.byChunk.get(chunkCoord);
+        if (blocksBySection == null || blocksBySection.isEmpty()) {
             return chunkPacket;
         }
-        return FakeBlockHelper.handleMapChunkPacket(networkManager.player.getBukkitEntity().getWorld(), chunkPacket, chunkX, chunkZ, blocks, map);
+        return FakeBlockHelper.handleMapChunkPacket(networkManager.player.getBukkitEntity().getWorld(), chunkPacket, chunkX, chunkZ, blocksBySection, map);
+//        List<Packet<? super ClientGamePacketListener>> packets = new ArrayList<>(blocksBySection.size() + 1);
+//        packets.add(mappedPacket);
+//        for (Int2ObjectMap.Entry<List<FakeBlock>> entry : blocksBySection.int2ObjectEntrySet()) {
+//            List<FakeBlock> fakeBlocks = entry.getValue();
+//            int size = fakeBlocks.size();
+//            short[] offsets = new short[size];
+//            BlockState[] states = new BlockState[size];
+//            for (int i = 0; i < size; i++) {
+//                FakeBlock fakeBlock = fakeBlocks.get(i);
+//                offsets[i] = SectionPos.sectionRelativePos(CraftLocation.toBlockPosition(fakeBlock.location));
+//                states[i] = ((CraftBlockData) fakeBlock.material.getModernData()).getState();
+//            }
+//            packets.add(new ClientboundSectionBlocksUpdatePacket(SectionPos.of(chunkX, entry.getIntKey(), chunkZ), new ShortArraySet(offsets), states));
+//        }
+//        return new ClientboundBundlePacket(packets);
     }
 
     public static ClientboundSectionBlocksUpdatePacket processSectionBlocksUpdatePacket(DenizenNetworkManagerImpl networkManager, ClientboundSectionBlocksUpdatePacket sectionUpdatePacket) throws Throwable {
