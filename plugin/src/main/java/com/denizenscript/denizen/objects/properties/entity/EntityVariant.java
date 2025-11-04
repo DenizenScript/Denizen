@@ -43,12 +43,13 @@ public class EntityVariant extends EntityProperty<ElementTag> {
     // A list of valid wolf variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Wolf.Variant.html>.
     // -->
 
-    public static boolean describes(EntityTag entity) {
-        return entity.getBukkitEntity() instanceof Wolf
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity.getBukkitEntity() instanceof Chicken)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity.getBukkitEntity() instanceof CopperGolem)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity.getBukkitEntity() instanceof Cow)
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity.getBukkitEntity() instanceof Pig);
+    public static boolean describes(EntityTag entityTag) {
+        Entity entity = entityTag.getBukkitEntity();
+        return entity instanceof Wolf
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (entity instanceof Chicken
+                                                                        || entity instanceof CopperGolem
+                                                                        || entity instanceof Cow
+                                                                        || entity instanceof Pig));
     }
 
     @Override
@@ -56,23 +57,25 @@ public class EntityVariant extends EntityProperty<ElementTag> {
         if (getEntity() instanceof Wolf wolf) {
             return new ElementTag(Utilities.namespacedKeyToString(wolf.getVariant().getKey()), true);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Chicken chicken) {
-            return new ElementTag(Utilities.namespacedKeyToString(chicken.getVariant().getKey()), true);
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof CopperGolem copperGolem) {
-            return new ElementTag(PaperAPITools.instance.getCopperGolemState(copperGolem), true);
-        }
-        else if (COW_GET_VARIANT != null && getEntity() instanceof Cow cow) {
-            try {
-                return new ElementTag(Utilities.namespacedKeyToString(((Cow.Variant) COW_GET_VARIANT.invoke(cow)).getKey()), true);
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            if (getEntity() instanceof Chicken chicken) {
+                return new ElementTag(Utilities.namespacedKeyToString(chicken.getVariant().getKeyOrThrow()), true);
             }
-            catch (Throwable e) {
-                Debug.echoError(e);
-                return null;
+            else if (getEntity() instanceof CopperGolem copperGolem) {
+                return new ElementTag(PaperAPITools.instance.getCopperGolemState(copperGolem), true);
             }
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Pig pig) {
-            return new ElementTag(Utilities.namespacedKeyToString(pig.getVariant().getKey()), true);
+            else if (COW_GET_VARIANT != null && getEntity() instanceof Cow cow) {
+                try {
+                    return new ElementTag(Utilities.namespacedKeyToString(((Cow.Variant) COW_GET_VARIANT.invoke(cow)).getKeyOrThrow()), true);
+                }
+                catch (Throwable e) {
+                    Debug.echoError(e);
+                    return null;
+                }
+            }
+            else if (getEntity() instanceof Pig pig) {
+                return new ElementTag(Utilities.namespacedKeyToString(pig.getVariant().getKeyOrThrow()), true);
+            }
         }
         return null;
     }
@@ -85,30 +88,32 @@ public class EntityVariant extends EntityProperty<ElementTag> {
                 wolf.setVariant(wolfVariant);
             }
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Chicken chicken) {
-            Chicken.Variant chickenVariant = Utilities.elementToRequiredEnumLike(variant, Chicken.Variant.class, mechanism);
-            if (chickenVariant != null) {
-                chicken.setVariant(chickenVariant);
-            }
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof CopperGolem copperGolem) {
-            PaperAPITools.instance.setCopperGolemState(variant, copperGolem, mechanism);
-        }
-        else if (COW_SET_VARIANT != null && getEntity() instanceof Cow cow) {
-            Cow.Variant cowVariant = Utilities.elementToRequiredEnumLike(variant, Cow.Variant.class, mechanism);
-            if (cowVariant != null) {
-                try {
-                    COW_SET_VARIANT.invoke(cow, cowVariant);
-                }
-                catch (Throwable e) {
-                    Debug.echoError(e);
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            if (getEntity() instanceof Chicken chicken) {
+                Chicken.Variant chickenVariant = Utilities.elementToRequiredEnumLike(variant, Chicken.Variant.class, mechanism);
+                if (chickenVariant != null) {
+                    chicken.setVariant(chickenVariant);
                 }
             }
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof Pig pig) {
-            Pig.Variant pigVariant = Utilities.elementToRequiredEnumLike(variant, Pig.Variant.class, mechanism);
-            if (pigVariant != null) {
-                pig.setVariant(pigVariant);
+            else if (getEntity() instanceof CopperGolem copperGolem) {
+                PaperAPITools.instance.setCopperGolemState(variant, copperGolem, mechanism);
+            }
+            else if (COW_SET_VARIANT != null && getEntity() instanceof Cow cow) {
+                Cow.Variant cowVariant = Utilities.elementToRequiredEnumLike(variant, Cow.Variant.class, mechanism);
+                if (cowVariant != null) {
+                    try {
+                        COW_SET_VARIANT.invoke(cow, cowVariant);
+                    }
+                    catch (Throwable e) {
+                        Debug.echoError(e);
+                    }
+                }
+            }
+            else if (getEntity() instanceof Pig pig) {
+                Pig.Variant pigVariant = Utilities.elementToRequiredEnumLike(variant, Pig.Variant.class, mechanism);
+                if (pigVariant != null) {
+                    pig.setVariant(pigVariant);
+                }
             }
         }
     }
