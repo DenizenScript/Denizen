@@ -17,7 +17,7 @@ public class MaterialCount extends MaterialProperty<ElementTag> {
     // @name count
     // @input ElementTag(Number)
     // @description
-    // Controls the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, candles in a Candle material, flowers in a flower bed, or leaves on the ground.
+    // Controls the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, candles in a Candle material, flowers in a flower bed, or leaves in a leaf litter.
     // -->
 
     public static boolean describes(MaterialTag material) {
@@ -159,7 +159,7 @@ public class MaterialCount extends MaterialProperty<ElementTag> {
             return 0;
         }
         else if ((NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals)
-            || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (getBlockData() instanceof FlowerBed) || getBlockData() instanceof LeafLitter)
+            || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (getBlockData() instanceof FlowerBed || getBlockData() instanceof LeafLitter))
             || getBlockData() instanceof Candle) {
             return 1;
         }
