@@ -4514,7 +4514,8 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @mechanism LocationTag.crafter_disabled_slots
             // @group world
             // @description
-            // Returns the disabled slots of a crafter block from left to right, top to bottom.
+            // Returns which slots in a crafter are disabled.
+            // The slots are arranged from left to right, top to bottom.
             // -->
             tagProcessor.registerTag(ListTag.class, "crafter_disabled_slots", (attribute, object) -> {
                 if (!(object.getBlockStateForTag(attribute) instanceof Crafter crafter)) {
