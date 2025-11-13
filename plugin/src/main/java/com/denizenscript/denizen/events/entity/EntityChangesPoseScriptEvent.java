@@ -68,15 +68,12 @@ public class EntityChangesPoseScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "entity":
-                return entity;
-            case "old_pose":
-                return new ElementTag(oldPose);
-            case "new_pose":
-                return new ElementTag(event.getPose());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity.getDenizenObject();
+            case "old_pose" -> new ElementTag(oldPose);
+            case "new_pose" -> new ElementTag(event.getPose());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
