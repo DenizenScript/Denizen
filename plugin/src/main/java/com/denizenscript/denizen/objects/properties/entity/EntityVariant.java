@@ -59,14 +59,14 @@ public class EntityVariant extends EntityProperty<ElementTag> {
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
             if (getEntity() instanceof Chicken chicken) {
-                return new ElementTag(Utilities.namespacedKeyToString(chicken.getVariant().getKeyOrThrow()), true);
+                return new ElementTag(Utilities.namespacedKeyToString(chicken.getVariant().getKey()), true);
             }
             else if (getEntity() instanceof CopperGolem copperGolem) {
                 return new ElementTag(PaperAPITools.instance.getCopperGolemState(copperGolem), true);
             }
             else if (COW_GET_VARIANT != null && getEntity() instanceof Cow cow) {
                 try {
-                    return new ElementTag(Utilities.namespacedKeyToString(((Cow.Variant) COW_GET_VARIANT.invoke(cow)).getKeyOrThrow()), true);
+                    return new ElementTag(Utilities.namespacedKeyToString(((Cow.Variant) COW_GET_VARIANT.invoke(cow)).getKey()), true);
                 }
                 catch (Throwable e) {
                     Debug.echoError(e);
@@ -74,7 +74,7 @@ public class EntityVariant extends EntityProperty<ElementTag> {
                 }
             }
             else if (getEntity() instanceof Pig pig) {
-                return new ElementTag(Utilities.namespacedKeyToString(pig.getVariant().getKeyOrThrow()), true);
+                return new ElementTag(Utilities.namespacedKeyToString(pig.getVariant().getKey()), true);
             }
         }
         return null;
