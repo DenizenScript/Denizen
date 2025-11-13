@@ -8,7 +8,8 @@ import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.shorts.*;
+import it.unimi.dsi.fastutil.shorts.ShortArraySet;
+import it.unimi.dsi.fastutil.shorts.ShortObjectPair;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
@@ -51,7 +52,7 @@ public class FakeBlockHelper {
 
     public static final PalettedContainer<BlockState> EMPTY_BLOCKS_CONTAINER = new PalettedContainer<>(Blocks.AIR.defaultBlockState(), Strategy.createForBlockStates(Block.BLOCK_STATE_REGISTRY));
     public static final Map<Material, BlockEntityType<?>> MATERIAL_BLOCK_ENTITY_TYPES = new HashMap<>();
-    public static final BlockState MAX_LIGHT_LIGHT_BLOCK = Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 15);
+    public static final BlockState MAX_LIGHT_LIGHT_BLOCK = Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 15), AIR = Blocks.AIR.defaultBlockState();
 
     static {
         try {
@@ -160,29 +161,28 @@ public class FakeBlockHelper {
                 hasSkyLight = true;
             }
             if (fakeBlocksInSection != null) {
-                List<ShortObjectPair<BlockState>> lightPatch = null;
+                List<ShortObjectPair<BlockState>> lightPatch = new ArrayList<>();
                 DataLayer blockLayer = null, skyLayer = null;
                 if (hasBlockLight) {
                     blockLightMask.clear(sectionIndex);
                     blockLayer = new DataLayer(lightData.getBlockUpdates().remove(blockLitSections));
                     hasBlockLight = false;
-                    // TODO: light sources from outside the section? Can try adding all lit blocks to the patch, maybe just put the entire section in a patch again atp
                     for (int x = 0; x < 16; x++) {
                         for (int y = 0; y < 16; y++) {
                             for (int z = 0; z < 16; z++) {
-                                if (blockLayer.get(x, y, z) > 0) {
-                                    BlockState state = states.get(x, y, z);
-                                    if (state.isAir()) {
-                                        continue;
-                                    }
-                                    if (lightPatch == null) {
-                                        lightPatch = new ArrayList<>();
-                                    }
-//                                    Debug.log("Adding lit block " + state.getBlockHolder().getRegisteredName() + " at " + x + ',' + y + ',' + z);
-                                    // Based on SectionPos#sectionRelativePos
-                                    int offset = x << 8 | z << 4 | y << 0;
-                                    lightPatch.add(ShortObjectPair.of((short) offset, Blocks.AIR.defaultBlockState()));
-                                    lightPatch.add(ShortObjectPair.of((short) offset, state));
+                                BlockState state = states.get(x, y, z);
+                                boolean isAir = state.isAir();
+                                if (isAir && (y == 0 || states.get(x, y - 1, z).isAir())) {
+                                    continue;
+                                }
+                                if (!isAir && blockLayer.get(x, y, z) == 0) {
+                                    continue;
+                                }
+                                // Based on SectionPos#sectionRelativePos
+                                short offset = (short) (x << 8 | z << 4 | y << 0);
+                                lightPatch.add(ShortObjectPair.of(offset, isAir ? MAX_LIGHT_LIGHT_BLOCK : AIR));
+                                lightPatch.add(ShortObjectPair.of(offset, state));
+                                if (!isAir) {
                                     blockCount--;
                                     states.set(x, y, x, Blocks.AIR.defaultBlockState());
                                 }
@@ -222,15 +222,12 @@ public class FakeBlockHelper {
                         blockCount--;
                         states.set(relativeX, relativeY, relativeZ, Blocks.AIR.defaultBlockState());
                         if (maxLight <= 0 && !newState.isSolidRender()) {
-                            if (lightPatch == null) {
-                                lightPatch = new ArrayList<>();
-                            }
                             lightPatch.add(ShortObjectPair.of(sectionRelativePos, MAX_LIGHT_LIGHT_BLOCK));
                         }
                     }
                 }
                 SectionPos sectionPos = SectionPos.of(chunkX, chunkY, chunkZ);
-                if (lightPatch != null) {
+                if (!lightPatch.isEmpty()) {
                     int lightCount = lightPatch.size();
                     short[] lightOffsets = new short[lightCount];
                     BlockState[] lightStates = new BlockState[lightCount];
@@ -252,10 +249,8 @@ public class FakeBlockHelper {
             newChunkData.writeShort(blockCount);
             if (blockCount > 0) {
                 states.write(newChunkData);
-//                Debug.log("Writing non-empty data" + (fakeBlocksInSection != null ? " FAKE!!" : ""));
             }
             else {
-//                Debug.log("WRITING EMPTY CONTAINER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + (fakeBlocksInSection != null ? " FAKE!!" : ""));
                 EMPTY_BLOCKS_CONTAINER.write(newChunkData);
             }
             biomes.write(newChunkData);
