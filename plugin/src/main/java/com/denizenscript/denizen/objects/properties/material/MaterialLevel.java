@@ -81,7 +81,7 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
             return;
         }
         int level = value.asInt();
-        if (level < (getBlockData() instanceof Snow snow ? snow.getMinimumLayers() : 0) || level > getMax()) {
+        if (level < getMin() || level > getMax()) {
             mechanism.echoError("Level value '" + level + "' is not valid. Must be between " + (getBlockData() instanceof Snow snow ? snow.getMinimumLayers() : 0) + " and " + getMax() + " for material '" + getBlockData().getMaterial().name() + "'.");
             return;
         }
