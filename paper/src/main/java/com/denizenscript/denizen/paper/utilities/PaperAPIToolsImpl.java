@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
+import com.denizenscript.denizen.scripts.commands.player.ResourcePackCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
@@ -116,12 +117,15 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
-    public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt) {
-        if (prompt == null && !forced) {
-            super.sendResourcePack(player, url, hash, false, null);
+    public void setResourcePack(Player player, String url, String hash, boolean forced, String prompt, String id) {
+        if (prompt == null && !forced && id == null) {
+            super.setResourcePack(player, url, hash, false, null, null);
+        }
+        else if (id == null) {
+            player.setResourcePack(url, CoreUtilities.toLowerCase(hash), forced, PaperModule.parseFormattedText(prompt, ChatColor.WHITE));
         }
         else {
-            player.setResourcePack(url, CoreUtilities.toLowerCase(hash), forced, PaperModule.parseFormattedText(prompt, ChatColor.WHITE));
+            player.setResourcePack(ResourcePackCommand.parseUUID(id), url, CoreUtilities.toLowerCase(hash), PaperModule.parseFormattedText(prompt, ChatColor.WHITE), forced);
         }
     }
 
