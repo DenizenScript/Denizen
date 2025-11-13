@@ -55,7 +55,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "entity" -> entity;
-            case "lightning" -> lightning != null ? lightning : null;
+            case "lightning" -> lightning;
             case "cause" -> cause;
             default -> super.getContext(name);
         };
