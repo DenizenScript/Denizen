@@ -4517,8 +4517,8 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // Returns the disabled slots of a crafter block from left to right, top to bottom.
             // -->
             tagProcessor.registerTag(ListTag.class, "crafter_disabled_slots", (attribute, object) -> {
-                if (!(object.getBlockState() instanceof Crafter crafter)) {
-                    Debug.echoError("The 'LocationTag.crafter_disabled_slots' tag can only be called on a crafter block.");
+                if (!(object.getBlockStateForTag(attribute) instanceof Crafter crafter)) {
+                    attribute.echoError("The 'LocationTag.crafter_disabled_slots' tag can only be called on a crafter block.");
                     return null;
                 }
                 ListTag slots = new ListTag();
@@ -4535,7 +4535,8 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @name crafter_disabled_slots
             // @input ListTag
             // @description
-            // Sets which slots in a crafter are disabled from left to right, top to bottom.
+            // Sets which slots in a crafter are disabled.
+            // The slots are arranged from left to right, top to bottom.
             // Provide no input to enable all slots.
             // @tags
             // <LocationTag.crafter_disabled_slots>
@@ -4557,11 +4558,10 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                         int value = element.asInt();
                         if (value > 0 && value <= 9) {
                             crafter.setSlotDisabled(value - 1, true);
+                            continue;
                         }
                     }
-                    else {
-                        mechanism.echoError("'" + slot + "' is not a valid slot for the 'crafter_disabled_slots' mechanism.");
-                    }
+                    mechanism.echoError("'" + slot + "' is not a valid slot for the 'crafter_disabled_slots' mechanism.");
                 }
                 crafter.update();
             });
