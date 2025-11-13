@@ -130,7 +130,7 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         // This will return 0 for all valid materials aside from snow.
         // -->
         PropertyParser.registerStaticTag(MaterialLevel.class, ElementTag.class, "minimum_level", (attribute, material) -> {
-            return new ElementTag(material.getBlockData() instanceof Snow snow ? snow.getMinimumLayers() : 0);
+            return new ElementTag(material.getMin());
         });
 
         autoRegister("level", MaterialLevel.class, ElementTag.class, false);
@@ -159,5 +159,12 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
             return driedGhast.getMaximumHydration();
         }
         throw new UnsupportedOperationException();
+    }
+
+    public int getMin() {
+        if (getBlockData() instanceof Snow snow) {
+            return snow.getMinimumLayers();
+        }
+        return 0;
     }
 }
