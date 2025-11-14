@@ -238,4 +238,8 @@ public class PaperAPITools {
     public void addLink(ServerLinks links, String display, URI uri) {
         links.addLink(display, uri);
     }
+  
+    public double[] getRecentTps() {
+        return NMSHandler.instance.getRecentTps();
+    }
 }
