@@ -67,7 +67,6 @@ import org.bukkit.craftbukkit.v1_21_R6.boss.CraftBossBar;
 import org.bukkit.craftbukkit.v1_21_R6.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R6.util.CraftLocation;
 import org.bukkit.craftbukkit.v1_21_R6.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_21_R6.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
@@ -432,10 +431,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         }
         LevelData.RespawnData nmsRespawnData = nmsRespawnConfig.respawnData();
         Level nmsWorld = MinecraftServer.getServer().getLevel(nmsRespawnData.dimension());
-        if (nmsWorld == null) {
-            return null;
-        }
-        return CraftLocation.toBukkit(nmsRespawnData.pos(), nmsWorld.getWorld(), nmsRespawnData.yaw(), nmsRespawnData.pitch());
+        return nmsWorld != null ? new Location(nmsWorld.getWorld(), nmsRespawnData.pos().getX(), nmsRespawnData.pos().getY(), nmsRespawnData.pos().getZ(), nmsRespawnData.yaw(), nmsRespawnData.pitch()) : null;
     }
 
     @Override
