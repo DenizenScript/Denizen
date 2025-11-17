@@ -1,10 +1,10 @@
 package com.denizenscript.denizen.nms.interfaces;
 
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizencore.objects.core.ColorTag;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
@@ -72,7 +72,7 @@ public interface PacketHelper {
         player.sendBlockDamage(location, progressFloat, id);
     }
 
-    default void showTileEntityData(Player player, Location location, int action, CompoundTag compoundTag) { // TODO: once minimum version is 1.20, remove in favor of Player#sendBlockUpdate
+    default void showTileEntityData(Player player, Location location, int action, CompoundBinaryTag compoundTag) { // TODO: once minimum version is 1.20, remove in favor of Player#sendBlockUpdate
         throw new UnsupportedOperationException();
     }
 
@@ -90,7 +90,7 @@ public interface PacketHelper {
         player.sendEquipmentChange(entity, equipmentSlot, itemStack);
     }
 
-    default void resetEquipment(Player player, LivingEntity entity) { // TODO: once minimum version is 1.19 or higher, remove from NMS
+    default void resetEquipment(Player player, LivingEntity entity) { // TODO: once 1.19 is the minimum supported version, remove from NMS
         EntityEquipment equipment = entity.getEquipment();
         Map<EquipmentSlot, ItemStack> equipmentMap = new EnumMap<>(EquipmentSlot.class);
         for (EquipmentSlot slot : EquipmentSlot.values()) {

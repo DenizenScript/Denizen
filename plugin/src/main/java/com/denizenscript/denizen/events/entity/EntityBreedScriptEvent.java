@@ -5,8 +5,7 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityBreedEvent;
@@ -40,6 +39,13 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
 
     public EntityBreedScriptEvent() {
         registerCouldMatcher("<entity> breeds");
+        this.<EntityBreedScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, determination) -> {
+            if (determination.isInt()) {
+                evt.event.setExperience(determination.asInt());
+                return true;
+            }
+            return false;
+        });
     }
 
     private EntityTag entity;
@@ -62,44 +68,28 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            experience = element.asInt();
-            event.setExperience(experience);
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("child")) {
-            return entity.getDenizenObject();
-        }
-        else if (name.equals("breeder") && breeder != null) {
-            return breeder.getDenizenObject();
-        }
-        else if (name.equals("father")) {
-            return father.getDenizenObject();
-        }
-        else if (name.equals("mother")) {
-            return mother.getDenizenObject();
-        }
-        else if (name.equals("item") && item != null) {
-            return item;
-        }
-        else if (name.equals("experience")) {
-            return new ElementTag(experience);
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "child" -> entity.getDenizenObject();
+            case "breeder" -> breeder == null ? null : breeder.getDenizenObject();
+            case "father" ->  father.getDenizenObject();
+            case "mother" -> mother.getDenizenObject();
+            case "item" -> item;
+            case "experience" -> new ElementTag(experience);
+            default -> super.getContext(name);
+        };
     }
 
     @Override
     public void cancellationChanged() {
         // Prevent entities from continuing to breed with each other
-        if (cancelled) {
+        if (cancelled && entity.getBukkitEntity() instanceof Animals) {
             ((Animals) father.getLivingEntity()).setLoveModeTicks(0);
             ((Animals) mother.getLivingEntity()).setLoveModeTicks(0);
+        }
+        else if (cancelled && entity.getBukkitEntity() instanceof Villager) {
+            ((Villager) father.getLivingEntity()).getInventory().clear();
+            ((Villager) mother.getLivingEntity()).getInventory().clear();
         }
         super.cancellationChanged();
     }

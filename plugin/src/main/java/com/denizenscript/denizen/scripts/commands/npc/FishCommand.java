@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -96,7 +97,7 @@ public class FishCommand extends AbstractCommand {
             trait.stopFishing();
             return;
         }
-        npc.getEquipmentTrait().set(0, new ItemStack(Material.FISHING_ROD));
+        npc.getEquipmentTrait().set(Equipment.EquipmentSlot.HAND, new ItemStack(Material.FISHING_ROD));
         trait.setCatchPercent(percent.asInt());
         trait.setCatchType(FishingHelper.CatchType.valueOf(catchtype.asString().toUpperCase()));
         trait.startFishing(location);

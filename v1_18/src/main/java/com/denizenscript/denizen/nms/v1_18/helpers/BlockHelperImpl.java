@@ -2,10 +2,7 @@ package com.denizenscript.denizen.nms.v1_18.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
-import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -14,10 +11,11 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.minecraft.core.Registry;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.minecraft.core.*;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundUpdateTagsPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagNetworkSerialization;
@@ -48,6 +46,7 @@ import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_18_R2.tag.CraftBlockTag;
 import org.bukkit.craftbukkit.v1_18_R2.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_18_R2.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 
 import java.lang.invoke.MethodHandle;
@@ -116,25 +115,24 @@ public class BlockHelperImpl implements BlockHelper {
     }
 
     @Override
-    public CompoundTag getNbtData(Block block) {
+    public CompoundBinaryTag getNbtData(Block block) {
         BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(new BlockPos(block.getX(), block.getY(), block.getZ()), true);
         if (te != null) {
-            net.minecraft.nbt.CompoundTag compound = te.saveWithFullMetadata();
-            return CompoundTagImpl.fromNMSTag(compound);
+            CompoundTag nmsData = te.saveWithFullMetadata();
+            return NBTAdapter.toAPI(nmsData);
         }
         return null;
     }
 
     @Override
-    public void setNbtData(Block block, CompoundTag ctag) {
-        CompoundTagBuilder builder = ctag.createBuilder();
-        builder.putInt("x", block.getX());
-        builder.putInt("y", block.getY());
-        builder.putInt("z", block.getZ());
-        ctag = builder.build();
+    public void setNbtData(Block block, CompoundBinaryTag ctag) {
+        CompoundTag nmsData = NBTAdapter.toNMS(ctag);
+        nmsData.putInt("x", block.getX());
+        nmsData.putInt("y", block.getY());
+        nmsData.putInt("z", block.getZ());
         BlockPos blockPos = new BlockPos(block.getX(), block.getY(), block.getZ());
         BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(blockPos, true);
-        te.load(((CompoundTagImpl) ctag).toNMSTag());
+        te.load(nmsData);
     }
 
     @Override
@@ -303,7 +301,7 @@ public class BlockHelperImpl implements BlockHelper {
             SpawnerBlockEntity nmsSnapshot = (SpawnerBlockEntity) craftBlockEntityState_snapshot.get(bukkitSpawner);
             BaseSpawner nmsSpawner = nmsSnapshot.getSpawner();
             SpawnData toSpawn = nmsSpawner.nextSpawnData;
-            net.minecraft.nbt.CompoundTag tag = toSpawn.getEntityToSpawn();
+            CompoundTag tag = toSpawn.getEntityToSpawn();
             nmsEntity.saveWithoutId(tag);
         }
         catch (Throwable ex) {
@@ -337,7 +335,7 @@ public class BlockHelperImpl implements BlockHelper {
     public static MethodHandle Holder_Reference_bindTags = ReflectionHelper.getMethodHandle(Holder.Reference.class, ReflectionMappingsInfo.Holder_Reference_bindTags, Collection.class);
 
     @Override
-    public void setVanillaTags(Material material, Set<String> tags) {
+    public void setVanillaTags(Material material, Set<NamespacedKey> tags) {
         Holder<net.minecraft.world.level.block.Block> nmsHolder = getMaterialBlock(material).builtInRegistryHolder();
         nmsHolder.tags().forEach(nmsTag -> {
             HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = Registry.BLOCK.getTag(nmsTag).orElse(null);
@@ -355,8 +353,8 @@ public class BlockHelperImpl implements BlockHelper {
             VanillaTagHelper.updateMaterialTag(new CraftBlockTag(Registry.BLOCK, nmsTag));
         });
         List<TagKey<net.minecraft.world.level.block.Block>> newNmsTags = new ArrayList<>();
-        for (String tag : tags) {
-            TagKey<net.minecraft.world.level.block.Block> newNmsTag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(tag));
+        for (NamespacedKey tag : tags) {
+            TagKey<net.minecraft.world.level.block.Block> newNmsTag = TagKey.create(Registry.BLOCK_REGISTRY, CraftNamespacedKey.toMinecraft(tag));
             HolderSet.Named<net.minecraft.world.level.block.Block> nmsHolderSet = Registry.BLOCK.getOrCreateTag(newNmsTag);
             List<Holder<net.minecraft.world.level.block.Block>> nmsHolders = nmsHolderSet.stream().collect(Collectors.toCollection(ArrayList::new));
             nmsHolders.add(nmsHolder);

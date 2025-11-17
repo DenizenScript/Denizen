@@ -26,7 +26,7 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
     //
     // @Cancellable true
     //
-    // @Triggers when a projectile entity collides with an entity (before any damage calculations are done).
+    // @Triggers N/A - use <@link event projectile hits> with the 'entity' switch on versions above 1.19.
     //
     // @Context
     // <context.projectile> returns the projectile that is colliding.
@@ -35,7 +35,7 @@ public class ProjectileCollideScriptEvent extends BukkitScriptEvent implements L
     // @Player When the entity collided with is a player.
     // @NPC When the entity collided with is a NPC.
     //
-    // @deprecated Use <@link event projectile hits> with the 'entity' switch on versions above 1.19.
+    // @deprecated Use 'projectile hits' with the 'entity' switch on versions above 1.19.
     //
     // -->
 

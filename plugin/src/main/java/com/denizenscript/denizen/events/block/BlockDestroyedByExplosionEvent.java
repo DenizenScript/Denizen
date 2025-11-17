@@ -70,13 +70,13 @@ public class BlockDestroyedByExplosionEvent extends BukkitScriptEvent implements
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "block": return location;
-            case "source_location": return new LocationTag(blockEvent != null ? blockEvent.getBlock().getLocation() : entityEvent.getLocation());
-            case "source_entity": return entityEvent == null ? null : new EntityTag(entityEvent.getEntity());
-            case "strength": return new ElementTag(blockEvent != null ? blockEvent.getYield() : entityEvent.getYield());
-            default: return super.getContext(name);
-        }
+        return switch (name) {
+            case "block" -> location;
+            case "source_location" -> new LocationTag(blockEvent != null ? blockEvent.getBlock().getLocation() : entityEvent.getLocation());
+            case "source_entity" -> entityEvent == null ? null : new EntityTag(entityEvent.getEntity());
+            case "strength" -> new ElementTag(blockEvent != null ? blockEvent.getYield() : entityEvent.getYield());
+            default -> super.getContext(name);
+        };
     }
 
     @Override

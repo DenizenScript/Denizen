@@ -16,19 +16,16 @@ import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.ServerboundResourcePackPacket;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.CommonListenerCookie;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_21_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_21_R6.block.CraftBlock;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
-    public String brand = "unknown";
-
     public BlockPos fakeSignExpected;
 
     public DenizenPacketListenerImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer) {
-        super(networkManager, entityPlayer, entityPlayer.connection, new CommonListenerCookie(entityPlayer.getGameProfile(), entityPlayer.connection.latency(), entityPlayer.clientInformation(), entityPlayer.connection.isTransferred()));
+        super(networkManager, entityPlayer, entityPlayer.connection);
     }
 
     @Override
@@ -79,7 +76,7 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
     @Override
     public void handleContainerClick(ServerboundContainerClickPacket packet) {
         FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(player.getUUID(), getCraftPlayer());
-        if (override != null && packet.getContainerId() == 0) {
+        if (override != null && packet.containerId() == 0) {
             Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), player.getBukkitEntity()::updateInventory, 1);
         }
         super.handleContainerClick(packet);

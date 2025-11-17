@@ -3,8 +3,6 @@ package com.denizenscript.denizen.nms;
 import com.denizenscript.denizen.nms.abstracts.*;
 import com.denizenscript.denizen.nms.interfaces.*;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.Tag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -19,7 +17,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public abstract class NMSHandler {
@@ -31,8 +28,7 @@ public abstract class NMSHandler {
     public static boolean debugPackets = false;
     public static String debugPacketFilter = "";
 
-    public static boolean initialize(JavaPlugin plugin) {
-        javaPlugin = plugin;
+    static {
         String bukkitVersion = Bukkit.getBukkitVersion();
         for (NMSVersion potentialVersion : NMSVersion.values()) {
             if (bukkitVersion.startsWith(potentialVersion.minecraftVersion)) {
@@ -42,6 +38,12 @@ public abstract class NMSHandler {
         }
         if (version == null) {
             version = NMSVersion.NOT_SUPPORTED;
+        }
+    }
+
+    public static boolean initialize(JavaPlugin plugin) {
+        javaPlugin = plugin;
+        if (getVersion() == NMSVersion.NOT_SUPPORTED) {
             instance = null;
             return false;
         }
@@ -88,7 +90,7 @@ public abstract class NMSHandler {
     public static WorldHelper worldHelper;
     public static EnchantmentHelper enchantmentHelper;
 
-    public boolean isCorrectMappingsCode() {
+    public boolean isExactServerVersionMatch() {
         return true;
     }
 
@@ -117,12 +119,6 @@ public abstract class NMSHandler {
     }
 
     public abstract double[] getRecentTps();
-
-    public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
-
-    public CompoundTag parseSNBT(String snbt) {
-        throw new UnsupportedOperationException();
-    }
 
     public abstract String getTitle(Inventory inventory);
 

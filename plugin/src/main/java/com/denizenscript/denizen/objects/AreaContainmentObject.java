@@ -49,6 +49,21 @@ public interface AreaContainmentObject extends ObjectTag {
     //
     // -->
 
+    // <--[extension]
+    // @name Note Command Extension
+    // @target_type command
+    // @target_name Note
+    // @Description
+    // Notable object types: CuboidTag, EllipsoidTag, PolygonTag, LocationTag, InventoryTag
+    // @Tags
+    // <server.notes[<type>]>
+    // <CuboidTag.note_name>
+    // <EllipsoidTag.note_name>
+    // <PolygonTag.note_name>
+    // <InventoryTag.note_name>
+    // <LocationTag.note_name>
+    // -->
+
     String getNoteName();
 
     boolean doesContainLocation(Location loc);

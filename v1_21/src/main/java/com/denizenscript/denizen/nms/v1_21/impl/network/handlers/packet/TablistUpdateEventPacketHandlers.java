@@ -73,13 +73,13 @@ public class TablistUpdateEventPacketHandlers {
             for (ClientboundPlayerInfoUpdatePacket.Entry update : infoPacket.entries()) {
                 GameProfile profile = update.profile();
                 String texture = null, signature = null;
-                if (profile.getProperties().containsKey("textures")) {
-                    Property property = profile.getProperties().get("textures").stream().findFirst().get();
+                if (profile.properties().containsKey("textures")) {
+                    Property property = profile.properties().get("textures").stream().findFirst().get();
                     texture = property.value();
                     signature = property.signature();
                 }
                 String modeText = update.gameMode() == null ? null : update.gameMode().name();
-                PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.getId(), update.listed(), profile.getName(),
+                PlayerReceivesTablistUpdateScriptEvent.TabPacketData data = new PlayerReceivesTablistUpdateScriptEvent.TabPacketData(mode, profile.id(), update.listed(), profile.name(),
                         update.displayName() == null ? null : FormattedTextHelper.stringify(Handler.componentToSpigot(update.displayName())), modeText, texture, signature, update.latency());
                 PlayerReceivesTablistUpdateScriptEvent.fire(networkManager.player.getBukkitEntity(), data);
                 if (data.modified) {
@@ -93,11 +93,8 @@ public class TablistUpdateEventPacketHandlers {
                         }
                     }
                     if (!data.cancelled) {
-                        GameProfile newProfile = new GameProfile(data.id, data.name);
-                        if (data.texture != null) {
-                            newProfile.getProperties().put("textures", new Property("textures", data.texture, data.signature));
-                        }
-                        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(newProfile.getId(), newProfile, data.isListed, data.latency, data.gamemode == null ? null : GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
+                        GameProfile newProfile = ProfileEditorImpl.createGameProfile(data.id, data.name, data.texture, data.signature);
+                        ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(newProfile.id(), newProfile, data.isListed, data.latency, data.gamemode == null ? null : GameType.byName(CoreUtilities.toLowerCase(data.gamemode)),
                                 data.display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(data.display, ChatColor.WHITE)), update.showHat(), update.listOrder(), update.chatSession());
                         networkManager.oldManager.send(ProfileEditorImpl.createInfoPacket(infoPacket.actions(), Collections.singletonList(entry)));
                     }

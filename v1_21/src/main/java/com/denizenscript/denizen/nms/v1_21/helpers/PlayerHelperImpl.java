@@ -24,15 +24,13 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientboundUpdateTagsPacket;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -41,30 +39,37 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.players.NameAndId;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.server.players.ServerOpList;
 import net.minecraft.server.players.ServerOpListEntry;
 import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagNetworkSerialization;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.entity.Leashable;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.AABB;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R3.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R3.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_21_R3.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_21_R6.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R6.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R6.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R6.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R6.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R6.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -73,6 +78,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class PlayerHelperImpl extends PlayerHelper {
 
@@ -81,10 +87,8 @@ public class PlayerHelperImpl extends PlayerHelper {
     public static final Field FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundTickCount, int.class);
     public static final Field VEHICLE_FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundVehicleTickCount, int.class);
     public static final Field PASSENGERS_PACKET_PASSENGERS = ReflectionHelper.getFields(ClientboundSetPassengersPacket.class).get(ReflectionMappingsInfo.ClientboundSetPassengersPacket_passengers, int[].class);
-    public static final MethodHandle PLAYER_RESPAWNFORCED_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnForced, boolean.class);
+    public static final MethodHandle PLAYER_RESPAWNCONFIG_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnConfig, ServerPlayer.RespawnConfig.class);
     public static final MethodHandle SERVER_RECIPE_BOOK_ADD_HIGHLIGHT = ReflectionHelper.getMethodHandle(ServerRecipeBook.class, ReflectionMappingsInfo.ServerRecipeBook_addHighlight_method, ResourceKey.class);
-
-    public static final EntityDataAccessor<Byte> PLAYER_DATA_ACCESSOR_SKINLAYERS = ReflectionHelper.getFieldValue(net.minecraft.world.entity.player.Player.class, ReflectionMappingsInfo.Player_DATA_PLAYER_MODE_CUSTOMISATION, null);
 
     @Override
     public void stopSound(Player player, NamespacedKey sound, SoundCategory category) {
@@ -94,7 +98,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void deTrackEntity(Player player, Entity entity) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        ChunkMap.TrackedEntity tracker = nmsPlayer.serverLevel().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
+        ChunkMap.TrackedEntity tracker = nmsPlayer.level().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
         if (tracker == null) {
             if (NMSHandler.debugPackets) {
                 DenizenNetworkManagerImpl.doPacketOutput("Failed to de-track entity " + entity.getEntityId() + " for " + player.getName() + ": tracker null");
@@ -120,6 +124,31 @@ public class PlayerHelperImpl extends PlayerHelper {
         }
         for (PlayerTag player : players) {
             PacketHelperImpl.send(player.getPlayerEntity(), packet);
+        }
+    }
+
+    public record FakeEntitySynchronizer(ServerGamePacketListenerImpl target) implements ServerEntity.Synchronizer {
+
+        @Override
+        public void sendToTrackingPlayers(Packet<? super ClientGamePacketListener> packet) {
+            target.send(packet);
+        }
+
+        @Override
+        public void sendToTrackingPlayersAndSelf(Packet<? super ClientGamePacketListener> packet) {
+            sendToTrackingPlayers(packet);
+        }
+
+        @Override
+        public void sendToTrackingPlayersFiltered(Packet<? super ClientGamePacketListener> packet, Predicate<ServerPlayer> predicate) {
+            if (predicate.test(target.getPlayer())) {
+                sendToTrackingPlayers(packet);
+            }
+        }
+
+        @Override
+        public void sendToTrackingPlayersFilteredAndSelf(Packet<? super ClientGamePacketListener> packet, Predicate<ServerPlayer> predicate) {
+            sendToTrackingPlayersFiltered(packet, predicate);
         }
     }
 
@@ -187,7 +216,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         fake.triggerSpawnPacket = (player) -> {
             ServerPlayer nmsPlayer = ((CraftPlayer) player.getPlayerEntity()).getHandle();
             ServerGamePacketListenerImpl conn = nmsPlayer.connection;
-            final ServerEntity tracker = new ServerEntity(world.getHandle(), nmsEntity, 1, true, conn::send, Collections.singleton(nmsPlayer.connection));
+            final ServerEntity tracker = new ServerEntity(world.getHandle(), nmsEntity, 1, true, new FakeEntitySynchronizer(conn), Set.of(conn));
             tracker.addPairing(nmsPlayer);
             final TrackerData data = new TrackerData(player, tracker);
             trackers.add(data);
@@ -308,13 +337,13 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void setTemporaryOp(Player player, boolean op) {
         MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-        GameProfile profile = ((CraftPlayer) player).getProfile();
+        NameAndId nameAndId = new NameAndId(((CraftPlayer) player).getProfile());
         ServerOpList opList = server.getPlayerList().getOps();
         if (op) {
-            opList.add(new ServerOpListEntry(profile, server.getOperatorUserPermissionLevel(), opList.canBypassPlayerLimit(profile)));
+            opList.add(new ServerOpListEntry(nameAndId, server.operatorUserPermissionLevel(), opList.canBypassPlayerLimit(nameAndId)));
         }
         else {
-            opList.remove(profile);
+            opList.remove(nameAndId);
         }
         player.recalculatePermissions();
     }
@@ -362,12 +391,12 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public byte getSkinLayers(Player player) {
-        return ((CraftPlayer) player).getHandle().getEntityData().get(PLAYER_DATA_ACCESSOR_SKINLAYERS);
+        return ((CraftPlayer) player).getHandle().getEntityData().get(Avatar.DATA_PLAYER_MODE_CUSTOMISATION);
     }
 
     @Override
     public void setSkinLayers(Player player, byte flags) {
-        ((CraftPlayer) player).getHandle().getEntityData().set(PLAYER_DATA_ACCESSOR_SKINLAYERS, flags);
+        ((CraftPlayer) player).getHandle().getEntityData().set(Avatar.DATA_PLAYER_MODE_CUSTOMISATION, flags);
     }
 
     @Override
@@ -378,14 +407,16 @@ public class PlayerHelperImpl extends PlayerHelper {
 
     @Override
     public boolean getSpawnForced(Player player) {
-        return ((CraftPlayer) player).getHandle().isRespawnForced();
+        return ((CraftPlayer) player).getHandle().getRespawnConfig().forced();
     }
 
     @Override
     public void setSpawnForced(Player player, boolean forced) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         try {
-            PLAYER_RESPAWNFORCED_SETTER.invoke(nmsPlayer, forced);
+            ServerPlayer.RespawnConfig config = nmsPlayer.getRespawnConfig();
+            config = new ServerPlayer.RespawnConfig(config.respawnData(), forced);
+            PLAYER_RESPAWNCONFIG_SETTER.invoke(nmsPlayer, config);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -395,15 +426,16 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public Location getBedSpawnLocation(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        BlockPos spawnPosition = nmsPlayer.getRespawnPosition();
-        if (spawnPosition == null) {
+        ServerPlayer.RespawnConfig nmsRespawnConfig = nmsPlayer.getRespawnConfig();
+        if (nmsRespawnConfig == null) {
             return null;
         }
-        Level nmsWorld = MinecraftServer.getServer().getLevel(nmsPlayer.getRespawnDimension());
+        LevelData.RespawnData nmsRespawnData = nmsRespawnConfig.respawnData();
+        Level nmsWorld = MinecraftServer.getServer().getLevel(nmsRespawnData.dimension());
         if (nmsWorld == null) {
             return null;
         }
-        return new Location(nmsWorld.getWorld(), spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ(), nmsPlayer.getRespawnAngle(), 0);
+        return CraftLocation.toBukkit(nmsRespawnData.pos(), nmsWorld.getWorld(), nmsRespawnData.yaw(), nmsRespawnData.pitch());
     }
 
     @Override
@@ -423,10 +455,7 @@ public class PlayerHelperImpl extends PlayerHelper {
                 case UPDATE_LISTED -> ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED;
             });
         }
-        GameProfile profile = new GameProfile(id, name != null ? name : ProfileEditorImpl.EMPTY_NAME);
-        if (texture != null) {
-            profile.getProperties().put("textures", new Property("textures", texture, signature));
-        }
+        GameProfile profile = ProfileEditorImpl.createGameProfile(id, name, texture, signature);
         // TODO: 1.21.3: Player list order and hat visibility support
         ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(id, profile, listed, latency, gameMode == null ? null : GameType.byId(gameMode.getValue()), display == null ? null : Handler.componentToNMS(FormattedTextHelper.parse(display, ChatColor.WHITE)), true, player.getPlayerListOrder(), null);
         PacketHelperImpl.send(player, ProfileEditorImpl.createInfoPacket(actions, List.of(entry)));
@@ -452,18 +481,18 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void refreshPlayer(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        ServerLevel nmsWorld = (ServerLevel) nmsPlayer.level();
+        ServerLevel nmsWorld = nmsPlayer.level();
         nmsPlayer.connection.send(new ClientboundRespawnPacket(nmsPlayer.createCommonSpawnInfo(nmsWorld), ClientboundRespawnPacket.KEEP_ALL_DATA));
-        nmsPlayer.connection.teleport(player.getLocation());
+        nmsPlayer.connection.internalTeleport(PositionMoveRotation.of(nmsPlayer), Set.of());
         if (nmsPlayer.isPassenger()) {
            nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer.getVehicle()));
         }
         if (nmsPlayer.isVehicle()) {
             nmsPlayer.connection.send(new ClientboundSetPassengersPacket(nmsPlayer));
         }
-        AABB boundingBox = new AABB(nmsPlayer.position(), nmsPlayer.position()).inflate(10);
-        for (Mob nmsMob : nmsWorld.getEntitiesOfClass(Mob.class, boundingBox, nmsMob -> nmsPlayer.equals(nmsMob.getLeashHolder()))) {
-            nmsPlayer.connection.send(new ClientboundSetEntityLinkPacket(nmsMob, nmsPlayer));
+        AABB boundingBox = AABB.ofSize(nmsPlayer.getBoundingBox().getCenter(), 32, 32, 32);
+        for (net.minecraft.world.entity.Entity nmsEntity : nmsWorld.getEntitiesOfClass(net.minecraft.world.entity.Entity.class, boundingBox, nmsEntity -> nmsEntity instanceof Leashable nmsLeashable && nmsPlayer.equals(nmsLeashable.getLeashHolder()))) {
+            nmsPlayer.connection.send(new ClientboundSetEntityLinkPacket(nmsEntity, nmsPlayer));
         }
         if (!nmsPlayer.getCooldowns().cooldowns.isEmpty()) {
             int tickCount = nmsPlayer.getCooldowns().tickCount;
@@ -471,9 +500,14 @@ public class PlayerHelperImpl extends PlayerHelper {
                 nmsPlayer.connection.send(new ClientboundCooldownPacket(entry.getKey(), entry.getValue().endTime - tickCount));
             }
         }
+        nmsPlayer.connection.send(new ClientboundSetExperiencePacket(nmsPlayer.experienceProgress, nmsPlayer.totalExperience, nmsPlayer.experienceLevel));
+        for (MobEffectInstance nmsEffect : nmsPlayer.getActiveEffects()) {
+            nmsPlayer.connection.send(new ClientboundUpdateMobEffectPacket(nmsPlayer.getId(), nmsEffect, false));
+        }
         nmsPlayer.onUpdateAbilities();
-        nmsPlayer.server.getPlayerList().sendPlayerPermissionLevel(nmsPlayer);
-        nmsPlayer.server.getPlayerList().sendLevelInfo(nmsPlayer, nmsWorld);
-        nmsPlayer.server.getPlayerList().sendAllPlayerInfo(nmsPlayer);
+        PlayerList nmsPlayerList = nmsPlayer.server.getPlayerList();
+        nmsPlayerList.sendPlayerPermissionLevel(nmsPlayer);
+        nmsPlayerList.sendLevelInfo(nmsPlayer, nmsWorld);
+        nmsPlayerList.sendAllPlayerInfo(nmsPlayer);
     }
 }

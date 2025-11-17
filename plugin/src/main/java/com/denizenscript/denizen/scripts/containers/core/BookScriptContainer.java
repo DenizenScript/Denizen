@@ -69,6 +69,10 @@ public class BookScriptContainer extends ScriptContainer {
         if (context == null) {
             context = new BukkitTagContext(null, null, new ScriptTag(this));
         }
+        else {
+            context = context.clone();
+            context.script = new ScriptTag(this);
+        }
         if (contains("signed", String.class)) {
             Material target = getString("signed").equalsIgnoreCase("false") ? Material.WRITABLE_BOOK : Material.WRITTEN_BOOK;
             if (book.getItemStack().getType() != target) {

@@ -56,22 +56,14 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "material": return new MaterialTag(event.getBlock());
-            case "cause": return cause;
-            case "entity":
-                if (event.getIgnitingEntity() != null) {
-                    return new EntityTag(event.getIgnitingEntity()).getDenizenObject();
-                }
-                break;
-            case "origin_location":
-                if (event.getIgnitingBlock() != null) {
-                    return new LocationTag(event.getIgnitingBlock().getLocation());
-                }
-                break;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "material" -> new MaterialTag(event.getBlock());
+            case "cause" -> cause;
+            case "entity" -> event.getIgnitingEntity() != null ? new EntityTag(event.getIgnitingEntity()).getDenizenObject() : null;
+            case "origin_location" -> event.getIgnitingBlock() != null ? new LocationTag(event.getIgnitingBlock().getLocation()) : null;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

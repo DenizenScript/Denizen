@@ -3,12 +3,12 @@ package com.denizenscript.denizen.utilities.blocks;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
-import com.denizenscript.denizen.nms.util.jnbt.*;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.kyori.adventure.nbt.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -20,19 +20,17 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 public class SpongeSchematicHelper {
 
-    public static String stringifyTag(Tag t) {
-        if (t instanceof StringTag) {
-            return ((StringTag) t).getValue();
+    public static String stringifyTag(BinaryTag tag) {
+        if (tag instanceof StringBinaryTag stringTag) {
+            return stringTag.value();
         }
-        else if (t instanceof ByteArrayTag) {
-            return new String(((ByteArrayTag) t).getValue(), StandardCharsets.UTF_8);
+        else if (tag instanceof ByteArrayBinaryTag byteArrayTag) {
+            return new String(byteArrayTag.value(), StandardCharsets.UTF_8);
         }
-        return t.toString();
+        return tag.toString();
     }
 
     public static ConcurrentHashMap<String, BlockData> blockDataCache = new ConcurrentHashMap<>();
@@ -60,27 +58,25 @@ public class SpongeSchematicHelper {
         boolean isPrimary = Bukkit.isPrimaryThread();
         CuboidBlockSet cbs = new CuboidBlockSet();
         try {
-            NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(is));
-            NamedTag rootTag = nbtStream.readNamedTag();
-            nbtStream.close();
-            if (!rootTag.getName().equals("Schematic")) {
+            Map.Entry<String, CompoundBinaryTag> rootTag = BinaryTagIO.reader().readNamed(is, BinaryTagIO.Compression.GZIP);
+            if (!rootTag.getKey().equals("Schematic")) {
                 throw new Exception("Tag 'Schematic' does not exist or is not first!");
             }
-            CompoundTag schematicTag = (CompoundTag) rootTag.getTag();
-            Map<String, Tag> schematic = schematicTag.getValue();
-            if (schematic.containsKey("DenizenEntities")) {
+            CompoundBinaryTag schematic = rootTag.getValue();
+            // TODO: adventure-nbt: compound tag contains
+            if (schematic.keySet().contains("DenizenEntities")) {
                 String entities = stringifyTag(schematic.get("DenizenEntities"));
                 cbs.entities = ListTag.valueOf(entities, CoreUtilities.errorButNoDebugContext);
             }
-            short width = getChildTag(schematic, "Width", ShortTag.class).getValue();
-            short length = getChildTag(schematic, "Length", ShortTag.class).getValue();
-            short height = getChildTag(schematic, "Height", ShortTag.class).getValue();
+            short width = getChildTag(schematic, "Width", BinaryTagTypes.SHORT).value();
+            short length = getChildTag(schematic, "Length", BinaryTagTypes.SHORT).value();
+            short height = getChildTag(schematic, "Height", BinaryTagTypes.SHORT).value();
             int originX = 0;
             int originY = 0;
             int originZ = 0;
-            if (schematic.containsKey("DenizenOffset")) {
+            if (schematic.keySet().contains("DenizenOffset")) {
                 // Note: "Offset" contains complete nonsense from WE, so just don't touch it.
-                int[] offsetArr = getChildTag(schematic, "DenizenOffset", IntArrayTag.class).getValue();
+                int[] offsetArr = getChildTag(schematic, "DenizenOffset", BinaryTagTypes.INT_ARRAY).value();
                 originX = offsetArr[0];
                 originY = offsetArr[1];
                 originZ = offsetArr[2];
@@ -92,11 +88,11 @@ public class SpongeSchematicHelper {
             cbs.center_y = originY;
             cbs.center_z = originZ;
             cbs.blocks = new FullBlockData[width * length * height];
-            Map<String, Tag> paletteMap = getChildTag(schematic, "Palette", CompoundTag.class).getValue();
+            CompoundBinaryTag paletteTag = getChildTag(schematic, "Palette", BinaryTagTypes.COMPOUND);
             HashMap<Integer, BlockData> palette = new HashMap<>(256);
             List<Map.Entry<Integer, String>> latePairs = isPrimary ? null : new ArrayList<>();
-            for (String key : paletteMap.keySet()) {
-                int id = getChildTag(paletteMap, key, IntTag.class).getValue();
+            for (String key : paletteTag.keySet()) {
+                int id = getChildTag(paletteTag, key, BinaryTagTypes.INT).value();
                 if (isPrimary) {
                     palette.put(id, blockDataCache.computeIfAbsent(key, SpongeSchematicHelper::unstableParseMaterial));
                 }
@@ -125,23 +121,22 @@ public class SpongeSchematicHelper {
                     }
                 }
             }
-            Map<BlockVector, Map<String, Tag>> tileEntitiesMap = new HashMap<>();
-            if (schematic.containsKey("BlockEntities")) {
-                List<Tag> tileEntities = getChildTag(schematic, "BlockEntities", JNBTListTag.class).getValue();
-                for (Tag tag : tileEntities) {
-                    if (!(tag instanceof CompoundTag)) {
+            Map<BlockVector, CompoundBinaryTag> tileEntitiesMap = new HashMap<>();
+            if (schematic.keySet().contains("BlockEntities")) {
+                ListBinaryTag tileEntities = getChildTag(schematic, "BlockEntities", BinaryTagTypes.LIST);
+                for (BinaryTag tag : tileEntities) {
+                    if (!(tag instanceof CompoundBinaryTag compoundTag)) {
                         continue;
                     }
-                    CompoundTag t = (CompoundTag) tag;
-                    int[] pos = getChildTag(t.getValue(), "Pos", IntArrayTag.class).getValue();
+                    int[] pos = getChildTag(compoundTag, "Pos", BinaryTagTypes.INT_ARRAY).value();
                     int x = pos[0];
                     int y = pos[1];
                     int z = pos[2];
                     BlockVector vec = new BlockVector(x, y, z);
-                    tileEntitiesMap.put(vec, t.getValue());
+                    tileEntitiesMap.put(vec, compoundTag);
                 }
             }
-            byte[] blocks = getChildTag(schematic, "BlockData", ByteArrayTag.class).getValue();
+            byte[] blocks = getChildTag(schematic, "BlockData", BinaryTagTypes.BYTE_ARRAY).value();
             int i = 0;
             int index = 0;
             while (i < blocks.length) {
@@ -165,14 +160,14 @@ public class SpongeSchematicHelper {
                 int cbsIndex = z + y * cbs.z_height + x * cbs.z_height * cbs.y_length;
                 BlockVector pt = new BlockVector(x, y, z);
                 if (tileEntitiesMap.containsKey(pt)) {
-                    block.tileEntityData = NMSHandler.instance.createCompoundTag(tileEntitiesMap.get(pt));
+                    block.tileEntityData = tileEntitiesMap.get(pt);
                 }
                 cbs.blocks[cbsIndex] = block;
                 index++;
             }
-            if (schematic.containsKey("DenizenFlags")) {
-                Map<String, Tag> flags = getChildTag(schematic, "DenizenFlags", CompoundTag.class).getValue();
-                for (Map.Entry<String, Tag> flagData : flags.entrySet()) {
+            if (schematic.keySet().contains("DenizenFlags")) {
+                CompoundBinaryTag flags = getChildTag(schematic, "DenizenFlags", BinaryTagTypes.COMPOUND);
+                for (Map.Entry<String, ? extends BinaryTag> flagData : flags) {
                     int flagIndex = Integer.parseInt(flagData.getKey());
                     cbs.blocks[flagIndex].flags = MapTag.valueOf(stringifyTag(flagData.getValue()), CoreUtilities.noDebugContext);
                 }
@@ -184,30 +179,30 @@ public class SpongeSchematicHelper {
         return cbs;
     }
 
-    private static <T extends Tag> T getChildTag(Map<String, Tag> items, String key, Class<T> expected) throws Exception {
-        if (!items.containsKey(key)) {
+    private static <T extends BinaryTag> T getChildTag(CompoundBinaryTag compoundTag, String key, BinaryTagType<T> expected) throws Exception {
+        BinaryTag tag = compoundTag.get(key);
+        if (tag == null) {
             throw new Exception("Schem file is missing a '" + key + "' tag");
         }
-        Tag tag = items.get(key);
-        if (!expected.isInstance(tag)) {
-            throw new Exception(key + " tag is not of tag type " + expected.getName());
+        if (tag.type() != expected) {
+            throw new Exception(key + " tag is not of tag type " + expected);
         }
-        return expected.cast(tag);
+        return (T) tag;
     }
 
     public static void saveToSpongeStream(CuboidBlockSet blockSet, OutputStream os) {
         try {
-            HashMap<String, Tag> schematic = new HashMap<>();
-            schematic.put("Width", new ShortTag((short) (blockSet.x_width)));
-            schematic.put("Length", new ShortTag((short) (blockSet.z_height)));
-            schematic.put("Height", new ShortTag((short) (blockSet.y_length)));
-            schematic.put("DenizenOffset", new IntArrayTag(new int[] {blockSet.center_x, blockSet.center_y, blockSet.center_z}));
+            CompoundBinaryTag.Builder schematic = CompoundBinaryTag.builder();
+            schematic.putShort("Width", (short) blockSet.x_width);
+            schematic.putShort("Length", (short) blockSet.z_height);
+            schematic.putShort("Height", (short) blockSet.y_length);
+            schematic.putIntArray("DenizenOffset", new int[] {blockSet.center_x, blockSet.center_y, blockSet.center_z});
             if (blockSet.entities != null) {
-                schematic.put("DenizenEntities", new ByteArrayTag(blockSet.entities.toString().getBytes(StandardCharsets.UTF_8)));
+                schematic.putByteArray("DenizenEntities", blockSet.entities.toString().getBytes(StandardCharsets.UTF_8));
             }
-            Map<String, Tag> palette = new HashMap<>();
+            Map<String, BinaryTag> palette = new HashMap<>();
             ByteArrayOutputStream blocksBuffer = new ByteArrayOutputStream((blockSet.x_width) * (blockSet.y_length) * (blockSet.z_height));
-            ArrayList<Tag> tileEntities = new ArrayList<>();
+            ListBinaryTag.Builder<CompoundBinaryTag> tileEntities = ListBinaryTag.builder(BinaryTagTypes.COMPOUND);
             int paletteMax = 0;
             for (int y = 0; y < blockSet.y_length; y++) {
                 for (int z = 0; z < blockSet.z_height; z++) {
@@ -215,47 +210,41 @@ public class SpongeSchematicHelper {
                         int cbsIndex = z + y * blockSet.z_height + x * blockSet.z_height * blockSet.y_length;
                         FullBlockData bd = blockSet.blocks[cbsIndex];
                         String dataStr = bd.data.getAsString();
-                        Tag blockIdTag = palette.get(dataStr);
+                        BinaryTag blockIdTag = palette.get(dataStr);
                         if (blockIdTag == null) {
-                            blockIdTag = new IntTag(paletteMax++);
+                            blockIdTag = IntBinaryTag.intBinaryTag(paletteMax++);
                             palette.put(dataStr, blockIdTag);
                         }
-                        int blockId = ((IntTag) blockIdTag).getValue();
+                        int blockId = ((IntBinaryTag) blockIdTag).value();
                         while ((blockId & -128) != 0) {
                             blocksBuffer.write(blockId & 127 | 128);
                             blockId >>>= 7;
                         }
                         blocksBuffer.write(blockId);
-                        CompoundTag rawTag = bd.tileEntityData;
+                        CompoundBinaryTag rawTag = bd.tileEntityData;
                         if (rawTag != null) {
-                            HashMap<String, Tag> values = new HashMap<>(rawTag.getValue());
-                            values.put("Pos", new IntArrayTag(new int[] { x, y, z }));
-                            CompoundTag tileEntityTag = NMSHandler.instance.createCompoundTag(values);
+                            CompoundBinaryTag tileEntityTag = rawTag.putIntArray("Pos", new int[] { x, y, z });
                             tileEntities.add(tileEntityTag);
                         }
                     }
                 }
             }
-            schematic.put("PaletteMax", new IntTag(paletteMax));
-            schematic.put("Palette", NMSHandler.instance.createCompoundTag(palette));
-            schematic.put("BlockData", new ByteArrayTag(blocksBuffer.toByteArray()));
-            schematic.put("BlockEntities", new JNBTListTag(CompoundTag.class, tileEntities));
+            schematic.putInt("PaletteMax", paletteMax);
+            schematic.put("Palette", CompoundBinaryTag.from(palette));
+            schematic.putByteArray("BlockData", blocksBuffer.toByteArray());
+            schematic.put("BlockEntities", tileEntities.build());
             if (blockSet.hasFlags) {
-                Map<String, Tag> flagMap = new HashMap<>();
+                Map<String, BinaryTag> flagMap = new HashMap<>();
                 for (int i = 0; i < blockSet.blocks.length; i++) {
                     if (blockSet.blocks[i].flags != null) {
-                        flagMap.put(String.valueOf(i), new ByteArrayTag(blockSet.blocks[i].flags.toString().getBytes(StandardCharsets.UTF_8)));
+                        flagMap.put(String.valueOf(i), ByteArrayBinaryTag.byteArrayBinaryTag(blockSet.blocks[i].flags.toString().getBytes(StandardCharsets.UTF_8)));
                     }
                 }
                 if (!flagMap.isEmpty()) {
-                    schematic.put("DenizenFlags", NMSHandler.instance.createCompoundTag(flagMap));
+                    schematic.put("DenizenFlags", CompoundBinaryTag.from(flagMap));
                 }
             }
-            CompoundTag schematicTag = NMSHandler.instance.createCompoundTag(schematic);
-            NBTOutputStream stream = new NBTOutputStream(new GZIPOutputStream(os));
-            stream.writeNamedTag("Schematic", schematicTag);
-            os.flush();
-            stream.close();
+            BinaryTagIO.writer().writeNamed(Map.entry("Schematic", schematic.build()), os, BinaryTagIO.Compression.GZIP);
         }
         catch (Exception ex) {
             Debug.echoError(ex);

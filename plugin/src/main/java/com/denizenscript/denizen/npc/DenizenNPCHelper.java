@@ -8,21 +8,17 @@ import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 public class DenizenNPCHelper implements Listener {
@@ -32,7 +28,6 @@ public class DenizenNPCHelper implements Listener {
     public DenizenNPCHelper() {
         if (Depends.citizens != null) {
             Bukkit.getPluginManager().registerEvents(this, Denizen.getInstance());
-            INVENTORY_TRAIT_VIEW = ReflectionHelper.getFields(net.citizensnpcs.api.trait.trait.Inventory.class).get("view");
         }
         actionHandler = new ActionHandler();
     }
@@ -56,17 +51,13 @@ public class DenizenNPCHelper implements Listener {
         if (npc == null) {
             return null;
         }
-        /*if (!npcInventories.containsKey(npc.getId())) {
-            _registerNPC(npc);
-        }
-        return npcInventories.get(npc.getId());*/
         if (npc.isSpawned() && npc.getEntity() instanceof InventoryHolder) {
             return ((InventoryHolder) npc.getEntity()).getInventory();
         }
         else {
             try {
                 NPCTag npcTag = new NPCTag(npc);
-                Inventory inv = (Inventory) INVENTORY_TRAIT_VIEW.get(npcTag.getInventoryTrait());
+                Inventory inv = npcTag.getInventoryTrait().getInventoryView();
                 if (inv != null) {
                     return inv;
                 }
@@ -83,8 +74,6 @@ public class DenizenNPCHelper implements Listener {
             }
         }
     }
-
-    public static Field INVENTORY_TRAIT_VIEW;
 
     // <--[action]
     // @Actions
@@ -155,18 +144,5 @@ public class DenizenNPCHelper implements Listener {
     public void onRemove(NPCRemoveEvent event) {
         NPC npc = event.getNPC();
         new NPCTag(npc).action("remove", null);
-    }
-
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        Inventory inventory = event.getInventory();
-        if (inventory.getHolder() instanceof NPCTag) {
-            NPCTag npc = (NPCTag) inventory.getHolder();
-            npc.getInventory().setContents(inventory.getContents());
-            Equipment equipment = npc.getEquipmentTrait();
-            for (int i = 0; i < 5; i++) {
-                equipment.set(i, inventory.getItem(i));
-            }
-        }
     }
 }

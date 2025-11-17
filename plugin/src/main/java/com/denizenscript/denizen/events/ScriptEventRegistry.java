@@ -82,6 +82,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BrewingStandFueledScriptEvent.class);
         ScriptEvent.registerScriptEvent(BrewsScriptEvent.class);
         ScriptEvent.registerScriptEvent(CauldronLevelChangeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(DragonEggMovesScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceBurnsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceStartsSmeltingScriptEvent.class);
         ScriptEvent.registerScriptEvent(LeafDecaysScriptEvent.class);
@@ -177,14 +178,14 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BiomeEnterExitScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockDropsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(ChatScriptEvent.class);
-        ScriptEvent.registerScriptEvent(HotbarScrollScriptEvent.class);
         ScriptEvent.registerScriptEvent(ExperienceBottleBreaksScriptEvent.class);
+        ScriptEvent.registerScriptEvent(HotbarScrollScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerAnimatesScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerArmorStandManipulateScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBreaksBlockScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerBreaksItemScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerChangesMainHandScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesGamemodeScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerChangesMainHandScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesSignScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesWorldScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerChangesXPScriptEvent.class);
@@ -206,6 +207,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerFlyingScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerHearsSoundScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerIncreasesExhaustionLevelScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(PlayerInputScriptEvent.class);
+        }
         if (!Denizen.supportsPaper) {
             ScriptEvent.registerScriptEvent(PlayerItemTakesDamageScriptEvent.class);
         }
@@ -227,6 +231,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerPreLoginScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerPreparesAnvilCraftScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerPreparesEnchantScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerPreparesSmithingTableScriptEvent.class);
         if (!Denizen.supportsPaper) {
             ScriptEvent.registerScriptEvent(PlayerQuitsScriptEvent.class);
         }
@@ -238,13 +243,13 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(PlayerReceivesMessageScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerReceivesPacketScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerReceivesTablistUpdateScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerRecipeDiscoverScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerRespawnsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerRightClicksEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerRiptideScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSendPacketScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerShearsScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSmithsItemScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayersPrepareSmithingTableScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSneakScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSprintScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerStandsOnScriptEvent.class);

@@ -1,18 +1,18 @@
 package com.denizenscript.denizen.utilities.command.scripted;
 
-import com.denizenscript.denizen.utilities.depends.Depends;
-import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.CommandScriptContainer;
 import com.denizenscript.denizen.tags.BukkitTagContext;
+import com.denizenscript.denizen.utilities.depends.Depends;
+import com.denizenscript.denizencore.objects.ArgumentHelper;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.tags.TagManager;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.SimpleDefinitionProvider;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
@@ -36,10 +36,10 @@ public class DenizenCommand extends Command {
     public DenizenCommand(CommandScriptContainer script) {
         super(script.getCommandName(), script.getDescription(), script.getUsage(), script.getAliases());
         String permission = script.getPermission();
-        if (permission != null && !permission.equals("")) {
+        if (permission != null && !permission.isEmpty()) {
             this.setPermission(permission);
             String permissionMessage = script.getPermissionMessage();
-            if (permissionMessage != null && !permissionMessage.equals("")) {
+            if (permissionMessage != null && !permissionMessage.isEmpty()) {
                 this.setPermissionMessage(permissionMessage);
             }
         }
@@ -102,10 +102,6 @@ public class DenizenCommand extends Command {
                 if (citizen != null) {
                     npc = new NPCTag(citizen);
                 }
-            }
-            if (permissionMessage.contains("<permission>")) {
-                BukkitImplDeprecations.pseudoTagBases.warn(script);
-                permissionMessage = permissionMessage.replace("<permission>", getPermission());
             }
             BukkitTagContext context = new BukkitTagContext(player, npc, null, false, new ScriptTag(script));
             context.definitionProvider = new SimpleDefinitionProvider();

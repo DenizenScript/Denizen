@@ -12,9 +12,10 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R3.CraftRegistry;
 
 import java.lang.invoke.MethodHandle;
 
@@ -78,22 +79,24 @@ public class EntityItemProjectileImpl extends ThrowableProjectile {
     }
 
     @Override
-    public boolean save(net.minecraft.nbt.CompoundTag nbttagcompound) {
+    public boolean save(ValueOutput nmsValueOutput) {
         if (!this.getItemStack().isEmpty()) {
-            nbttagcompound.put("Item", this.getItemStack().save(CraftRegistry.getMinecraftRegistry()));
+            nmsValueOutput.store("Item", ItemStack.CODEC, this.getItemStack());
         }
-        super.save(nbttagcompound);
+        super.save(nmsValueOutput);
         return true;
     }
 
     @Override
-    public void load(net.minecraft.nbt.CompoundTag nbttagcompound) {
-        net.minecraft.nbt.CompoundTag nbttagcompound1 = nbttagcompound.getCompound("Item");
-        this.setItemStack(ItemStack.parseOptional(CraftRegistry.getMinecraftRegistry(), nbttagcompound1));
-        if (this.getItemStack().isEmpty()) {
+    public void load(ValueInput nmsValueInput) {
+        ItemStack nmsItemStack = nmsValueInput.read("Item", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+        if (nmsItemStack.isEmpty()) {
             this.remove(RemovalReason.KILLED);
         }
-        super.load(nbttagcompound);
+        else {
+            this.setItemStack(nmsItemStack);
+        }
+        super.load(nmsValueInput);
     }
 
     @Override

@@ -14,7 +14,6 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     // <--[event]
     // @Events
     // liquid spreads
-    // dragon egg moves
     //
     // @Switch type:<block> to only run if the block spreading matches the material input.
     //
@@ -24,7 +23,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Cancellable true
     //
-    // @Triggers when a liquid block spreads or dragon egg moves.
+    // @Triggers when a liquid block spreads.
     //
     // @Context
     // <context.destination> returns the LocationTag the block spread to.
@@ -35,8 +34,6 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
 
     public LiquidSpreadScriptEvent() {
         registerCouldMatcher("liquid spreads");
-        registerCouldMatcher("<block> spreads"); // NOTE: exists for historical compat reasons.
-        registerCouldMatcher("dragon egg moves"); // TODO: this should just be a separate event?
         registerSwitches("type");
     }
 
@@ -46,29 +43,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     public BlockFromToEvent event;
 
     @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!super.couldMatch(path)) {
-            return false;
-        }
-        if (path.eventLower.startsWith("block")) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public boolean matches(ScriptPath path) {
-        if (path.eventLower.startsWith("dragon egg moves")) {
-            if (material.getMaterial() != Material.DRAGON_EGG) {
-                return false;
-            }
-        }
-        else {
-            String mat = path.eventArgLowerAt(0);
-            if (!mat.equals("liquid") && !material.tryAdvancedMatcher(mat, path.context)) {
-                return false;
-            }
-        }
         if (!path.tryObjectSwitch("type", material)) {
             return false;
         }
@@ -80,16 +55,19 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "destination": return destination;
-            case "material": return material;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "destination" -> destination;
+            case "material" -> material;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
     public void onLiquidSpreads(BlockFromToEvent event) {
+        if (event.getBlock().getType() == Material.DRAGON_EGG) { // BlockFromToEvent also fires with DragonEggMovesScriptEvent
+            return;
+        }
         destination = new LocationTag(event.getToBlock().getLocation());
         location = new LocationTag(event.getBlock().getLocation());
         material = new MaterialTag(event.getBlock());

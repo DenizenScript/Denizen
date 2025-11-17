@@ -15,9 +15,7 @@ public class ItemCustomModel extends ItemProperty<ElementTag> {
     // @description
     // Controls the custom model data ID number of the item.
     // Use with no input to remove the custom model data.
-    // @tags
-    // <ItemTag.has_custom_model_data>
-    // <ItemTag.custom_model_data>
+    // See also <@link tag ItemTag.has_custom_model_data>
     // -->
     public static boolean describes(ItemTag item) {
         return !item.getBukkitMaterial().isAir();

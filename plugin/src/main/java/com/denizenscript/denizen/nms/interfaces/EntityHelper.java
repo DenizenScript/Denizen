@@ -2,12 +2,12 @@ package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.events.entity.EntityEntersVehicleScriptEvent;
 import com.denizenscript.denizen.events.entity.EntityExitsVehicleScriptEvent;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
@@ -60,9 +60,9 @@ public abstract class EntityHelper {
 
     public abstract void forceInteraction(Player player, Location location);
 
-    public abstract CompoundTag getNbtData(Entity entity);
+    public abstract CompoundBinaryTag getNbtData(Entity entity);
 
-    public abstract void setNbtData(Entity entity, CompoundTag compoundTag);
+    public abstract void setNbtData(Entity entity, CompoundBinaryTag compoundTag);
 
     public abstract void stopFollowing(Entity follower);
 
@@ -394,7 +394,7 @@ public abstract class EntityHelper {
 
     public abstract void setBoundingBox(Entity entity, BoundingBox box);
 
-    public List<Player> getPlayersThatSee(Entity entity) { // TODO: once the minimum supported version is 1.20, remove from NMS
+    public List<Player> getPlayersThatSee(Entity entity) { // TODO: once 1.20 is the minimum supported version, remove from NMS
         return List.copyOf(entity.getTrackedBy());
     }
 
@@ -406,7 +406,7 @@ public abstract class EntityHelper {
 
     public abstract void setHeadAngle(LivingEntity entity, float angle);
 
-    public void setGhastAttacking(Ghast ghast, boolean attacking) { // TODO: once minimum version is 1.19 or higher, remove from NMS
+    public void setGhastAttacking(Ghast ghast, boolean attacking) { // TODO: once 1.19 is the minimum supported version, remove from NMS
         ghast.setCharging(attacking);
     }
 
@@ -485,11 +485,11 @@ public abstract class EntityHelper {
 
     public abstract void openHorseInventory(Player player, AbstractHorse horse);
 
-    public CompoundTag getRawNBT(Entity entity) {
+    public CompoundBinaryTag getRawNBT(Entity entity) {
         throw new UnsupportedOperationException();
     }
 
-    public void modifyRawNBT(Entity entity, CompoundTag tag) {
+    public void modifyRawNBT(Entity entity, CompoundBinaryTag tag) {
         throw new UnsupportedOperationException();
     }
 

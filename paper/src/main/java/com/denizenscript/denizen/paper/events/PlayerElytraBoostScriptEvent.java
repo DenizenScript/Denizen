@@ -8,7 +8,6 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.destroystokyo.paper.event.player.PlayerElytraBoostEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,6 +46,13 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
     public PlayerElytraBoostScriptEvent() {
         registerCouldMatcher("player boosts elytra");
         registerSwitches("with", "elytra");
+        this.<PlayerElytraBoostScriptEvent, ElementTag>registerOptionalDetermination("keep", ElementTag.class, (evt, context, value) -> {
+            if (value.isBoolean()) {
+                evt.event.setShouldConsume(!value.asBoolean());
+                return true;
+            }
+            return false;
+        });
     }
 
     public PlayerElytraBoostEvent event;
@@ -74,26 +80,12 @@ public class PlayerElytraBoostScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "item":
-                return firework;
-            case "entity":
-                return new EntityTag(event.getFirework());
-            case "should_keep":
-                return new ElementTag(!event.shouldConsume());
-        }
-        return super.getContext(name);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = CoreUtilities.toLowerCase(determinationObj.toString());
-        if (determination.startsWith("keep:")) {
-            String value = determination.substring("keep:".length());
-            event.setShouldConsume(!(new ElementTag(value).asBoolean()));
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
+        return switch (name) {
+            case "item" -> firework;
+            case "entity" -> new EntityTag(event.getFirework());
+            case "should_keep" -> new ElementTag(!event.shouldConsume());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

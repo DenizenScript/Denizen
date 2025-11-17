@@ -1,12 +1,9 @@
 package com.denizenscript.denizen.nms.interfaces;
 
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.objects.EntityTag;
-import org.bukkit.Color;
-import org.bukkit.Instrument;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
+import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
@@ -22,9 +19,9 @@ public interface BlockHelper {
 
     void setPlayerProfile(Skull skull, PlayerProfile playerProfile);
 
-    CompoundTag getNbtData(Block block);
+    CompoundBinaryTag getNbtData(Block block);
 
-    void setNbtData(Block block, CompoundTag compoundTag);
+    void setNbtData(Block block, CompoundBinaryTag compoundTag);
 
     boolean setBlockResistance(Material material, float resistance);
 
@@ -68,7 +65,7 @@ public interface BlockHelper {
         return Material.matchMaterial(material).createBlockData(otherData);
     }
 
-    void makeBlockStateRaw(BlockState state);
+    default void makeBlockStateRaw(BlockState state) {} // TODO: once 1.19 is the minimum supported version, remove this
 
     void doRandomTick(Location location);
 
@@ -92,7 +89,7 @@ public interface BlockHelper {
         return block.getBlockData().getMapColor();
     }
 
-    default void setVanillaTags(Material material, Set<String> tags) {
+    default void setVanillaTags(Material material, Set<NamespacedKey> tags) { // TODO: once 1.21 is the minimum supported version, remove this
         throw new UnsupportedOperationException();
     }
 }
