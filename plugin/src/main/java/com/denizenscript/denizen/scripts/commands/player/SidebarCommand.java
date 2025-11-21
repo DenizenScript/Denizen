@@ -3,6 +3,7 @@ package com.denizenscript.denizen.scripts.commands.player;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.tags.ParseableTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
@@ -20,6 +21,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public class SidebarCommand extends AbstractCommand {
 
@@ -123,11 +125,11 @@ public class SidebarCommand extends AbstractCommand {
         if (players == null) {
             players = Utilities.entryHasPlayer(scriptEntry) ? Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)) : Collections.emptyList();
         }
-        ElementTag parsedTitle = (perPlayer || title == null) ? null : new ElementTag(TagManager.tag(title, scriptEntry.getContext()));
+        ElementTag parsedTitle = (perPlayer || title == null) ? null : TagManager.tagObject(title, scriptEntry.getContext()).asElement();
         ListTag parsedValues = (perPlayer || values == null) ? null : ListTag.valueOf(TagManager.tag(values, scriptEntry.getContext()), scriptEntry.getContext());
         ListTag parsedScores = (perPlayer || scores == null) ? null : ListTag.valueOf(TagManager.tag(scores, scriptEntry.getContext()), scriptEntry.getContext());
-        ElementTag parsedStart = (perPlayer || start == null) ? null : new ElementTag(TagManager.tag(start, scriptEntry.getContext()));
-        ElementTag parsedIncrement = perPlayer ? null : new ElementTag(TagManager.tag(increment, scriptEntry.getContext()));
+        ElementTag parsedStart = (perPlayer || start == null) ? null : TagManager.tagObject(start, scriptEntry.getContext()).asElement();
+        ElementTag parsedIncrement = perPlayer ? null : TagManager.tagObject(increment, scriptEntry.getContext()).asElement();
         Map<PlayerTag, PlayerSidebarData> sidebarData = new HashMap<>(players.size());
         for (PlayerTag player : players) {
             if (player == null || !player.isValid()) {
@@ -172,7 +174,7 @@ public class SidebarCommand extends AbstractCommand {
                     boolean removedAny = false;
                     List<Sidebar.SidebarLine> current = sidebar.getLines();
                     PlayerSidebarData data = entry.getValue();
-                    if (data.getScores() != null) {
+                    if (data.getScores() != null && !data.getScores().isEmpty()) {
                         try {
                             for (String scoreString : data.getScores()) {
                                 int score = Integer.parseInt(scoreString);
@@ -187,11 +189,9 @@ public class SidebarCommand extends AbstractCommand {
                             Debug.echoError(e);
                             continue;
                         }
-                        sidebar.setLines(current);
-                        sidebar.sendUpdate();
                         removedAny = true;
                     }
-                    if (data.getValues() != null) {
+                    if (data.getValues() != null && !data.getValues().isEmpty()) {
                         for (String line : data.getValues()) {
                             for (int i = 0; i < current.size(); i++) {
                                 if (current.get(i).text.equalsIgnoreCase(line)) {
@@ -199,13 +199,15 @@ public class SidebarCommand extends AbstractCommand {
                                 }
                             }
                         }
-                        sidebar.setLines(current);
-                        sidebar.sendUpdate();
                         removedAny = true;
                     }
                     if (!removedAny) {
                         sidebar.remove();
                         sidebars.remove(entry.getKey().getPlayerEntity().getUniqueId());
+                    }
+                    else {
+                        sidebar.setLines(current);
+                        sidebar.sendUpdate();
                     }
                 }
             }
@@ -252,9 +254,9 @@ public class SidebarCommand extends AbstractCommand {
             case SET -> {
                 for (Map.Entry<PlayerTag, PlayerSidebarData> entry : sidebarData.entrySet()) {
                     Sidebar sidebar = entry.getValue().sidebar;
-                    List<Sidebar.SidebarLine> current = new ArrayList<>();
                     PlayerSidebarData data = entry.getValue();
-                    if (data.getValues() != null) {
+                    if (data.getValues() != null && !data.getValues().isEmpty()) {
+                        List<Sidebar.SidebarLine> current = new ArrayList<>(data.getValues().size());
                         try {
                             int index = data.getStart() != null ? data.getStart().asInt() : data.getValues().size();
                             int incr = data.getIncrement() != null ? data.getIncrement().asInt() : -1;
@@ -310,38 +312,34 @@ public class SidebarCommand extends AbstractCommand {
         }
 
         public ElementTag getTitle() {
-            if (parsedTitle == null) {
-                parsedTitle = rawTitle == null ? null : new ElementTag(TagManager.tag(rawTitle, context));
-            }
-            return parsedTitle;
+            return parsedTitle = lazyParse(parsedTitle, rawTitle, () -> TagManager.tagObject(rawTitle, context).asElement());
         }
 
         public ListTag getScores() {
-            if (parsedScores == null) {
-                parsedScores = rawScores == null ? null : ListTag.getListFor(TagManager.tagObject(rawScores, context), context);
-            }
-            return parsedScores;
+            return parsedScores = lazyParse(parsedScores, rawScores, () -> ListTag.getListFor(TagManager.tagObject(rawScores, context), context));
         }
 
         public ListTag getValues() {
-            if (parsedValues == null) {
-                parsedValues = rawValues == null ? null : ListTag.getListFor(TagManager.tagObject(rawValues, context), context);
-            }
-            return parsedValues;
+            return parsedValues = lazyParse(parsedValues, rawValues, () -> ListTag.getListFor(TagManager.tagObject(rawValues, context), context));
         }
 
         public ElementTag getIncrement() {
-            if (parsedIncrement == null) {
-                parsedIncrement = rawIncrement == null ? null : new ElementTag(TagManager.tag(rawIncrement, context));
-            }
-            return parsedIncrement;
+            return parsedIncrement = lazyParse(parsedIncrement, rawIncrement, () -> TagManager.tagObject(rawIncrement, context).asElement());
         }
 
         public ElementTag getStart() {
-            if (parsedStart == null) {
-                parsedStart = rawStart == null ? null : new ElementTag(TagManager.tag(rawStart, context));
+            return parsedStart = lazyParse(parsedStart, rawStart, () -> TagManager.tagObject(rawStart, context).asElement());
+        }
+
+        public static <T> T lazyParse(T parsedValue, String rawValue, Supplier<T> parser) {
+            if (parsedValue == null) {
+                if (rawValue == null) {
+                    return null;
+                }
+                Debug.log("Sidebar command lazy parsing: " + rawValue);
+                parsedValue = parser.get();
             }
-            return parsedStart;
+            return parsedValue;
         }
     }
 
@@ -361,18 +359,11 @@ public class SidebarCommand extends AbstractCommand {
             return null;
         }
         Player player = denizenPlayer.getPlayerEntity();
-        UUID uuid = player.getUniqueId();
-        if (!sidebars.containsKey(uuid)) {
-            sidebars.put(uuid, NMSHandler.instance.createSidebar(player));
-        }
-        return sidebars.get(player.getUniqueId());
+        return sidebars.computeIfAbsent(player.getUniqueId(), uuid -> NMSHandler.instance.createSidebar(player));
     }
 
     public static Sidebar getSidebar(PlayerTag denizenPlayer) {
-        if (!denizenPlayer.isOnline()) {
-            return null;
-        }
-        return sidebars.get(denizenPlayer.getPlayerEntity().getUniqueId());
+        return denizenPlayer.isOnline() ? sidebars.get(denizenPlayer.getPlayerEntity().getUniqueId()) : null;
     }
 
     public static class SidebarEvents implements Listener {
