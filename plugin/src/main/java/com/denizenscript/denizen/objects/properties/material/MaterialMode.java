@@ -17,18 +17,18 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
     // @input ElementTag
     // @description
     // Controls a block's mode.
-    // For comparators, options are COMPARE and SUBTRACT.
-    // For piston_heads, options are NORMAL and SHORT.
-    // For bubble_columns, options are NORMAL and DRAG.
-    // For structure_blocks, options are CORNER, DATA, LOAD, and SAVE.
-    // For sculk_sensors, options are ACTIVE, COOLDOWN, and INACTIVE.
-    // For daylight_detectors, options are INVERTED and NORMAL.
-    // For command_blocks, options are CONDITIONAL and NORMAL.
-    // For big_dripleafs, options are FULL, NONE, PARTIAL, and UNSTABLE.
-    // For sculk_catalysts, options are BLOOM and NORMAL.
-    // For sculk_shriekers, options are SHRIEKING and NORMAL.
-    // For tripwires, options are ARMED and DISARMED.
-    // For creaking_hearts, options are AWAKE, DORMANT, and UPROOTED.
+    // For comparators, modes are COMPARE and SUBTRACT.
+    // For piston_heads, modes are NORMAL and SHORT.
+    // For bubble_columns, modes are NORMAL and DRAG.
+    // For structure_blocks, modes are CORNER, DATA, LOAD, and SAVE.
+    // For sculk_sensors, modes are ACTIVE, COOLDOWN, and INACTIVE.
+    // For daylight_detectors, modes are INVERTED and NORMAL.
+    // For command_blocks, modes are CONDITIONAL and NORMAL.
+    // For big_dripleafs, modes are FULL, NONE, PARTIAL, and UNSTABLE.
+    // For sculk_catalysts, modes are BLOOM and NORMAL.
+    // For sculk_shriekers, modes are SHRIEKING and NORMAL.
+    // For tripwires, modes are ARMED and DISARMED.
+    // For creaking_hearts, modes are AWAKE, DORMANT, and UPROOTED.
     // -->
 
     public static boolean describes(MaterialTag material) {
