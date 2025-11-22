@@ -100,10 +100,10 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             }
         }
         else if (getBlockData() instanceof BubbleColumn bubbleColumn) {
-            bubbleColumn.setDrag(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "drag"));
+            bubbleColumn.setDrag(CoreUtilities.equalsIgnoreCase(value.toString(), "drag"));
         }
         else if (getBlockData() instanceof PistonHead pistonHead) {
-            pistonHead.setShort(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "short"));
+            pistonHead.setShort(CoreUtilities.equalsIgnoreCase(value.toString(), "short"));
         }
         else if (getBlockData() instanceof StructureBlock structureBlock) {
             if (mechanism.requireEnum(StructureBlock.Mode.class)) {
@@ -111,10 +111,10 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             }
         }
         else if (getBlockData() instanceof DaylightDetector daylightDetector) {
-            daylightDetector.setInverted(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "inverted"));
+            daylightDetector.setInverted(CoreUtilities.equalsIgnoreCase(value.toString(), "inverted"));
         }
         else if (getBlockData() instanceof CommandBlock cmdBlock) {
-            cmdBlock.setConditional(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "conditional"));
+            cmdBlock.setConditional(CoreUtilities.equalsIgnoreCase(value.toString(), "conditional"));
         }
         else if (getBlockData() instanceof SculkSensor sculkSensor) {
             if (mechanism.requireEnum(SculkSensor.Phase.class)) {
@@ -127,14 +127,14 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             }
         }
         else if (getBlockData() instanceof Tripwire tripwire) {
-            tripwire.setDisarmed(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "disarmed"));
+            tripwire.setDisarmed(CoreUtilities.equalsIgnoreCase(value.toString(), "disarmed"));
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             if (getBlockData() instanceof SculkCatalyst sculkCatalyst) {
-                sculkCatalyst.setBloom(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "bloom"));
+                sculkCatalyst.setBloom(CoreUtilities.equalsIgnoreCase(value.toString(), "bloom"));
             }
             else if (getBlockData() instanceof SculkShrieker sculkShrieker) {
-                sculkShrieker.setShrieking(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "shrieking"));
+                sculkShrieker.setShrieking(CoreUtilities.equalsIgnoreCase(value.toString(), "shrieking"));
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
                 if (getBlockData() instanceof CreakingHeart creakingHeart) {
