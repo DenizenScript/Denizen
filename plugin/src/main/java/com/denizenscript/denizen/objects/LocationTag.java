@@ -4510,48 +4510,6 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             });
         }
 
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-
-            // <--[tag]
-            // @attribute <LocationTag.heart_state>
-            // @returns ElementTag
-            // @mechanism LocationTag.heart_state
-            // @group world
-            // @description
-            // Returns the state of a creaking heart.
-            // Valid values are "AWAKE", "DORMANT", and "UPROOTED".
-            // -->
-            tagProcessor.registerTag(ElementTag.class, "heart_state", (attribute, object) -> {
-                if (!(object.getBlockState().getBlockData() instanceof CreakingHeart heart)) {
-                    Debug.echoError("The 'LocationTag.heart_state' tag can only be called on a creaking heart block.");
-                    return null;
-                }
-                return Utilities.enumlikeToElement(heart.getCreakingHeartState());
-            });
-
-            // <--[mechanism]
-            // @object LocationTag
-            // @name heart_state
-            // @input ElementTag
-            // @description
-            // Sets the state of a creaking heart.
-            // Valid values are "AWAKE", "DORMANT", and "UPROOTED".
-            // @tags
-            // <LocationTag.heart_state>
-            // -->
-            tagProcessor.registerMechanism("heart_state", false, ElementTag.class, (object, mechanism, input) -> {
-                if (!(object.getBlockState().getBlockData() instanceof CreakingHeart heart)) {
-                    mechanism.echoError("The 'LocationTag.heart_state' mechanism can only be called on a creaking heart block.");
-                    return;
-                }
-                CreakingHeart.State heartState = Utilities.elementToRequiredEnumLike(input, CreakingHeart.State.class, mechanism);
-                if (heartState != null) {
-                    heart.setCreakingHeartState(heartState);
-                    object.getBlock().setBlockData(heart);
-                }
-            });
-        }
-
         // <--[mechanism]
         // @object LocationTag
         // @name spawner_type
