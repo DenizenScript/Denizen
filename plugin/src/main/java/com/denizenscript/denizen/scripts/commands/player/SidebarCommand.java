@@ -2,8 +2,10 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.tags.ParseableTag;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
@@ -21,7 +23,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.*;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public class SidebarCommand extends AbstractCommand {
 
@@ -125,12 +127,9 @@ public class SidebarCommand extends AbstractCommand {
         if (players == null) {
             players = Utilities.entryHasPlayer(scriptEntry) ? Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)) : Collections.emptyList();
         }
-        ElementTag parsedTitle = (perPlayer || title == null) ? null : TagManager.tagObject(title, scriptEntry.getContext()).asElement();
-        ListTag parsedValues = (perPlayer || values == null) ? null : ListTag.valueOf(TagManager.tag(values, scriptEntry.getContext()), scriptEntry.getContext());
-        ListTag parsedScores = (perPlayer || scores == null) ? null : ListTag.valueOf(TagManager.tag(scores, scriptEntry.getContext()), scriptEntry.getContext());
-        ElementTag parsedStart = (perPlayer || start == null) ? null : TagManager.tagObject(start, scriptEntry.getContext()).asElement();
-        ElementTag parsedIncrement = perPlayer ? null : TagManager.tagObject(increment, scriptEntry.getContext()).asElement();
-        Map<PlayerTag, PlayerSidebarData> sidebarData = new HashMap<>(players.size());
+        ParseableTags parseableTags = new ParseableTags(title, scores, values, start, increment, scriptEntry.getContext());
+        LazyParser globalParser = perPlayer ? null : new LazyParser(parseableTags, (BukkitTagContext) scriptEntry.getContext());
+        Map<PlayerTag, LazyParser> sidebarData = new HashMap<>(players.size());
         for (PlayerTag player : players) {
             if (player == null || !player.isValid()) {
                 Debug.echoError("Invalid player!");
@@ -141,15 +140,15 @@ public class SidebarCommand extends AbstractCommand {
                 continue;
             }
             sidebarData.put(player, perPlayer ?
-                    new PlayerSidebarData(sidebar, new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry), scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript()), title, scores, values, start, increment) :
-                    new PlayerSidebarData(sidebar, parsedTitle, parsedScores, parsedValues, parsedStart, parsedIncrement));
+                    new LazyParser(parseableTags, new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry), scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript())) :
+                    globalParser);
         }
         switch (action) {
             case ADD -> {
-                for (Map.Entry<PlayerTag, PlayerSidebarData> entry : sidebarData.entrySet()) {
-                    Sidebar sidebar = entry.getValue().sidebar;
+                for (Map.Entry<PlayerTag, LazyParser> entry : sidebarData.entrySet()) {
+                    Sidebar sidebar = createSidebar(entry.getKey());
                     List<Sidebar.SidebarLine> current = sidebar.getLines();
-                    PlayerSidebarData data = entry.getValue();
+                    LazyParser data = entry.getValue();
                     try {
                         int index = data.getStart() != null ? data.getStart().asInt() : (!current.isEmpty() ? current.get(current.size() - 1).score : data.getValues().size());
                         int incr = data.getIncrement().asInt();
@@ -169,11 +168,11 @@ public class SidebarCommand extends AbstractCommand {
                 }
             }
             case REMOVE -> {
-                for (Map.Entry<PlayerTag, PlayerSidebarData> entry : sidebarData.entrySet()) {
-                    Sidebar sidebar = entry.getValue().sidebar;
+                for (Map.Entry<PlayerTag, LazyParser> entry : sidebarData.entrySet()) {
+                    Sidebar sidebar = createSidebar(entry.getKey());
                     boolean removedAny = false;
                     List<Sidebar.SidebarLine> current = sidebar.getLines();
-                    PlayerSidebarData data = entry.getValue();
+                    LazyParser data = entry.getValue();
                     if (data.getScores() != null && !data.getScores().isEmpty()) {
                         try {
                             for (String scoreString : data.getScores()) {
@@ -212,8 +211,8 @@ public class SidebarCommand extends AbstractCommand {
                 }
             }
             case SET_LINE -> {
-                for (Map.Entry<PlayerTag, PlayerSidebarData> entry : sidebarData.entrySet()) {
-                    PlayerSidebarData data = entry.getValue();
+                for (Map.Entry<PlayerTag, LazyParser> entry : sidebarData.entrySet()) {
+                    LazyParser data = entry.getValue();
                     if (data.getScores() == null || data.getScores().isEmpty()) {
                         Debug.echoError("Missing or invalid 'scores' parameter!");
                         return;
@@ -222,7 +221,7 @@ public class SidebarCommand extends AbstractCommand {
                         Debug.echoError("Missing or invalid 'values' parameter!");
                         return;
                     }
-                    Sidebar sidebar = entry.getValue().sidebar;
+                    Sidebar sidebar = createSidebar(entry.getKey());
                     List<Sidebar.SidebarLine> current = sidebar.getLines();
                     try {
                         for (int i = 0; i < data.getValues().size(); i++) {
@@ -252,9 +251,9 @@ public class SidebarCommand extends AbstractCommand {
                 }
             }
             case SET -> {
-                for (Map.Entry<PlayerTag, PlayerSidebarData> entry : sidebarData.entrySet()) {
-                    Sidebar sidebar = entry.getValue().sidebar;
-                    PlayerSidebarData data = entry.getValue();
+                for (Map.Entry<PlayerTag, LazyParser> entry : sidebarData.entrySet()) {
+                    Sidebar sidebar = createSidebar(entry.getKey());
+                    LazyParser data = entry.getValue();
                     if (data.getValues() != null && !data.getValues().isEmpty()) {
                         List<Sidebar.SidebarLine> current = new ArrayList<>(data.getValues().size());
                         try {
@@ -280,11 +279,15 @@ public class SidebarCommand extends AbstractCommand {
         }
     }
 
-    public static class PlayerSidebarData {
-        BukkitTagContext context;
-        Sidebar sidebar;
+    public record ParseableTags(ParseableTag title, ParseableTag scores, ParseableTag values, ParseableTag start, ParseableTag increment) {
+        public ParseableTags(String title, String scores, String values, String start, String increment, TagContext context) {
+            this(TagManager.parseTextToTag(title, context), TagManager.parseTextToTag(scores, context), TagManager.parseTextToTag(values, context), TagManager.parseTextToTag(start, context), TagManager.parseTextToTag(increment, context));
+        }
+    }
 
-        String rawTitle = null, rawScores = null, rawValues = null, rawStart = null, rawIncrement = null;
+    public static class LazyParser {
+        final ParseableTags parseableTags;
+        final BukkitTagContext context;
 
         ElementTag parsedTitle = null;
         ListTag parsedScores = null;
@@ -292,52 +295,37 @@ public class SidebarCommand extends AbstractCommand {
         ElementTag parsedStart = null;
         ElementTag parsedIncrement = null;
 
-        PlayerSidebarData(Sidebar sidebar, BukkitTagContext context, String rawTitle, String rawScores, String rawValues, String rawStart, String rawIncrement) {
-            this.sidebar = sidebar;
+        public LazyParser(ParseableTags parseableTags, BukkitTagContext context) {
+            this.parseableTags = parseableTags;
             this.context = context;
-            this.rawTitle = rawTitle;
-            this.rawScores = rawScores;
-            this.rawValues = rawValues;
-            this.rawStart = rawStart;
-            this.rawIncrement = rawIncrement;
-        }
-
-        PlayerSidebarData(Sidebar sidebar, ElementTag title, ListTag scores, ListTag values, ElementTag start, ElementTag increment) {
-            this.sidebar = sidebar;
-            this.parsedTitle = title;
-            this.parsedScores = scores;
-            this.parsedValues = values;
-            this.parsedStart = start;
-            this.parsedIncrement = increment;
         }
 
         public ElementTag getTitle() {
-            return parsedTitle = lazyParse(parsedTitle, rawTitle, () -> TagManager.tagObject(rawTitle, context).asElement());
+            return parsedTitle = lazyParse(parsedTitle, parseableTags.title(), ObjectTag::asElement);
         }
 
         public ListTag getScores() {
-            return parsedScores = lazyParse(parsedScores, rawScores, () -> ListTag.getListFor(TagManager.tagObject(rawScores, context), context));
+            return parsedScores = lazyParse(parsedScores, parseableTags.scores(), (obj) -> ListTag.getListFor(obj, context));
         }
 
         public ListTag getValues() {
-            return parsedValues = lazyParse(parsedValues, rawValues, () -> ListTag.getListFor(TagManager.tagObject(rawValues, context), context));
+            return parsedValues = lazyParse(parsedValues, parseableTags.values(), (obj) -> ListTag.getListFor(obj, context));
         }
 
         public ElementTag getIncrement() {
-            return parsedIncrement = lazyParse(parsedIncrement, rawIncrement, () -> TagManager.tagObject(rawIncrement, context).asElement());
+            return parsedIncrement = lazyParse(parsedIncrement, parseableTags.increment(), ObjectTag::asElement);
         }
 
         public ElementTag getStart() {
-            return parsedStart = lazyParse(parsedStart, rawStart, () -> TagManager.tagObject(rawStart, context).asElement());
+            return parsedStart = lazyParse(parsedStart, parseableTags.start(), ObjectTag::asElement);
         }
 
-        public static <T> T lazyParse(T parsedValue, String rawValue, Supplier<T> parser) {
+        public <T extends ObjectTag> T lazyParse(T parsedValue, ParseableTag rawValue, Function<ObjectTag, T> parser) {
             if (parsedValue == null) {
                 if (rawValue == null) {
                     return null;
                 }
-                Debug.log("Sidebar command lazy parsing: " + rawValue);
-                parsedValue = parser.get();
+                parsedValue = parser.apply(rawValue.parse(context));
             }
             return parsedValue;
         }
