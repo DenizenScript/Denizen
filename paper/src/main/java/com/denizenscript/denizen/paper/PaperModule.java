@@ -66,9 +66,6 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerItemTakesDamageScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerLecternPageChangeScriptEvent.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            ScriptEvent.registerScriptEvent(PlayerLinksSendScriptEvent.class);
-        }
         ScriptEvent.registerScriptEvent(PlayerLoomPatternSelectScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerNameEntityScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
@@ -78,6 +75,9 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerQuitsScriptEventPaperImpl.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_18)) {
             ScriptEvent.registerScriptEvent(PlayerRaiseLowerItemScriptEventPaperImpl.class);
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(PlayerReceivesLinksScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(PlayerSelectsStonecutterRecipeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerSetSpawnScriptEvent.class);

@@ -12,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLinksSendEvent;
 
-public class PlayerLinksSendScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerReceivesLinksScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -22,27 +22,27 @@ public class PlayerLinksSendScriptEvent extends BukkitScriptEvent implements Lis
     //
     // @Plugin Paper
     //
-    // @Triggers when a player receives a list of links
+    // @Triggers when a player receives a list of server links.
     //
     // @Determine
     // "LINKS:<ListTag(MapTag)>" to set the links sent to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
-    // "ADD_LINKS:<ListTag(MapTag)>" to add to the links sent to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
+    // "ADD_LINKS:<ListTag(MapTag)>" to send additional links to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
     //
     // @Player Always.
     //
-    // @Warning this may fire early in the player login process, during which the linked player is essentially an offline player
+    // @Warning this may fire early in the player login process, during which the linked player is essentially an offline player.
     //
     // -->
 
     public PlayerLinksSendEvent event;
     public PlayerTag player;
 
-    public PlayerLinksSendScriptEvent() {
+    public PlayerReceivesLinksScriptEvent() {
         registerCouldMatcher("player receives links");
-        this.<PlayerLinksSendScriptEvent, ListTag>registerDetermination("links", ListTag.class, (evt, context, value) -> {
+        this.<PlayerReceivesLinksScriptEvent, ListTag>registerDetermination("links", ListTag.class, (evt, context, value) -> {
             Utilities.replaceServerLinks(evt.event.getLinks(), value, context);
         });
-        this.<PlayerLinksSendScriptEvent, ListTag>registerDetermination("add_links", ListTag.class, (evt, context, value) -> {
+        this.<PlayerReceivesLinksScriptEvent, ListTag>registerDetermination("add_links", ListTag.class, (evt, context, value) -> {
             Utilities.fillServerLinks(evt.event.getLinks(), value, context);
         });
     }
@@ -54,14 +54,14 @@ public class PlayerLinksSendScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onPlayerLinksSend(PlayerLinksSendEvent event) {
-        if (event.getConnection() instanceof PlayerGameConnection connection) {
-            player = new PlayerTag(connection.getPlayer());
+        if (event.getConnection() instanceof PlayerGameConnection gameConnection) {
+            player = new PlayerTag(gameConnection.getPlayer());
         }
-        else if (event.getConnection() instanceof PlayerConfigurationConnection connection) {
-            player = new PlayerTag(connection.getProfile().getId());
+        else if (event.getConnection() instanceof PlayerConfigurationConnection configConnection) {
+            player = new PlayerTag(configConnection.getProfile().getId());
         }
         else {
-            player = null;
+            throw new IllegalStateException("Links send event fired with unknown connection type! " + event.getConnection() + " / " + event.getConnection().getClass().getName());
         }
         this.event = event;
         fire(event);

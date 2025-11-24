@@ -655,10 +655,10 @@ public class Utilities {
     // @group Minecraft Logic
     // @description
     // Server links are represented in Denizen as <@link ObjectType MapTag>s with the following keys:
-    // - link: The address of the link.
-    // - type: The type of the link. Valid types are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ServerLinks.Type.html>
+    // - link: The address of the link, required.
+    // And one of:
+    // - type: The type of the link, valid types are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ServerLinks.Type.html>.
     // - display: The display name of the link.
-    // When constructing this map, the "link" key is required. You can then optionally specify either the "type" or "display" key.
     // -->
 
     public static ServerLinks replaceServerLinks(ServerLinks serverLinks, ListTag list, TagContext context) {
@@ -678,7 +678,7 @@ public class Utilities {
                 uri = new URI(strUri);
             }
             catch (URISyntaxException e) {
-                Debug.echoError("Invalid server links map '" + map + "': invalid 'link' key: " + strUri);
+                Debug.echoError("Invalid server links map '" + map + "': invalid 'link' value '" + strUri + "'.");
                 continue;
             }
             if (map.containsKey("display")) {
@@ -687,7 +687,7 @@ public class Utilities {
             else if (map.containsKey("type")) {
                 ServerLinks.Type type = map.getElement("type").asEnum(ServerLinks.Type.class);
                 if (type == null) {
-                    Debug.echoError("Invalid server links map '" + map + "': invalid 'type' key: " + map.getElement("type"));
+                    Debug.echoError("Invalid server links map '" + map + "': invalid 'type' value '" + map.getElement("type") + "'.");
                     continue;
                 }
                 serverLinks.addLink(type, uri);
