@@ -55,13 +55,13 @@ public class CauldronLevelChangeScriptEvent extends BukkitScriptEvent implements
             if (level > 3) {
                 return false;
             }
-            if (cauldronType != Material.WATER_CAULDRON && cauldronType != Material.LAVA_CAULDRON) {
+            if (cauldronState.getType() != Material.WATER_CAULDRON && cauldronState.getType() != Material.LAVA_CAULDRON) {
                 cauldronState.setType(cauldronType);
             }
             if (cauldronState.getBlockData() instanceof Levelled levelled) {
                 levelled.setLevel(level);
                 cauldronState.setBlockData(levelled);
-                newLevel = level;
+                evt.newLevel = level;
                 return true;
             }
             return false;
