@@ -42,8 +42,8 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
 
     public EntityTag entity;
     public LocationTag location;
-    public MaterialTag old_material;
-    public MaterialTag new_material;
+    public MaterialTag oldMaterial;
+    public MaterialTag newMaterial;
     public EntityChangeBlockEvent event;
 
     @Override
@@ -52,7 +52,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         if (!entity.tryAdvancedMatcher(entName, path.context)) {
             return false;
         }
-        if (!path.tryArgObject(2, old_material)) {
+        if (!path.tryArgObject(2, oldMaterial)) {
             return false;
         }
         if (path.eventArgLowerAt(3).equals("into")) {
@@ -61,7 +61,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
                 Debug.echoError("Invalid event material [" + getName() + "]: '" + path.event + "' for " + path.container.getName());
                 return false;
             }
-            else if (!new_material.tryAdvancedMatcher(mat2, path.context)) {
+            else if (!newMaterial.tryAdvancedMatcher(mat2, path.context)) {
                 return false;
             }
         }
@@ -81,8 +81,8 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         return switch (name) {
             case "entity" -> entity.getDenizenObject();
             case "location" -> location;
-            case "new_material" -> new_material;
-            case "old_material" -> old_material;
+            case "new_material" -> newMaterial;
+            case "old_material" -> oldMaterial;
             default -> super.getContext(name);
         };
     }
@@ -91,8 +91,8 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     public void onEntityChangesBlock(EntityChangeBlockEvent event) {
         entity = new EntityTag(event.getEntity());
         location = new LocationTag(event.getBlock().getLocation());
-        old_material = new MaterialTag(location.getBlock());
-        new_material = new MaterialTag(event.getTo());
+        oldMaterial = new MaterialTag(location.getBlock());
+        newMaterial = new MaterialTag(event.getTo());
         this.event = event;
         fire(event);
     }

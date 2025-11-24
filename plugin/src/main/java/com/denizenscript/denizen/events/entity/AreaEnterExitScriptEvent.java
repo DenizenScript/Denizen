@@ -1,9 +1,10 @@
 package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.objects.AreaContainmentObject;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -13,6 +14,7 @@ import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
@@ -89,27 +91,29 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         return switch (name) {
             case "area" -> area;
             case "cause" -> {
+                String cause;
                 if (currentEvent instanceof PlayerJoinEvent) {
-                    yield new ElementTag("JOIN");
+                    cause = "JOIN";
                 }
                 else if (currentEvent instanceof PlayerQuitEvent) {
-                    yield new ElementTag("QUIT");
+                    cause = "QUIT";
                 }
                 else if (currentEvent instanceof PlayerChangedWorldEvent) {
-                    yield new ElementTag("WORLD_CHANGE");
+                    cause = "WORLD_CHANGE";
                 }
                 else if (currentEvent instanceof PlayerTeleportEvent) {
-                    yield new ElementTag("TELEPORT");
+                    cause = "TELEPORT";
                 }
                 else if (currentEvent instanceof VehicleMoveEvent) {
-                    yield new ElementTag("VEHICLE");
+                    cause = "VEHICLE";
                 }
                 else if (currentEvent instanceof PlayerMoveEvent) {
-                    yield new ElementTag("WALK");
+                    cause = "WALK";
                 }
                 else {
-                    yield new ElementTag("UNKNOWN");
+                    cause = "UNKNOWN";
                 }
+                yield new ElementTag(cause, true);
             }
             case "to" -> to != null ? new LocationTag(to) : null;
             case "from" -> {
