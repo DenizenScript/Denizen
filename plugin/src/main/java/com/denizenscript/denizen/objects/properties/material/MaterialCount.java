@@ -158,9 +158,16 @@ public class MaterialCount extends MaterialProperty<ElementTag> {
         else if (getBlockData() instanceof RespawnAnchor) {
             return 0;
         }
-        else if ((NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals)
-            || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (getBlockData() instanceof FlowerBed || getBlockData() instanceof LeafLitter))
-            || getBlockData() instanceof Candle) {
+        else if (getBlockData() instanceof Candle) {
+            return 1;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals) {
+            return 1;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed) {
+            return 1;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof LeafLitter) {
             return 1;
         }
         throw new UnsupportedOperationException();
