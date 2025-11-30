@@ -36,7 +36,7 @@ public class EntityProfession extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        if (Utilities.requireEnumlike(mechanism, Villager.Profession.class)) {
+        if (mechanism.requireEnum(Villager.Profession.class)) {
             if (getEntity() instanceof Villager villager) {
                 villager.setProfession(value.asEnum(Villager.Profession.class));
             }
