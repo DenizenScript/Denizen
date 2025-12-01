@@ -7,7 +7,6 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -27,7 +26,6 @@ import org.bukkit.util.Consumer;
 
 import java.lang.invoke.MethodHandle;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -94,8 +92,8 @@ public class PaperAPITools {
         return sign.getLines();
     }
 
-    public ListTag getBackSignLines(Sign sign) {
-        return new ListTag(Arrays.asList(sign.getSide(Side.BACK).getLines()));
+    public String[] getBackSignLines(Sign sign) {
+        return sign.getSide(Side.BACK).getLines();
     }
 
     public void setSignLine(Sign sign, int line, String text) {

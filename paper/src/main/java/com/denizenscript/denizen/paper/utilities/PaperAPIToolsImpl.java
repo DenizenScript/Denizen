@@ -13,7 +13,6 @@ import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -106,22 +105,21 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     public String[] getSignLines(Sign sign) {
         String[] output = new String[4];
         int i = 0;
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            for (Component component : sign.getSide(Side.FRONT).lines()) {
-                output[i++] = PaperModule.stringifyComponent(component);
-            }
-        }
-        else {
-            for (Component component : sign.lines()) {
-                output[i++] = PaperModule.stringifyComponent(component);
-            }
+        List<Component> list = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? sign.getSide(Side.FRONT).lines() : sign.lines();
+        for (Component component : list) {
+            output[i++] = PaperModule.stringifyComponent(component);
         }
         return output;
     }
 
     @Override
-    public ListTag getBackSignLines(Sign sign) {
-        return new ListTag(sign.getSide(Side.BACK).lines(), component -> new ElementTag(PaperModule.stringifyComponent(component)));
+    public String[] getBackSignLines(Sign sign) {
+        String[] output = new String[4];
+        int i = 0;
+        for (Component component : sign.getSide(Side.BACK).lines()) {
+            output[i++] = PaperModule.stringifyComponent(component);
+        }
+        return output;
     }
 
     @Override

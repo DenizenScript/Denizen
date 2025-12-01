@@ -4520,7 +4520,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // -->
             tagProcessor.registerTag(ListTag.class, "sign_contents_back", (attribute, object) -> {
                 if (object.getBlockStateForTag(attribute) instanceof Sign sign) {
-                    return PaperAPITools.instance.getBackSignLines(sign);
+                    return new ListTag(Arrays.asList(PaperAPITools.instance.getBackSignLines(sign)), true);
                 }
                 return null;
             });
@@ -4639,15 +4639,12 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             for (int i = 0; i < 4; i++) {
                 PaperAPITools.instance.setSignLine(sign, i, "");
             }
-            ListTag list = mechanism.valueAsType(ListTag.class);
-            CoreUtilities.fixNewLinesToListSeparation(list);
-            if (list.size() > 4) {
+            CoreUtilities.fixNewLinesToListSeparation(value);
+            if (value.size() > 4) {
                 mechanism.echoError("Sign can only hold four lines!");
             }
-            else {
-                for (int i = 0; i < list.size(); i++) {
-                    PaperAPITools.instance.setSignLine(sign, i, list.get(i));
-                }
+            for (int i = 0; i < value.size(); i++) {
+                PaperAPITools.instance.setSignLine(sign, i, value.get(i));
             }
             sign.update();
         });

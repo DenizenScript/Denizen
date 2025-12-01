@@ -7,6 +7,8 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
+import java.util.Arrays;
+
 public class ItemSignContentsBack extends ItemProperty<ListTag> {
 
     // <--[property]
@@ -26,7 +28,7 @@ public class ItemSignContentsBack extends ItemProperty<ListTag> {
     @Override
     public ListTag getPropertyValue() {
         Sign sign = (((Sign) ((BlockStateMeta) getItemMeta()).getBlockState()));
-        return PaperAPITools.instance.getBackSignLines(sign);
+        return new ListTag(Arrays.asList(PaperAPITools.instance.getBackSignLines(sign)), true);
     }
 
     @Override
