@@ -4519,11 +4519,10 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // Map keys are 'front' and 'back'.
             // -->
             tagProcessor.registerTag(ListTag.class, "sign_contents_back", (attribute, object) -> {
-                if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
-                    attribute.echoError("The 'LocationTag.sign_contents_back' tag is only valid for Sign blocks.");
-                    return null;
+                if (object.getBlockStateForTag(attribute) instanceof Sign sign) {
+                    return PaperAPITools.instance.getBackSignLines(sign);
                 }
-                return PaperAPITools.instance.getBackSignLines(sign);
+                return null;
             });
 
             // <--[mechanism]
@@ -4538,7 +4537,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // -->
             tagProcessor.registerMechanism("sign_contents_back", false, ListTag.class, (object, mechanism, input) -> {
                 if (!(object.getBlockState() instanceof Sign sign)) {
-                    mechanism.echoError("The 'LocationTag.sign_lines' mechanism is only valid for Sign blocks.");
+                    mechanism.echoError("Mechanism 'LocationTag.sign_contents_back' is only valid for Sign blocks.");
                     return;
                 }
                 for (int i = 0; i < 4; i++) {
@@ -4546,7 +4545,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 }
                 CoreUtilities.fixNewLinesToListSeparation(input);
                 if (input.size() > 4) {
-                    mechanism.echoError("Sign can only hold four lines on the back side.");
+                    mechanism.echoError("Sign can only hold four lines!");
                 }
                 for (int i = 0; i < input.size(); i++) {
                     PaperAPITools.instance.setBackSignLine(sign, i, input.get(i));
