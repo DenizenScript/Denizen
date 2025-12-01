@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.blocks.FullBlockData;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -12,6 +14,7 @@ import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.*;
+import org.bukkit.block.sign.Side;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
@@ -109,6 +112,11 @@ public class CopyBlockCommand extends AbstractCommand {
                 int n = 0;
                 for (String line : ((Sign) sourceState).getLines()) {
                     PaperAPITools.instance.setSignLine(((Sign) updateState), n++, line);
+                }
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                    for (String line : ((Sign) sourceState).getSide(Side.BACK).getLines()) {
+                        PaperAPITools.instance.setBackSignLine(((Sign) updateState), n++, line);
+                    }
                 }
             }
             else if (sourceState instanceof Skull) {

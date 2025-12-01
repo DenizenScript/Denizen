@@ -13,6 +13,7 @@ import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -28,6 +29,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -104,15 +106,37 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     public String[] getSignLines(Sign sign) {
         String[] output = new String[4];
         int i = 0;
-        for (Component component : sign.lines()) {
-            output[i++] = PaperModule.stringifyComponent(component);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            for (Component component : sign.getSide(Side.FRONT).lines()) {
+                output[i++] = PaperModule.stringifyComponent(component);
+            }
+        }
+        else {
+            for (Component component : sign.lines()) {
+                output[i++] = PaperModule.stringifyComponent(component);
+            }
         }
         return output;
     }
 
     @Override
+    public ListTag getBackSignLines(Sign sign) {
+        return new ListTag(sign.getSide(Side.BACK).lines(), component -> new ElementTag(PaperModule.stringifyComponent(component)));
+    }
+
+    @Override
     public void setSignLine(Sign sign, int line, String text) {
-        sign.line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            sign.getSide(Side.FRONT).line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
+        }
+        else {
+            sign.line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
+        }
+    }
+
+    @Override
+    public void setBackSignLine(Sign sign, int line, String text) {
+        sign.getSide(Side.BACK).line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
     }
 
     @Override

@@ -7,11 +7,13 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -25,6 +27,7 @@ import org.bukkit.util.Consumer;
 
 import java.lang.invoke.MethodHandle;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -85,11 +88,27 @@ public class PaperAPITools {
     }
 
     public String[] getSignLines(Sign sign) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            return sign.getSide(Side.FRONT).getLines();
+        }
         return sign.getLines();
     }
 
+    public ListTag getBackSignLines(Sign sign) {
+        return new ListTag(Arrays.asList(sign.getSide(Side.BACK).getLines()));
+    }
+
     public void setSignLine(Sign sign, int line, String text) {
-        sign.setLine(line, text == null ? "" : text);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            sign.getSide(Side.FRONT).setLine(line, text == null ? "" : text);
+        }
+        else {
+            sign.setLine(line, text == null ? "" : text);
+        }
+    }
+
+    public void setBackSignLine(Sign sign, int line, String text) {
+        sign.getSide(Side.BACK).setLine(line, text == null ? "" : text);
     }
 
     public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt) {
@@ -237,7 +256,7 @@ public class PaperAPITools {
     public void addLink(ServerLinks links, String display, URI uri) {
         links.addLink(display, uri);
     }
-  
+
     public double[] getRecentTps() {
         return NMSHandler.instance.getRecentTps();
     }

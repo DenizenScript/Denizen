@@ -1249,14 +1249,14 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @group world
         // @description
         // Returns a list of lines on a sign.
+        // For MC 1.20+, this returns the contents on the front of the sign.
+        // To get the contents of the back, see <@link tag LocationTag.sign_contents_back>.
         // -->
         tagProcessor.registerTag(ListTag.class, "sign_contents", (attribute, object) -> {
-            if (object.getBlockStateForTag(attribute) instanceof Sign) {
-                return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines(((Sign) object.getBlockStateForTag(attribute)))));
+            if (object.getBlockStateForTag(attribute) instanceof Sign sign) {
+                return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines(sign)));
             }
-            else {
-                return null;
-            }
+            return null;
         });
 
         // <--[tag]
@@ -4507,6 +4507,52 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 }
                 return new ElementTag(chiseledBookshelf.getSlot(input.toVector()) + 1);
             });
+
+            // <--[tag]
+            // @attribute <LocationTag.sign_contents_back>
+            // @returns ListTag
+            // @mechanism LocationTag.sign_contents_back
+            // @group world
+            // @description
+            // Returns the contents on the back of a sign block.
+            // For the contents on the front, see <@link tag LocationTag.sign_contents>.
+            // Map keys are 'front' and 'back'.
+            // -->
+            tagProcessor.registerTag(ListTag.class, "sign_contents_back", (attribute, object) -> {
+                if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
+                    attribute.echoError("The 'LocationTag.sign_contents_back' tag is only valid for Sign blocks.");
+                    return null;
+                }
+                return PaperAPITools.instance.getBackSignLines(sign);
+            });
+
+            // <--[mechanism]
+            // @object LocationTag
+            // @name sign_contents_back
+            // @input ListTag
+            // @description
+            // Sets the contents on the back of a sign block.
+            // To set the contents of the front, see <@link mechanism LocationTag.sign_contents>.
+            // @tags
+            // <LocationTag.sign_contents_back>
+            // -->
+            tagProcessor.registerMechanism("sign_contents_back", false, ListTag.class, (object, mechanism, input) -> {
+                if (!(object.getBlockState() instanceof Sign sign)) {
+                    mechanism.echoError("The 'LocationTag.sign_lines' mechanism is only valid for Sign blocks.");
+                    return;
+                }
+                for (int i = 0; i < 4; i++) {
+                    PaperAPITools.instance.setBackSignLine(sign, i, "");
+                }
+                CoreUtilities.fixNewLinesToListSeparation(input);
+                if (input.size() > 4) {
+                    mechanism.echoError("Sign can only hold four lines on the back side.");
+                }
+                for (int i = 0; i < input.size(); i++) {
+                    PaperAPITools.instance.setBackSignLine(sign, i, input.get(i));
+                }
+                sign.update();
+            });
         }
 
         // <--[mechanism]
@@ -4573,6 +4619,38 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             else {
                 mechanism.echoError("The 'LocationTag.page' mechanism can only be called on a lectern block.");
             }
+        });
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name sign_contents
+        // @input ListTag
+        // @description
+        // Sets the contents of a sign block.
+        // For MC 1.20+, this sets the contents on the front of the sign.
+        // To set the contents of the back, see <@link mechanism LocationTag.sign_contents_back>.
+        // @tags
+        // <LocationTag.sign_contents>
+        // -->
+        tagProcessor.registerMechanism("sign_contents", false, ListTag.class, (object, mechanism, value) -> {
+            if (!(object.getBlockState() instanceof Sign sign)) {
+                mechanism.echoError("Mechanism 'LocationTag.sign_contents' is only valid for Sign blocks.");
+                return;
+            }
+            for (int i = 0; i < 4; i++) {
+                PaperAPITools.instance.setSignLine(sign, i, "");
+            }
+            ListTag list = mechanism.valueAsType(ListTag.class);
+            CoreUtilities.fixNewLinesToListSeparation(list);
+            if (list.size() > 4) {
+                mechanism.echoError("Sign can only hold four lines!");
+            }
+            else {
+                for (int i = 0; i < list.size(); i++) {
+                    PaperAPITools.instance.setSignLine(sign, i, list.get(i));
+                }
+            }
+            sign.update();
         });
     }
 
@@ -4766,33 +4844,6 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         if (mechanism.matches("lock") && getBlockState() instanceof Lockable) {
             BlockState state = getBlockState();
             ((Lockable) state).setLock(mechanism.hasValue() ? mechanism.getValue().asString() : null);
-            state.update();
-        }
-
-        // <--[mechanism]
-        // @object LocationTag
-        // @name sign_contents
-        // @input ListTag
-        // @description
-        // Sets the contents of a sign block.
-        // @tags
-        // <LocationTag.sign_contents>
-        // -->
-        if (mechanism.matches("sign_contents") && getBlockState() instanceof Sign) {
-            Sign state = (Sign) getBlockState();
-            for (int i = 0; i < 4; i++) {
-                PaperAPITools.instance.setSignLine(state, i, "");
-            }
-            ListTag list = mechanism.valueAsType(ListTag.class);
-            CoreUtilities.fixNewLinesToListSeparation(list);
-            if (list.size() > 4) {
-                mechanism.echoError("Sign can only hold four lines!");
-            }
-            else {
-                for (int i = 0; i < list.size(); i++) {
-                    PaperAPITools.instance.setSignLine(state, i, list.get(i));
-                }
-            }
             state.update();
         }
 
