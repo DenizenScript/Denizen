@@ -37,7 +37,7 @@ public class ItemSignContentsBack extends ItemProperty<ListTag> {
             PaperAPITools.instance.setBackSignLine(sign, i, "");
         }
         if (value.size() > 4) {
-            mechanism.echoError("Sign can only hold four lines on the back side.");
+            mechanism.echoError("Sign can only hold four lines!");
         }
         for (int i = 0; i < value.size(); i++) {
             PaperAPITools.instance.setBackSignLine(sign, i, value.get(i));
