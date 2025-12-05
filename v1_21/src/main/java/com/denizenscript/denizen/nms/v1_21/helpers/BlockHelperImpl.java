@@ -2,18 +2,18 @@ package com.denizenscript.denizen.nms.v1_21.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
+import com.denizenscript.denizen.nms.v1_21.Handler;
 import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_21.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v1_21.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.InclusiveRange;
 import net.minecraft.util.random.WeightedList;
@@ -34,17 +34,17 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Skull;
-import org.bukkit.craftbukkit.v1_21_R4.CraftChunk;
-import org.bukkit.craftbukkit.v1_21_R4.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R4.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_21_R4.block.CraftBlockEntityState;
-import org.bukkit.craftbukkit.v1_21_R4.block.CraftCreatureSpawner;
-import org.bukkit.craftbukkit.v1_21_R4.block.CraftSkull;
-import org.bukkit.craftbukkit.v1_21_R4.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R4.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_21_R4.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R6.CraftChunk;
+import org.bukkit.craftbukkit.v1_21_R6.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R6.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R6.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_21_R6.block.CraftBlockEntityState;
+import org.bukkit.craftbukkit.v1_21_R6.block.CraftCreatureSpawner;
+import org.bukkit.craftbukkit.v1_21_R6.block.CraftSkull;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R6.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R6.util.CraftMagicNumbers;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -85,15 +85,15 @@ public class BlockHelperImpl implements BlockHelper {
         if (profile == null) {
             return null;
         }
-        com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.properties().get("textures"), null);
-        return new PlayerProfile(profile.name().orElse(null), profile.id().orElse(null), property != null ? property.value() : null);
+        com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.partialProfile().properties().get("textures"), null);
+        return new PlayerProfile(profile.name().orElse(null), ProfileEditorImpl.getUUID(profile), property != null ? property.value() : null);
     }
 
     @Override
     public void setPlayerProfile(Skull skull, PlayerProfile playerProfile) {
         GameProfile gameProfile = ProfileEditorImpl.getGameProfile(playerProfile);
         try {
-            craftSkull_profile.set(skull, new ResolvableProfile(gameProfile));
+            craftSkull_profile.set(skull, ResolvableProfile.createResolved(gameProfile));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -101,26 +101,28 @@ public class BlockHelperImpl implements BlockHelper {
         skull.update();
     }
 
+    public BlockEntity getBlockEntity(Block block) {
+        CraftBlock craftBlock = ((CraftBlock) block);
+        return craftBlock.getHandle().getBlockEntity(craftBlock.getPosition());
+    }
+
     @Override
-    public CompoundTag getNbtData(Block block) {
-        BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(new BlockPos(block.getX(), block.getY(), block.getZ()), true);
-        if (te != null) {
-            net.minecraft.nbt.CompoundTag compound = te.saveWithFullMetadata(CraftRegistry.getMinecraftRegistry());
-            return CompoundTagImpl.fromNMSTag(compound);
+    public CompoundBinaryTag getNbtData(Block block) {
+        BlockEntity nmsBlockEntity = getBlockEntity(block);
+        if (nmsBlockEntity != null) {
+            CompoundTag compound = nmsBlockEntity.saveWithFullMetadata(CraftRegistry.getMinecraftRegistry());
+            return NBTAdapter.toAPI(compound);
         }
         return null;
     }
 
     @Override
-    public void setNbtData(Block block, CompoundTag ctag) {
-        CompoundTagBuilder builder = ctag.createBuilder();
-        builder.putInt("x", block.getX());
-        builder.putInt("y", block.getY());
-        builder.putInt("z", block.getZ());
-        ctag = builder.build();
-        BlockPos blockPos = new BlockPos(block.getX(), block.getY(), block.getZ());
-        BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(blockPos, true);
-        te.loadWithComponents(((CompoundTagImpl) ctag).toNMSTag(), CraftRegistry.getMinecraftRegistry());
+    public void setNbtData(Block block, CompoundBinaryTag ctag) {
+        CompoundTag nmsData = NBTAdapter.toNMS(ctag);
+        nmsData.putInt("x", block.getX());
+        nmsData.putInt("y", block.getY());
+        nmsData.putInt("z", block.getZ());
+        Handler.useValueInput(nmsData, getBlockEntity(block)::loadWithComponents);
     }
 
     @Override
@@ -214,6 +216,7 @@ public class BlockHelperImpl implements BlockHelper {
         }
         try {
             // Wrangle a fake entity
+            // TODO: 1.21.6: seems to have a bug where the "Pos" value being set prevents it from spawning?
             org.bukkit.entity.Entity bukkitEntity = ((CraftWorld) spawner.getWorld()).createEntity(spawner.getLocation(), entity.getBukkitEntityType().getEntityClass());
             Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
             EntityTag entityTag = new EntityTag(bukkitEntity);
@@ -224,12 +227,8 @@ public class BlockHelperImpl implements BlockHelper {
             }
             nmsEntity.unsetRemoved();
             // Store it into the spawner
-            CraftCreatureSpawner bukkitSpawner = (CraftCreatureSpawner) spawner;
-            SpawnerBlockEntity nmsSnapshot = (SpawnerBlockEntity) craftBlockEntityState_snapshot.get(bukkitSpawner);
-            BaseSpawner nmsSpawner = nmsSnapshot.getSpawner();
-            SpawnData toSpawn = nmsSpawner.nextSpawnData;
-            net.minecraft.nbt.CompoundTag tag = toSpawn.getEntityToSpawn();
-            nmsEntity.saveWithoutId(tag);
+            SpawnerBlockEntity nmsSnapshot = (SpawnerBlockEntity) craftBlockEntityState_snapshot.get(spawner);
+            Handler.useValueOutput(nmsSnapshot.getSpawner().nextSpawnData.getEntityToSpawn(), nmsEntity::saveWithoutId);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

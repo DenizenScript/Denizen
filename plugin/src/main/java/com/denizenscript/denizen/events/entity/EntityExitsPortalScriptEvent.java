@@ -59,13 +59,11 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("location")) {
-            return location;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity.getDenizenObject();
+            case "location" -> location;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

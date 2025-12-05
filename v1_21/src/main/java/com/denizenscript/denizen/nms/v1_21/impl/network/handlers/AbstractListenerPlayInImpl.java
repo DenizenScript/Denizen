@@ -6,31 +6,35 @@ import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
+import io.netty.channel.ChannelFutureListener;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.DisconnectionDetails;
-import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.*;
+import net.minecraft.network.protocol.cookie.ServerboundCookieResponsePacket;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.protocol.ping.ServerboundPingRequestPacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
 import java.util.Set;
@@ -39,11 +43,22 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
 
     public static final Field ServerGamePacketListenerImpl_chunkSender = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_chunkSender);
 
+    public static final MethodHandle SERVER_COMMON_PACKET_LISTENER_IMPL_CREATE_COOKIE = ReflectionHelper.getMethodHandle(ServerCommonPacketListenerImpl.class, ReflectionMappingsInfo.ServerCommonPacketListenerImpl_createCookie_method, ClientInformation.class);
+
+    public static CommonListenerCookie createCookie(ServerPlayer nmsPlayer) {
+        try {
+            return (CommonListenerCookie) SERVER_COMMON_PACKET_LISTENER_IMPL_CREATE_COOKIE.invoke(nmsPlayer.connection, nmsPlayer.clientInformation());
+        }
+        catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public final ServerGamePacketListenerImpl oldListener;
     public final DenizenNetworkManagerImpl denizenNetworkManager;
 
-    public AbstractListenerPlayInImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer, ServerGamePacketListenerImpl oldListener, CommonListenerCookie cookie) {
-        super(MinecraftServer.getServer(), networkManager, entityPlayer, cookie);
+    public AbstractListenerPlayInImpl(DenizenNetworkManagerImpl networkManager, ServerPlayer entityPlayer, ServerGamePacketListenerImpl oldListener) {
+        super(MinecraftServer.getServer(), networkManager, entityPlayer, createCookie(entityPlayer));
         this.oldListener = oldListener;
         this.denizenNetworkManager = networkManager;
         try {
@@ -57,6 +72,16 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     @Override
     public void disconnect(Component ichatbasecomponent) {
         oldListener.disconnect(ichatbasecomponent);
+    }
+
+    @Override
+    public void disconnect(DisconnectionDetails disconnectiondetails) {
+        oldListener.disconnect(disconnectiondetails);
+    }
+
+    @Override
+    public void kickPlayer(Component reason) {
+        oldListener.kickPlayer(reason);
     }
 
     @Override
@@ -150,8 +175,8 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void send(Packet<?> packet, PacketSendListener listener) {
-        oldListener.send(packet, listener);
+    public void send(Packet<?> packet, ChannelFutureListener channelfuturelistener) {
+        oldListener.send(packet, channelfuturelistener);
     }
 
     public static Field AWAITING_POS_FIELD = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_awaitingPositionFromClient, Vec3.class);
@@ -583,9 +608,9 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void handleDebugSampleSubscription(ServerboundDebugSampleSubscriptionPacket packet) {
+    public void handleDebugSubscriptionRequest(ServerboundDebugSubscriptionRequestPacket packet) {
         if (handlePacketIn(packet)) { return; }
-        oldListener.handleDebugSampleSubscription(packet);
+        oldListener.handleDebugSubscriptionRequest(packet);
     }
 
     @Override
@@ -604,6 +629,24 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public void handleSignedChatCommand(ServerboundChatCommandSignedPacket packet) {
         if (handlePacketIn(packet)) { return; }
         oldListener.handleSignedChatCommand(packet);
+    }
+
+    @Override
+    public void handleChangeGameMode(ServerboundChangeGameModePacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleChangeGameMode(packet);
+    }
+
+    @Override
+    public void handleCustomClickAction(ServerboundCustomClickActionPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleCustomClickAction(packet);
+    }
+
+    @Override
+    public void handleCookieResponse(ServerboundCookieResponsePacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleCookieResponse(packet);
     }
 
     @Override

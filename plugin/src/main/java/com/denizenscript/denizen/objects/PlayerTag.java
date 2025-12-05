@@ -104,13 +104,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
      * Notes that the player exists, for easy PlayerTag valueOf handling.
      */
     public static void notePlayer(OfflinePlayer player) {
-        if (player.getName() == null) {
-            Debug.echoError("Null named player " + player + " - may be file corruption, or player data imported from non-bukkit server?");
+        UUID uuid = player.getUniqueId();
+        Player onlinePlayer = player.getPlayer();
+        notePlayer(onlinePlayer != null ? onlinePlayer.getName() : NMSHandler.playerHelper.getOfflineData(uuid).getName(), uuid);
+    }
+
+    public static void notePlayer(String name, UUID uuid) {
+        if (name == null) {
+            Debug.echoError("Null named player " + uuid + " - may be file corruption, or player data imported from non-bukkit server?");
             return;
         }
-        if (!playerNames.containsKey(CoreUtilities.toLowerCase(player.getName()))) {
-            playerNames.put(CoreUtilities.toLowerCase(player.getName()), player.getUniqueId());
-        }
+        playerNames.putIfAbsent(CoreUtilities.toLowerCase(name), uuid);
     }
 
     public static boolean isNoted(OfflinePlayer player) {
@@ -2675,6 +2679,33 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 object.getNBTEditor().setSpawnForced(input.asBoolean());
             }
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+
+            // <--[mechanism]
+            // @object PlayerTag
+            // @name links
+            // @input ListTag(MapTag)
+            // @description
+            // Sends the specified list of server links to the player. This will override existing links player has.
+            // Each item in the list must be a MapTag in <@link language Server Links Format>.
+            // Generally prefer <@link mechanism PlayerTag.add_links>.
+            // -->
+            registerOnlineOnlyMechanism("links", ListTag.class, (player, mechanism, input) -> {
+                player.getPlayerEntity().sendLinks(Utilities.replaceServerLinks(Bukkit.getServerLinks().copy(), input, mechanism.context));
+            });
+
+            // <--[mechanism]
+            // @object PlayerTag
+            // @name add_links
+            // @input ListTag(MapTag)
+            // @description
+            // Adds the specified list of server links to the player. Each item in the list must be a MapTag in <@link language Server Links Format>.
+            // -->
+            registerOnlineOnlyMechanism("add_links", ListTag.class, (player, mechanism, input) -> {
+                player.getPlayerEntity().sendLinks(Utilities.fillServerLinks(Bukkit.getServerLinks().copy(), input, mechanism.context));
+            });
+        }
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
@@ -2833,17 +2864,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @name vision
         // @input ElementTag
         // @description
-        // Changes the player's vision to the provided entity type. Valid types:
+        // Changes the player's vision to that of the provided entity type. Valid types:
         // ENDERMAN, CAVE_SPIDER, SPIDER, CREEPER
         // Provide no value to reset the player's vision.
         // Note: This is powered by a bug in Minecraft that has been present for a long time, but may at some point be 'fixed' by Mojang.
         // -->
         if (mechanism.matches("vision")) {
-            if (mechanism.hasValue() && mechanism.requireEnum(EntityType.class)) {
-                NMSHandler.packetHelper.setVision(getPlayerEntity(), EntityType.valueOf(mechanism.getValue().asString().toUpperCase()));
-            }
-            else {
+            if (!mechanism.hasValue()) {
                 NMSHandler.packetHelper.forceSpectate(getPlayerEntity(), getPlayerEntity());
+                return;
+            }
+            if (mechanism.requireEnum(EntityType.class)) {
+                NMSHandler.packetHelper.setVision(getPlayerEntity(), mechanism.getValue().asEnum(EntityType.class));
             }
         }
 

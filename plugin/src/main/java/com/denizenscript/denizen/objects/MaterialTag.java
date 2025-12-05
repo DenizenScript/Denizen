@@ -545,10 +545,10 @@ public class MaterialTag implements ObjectTag, Adjustable, FlaggableObject {
         // @attribute <MaterialTag.item>
         // @returns ItemTag
         // @description
-        // Returns an item of the material.
+        // Returns an item of the material. Not all materials can be items.
         // -->
         tagProcessor.registerTag(ItemTag.class, "item", (attribute, object) -> {
-            return new ItemTag(object, 1);
+            return object.material.isItem() ? new ItemTag(object, 1) : null;
         });
 
         // <--[tag]

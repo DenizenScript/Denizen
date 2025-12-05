@@ -3,9 +3,8 @@ package com.denizenscript.denizen.nms.v1_21.helpers;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
+import com.denizenscript.denizen.nms.v1_21.Handler;
 import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
-import com.denizenscript.denizen.nms.v1_21.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -18,7 +17,9 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.text.StringHolder;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerLookAtPacket;
@@ -66,14 +67,14 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_21_R4.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R4.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_21_R4.block.CraftCreatureSpawner;
-import org.bukkit.craftbukkit.v1_21_R4.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R4.entity.*;
-import org.bukkit.craftbukkit.v1_21_R4.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R4.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R6.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R6.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R6.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_21_R6.block.CraftCreatureSpawner;
+import org.bukkit.craftbukkit.v1_21_R6.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R6.entity.*;
+import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R6.util.CraftLocation;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -173,15 +174,14 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public CompoundTag getNbtData(Entity entity) {
-        net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
-        ((CraftEntity) entity).getHandle().saveAsPassenger(compound);
-        return CompoundTagImpl.fromNMSTag(compound);
+    public CompoundBinaryTag getNbtData(Entity entity) {
+        CompoundTag nmsTag = Handler.useValueOutput(((CraftEntity) entity).getHandle()::saveAsPassenger);
+        return NBTAdapter.toAPI(nmsTag);
     }
 
     @Override
-    public void setNbtData(Entity entity, CompoundTag compoundTag) {
-        ((CraftEntity) entity).getHandle().load(((CompoundTagImpl) compoundTag).toNMSTag());
+    public void setNbtData(Entity entity, CompoundBinaryTag compoundTag) {
+        Handler.useValueInput(NBTAdapter.toNMS(compoundTag), ((CraftEntity) entity).getHandle()::load);
     }
 
     /*
@@ -371,7 +371,7 @@ public class EntityHelperImpl extends EntityHelper {
         }
         ServerPlayer nmsPlayer = ((CraftPlayer) pl).getHandle();
         if (nmsPlayer.connection != null && !pl.equals(entity)) {
-            ChunkMap.TrackedEntity entry = nmsPlayer.serverLevel().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
+            ChunkMap.TrackedEntity entry = nmsPlayer.level().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
             if (entry != null) {
                 entry.removePlayer(nmsPlayer);
             }
@@ -389,7 +389,7 @@ public class EntityHelperImpl extends EntityHelper {
         }
         ServerPlayer nmsPlayer = ((CraftPlayer) pl).getHandle();
         if (nmsPlayer.connection != null && !pl.equals(entity)) {
-            ChunkMap.TrackedEntity entry = nmsPlayer.serverLevel().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
+            ChunkMap.TrackedEntity entry = nmsPlayer.level().getChunkSource().chunkMap.entityMap.get(entity.getEntityId());
             if (entry != null) {
                 entry.removePlayer(nmsPlayer);
                 entry.updatePlayer(nmsPlayer);
@@ -825,22 +825,22 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftPlayer) player).getHandle().openHorseInventory(nmsHorse, nmsHorse.inventory);
     }
 
-    private net.minecraft.nbt.CompoundTag getRawEntityNBT(net.minecraft.world.entity.Entity entity) {
-        return entity.saveWithoutId(new net.minecraft.nbt.CompoundTag());
+    private CompoundTag getRawEntityNBT(net.minecraft.world.entity.Entity entity) {
+        return Handler.useValueOutput(entity::saveWithoutId);
     }
 
     @Override
-    public CompoundTag getRawNBT(Entity entity) {
-        return CompoundTagImpl.fromNMSTag(getRawEntityNBT(((CraftEntity) entity).getHandle()));
+    public CompoundBinaryTag getRawNBT(Entity entity) {
+        return NBTAdapter.toAPI(getRawEntityNBT(((CraftEntity) entity).getHandle()));
     }
 
     @Override
-    public void modifyRawNBT(Entity entity, CompoundTag tag) {
+    public void modifyRawNBT(Entity entity, CompoundBinaryTag tag) {
         net.minecraft.world.entity.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        net.minecraft.nbt.CompoundTag nmsTag = ((CompoundTagImpl) tag).toNMSTag();
-        net.minecraft.nbt.CompoundTag nmsMergedTag = getRawEntityNBT(nmsEntity).merge(nmsTag);
+        CompoundTag nmsTag = NBTAdapter.toNMS(tag);
+        CompoundTag nmsMergedTag = getRawEntityNBT(nmsEntity).merge(nmsTag);
         UUID uuid = nmsEntity.getUUID();
-        nmsEntity.load(nmsMergedTag);
+        Handler.useValueInput(nmsMergedTag, nmsEntity::load);
         nmsEntity.setUUID(uuid);
     }
 }

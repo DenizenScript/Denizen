@@ -1,5 +1,8 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.EntityTag;
@@ -13,9 +16,8 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Material;
-import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Steerable;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.HorseInventory;
 
 import java.util.*;
@@ -24,14 +26,14 @@ public class EquipCommand extends AbstractCommand {
 
     public EquipCommand() {
         setName("equip");
-        setSyntax("equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)");
+        setSyntax("equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (body:<item>)");
         setRequiredArguments(1, 9);
         isProcedural = false;
     }
 
     // <--[command]
     // @Name Equip
-    // @Syntax equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)
+    // @Syntax equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (body:<item>)
     // @Required 1
     // @Maximum 9
     // @Short Equips items and armor on a list of entities.
@@ -64,6 +66,10 @@ public class EquipCommand extends AbstractCommand {
     // @Usage
     // Use to equip a saddle on all nearby pigs.
     // - equip <player.location.find_entities[pig].within[10]> saddle:saddle
+    //
+    // @Usage
+    // Use to equip a horse with iron horse armor.
+    // - equip <[horse]> body:iron_horse_armor
     // -->
 
     @Override
@@ -96,7 +102,15 @@ public class EquipCommand extends AbstractCommand {
             }
             else if (arg.matchesArgumentType(ItemTag.class)
                     && arg.matchesPrefix("horse_armor", "horse_armour")) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                    BukkitImplDeprecations.horseArmorEquipCommand.warn();
+                }
                 equipment.put("horse_armor", ItemTag.valueOf(arg.getValue(), scriptEntry.getContext()));
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)
+                    && arg.matchesArgumentType(ItemTag.class)
+                    && arg.matchesPrefix("body")) {
+                equipment.put("body", ItemTag.valueOf(arg.getValue(), scriptEntry.getContext()));
             }
             else if (arg.matchesArgumentType(ItemTag.class)
                     && arg.matchesPrefix("offhand")) {
@@ -158,28 +172,25 @@ public class EquipCommand extends AbstractCommand {
                     if (equipment.get("offhand") != null) {
                         trait.set(Equipment.EquipmentSlot.OFF_HAND, equipment.get("offhand").getItemStack());
                     }
+                    if (equipment.get("body") != null) {
+                        trait.set(Equipment.EquipmentSlot.BODY, equipment.get("body").getItemStack());
+                    }
                     if (npc.isSpawned()) {
                         LivingEntity livingEntity = npc.getLivingEntity();
                         // TODO: Citizens API for this blob?
-                        if (livingEntity instanceof AbstractHorse) {
+                        if (livingEntity instanceof AbstractHorse abstractHorse) {
                             if (equipment.get("saddle") != null) {
-                                ((AbstractHorse) livingEntity).getInventory().setSaddle(equipment.get("saddle").getItemStack());
+                                abstractHorse.getInventory().setSaddle(equipment.get("saddle").getItemStack());
                             }
                             if (equipment.get("horse_armor") != null) {
-                                if(((AbstractHorse) livingEntity).getInventory() instanceof HorseInventory) {
-                                    ((HorseInventory) ((AbstractHorse) livingEntity).getInventory()).setArmor(equipment.get("horse_armor").getItemStack());
+                                if (abstractHorse.getInventory() instanceof HorseInventory horseInventory) {
+                                    horseInventory.setArmor(equipment.get("horse_armor").getItemStack());
                                 }
                             }
                         }
-                        else if (livingEntity instanceof Steerable) {
+                        else if (livingEntity instanceof Steerable steerable) {
                             if (equipment.get("saddle") != null) {
-                                ItemTag saddle = equipment.get("saddle");
-                                if (saddle.getBukkitMaterial() == Material.SADDLE) {
-                                    ((Steerable) livingEntity).setSaddle(true);
-                                }
-                                else {
-                                    ((Steerable) livingEntity).setSaddle(false);
-                                }
+                                steerable.setSaddle(equipment.get("saddle").getBukkitMaterial() == Material.SADDLE);
                             }
                         }
                     }
@@ -188,25 +199,22 @@ public class EquipCommand extends AbstractCommand {
             else {
                 LivingEntity livingEntity = entity.getLivingEntity();
                 if (livingEntity != null) {
-                    if (livingEntity instanceof AbstractHorse) {
+                    if (equipment.get("body") != null) {
+                        livingEntity.getEquipment().setItem(EquipmentSlot.BODY, equipment.get("body").getItemStack());
+                    }
+                    else if (livingEntity instanceof AbstractHorse abstractHorse) {
                         if (equipment.get("saddle") != null) {
-                            ((AbstractHorse) livingEntity).getInventory().setSaddle(equipment.get("saddle").getItemStack());
+                            abstractHorse.getInventory().setSaddle(equipment.get("saddle").getItemStack());
                         }
                         if (equipment.get("horse_armor") != null) {
-                            if(((AbstractHorse) livingEntity).getInventory() instanceof HorseInventory) {
-                                ((HorseInventory) ((AbstractHorse) livingEntity).getInventory()).setArmor(equipment.get("horse_armor").getItemStack());
+                            if (abstractHorse.getInventory() instanceof HorseInventory horseInventory) {
+                                horseInventory.setArmor(equipment.get("horse_armor").getItemStack());
                             }
                         }
                     }
-                    else if (livingEntity instanceof Steerable) {
+                    else if (livingEntity instanceof Steerable steerable) {
                         if (equipment.get("saddle") != null) {
-                            ItemTag saddle = equipment.get("saddle");
-                            if (saddle.getBukkitMaterial() == Material.SADDLE) {
-                                ((Steerable) livingEntity).setSaddle(true);
-                            }
-                            else {
-                                ((Steerable) livingEntity).setSaddle(false);
-                            }
+                            steerable.setSaddle(equipment.get("saddle").getBukkitMaterial() == Material.SADDLE);
                         }
                     }
                     else {

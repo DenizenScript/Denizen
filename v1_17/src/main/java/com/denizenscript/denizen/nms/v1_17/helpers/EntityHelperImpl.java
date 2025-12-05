@@ -5,14 +5,14 @@ import com.denizenscript.denizen.events.entity.EntityEntersVehicleScriptEvent;
 import com.denizenscript.denizen.events.entity.EntityExitsVehicleScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
 import com.denizenscript.denizen.nms.v1_17.ReflectionMappingsInfo;
-import com.denizenscript.denizen.nms.v1_17.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ChunkMap;
@@ -159,15 +159,15 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public CompoundTag getNbtData(Entity entity) {
-        net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
+    public CompoundBinaryTag getNbtData(Entity entity) {
+        CompoundTag compound = new CompoundTag();
         ((CraftEntity) entity).getHandle().saveAsPassenger(compound);
-        return CompoundTagImpl.fromNMSTag(compound);
+        return NBTAdapter.toAPI(compound);
     }
 
     @Override
-    public void setNbtData(Entity entity, CompoundTag compoundTag) {
-        ((CraftEntity) entity).getHandle().load(((CompoundTagImpl) compoundTag).toNMSTag());
+    public void setNbtData(Entity entity, CompoundBinaryTag compoundTag) {
+        ((CraftEntity) entity).getHandle().load(NBTAdapter.toNMS(compoundTag));
     }
 
     /*

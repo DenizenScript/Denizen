@@ -8,38 +8,42 @@ public class ReflectionMappingsInfo {
     public static String BlockBehaviour_explosionResistance = "G";
 
     // net.minecraft.core.MappedRegistry
-    public static String MappedRegistry_frozen = "l";
-    public static String MappedRegistry_unregisteredIntrusiveHolders = "m";
+    public static String MappedRegistry_registrationInfos = "h";
 
     // net.minecraft.world.entity.Entity
-    public static String Entity_onGround = "aH";
-    public static String Entity_DATA_SHARED_FLAGS_ID = "am";
-    public static String Entity_DATA_CUSTOM_NAME = "aR";
-    public static String Entity_DATA_CUSTOM_NAME_VISIBLE = "aS";
+    public static String Entity_onGround = "bc";
+    public static String Entity_DATA_SHARED_FLAGS_ID = "aA";
+    public static String Entity_DATA_CUSTOM_NAME = "bm";
+    public static String Entity_DATA_CUSTOM_NAME_VISIBLE = "bn";
 
     // net.minecraft.world.entity.LivingEntity
-    public static String LivingEntity_attackStrengthTicker = "aS";
-    public static String LivingEntity_autoSpinAttackTicks = "bp";
+    public static String LivingEntity_attackStrengthTicker = "by";
+    public static String LivingEntity_autoSpinAttackTicks = "bV";
     public static String LivingEntity_setLivingEntityFlag_method = "c";
 
     // net.minecraft.world.entity.player.Player
-    public static String Player_DATA_PLAYER_ABSORPTION_ID = "c";
-    public static String Player_DATA_PLAYER_MODE_CUSTOMISATION = "bK";
+    public static String Player_DATA_PLAYER_ABSORPTION_ID = "b";
 
     // net.minecraft.server.level.ServerPlayer
-    public static String ServerPlayer_respawnConfig = "dc";
+    public static String ServerPlayer_respawnConfig = "dq";
 
     // net.minecraft.world.entity.monster.EnderMan
-    public static String EnderMan_DATA_CREEPY = "bJ";
+    public static String EnderMan_DATA_CREEPY = "cu";
 
     // net.minecraft.world.entity.monster.Zombie
-    public static String Zombie_inWaterTime = "bY";
+    public static String Zombie_inWaterTime = "cJ";
 
     // net.minecraft.world.item.Item
     public static String Item_components = "c";
 
+    // net.minecraft.world.item.component.ResolvableProfile
+    public static String ResolvableProfile_unpack_method = "a";
+
+    // net.minecraft.world.item.component.ResolvableProfile$Partial
+    public static String ResolvableProfilePartial_id = "d";
+
     // net.minecraft.world.level.Level
-    public static String Level_isClientSide = "C";
+    public static String Level_isClientSide = "E";
 
     // net.minecraft.server.level.ThreadedLevelLightEngine
     public static String ThreadedLevelLightEngine_addTask_method = "a";
@@ -74,6 +78,7 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.server.network.ServerCommonPacketListenerImpl
     public static String ServerCommonPacketListenerImpl_connection = "e";
+    public static String ServerCommonPacketListenerImpl_createCookie_method = "a";
 
     // net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket
     public static String ClientboundPlayerAbilitiesPacket_walkingSpeed = "k";
@@ -104,9 +109,9 @@ public class ReflectionMappingsInfo {
     public static String SynchedEntityData_itemsById = "e";
 
     // net.minecraft.world.entity.projectile.FishingHook
-    public static String FishingHook_nibble = "i";
-    public static String FishingHook_timeUntilLured = "j";
-    public static String FishingHook_timeUntilHooked = "k";
+    public static String FishingHook_nibble = "j";
+    public static String FishingHook_timeUntilLured = "k";
+    public static String FishingHook_timeUntilHooked = "l";
 
     // net.minecraft.tags.TagNetworkSerialization$NetworkPayload
     public static String TagNetworkSerializationNetworkPayload_tags = "b";
@@ -118,12 +123,11 @@ public class ReflectionMappingsInfo {
     public static String HolderReference_bindTags_method = "a";
 
     // net.minecraft.server.level.ServerLevel
-    public static String ServerLevel_sleepStatus = "Q";
+    public static String ServerLevel_sleepStatus = "O";
 
     // net.minecraft.world.item.AdventureModePredicate
-    public static String AdventureModePredicate_predicates = "f";
+    public static String AdventureModePredicate_predicates = "g";
 
     // net.minecraft.stats.ServerRecipeBook
     public static String ServerRecipeBook_addHighlight_method = "e";
-
 }

@@ -2,10 +2,7 @@ package com.denizenscript.denizen.nms.v1_18.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTag;
-import com.denizenscript.denizen.nms.util.jnbt.CompoundTagBuilder;
 import com.denizenscript.denizen.nms.v1_18.ReflectionMappingsInfo;
-import com.denizenscript.denizen.nms.v1_18.impl.jnbt.CompoundTagImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.VanillaTagHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -14,8 +11,10 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.minecraft.core.Registry;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.minecraft.core.*;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundUpdateTagsPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
@@ -116,25 +115,24 @@ public class BlockHelperImpl implements BlockHelper {
     }
 
     @Override
-    public CompoundTag getNbtData(Block block) {
+    public CompoundBinaryTag getNbtData(Block block) {
         BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(new BlockPos(block.getX(), block.getY(), block.getZ()), true);
         if (te != null) {
-            net.minecraft.nbt.CompoundTag compound = te.saveWithFullMetadata();
-            return CompoundTagImpl.fromNMSTag(compound);
+            CompoundTag nmsData = te.saveWithFullMetadata();
+            return NBTAdapter.toAPI(nmsData);
         }
         return null;
     }
 
     @Override
-    public void setNbtData(Block block, CompoundTag ctag) {
-        CompoundTagBuilder builder = ctag.createBuilder();
-        builder.putInt("x", block.getX());
-        builder.putInt("y", block.getY());
-        builder.putInt("z", block.getZ());
-        ctag = builder.build();
+    public void setNbtData(Block block, CompoundBinaryTag ctag) {
+        CompoundTag nmsData = NBTAdapter.toNMS(ctag);
+        nmsData.putInt("x", block.getX());
+        nmsData.putInt("y", block.getY());
+        nmsData.putInt("z", block.getZ());
         BlockPos blockPos = new BlockPos(block.getX(), block.getY(), block.getZ());
         BlockEntity te = ((CraftWorld) block.getWorld()).getHandle().getBlockEntity(blockPos, true);
-        te.load(((CompoundTagImpl) ctag).toNMSTag());
+        te.load(nmsData);
     }
 
     @Override
@@ -303,7 +301,7 @@ public class BlockHelperImpl implements BlockHelper {
             SpawnerBlockEntity nmsSnapshot = (SpawnerBlockEntity) craftBlockEntityState_snapshot.get(bukkitSpawner);
             BaseSpawner nmsSpawner = nmsSnapshot.getSpawner();
             SpawnData toSpawn = nmsSpawner.nextSpawnData;
-            net.minecraft.nbt.CompoundTag tag = toSpawn.getEntityToSpawn();
+            CompoundTag tag = toSpawn.getEntityToSpawn();
             nmsEntity.saveWithoutId(tag);
         }
         catch (Throwable ex) {

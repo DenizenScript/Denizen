@@ -11,6 +11,7 @@ import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import net.minecraft.network.*;
@@ -31,9 +32,9 @@ import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.util.debugchart.LocalSampleLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R4.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R4.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R6.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R6.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -271,7 +272,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         else if (packet instanceof ClientboundSetEntityMotionPacket) {
             ClientboundSetEntityMotionPacket velPacket = (ClientboundSetEntityMotionPacket) packet;
-            doPacketOutput("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getXa() + "," + velPacket.getYa() + "," + velPacket.getZa());
+            doPacketOutput("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getMovement());
         }
         else if (packet instanceof ClientboundAddEntityPacket) {
             ClientboundAddEntityPacket addEntityPacket = (ClientboundAddEntityPacket) packet;
@@ -289,8 +290,8 @@ public class DenizenNetworkManagerImpl extends Connection {
         else if (packet instanceof ClientboundPlayerInfoUpdatePacket) {
             ClientboundPlayerInfoUpdatePacket playerInfoPacket = (ClientboundPlayerInfoUpdatePacket) packet;
             doPacketOutput("Packet: ClientboundPlayerInfoPacket sent to " + player.getScoreboardName() + " of types " + playerInfoPacket.actions() + " for player profiles: " +
-                    playerInfoPacket.entries().stream().map(p -> "mode=" + p.gameMode() + "/latency=" + p.latency() + "/display=" + p.displayName() + "/name=" + p.profile().getName() + "/id=" + p.profile().getId() + "/"
-                            + p.profile().getProperties().asMap().entrySet().stream().map(e -> e.getKey() + "=" + e.getValue().stream().map(v -> v.value() + ";" + v.signature()).collect(Collectors.joining(";;;"))).collect(Collectors.joining("/"))).collect(Collectors.joining(", ")));
+                    playerInfoPacket.entries().stream().map(p -> "mode=" + p.gameMode() + "/latency=" + p.latency() + "/display=" + p.displayName() + "/name=" + p.profile().name() + "/id=" + p.profile().id() + "/"
+                            + p.profile().properties().asMap().entrySet().stream().map(e -> e.getKey() + "=" + e.getValue().stream().map(v -> v.value() + ";" + v.signature()).collect(Collectors.joining(";;;"))).collect(Collectors.joining("/"))).collect(Collectors.joining(", ")));
         }
         else {
             doPacketOutput("Packet: " + packet.getClass().getCanonicalName() + " sent to " + player.getScoreboardName());
@@ -298,12 +299,12 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
-    public void send(Packet<?> packet, PacketSendListener genericfuturelistener) {
-        send(packet, genericfuturelistener, true);
+    public void send(Packet<?> packet, ChannelFutureListener channelFutureListener) {
+        send(packet, channelFutureListener, true);
     }
 
     @Override
-    public void send(Packet<?> packet, @Nullable PacketSendListener genericfuturelistener, boolean flush) {
+    public void send(Packet<?> packet, @Nullable ChannelFutureListener channelFutureListener, boolean flush) {
         if (!Bukkit.isPrimaryThread()) {
             if (Settings.cache_warnOnAsyncPackets
                     && !(packet instanceof ClientboundSystemChatPacket) && !(packet instanceof ClientboundPlayerChatPacket) // Vanilla supports an async chat system, though it's normally disabled, some plugins use this as justification for sending messages async
@@ -317,7 +318,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                     Debug.echoError(ex);
                 }
             }
-            oldManager.send(packet, genericfuturelistener, flush);
+            oldManager.send(packet, channelFutureListener, flush);
             return;
         }
         if (NMSHandler.debugPackets) {
@@ -350,7 +351,7 @@ public class DenizenNetworkManagerImpl extends Connection {
             }
             packet = processed;
         }
-        oldManager.send(packet, genericfuturelistener, flush);
+        oldManager.send(packet, channelFutureListener, flush);
     }
 
     @Override

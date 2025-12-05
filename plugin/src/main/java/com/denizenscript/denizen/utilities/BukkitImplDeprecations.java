@@ -181,10 +181,6 @@ public class BukkitImplDeprecations {
     // Safe to remove now.
     public static Warning attachToMech = new StrongWarning("attachToMech", "The entity 'attach_to' mechanism is deprecated: use the new 'attach' command instead!");
 
-    // Added 2020/07/12, made slow 2022/12/31, made normal 2024/01/02, made strong 2025/01/15.
-    // Safe to remove now.
-    public static Warning entityEquipmentSubtags = new StrongWarning("entityEquipmentSubtags", pointlessSubtagPrefix + " 'entity.equipment.slotname' is deprecated: use 'entity.equipment_map.get[slotname]' instead.");
-
     // Added 2021/04/13, made slow 2022/12/31, made normal 2024/01/02, made strong 2025/01/15.
     // Safe to remove now.
     public static Warning materialHasDataPackTag = new StrongWarning("materialHasDataPackTag", "The tag 'MaterialTag.has_vanilla_data_tag[...]' is deprecated in favor of MaterialTag.vanilla_tags.contains[<name>]");
@@ -268,6 +264,9 @@ public class BukkitImplDeprecations {
     // Added 2025/03/14
     public static Warning settingBoatType = new Warning("settingBoatType", "As of MC 1.21, separate boat wood types are separate entity types, meaning the wood type of an existing boat entity cannot be changed without spawning a new one.");
 
+    // Added 2025/07/10
+    public static Warning entityKnockback = new Warning("entityKnockback", "The 'EntityTag.knockback' property is deprecated. You should adjust the knockback enchantment on the weapon itself.");
+
     // ==================== SLOW deprecations ====================
     // These aren't spammed, but will show up repeatedly until fixed. Server owners will probably notice them.
 
@@ -293,12 +292,6 @@ public class BukkitImplDeprecations {
     // Added 2024/05/31
     // 2024-year-end commonality: #15
     public static Warning oldNbtProperty = new SlowWarning("oldNbtProperty", "'ItemTag.raw_nbt' is deprecated in favor of 'ItemTag.custom_data', as item NBT was removed by Mojang in favor of item components.");
-
-    // In multiple places, Added 2021/11/20, made very-slow 2022/12/31, made slow 2025/01/15.
-    // 2022-year-end commonality: #15
-    // 2023-year-end commonality: #23
-    // Safe to remove now.
-    public static Warning pseudoTagBases = new SlowWarning("pseudoTagBases", "Pseudo-tags like '<text>', '<name>', '<amount>', and '<permission>' are deprecated in favor of definitions: just replace <text> with <[text]> or similar.");
 
     // Added 2021/10/18, made very-slow 2022/12/31, made slow 2025/01/15.
     // 2022-year-end commonality: #10
@@ -354,6 +347,9 @@ public class BukkitImplDeprecations {
     // Added 2025/03/16
     // Bump once 1.21 is the minimum supported version (as that is where boat types were split)
     public static Warning gettingBoatType = new SlowWarning("gettingBoatType", "Getting boat wood types is deprecated, as separate boat types are separate entity types now: should check the entity type.");
+
+    // Added 2025/09/14
+    public static Warning lookCommandNoEntities = new SlowWarning("lookCommandNoEntities", "The 'look' command now requires both the entity and location inputs.");
 
     // ==================== VERY SLOW deprecations ====================
     // These are only shown minimally, so server owners are aware of them but not bugged by them. Only servers with active scripters (using 'ex reload') will see them often.
@@ -461,9 +457,36 @@ public class BukkitImplDeprecations {
 
     // Added 2025/03/29
     public static Warning areaEffectCloudControls = new FutureWarning("areaEffectCloudControls", "Several tags/mechanisms for controlling area effect clouds have been merged into existing properties, check relevant meta docs for more information.");
-  
+
     // Added 2025/04/27
     public static Warning playerChangesWorldSwitches = new FutureWarning("playerChangesWorldSwitches", "The 'from' and 'to' arguments in the 'player changes world' script event have been deprecated in favor of the 'from' and 'to' switches.");
+
+    // Added 2025/05/02
+    public static Warning timeSubTags = new FutureWarning("timeSubTags", pointlessSubtagPrefix + "'time.*' tags are now just 'time_*'.");
+
+    // Added 2025/08/06
+    public static Warning horseArmorEquipCommand = new FutureWarning("horseArmorEquipCommand", "The 'horse_armor' argument in the 'equip' command has been deprecated in favor of 'body'.");
+
+    // Added 2025/08/06
+    public static Warning horseArmorTag = new FutureWarning("horseArmorTag", "The 'EntityTag.horse_armor' tag has been deprecated in favor of 'EntityTag.equipment_map.get[body]'.");
+
+    // Added 2025/08/06
+    public static Warning entityEquipmentListTag = new FutureWarning("entityEquipmentListTag", "The ListTag 'EntityTag.equipment' has been deprecated in favor of the MapTag 'EntityTag.equipment_map'.");
+
+    // Added 2025/07/11
+    public static Warning assignmentOptionalPrefixArgs = new FutureWarning("assignmentOptionalPrefixArgs", "For the 'assignment' command, the args 'script' and 'to' now require a prefix to use.");
+
+    // Added 2025/06/29
+    public static Warning blockExplodesStrengthDetermination = new FutureWarning("blockExplodesStrengthDetermination", "The determination to control strength in the 'block explodes' script event has been changed into the 'STRENGTH:<ElementTag(Decimal)>' format.");
+
+    // Added 2025/06/29
+    public static Warning blockDispensesItemDetermination = new FutureWarning("blockDispensesItemDetermination", "The determination to control the item in the 'block dispenses' script event has been changed into the 'ITEM:<ItemTag>' format.");
+
+    // Added 2025/08/23
+    public static Warning advancementBackgroundFormat = new FutureWarning("advancementBackgroundFormat", "The 'background:' input in the advancement command no longer uses the 'textures/' path or '.png' suffix, so for example 'minecraft:textures/gui/advancements/backgrounds/stone.png' would be 'minecraft:gui/advancements/backgrounds/stone'.");
+
+    // Added 2025/09/22
+    public static Warning playerSteerEntityEvent = new FutureWarning("playerSteerEntityEvent", "The 'player steers <entity>' event is deprecated in favor of the 'player input' event in MC 1.21+.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 

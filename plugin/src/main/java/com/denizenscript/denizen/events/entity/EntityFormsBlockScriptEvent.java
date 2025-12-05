@@ -63,15 +63,12 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location":
-                return location;
-            case "material":
-                return material;
-            case "entity":
-                return entity;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "material" -> material;
+            case "entity" -> entity;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

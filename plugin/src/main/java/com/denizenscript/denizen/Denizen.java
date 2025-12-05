@@ -5,6 +5,7 @@ import com.denizenscript.denizen.events.bukkit.SavesReloadEvent;
 import com.denizenscript.denizen.events.server.ServerPrestartScriptEvent;
 import com.denizenscript.denizen.events.server.ServerStartScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.FakeArrow;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
@@ -162,12 +163,26 @@ public class Denizen extends JavaPlugin {
             startedSuccessful = false;
             return;
         }
-        if (!NMSHandler.instance.isCorrectMappingsCode()) {
-            getLogger().warning("-------------------------------------");
-            getLogger().warning("This build of Denizen was built for a different Spigot revision! This may potentially cause issues."
-                    + " If you are experiencing trouble, update Denizen and Spigot both to latest builds!"
-                    + " If this message appears with both Denizen and Spigot fully up-to-date, contact the Denizen team (via GitHub, Spigot, or Discord) to request an update be built.");
-            getLogger().warning("-------------------------------------");
+        try {
+            if (Class.forName("com.destroystokyo.paper.PaperConfig") != null) {
+                supportsPaper = true;
+            }
+        }
+        catch (ClassNotFoundException ex) {
+            // Ignore.
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+        if (!NMSHandler.instance.isExactServerVersionMatch()) {
+            String serverSoftware = supportsPaper ? "Paper" : "Spigot";
+            getLogger().warning("""
+                    \n-------------------------------------
+                    This build of Denizen was built for a different Minecraft version! This may potentially cause issues.
+                    If you are experiencing trouble, update Denizen and <server> both to latest builds!
+                    If this message appears with both Denizen and <server> fully up-to-date, contact the Denizen team (via Discord) to request an update be built.
+                    -------------------------------------""".replace("<server>", serverSoftware)
+            );
         }
         triggerRegistry = new TriggerRegistry();
         boolean citizensBork = false;
@@ -204,17 +219,6 @@ public class Denizen extends JavaPlugin {
         }
         catch (Exception e) {
             Debug.echoError(e);
-        }
-        try {
-            if (Class.forName("com.destroystokyo.paper.PaperConfig") != null) {
-                supportsPaper = true;
-            }
-        }
-        catch (ClassNotFoundException ex) {
-            // Ignore.
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
         }
         // bstats.org
         try {
@@ -344,7 +348,10 @@ public class Denizen extends JavaPlugin {
             Debug.echoError(e);
         }
         try {
-            new CommandEvents();
+            // TODO: temporary patch, should switch to custom click events
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) {
+                new CommandEvents();
+            }
             if (Settings.cache_packetInterceptAutoInit) {
                 NetworkInterceptHelper.enable();
             }
