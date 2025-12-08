@@ -105,9 +105,9 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     @Override
     public Inventory getEnderChest() {
         if (enderchest == null) {
-            PlayerEnderChestContainer endchest = new PlayerEnderChestContainer(null);
-            Handler.useValueInput(NBTAdapter.toNMS(this.compound), valueInput -> endchest.fromSlots(valueInput.listOrEmpty("EnderItems", ItemStackWithSlot.CODEC)));
-            enderchest = new CraftInventory(endchest);
+            PlayerEnderChestContainer nmsEnderChest = new PlayerEnderChestContainer(getFakeNmsPlayer());
+            Handler.useValueInput(NBTAdapter.toNMS(this.compound), valueInput -> nmsEnderChest.fromSlots(valueInput.listOrEmpty("EnderItems", ItemStackWithSlot.CODEC)));
+            enderchest = new CraftInventory(nmsEnderChest);
         }
         return enderchest;
     }
