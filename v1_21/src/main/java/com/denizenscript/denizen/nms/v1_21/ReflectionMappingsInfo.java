@@ -17,21 +17,21 @@ public class ReflectionMappingsInfo {
     public static String Entity_DATA_CUSTOM_NAME_VISIBLE = "bn";
 
     // net.minecraft.world.entity.LivingEntity
-    public static String LivingEntity_attackStrengthTicker = "by";
-    public static String LivingEntity_autoSpinAttackTicks = "bV";
+    public static String LivingEntity_attackStrengthTicker = "bz";
+    public static String LivingEntity_autoSpinAttackTicks = "bW";
     public static String LivingEntity_setLivingEntityFlag_method = "c";
 
     // net.minecraft.world.entity.player.Player
     public static String Player_DATA_PLAYER_ABSORPTION_ID = "b";
 
     // net.minecraft.server.level.ServerPlayer
-    public static String ServerPlayer_respawnConfig = "dq";
+    public static String ServerPlayer_respawnConfig = "dr";
 
     // net.minecraft.world.entity.monster.EnderMan
-    public static String EnderMan_DATA_CREEPY = "cu";
+    public static String EnderMan_DATA_CREEPY = "cx";
 
     // net.minecraft.world.entity.monster.Zombie
-    public static String Zombie_inWaterTime = "cJ";
+    public static String Zombie_inWaterTime = ERROR_UNKNOWN_TARGET;
 
     // net.minecraft.world.item.Item
     public static String Item_components = "c";
@@ -43,7 +43,7 @@ public class ReflectionMappingsInfo {
     public static String ResolvableProfilePartial_id = "d";
 
     // net.minecraft.world.level.Level
-    public static String Level_isClientSide = "E";
+    public static String Level_isClientSide = "D";
 
     // net.minecraft.server.level.ThreadedLevelLightEngine
     public static String ThreadedLevelLightEngine_addTask_method = "a";
@@ -61,20 +61,20 @@ public class ReflectionMappingsInfo {
     public static String Biome_climateSettings = "i";
 
     // net.minecraft.world.level.biome.BiomeSpecialEffects
-    public static String BiomeSpecialEffects_foliageColorOverride = "f";
-    public static String BiomeSpecialEffects_fogColor = "b";
-    public static String BiomeSpecialEffects_waterFogColor = "d";
+    public static String BiomeSpecialEffects_foliageColorOverride = "c";
+    public static String BiomeSpecialEffects_fogColor = ERROR_UNKNOWN_TARGET;
+    public static String BiomeSpecialEffects_waterFogColor = ERROR_UNKNOWN_TARGET;
 
     // net.minecraft.network.Connection
-    public static String Connection_receiving = "k";
-    public static String Connection_packetListener = "q";
+    public static String Connection_receiving = "h";
+    public static String Connection_packetListener = "n";
 
     // net.minecraft.server.network.ServerGamePacketListenerImpl
-    public static String ServerGamePacketListenerImpl_aboveGroundTickCount = "J";
-    public static String ServerGamePacketListenerImpl_aboveGroundVehicleTickCount = "L";
-    public static String ServerGamePacketListenerImpl_awaitingPositionFromClient = "F";
-    public static String ServerGamePacketListenerImpl_awaitingTeleport = "G";
-    public static String ServerGamePacketListenerImpl_chunkSender = "g";
+    public static String ServerGamePacketListenerImpl_aboveGroundTickCount = "L";
+    public static String ServerGamePacketListenerImpl_aboveGroundVehicleTickCount = "N";
+    public static String ServerGamePacketListenerImpl_awaitingPositionFromClient = "H";
+    public static String ServerGamePacketListenerImpl_awaitingTeleport = "I";
+    public static String ServerGamePacketListenerImpl_chunkSender = "h";
 
     // net.minecraft.server.network.ServerCommonPacketListenerImpl
     public static String ServerCommonPacketListenerImpl_connection = "e";
