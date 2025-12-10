@@ -45,7 +45,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
@@ -294,7 +294,7 @@ public class Handler extends NMSHandler {
     public List<BiomeNMS> getBiomes(World world) {
         ServerLevel level = ((CraftWorld) world).getHandle();
         ArrayList<BiomeNMS> output = new ArrayList<>();
-        for (ResourceLocation key : level.registryAccess().lookupOrThrow(Registries.BIOME).keySet()) {
+        for (Identifier key : level.registryAccess().lookupOrThrow(Registries.BIOME).keySet()) {
             output.add(new BiomeNMSImpl(level, CraftNamespacedKey.fromMinecraft(key)));
         }
         return output;
@@ -314,7 +314,7 @@ public class Handler extends NMSHandler {
         // Based on CraftWorld source
         ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
         Holder<Biome> biome = level.getNoiseBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2);
-        ResourceLocation key = level.registryAccess().lookupOrThrow(Registries.BIOME).getKey(biome.value());
+        Identifier key = level.registryAccess().lookupOrThrow(Registries.BIOME).getKey(biome.value());
         return new BiomeNMSImpl(level, CraftNamespacedKey.fromMinecraft(key));
     }
 

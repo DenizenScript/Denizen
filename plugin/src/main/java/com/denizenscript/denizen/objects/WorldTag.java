@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
+import com.denizenscript.denizen.utilities.world.GameRuleReflect;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.Adjustable;
@@ -177,7 +178,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         if (value == null) {
             value = world.getGameRuleDefault(gameRule);
             if (value == null) {
-                throw new IllegalStateException("World " + world_name + " contains no GameRule " + gameRule.getName());
+                throw new IllegalStateException("World " + world_name + " contains no GameRule " + GameRuleReflect.getName(gameRule));
             }
         }
         return value;
@@ -859,9 +860,13 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
                 attribute.echoError("The tag 'worldtag.gamerule[...]' must have an input value.");
                 return null;
             }
-            GameRule rule = GameRule.getByName(attribute.getParam());
-            Object result = object.getWorld().getGameRuleValue(rule);
-            return new ElementTag(result == null ? "null" : result.toString());
+            GameRule<?> rule = GameRuleReflect.getByName(attribute.getParam());
+            if (rule == null) {
+                attribute.echoError("Invalid game rule specified: " + attribute.getParam() + '.');
+                return null;
+            }
+            Object result = GameRuleReflect.getValue(object.getWorld(), rule);
+            return new ElementTag(String.valueOf(result), true);
         });
 
         // <--[tag]
@@ -872,10 +877,10 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         registerTag(MapTag.class, "gamerule_map", (attribute, object) -> {
             MapTag map = new MapTag();
-            for (GameRule rule : GameRule.values()) {
-                Object result = object.getWorld().getGameRuleValue(rule);
+            for (GameRule<?> rule : GameRuleReflect.values()) {
+                Object result = GameRuleReflect.getValue(object.getWorld(), rule);
                 if (result != null) {
-                    map.putObject(rule.getName(), new ElementTag(result.toString()));
+                    map.putObject(GameRuleReflect.getName(rule), new ElementTag(result.toString(), true));
                 }
             }
             return map;
@@ -1525,7 +1530,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
                 NMSHandler.worldHelper.wakeUpAllPlayers(world);
             }
             // minor change: prior to 1.18, hasStorm/isRaining was not checked
-            if (object.getGameRuleOrDefault(GameRule.DO_WEATHER_CYCLE) && world.hasStorm()) {
+            if (object.getGameRuleOrDefault(GameRuleReflect.WEATHER_CYCLE_GAMERULE) && world.hasStorm()) {
                 NMSHandler.worldHelper.clearWeather(world);
             }
         });

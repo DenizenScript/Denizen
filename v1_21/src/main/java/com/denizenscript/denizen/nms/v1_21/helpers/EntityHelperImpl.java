@@ -685,7 +685,7 @@ public class EntityHelperImpl extends EntityHelper {
         return new EntityTag(nmsEntity.getBukkitEntity());
     }
 
-    public static final Field ZOMBIE_INWATERTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.Zombie.class).get(ReflectionMappingsInfo.Zombie_inWaterTime, int.class);
+    public static final Field ZOMBIE_INWATERTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.zombie.Zombie.class).get(ReflectionMappingsInfo.Zombie_inWaterTime, int.class);
 
     @Override
     public int getInWaterTime(Zombie zombie) {
@@ -821,7 +821,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void openHorseInventory(Player player, AbstractHorse horse) {
-        net.minecraft.world.entity.animal.horse.AbstractHorse nmsHorse = ((CraftAbstractHorse) horse).getHandle();
+        net.minecraft.world.entity.animal.equine.AbstractHorse nmsHorse = ((CraftAbstractHorse) horse).getHandle();
         ((CraftPlayer) player).getHandle().openHorseInventory(nmsHorse, nmsHorse.inventory);
     }
 

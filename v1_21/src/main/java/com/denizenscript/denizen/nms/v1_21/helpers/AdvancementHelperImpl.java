@@ -6,10 +6,10 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.google.common.collect.ImmutableMap;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.advancements.criterion.ImpossibleTrigger;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,8 +38,8 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             return;
         }
         AdvancementHolder nmsAdvancementHolder = asNMSCopy(advancement);
-        Map<ResourceLocation, AdvancementHolder> nmsAdvancements = getNMSAdvancementManager().advancements;
-        ImmutableMap.Builder<ResourceLocation, AdvancementHolder> mapBuilder = ImmutableMap.builderWithExpectedSize(nmsAdvancements.size() + 1);
+        Map<Identifier, AdvancementHolder> nmsAdvancements = getNMSAdvancementManager().advancements;
+        ImmutableMap.Builder<Identifier, AdvancementHolder> mapBuilder = ImmutableMap.builderWithExpectedSize(nmsAdvancements.size() + 1);
         mapBuilder.putAll(nmsAdvancements);
         mapBuilder.put(nmsAdvancementHolder.id(), nmsAdvancementHolder);
         getNMSAdvancementManager().advancements = mapBuilder.build();
@@ -65,10 +65,10 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         if (advancement.temporary || !advancement.registered) {
             return;
         }
-        ResourceLocation nmsKey = CraftNamespacedKey.toMinecraft(advancement.key);
-        Map<ResourceLocation, AdvancementHolder> nmsAdvancements = getNMSAdvancementManager().advancements;
-        ImmutableMap.Builder<ResourceLocation, AdvancementHolder> mapBuilder = ImmutableMap.builderWithExpectedSize(nmsAdvancements.size() - 1);
-        for (Map.Entry<ResourceLocation, AdvancementHolder> entry : nmsAdvancements.entrySet()) {
+        Identifier nmsKey = CraftNamespacedKey.toMinecraft(advancement.key);
+        Map<Identifier, AdvancementHolder> nmsAdvancements = getNMSAdvancementManager().advancements;
+        ImmutableMap.Builder<Identifier, AdvancementHolder> mapBuilder = ImmutableMap.builderWithExpectedSize(nmsAdvancements.size() - 1);
+        for (Map.Entry<Identifier, AdvancementHolder> entry : nmsAdvancements.entrySet()) {
             if (!entry.getKey().equals(nmsKey)) {
                 mapBuilder.put(entry);
             }

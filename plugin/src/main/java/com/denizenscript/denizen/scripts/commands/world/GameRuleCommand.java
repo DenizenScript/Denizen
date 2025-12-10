@@ -1,16 +1,17 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.WorldTag;
+import com.denizenscript.denizen.utilities.world.GameRuleReflect;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.generator.WorldInfo;
-
-import java.util.stream.Collectors;
 
 public class GameRuleCommand extends AbstractCommand {
 
@@ -45,10 +46,14 @@ public class GameRuleCommand extends AbstractCommand {
     // - gamerule Adventure mobGriefing false
     // -->
 
+
+
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
-        tab.add(Bukkit.getWorlds().get(0).getGameRules());
-        tab.add(Bukkit.getWorlds().stream().map(WorldInfo::getName).collect(Collectors.toSet()));
+        for (GameRule<?> gameRule : GameRuleReflect.values()) {
+            tab.add(GameRuleReflect.getName(gameRule));
+        }
+        tab.add(Bukkit.getWorlds().stream().map(WorldInfo::getName).toList());
     }
 
     @Override
@@ -82,12 +87,37 @@ public class GameRuleCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         WorldTag world = scriptEntry.getObjectTag("world");
-        ElementTag gamerule = scriptEntry.getElement("gamerule");
-        ElementTag value = scriptEntry.getElement("value");
+        ElementTag gameRuleInput = scriptEntry.getElement("gamerule");
+        ElementTag valueInput = scriptEntry.getElement("value");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), world, gamerule, value);
+            Debug.report(scriptEntry, getName(), world, gameRuleInput, valueInput);
         }
-        if (!world.getWorld().setGameRuleValue(gamerule.asString(), value.asString())) {
+        GameRule gameRule = GameRuleReflect.getByName(gameRuleInput.asString());
+        if (gameRule == null) {
+            Debug.echoError("Invalid game rule specified: " + gameRuleInput.asString() + '.');
+            return;
+        }
+        Class<?> gameRuleType = GameRuleReflect.getType(gameRule);
+        Object convertedValue;
+        if (gameRuleType == Integer.class) {
+            if (!valueInput.isInt()) {
+                Debug.echoError("Invalid value specified: must be a number.");
+                return;
+            }
+            convertedValue = valueInput.asInt();
+        }
+        else if (gameRuleType == Boolean.class) {
+            if (!valueInput.isBoolean()) {
+                Debug.echoError("Invalid value specified: must be a boolean.");
+                return;
+            }
+            convertedValue = valueInput.asBoolean();
+        }
+        else {
+            Debug.echoError("Unrecognized game rule type '" + DebugInternals.getFullClassNameOpti(gameRuleType) + "'! Please report this to the developers.");
+            return;
+        }
+        if (!world.getWorld().setGameRule(gameRule, convertedValue)) {
             Debug.echoError(scriptEntry, "Invalid gamerule!");
         }
     }

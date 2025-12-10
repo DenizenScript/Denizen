@@ -30,8 +30,8 @@ public class ReflectionMappingsInfo {
     // net.minecraft.world.entity.monster.EnderMan
     public static String EnderMan_DATA_CREEPY = "cx";
 
-    // net.minecraft.world.entity.monster.Zombie
-    public static String Zombie_inWaterTime = ERROR_UNKNOWN_TARGET;
+    // net.minecraft.world.entity.monster.zombie.Zombie
+    public static String Zombie_inWaterTime = "cL";
 
     // net.minecraft.world.item.Item
     public static String Item_components = "c";
@@ -59,11 +59,10 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.world.level.biome.Biome
     public static String Biome_climateSettings = "i";
+    public static String Biome_attributes = "l";
 
     // net.minecraft.world.level.biome.BiomeSpecialEffects
     public static String BiomeSpecialEffects_foliageColorOverride = "c";
-    public static String BiomeSpecialEffects_fogColor = ERROR_UNKNOWN_TARGET;
-    public static String BiomeSpecialEffects_waterFogColor = ERROR_UNKNOWN_TARGET;
 
     // net.minecraft.network.Connection
     public static String Connection_receiving = "h";

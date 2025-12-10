@@ -24,8 +24,8 @@ import com.mojang.serialization.JsonOps;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.advancements.critereon.BlockPredicate;
-import net.minecraft.advancements.critereon.DataComponentMatchers;
+import net.minecraft.advancements.criterion.BlockPredicate;
+import net.minecraft.advancements.criterion.DataComponentMatchers;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
@@ -36,9 +36,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.world.flag.FeatureFlagSet;
@@ -202,7 +202,7 @@ public class ItemHelperImpl extends ItemHelper {
     }
 
     public static ResourceKey<Recipe<?>> createRecipeKey(String name) {
-        return ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath("denizen", name));
+        return ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath("denizen", name));
     }
 
     @Override
@@ -443,7 +443,7 @@ public class ItemHelperImpl extends ItemHelper {
         DataComponentPatch patch = nmsItemStack.getComponentsPatch();
         if (excludeHandled) {
             patch = patch.forget(componentType -> {
-                ResourceLocation componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
+                Identifier componentId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(componentType);
                 return ItemComponentsPatch.propertyHandledComponents.contains(componentId.toString());
             });
         }

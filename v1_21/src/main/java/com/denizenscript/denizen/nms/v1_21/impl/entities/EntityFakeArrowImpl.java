@@ -2,7 +2,7 @@ package com.denizenscript.denizen.nms.v1_21.impl.entities;
 
 import com.denizenscript.denizen.nms.v1_21.Handler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.world.entity.projectile.SpectralArrow;
+import net.minecraft.world.entity.projectile.arrow.SpectralArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.bukkit.Bukkit;
