@@ -853,7 +853,6 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // @returns ElementTag
         // @description
         // Returns the current value of the specified gamerule in the world.
-        // Note that the name is case-sensitive... so "doFireTick" is correct, but "dofiretick" is not.
         // -->
         registerTag(ElementTag.class, "gamerule", (attribute, object) -> {
             if (!attribute.hasParam()) {
@@ -992,7 +991,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns whether enough players are sleeping to prepare for the night to advance.
         // Typically used before checking <@link tag WorldTag.enough_deep_sleeping>
-        // By default, automatically checks the playersSleepingPercentage gamerule,
+        // By default, automatically checks the players_sleeping_percentage gamerule,
         // but this can optionally be overridden by specifying a percentage integer.
         // Any integer above 100 will always yield 'false'. Requires at least one player to be sleeping to return 'true'.
         // -->
@@ -1013,7 +1012,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns whether enough players have been in bed long enough for the night to advance (generally 100 ticks).
         // Loops through all online players, so is typically used after checking <@link tag WorldTag.enough_sleeping>
-        // By default, automatically checks the playersSleepingPercentage gamerule,
+        // By default, automatically checks the players_sleeping_percentage gamerule,
         // but this can optionally be overridden by specifying a percentage integer.
         // Any integer above 100 will always yield 'false'. Requires at least one player to be sleeping to return 'true'.
         // -->
@@ -1514,7 +1513,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // @input None
         // @description
         // Skips to the next day as if enough players slept through the night.
-        // NOTE: This ignores the doDaylightCycle gamerule!
+        // NOTE: This ignores the advance_time gamerule!
         // -->
         tagProcessor.registerMechanism("skip_night", false, (object, mechanism) -> {
             // general logic from NMS world tick

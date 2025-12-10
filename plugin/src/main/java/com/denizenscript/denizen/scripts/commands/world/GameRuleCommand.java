@@ -32,21 +32,18 @@ public class GameRuleCommand extends AbstractCommand {
     //
     // @Description
     // Sets a gamerule on the world. A list of valid gamerules can be found here: <@link url https://minecraft.wiki/w/Game_rule>
-    // Note: Be careful, gamerules are CASE SENSITIVE.
     //
     // @Tags
     // <WorldTag.gamerule[<gamerule>]>
     //
     // @Usage
     // Use to disable fire spreading in world "Adventure".
-    // - gamerule Adventure doFireTick false
+    // - gamerule Adventure fire_spread_radius_around_player 0
     //
     // @Usage
     // Use to avoid mobs from destroying blocks (creepers, endermen...) and picking items up (zombies, skeletons...) in world "Adventure".
-    // - gamerule Adventure mobGriefing false
+    // - gamerule Adventure mob_griefing false
     // -->
-
-
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {

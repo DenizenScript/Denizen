@@ -53,6 +53,7 @@ public class GameRuleReflect {
         }
     }
 
+    // TODO 1.21.11: certain gamemodes (e.g. max_minecart_speed) behave badly on Spigot, need to test with Paper
     public static <T> T getValue(World world, GameRule<T> gameRule) {
         try {
             return world.getGameRuleValue(gameRule);
