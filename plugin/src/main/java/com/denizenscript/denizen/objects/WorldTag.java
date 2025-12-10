@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.flags.WorldFlagHandler;
+import com.denizenscript.denizen.utilities.world.GameRuleReflect;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.Adjustable;
@@ -177,7 +178,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         if (value == null) {
             value = world.getGameRuleDefault(gameRule);
             if (value == null) {
-                throw new IllegalStateException("World " + world_name + " contains no GameRule " + gameRule.getName());
+                throw new IllegalStateException("World " + world_name + " contains no GameRule " + GameRuleReflect.getName(gameRule));
             }
         }
         return value;
@@ -852,16 +853,19 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // @returns ElementTag
         // @description
         // Returns the current value of the specified gamerule in the world.
-        // Note that the name is case-sensitive... so "doFireTick" is correct, but "dofiretick" is not.
         // -->
         registerTag(ElementTag.class, "gamerule", (attribute, object) -> {
             if (!attribute.hasParam()) {
                 attribute.echoError("The tag 'worldtag.gamerule[...]' must have an input value.");
                 return null;
             }
-            GameRule rule = GameRule.getByName(attribute.getParam());
-            Object result = object.getWorld().getGameRuleValue(rule);
-            return new ElementTag(result == null ? "null" : result.toString());
+            GameRule<?> rule = GameRuleReflect.getByName(attribute.getParam());
+            if (rule == null) {
+                attribute.echoError("Invalid game rule specified: " + attribute.getParam() + '.');
+                return null;
+            }
+            Object result = GameRuleReflect.getValue(object.getWorld(), rule);
+            return new ElementTag(String.valueOf(result), true);
         });
 
         // <--[tag]
@@ -872,10 +876,10 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // -->
         registerTag(MapTag.class, "gamerule_map", (attribute, object) -> {
             MapTag map = new MapTag();
-            for (GameRule rule : GameRule.values()) {
-                Object result = object.getWorld().getGameRuleValue(rule);
+            for (GameRule<?> rule : GameRuleReflect.values()) {
+                Object result = GameRuleReflect.getValue(object.getWorld(), rule);
                 if (result != null) {
-                    map.putObject(rule.getName(), new ElementTag(result.toString()));
+                    map.putObject(GameRuleReflect.getName(rule), new ElementTag(result.toString(), true));
                 }
             }
             return map;
@@ -987,7 +991,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns whether enough players are sleeping to prepare for the night to advance.
         // Typically used before checking <@link tag WorldTag.enough_deep_sleeping>
-        // By default, automatically checks the playersSleepingPercentage gamerule,
+        // By default, automatically checks the players_sleeping_percentage gamerule,
         // but this can optionally be overridden by specifying a percentage integer.
         // Any integer above 100 will always yield 'false'. Requires at least one player to be sleeping to return 'true'.
         // -->
@@ -1008,7 +1012,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // @description
         // Returns whether enough players have been in bed long enough for the night to advance (generally 100 ticks).
         // Loops through all online players, so is typically used after checking <@link tag WorldTag.enough_sleeping>
-        // By default, automatically checks the playersSleepingPercentage gamerule,
+        // By default, automatically checks the players_sleeping_percentage gamerule,
         // but this can optionally be overridden by specifying a percentage integer.
         // Any integer above 100 will always yield 'false'. Requires at least one player to be sleeping to return 'true'.
         // -->
@@ -1509,7 +1513,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
         // @input None
         // @description
         // Skips to the next day as if enough players slept through the night.
-        // NOTE: This ignores the doDaylightCycle gamerule!
+        // NOTE: This ignores the advance_time gamerule!
         // -->
         tagProcessor.registerMechanism("skip_night", false, (object, mechanism) -> {
             // general logic from NMS world tick
@@ -1525,7 +1529,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
                 NMSHandler.worldHelper.wakeUpAllPlayers(world);
             }
             // minor change: prior to 1.18, hasStorm/isRaining was not checked
-            if (object.getGameRuleOrDefault(GameRule.DO_WEATHER_CYCLE) && world.hasStorm()) {
+            if (object.getGameRuleOrDefault(GameRuleReflect.WEATHER_CYCLE_GAMERULE) && world.hasStorm()) {
                 NMSHandler.worldHelper.clearWeather(world);
             }
         });
