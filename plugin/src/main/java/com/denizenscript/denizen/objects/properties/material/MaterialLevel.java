@@ -82,7 +82,7 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         }
         int level = value.asInt();
         if (level < getMin() || level > getMax()) {
-            mechanism.echoError("Level value '" + level + "' is not valid. Must be between " + (getBlockData() instanceof Snow snow ? snow.getMinimumLayers() : 0) + " and " + getMax() + " for material '" + getBlockData().getMaterial().name() + "'.");
+            mechanism.echoError("Level value '" + level + "' is not valid. Must be between " + getMin() + " and " + getMax() + " for material '" + getBlockData().getMaterial().name() + "'.");
             return;
         }
         if (getBlockData() instanceof Cake cake) {
