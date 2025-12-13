@@ -76,7 +76,12 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
                     return false;
                 }
                 for (int i = 0; i < offers.size(); i++) {
-                    MapTag map = MapTag.getMapFor(offers.getObject(i), getTagContext(path));
+                    var offer = offers.getObject(i);
+                    MapTag map = MapTag.getMapFor(offer, getTagContext(path));
+                    if(map.isEmpty()){
+                        event.getOffers()[i] = null;
+                        continue;
+                    }
                     event.getOffers()[i].setCost(map.getElement("cost").asInt());
                     EnchantmentTag enchantment = map.getObjectAs("enchantment_type", EnchantmentTag.class, getTagContext(path));
                     if (enchantment == null) {
@@ -108,6 +113,10 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
             case "offers":
                 ListTag output = new ListTag();
                 for (EnchantmentOffer offer : event.getOffers()) {
+                    if(offer == null) {
+                        output.addObject(new MapTag());
+                        continue;
+                    }
                     MapTag map = new MapTag();
                     map.putObject("cost", new ElementTag(offer.getCost()));
                     map.putObject("enchantment", new ElementTag(offer.getEnchantment().getKey().getKey()));
