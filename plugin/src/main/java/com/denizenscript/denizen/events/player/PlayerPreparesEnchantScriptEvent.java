@@ -76,8 +76,7 @@ public class PlayerPreparesEnchantScriptEvent extends BukkitScriptEvent implemen
                     return false;
                 }
                 for (int i = 0; i < offers.size(); i++) {
-                    var offer = offers.getObject(i);
-                    MapTag map = MapTag.getMapFor(offer, getTagContext(path));
+                    MapTag map = MapTag.getMapFor(offers.getObject(i), getTagContext(path));
                     if(map.isEmpty()){
                         event.getOffers()[i] = null;
                         continue;
