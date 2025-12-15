@@ -24,7 +24,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     // @Triggers when an entity decides to explode.
     //
     // @Context
-    // <context.entity> returns an EntityTag of the explosive.
+    // <context.entity> returns an EntityTag of the exploding entity.
     // <context.radius> returns the explosion's radius.
     // <context.fire> returns whether the explosion will create fire.
     //
@@ -36,13 +36,13 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     public EntityExplosionPrimesScriptEvent() {
         registerCouldMatcher("<entity> explosion primes");
         this.<EntityExplosionPrimesScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isFloat()) {
+                evt.event.setRadius(value.asFloat());
+                return true;
+            }
             if (value.isBoolean()) {
                 BukkitImplDeprecations.explosionPrimeDetermination.warn();
                 evt.event.setFire(value.asBoolean());
-                return true;
-            }
-            if (value.isFloat()) {
-                evt.event.setRadius(value.asFloat());
                 return true;
             }
             return false;

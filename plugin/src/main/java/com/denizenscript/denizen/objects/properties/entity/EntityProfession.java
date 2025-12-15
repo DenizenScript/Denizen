@@ -2,8 +2,8 @@ package com.denizenscript.denizen.objects.properties.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.ZombieVillager;
 
@@ -28,21 +28,22 @@ public class EntityProfession extends EntityProperty<ElementTag> {
         if (getEntity() instanceof Villager villager) {
             return Utilities.enumlikeToElement(villager.getProfession());
         }
-        else if (getEntity() instanceof ZombieVillager zvillager) {
-            return Utilities.enumlikeToElement(zvillager.getVillagerProfession());
+        else if (getEntity() instanceof ZombieVillager zombieVillager) {
+            return Utilities.enumlikeToElement(zombieVillager.getVillagerProfession());
         }
         return null;
     }
 
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        if (mechanism.requireEnum(Villager.Profession.class)) {
-            if (getEntity() instanceof Villager villager) {
-                villager.setProfession(value.asEnum(Villager.Profession.class));
-            }
-            else if (getEntity() instanceof ZombieVillager zvillager) {
-                zvillager.setVillagerProfession(value.asEnum(Villager.Profession.class));
-            }
+        if (!mechanism.requireEnum(Villager.Profession.class)) {
+            return;
+        }
+        if (getEntity() instanceof Villager villager) {
+            villager.setProfession(value.asEnum(Villager.Profession.class));
+        }
+        else if (getEntity() instanceof ZombieVillager zombieVillager) {
+            zombieVillager.setVillagerProfession(value.asEnum(Villager.Profession.class));
         }
     }
 

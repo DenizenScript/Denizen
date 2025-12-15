@@ -10,7 +10,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.*;
 
 public class MaterialCount extends MaterialProperty<ElementTag> {
-    // TODO: once 1.21 is the minimum supported version, remove PinkPetals interface in favor of FlowerBed
+    // TODO: once 1.21 is the minimum supported version, remove PinkPetals usage in favor of FlowerBed
 
     // <--[property]
     // @object MaterialTag
