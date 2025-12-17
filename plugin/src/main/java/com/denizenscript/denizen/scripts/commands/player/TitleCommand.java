@@ -21,6 +21,7 @@ public class TitleCommand extends AbstractCommand {
         setName("title");
         setSyntax("title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...) (per_player)");
         setRequiredArguments(1, 7);
+        addRemappedPrefixes("targets", "target");
         isProcedural = false;
         autoCompile();
     }
