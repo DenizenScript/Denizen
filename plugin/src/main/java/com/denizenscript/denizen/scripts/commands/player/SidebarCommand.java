@@ -29,6 +29,12 @@ public class SidebarCommand extends AbstractCommand {
         setSyntax("sidebar (add/remove/{set}/set_line) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)");
         setRequiredArguments(1, 8);
         Denizen.getInstance().getServer().getPluginManager().registerEvents(new SidebarEvents(), Denizen.getInstance());
+        addRemappedPrefixes("title", "t", "objective", "obj", "o");
+        addRemappedPrefixes("scores", "score", "lines", "line", "l");
+        addRemappedPrefixes("values", "value", "val", "v");
+        addRemappedPrefixes("increment", "inc", "i");
+        addRemappedPrefixes("start", "s");
+        addRemappedPrefixes("players", "player", "p");
         isProcedural = false;
         autoCompile();
     }
