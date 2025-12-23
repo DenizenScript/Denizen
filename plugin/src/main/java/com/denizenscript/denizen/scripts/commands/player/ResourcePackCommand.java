@@ -20,15 +20,15 @@ public class ResourcePackCommand extends AbstractCommand {
 
     public ResourcePackCommand() {
         setName("resourcepack");
-        setSyntax("resourcepack ({set}/add) (id:<id>) [url:<url>] [hash:<hash>] (forced) (prompt:<text>) (targets:<player>|...)");
-        setRequiredArguments(2, 7);
+        setSyntax("resourcepack ({set}/add/remove) (id:<id>) (url:<url>) (hash:<hash>) (forced) (prompt:<text>) (targets:<player>|...)");
+        setRequiredArguments(1, 7);
         isProcedural = false;
         autoCompile();
     }
 
     // <--[command]
     // @Name ResourcePack
-    // @Syntax resourcepack ({set}/add) (id:<id>) [url:<url>] [hash:<hash>] (forced) (prompt:<text>) (targets:<player>|...)
+    // @Syntax resourcepack ({set}/add/remove) (id:<id>) (url:<url>) (hash:<hash>) (forced) (prompt:<text>) (targets:<player>|...)
     // @Required 2
     // @Maximum 5
     // @Short Prompts a player to download a server resource pack.
@@ -38,7 +38,7 @@ public class ResourcePackCommand extends AbstractCommand {
     // Sets the current resource pack by specifying a valid URL to a resource pack.
     //
     // Optionally, you can send the player additional resource packs by using the "add" argument.
-    // The "id" argument allows you to overwrite a specific resource pack or remove one via <@link mechanism PlayerTag.remove_resource_pack>.
+    // The "id" argument allows you to overwrite a specific resource pack or remove one with "remove" argument.
     //
     // The player will be prompted to download the pack, with the optional prompt text or a default vanilla message.
     // Once a player says "yes" once, all future packs will be automatically downloaded. If the player selects "no" once, all future packs will automatically be rejected.
@@ -68,39 +68,43 @@ public class ResourcePackCommand extends AbstractCommand {
     // - resourcepack add id:first_pack url:https://example.com/pack1.zip hash:0102030405060708090a0b0c0d0e0f1112131415
     // - resourcepack add id:second_pack url:https://example.com/pack2.zip hash:0102030405060708090a0b0c0d0e0f1112131415
     //
+    // @Usage
+    // Use to remove all resource packs from all online players.
+    // - resourcepack remove targets:<server.online_players>
     // -->
 
-    public enum Action { SET, ADD }
+    public enum Action { SET, ADD, REMOVE }
 
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("action") @ArgDefaultText("set") Action action,
                                    @ArgName("id") @ArgPrefixed @ArgDefaultNull String id,
-                                   @ArgName("url") @ArgPrefixed String url,
-                                   @ArgName("hash") @ArgPrefixed String hash,
+                                   @ArgName("url") @ArgPrefixed @ArgDefaultNull String url,
+                                   @ArgName("hash") @ArgPrefixed @ArgDefaultNull String hash,
                                    @ArgName("prompt") @ArgPrefixed @ArgDefaultNull String prompt,
                                    @ArgName("targets") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> targets,
                                    @ArgName("forced") boolean forced) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && (action == Action.ADD || id != null)) {
+            throw new UnsupportedOperationException();
+        }
         if (targets == null) {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
                 throw new InvalidArgumentsRuntimeException("Must specify an online player!");
             }
             targets = Collections.singletonList(Utilities.getEntryPlayer(scriptEntry));
         }
-        if (hash.length() != 40) {
+        if ((action == Action.ADD || action == Action.SET) && (url == null || hash == null)) {
+            throw new InvalidArgumentsRuntimeException("Must specify both a resource pack URL and hash!");
+        }
+        if ((action == Action.ADD || action == Action.SET) && hash.length() != 40) {
             Debug.echoError("Invalid resource_pack hash. Should be 40 characters of hexadecimal data.");
             return;
-        }
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && (action == Action.ADD || id != null)) {
-            throw new UnsupportedOperationException();
         }
         switch (action) {
             case SET -> {
                 for (PlayerTag player : targets) {
-                    if (!player.isOnline()) {
-                        Debug.echoDebug(scriptEntry, "Player is offline, can't send resource pack to them. Skipping.");
-                        continue;
+                    if (checkOnline(player)) {
+                        PaperAPITools.instance.setResourcePack(player.getPlayerEntity(), url, hash, forced, prompt, id);
                     }
-                    PaperAPITools.instance.setResourcePack(player.getPlayerEntity(), url, hash, forced, prompt, id);
                 }
             }
             case ADD -> {
@@ -110,14 +114,37 @@ public class ResourcePackCommand extends AbstractCommand {
                 }
                 UUID packUUID = id == null ? UUID.nameUUIDFromBytes(url.getBytes(StandardCharsets.UTF_8)) : parseUUID(id);
                 for (PlayerTag player : targets) {
-                    if (!player.isOnline()) {
-                        Debug.echoDebug(scriptEntry, "Player is offline, can't send resource pack to them. Skipping.");
-                        continue;
+                    if (checkOnline(player)) {
+                        player.getPlayerEntity().addResourcePack(packUUID, url, hashData, prompt, forced);
                     }
-                    player.getPlayerEntity().addResourcePack(packUUID, url, hashData, prompt, forced);
+                }
+            }
+            case REMOVE -> {
+                if (id == null) {
+                    for (PlayerTag player : targets) {
+                        if (checkOnline(player)) {
+                            player.getPlayerEntity().removeResourcePacks();
+                        }
+                    }
+                }
+                else {
+                    UUID packUUID = parseUUID(id);
+                    for (PlayerTag player : targets) {
+                        if (checkOnline(player)) {
+                            player.getPlayerEntity().removeResourcePack(packUUID);
+                        }
+                    }
                 }
             }
         }
+    }
+
+    public static boolean checkOnline(PlayerTag player) {
+        if (!player.isOnline()) {
+            Debug.echoError("Invalid player '" + player.getName() + "' specified: must be online");
+            return false;
+        }
+        return true;
     }
 
     public static UUID parseUUID(String id) {
