@@ -60,9 +60,7 @@ public class ReflectionMappingsInfo {
     // net.minecraft.world.level.biome.Biome
     public static String Biome_climateSettings = "i";
     public static String Biome_attributes = "l";
-
-    // net.minecraft.world.level.biome.BiomeSpecialEffects
-    public static String BiomeSpecialEffects_foliageColorOverride = "c";
+    public static String Biome_specialEffects = "m";
 
     // net.minecraft.network.Connection
     public static String Connection_receiving = "h";

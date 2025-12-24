@@ -151,7 +151,11 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public void setFoliageColor(int color) {
-        ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_foliageColorOverride, biomeHolder.value().getSpecialEffects(), Optional.of(color));
+        BiomeSpecialEffects nmsCurrEffects = biomeHolder.value().getSpecialEffects();
+        BiomeSpecialEffects nmsNewEffects = new BiomeSpecialEffects(
+                nmsCurrEffects.waterColor(), Optional.of(color), nmsCurrEffects.dryFoliageColorOverride(), nmsCurrEffects.grassColorOverride(), nmsCurrEffects.grassColorModifier()
+        );
+        ReflectionHelper.setFieldValue(Biome.class, ReflectionMappingsInfo.Biome_specialEffects, biomeHolder.value(), nmsNewEffects);
         setNetworkedRegistrationInfo();
     }
 
