@@ -1,9 +1,11 @@
 package com.denizenscript.denizen.objects.properties.item;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.inventory.meta.Damageable;
@@ -58,6 +60,20 @@ public class ItemDurability implements Property {
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
+            // <--[tag]
+            // @attribute <ItemTag.max_durability>
+            // @returns ElementTag(Number)
+            // @group properties
+            // @description
+            // Returns the maximum durability (number of uses) of this item.
+            // For use with <@link tag ItemTag.durability> and <@link mechanism ItemTag.durability>.
+            // -->
+            if (attribute.startsWith("max_durability")) {
+                return new ElementTag(item.getMaterial().getMaterial().getMaxDurability())
+                        .getObjectAttribute(attribute.fulfill(1));
+            }
+        }
         return null;
     }
 
