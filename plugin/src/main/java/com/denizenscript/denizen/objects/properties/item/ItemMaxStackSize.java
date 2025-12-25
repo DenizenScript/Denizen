@@ -14,6 +14,8 @@ public class ItemMaxStackSize extends ItemProperty<ElementTag> {
     // @input ElementTag
     // @description
     // Controls the maximum stack size of the item.
+    // @mechanism
+    // Provide no input to reset the max stack size to the default for the item type.
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -30,7 +32,14 @@ public class ItemMaxStackSize extends ItemProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag element, Mechanism mechanism) {
-        editMeta(ItemMeta.class, meta -> meta.setMaxStackSize(element.asInt()));
+        editMeta(ItemMeta.class, meta -> {
+            if (element == null) {
+                meta.setMaxStackSize(getItemStack().getType().getMaxStackSize());
+            }
+            else {
+                meta.setMaxStackSize(element.asInt());
+            }
+        });
     }
 
     @Override

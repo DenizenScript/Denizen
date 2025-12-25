@@ -14,7 +14,9 @@ public class ItemModel extends ItemProperty<ElementTag> {
     // @name item_model
     // @input ElementTag
     // @description
-    // Controls the item model of the item in namespaced key format.
+    // Controls the item model of the item in namespaced key format, if any.
+    // @mechanism
+    // Provide no input to remove the item model component from the item.
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -31,7 +33,14 @@ public class ItemModel extends ItemProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag element, Mechanism mechanism) {
-        editMeta(ItemMeta.class, meta -> meta.setItemModel(Utilities.parseNamespacedKey(element.toString())));
+        editMeta(ItemMeta.class, meta -> {
+            if (element == null) {
+                meta.setItemModel(null);
+            }
+            else {
+                meta.setItemModel(Utilities.parseNamespacedKey(element.toString()));
+            }
+        });
     }
 
     @Override

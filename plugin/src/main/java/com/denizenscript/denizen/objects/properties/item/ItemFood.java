@@ -20,6 +20,10 @@ public class ItemFood extends ItemProperty<MapTag> {
     // The 'nutrition' is the amount of hunger points the food restores.
     // The 'saturation' is the amount of saturation points the food restores.
     // The 'can_always_eat' is a boolean indicating if the food can be eaten even when the player is not hungry.
+    // @tag
+    // If the item does not have food properties, this will return null.
+    // @mechanism
+    // Provide no input to entirely remove the food component from the item.
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -41,16 +45,23 @@ public class ItemFood extends ItemProperty<MapTag> {
 
     @Override
     public void setPropertyValue(MapTag map, Mechanism mechanism) {
-        FoodComponent food = getItemMeta().getFood();
         editMeta(ItemMeta.class, meta -> {
-            if (map.getElement("nutrition") != null) {
-                food.setNutrition(map.getElement("nutrition").asInt());
+            if (map == null) {
+                meta.setFood(null);
+                return;
             }
-            if (map.getElement("saturation") != null) {
-                food.setSaturation(map.getElement("saturation").asFloat());
+            FoodComponent food = meta.getFood();
+            ElementTag nutrition = map.getElement("nutrition");
+            if (nutrition != null) {
+                food.setNutrition(nutrition.asInt());
             }
-            if (map.getElement("can_always_eat") != null) {
-                food.setCanAlwaysEat(map.getElement("can_always_eat").asBoolean());
+            ElementTag saturation = map.getElement("saturation");
+            if (saturation != null) {
+                food.setSaturation(saturation.asFloat());
+            }
+            ElementTag canAlwaysEat = map.getElement("can_always_eat");
+            if (canAlwaysEat != null) {
+                food.setCanAlwaysEat(canAlwaysEat.asBoolean());
             }
             meta.setFood(food);
         });

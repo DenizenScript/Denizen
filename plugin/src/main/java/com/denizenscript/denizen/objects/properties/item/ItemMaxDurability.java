@@ -16,6 +16,7 @@ public class ItemMaxDurability extends ItemProperty<ElementTag> {
     // @description
     // Controls the maximum durability of an item, if it can have durability.
     // If the item cannot have durability (e.g. is not a tool or armor), this will return null.
+    // @tag
     // If the item does not have a max durability item component set, this will return the default max durability for the item type.
     // -->
 
@@ -44,7 +45,7 @@ public class ItemMaxDurability extends ItemProperty<ElementTag> {
                 if (element == null) {
                     damageable.setMaxDamage((int) getItemStack().getType().getMaxDurability());
                 }
-                if (mechanism.requireInteger()) {
+                else if (mechanism.requireInteger()) {
                     damageable.setMaxDamage(element.asInt());
                 }
             }

@@ -16,6 +16,8 @@ public class ItemRarity extends ItemProperty<ElementTag> {
     // @description
     // Controls the rarity of the item.
     // Valid rarities are: 'COMMON', 'UNCOMMON', 'RARE', and 'EPIC'.
+    // @mechanism
+    // Provide no input to reset the rarity to the default for the item type.
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -32,7 +34,10 @@ public class ItemRarity extends ItemProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag element, Mechanism mechanism) {
-        if (mechanism.requireEnum(org.bukkit.inventory.ItemRarity.class)) {
+        if (element == null) {
+            editMeta(ItemMeta.class, meta -> meta.setRarity(getItemMeta().getRarity()));
+        }
+        else if (mechanism.requireEnum(org.bukkit.inventory.ItemRarity.class)) {
             editMeta(ItemMeta.class, meta -> meta.setRarity(element.asEnum(org.bukkit.inventory.ItemRarity.class)));
         }
     }
