@@ -8,7 +8,9 @@ import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkM
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.commands.core.ReflectionSetCommand;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -43,6 +45,7 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.animal.armadillo.Armadillo;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
@@ -847,5 +850,19 @@ public class EntityHelperImpl extends EntityHelper {
         UUID uuid = nmsEntity.getUUID();
         nmsEntity.load(nmsMergedTag);
         nmsEntity.setUUID(uuid);
+    }
+
+    @Override
+    public ElementTag getArmadilloState(org.bukkit.entity.Armadillo entity) {
+        net.minecraft.world.entity.animal.armadillo.Armadillo armadillo = (Armadillo) ((CraftEntity) entity).getHandle();
+        return new ElementTag(armadillo.getState());
+    }
+
+    @Override
+    public void setArmadilloState(org.bukkit.entity.Armadillo entity, Mechanism mechanism, ElementTag state) {
+        if (mechanism.requireEnum(Armadillo.ArmadilloState.class)) {
+            net.minecraft.world.entity.animal.armadillo.Armadillo armadillo = (Armadillo) ((CraftEntity) entity).getHandle();
+            armadillo.switchToState(state.asEnum(Armadillo.ArmadilloState.class));
+        }
     }
 }
