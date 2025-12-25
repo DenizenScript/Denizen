@@ -27,7 +27,7 @@ public class ItemDurability implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "durability"
+            "durability", "max_durability"
     };
 
     public static final String[] handledMechs = new String[] {
