@@ -7,6 +7,7 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.objects.WorldTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
+import com.denizenscript.denizen.utilities.world.GameRuleReflect;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -69,7 +70,7 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
         if (path.eventArgLowerAt(2).equals("in") && !path.tryArgObject(3, world)) {
             return false;
         }
-        if (!runGenericSwitchCheck(path, "gamerule", event.getGameRule().getName())) {
+        if (!runGenericSwitchCheck(path, "gamerule", GameRuleReflect.getName(event.getGameRule()))) {
             return false;
         }
         return super.matches(path);
@@ -78,7 +79,7 @@ public class WorldGameRuleChangeScriptEvent extends BukkitScriptEvent implements
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "gamerule" -> new ElementTag(event.getGameRule().getName(), true);
+            case "gamerule" -> new ElementTag(GameRuleReflect.getName(event.getGameRule()), true);
             case "value" -> new ElementTag(event.getValue(), true);
             case "source_type" -> getSourceType();
             case "command_block_location" -> getCommandBlock();

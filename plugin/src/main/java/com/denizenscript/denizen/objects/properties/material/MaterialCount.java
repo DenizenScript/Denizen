@@ -4,62 +4,97 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.*;
 
-public class MaterialCount implements Property {
+public class MaterialCount extends MaterialProperty<ElementTag> {
+    // TODO: once 1.21 is the minimum supported version, remove PinkPetals usage in favor of FlowerBed
 
-    public static boolean describes(ObjectTag material) {
-        if (!(material instanceof MaterialTag mat)) {
-            return false;
-        }
-        if (!mat.hasModernData()) {
-            return false;
-        }
-        BlockData data = mat.getModernData();
+    // <--[property]
+    // @object MaterialTag
+    // @name count
+    // @input ElementTag(Number)
+    // @description
+    // Controls the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, candles in a Candle material, flowers in a flower bed, or leaves in a leaf litter.
+    // -->
+
+    public static boolean describes(MaterialTag material) {
+        BlockData data = material.getModernData();
         return data instanceof SeaPickle
                 || data instanceof TurtleEgg
                 || data instanceof RespawnAnchor
                 || data instanceof Candle
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && data instanceof PinkPetals);
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && data instanceof PinkPetals)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (data instanceof FlowerBed
+                                                                        || data instanceof LeafLitter));
     }
 
-    public static MaterialCount getFrom(ObjectTag _material) {
-        if (!describes(_material)) {
-            return null;
+    @Override
+    public ElementTag getPropertyValue() {
+        if (getBlockData() instanceof SeaPickle seaPickle) {
+            return new ElementTag(seaPickle.getPickles());
         }
-        else {
-            return new MaterialCount((MaterialTag) _material);
+        else if (getBlockData() instanceof TurtleEgg turtleEgg) {
+            return new ElementTag(turtleEgg.getEggs());
+        }
+        else if (getBlockData() instanceof RespawnAnchor respawnAnchor) {
+            return new ElementTag(respawnAnchor.getCharges());
+        }
+        else if (getBlockData() instanceof Candle candle) {
+            return new ElementTag(candle.getCandles());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals pinkPetals) {
+            return new ElementTag(pinkPetals.getFlowerAmount());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed flowerBed) {
+            return new ElementTag(flowerBed.getFlowerAmount());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof LeafLitter leafLitter) {
+            return new ElementTag(leafLitter.getSegmentAmount());
+        }
+        return null;
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        if (mechanism.requireInteger()) {
+            int count = value.asInt();
+            if (count < getMin() || count > getMax()) {
+                mechanism.echoError("Material count mechanism value '" + count + "' is not valid. Must be between " + getMin() + " and " + getMax() + ".");
+                return;
+            }
+            if (getBlockData() instanceof SeaPickle seaPickle) {
+                seaPickle.setPickles(count);
+            }
+            else if (getBlockData() instanceof TurtleEgg turtleEgg) {
+                turtleEgg.setEggs(count);
+            }
+            else if (getBlockData() instanceof RespawnAnchor respawnAnchor) {
+                respawnAnchor.setCharges(count);
+            }
+            else if (getBlockData() instanceof Candle candle) {
+                candle.setCandles(count);
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals pinkPetals) {
+                pinkPetals.setFlowerAmount(count);
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed flowerBed) {
+                flowerBed.setFlowerAmount(count);
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof LeafLitter leafLitter) {
+                leafLitter.setSegmentAmount(count);
+            }
         }
     }
 
-    public static final String[] handledMechs = new String[] {
-            "count", "pickle_count"
-    };
-
-    public MaterialCount(MaterialTag _material) {
-        material = _material;
+    @Override
+    public String getPropertyId() {
+        return "count";
     }
-
-    MaterialTag material;
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <MaterialTag.count>
-        // @returns ElementTag(Number)
-        // @mechanism MaterialTag.count
-        // @group properties
-        // @description
-        // Returns the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, candles in a Candle material, or petals in a Pink Petals material.
-        // -->
-        PropertyParser.registerStaticTag(MaterialCount.class, ElementTag.class, "count", (attribute, material) -> {
-            return new ElementTag(material.getCurrent());
-        }, "pickle_count");
 
         // <--[tag]
         // @attribute <MaterialTag.count_max>
@@ -84,142 +119,57 @@ public class MaterialCount implements Property {
         PropertyParser.registerStaticTag(MaterialCount.class, ElementTag.class, "count_min", (attribute, material) -> {
             return new ElementTag(material.getMin());
         }, "pickle_min");
-    }
 
-    public boolean isSeaPickle() {
-        return material.getModernData() instanceof SeaPickle;
-    }
-
-    public boolean isTurtleEgg() {
-        return material.getModernData() instanceof TurtleEgg;
-    }
-
-    public boolean isRespawnAnchor() {
-        return material.getModernData() instanceof RespawnAnchor;
-    }
-
-    public boolean isCandle() {
-        return material.getModernData() instanceof Candle;
-    }
-
-    public TurtleEgg getTurtleEgg() {
-        return (TurtleEgg) material.getModernData();
-    }
-
-    public SeaPickle getSeaPickle() {
-        return (SeaPickle) material.getModernData();
-    }
-
-    public RespawnAnchor getRespawnAnchor() {
-        return (RespawnAnchor) material.getModernData();
-    }
-
-    public Candle getCandle() {
-        return (Candle) material.getModernData();
-    }
-
-    public int getCurrent() {
-        if (isSeaPickle()) {
-            return getSeaPickle().getPickles();
-        }
-        else if (isTurtleEgg()) {
-            return getTurtleEgg().getEggs();
-        }
-        else if (isRespawnAnchor()) {
-            return getRespawnAnchor().getCharges();
-        }
-        else if (isCandle()) {
-            return getCandle().getCandles();
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && material.getModernData() instanceof PinkPetals pinkPetals) {
-            return pinkPetals.getFlowerAmount();
-        }
-        throw new UnsupportedOperationException();
+        autoRegister("count", MaterialCount.class, ElementTag.class, false, "pickle_count");
     }
 
     public int getMax() {
-        if (isSeaPickle()) {
-            return getSeaPickle().getMaximumPickles();
+        if (getBlockData() instanceof SeaPickle seaPickle) {
+            return seaPickle.getMaximumPickles();
         }
-        else if (isTurtleEgg()) {
-            return getTurtleEgg().getMaximumEggs();
+        else if (getBlockData() instanceof TurtleEgg turtleEgg) {
+            return turtleEgg.getMaximumEggs();
         }
-        else if (isRespawnAnchor()) {
-            return getRespawnAnchor().getMaximumCharges();
+        else if (getBlockData() instanceof RespawnAnchor respawnAnchor) {
+            return respawnAnchor.getMaximumCharges();
         }
-        else if (isCandle()) {
-            return getCandle().getMaximumCandles();
+        else if (getBlockData() instanceof Candle candle) {
+            return candle.getMaximumCandles();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && material.getModernData() instanceof PinkPetals pinkPetals) {
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals pinkPetals) {
             return pinkPetals.getMaximumFlowerAmount();
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed flowerBed) {
+            return flowerBed.getMaximumFlowerAmount();
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof LeafLitter leafLitter) {
+            return leafLitter.getMaximumSegmentAmount();
         }
         throw new UnsupportedOperationException();
     }
 
     public int getMin() {
-        if (isSeaPickle()) {
-            return getSeaPickle().getMinimumPickles();
+        if (getBlockData() instanceof SeaPickle seaPickle) {
+            return seaPickle.getMinimumPickles();
         }
-        else if (isTurtleEgg()) {
-            return getTurtleEgg().getMinimumEggs();
+        else if (getBlockData() instanceof TurtleEgg turtleEgg) {
+            return turtleEgg.getMinimumEggs();
         }
-        else if (isRespawnAnchor()) {
+        else if (getBlockData() instanceof RespawnAnchor) {
             return 0;
         }
-        else if (isCandle()) {
+        else if (getBlockData() instanceof Candle) {
             return 1;
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && material.getModernData() instanceof PinkPetals) {
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof PinkPetals) {
+            return 1;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof FlowerBed) {
+            return 1;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof LeafLitter) {
             return 1;
         }
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String getPropertyString() {
-        return String.valueOf(getCurrent());
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "count";
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object MaterialTag
-        // @name count
-        // @input ElementTag(Number)
-        // @description
-        // Sets the amount of pickles in a Sea Pickle material, eggs in a Turtle Egg material, charges in a Respawn Anchor material, candles in a Candle material, or petals in a Pink Petals material.
-        // @tags
-        // <MaterialTag.count>
-        // <MaterialTag.count_min>
-        // <MaterialTag.count_max>
-        // -->
-        if ((mechanism.matches("count") || (mechanism.matches("pickle_count"))) && mechanism.requireInteger()) {
-            int count = mechanism.getValue().asInt();
-            if (count < getMin() || count > getMax()) {
-                mechanism.echoError("Material count mechanism value '" + count + "' is not valid. Must be between " + getMin() + " and " + getMax() + ".");
-                return;
-            }
-            if (isSeaPickle()) {
-                getSeaPickle().setPickles(count);
-            }
-            else if (isTurtleEgg()) {
-                getTurtleEgg().setEggs(count);
-            }
-            else if (isRespawnAnchor()) {
-                getRespawnAnchor().setCharges(count);
-            }
-            else if (isCandle()) {
-                getCandle().setCandles(count);
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && material.getModernData() instanceof PinkPetals pinkPetals) {
-                pinkPetals.setFlowerAmount(count);
-            }
-        }
     }
 }

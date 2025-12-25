@@ -14,6 +14,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
+import com.denizenscript.denizen.utilities.world.GameRuleReflect;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -639,11 +640,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all available gamerules on the server.
         // -->
         tagProcessor.registerStaticTag(ListTag.class, "gamerules", (attribute, object) -> {
-            ListTag gamerules = new ListTag();
-            for (GameRule<?> rule : GameRule.values()) {
-                gamerules.add(rule.getName());
-            }
-            return gamerules;
+            return new ListTag(Arrays.asList(GameRuleReflect.values()), gameRule -> new ElementTag(GameRuleReflect.getName(gameRule), true));
         });
 
         // <--[tag]
