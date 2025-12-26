@@ -2,8 +2,10 @@ package com.denizenscript.denizen.utilities.world;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import org.bukkit.GameRule;
+import org.bukkit.Keyed;
 import org.bukkit.World;
 
 import java.lang.invoke.MethodHandle;
@@ -15,7 +17,8 @@ public class GameRuleReflect {
     private static final MethodHandle GAMERULE_GET_NAME = ReflectionHelper.getMethodHandle(GameRule.class, "getName");
     private static final MethodHandle GAMERULE_GET_TYPE = ReflectionHelper.getMethodHandle(GameRule.class, "getType");
 
-    public static final GameRule<Boolean> WEATHER_CYCLE_GAMERULE = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) ? GameRule.ADVANCE_WEATHER : (GameRule<Boolean>) getByName("doWeatherCycle");
+    public static final boolean MODERN_GAMERULE_NAMING = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21);
+    public static final GameRule<Boolean> WEATHER_CYCLE_GAMERULE = getByName(MODERN_GAMERULE_NAMING ? "advance_weather" : "doWeatherCycle");
 
     public static GameRule<?>[] values() {
         try {
@@ -26,9 +29,9 @@ public class GameRuleReflect {
         }
     }
 
-    public static GameRule<?> getByName(String name) {
+    public static <T> GameRule<T> getByName(String name) {
         try {
-            return (GameRule<?>) GAMERULE_GET_BY_NAME.invokeExact(name);
+            return (GameRule<T>) GAMERULE_GET_BY_NAME.invokeExact(name);
         }
         catch (Throwable e) {
             throw new RuntimeException(e);
@@ -36,6 +39,9 @@ public class GameRuleReflect {
     }
 
     public static String getName(GameRule<?> gameRule) {
+        if (MODERN_GAMERULE_NAMING) {
+            return Utilities.namespacedKeyToString(((Keyed) gameRule).getKey());
+        }
         try {
             return (String) GAMERULE_GET_NAME.invokeExact(gameRule);
         }
@@ -53,7 +59,7 @@ public class GameRuleReflect {
         }
     }
 
-    // TODO 1.21.11: certain gamemodes (e.g. max_minecart_speed) behave badly on Spigot, need to test with Paper
+    // TODO 1.21.11: certain gamemodes (e.g. max_minecart_speed) behave badly for some reason
     public static <T> T getValue(World world, GameRule<T> gameRule) {
         try {
             return world.getGameRuleValue(gameRule);
