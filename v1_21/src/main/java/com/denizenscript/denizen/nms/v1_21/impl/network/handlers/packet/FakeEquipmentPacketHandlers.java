@@ -4,7 +4,6 @@ import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkM
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
@@ -86,7 +85,7 @@ public class FakeEquipmentPacketHandlers {
         if (override == null) {
             return setContentPacket;
         }
-        NonNullList<ItemStack> items = (NonNullList<ItemStack>) setContentPacket.items();
+        List<ItemStack> items = setContentPacket.items();
         if (override.head != null) {
             items.set(5, CraftItemStack.asNMSCopy(override.head.getItemStack()));
         }
