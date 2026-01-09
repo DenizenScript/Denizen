@@ -426,7 +426,7 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public ItemStack setEntityData(ItemStack item, CompoundBinaryTag entityNbt, EntityType entityType) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
-        if (entityNbt == null || entityNbt.isEmpty() || (entityNbt.size() == 1 && entityNbt.keySet().contains("id"))) {
+        if (entityNbt == null || entityNbt.isEmpty() || (entityNbt.size() == 1 && entityNbt.contains("id"))) {
             nmsItemStack.remove(DataComponents.ENTITY_DATA);
         }
         else {

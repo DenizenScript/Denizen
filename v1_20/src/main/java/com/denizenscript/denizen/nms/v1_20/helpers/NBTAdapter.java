@@ -105,10 +105,9 @@ public class NBTAdapter {
     }
 
     public static ListBinaryTag toAPI(ListTag nmsListTag) {
-        // TODO: adventure-nbt: builder initial capacity
-        ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.builder();
-        for (Tag nmsEntry : nmsListTag) {
-            builder.add(toAPI(nmsEntry));
+        ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.builder(nmsListTag.size());
+        for (Tag nmsValue : nmsListTag) {
+            builder.add(toAPI(nmsValue));
         }
         return builder.build();
     }
@@ -122,11 +121,11 @@ public class NBTAdapter {
     }
 
     public static CompoundBinaryTag toAPI(CompoundTag nmsCompoundTag) {
-        Map<String, BinaryTag> tags = new HashMap<>(nmsCompoundTag.size());
+        CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder(nmsCompoundTag.size());
         for (String key : nmsCompoundTag.getAllKeys()) {
-            tags.put(key, toAPI(nmsCompoundTag.get(key)));
+            builder.put(key, toAPI(nmsCompoundTag.get(key)));
         }
-        return CompoundBinaryTag.from(tags);
+        return builder.build();
     }
 
     public static CompoundTag toNMS(CompoundBinaryTag compoundTag) {
