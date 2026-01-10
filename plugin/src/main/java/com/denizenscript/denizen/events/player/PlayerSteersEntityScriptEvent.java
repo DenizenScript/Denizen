@@ -1,7 +1,10 @@
 package com.denizenscript.denizen.events.player;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
@@ -11,7 +14,6 @@ import com.denizenscript.denizencore.scripts.ScriptEntryData;
 
 import java.util.function.Consumer;
 
-// TODO: 1.21.3: This can probably be deprecated in favor of the new "PlayerInputEvent"
 public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
 
     // <--[event]
@@ -27,7 +29,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     //
     // @Cancellable true
     //
-    // @Triggers every tick that a player is controlling a vehicle.
+    // @Triggers every tick that a player is controlling a vehicle. Use <@link event player input> on MC 1.21+.
     //
     // @Context
     // <context.entity> returns the EntityTag being steered by the player.
@@ -37,6 +39,8 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     // <context.dismount> returns an ElementTag(Boolean) that signifies whether the player is attempting to dismount.
     //
     // @Player Always.
+    //
+    // @deprecated Use the 'player input' event on MC 1.21+.
     //
     // -->
 
@@ -66,6 +70,9 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
         }
         if (!couldMatchEntity(path.eventArgLowerAt(2))) {
             return false;
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            BukkitImplDeprecations.playerSteerEntityEvent.warn(path.container);
         }
         return true;
     }

@@ -6,18 +6,18 @@ import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.google.common.collect.ImmutableMap;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.advancements.criterion.ImpossibleTrigger;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_21_R5.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R5.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -38,8 +38,8 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             return;
         }
         AdvancementHolder nmsAdvancementHolder = asNMSCopy(advancement);
-        Map<ResourceLocation, AdvancementHolder> nmsAdvancements = getNMSAdvancementManager().advancements;
-        ImmutableMap.Builder<ResourceLocation, AdvancementHolder> mapBuilder = ImmutableMap.builderWithExpectedSize(nmsAdvancements.size() + 1);
+        Map<Identifier, AdvancementHolder> nmsAdvancements = getNMSAdvancementManager().advancements;
+        ImmutableMap.Builder<Identifier, AdvancementHolder> mapBuilder = ImmutableMap.builderWithExpectedSize(nmsAdvancements.size() + 1);
         mapBuilder.putAll(nmsAdvancements);
         mapBuilder.put(nmsAdvancementHolder.id(), nmsAdvancementHolder);
         getNMSAdvancementManager().advancements = mapBuilder.build();
@@ -65,10 +65,10 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         if (advancement.temporary || !advancement.registered) {
             return;
         }
-        ResourceLocation nmsKey = CraftNamespacedKey.toMinecraft(advancement.key);
-        Map<ResourceLocation, AdvancementHolder> nmsAdvancements = getNMSAdvancementManager().advancements;
-        ImmutableMap.Builder<ResourceLocation, AdvancementHolder> mapBuilder = ImmutableMap.builderWithExpectedSize(nmsAdvancements.size() - 1);
-        for (Map.Entry<ResourceLocation, AdvancementHolder> entry : nmsAdvancements.entrySet()) {
+        Identifier nmsKey = CraftNamespacedKey.toMinecraft(advancement.key);
+        Map<Identifier, AdvancementHolder> nmsAdvancements = getNMSAdvancementManager().advancements;
+        ImmutableMap.Builder<Identifier, AdvancementHolder> mapBuilder = ImmutableMap.builderWithExpectedSize(nmsAdvancements.size() - 1);
+        for (Map.Entry<Identifier, AdvancementHolder> entry : nmsAdvancements.entrySet()) {
             if (!entry.getKey().equals(nmsKey)) {
                 mapBuilder.put(entry);
             }
@@ -176,7 +176,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                 : null;
         DisplayInfo display = new DisplayInfo(CraftItemStack.asNMSCopy(advancement.icon),
                 Handler.componentToNMS(FormattedTextHelper.parse(advancement.title, ChatColor.WHITE)), Handler.componentToNMS(FormattedTextHelper.parse(advancement.description, ChatColor.WHITE)),
-                Optional.ofNullable(advancement.background).map(CraftNamespacedKey::toMinecraft).map(ClientAsset::new), AdvancementType.valueOf(advancement.frame.name()),
+                Optional.ofNullable(advancement.background).map(CraftNamespacedKey::toMinecraft).map(ClientAsset.ResourceTexture::new), AdvancementType.valueOf(advancement.frame.name()),
                 advancement.toast, advancement.announceToChat, advancement.hidden);
         display.setLocation(advancement.xOffset, advancement.yOffset);
         Map<String, Criterion<?>> criteria = IMPOSSIBLE_CRITERIA;

@@ -16,13 +16,13 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.storage.PrimaryLevelData;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
 
 public class WorldHelperImpl implements WorldHelper {
 
     @Override
     public boolean isStatic(World world) {
-        return ((CraftWorld) world).getHandle().isClientSide;
+        return ((CraftWorld) world).getHandle().isClientSide();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class WorldHelperImpl implements WorldHelper {
     // net.minecraft.server.level.ServerLevel#resetWeatherCycle()
     @Override
     public void clearWeather(World world) {
-        PrimaryLevelData data = ((CraftWorld) world).getHandle().L;
+        PrimaryLevelData data = ((CraftWorld) world).getHandle().I;
         data.setRaining(false);
         if (!data.isRaining()) {
             data.setRainTime(0);

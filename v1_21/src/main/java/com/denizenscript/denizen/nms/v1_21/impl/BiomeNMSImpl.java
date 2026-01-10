@@ -14,6 +14,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.attribute.EnvironmentAttribute;
+import net.minecraft.world.attribute.EnvironmentAttributeMap;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
@@ -22,10 +25,10 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftEntityType;
-import org.bukkit.craftbukkit.v1_21_R5.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_21_R5.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftEntityType;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 
 import java.lang.invoke.MethodHandle;
@@ -38,6 +41,7 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     public static final MethodHandle BIOME_CLIMATESETTINGS_CONSTRUCTOR = ReflectionHelper.getConstructor(Biome.ClimateSettings.class, boolean.class, float.class, Biome.TemperatureModifier.class, float.class);
     public static final MethodHandle MAPPED_REGISTRY_REGISTRATION_INFOS = ReflectionHelper.getFields(MappedRegistry.class).getGetter(ReflectionMappingsInfo.MappedRegistry_registrationInfos);
+    public static final MethodHandle BIOME_ATTRIBUTES_SETTER = ReflectionHelper.getFields(Biome.class).getSetter(ReflectionMappingsInfo.Biome_attributes);
 
     public Holder.Reference<Biome> biomeHolder;
     public ServerLevel world;
@@ -147,29 +151,47 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public void setFoliageColor(int color) {
-        ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_foliageColorOverride, biomeHolder.value().getSpecialEffects(), Optional.of(color));
+        BiomeSpecialEffects nmsCurrEffects = biomeHolder.value().getSpecialEffects();
+        BiomeSpecialEffects nmsNewEffects = new BiomeSpecialEffects(
+                nmsCurrEffects.waterColor(), Optional.of(color), nmsCurrEffects.dryFoliageColorOverride(), nmsCurrEffects.grassColorOverride(), nmsCurrEffects.grassColorModifier()
+        );
+        ReflectionHelper.setFieldValue(Biome.class, ReflectionMappingsInfo.Biome_specialEffects, biomeHolder.value(), nmsNewEffects);
         setNetworkedRegistrationInfo();
     }
 
     @Override
     public int getFogColor() {
-        return biomeHolder.value().getFogColor();
+        return getEnvironmentAttribute(EnvironmentAttributes.FOG_COLOR);
     }
 
     @Override
     public void setFogColor(int color) {
-        ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_fogColor, biomeHolder.value().getSpecialEffects(), color);
-        setNetworkedRegistrationInfo();
+        setEnvironmentAttribute(EnvironmentAttributes.FOG_COLOR, color);
     }
 
     @Override
     public int getWaterFogColor() {
-        return biomeHolder.value().getWaterFogColor();
+        return getEnvironmentAttribute(EnvironmentAttributes.WATER_FOG_COLOR);
     }
 
     @Override
     public void setWaterFogColor(int color) {
-        ReflectionHelper.setFieldValue(BiomeSpecialEffects.class, ReflectionMappingsInfo.BiomeSpecialEffects_waterFogColor, biomeHolder.value().getSpecialEffects(), color);
+        setEnvironmentAttribute(EnvironmentAttributes.WATER_FOG_COLOR, color);
+    }
+
+    public <T> T getEnvironmentAttribute(EnvironmentAttribute<T> attribute) {
+        return biomeHolder.value().getAttributes().applyModifier(attribute, attribute.defaultValue());
+    }
+
+    public <T> void setEnvironmentAttribute(EnvironmentAttribute<T> attribute, T value) {
+        Biome nmsBiome = biomeHolder.value();
+        EnvironmentAttributeMap newAttributeMap = EnvironmentAttributeMap.builder().putAll(nmsBiome.getAttributes()).set(attribute, value).build();
+        try {
+            BIOME_ATTRIBUTES_SETTER.invokeExact(nmsBiome, newAttributeMap);
+        }
+        catch (Throwable e) {
+            Debug.echoError(e);
+        }
         setNetworkedRegistrationInfo();
     }
 

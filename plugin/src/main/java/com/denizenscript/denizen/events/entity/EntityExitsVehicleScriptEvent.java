@@ -63,13 +63,11 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("vehicle")) {
-            return vehicle.getDenizenObject();
-        }
-        else if (name.equals("entity")) {
-            return entity.getDenizenObject();
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "vehicle" -> vehicle.getDenizenObject();
+            case "entity" -> entity.getDenizenObject();
+            default -> super.getContext(name);
+        };
     }
 
     @Override

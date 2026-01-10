@@ -17,7 +17,7 @@ import net.minecraft.network.protocol.common.ServerboundResourcePackPacket;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_21_R5.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_21_R7.block.CraftBlock;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {

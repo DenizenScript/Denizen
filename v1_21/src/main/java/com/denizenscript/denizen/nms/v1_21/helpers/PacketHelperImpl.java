@@ -13,6 +13,7 @@ import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.maps.MapImage;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.core.ColorTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;
@@ -21,8 +22,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.BrandPayload;
-import net.minecraft.network.protocol.common.custom.GameTestAddMarkerDebugPayload;
-import net.minecraft.network.protocol.common.custom.GameTestClearMarkersDebugPayload;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -33,10 +32,10 @@ import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.CaveSpider;
+import net.minecraft.world.entity.monster.spider.CaveSpider;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
-import net.minecraft.world.entity.monster.Spider;
+import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
@@ -50,14 +49,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
-import org.bukkit.craftbukkit.v1_21_R5.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R5.map.CraftMapCanvas;
-import org.bukkit.craftbukkit.v1_21_R5.map.CraftMapView;
-import org.bukkit.craftbukkit.v1_21_R5.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R7.map.CraftMapCanvas;
+import org.bukkit.craftbukkit.v1_21_R7.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftLocation;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -354,15 +353,13 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showDebugTestMarker(Player player, Location location, ColorTag color, String name, int time) {
-        int colorInt = color.blue | (color.green << 8) | (color.red << 16) | (color.alpha << 24);
-        GameTestAddMarkerDebugPayload payload = new GameTestAddMarkerDebugPayload(CraftLocation.toBlockPosition(location), colorInt, name, time);
-        send(player, new ClientboundCustomPayloadPacket(payload));
+        BlockPos nmsPos = CraftLocation.toBlockPosition(location);
+        LocationTag displayPos = !name.isEmpty() ? LocationTag.valueOf(name, CoreUtilities.noDebugContext) : null;
+        send(player, new ClientboundGameTestHighlightPosPacket(nmsPos, displayPos != null ? CraftLocation.toBlockPosition(displayPos) : nmsPos));
     }
 
     @Override
     public void clearDebugTestMarker(Player player) {
-        GameTestClearMarkersDebugPayload payload = new GameTestClearMarkersDebugPayload();
-        send(player, new ClientboundCustomPayloadPacket(payload));
     }
 
     @Override

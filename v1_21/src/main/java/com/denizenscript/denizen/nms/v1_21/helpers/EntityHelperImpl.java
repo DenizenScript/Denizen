@@ -67,14 +67,14 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_21_R5.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R5.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_21_R5.block.CraftCreatureSpawner;
-import org.bukkit.craftbukkit.v1_21_R5.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R5.entity.*;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R5.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_21_R7.block.CraftCreatureSpawner;
+import org.bukkit.craftbukkit.v1_21_R7.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R7.entity.*;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftLocation;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -685,7 +685,7 @@ public class EntityHelperImpl extends EntityHelper {
         return new EntityTag(nmsEntity.getBukkitEntity());
     }
 
-    public static final Field ZOMBIE_INWATERTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.Zombie.class).get(ReflectionMappingsInfo.Zombie_inWaterTime, int.class);
+    public static final Field ZOMBIE_INWATERTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.zombie.Zombie.class).get(ReflectionMappingsInfo.Zombie_inWaterTime, int.class);
 
     @Override
     public int getInWaterTime(Zombie zombie) {
@@ -821,7 +821,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void openHorseInventory(Player player, AbstractHorse horse) {
-        net.minecraft.world.entity.animal.horse.AbstractHorse nmsHorse = ((CraftAbstractHorse) horse).getHandle();
+        net.minecraft.world.entity.animal.equine.AbstractHorse nmsHorse = ((CraftAbstractHorse) horse).getHandle();
         ((CraftPlayer) player).getHandle().openHorseInventory(nmsHorse, nmsHorse.inventory);
     }
 

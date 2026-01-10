@@ -24,10 +24,10 @@ import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R5.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -105,9 +105,9 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     @Override
     public Inventory getEnderChest() {
         if (enderchest == null) {
-            PlayerEnderChestContainer endchest = new PlayerEnderChestContainer(null);
-            Handler.useValueInput(NBTAdapter.toNMS(this.compound), valueInput -> endchest.fromSlots(valueInput.listOrEmpty("EnderItems", ItemStackWithSlot.CODEC)));
-            enderchest = new CraftInventory(endchest);
+            PlayerEnderChestContainer nmsEnderChest = new PlayerEnderChestContainer(getFakeNmsPlayer());
+            Handler.useValueInput(NBTAdapter.toNMS(this.compound), valueInput -> nmsEnderChest.fromSlots(valueInput.listOrEmpty("EnderItems", ItemStackWithSlot.CODEC)));
+            enderchest = new CraftInventory(nmsEnderChest);
         }
         return enderchest;
     }

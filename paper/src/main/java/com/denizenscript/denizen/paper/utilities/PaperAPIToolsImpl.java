@@ -11,6 +11,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -20,6 +21,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.potion.PotionMix;
+import io.papermc.paper.world.WeatheringCopperState;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
@@ -27,10 +29,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -41,6 +40,7 @@ import org.bukkit.potion.PotionBrewer;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
+import java.net.URI;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -408,5 +408,27 @@ public class PaperAPIToolsImpl extends PaperAPITools {
             return;
         }
         BlockTagsSetter.INSTANCE.setTags(type, tags);
+    }
+
+    @Override
+    public void addLink(ServerLinks links, String display, URI uri) {
+        links.addLink(PaperModule.parseFormattedText(display, ChatColor.WHITE), uri);
+    }
+  
+    @Override
+    public double[] getRecentTps() {
+        return Bukkit.getTPS();
+    }
+
+    @Override
+    public String getCopperGolemState(CopperGolem copperGolem) {
+        return copperGolem.getWeatheringState().name();
+    }
+
+    @Override
+    public void setCopperGolemState(ElementTag variant, CopperGolem copperGolem, Mechanism mechanism) {
+        if (mechanism.requireEnum(WeatheringCopperState.class)) {
+            copperGolem.setWeatheringState(variant.asEnum(WeatheringCopperState.class));
+        }
     }
 }

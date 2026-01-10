@@ -2,13 +2,13 @@ package com.denizenscript.denizen.nms.v1_21.impl.entities;
 
 import com.denizenscript.denizen.nms.v1_21.Handler;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.minecraft.world.entity.projectile.SpectralArrow;
+import net.minecraft.world.entity.projectile.arrow.SpectralArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R5.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class EntityFakeArrowImpl extends SpectralArrow {

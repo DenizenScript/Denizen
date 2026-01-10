@@ -22,11 +22,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.PalettedContainer;
+import net.minecraft.world.level.chunk.Strategy;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R5.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R5.block.CraftBlockStates;
-import org.bukkit.craftbukkit.v1_21_R5.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R7.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.block.CraftBlockStates;
+import org.bukkit.craftbukkit.v1_21_R7.block.data.CraftBlockData;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
@@ -44,7 +45,7 @@ public class FakeBlockHelper {
     public static Field CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).get(ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ);
     public static Field CHUNKDATA_BLOCKENTITYINFO_Y = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).get(ReflectionMappingsInfo.ClientboundLevelChunkPacketDataBlockEntityInfo_y);
     public static MethodHandle CHUNKPACKET_CHUNKDATA_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(ClientboundLevelChunkWithLightPacket.class, ClientboundLevelChunkPacketData.class);
-    public static Constructor<?> PALETTEDCONTAINER_CTOR = Arrays.stream(PalettedContainer.class.getConstructors()).filter(c -> c.getParameterCount() == 3).findFirst().get();
+    public static Constructor<?> PALETTEDCONTAINER_CTOR = Arrays.stream(PalettedContainer.class.getConstructors()).filter(c -> c.getParameterCount() == 2).findFirst().get();
 
     public static BlockState getNMSState(FakeBlock block) {
         return ((CraftBlockData) block.material.getModernData()).getState();
@@ -123,9 +124,9 @@ public class FakeBlockHelper {
             for (int y = minChunkY; y < maxChunkY; y++) {
                 int blockCount = serial.readShort();
                 // reflected constructors as workaround for spigot remapper bug - Mojang "IdMap" became Spigot "IRegistry" but should be "Registry"
-                PalettedContainer<BlockState> states = (PalettedContainer<BlockState>) PALETTEDCONTAINER_CTOR.newInstance(Block.BLOCK_STATE_REGISTRY, Blocks.AIR.defaultBlockState(), PalettedContainer.Strategy.SECTION_STATES);
+                PalettedContainer<BlockState> states = (PalettedContainer<BlockState>) PALETTEDCONTAINER_CTOR.newInstance(Blocks.AIR.defaultBlockState(), Strategy.createForBlockStates(Block.BLOCK_STATE_REGISTRY));
                 states.read(serial);
-                PalettedContainer<Biome> biomes = (PalettedContainer<Biome>) PALETTEDCONTAINER_CTOR.newInstance(biomeRegistry, biomeRegistry.getOrThrow(Biomes.PLAINS), PalettedContainer.Strategy.SECTION_BIOMES);
+                PalettedContainer<Biome> biomes = (PalettedContainer<Biome>) PALETTEDCONTAINER_CTOR.newInstance(biomeRegistry.getOrThrow(Biomes.PLAINS), Strategy.createForBiomes(biomeRegistry));
                 biomes.read(serial);
                 if (anyBlocksInSection(blocks, y)) {
                     int minY = y << 4;

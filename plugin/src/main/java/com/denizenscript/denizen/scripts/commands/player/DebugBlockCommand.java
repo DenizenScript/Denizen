@@ -5,15 +5,15 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.objects.core.ColorTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
 import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.objects.core.ColorTag;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +42,12 @@ public class DebugBlockCommand extends AbstractCommand {
     // Markers can optionally also have simple text names.
     //
     // If arguments are unspecified, the default color is white, the default player is the linked player, the default name is none, and the default duration is 10 seconds.
+    //
+    // Note that on MC 1.21+ this has limitations (within Minecraft itself), namely:
+    // - the color is always green.
+    // - the duration is always 10 seconds.
+    // - the name can only be a LocationTag and defaults to the debug block's location if unspecified.
+    // - debug blocks can't be cleared.
     //
     // @Tags
     // None

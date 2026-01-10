@@ -34,17 +34,17 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Skull;
-import org.bukkit.craftbukkit.v1_21_R5.CraftChunk;
-import org.bukkit.craftbukkit.v1_21_R5.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R5.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R5.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_21_R5.block.CraftBlockEntityState;
-import org.bukkit.craftbukkit.v1_21_R5.block.CraftCreatureSpawner;
-import org.bukkit.craftbukkit.v1_21_R5.block.CraftSkull;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R5.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R5.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_21_R5.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R7.CraftChunk;
+import org.bukkit.craftbukkit.v1_21_R7.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_21_R7.block.CraftBlockEntityState;
+import org.bukkit.craftbukkit.v1_21_R7.block.CraftCreatureSpawner;
+import org.bukkit.craftbukkit.v1_21_R7.block.CraftSkull;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftMagicNumbers;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
@@ -85,15 +85,15 @@ public class BlockHelperImpl implements BlockHelper {
         if (profile == null) {
             return null;
         }
-        com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.properties().get("textures"), null);
-        return new PlayerProfile(profile.name().orElse(null), profile.id().orElse(null), property != null ? property.value() : null);
+        com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.partialProfile().properties().get("textures"), null);
+        return new PlayerProfile(profile.name().orElse(null), ProfileEditorImpl.getUUID(profile), property != null ? property.value() : null);
     }
 
     @Override
     public void setPlayerProfile(Skull skull, PlayerProfile playerProfile) {
         GameProfile gameProfile = ProfileEditorImpl.getGameProfile(playerProfile);
         try {
-            craftSkull_profile.set(skull, new ResolvableProfile(gameProfile));
+            craftSkull_profile.set(skull, ResolvableProfile.createResolved(gameProfile));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

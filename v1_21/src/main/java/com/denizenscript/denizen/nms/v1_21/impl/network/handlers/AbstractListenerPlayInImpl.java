@@ -31,7 +31,7 @@ import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R5.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.lang.invoke.MethodHandle;
@@ -608,9 +608,9 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void handleDebugSampleSubscription(ServerboundDebugSampleSubscriptionPacket packet) {
+    public void handleDebugSubscriptionRequest(ServerboundDebugSubscriptionRequestPacket packet) {
         if (handlePacketIn(packet)) { return; }
-        oldListener.handleDebugSampleSubscription(packet);
+        oldListener.handleDebugSubscriptionRequest(packet);
     }
 
     @Override
