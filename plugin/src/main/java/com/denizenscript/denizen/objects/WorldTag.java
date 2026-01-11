@@ -36,6 +36,7 @@ import org.bukkit.util.BoundingBox;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
@@ -1092,7 +1093,12 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
                 mechanism.echoError("Provided world is not an end world!");
                 return;
             }
-            battle.initiateRespawn();
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) { // workaround for upstream bug
+                battle.initiateRespawn(Collections.emptyList());
+            }
+            else {
+                battle.initiateRespawn();
+            }
         });
 
         // <--[mechanism]
