@@ -36,7 +36,6 @@ import org.bukkit.util.BoundingBox;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
@@ -1094,7 +1093,7 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
                 return;
             }
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) { // workaround for upstream bug
-                battle.initiateRespawn(Collections.emptyList());
+                battle.initiateRespawn(List.of());
             }
             else {
                 battle.initiateRespawn();
