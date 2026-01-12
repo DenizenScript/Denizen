@@ -233,6 +233,9 @@ public class PropertyRegistry {
             PropertyParser.registerProperty(ItemComponentsPatch.class, ItemTag.class);
             registerItemProperty(ItemCustomData.class, "custom_data");
         }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            registerItemProperty(ItemItemModel.class, "item_model");
+        }
         registerItemProperty(ItemCustomModel.class, "custom_model_data");
         registerItemProperty(ItemChargedProjectile.class, "charged_projectiles");
         registerItemProperty(ItemEnchantments.class, "enchantments", "stored_enchantments");
