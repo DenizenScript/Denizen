@@ -121,7 +121,7 @@ public class EntityVariant extends EntityProperty<ElementTag> {
                 }
             }
             else if (getEntity() instanceof ZombieNautilus zombieNautilus) {
-                ZombieNautilus.Variant zombieNautilusVariant= Utilities.elementToRequiredEnumLike(variant, ZombieNautilus.Variant.class, mechanism);
+                ZombieNautilus.Variant zombieNautilusVariant = Utilities.elementToRequiredEnumLike(variant, ZombieNautilus.Variant.class, mechanism);
                 if (zombieNautilusVariant != null) {
                     zombieNautilus.setVariant(zombieNautilusVariant);
                 }
