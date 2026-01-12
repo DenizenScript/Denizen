@@ -84,7 +84,7 @@ public class ResourcePackCommand extends AbstractCommand {
                                    @ArgName("targets") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> targets,
                                    @ArgName("forced") boolean forced) {
         if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && (action == Action.ADD || id != null)) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Adding multiple resource packs is not supported on this server version!");
         }
         if (targets == null) {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
