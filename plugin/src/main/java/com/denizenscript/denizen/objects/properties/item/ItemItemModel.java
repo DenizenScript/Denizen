@@ -42,12 +42,7 @@ public class ItemItemModel extends ItemProperty<ElementTag> {
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
         ItemMeta meta = getItemMeta();
-        if (mechanism.hasValue()) {
-            meta.setItemModel(NamespacedKey.fromString(value.asString()));
-        }
-        else {
-            meta.setItemModel(null);
-        }
+        meta.setItemModel(mechanism.hasValue() ? NamespacedKey.fromString(value.asString()) : null);
         setItemMeta(meta);
     }
 
