@@ -12,7 +12,6 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.tags.TagManager;
 
-import java.util.Collections;
 import java.util.List;
 
 public class TitleCommand extends AbstractCommand {
@@ -74,7 +73,7 @@ public class TitleCommand extends AbstractCommand {
                 Debug.echoError("Must specify target(s).");
                 return;
             }
-            players = Collections.singletonList(Utilities.getEntryPlayer(scriptEntry));
+            players = List.of(Utilities.getEntryPlayer(scriptEntry));
         }
         BukkitTagContext context = new BukkitTagContext((BukkitTagContext) scriptEntry.getContext());
         ParseableTag parseableTitle = strTitle == null ? null : TagManager.parseTextToTag(strTitle, context);
