@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 
 public class ItemItemModel extends ItemProperty<ElementTag> {
+
     // <--[property]
     // @object ItemTag
     // @name item_model
