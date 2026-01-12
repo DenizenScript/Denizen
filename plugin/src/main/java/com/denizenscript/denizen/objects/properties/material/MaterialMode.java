@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.*;
 
@@ -76,18 +75,14 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
         else if (getBlockData() instanceof Tripwire tripwire) {
             return new ElementTag(tripwire.isDisarmed() ? "DISARMED" : "ARMED", true);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            if (getBlockData() instanceof SculkCatalyst sculkCatalyst) {
-                return new ElementTag(sculkCatalyst.isBloom() ? "BLOOM" : "NORMAL", true);
-            }
-            else if (getBlockData() instanceof SculkShrieker sculkShrieker) {
-                return new ElementTag(sculkShrieker.isShrieking() ? "SHRIEKING" : "NORMAL", true);
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                if (getBlockData() instanceof CreakingHeart creakingHeart) {
-                    return new ElementTag(creakingHeart.getCreakingHeartState());
-                }
-            }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkCatalyst sculkCatalyst) {
+            return new ElementTag(sculkCatalyst.isBloom() ? "BLOOM" : "NORMAL", true);
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkShrieker sculkShrieker) {
+            return new ElementTag(sculkShrieker.isShrieking() ? "SHRIEKING" : "NORMAL", true);
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof CreakingHeart creakingHeart) {
+            return new ElementTag(creakingHeart.getCreakingHeartState());
         }
         return null;
     }
@@ -100,10 +95,10 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             }
         }
         else if (getBlockData() instanceof BubbleColumn bubbleColumn) {
-            bubbleColumn.setDrag(CoreUtilities.equalsIgnoreCase(value.toString(), "drag"));
+            bubbleColumn.setDrag(value.asLowerString().equals("drag"));
         }
         else if (getBlockData() instanceof PistonHead pistonHead) {
-            pistonHead.setShort(CoreUtilities.equalsIgnoreCase(value.toString(), "short"));
+            pistonHead.setShort(value.asLowerString().equals("short"));
         }
         else if (getBlockData() instanceof StructureBlock structureBlock) {
             if (mechanism.requireEnum(StructureBlock.Mode.class)) {
@@ -111,10 +106,10 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             }
         }
         else if (getBlockData() instanceof DaylightDetector daylightDetector) {
-            daylightDetector.setInverted(CoreUtilities.equalsIgnoreCase(value.toString(), "inverted"));
+            daylightDetector.setInverted(value.asLowerString().equals("inverted"));
         }
         else if (getBlockData() instanceof CommandBlock cmdBlock) {
-            cmdBlock.setConditional(CoreUtilities.equalsIgnoreCase(value.toString(), "conditional"));
+            cmdBlock.setConditional(value.asLowerString().equals("conditional"));
         }
         else if (getBlockData() instanceof SculkSensor sculkSensor) {
             if (mechanism.requireEnum(SculkSensor.Phase.class)) {
@@ -127,21 +122,17 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             }
         }
         else if (getBlockData() instanceof Tripwire tripwire) {
-            tripwire.setDisarmed(CoreUtilities.equalsIgnoreCase(value.toString(), "disarmed"));
+            tripwire.setDisarmed(value.asLowerString().equals("disarmed"));
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            if (getBlockData() instanceof SculkCatalyst sculkCatalyst) {
-                sculkCatalyst.setBloom(CoreUtilities.equalsIgnoreCase(value.toString(), "bloom"));
-            }
-            else if (getBlockData() instanceof SculkShrieker sculkShrieker) {
-                sculkShrieker.setShrieking(CoreUtilities.equalsIgnoreCase(value.toString(), "shrieking"));
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                if (getBlockData() instanceof CreakingHeart creakingHeart) {
-                    if (mechanism.requireEnum(CreakingHeart.State.class)) {
-                        creakingHeart.setCreakingHeartState(value.asEnum(CreakingHeart.State.class));
-                    }
-                }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkCatalyst sculkCatalyst) {
+            sculkCatalyst.setBloom(value.asLowerString().equals("bloom"));
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkShrieker sculkShrieker) {
+            sculkShrieker.setShrieking(value.asLowerString().equals("shrieking"));
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof CreakingHeart creakingHeart) {
+            if (mechanism.requireEnum(CreakingHeart.State.class)) {
+                creakingHeart.setCreakingHeartState(value.asEnum(CreakingHeart.State.class));
             }
         }
     }
