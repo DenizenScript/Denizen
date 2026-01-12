@@ -5,7 +5,7 @@ import com.denizenscript.denizen.events.entity.EntityExitsVehicleScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizen.objects.properties.entity.EntityState;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
@@ -516,11 +516,11 @@ public abstract class EntityHelper {
         return EntityExitsVehicleScriptEventImpl.class;
     }
 
-    public ElementTag getArmadilloState(Armadillo entity) {
+    public EntityState.ArmadilloState getArmadilloState(Armadillo entity) {
         throw new UnsupportedOperationException();
     }
 
-    public void setArmadilloState(Armadillo entity, Mechanism mechanism, ElementTag state) {
+    public void setArmadilloState(Armadillo entity, EntityState.ArmadilloState state) {
         throw new UnsupportedOperationException();
     }
 }

@@ -22,14 +22,20 @@ public class EntityState extends EntityProperty<ElementTag> {
           return entity.getBukkitEntity() instanceof Armadillo;
     }
 
+    public enum ArmadilloState {
+        IDLE, ROLLING, SCARED, UNROLLING;
+    }
+
     @Override
     public ElementTag getPropertyValue() {
-        return NMSHandler.entityHelper.getArmadilloState(as(Armadillo.class));
+        return new ElementTag(NMSHandler.entityHelper.getArmadilloState(as(Armadillo.class)));
     }
 
     @Override
     public void setPropertyValue(ElementTag param, Mechanism mechanism) {
-        NMSHandler.entityHelper.setArmadilloState(as(Armadillo.class), mechanism, param);
+        if (mechanism.requireEnum(ArmadilloState.class)) {
+            NMSHandler.entityHelper.setArmadilloState(as(Armadillo.class), param.asEnum(ArmadilloState.class));
+        }
     }
 
     @Override

@@ -6,9 +6,9 @@ import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.v1_20.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_20.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.properties.entity.EntityState;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
-import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
@@ -853,16 +853,24 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public ElementTag getArmadilloState(org.bukkit.entity.Armadillo entity) {
-        net.minecraft.world.entity.animal.armadillo.Armadillo armadillo = (Armadillo) ((CraftEntity) entity).getHandle();
-        return new ElementTag(armadillo.getState());
+    public EntityState.ArmadilloState getArmadilloState(org.bukkit.entity.Armadillo entity) {
+        Armadillo armadillo = (Armadillo) ((CraftEntity) entity).getHandle();
+        return switch (armadillo.getState()) {
+            case IDLE -> EntityState.ArmadilloState.IDLE;
+            case ROLLING -> EntityState.ArmadilloState.ROLLING;
+            case SCARED -> EntityState.ArmadilloState.SCARED;
+            case UNROLLING -> EntityState.ArmadilloState.UNROLLING;
+        };
     }
 
     @Override
-    public void setArmadilloState(org.bukkit.entity.Armadillo entity, Mechanism mechanism, ElementTag state) {
-        if (mechanism.requireEnum(Armadillo.ArmadilloState.class)) {
-            net.minecraft.world.entity.animal.armadillo.Armadillo armadillo = (Armadillo) ((CraftEntity) entity).getHandle();
-            armadillo.switchToState(state.asEnum(Armadillo.ArmadilloState.class));
-        }
+    public void setArmadilloState(org.bukkit.entity.Armadillo entity, EntityState.ArmadilloState state) {
+        Armadillo armadillo = (Armadillo) ((CraftEntity) entity).getHandle();
+        armadillo.switchToState(switch (state) {
+            case IDLE -> Armadillo.ArmadilloState.IDLE;
+            case ROLLING -> Armadillo.ArmadilloState.ROLLING;
+            case SCARED -> Armadillo.ArmadilloState.SCARED;
+            case UNROLLING -> Armadillo.ArmadilloState.UNROLLING;
+        });
     }
 }
