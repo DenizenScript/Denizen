@@ -75,7 +75,7 @@ public class TitleCommand extends AbstractCommand {
             }
             players = List.of(Utilities.getEntryPlayer(scriptEntry));
         }
-        BukkitTagContext context = perPlayer ? (BukkitTagContext) scriptEntry.getContext() : new BukkitTagContext((BukkitTagContext) scriptEntry.getContext());
+        BukkitTagContext context = perPlayer ? new BukkitTagContext((BukkitTagContext) scriptEntry.getContext()) : (BukkitTagContext) scriptEntry.getContext();
         ParseableTag parseableTitle = TagManager.parseTextToTag(strTitle, context);
         ParseableTag parseableSubTitle = TagManager.parseTextToTag(strSubTitle, context);
         String parsedTitle = perPlayer ? null : parse(parseableTitle, context);
