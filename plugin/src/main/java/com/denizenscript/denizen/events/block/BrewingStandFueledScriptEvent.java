@@ -45,14 +45,12 @@ public class BrewingStandFueledScriptEvent extends BukkitScriptEvent implements 
             }
             return false;
         });
-        this.<BrewingStandFueledScriptEvent, ElementTag>registerDetermination("consuming", ElementTag.class, (evt, context, value) -> {
+        this.<BrewingStandFueledScriptEvent, ElementTag>registerOptionalDetermination("consuming", ElementTag.class, (evt, context, value) -> {
             if (value.isBoolean()) {
                 evt.event.setConsuming(value.asBoolean());
+                return true;
             }
-            else {
-                BukkitImplDeprecations.brewingStandConsumeDetermination.warn();
-                evt.event.setConsuming(true);
-            }
+            return false;
         });
         this.<BrewingStandFueledScriptEvent>registerTextDetermination("not_consuming", (evt) -> {
             BukkitImplDeprecations.brewingStandConsumeDetermination.warn();
