@@ -24,7 +24,7 @@ public class VaultChangeStateScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Location true
     //
-    // @Triggers when a vault block state changes
+    // @Triggers when a vault block's state changes. A list of states can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/data/type/TrialSpawner.State.html>.
     //
     // @Context
     // <context.location> returns the LocationTag of the vault block.

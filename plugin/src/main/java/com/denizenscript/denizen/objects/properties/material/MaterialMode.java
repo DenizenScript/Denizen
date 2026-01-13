@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.*;
 
@@ -44,7 +43,7 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
                 || data instanceof BigDripleaf
                 || data instanceof Tripwire
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && (data instanceof SculkCatalyst
-                                                                        || data instanceof  SculkShrieker))
+                                                                        || data instanceof SculkShrieker))
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (data instanceof TrialSpawner
                                                                         || data instanceof Vault));
     }
@@ -85,10 +84,10 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             return new ElementTag(sculkShrieker.isShrieking() ? "SHRIEKING" : "NORMAL", true);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof TrialSpawner trialSpawner) {
-            return new ElementTag(trialSpawner.getTrialSpawnerState().name(), true);
+            return new ElementTag(trialSpawner.getTrialSpawnerState());
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof Vault vault) {
-            return new ElementTag(vault.getVaultState().name(), true);
+            return new ElementTag(vault.getVaultState());
         }
         return null; // Unreachable
     }
@@ -101,10 +100,10 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             }
         }
         else if (getBlockData() instanceof BubbleColumn bubbleColumn) {
-            bubbleColumn.setDrag(CoreUtilities.equalsIgnoreCase(value.toString(), "drag"));
+            bubbleColumn.setDrag(value.asLowerString().equals("drag"));
         }
         else if (getBlockData() instanceof PistonHead pistonHead) {
-            pistonHead.setShort(CoreUtilities.equalsIgnoreCase(value.toString(), "short"));
+            pistonHead.setShort(value.asLowerString().equals("short"));
         }
         else if (getBlockData() instanceof StructureBlock structureBlock) {
             if (mechanism.requireEnum(StructureBlock.Mode.class)) {
@@ -112,10 +111,10 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             }
         }
         else if (getBlockData() instanceof DaylightDetector daylightDetector) {
-            daylightDetector.setInverted(CoreUtilities.equalsIgnoreCase(value.toString(), "inverted"));
+            daylightDetector.setInverted(value.asLowerString().equals("inverted"));
         }
         else if (getBlockData() instanceof CommandBlock commandBlock) {
-            commandBlock.setConditional(CoreUtilities.equalsIgnoreCase(value.toString(), "conditional"));
+            commandBlock.setConditional(value.asLowerString().equals("conditional"));
         }
         else if (getBlockData() instanceof SculkSensor sculkSensor) {
             if (mechanism.requireEnum(SculkSensor.Phase.class)) {
@@ -128,13 +127,13 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             }
         }
         else if (getBlockData() instanceof Tripwire tripwire) {
-            tripwire.setDisarmed(CoreUtilities.equalsIgnoreCase(value.toString(), "disarmed"));
+            tripwire.setDisarmed(value.asLowerString().equals("disarmed"));
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkCatalyst sculkCatalyst) {
-            sculkCatalyst.setBloom(CoreUtilities.equalsIgnoreCase(value.toString(), "bloom"));
+            sculkCatalyst.setBloom(value.asLowerString().equals("bloom"));
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkShrieker sculkShrieker) {
-            sculkShrieker.setShrieking(CoreUtilities.equalsIgnoreCase(value.toString(), "shrieking"));
+            sculkShrieker.setShrieking(value.asLowerString().equals("shrieking"));
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof TrialSpawner trialSpawner) {
             if (mechanism.requireEnum(TrialSpawner.State.class)) {

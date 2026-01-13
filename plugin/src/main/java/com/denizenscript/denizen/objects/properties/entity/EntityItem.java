@@ -30,6 +30,7 @@ public class EntityItem implements Property {
     // - an eye-of-ender's item, which is both displayed and dropped.
     // - a fireball's display item.
     // - an item display's display item.
+    // - an ominous item's display item.
     // -->
 
     public static boolean describes(ObjectTag object) {
@@ -42,7 +43,8 @@ public class EntityItem implements Property {
                 || entity instanceof SizedFireball
                 || entity instanceof ThrowableProjectile
                 || entity instanceof EnderSignal
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && entity instanceof ItemDisplay);
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && entity instanceof ItemDisplay)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof OminousItemSpawner);
     }
 
     public static EntityItem getFrom(ObjectTag entity) {

@@ -35,14 +35,14 @@ public class BlockDispenseLootScriptEvent extends BukkitScriptEvent implements L
     // <context.location> returns a LocationTag of the block that is dispensing the items.
     //
     // @Determine
-    // <ListTag(ItemTag)> to determine the new items that are outputted.
+    // "LOOT:<ListTag(ItemTag)>" to determine the new items that are outputted.
     //
     // -->
 
     public BlockDispenseLootScriptEvent() {
         registerCouldMatcher("loot dispenses from <block>");
-        this.<BlockDispenseLootScriptEvent, ListTag>registerDetermination(null, ListTag.class, (evt, context, input) -> {
-            List<ItemStack> items = new ArrayList<>();
+        this.<BlockDispenseLootScriptEvent, ListTag>registerDetermination("loot", ListTag.class, (evt, context, input) -> {
+            List<ItemStack> items = new ArrayList<>(input.size());
             for (ItemTag item : input.filter(ItemTag.class, context)) {
                 items.add(item.getItemStack());
             }
