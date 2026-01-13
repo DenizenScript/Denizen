@@ -159,13 +159,11 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showTitle(Player player, String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
-        send(player, new ClientboundSetTitlesAnimationPacket(fadeInTicks, stayTicks, fadeOutTicks));
-        if (title != null) {
-            send(player, new ClientboundSetTitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE))));
-        }
-        if (subtitle != null) {
-            send(player, new ClientboundSetSubtitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE))));
-        }
+        send(player, new ClientboundBundlePacket(List.of(
+                new ClientboundSetTitlesAnimationPacket(fadeInTicks, stayTicks, fadeOutTicks),
+                new ClientboundSetTitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE))),
+                new ClientboundSetSubtitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE)))
+        )));
     }
 
     @Override
