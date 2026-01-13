@@ -95,6 +95,6 @@ public class TitleCommand extends AbstractCommand {
     }
 
     public static String parse(ParseableTag tag, BukkitTagContext context) {
-        return tag == null ? null : tag.parse(context).toString();
+        return tag == null ? "" : tag.parse(context).toString();
     }
 }
