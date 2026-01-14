@@ -4508,6 +4508,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 return new ElementTag(chiseledBookshelf.getSlot(input.toVector()) + 1);
             });
 
+            // <--[tag]
             // @attribute <LocationTag.disabled_slots>
             // @returns ListTag
             // @mechanism LocationTag.disabled_slots
@@ -4530,6 +4531,8 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 return slots;
             });
 
+            // <--[mechanism]
+            // @object LocationTag
             // @name disabled_slots
             // @input ListTag
             // @description
