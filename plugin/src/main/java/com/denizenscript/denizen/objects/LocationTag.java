@@ -4508,6 +4508,64 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 return new ElementTag(chiseledBookshelf.getSlot(input.toVector()) + 1);
             });
 
+            // @attribute <LocationTag.disabled_slots>
+            // @returns ListTag
+            // @mechanism LocationTag.disabled_slots
+            // @group world
+            // @description
+            // Returns which slots in a crafter are disabled.
+            // The slots are arranged from left to right, top to bottom.
+            // -->
+            tagProcessor.registerTag(ListTag.class, "disabled_slots", (attribute, object) -> {
+                if (!(object.getBlockStateForTag(attribute) instanceof Crafter crafter)) {
+                    attribute.echoError("The 'LocationTag.disabled_slots' tag can only be called on a crafter block.");
+                    return null;
+                }
+                ListTag slots = new ListTag();
+                for (int i = 0; i <= 8; i++) {
+                    if (crafter.isSlotDisabled(i)) {
+                        slots.addObject(new ElementTag(i + 1));
+                    }
+                }
+                return slots;
+            });
+
+            // @name disabled_slots
+            // @input ListTag
+            // @description
+            // Sets which slots in a crafter are disabled.
+            // The slots are arranged from left to right, top to bottom.
+            // Provide no input to enable all slots.
+            // @tags
+            // <LocationTag.disabled_slots>
+            // @example
+            // # Disables the slots in the top left and middle right
+            // - adjustblock <[location]> disabled_slots:1|6
+            // -->
+            tagProcessor.registerMechanism("disabled_slots", false, ListTag.class, (object, mechanism, input) -> {
+                if (!(object.getBlockState() instanceof Crafter crafter)) {
+                    mechanism.echoError("The 'LocationTag.disabled_slots' mechanism can only be called on a crafter block.");
+                    return;
+                }
+                for (int i = 0; i <= 8; i++) {
+                    crafter.setSlotDisabled(i, false);
+                }
+                for (String slot : input) {
+                    ElementTag element = new ElementTag(slot);
+                    if (!element.isInt()) {
+                        mechanism.echoError("Invalid slot '" + slot + "' specified: must be an integer.");
+                        continue;
+                    }
+                    int value = element.asInt();
+                    if (value < 1 || value > 9) {
+                        mechanism.echoError("Invalid slot '" + slot + "' specified: must between 1 and 9.");
+                        continue;
+                    }
+                    crafter.setSlotDisabled(value - 1, true);
+                }
+                crafter.update();
+            });
+
             // <--[tag]
             // @attribute <LocationTag.sign_contents_back>
             // @returns ListTag

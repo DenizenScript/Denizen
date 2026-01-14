@@ -1,10 +1,13 @@
 package com.denizenscript.denizen.utilities.packets;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizencore.utilities.codegen.CodeGenUtil;
 import com.denizenscript.denizencore.utilities.codegen.MethodGenerator;
-import org.objectweb.asm.*;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -12,6 +15,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NetworkInterceptCodeGen {
 
@@ -54,18 +59,46 @@ public class NetworkInterceptCodeGen {
                                     + ", Public=" + Modifier.isPublic(modifier) + ", final=" + Modifier.isFinal(modifier));
                         }
                         MethodGenerator gen = MethodGenerator.generateMethod(className, cw, Opcodes.ACC_PUBLIC, method.getName(), Type.getMethodDescriptor(method));
-                        gen.loadThis();
-                        gen.loadInstanceField(Type.getInternalName(abstractClass), "oldListener", Type.getDescriptor(nmsClass));
+                        List<MethodGenerator.Local> locals = new ArrayList<>();
                         int id = 1;
                         for (Class<?> type : method.getParameterTypes()) {
                             if (NMSHandler.debugPackets) {
                                 Debug.log("Var " + id + " is type " + type.getName());
                             }
-                            MethodGenerator.Local local = gen.addLocal("arg_" + (id++), type);
-                            gen.loadLocal(local);
+                            locals.add(gen.addLocal("arg_" + (id++), type));
                         }
+                        Label returnLabel = new Label();
+                        gen.loadThis();
+                        gen.loadInstanceField(Type.getInternalName(abstractClass), "oldListener", Type.getDescriptor(nmsClass));
+                        gen.jumpIfNullTo(returnLabel);
+                        gen.loadThis();
+                        gen.loadInstanceField(Type.getInternalName(abstractClass), "oldListener", Type.getDescriptor(nmsClass));
+                        locals.forEach(gen::loadLocal);
                         gen.invokeVirtual(method);
-                        gen.returnValue(method.getReturnType());
+                        Class<?> returnType = method.getReturnType();
+                        gen.returnValue(returnType);
+
+                        gen.advanceAndLabel(returnLabel);
+                        if (returnType != Void.TYPE) {
+                            if (returnType.isPrimitive()) {
+                                if (returnType == Long.TYPE) {
+                                    gen.mv.visitInsn(Opcodes.LCONST_0);
+                                }
+                                else if (returnType == Float.TYPE) {
+                                    gen.mv.visitInsn(Opcodes.FCONST_0);
+                                }
+                                else if (returnType == Double.TYPE) {
+                                    gen.mv.visitInsn(Opcodes.DCONST_0);
+                                }
+                                else {
+                                    gen.mv.visitInsn(Opcodes.ICONST_0);
+                                }
+                            }
+                            else {
+                                gen.loadNull();
+                            }
+                        }
+                        gen.returnValue(returnType);
                         gen.end();
                     }
                 }

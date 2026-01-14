@@ -63,8 +63,7 @@ public class SpongeSchematicHelper {
                 throw new Exception("Tag 'Schematic' does not exist or is not first!");
             }
             CompoundBinaryTag schematic = rootTag.getValue();
-            // TODO: adventure-nbt: compound tag contains
-            if (schematic.keySet().contains("DenizenEntities")) {
+            if (schematic.contains("DenizenEntities")) {
                 String entities = stringifyTag(schematic.get("DenizenEntities"));
                 cbs.entities = ListTag.valueOf(entities, CoreUtilities.errorButNoDebugContext);
             }
@@ -74,7 +73,7 @@ public class SpongeSchematicHelper {
             int originX = 0;
             int originY = 0;
             int originZ = 0;
-            if (schematic.keySet().contains("DenizenOffset")) {
+            if (schematic.contains("DenizenOffset")) {
                 // Note: "Offset" contains complete nonsense from WE, so just don't touch it.
                 int[] offsetArr = getChildTag(schematic, "DenizenOffset", BinaryTagTypes.INT_ARRAY).value();
                 originX = offsetArr[0];
@@ -122,7 +121,7 @@ public class SpongeSchematicHelper {
                 }
             }
             Map<BlockVector, CompoundBinaryTag> tileEntitiesMap = new HashMap<>();
-            if (schematic.keySet().contains("BlockEntities")) {
+            if (schematic.contains("BlockEntities")) {
                 ListBinaryTag tileEntities = getChildTag(schematic, "BlockEntities", BinaryTagTypes.LIST);
                 for (BinaryTag tag : tileEntities) {
                     if (!(tag instanceof CompoundBinaryTag compoundTag)) {
@@ -165,7 +164,7 @@ public class SpongeSchematicHelper {
                 cbs.blocks[cbsIndex] = block;
                 index++;
             }
-            if (schematic.keySet().contains("DenizenFlags")) {
+            if (schematic.contains("DenizenFlags")) {
                 CompoundBinaryTag flags = getChildTag(schematic, "DenizenFlags", BinaryTagTypes.COMPOUND);
                 for (Map.Entry<String, ? extends BinaryTag> flagData : flags) {
                     int flagIndex = Integer.parseInt(flagData.getKey());

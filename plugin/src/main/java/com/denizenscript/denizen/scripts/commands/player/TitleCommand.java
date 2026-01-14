@@ -2,19 +2,16 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.tags.ParseableTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.tags.TagManager;
 
-import java.util.Collections;
 import java.util.List;
 
 public class TitleCommand extends AbstractCommand {
@@ -23,8 +20,9 @@ public class TitleCommand extends AbstractCommand {
         setName("title");
         setSyntax("title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...) (per_player)");
         setRequiredArguments(1, 7);
-        setParseArgs(false);
+        addRemappedPrefixes("targets", "target");
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -58,83 +56,45 @@ public class TitleCommand extends AbstractCommand {
     // - title "title:<green>Tatooine" "subtitle:<gold>What a desolate place this is."
     // -->
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : ArgumentHelper.interpret(scriptEntry, scriptEntry.getOriginalArguments())) {
-            if (arg.matchesPrefix("title")) {
-                scriptEntry.addObject("title", arg.asElement());
-            }
-            else if (arg.matchesPrefix("subtitle")) {
-                scriptEntry.addObject("subtitle", arg.asElement());
-            }
-            else if (arg.matchesPrefix("fade_in")) {
-                String argStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
-                scriptEntry.addObject("fade_in", DurationTag.valueOf(argStr, scriptEntry.context));
-            }
-            else if (arg.matchesPrefix("stay")) {
-                String argStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
-                scriptEntry.addObject("stay", DurationTag.valueOf(argStr, scriptEntry.context));
-            }
-            else if (arg.matchesPrefix("fade_out")) {
-                String argStr = TagManager.tag(arg.getValue(), scriptEntry.getContext());
-                scriptEntry.addObject("fade_out", DurationTag.valueOf(argStr, scriptEntry.context));
-            }
-            else if (arg.matchesPrefix("targets", "target")) {
-                scriptEntry.addObject("targets", ListTag.getListFor(TagManager.tagObject(arg.getValue(), scriptEntry.getContext()), scriptEntry.getContext()).filter(PlayerTag.class, scriptEntry));
-            }
-            else if (!scriptEntry.hasObject("per_player")
-                    && arg.matches("per_player")) {
-                scriptEntry.addObject("per_player", new ElementTag(true));
-            }
-            else {
-                arg.reportUnhandled();
-            }
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("title") @ArgPrefixed @ArgUnparsed @ArgDefaultNull String strTitle,
+                                   @ArgName("subtitle") @ArgPrefixed @ArgUnparsed @ArgDefaultNull String strSubTitle,
+                                   @ArgName("fade_in") @ArgPrefixed @ArgDefaultText("1s") DurationTag fadeIn,
+                                   @ArgName("stay") @ArgPrefixed @ArgDefaultText("3s") DurationTag stay,
+                                   @ArgName("fade_out") @ArgPrefixed @ArgDefaultText("1s") DurationTag fadeOut,
+                                   @ArgName("targets") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> players,
+                                   @ArgName("per_player") boolean perPlayer) {
+        if (strTitle == null && strSubTitle == null) {
+            Debug.echoError("Must have a title or subtitle!");
+            return;
         }
-        if (!scriptEntry.hasObject("title") && !scriptEntry.hasObject("subtitle")) {
-            throw new InvalidArgumentsException("Must have a title or subtitle!");
+        if (players == null) {
+            if (!Utilities.entryHasPlayer(scriptEntry)) {
+                Debug.echoError("Must specify target(s).");
+                return;
+            }
+            players = List.of(Utilities.getEntryPlayer(scriptEntry));
         }
-        scriptEntry.defaultObject("fade_in", new DurationTag(1)).defaultObject("stay", new DurationTag(3))
-                .defaultObject("fade_out", new DurationTag(1))
-                .defaultObject("targets", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)))
-            .defaultObject("subtitle", new ElementTag("")).defaultObject("title", new ElementTag(""));
+        BukkitTagContext context = perPlayer ? new BukkitTagContext((BukkitTagContext) scriptEntry.getContext()) : (BukkitTagContext) scriptEntry.getContext();
+        ParseableTag parseableTitle = TagManager.parseTextToTag(strTitle, context);
+        ParseableTag parseableSubTitle = TagManager.parseTextToTag(strSubTitle, context);
+        String parsedTitle = perPlayer ? null : parse(parseableTitle, context);
+        String parsedSubTitle = perPlayer ? null : parse(parseableSubTitle, context);
+        for (PlayerTag player : players) {
+            if (!player.isOnline()) {
+                Debug.echoDebug(scriptEntry, "Player is offline, can't send title to them. Skipping.");
+                continue;
+            }
+            if (perPlayer) {
+                context.player = player;
+                parsedTitle = parse(parseableTitle, context);
+                parsedSubTitle = parse(parseableSubTitle, context);
+            }
+            NMSHandler.packetHelper.showTitle(player.getPlayerEntity(), parsedTitle, parsedSubTitle, fadeIn.getTicksAsInt(), stay.getTicksAsInt(), fadeOut.getTicksAsInt());
+        }
     }
 
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        String title = scriptEntry.getElement("title").asString();
-        String subtitle = scriptEntry.getElement("subtitle").asString();
-        DurationTag fade_in = scriptEntry.getObjectTag("fade_in");
-        DurationTag stay = scriptEntry.getObjectTag("stay");
-        DurationTag fade_out = scriptEntry.getObjectTag("fade_out");
-        List<PlayerTag> targets = (List<PlayerTag>) scriptEntry.getObject("targets");
-        ElementTag perPlayerObj = scriptEntry.getElement("per_player");
-        boolean perPlayer = perPlayerObj != null && perPlayerObj.asBoolean();
-        BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
-        if (!perPlayer) {
-            title = TagManager.tag(title, context);
-            subtitle = TagManager.tag(subtitle, context);
-        }
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), db("title", title), db("subtitle", subtitle), fade_in, stay, fade_out, db("targets", targets), perPlayerObj);
-        }
-        for (PlayerTag player : targets) {
-            if (player != null) {
-                if (!player.isOnline()) {
-                    Debug.echoDebug(scriptEntry, "Player is offline, can't send title to them. Skipping.");
-                    continue;
-                }
-                String personalTitle = title;
-                String personalSubtitle = subtitle;
-                if (perPlayer) {
-                    context.player = player;
-                    personalTitle = TagManager.tag(personalTitle, context);
-                    personalSubtitle = TagManager.tag(personalSubtitle, context);
-                }
-                NMSHandler.packetHelper.showTitle(player.getPlayerEntity(), personalTitle, personalSubtitle, fade_in.getTicksAsInt(), stay.getTicksAsInt(), fade_out.getTicksAsInt());
-            }
-            else {
-                Debug.echoError("Sent title to non-existent player!?");
-            }
-        }
+    public static String parse(ParseableTag tag, BukkitTagContext context) {
+        return tag == null ? "" : tag.parse(context).toString();
     }
 }
