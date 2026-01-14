@@ -35,12 +35,13 @@ public class EntityVariant extends EntityProperty<ElementTag> {
     // @name variant
     // @input ElementTag
     // @description
-    // Controls which variant a chicken, copper golem, cow, pig, or wolf is.
+    // Controls which variant a chicken, copper golem, cow, pig, wolf, or zombie nautilus is.
     // A list of valid chicken variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Chicken.Variant.html>.
     // A list of valid copper golem variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/CopperGolem.CopperWeatherState.html>.
     // A list of valid cow variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Cow.Variant.html>.
     // A list of valid pig variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Pig.Variant.html>.
     // A list of valid wolf variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Wolf.Variant.html>.
+    // A list of valid zombie nautilus variants can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/ZombieNautilus.Variant.html>.
     // -->
 
     public static boolean describes(EntityTag entityTag) {
@@ -49,7 +50,8 @@ public class EntityVariant extends EntityProperty<ElementTag> {
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (entity instanceof Chicken
                                                                         || entity instanceof CopperGolem
                                                                         || entity instanceof Cow
-                                                                        || entity instanceof Pig));
+                                                                        || entity instanceof Pig
+                                                                        || entity instanceof ZombieNautilus));
     }
 
     @Override
@@ -75,6 +77,9 @@ public class EntityVariant extends EntityProperty<ElementTag> {
             }
             else if (getEntity() instanceof Pig pig) {
                 return new ElementTag(Utilities.namespacedKeyToString(pig.getVariant().getKey()), true);
+            }
+            else if (getEntity() instanceof ZombieNautilus zombieNautilus) {
+                return new ElementTag(Utilities.namespacedKeyToString(zombieNautilus.getVariant().getKey()), true);
             }
         }
         return null;
@@ -113,6 +118,12 @@ public class EntityVariant extends EntityProperty<ElementTag> {
                 Pig.Variant pigVariant = Utilities.elementToRequiredEnumLike(variant, Pig.Variant.class, mechanism);
                 if (pigVariant != null) {
                     pig.setVariant(pigVariant);
+                }
+            }
+            else if (getEntity() instanceof ZombieNautilus zombieNautilus) {
+                ZombieNautilus.Variant zombieNautilusVariant = Utilities.elementToRequiredEnumLike(variant, ZombieNautilus.Variant.class, mechanism);
+                if (zombieNautilusVariant != null) {
+                    zombieNautilus.setVariant(zombieNautilusVariant);
                 }
             }
         }
