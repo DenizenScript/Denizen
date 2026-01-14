@@ -4577,7 +4577,6 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @description
             // Returns the contents on the back of a sign block.
             // For the contents on the front, see <@link tag LocationTag.sign_contents>.
-            // Map keys are 'front' and 'back'.
             // -->
             tagProcessor.registerTag(ListTag.class, "sign_contents_back", (attribute, object) -> {
                 if (object.getBlockStateForTag(attribute) instanceof Sign sign) {
