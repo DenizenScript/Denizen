@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.paper.datacomponents;
 
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.properties.item.ItemComponentsPatch;
 import com.denizenscript.denizen.objects.properties.item.ItemProperty;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -12,7 +11,6 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import io.papermc.paper.datacomponent.DataComponentType;
-import org.bukkit.Material;
 import org.bukkit.Registry;
 
 import java.util.HashMap;
@@ -69,15 +67,6 @@ public abstract class DataComponentAdapter<TP, TD extends ObjectTag> {
                 item -> !item.getItemStack().isEmpty() ? adapter.new Property(item) : null,
                 ItemTag.class, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY, DataComponentAdapter.Property.class);
         DataComponentAdapter.Property.currentlyRegisteringComponentAdapter = null;
-        MaterialTag.tagProcessor.registerTag(adapter.denizenType, adapter.name, (attribute, materialTag) -> {
-            Material material = materialTag.getMaterial();
-            if (!material.isItem()) {
-                attribute.echoError("Cannot get item component values from a block material.");
-                return null;
-            }
-            TP internalValue = material.getDefaultData(adapter.componentType);
-            return internalValue != null ? adapter.toDenizen(internalValue) : null;
-        });
         String componentName = adapter.componentType.key().value();
         ItemComponentsPatch.registerHandledComponent(componentName);
         if (!adapter.name.equals(componentName)) {

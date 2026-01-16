@@ -20,13 +20,6 @@ public class FoodAdapter extends DataComponentAdapter<FoodProperties, MapTag> {
     // - "can_always_eat", ElementTag(Boolean) controlling whether the item can always be eaten, even if the player isn't hungry.
     // -->
 
-    // <--[tag]
-    // @attribute <MaterialTag.food>
-    // @returns MapTag
-    // @description
-    // Gets the material's default food value, in the same format as <@link tag ItemTag.food>.
-    // -->
-
     public FoodAdapter() {
         super(DataComponentTypes.FOOD, MapTag.class, "food");
     }
