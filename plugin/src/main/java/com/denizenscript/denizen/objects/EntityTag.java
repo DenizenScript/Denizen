@@ -3242,7 +3242,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 windCharge.explode();
             }
             else {
-                mechanism.echoError("Cannot detonate entity of type '" + object.getBukkitEntityType().name() + "'.");
+                mechanism.echoError("Cannot detonate entity of type '" + object.getEntityType() + "'.");
             }
         });
 

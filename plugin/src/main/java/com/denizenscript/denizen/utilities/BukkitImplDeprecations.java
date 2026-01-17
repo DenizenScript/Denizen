@@ -267,6 +267,9 @@ public class BukkitImplDeprecations {
     // Added 2025/07/10
     public static Warning entityKnockback = new Warning("entityKnockback", "The 'EntityTag.knockback' property is deprecated. You should adjust the knockback enchantment on the weapon itself.");
 
+    // Added 2025/10/24
+    public static Warning explosionPrimeDetermination = new Warning("explosionPrimeDetermination", "The determination to control fire in the '<entity> explosion primes' event is now formatted as 'FIRE:<ElementTag(Boolean)>'.");
+
     // ==================== SLOW deprecations ====================
     // These aren't spammed, but will show up repeatedly until fixed. Server owners will probably notice them.
 
