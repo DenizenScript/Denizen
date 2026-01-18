@@ -4645,11 +4645,10 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // <LocationTag.sign_glowing_back>
             // -->
             tagProcessor.registerMechanism("sign_glowing_back", false, ElementTag.class, (object, mechanism, input) -> {
-                if (mechanism.requireBoolean()) {
-                    if (!(object.getBlockState() instanceof Sign sign)) {
-                        mechanism.echoError("'sign_glowing_back' mechanism can only be called on Sign blocks.");
-                        return;
-                    }
+                if (!(object.getBlockState() instanceof Sign sign)) {
+                    mechanism.echoError("'sign_glowing_back' mechanism can only be called on Sign blocks.");
+                }
+                else if (mechanism.requireBoolean()) {
                     sign.getSide(Side.BACK).setGlowingText(input.asBoolean());
                     sign.update();
                 }
@@ -4687,11 +4686,10 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // <LocationTag.sign_glowing_back>
             // -->
             tagProcessor.registerMechanism("sign_glow_color_back", false, ElementTag.class, (object, mechanism, input) -> {
-                if (mechanism.requireEnum(DyeColor.class)) {
-                    if (!(object.getBlockState() instanceof Sign sign)) {
-                        mechanism.echoError("'sign_glow_color_back' mechanism can only be called on Sign blocks.");
-                        return;
-                    }
+                if (!(object.getBlockState() instanceof Sign sign)) {
+                    mechanism.echoError("'sign_glow_color_back' mechanism can only be called on Sign blocks.");
+                }
+                else if (mechanism.requireEnum(DyeColor.class)) {
                     sign.getSide(Side.BACK).setColor(input.asEnum(DyeColor.class));
                     sign.update();
                 }
