@@ -101,13 +101,21 @@ public abstract class BiomeNMS {
         throw new UnsupportedOperationException();
     }
 
-    public int getSkyColor() { throw new UnsupportedOperationException(); }
+    public int getSkyColor() {
+        throw new UnsupportedOperationException();
+    }
 
-    public void setSkyColor(int color) { throw new UnsupportedOperationException(); }
+    public void setSkyColor(int color) {
+        throw new UnsupportedOperationException();
+    }
 
-    public int getSkyLightColor() { throw new UnsupportedOperationException(); }
+    public int getSkyLightColor() {
+        throw new UnsupportedOperationException();
+    }
 
-    public void setSkyLightColor(int color) { throw new UnsupportedOperationException(); }
+    public void setSkyLightColor(int color) {
+        throw new UnsupportedOperationException();
+    }
 
     public abstract void setTo(Block block);
 
