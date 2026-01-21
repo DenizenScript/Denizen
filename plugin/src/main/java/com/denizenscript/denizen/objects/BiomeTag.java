@@ -351,34 +351,6 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             });
 
             // <--[tag]
-            // @attribute <BiomeTag.sky_color>
-            // @returns ColorTag
-            // @mechanism BiomeTag.sky_color
-            // @description
-            // Returns the biome's sky color.
-            // @example
-            // # Sends the player a message in their current biome's sky color.
-            // - narrate "You are currently seeing sky that looks like <&color[<player.location.biome.sky_color>]>this!"
-            // -->
-            tagProcessor.registerTag(ColorTag.class, "sky_color", (attribute, object) -> {
-                return ColorTag.fromRGB(object.biome.getSkyColor());
-            });
-
-            // <--[tag]
-            // @attribute <BiomeTag.sky_light_color>
-            // @returns ColorTag
-            // @mechanism BiomeTag.sky_light_color
-            // @description
-            // Returns the biome's skylight color.
-            // @example
-            // # Sends the player a message in their current biome's skylight color.
-            // - narrate "You are currently seeing skylight that looks like <&color[<player.location.biome.sky_light_color>]>this!"
-            // -->
-            tagProcessor.registerTag(ColorTag.class, "sky_light_color", (attribute, object) -> {
-                return ColorTag.fromRGB(object.biome.getSkyLightColor());
-            });
-
-            // <--[tag]
             // @attribute <BiomeTag.water_fog_color>
             // @returns ColorTag
             // @mechanism BiomeTag.water_fog_color
@@ -390,40 +362,6 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             // -->
             tagProcessor.registerTag(ColorTag.class, "water_fog_color", (attribute, object) -> {
                 return ColorTag.fromRGB(object.biome.getWaterFogColor());
-            });
-
-            // <--[mechanism]
-            // @object BiomeTag
-            // @name sky_color
-            // @input ColorTag
-            // @description
-            // Sets the biome's sky color.
-            // @tags
-            // <BiomeTag.sky_color>
-            // @example
-            // # Makes the plains biome's sky color red permanently, using a server start event to keep it applied.
-            // on server start:
-            // - adjust <biome[plains]> sky_color:red
-            // -->
-            tagProcessor.registerMechanism("sky_color", false, ColorTag.class, (object, mechanism, input) -> {
-                object.biome.setSkyColor(input.asRGB());
-            });
-
-            // <--[mechanism]
-            // @object BiomeTag
-            // @name sky_light_color
-            // @input ColorTag
-            // @description
-            // Sets the biome's skylight color.
-            // @tags
-            // <BiomeTag.sky_light_color>
-            // @example
-            // # Makes the plains biome's skylight color red permanently, using a server start event to keep it applied.
-            // on server start:
-            // - adjust <biome[plains]> sky_light_color:red
-            // -->
-            tagProcessor.registerMechanism("sky_light_color", false, ColorTag.class, (object, mechanism, input) -> {
-                object.biome.setSkyLightColor(input.asRGB());
             });
 
             // <--[mechanism]
@@ -568,6 +506,71 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
                 object.biome.setPrecipitation(input.asEnum(BiomeNMS.DownfallType.class));
             }
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+
+            // <--[mechanism]
+            // @object BiomeTag
+            // @name sky_color
+            // @input ColorTag
+            // @description
+            // Sets the biome's sky color.
+            // @tags
+            // <BiomeTag.sky_color>
+            // @example
+            // # Makes the plains biome's sky color red permanently, using a server start event to keep it applied.
+            // on server start:
+            // - adjust <biome[plains]> sky_color:red
+            // -->
+            tagProcessor.registerMechanism("sky_color", false, ColorTag.class, (object, mechanism, input) -> {
+                object.biome.setSkyColor(input.asRGB());
+            });
+
+            // <--[mechanism]
+            // @object BiomeTag
+            // @name sky_light_color
+            // @input ColorTag
+            // @description
+            // Sets the biome's skylight color.
+            // @tags
+            // <BiomeTag.sky_light_color>
+            // @example
+            // # Makes the plains biome's skylight color red permanently, using a server start event to keep it applied.
+            // on server start:
+            // - adjust <biome[plains]> sky_light_color:red
+            // -->
+            tagProcessor.registerMechanism("sky_light_color", false, ColorTag.class, (object, mechanism, input) -> {
+                object.biome.setSkyLightColor(input.asRGB());
+            });
+
+            // <--[tag]
+            // @attribute <BiomeTag.sky_color>
+            // @returns ColorTag
+            // @mechanism BiomeTag.sky_color
+            // @description
+            // Returns the biome's sky color.
+            // @example
+            // # Sends the player a message in their current biome's sky color.
+            // - narrate "You are currently seeing sky that looks like <&color[<player.location.biome.sky_color>]>this!"
+            // -->
+            tagProcessor.registerTag(ColorTag.class, "sky_color", (attribute, object) -> {
+                return ColorTag.fromRGB(object.biome.getSkyColor());
+            });
+
+            // <--[tag]
+            // @attribute <BiomeTag.sky_light_color>
+            // @returns ColorTag
+            // @mechanism BiomeTag.sky_light_color
+            // @description
+            // Returns the biome's skylight color.
+            // @example
+            // # Sends the player a message in their current biome's skylight color.
+            // - narrate "You are currently seeing skylight that looks like <&color[<player.location.biome.sky_light_color>]>this!"
+            // -->
+            tagProcessor.registerTag(ColorTag.class, "sky_light_color", (attribute, object) -> {
+                return ColorTag.fromRGB(object.biome.getSkyLightColor());
+            });
+        }
     }
 
     public static final ObjectTagProcessor<BiomeTag> tagProcessor = new ObjectTagProcessor<>();
