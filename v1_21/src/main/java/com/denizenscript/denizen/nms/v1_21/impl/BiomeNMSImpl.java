@@ -179,6 +179,26 @@ public class BiomeNMSImpl extends BiomeNMS {
         setEnvironmentAttribute(EnvironmentAttributes.WATER_FOG_COLOR, color);
     }
 
+    @Override
+    public int getSkyColor() {
+        return getEnvironmentAttribute(EnvironmentAttributes.SKY_COLOR);
+    }
+
+    @Override
+    public void setSkyColor(int color) {
+        setEnvironmentAttribute(EnvironmentAttributes.SKY_COLOR, color);
+    }
+
+    @Override
+    public int getSkyLightColor() {
+        return getEnvironmentAttribute(EnvironmentAttributes.SKY_LIGHT_COLOR);
+    }
+
+    @Override
+    public void setSkyLightColor(int color) {
+        setEnvironmentAttribute(EnvironmentAttributes.SKY_LIGHT_COLOR, color);
+    }
+
     public <T> T getEnvironmentAttribute(EnvironmentAttribute<T> attribute) {
         return biomeHolder.value().getAttributes().applyModifier(attribute, attribute.defaultValue());
     }
