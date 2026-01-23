@@ -509,6 +509,34 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
 
+            // <--[tag]
+            // @attribute <BiomeTag.sky_color>
+            // @returns ColorTag
+            // @mechanism BiomeTag.sky_color
+            // @description
+            // Returns the biome's sky color.
+            // @example
+            // # Sends the player a message in their current biome's sky color.
+            // - narrate "You are currently seeing sky that looks like <&color[<player.location.biome.sky_color>]>this!"
+            // -->
+            tagProcessor.registerTag(ColorTag.class, "sky_color", (attribute, object) -> {
+                return ColorTag.fromRGB(object.biome.getSkyColor());
+            });
+
+            // <--[tag]
+            // @attribute <BiomeTag.sky_light_color>
+            // @returns ColorTag
+            // @mechanism BiomeTag.sky_light_color
+            // @description
+            // Returns the biome's skylight color.
+            // @example
+            // # Sends the player a message in their current biome's skylight color.
+            // - narrate "You are currently seeing skylight that looks like <&color[<player.location.biome.sky_light_color>]>this!"
+            // -->
+            tagProcessor.registerTag(ColorTag.class, "sky_light_color", (attribute, object) -> {
+                return ColorTag.fromRGB(object.biome.getSkyLightColor());
+            });
+
             // <--[mechanism]
             // @object BiomeTag
             // @name sky_color
@@ -541,34 +569,6 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
             // -->
             tagProcessor.registerMechanism("sky_light_color", false, ColorTag.class, (object, mechanism, input) -> {
                 object.biome.setSkyLightColor(input.asRGB());
-            });
-
-            // <--[tag]
-            // @attribute <BiomeTag.sky_color>
-            // @returns ColorTag
-            // @mechanism BiomeTag.sky_color
-            // @description
-            // Returns the biome's sky color.
-            // @example
-            // # Sends the player a message in their current biome's sky color.
-            // - narrate "You are currently seeing sky that looks like <&color[<player.location.biome.sky_color>]>this!"
-            // -->
-            tagProcessor.registerTag(ColorTag.class, "sky_color", (attribute, object) -> {
-                return ColorTag.fromRGB(object.biome.getSkyColor());
-            });
-
-            // <--[tag]
-            // @attribute <BiomeTag.sky_light_color>
-            // @returns ColorTag
-            // @mechanism BiomeTag.sky_light_color
-            // @description
-            // Returns the biome's skylight color.
-            // @example
-            // # Sends the player a message in their current biome's skylight color.
-            // - narrate "You are currently seeing skylight that looks like <&color[<player.location.biome.sky_light_color>]>this!"
-            // -->
-            tagProcessor.registerTag(ColorTag.class, "sky_light_color", (attribute, object) -> {
-                return ColorTag.fromRGB(object.biome.getSkyLightColor());
             });
         }
     }
