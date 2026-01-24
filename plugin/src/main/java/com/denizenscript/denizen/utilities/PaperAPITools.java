@@ -3,6 +3,7 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
+import com.denizenscript.denizen.scripts.commands.player.ResourcePackCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -27,6 +28,7 @@ import java.lang.invoke.MethodHandle;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 public class PaperAPITools {
@@ -92,12 +94,12 @@ public class PaperAPITools {
         sign.setLine(line, text == null ? "" : text);
     }
 
-    public void setResourcePack(Player player, String url, String hash, boolean forced, String prompt, String id) {
-        byte[] hashData = new byte[20];
-        for (int i = 0; i < 20; i++) {
-            hashData[i] = (byte) Integer.parseInt(hash.substring(i * 2, i * 2 + 2), 16);
-        }
-        player.setResourcePack(url, hashData);
+    public void setResourcePack(Player player, String url, String hash, boolean forced, String prompt, UUID uuid) {
+        player.setResourcePack(url, ResourcePackCommand.parseHash(hash));
+    }
+
+    public void addResourcePack(Player player, String url, String hash, boolean forced, String prompt, UUID uuid) {
+        player.addResourcePack(uuid, url, ResourcePackCommand.parseHash(hash), prompt, forced);
     }
 
     public void sendSignUpdate(Player player, Location loc, String[] text) {

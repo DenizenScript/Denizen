@@ -12,7 +12,6 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -90,7 +89,7 @@ public class ResourcePackCommand extends AbstractCommand {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
                 throw new InvalidArgumentsRuntimeException("Must specify an online player!");
             }
-            targets = Collections.singletonList(Utilities.getEntryPlayer(scriptEntry));
+            targets = List.of(Utilities.getEntryPlayer(scriptEntry));
         }
         if ((action == Action.ADD || action == Action.SET) && (url == null || hash == null)) {
             throw new InvalidArgumentsRuntimeException("Must specify both a resource pack URL and hash!");
@@ -101,21 +100,18 @@ public class ResourcePackCommand extends AbstractCommand {
         }
         switch (action) {
             case SET -> {
+                UUID packUUID = id == null ? null : parseUUID(id);
                 for (PlayerTag player : targets) {
                     if (checkOnline(player)) {
-                        PaperAPITools.instance.setResourcePack(player.getPlayerEntity(), url, hash, forced, prompt, id);
+                        PaperAPITools.instance.setResourcePack(player.getPlayerEntity(), url, hash, forced, prompt, packUUID);
                     }
                 }
             }
             case ADD -> {
-                byte[] hashData = new byte[20];
-                for (int i = 0; i < 20; i++) {
-                    hashData[i] = (byte) Integer.parseInt(hash.substring(i * 2, i * 2 + 2), 16);
-                }
                 UUID packUUID = id == null ? UUID.nameUUIDFromBytes(url.getBytes(StandardCharsets.UTF_8)) : parseUUID(id);
                 for (PlayerTag player : targets) {
                     if (checkOnline(player)) {
-                        player.getPlayerEntity().addResourcePack(packUUID, url, hashData, prompt, forced);
+                        PaperAPITools.instance.addResourcePack(player.getPlayerEntity(), url, hash, forced, prompt, packUUID);
                     }
                 }
             }
@@ -141,20 +137,26 @@ public class ResourcePackCommand extends AbstractCommand {
 
     public static boolean checkOnline(PlayerTag player) {
         if (!player.isOnline()) {
-            Debug.echoError("Invalid player '" + player.getName() + "' specified: must be online");
+            Debug.echoError("Invalid player '" + player.getName() + "' specified: must be online.");
             return false;
         }
         return true;
     }
 
     public static UUID parseUUID(String id) {
-        UUID uuid;
         try {
-            uuid = UUID.fromString(id);
+            return UUID.fromString(id);
         }
         catch (IllegalArgumentException ex) {
-            uuid = UUID.nameUUIDFromBytes(id.getBytes(StandardCharsets.UTF_8));
+            return UUID.nameUUIDFromBytes(id.getBytes(StandardCharsets.UTF_8));
         }
-        return uuid;
+    }
+
+    public static byte[] parseHash(String hash) {
+        byte[] hashData = new byte[20];
+        for (int i = 0; i < 20; i++) {
+            hashData[i] = (byte) Integer.parseInt(hash.substring(i * 2, i * 2 + 2), 16);
+        }
+        return hashData;
     }
 }
