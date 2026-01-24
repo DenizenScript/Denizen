@@ -315,8 +315,7 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public ItemStack setEntityData(ItemStack item, CompoundBinaryTag entityNbt, EntityType entityType) {
         CompoundTag nmsEntityNbt = EMPTY_TAG;
-        // TODO: adventure-nbt: contains
-        if (entityNbt != null && !entityNbt.isEmpty() && (!entityNbt.keySet().contains("id") || entityNbt.size() > 1)) {
+        if (entityNbt != null && !entityNbt.isEmpty() && (!entityNbt.contains("id") || entityNbt.size() > 1)) {
             nmsEntityNbt = NBTAdapter.toNMS(entityNbt);
             nmsEntityNbt.putString("id", entityType.getKey().toString());
         }

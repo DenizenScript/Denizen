@@ -78,8 +78,7 @@ public class ItemArmorPose extends ItemProperty<MapTag> {
             if (entityNbt == null) {
                 return;
             }
-            // TODO: adventure-nbt: contains
-            if (!(entityNbt.get("Pose") instanceof CompoundBinaryTag)) {
+            if (!entityNbt.contains("Pose", BinaryTagTypes.COMPOUND)) {
                 return;
             }
             entityNbt = entityNbt.remove("Pose");

@@ -19,8 +19,6 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     // player tames entity
     // player tames <entity>
     //
-    // @Regex ^on [^\s]+ (tames [^\s]+|tamed)$
-    //
     // @Group Entity
     //
     // @Location true
@@ -33,27 +31,18 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     // <context.entity> returns a EntityTag of the tamed entity.
     // <context.owner> returns a EntityTag of the owner.
     //
-    // @Player when a player tames an entity and using the 'players tames entity' event.
+    // @Player when a player is what tamed the entity.
     //
     // -->
 
     public EntityTamesScriptEvent() {
+        registerCouldMatcher("<entity> tamed");
+        registerCouldMatcher("player tames <entity>");
     }
 
     public EntityTag entity;
     public EntityTag owner;
     public EntityTameEvent event;
-
-    @Override
-    public boolean couldMatch(ScriptPath path) {
-        if (!path.eventArgLowerAt(1).equals("tames") && !path.eventArgLowerAt(1).equals("tamed")) {
-            return false;
-        }
-        if (!couldMatchEntity(path.eventArgLowerAt(0))) {
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -76,13 +65,11 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("owner")) {
-            return owner;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity;
+            case "owner" -> owner.getDenizenObject();
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

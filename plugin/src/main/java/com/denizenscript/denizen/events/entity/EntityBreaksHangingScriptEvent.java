@@ -88,17 +88,13 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "cause":
-                return cause;
-            case "breaker":
-                return breaker;
-            case "hanging":
-                return hanging;
-            case "location":
-                return location;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "cause" -> cause;
+            case "breaker" -> breaker.getDenizenObject();
+            case "hanging" -> hanging;
+            case "location" -> location;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

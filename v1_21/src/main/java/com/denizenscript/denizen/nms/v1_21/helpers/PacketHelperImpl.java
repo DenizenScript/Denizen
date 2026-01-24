@@ -32,10 +32,10 @@ import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.CaveSpider;
+import net.minecraft.world.entity.monster.spider.CaveSpider;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.EnderMan;
-import net.minecraft.world.entity.monster.Spider;
+import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
@@ -49,14 +49,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
-import org.bukkit.craftbukkit.v1_21_R6.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R6.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R6.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R6.map.CraftMapCanvas;
-import org.bukkit.craftbukkit.v1_21_R6.map.CraftMapView;
-import org.bukkit.craftbukkit.v1_21_R6.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R7.map.CraftMapCanvas;
+import org.bukkit.craftbukkit.v1_21_R7.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftLocation;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -159,13 +159,11 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showTitle(Player player, String title, String subtitle, int fadeInTicks, int stayTicks, int fadeOutTicks) {
-        send(player, new ClientboundSetTitlesAnimationPacket(fadeInTicks, stayTicks, fadeOutTicks));
-        if (title != null) {
-            send(player, new ClientboundSetTitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE))));
-        }
-        if (subtitle != null) {
-            send(player, new ClientboundSetSubtitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE))));
-        }
+        send(player, new ClientboundBundlePacket(List.of(
+                new ClientboundSetTitlesAnimationPacket(fadeInTicks, stayTicks, fadeOutTicks),
+                new ClientboundSetTitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(title, ChatColor.WHITE))),
+                new ClientboundSetSubtitleTextPacket(Handler.componentToNMS(FormattedTextHelper.parse(subtitle, ChatColor.WHITE)))
+        )));
     }
 
     @Override

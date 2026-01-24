@@ -68,17 +68,13 @@ public class EntityDropsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "item":
-                return item;
-            case "entity":
-                return itemEntity;
-            case "dropped_by":
-                return dropper.getDenizenObject();
-            case "location":
-                return location;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "item" -> item;
+            case "entity" -> itemEntity;
+            case "dropped_by" -> dropper.getDenizenObject();
+            case "location" -> location;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

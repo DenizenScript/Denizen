@@ -204,7 +204,7 @@ public abstract class ImprovedOfflinePlayer {
     }
 
     public void setBedSpawnLocation(Location location) {
-        if (location == null && !compound.keySet().contains("SpawnDimension")) {
+        if (location == null && !compound.contains("SpawnDimension")) {
             return;
         }
         CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder().put(compound);

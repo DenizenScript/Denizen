@@ -31,8 +31,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientboundUpdateTagsPacket;
 import net.minecraft.network.protocol.game.*;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerEntity;
@@ -61,15 +61,14 @@ import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.AABB;
 import org.bukkit.*;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R6.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R6.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R6.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_21_R6.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R6.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_21_R6.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_21_R6.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftNamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -340,7 +339,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         NameAndId nameAndId = new NameAndId(((CraftPlayer) player).getProfile());
         ServerOpList opList = server.getPlayerList().getOps();
         if (op) {
-            opList.add(new ServerOpListEntry(nameAndId, server.operatorUserPermissionLevel(), opList.canBypassPlayerLimit(nameAndId)));
+            opList.add(new ServerOpListEntry(nameAndId, server.operatorUserPermissions(), opList.canBypassPlayerLimit(nameAndId)));
         }
         else {
             opList.remove(nameAndId);
@@ -432,10 +431,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         }
         LevelData.RespawnData nmsRespawnData = nmsRespawnConfig.respawnData();
         Level nmsWorld = MinecraftServer.getServer().getLevel(nmsRespawnData.dimension());
-        if (nmsWorld == null) {
-            return null;
-        }
-        return CraftLocation.toBukkit(nmsRespawnData.pos(), nmsWorld.getWorld(), nmsRespawnData.yaw(), nmsRespawnData.pitch());
+        return nmsWorld != null ? new Location(nmsWorld.getWorld(), nmsRespawnData.pos().getX(), nmsRespawnData.pos().getY(), nmsRespawnData.pos().getZ(), nmsRespawnData.yaw(), nmsRespawnData.pitch()) : null;
     }
 
     @Override
@@ -469,7 +465,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void sendClimbableMaterials(Player player, List<Material> materials) {
         Map<ResourceKey<? extends Registry<?>>, TagNetworkSerialization.NetworkPayload> packetInput = TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registries());
-        Map<ResourceLocation, IntList> tags = ReflectionHelper.getFieldValue(TagNetworkSerialization.NetworkPayload.class, ReflectionMappingsInfo.TagNetworkSerializationNetworkPayload_tags, packetInput.get(BuiltInRegistries.BLOCK.key()));
+        Map<Identifier, IntList> tags = ReflectionHelper.getFieldValue(TagNetworkSerialization.NetworkPayload.class, ReflectionMappingsInfo.TagNetworkSerializationNetworkPayload_tags, packetInput.get(BuiltInRegistries.BLOCK.key()));
         IntList climbableBlocks = tags.get(BlockTags.CLIMBABLE.location());
         climbableBlocks.clear();
         for (Material material : materials) {
@@ -496,7 +492,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         }
         if (!nmsPlayer.getCooldowns().cooldowns.isEmpty()) {
             int tickCount = nmsPlayer.getCooldowns().tickCount;
-            for (Map.Entry<ResourceLocation, ItemCooldowns.CooldownInstance> entry : nmsPlayer.getCooldowns().cooldowns.entrySet()) {
+            for (Map.Entry<Identifier, ItemCooldowns.CooldownInstance> entry : nmsPlayer.getCooldowns().cooldowns.entrySet()) {
                 nmsPlayer.connection.send(new ClientboundCooldownPacket(entry.getKey(), entry.getValue().endTime - tickCount));
             }
         }
@@ -505,7 +501,7 @@ public class PlayerHelperImpl extends PlayerHelper {
             nmsPlayer.connection.send(new ClientboundUpdateMobEffectPacket(nmsPlayer.getId(), nmsEffect, false));
         }
         nmsPlayer.onUpdateAbilities();
-        PlayerList nmsPlayerList = nmsPlayer.server.getPlayerList();
+        PlayerList nmsPlayerList = MinecraftServer.getServer().getPlayerList();
         nmsPlayerList.sendPlayerPermissionLevel(nmsPlayer);
         nmsPlayerList.sendLevelInfo(nmsPlayer, nmsWorld);
         nmsPlayerList.sendAllPlayerInfo(nmsPlayer);

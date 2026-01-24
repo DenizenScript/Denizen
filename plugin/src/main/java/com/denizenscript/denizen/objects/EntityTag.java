@@ -3223,6 +3223,29 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             fox.setSleeping(input.asBoolean());
         });
 
+        // <--[mechanism]
+        // @object EntityTag
+        // @name detonate
+        // @input None
+        // @description
+        // If the entity is a firework, creeper, or wind charge, detonates it.
+        // -->
+        tagProcessor.registerMechanism("detonate", false, (object, mechanism) -> {
+            Entity entity = object.getBukkitEntity();
+            if (entity instanceof Firework firework) {
+                firework.detonate();
+            }
+            else if (entity instanceof Creeper creeper) {
+                creeper.explode();
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof AbstractWindCharge windCharge) {
+                windCharge.explode();
+            }
+            else {
+                mechanism.echoError("Cannot detonate entity of type '" + object.getEntityType() + "'.");
+            }
+        });
+
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
 
             // <--[mechanism]
@@ -4128,28 +4151,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("swimming") && mechanism.requireBoolean()) {
             getLivingEntity().setSwimming(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name detonate
-        // @input None
-        // @description
-        // If the entity is a firework, creeper, or wind charge, detonates it.
-        // -->
-        if (mechanism.matches("detonate")) {
-            if (getBukkitEntity() instanceof Firework firework) {
-                firework.detonate();
-            }
-            else if (getBukkitEntity() instanceof Creeper creeper) {
-               creeper.explode();
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBukkitEntity() instanceof WindCharge windCharge) {
-                windCharge.explode();
-            }
-            else {
-                Debug.echoError("Cannot detonate entity of type '" + getBukkitEntityType().name() + "'.");
-            }
         }
 
         // <--[mechanism]
