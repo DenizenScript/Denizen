@@ -501,7 +501,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, "nickname", (attribute, object) -> {
             return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getOrAddTrait(NicknameTrait.class)
-                    .getNickname() : object.getName());
+                    .getNickname() : object.getName(), true);
         });
 
         // Documented in EntityTag
@@ -510,9 +510,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 BukkitImplDeprecations.npcNicknameTag.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getOrAddTrait(NicknameTrait.class)
-                        .getNickname() : object.getName());
+                        .getNickname() : object.getName(), true);
             }
-            return new ElementTag(object.getName());
+            return new ElementTag(object.getName(), true);
         });
 
         // <--[tag]
@@ -581,7 +581,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns a list of anchor names currently assigned to the NPC.
         // -->
         tagProcessor.registerTag(ListTag.class, "list_anchors", (attribute, object) -> {
-            return new ListTag(object.getCitizen().getOrAddTrait(Anchors.class).getAnchors(), anchor -> new ElementTag(anchor.getName()));
+            return new ListTag(object.getCitizen().getOrAddTrait(Anchors.class).getAnchors(), anchor -> new ElementTag(anchor.getName(), true));
         });
 
         // <--[tag]
@@ -605,7 +605,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             else if (attribute.startsWith("list", 2)) {
                 attribute.fulfill(1);
                 BukkitImplDeprecations.npcAnchorListTag.warn(attribute.context);
-                return new ListTag(trait.getAnchors(), anchor -> new ElementTag(anchor.getName()));
+                return new ListTag(trait.getAnchors(), anchor -> new ElementTag(anchor.getName(), true));
             }
             else {
                 attribute.echoError("npc.anchor[...] tag must have an input.");
@@ -622,7 +622,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         tagProcessor.registerTag(ElementTag.class, ElementTag.class, "constant", (attribute, object, param) -> {
             if (object.getCitizen().hasTrait(ConstantsTrait.class)
                     && object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(param.asString()) != null) {
-                return new ElementTag(object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(param.asString()));
+                return new ElementTag(object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(param.asString()), true);
             }
             else {
                 return null;
@@ -831,7 +831,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 if (skin.getSignature() != null) {
                     sign = ";" + skin.getSignature();
                 }
-                return new ElementTag(tex + sign);
+                return new ElementTag(tex + sign, true);
             }
             return null;
         });
@@ -849,7 +849,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             SkinTrait skin = object.getCitizen().getOrAddTrait(SkinTrait.class);
-            return new ElementTag(skin.getSkinName() + "|" + skin.getTexture());
+            return new ElementTag(skin.getSkinName() + "|" + skin.getTexture(), true);
         });
 
         // <--[tag]
@@ -861,7 +861,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, "skin", (attribute, object) -> {
             if (object.getCitizen().hasTrait(SkinTrait.class)) {
-                return new ElementTag(object.getCitizen().getOrAddTrait(SkinTrait.class).getSkinName());
+                return new ElementTag(object.getCitizen().getOrAddTrait(SkinTrait.class).getSkinName(), true);
             }
             return null;
         });
@@ -1099,7 +1099,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Not related to Sentinel combat.
         // -->
         tagProcessor.registerTag(ElementTag.class, "attack_strategy", (attribute, object) -> {
-            return new ElementTag(object.getNavigator().getLocalParameters().attackStrategy().toString());
+            return new ElementTag(object.getNavigator().getLocalParameters().attackStrategy().toString(), true);
         });
 
         // <--[tag]
@@ -1184,7 +1184,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             if (object.getNavigator().getTargetType() == null) {
                 return null;
             }
-            return new ElementTag(object.getNavigator().getTargetType().toString());
+            return new ElementTag(object.getNavigator().getTargetType().toString(), true);
         });
 
         // <--[tag]
@@ -1207,7 +1207,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the name of the registry this NPC came from.
         // -->
         tagProcessor.registerTag(ElementTag.class, "registry_name", (attribute, object) -> {
-            return new ElementTag(object.getCitizen().getOwningRegistry().getName());
+            return new ElementTag(object.getCitizen().getOwningRegistry().getName(), true);
         });
 
         // <--[tag]
@@ -1218,7 +1218,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, ElementTag.class, "citizens_data", (attribute, object, param) -> {
             Object val = object.getCitizen().data().get(param.asString());
-            return val != null ? new ElementTag(val.toString()) : null;
+            return val != null ? new ElementTag(val.toString(), true) : null;
         });
 
         // <--[tag]
