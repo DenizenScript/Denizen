@@ -8,7 +8,7 @@ import org.bukkit.block.data.type.Vault;
 
 public class MaterialOminous extends MaterialProperty<ElementTag> {
 
-    // <--[tag]
+    // <--[property]
     // @object MaterialTag
     // @name ominous
     // @input ElementTag(Boolean)
