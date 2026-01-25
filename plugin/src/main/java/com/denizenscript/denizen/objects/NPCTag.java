@@ -594,22 +594,18 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             Anchors trait = object.getCitizen().getOrAddTrait(Anchors.class);
             if (attribute.hasParam()) {
                 Anchor anchor = trait.getAnchor(attribute.getParam());
-                    if (anchor != null) {
-                        return new LocationTag(anchor.getLocation());
-                    }
-                    else {
-                        attribute.echoError("NPC Anchor '" + attribute.getParam() + "' is not defined.");
-                        return null;
-                    }
+                if (anchor != null) {
+                    return new LocationTag(anchor.getLocation());
+                }
+                else {
+                    attribute.echoError("NPC Anchor '" + attribute.getParam() + "' is not defined.");
+                    return null;
+                }
             }
             else if (attribute.startsWith("list", 2)) {
                 attribute.fulfill(1);
                 BukkitImplDeprecations.npcAnchorListTag.warn(attribute.context);
-                ListTag list = new ListTag();
-                for (Anchor anchor : trait.getAnchors()) {
-                    list.add(anchor.getName());
-                }
-                return list;
+                return new ListTag(trait.getAnchors(), anchor -> new ElementTag(anchor.getName()));
             }
             else {
                 attribute.echoError("npc.anchor[...] tag must have an input.");
