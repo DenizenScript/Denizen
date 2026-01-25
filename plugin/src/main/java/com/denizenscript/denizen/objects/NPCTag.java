@@ -1010,7 +1010,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             else {
-                return new ListTag(citizen.getOrAddTrait(AssignmentTrait.class).containerCache, Objects::nonNull,  ScriptTag::new);
+                return new ListTag(citizen.getOrAddTrait(AssignmentTrait.class).containerCache, Objects::nonNull, ScriptTag::new);
             }
         });
 
