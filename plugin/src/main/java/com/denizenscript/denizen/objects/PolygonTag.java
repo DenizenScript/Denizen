@@ -12,10 +12,7 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
-import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.ObjectTagProcessor;
-import com.denizenscript.denizencore.tags.TagContext;
-import com.denizenscript.denizencore.tags.TagManager;
+import com.denizenscript.denizencore.tags.*;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Location;
@@ -50,7 +47,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     //
     // Compared to CuboidTags, PolygonTags are generally slower to process and more complex to work with, but offer the benefit of supporting more intricate shapes.
     //
-    // Note that forming invalid polygons (duplicate corners, impossible shapes, etc) will not necessarily give any error message, and may cause weird results.
+    // Note that forming invalid polygons (duplicate corners, impossible shapes, etc.) will not necessarily give any error message, and may cause weird results.
     //
     // This object type can be noted.
     //
@@ -164,10 +161,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
     }
 
     public static boolean matches(String string) {
-        if (valueOf(string, CoreUtilities.noDebugContext) != null) {
-            return true;
-        }
-        return false;
+        return valueOf(string, CoreUtilities.noDebugContext) != null;
     }
 
     @Override
@@ -189,10 +183,9 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof PolygonTag)) {
+        if (!(other instanceof PolygonTag poly2)) {
             return false;
         }
-        PolygonTag poly2 = (PolygonTag) other;
         if ((noteName == null) != (poly2.noteName == null)) {
             return false;
         }
@@ -672,11 +665,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // - debugblock <polygon[my_polygon].corners>
         // -->
         tagProcessor.registerTag(ListTag.class, "corners", (attribute, polygon) -> {
-            ListTag list = new ListTag();
-            for (Corner corner : polygon.corners) {
-                list.addObject(new LocationTag(corner.x, polygon.yMin, corner.z, polygon.world.getName()));
-            }
-            return list;
+            return new ListTag(polygon.corners, corner -> new LocationTag(corner.x, polygon.yMin, corner.z, polygon.world.getName()));
         });
 
         // <--[tag]
@@ -688,23 +677,18 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // # Notes the polygon "my_polygon" as "my_shifted_polygon" but shifted over by 25,25,25.
         // - note <polygon[my_polygon].shift[25,25,25]> as:my_shifted_polygon
         // -->
-        tagProcessor.registerTag(PolygonTag.class, "shift", (attribute, polygon) -> {
-            if (!attribute.hasParam()) {
-                attribute.echoError("PolygonTag.shift[...] tag must have an input.");
-                return null;
-            }
-            LocationTag shift = attribute.paramAsType(LocationTag.class);
+        tagProcessor.registerTag(PolygonTag.class, LocationTag.class, "shift", (attribute, polygon, param) -> {
             PolygonTag toReturn = polygon.clone();
-            toReturn.yMin += shift.getY();
-            toReturn.yMax += shift.getY();
+            toReturn.yMin += param.getY();
+            toReturn.yMax += param.getY();
             for (Corner corner : toReturn.corners) {
-                corner.x += shift.getX();
-                corner.z += shift.getZ();
+                corner.x += param.getX();
+                corner.z += param.getZ();
             }
-            toReturn.boxMin.x += shift.getX();
-            toReturn.boxMin.z += shift.getZ();
-            toReturn.boxMax.x += shift.getX();
-            toReturn.boxMax.z += shift.getZ();
+            toReturn.boxMin.x += param.getX();
+            toReturn.boxMin.z += param.getZ();
+            toReturn.boxMax.x += param.getX();
+            toReturn.boxMax.z += param.getZ();
             return toReturn;
         });
 
@@ -720,14 +704,9 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // # then "my_new_polygon" will have corners  "0.0,0.0", "7.0,7.0", "-5.0,6.0", and "10.0,-2.0".
         // - note <polygon[my_polygon].with_corner[10,66,-2]> as:my_new_polygon
         // -->
-        tagProcessor.registerTag(PolygonTag.class, "with_corner", (attribute, polygon) -> {
-            if (!attribute.hasParam()) {
-                attribute.echoError("PolygonTag.with_corner[...] tag must have an input.");
-                return null;
-            }
-            LocationTag corner = attribute.paramAsType(LocationTag.class);
+        tagProcessor.registerTag(PolygonTag.class, LocationTag.class, "with_corner", (attribute, polygon, param) -> {
             PolygonTag toReturn = polygon.clone();
-            Corner added = new Corner(corner.getX(), corner.getZ());
+            Corner added = new Corner(param.getX(), param.getZ());
             toReturn.corners.add(added);
             toReturn.recalculateToFit(added);
             return toReturn;
@@ -743,13 +722,13 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // # For example, if "my_polygon" had a maximum-Y of 50 and a minimum-Y of 30, then "my_new_polygon" will have a maximum-Y of 50 and a minimum-Y of 10.
         // - note <polygon[my_polygon].with_y_min[10]> as:my_new_polygon
         // -->
-        tagProcessor.registerTag(PolygonTag.class, "with_y_min", (attribute, polygon) -> {
-            if (!attribute.hasParam()) {
-                attribute.echoError("PolygonTag.with_y_min[...] tag must have an input.");
+        tagProcessor.registerTag(PolygonTag.class, ElementTag.class, "with_y_min", (attribute, polygon, param) -> {
+            if (!param.isDouble()) {
+                attribute.echoError("PolygonTag.with_y_min[...] tag must have a decimal input.");
                 return null;
             }
             PolygonTag toReturn = polygon.clone();
-            toReturn.yMin = attribute.getDoubleParam();
+            toReturn.yMin = param.asDouble();
             return toReturn;
         });
 
@@ -763,13 +742,13 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // # For example, if "my_polygon" had a maximum-Y of 50 and a minimum-Y of 30, then "my_new_polygon" will have a maximum-Y of 70 and a minimum-Y of 30.
         // - note <polygon[my_polygon].with_y_max[70]> as:my_new_polygon
         // -->
-        tagProcessor.registerTag(PolygonTag.class, "with_y_max", (attribute, polygon) -> {
-            if (!attribute.hasParam()) {
-                attribute.echoError("PolygonTag.with_y_max[...] tag must have an input.");
+        tagProcessor.registerTag(PolygonTag.class, ElementTag.class, "with_y_max", (attribute, polygon, param) -> {
+            if (!param.isDouble()) {
+                attribute.echoError("PolygonTag.with_y_max[...] tag must have a decimal input.");
                 return null;
             }
             PolygonTag toReturn = polygon.clone();
-            toReturn.yMax = attribute.getDoubleParam();
+            toReturn.yMax = param.asDouble();
             return toReturn;
         });
 
@@ -785,13 +764,13 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // # However, if the player's Y location was 50, then the maximum-Y value would stay the same and the minimum-Y value would change to 50 instead.
         // - note <polygon[my_polygon].include_y[<player.location.y>]> as:my_new_polygon
         // -->
-        tagProcessor.registerTag(PolygonTag.class, "include_y", (attribute, polygon) -> {
-            if (!attribute.hasParam()) {
-                attribute.echoError("PolygonTag.include_y[...] tag must have an input.");
+        tagProcessor.registerTag(PolygonTag.class, ElementTag.class, "include_y", (attribute, polygon, param) -> {
+            if (!param.isDouble()) {
+                attribute.echoError("PolygonTag.include_y[...] tag must have a decimal input.");
                 return null;
             }
             PolygonTag toReturn = polygon.clone();
-            double y = attribute.getDoubleParam();
+            double y = param.asDouble();
             toReturn.yMin = Math.min(y, toReturn.yMin);
             toReturn.yMax = Math.max(y, toReturn.yMax);
             return toReturn;
@@ -806,12 +785,12 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // # Plays the "flame" effect along the 2D outline of the polygon, "my_polygon" at the player's Y location.
         // - playeffect effect:flame at:<polygon[my_polygon].outline_2d[<player.location.y>]> offset:0.0
         // -->
-        tagProcessor.registerTag(ListTag.class, "outline_2d", (attribute, polygon) -> {
-            if (!attribute.hasParam()) {
-                attribute.echoError("PolygonTag.outline_2d[...] tag must have an input.");
+        tagProcessor.registerTag(ListTag.class, ElementTag.class, "outline_2d", (attribute, polygon, param) -> {
+            if (!param.isDouble()) {
+                attribute.echoError("PolygonTag.outline_2d[...] tag must have a decimal input.");
                 return null;
             }
-            double y = attribute.getDoubleParam();
+            double y = param.asDouble();
             ListTag output = new ListTag();
             polygon.addOutline2D(y, output);
             return output;
@@ -910,6 +889,17 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
         // -->
         tagProcessor.registerTag(ListTag.class, "shell_inclusive", (attribute, polygon) -> {
             return polygon.getShellInternal(true);
+        });
+
+        // <--[tag]
+        // @attribute <PolygonTag.chunks>
+        // @returns ListTag(ChunkTag)
+        // @description
+        // Returns every chunk that is contained within a polygon.
+        // Uses block-inclusive containment: contains a wider section of blocks along the edge (this mode is equivalent to WorldEdit's block selection).
+        // -->
+        tagProcessor.registerTag(ListTag.class, "chunks", (attribute, polygon) -> {
+            return new ListTag(polygon.getCuboidBoundary().getBlocks_internal(null), location -> new ChunkTag(location.getChunk())).deduplicate();
         });
     }
 
