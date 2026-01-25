@@ -652,7 +652,7 @@ public class PolygonTag implements ObjectTag, Cloneable, Notable, Adjustable, Ar
             if (noteName == null) {
                 return null;
             }
-            return new ElementTag(noteName);
+            return new ElementTag(noteName, true);
         });
 
         // <--[tag]
