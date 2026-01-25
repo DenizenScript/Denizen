@@ -519,7 +519,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @attribute <NPCTag.traits>
         // @returns ListTag
         // @description
-        // Returns a list of all of the NPC's traits.
+        // Returns a list of all the NPC's traits.
         // -->
         tagProcessor.registerTag(ListTag.class, "traits", (attribute, object) -> {
             List<String> list = new ArrayList<>();
@@ -535,14 +535,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has a specified trait.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "has_trait", (attribute, object) -> {
-            if (attribute.hasParam()) {
-                Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(attribute.getParam());
-                if (trait != null) {
-                    return new ElementTag(object.getCitizen().hasTrait(trait));
-                }
-            }
-            return null;
+        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "has_trait", (attribute, object, param) -> {
+            Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(param.asString());
+            return trait != null ? new ElementTag(object.getCitizen().hasTrait(trait)) : null;
         });
 
         // <--[tag]
@@ -561,15 +556,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has a specified trigger.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "has_trigger", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
+        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "has_trigger", (attribute, object, param) -> {
             if (!object.getCitizen().hasTrait(TriggerTrait.class)) {
                 return new ElementTag(false);
             }
             TriggerTrait trait = object.getCitizen().getOrAddTrait(TriggerTrait.class);
-            return new ElementTag(trait.hasTrigger(attribute.getParam()));
+            return new ElementTag(trait.hasTrigger(param.asString()));
         });
 
         // <--[tag]
@@ -579,7 +571,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC has anchors assigned.
         // -->
         tagProcessor.registerTag(ElementTag.class, "has_anchors", (attribute, object) -> {
-            return (new ElementTag(object.getCitizen().getOrAddTrait(Anchors.class).getAnchors().size() > 0));
+            return new ElementTag(!object.getCitizen().getOrAddTrait(Anchors.class).getAnchors().isEmpty());
         });
 
         // <--[tag]
@@ -589,11 +581,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns a list of anchor names currently assigned to the NPC.
         // -->
         tagProcessor.registerTag(ListTag.class, "list_anchors", (attribute, object) -> {
-            ListTag list = new ListTag();
-            for (Anchor anchor : object.getCitizen().getOrAddTrait(Anchors.class).getAnchors()) {
-                list.add(anchor.getName());
-            }
-            return list;
+            return new ListTag(object.getCitizen().getOrAddTrait(Anchors.class).getAnchors(), anchor -> new ElementTag(anchor.getName()));
         });
 
         // <--[tag]
@@ -635,18 +623,14 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the specified constant from the NPC.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "constant", (attribute, object) -> {
-            if (attribute.hasParam()) {
-                if (object.getCitizen().hasTrait(ConstantsTrait.class)
-                        && object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(attribute.getParam()) != null) {
-                    return new ElementTag(object.getCitizen().getOrAddTrait(ConstantsTrait.class)
-                            .getConstant(attribute.getParam()));
-                }
-                else {
-                    return null;
-                }
+        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "constant", (attribute, object, param) -> {
+            if (object.getCitizen().hasTrait(ConstantsTrait.class)
+                    && object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(param.asString()) != null) {
+                return new ElementTag(object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(param.asString()));
             }
-            return null;
+            else {
+                return null;
+            }
         });
 
         // <--[tag]
@@ -655,13 +639,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns true if the NPC has the specified pose, otherwise returns false.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "has_pose", (attribute, object) -> {
-            if (attribute.hasParam()) {
-                return new ElementTag(object.getCitizen().getOrAddTrait(Poses.class).hasPose(attribute.getParam()));
-            }
-            else {
-                return null;
-            }
+        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "has_pose", (attribute, object, param) -> {
+            return new ElementTag(object.getCitizen().getOrAddTrait(Poses.class).hasPose(param.asString()));
         });
 
         // <--[tag]
@@ -671,14 +650,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the pose as a LocationTag with x, y, and z set to 0, and the world set to the first
         // possible available world Bukkit knows about.
         // -->
-        tagProcessor.registerTag(LocationTag.class, "pose", (attribute, object) -> {
-            if (attribute.hasParam()) {
-                Pose pose = object.getCitizen().getOrAddTrait(Poses.class).getPose(attribute.getParam());
-                return new LocationTag(org.bukkit.Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch());
-            }
-            else {
-                return null;
-            }
+        tagProcessor.registerTag(LocationTag.class, ElementTag.class, "pose", (attribute, object, param) -> {
+            Pose pose = object.getCitizen().getOrAddTrait(Poses.class).getPose(param.asString());
+            return new LocationTag(org.bukkit.Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch());
         }, "get_pose");
 
         // <--[tag]
@@ -716,11 +690,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             if (stands == null || stands.isEmpty()) {
                 return null;
             }
-            ListTag output = new ListTag();
-            for (Entity stand : stands) {
-                output.addObject(new EntityTag(stand).getDenizenObject());
-            }
-            return output;
+            return new ListTag(stands, stand -> new EntityTag(stand).getDenizenObject());
         });
 
         // <--[tag]
@@ -1044,13 +1014,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             else {
-                ListTag result = new ListTag();
-                for (AssignmentScriptContainer container : citizen.getOrAddTrait(AssignmentTrait.class).containerCache) {
-                    if (container != null) {
-                       result.addObject(new ScriptTag(container));
-                    }
-                }
-                return result;
+                return new ListTag(citizen.getOrAddTrait(AssignmentTrait.class).containerCache, Objects::nonNull,  ScriptTag::new);
             }
         });
 
@@ -1256,15 +1220,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the value of a Citizens NPC metadata key.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "citizens_data", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            Object val = object.getCitizen().data().get(attribute.getParam());
-            if (val == null) {
-                return null;
-            }
-            return new ElementTag(val.toString());
+        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "citizens_data", (attribute, object, param) -> {
+            Object val = object.getCitizen().data().get(param.asString());
+            return val != null ? new ElementTag(val.toString()) : null;
         });
 
         // <--[tag]
@@ -1341,6 +1299,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return new ElementTag(wanderWaypointProvider.getYRange());
             }
             return null;
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.can_navigate_to[<location>]>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether an NPC can navigate to a specified location.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, LocationTag.class, "can_navigate_to", (attribute, object, param) -> {
+            return new ElementTag(object.npc.getNavigator().canNavigateTo(param));
         });
 
         // <--[mechanism]
@@ -1420,15 +1388,14 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.wander_xrange>
         // -->
         tagProcessor.registerMechanism("wander_xrange", false, ElementTag.class, (object, mechanism, input) -> {
-            if (!mechanism.requireInteger()) {
-                return;
-            }
-            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
-            if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
-                wanderWaypointProvider.setXYRange(input.asInt(), wanderWaypointProvider.getYRange());
-            }
-            else {
-                mechanism.echoError("Must set waypoint_provider to 'wander' before setting wander_xrange!");
+            if (mechanism.requireInteger()) {
+                Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+                if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
+                    wanderWaypointProvider.setXYRange(input.asInt(), wanderWaypointProvider.getYRange());
+                }
+                else {
+                    mechanism.echoError("Must set waypoint_provider to 'wander' before setting wander_xrange!");
+                }
             }
         });
 
@@ -1443,15 +1410,607 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.wander_yrange>
         // -->
         tagProcessor.registerMechanism("wander_yrange", false, ElementTag.class, (object, mechanism, input) -> {
-            if (!mechanism.requireInteger()) {
-                return;
+            if (mechanism.requireInteger()) {
+                Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+                if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
+                    wanderWaypointProvider.setXYRange(wanderWaypointProvider.getXRange(), input.asInt());
+                }
+                else {
+                    mechanism.echoError("Must set waypoint_provider to 'wander' before setting wander_yrange!");
+                }
             }
-            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
-            if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
-                wanderWaypointProvider.setXYRange(wanderWaypointProvider.getXRange(), input.asInt());
+        });
+
+        // TODO: For all the mechanism tags, add the @Mechanism link!
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name set_assignment
+        // @input ScriptTag
+        // @description
+        // Sets the NPC's assignment script. Equivalent to 'clear_assignments' + 'add_assignment'.
+        // @tags
+        // <NPCTag.script>
+        // -->
+        tagProcessor.registerMechanism("set_assignment", false, ScriptTag.class, (object, mechanism, input) -> {
+            AssignmentTrait trait = object.getCitizen().getOrAddTrait(AssignmentTrait.class);
+            trait.clearAssignments(null);
+            trait.addAssignmentScript((AssignmentScriptContainer) input.getContainer(), null);
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name add_assignment
+        // @input ScriptTag
+        // @description
+        // Adds an assignment script to the NPC.
+        // @tags
+        // <NPCTag.script>
+        // -->
+        tagProcessor.registerMechanism("add_assignment", false, ScriptTag.class, (object, mechanism, input) -> {
+            object.getCitizen().getOrAddTrait(AssignmentTrait.class).addAssignmentScript((AssignmentScriptContainer) input.getContainer(), null);
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name remove_assignment
+        // @input ScriptTag
+        // @description
+        // Removes an assignment script from the NPC.
+        // @tags
+        // <NPCTag.script>
+        // -->
+        tagProcessor.registerMechanism("remove_assignment", false, (object, mechanism) -> {
+            if (!object.npc.hasTrait(AssignmentTrait.class)) {
+                mechanism.echoError("The npc used in the 'NPCTag.remove_assignment' mechanism does not have any assignments.");
+            }
+            else if (mechanism.hasValue()) {
+                AssignmentTrait trait = object.getCitizen().getOrAddTrait(AssignmentTrait.class);
+                trait.removeAssignmentScript(mechanism.getValue().asString(), null);
+                trait.checkAutoRemove();
             }
             else {
-                mechanism.echoError("Must set waypoint_provider to 'wander' before setting wander_yrange!");
+                BukkitImplDeprecations.assignmentRemove.warn(mechanism.context);
+                object.getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
+                object.npc.removeTrait(AssignmentTrait.class);
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name clear_assignments
+        // @input None
+        // @description
+        // Removes all the NPC's assignment scripts.
+        // @tags
+        // <NPCTag.script>
+        // -->
+        tagProcessor.registerMechanism("clear_assignments", false, (object, mechanism) -> {
+            if (object.npc.hasTrait(AssignmentTrait.class)) {
+                object.getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
+                object.npc.removeTrait(AssignmentTrait.class);
+            }
+            else {
+                mechanism.echoError("The npc used in the 'NPCTag.clear_assignments' mechanism did not have any assignments.");
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name hologram_direction
+        // @input ElementTag
+        // @deprecated This was removed from Citizens.
+        // @description
+        // Sets the NPC's hologram direction, as either BOTTOM_UP or TOP_DOWN.
+        // @tags
+        // <NPCTag.hologram_direction>
+        // -->
+        tagProcessor.registerMechanism("hologram_direction", false, ElementTag.class, (object, mechanism, param) -> {
+            //if (mechanism.requireEnum(HologramTrait.HologramDirection.class)) {
+                //HologramTrait hologram = object.getCitizen().getOrAddTrait(HologramTrait.class);
+                //hologram.setDirection(HologramTrait.HologramDirection.valueOf(param.asString().toUpperCase()));
+            //}
+            BukkitImplDeprecations.npcHologramDirection.warn(mechanism.context);
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name hologram_line_height
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the NPC's hologram line height. Can be -1 to indicate a default value.
+        // @tags
+        // <NPCTag.hologram_line_height>
+        // -->
+        tagProcessor.registerMechanism("hologram_line_height", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireDouble()) {
+                HologramTrait hologram = object.getCitizen().getOrAddTrait(HologramTrait.class);
+                hologram.setLineHeight(input.asDouble());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name set_nickname
+        // @input ElementTag
+        // @description
+        // Sets the NPC's nickname.
+        // @tags
+        // <NPCTag.nickname>
+        // -->
+        tagProcessor.registerMechanism("set_nickname", false, (object, mechanism) -> {
+            if (mechanism.hasValue()) {
+                object.getNicknameTrait().setNickname(mechanism.getValue().asString());
+            }
+            else {
+                object.getNicknameTrait().removeNickname();
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name remove_nickname
+        // @input None
+        // @description
+        // Removes the NPC's nickname.
+        // @tags
+        // <NPCTag.has_nickname>
+        // -->
+        tagProcessor.registerMechanism("remove_nickname", false, (object, mechanism) -> {
+            object.getNicknameTrait().removeNickname();
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name set_entity_type
+        // @input EntityTag
+        // @description
+        // Sets the NPC's entity type.
+        // @tags
+        // <NPCTag.entity_type>
+        // -->
+        tagProcessor.registerMechanism("set_entity_type", false, EntityTag.class, (object, mechanism, input) -> {
+            object.getCitizen().setBukkitEntityType(input.getBukkitEntityType());
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name name
+        // @input ElementTag
+        // @description
+        // Sets the name of the NPC.
+        // @tags
+        // <NPCTag.name>
+        // -->
+        tagProcessor.registerMechanism("name", false, ElementTag.class, (object, mechanism, input) -> {
+            object.getCitizen().setName(input.asString().length() > 256 ? input.asString().substring(0, 256) : input.asString());
+        }, "set_name");
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name owner
+        // @input PlayerTag
+        // @description
+        // Sets the owner of the NPC.
+        // @tags
+        // <NPCTag.owner>
+        // -->
+        tagProcessor.registerMechanism("owner", false, PlayerTag.class, (object, mechanism, input) -> {
+            object.getCitizen().getOrAddTrait(Owner.class).setOwner(input.getPlayerEntity());
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name skin_blob
+        // @input ElementTag
+        // @description
+        // Sets the skin blob of an NPC, in the form of "texture;signature;name".
+        // Call with no value to clear the custom skin value.
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
+        // @tags
+        // <NPCTag.skin>
+        // -->
+        tagProcessor.registerMechanism("skin_blob", false, (object, mechanism) -> {
+            if (!mechanism.hasValue()) {
+                if (object.getCitizen().hasTrait(SkinTrait.class)) {
+                    object.getCitizen().getOrAddTrait(SkinTrait.class).clearTexture();
+                    if (object.getCitizen().isSpawned()) {
+                        object.getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
+                        object.getCitizen().spawn(object.getCitizen().getStoredLocation());
+                    }
+                }
+            }
+            else {
+                SkinTrait skinTrait = object.getCitizen().getOrAddTrait(SkinTrait.class);
+                String[] dat = mechanism.getValue().asString().split(";");
+                if (dat.length < 2) {
+                    Debug.echoError("Invalid skin_blob input. Must specify texture;signature;name in full.");
+                    return;
+                }
+                skinTrait.setSkinPersistent(dat.length > 2 ? dat[2] : UUID.randomUUID().toString(), dat[1], dat[0]);
+                if (object.getCitizen().isSpawned() && object.getCitizen().getEntity() instanceof SkinnableEntity skinnable) {
+                    skinnable.getSkinTracker().notifySkinChange(true);
+                }
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name skin
+        // @input ElementTag
+        // @description
+        // Sets the skin of an NPC by name.
+        // Call with no value to clear the custom skin value.
+        // See also <@link language Player Entity Skins (Skin Blobs)>.
+        // @tags
+        // <NPCTag.skin>
+        // -->
+        tagProcessor.registerMechanism("skin", false, (object, mechanism) -> {
+            if (!mechanism.hasValue()) {
+                if (object.getCitizen().hasTrait(SkinTrait.class)) {
+                    object.getCitizen().getOrAddTrait(SkinTrait.class).clearTexture();
+                }
+            }
+            else {
+                SkinTrait skinTrait = object.getCitizen().getOrAddTrait(SkinTrait.class);
+                skinTrait.setSkinName(mechanism.getValue().asString());
+            }
+            if (object.getCitizen().isSpawned()) {
+                object.getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
+                object.getCitizen().spawn(object.getCitizen().getStoredLocation());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name auto_update_skin
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the NPC will automatically update its skin based on the skin name used.
+        // If true, the NPC's skin will change when the relevant account owner changes their skin.
+        // @tags
+        // <NPCTag.auto_update_skin>
+        // -->
+        tagProcessor.registerMechanism("auto_update_skin", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getCitizen().getOrAddTrait(SkinTrait.class).setShouldUpdateSkins(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name item_type
+        // @input ItemTag
+        // @description
+        // Sets the item type of the item.
+        // -->
+        tagProcessor.registerMechanism("item_type", false, ItemTag.class, (object, mechanism, input) -> {
+            Material mat = input.getMaterial().getMaterial();
+            Entity npcEntity = object.getEntity();
+            NPC citizen = object.getCitizen();
+            if (npcEntity instanceof Item droppedItem) {
+                droppedItem.getItemStack().setType(mat);
+            }
+            else if (npcEntity instanceof ItemFrame itemFrame) {
+                itemFrame.getItem().setType(mat);
+            }
+            else if (npcEntity instanceof FallingBlock) {
+                citizen.data().setPersistent(NPC.Metadata.ITEM_ID, mat.name());
+                citizen.data().setPersistent(NPC.Metadata.ITEM_DATA, 0);
+            }
+            else {
+                Debug.echoError("NPC is the not an item type!");
+            }
+            if (citizen.isSpawned()) {
+                citizen.despawn();
+                citizen.spawn(citizen.getStoredLocation());
+            }
+        });
+
+        tagProcessor.registerMechanism("spawn", false, (object, mechanism) -> {
+            BukkitImplDeprecations.npcSpawnMechanism.warn(mechanism.context);
+            if (mechanism.requireObject("Invalid LocationTag specified. Assuming last known NPC location.", LocationTag.class)) {
+                object.getCitizen().spawn(mechanism.valueAsType(LocationTag.class));
+            }
+            else {
+                object.getCitizen().spawn(object.getCitizen().getStoredLocation());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name range
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the maximum movement distance of the NPC.
+        // @tags
+        // <NPCTag.range>
+        // -->
+        tagProcessor.registerMechanism("range", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireFloat()) {
+                object.getCitizen().getNavigator().getDefaultParameters().range(input.asFloat());
+                object.getCitizen().getNavigator().getLocalParameters().range(input.asFloat());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name attack_range
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the maximum attack distance of the NPC.
+        // @tags
+        // <NPCTag.attack_range>
+        // -->
+        tagProcessor.registerMechanism("attack_range", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireFloat()) {
+                object.getCitizen().getNavigator().getDefaultParameters().attackRange(input.asFloat());
+                object.getCitizen().getNavigator().getLocalParameters().attackRange(input.asFloat());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name speed
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the movement speed of the NPC.
+        // @tags
+        // <NPCTag.speed>
+        // -->
+        tagProcessor.registerMechanism("speed", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireFloat()) {
+                object.getCitizen().getNavigator().getDefaultParameters().speedModifier(input.asFloat());
+                object.getCitizen().getNavigator().getLocalParameters().speedModifier(input.asFloat());
+            }
+        });
+
+        tagProcessor.registerMechanism("despawn", false, (object, mechanism) -> {
+            BukkitImplDeprecations.npcDespawnMech.warn(mechanism.context);
+            object.getCitizen().despawn(DespawnReason.PLUGIN);
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name set_sneaking
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the NPC is sneaking or not. Only works for player-type NPCs.
+        // @tags
+        // <NPCTag.is_sneaking>
+        // -->
+        tagProcessor.registerMechanism("set_sneaking", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                if (!object.getCitizen().hasTrait(SneakingTrait.class)) {
+                    object.getCitizen().addTrait(SneakingTrait.class);
+                }
+                SneakingTrait trait = object.getCitizen().getOrAddTrait(SneakingTrait.class);
+                if (trait.isSneaking() && !mechanism.getValue().asBoolean()) {
+                    trait.stand();
+                }
+                else if (!trait.isSneaking() && mechanism.getValue().asBoolean()) {
+                    trait.sneak();
+                }
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name set_protected
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether or not the NPC is protected.
+        // @tags
+        // <NPCTag.is_protected>
+        // -->
+        tagProcessor.registerMechanism("set_protected", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getCitizen().setProtected(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name lookclose
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets the NPC's lookclose value.
+        // @tags
+        // <NPCTag.lookclose>
+        // -->
+        tagProcessor.registerMechanism("lookclose", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getLookCloseTrait().lookClose(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name controllable
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the NPC is controllable.
+        // @tags
+        // <NPCTag.controllable>
+        // -->
+        tagProcessor.registerMechanism("controllable", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getCitizen().getOrAddTrait(Controllable.class).setEnabled(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name targetable
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the NPC is targetable.
+        // @tags
+        // <NPCTag.targetable>
+        // -->
+        tagProcessor.registerMechanism("targetable", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getCitizen().getOrAddTrait(TargetableTrait.class).setTargetable(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name teleport_on_stuck
+        // @input ElementTag(Boolean)
+        // @description
+        // Sets whether the NPC teleports when it is stuck.
+        // @tags
+        // <NPCTag.teleport_on_stuck>
+        // -->
+        tagProcessor.registerMechanism("teleport_on_stuck", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                if (input.asBoolean()) {
+                    object.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
+                }
+                else {
+                    object.getNavigator().getDefaultParameters().stuckAction(null);
+                }
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name distance_margin
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the NPC's distance margin.
+        // @tags
+        // <NPCTag.distance_margin>
+        // -->
+        tagProcessor.registerMechanism("distance_margin", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireDouble()) {
+                object.getNavigator().getDefaultParameters().distanceMargin(input.asDouble());
+                object.getNavigator().getLocalParameters().distanceMargin(input.asDouble());
+            }
+        }, "set_distance");
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name path_distance_margin
+        // @input ElementTag(Decimal)
+        // @description
+        // Sets the NPC's path distance margin.
+        // @tags
+        // <NPCTag.path_distance_margin>
+        // -->
+        tagProcessor.registerMechanism("path_distance_margin", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireDouble()) {
+                object.getNavigator().getDefaultParameters().pathDistanceMargin(input.asDouble());
+                object.getNavigator().getLocalParameters().pathDistanceMargin(input.asDouble());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name use_new_finder
+        // @input ElementTag(Boolean)
+        // @description
+        // If input is 'true', causes the NPC to use the 'new' Citizens A-Star pathfinder.
+        // if 'false', causes the NPC to use the 'old' minecraft vanilla mob pathfinder.
+        // @tags
+        // <NPCTag.use_new_finder>
+        // -->
+        tagProcessor.registerMechanism("use_new_finder", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getNavigator().getDefaultParameters().useNewPathfinder(input.asBoolean());
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name navigator_look_at
+        // @input LocationTag
+        // @description
+        // Sets the location the NPC will currently look at while moving.
+        // Give no value to let the NPC automatically look where it's going.
+        // Should be set after the NPC has started moving.
+        // @tags
+        // <NPCTag.navigator_look_at>
+        // -->
+        tagProcessor.registerMechanism("navigator_look_at", false, (object, mechanism) -> {
+            if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
+                object.getNavigator().getLocalParameters().lookAtFunction((n) -> mechanism.valueAsType(LocationTag.class));
+            }
+            else {
+                object.getNavigator().getLocalParameters().lookAtFunction(null);
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name name_visible
+        // @input ElementTag
+        // @description
+        // Sets whether the NPC's nameplate is visible. Input is 'true' (always visible), 'false' (never visible), or 'hover' (only visible while looking at the NPC).
+        // @tags
+        // TODO
+        // -->
+        tagProcessor.registerMechanism("name_visible", false, ElementTag.class, (object, mechanism, input) -> {
+            object.getCitizen().data().setPersistent(NPC.Metadata.NAMEPLATE_VISIBLE, input.asString());
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name glow_color
+        // @input ElementTag
+        // @description
+        // Sets the color the NPC will glow with, when it's glowing. Input must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html>.
+        // @tags
+        // TODO
+        // -->
+        tagProcessor.registerMechanism("glow_color", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireEnum(ChatColor.class)) {
+                object.getCitizen().getOrAddTrait(ScoreboardTrait.class).setColor(input.asEnum(ChatColor.class));
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name clear_waypoints
+        // @input None
+        // @description
+        // Clears all waypoint locations in the NPC's path.
+        // @tags
+        // TODO
+        // -->
+        tagProcessor.registerMechanism("clear_waypoints", false, (object, mechanism) -> {
+            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            if (wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider provider) {
+                ((List<Waypoint>) provider.waypoints()).clear();
+            }
+            else if (wp.getCurrentProvider() instanceof WanderWaypointProvider provider) {
+                List<Location> locs = provider.getRegionCentres();
+                for (Location loc : locs) {
+                    locs.remove(loc); // Manual clear to ensure recalculation for the forwarding list
+                }
+            }
+        });
+
+        // <--[mechanism]
+        // @object NPCTag
+        // @name add_waypoint
+        // @input LocationTag
+        // @description
+        // Add a waypoint location to the NPC's path.
+        // @tags
+        // TODO
+        // -->
+        tagProcessor.registerMechanism("add_waypoint", false, LocationTag.class, (object, mechanism, input) -> {
+            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            if (wp.getCurrentProvider() instanceof LinearWaypointProvider provider) {
+                provider.addWaypoint(new Waypoint(input));
+            }
+            else if (wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider provider) {
+                ((List<Waypoint>) provider.waypoints()).add(new Waypoint(input));
+            }
+            else if (wp.getCurrentProvider() instanceof WanderWaypointProvider provider) {
+                provider.getRegionCentres().add(input);
             }
         });
     }
@@ -1465,10 +2024,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
     @Override
     public ObjectTag getNextObjectTypeDown() {
-        if (getEntity() != null) {
-            return new EntityTag(this);
-        }
-        return new ElementTag(identify());
+        return getEntity() != null ? new EntityTag(this) : new ElementTag(identify());
     }
 
     public void applyProperty(Mechanism mechanism) {
@@ -1477,569 +2033,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
 
     @Override
     public void adjust(Mechanism mechanism) {
-
-        // TODO: For all the mechanism tags, add the @Mechanism link!
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name set_assignment
-        // @input ScriptTag
-        // @description
-        // Sets the NPC's assignment script. Equivalent to 'clear_assignments' + 'add_assignment'.
-        // @tags
-        // <NPCTag.script>
-        // -->
-        if (mechanism.matches("set_assignment") && mechanism.requireObject(ScriptTag.class)) {
-            AssignmentTrait trait = getCitizen().getOrAddTrait(AssignmentTrait.class);
-            trait.clearAssignments(null);
-            trait.addAssignmentScript((AssignmentScriptContainer) mechanism.valueAsType(ScriptTag.class).getContainer(), null);
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name add_assignment
-        // @input ScriptTag
-        // @description
-        // Adds an assignment script to the NPC.
-        // @tags
-        // <NPCTag.script>
-        // -->
-        if (mechanism.matches("add_assignment") && mechanism.requireObject(ScriptTag.class)) {
-            getCitizen().getOrAddTrait(AssignmentTrait.class).addAssignmentScript((AssignmentScriptContainer) mechanism.valueAsType(ScriptTag.class).getContainer(), null);
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name remove_assignment
-        // @input ScriptTag
-        // @description
-        // Removes an assignment script from the NPC.
-        // @tags
-        // <NPCTag.script>
-        // -->
-        if (mechanism.matches("remove_assignment")) {
-            if (npc.hasTrait(AssignmentTrait.class)) {
-                if (mechanism.hasValue()) {
-                    AssignmentTrait trait = getCitizen().getOrAddTrait(AssignmentTrait.class);
-                    trait.removeAssignmentScript(mechanism.getValue().asString(), null);
-                    trait.checkAutoRemove();
-                }
-                else {
-                    BukkitImplDeprecations.assignmentRemove.warn(mechanism.context);
-                    getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
-                    npc.removeTrait(AssignmentTrait.class);
-                }
-            }
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name clear_assignments
-        // @input None
-        // @description
-        // Removes all the NPC's assignment scripts.
-        // @tags
-        // <NPCTag.script>
-        // -->
-        if (mechanism.matches("clear_assignments")) {
-            if (npc.hasTrait(AssignmentTrait.class)) {
-                getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
-                npc.removeTrait(AssignmentTrait.class);
-            }
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name hologram_direction
-        // @input ElementTag
-        // @deprecated This was removed from Citizens.
-        // @description
-        // Sets the NPC's hologram direction, as either BOTTOM_UP or TOP_DOWN.
-        // @tags
-        // <NPCTag.hologram_direction>
-        // -->
-        if (mechanism.matches("hologram_direction")) { //  && mechanism.requireEnum(HologramTrait.HologramDirection.class)
-            BukkitImplDeprecations.npcHologramDirection.warn(mechanism.context);
-            //HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
-            //hologram.setDirection(HologramTrait.HologramDirection.valueOf(mechanism.getValue().asString().toUpperCase()));
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name hologram_line_height
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the NPC's hologram line height. Can be -1 to indicate a default value.
-        // @tags
-        // <NPCTag.hologram_line_height>
-        // -->
-        if (mechanism.matches("hologram_line_height") && mechanism.requireDouble()) {
-            HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
-            hologram.setLineHeight(mechanism.getValue().asDouble());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name set_nickname
-        // @input ElementTag
-        // @description
-        // Sets the NPC's nickname.
-        // @tags
-        // <NPCTag.nickname>
-        // -->
-        if (mechanism.matches("set_nickname")) {
-            getNicknameTrait().setNickname(mechanism.getValue().asString());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name remove_nickname
-        // @input None
-        // @description
-        // Removes the NPC's nickname.
-        // @tags
-        // <NPCTag.has_nickname>
-        // -->
-        if (mechanism.matches("remove_nickname")) {
-            getNicknameTrait().removeNickname();
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name set_entity_type
-        // @input EntityTag
-        // @description
-        // Sets the NPC's entity type.
-        // @tags
-        // <NPCTag.entity_type>
-        // -->
-        if (mechanism.matches("set_entity_type") && mechanism.requireObject(EntityTag.class)) {
-            getCitizen().setBukkitEntityType(mechanism.valueAsType(EntityTag.class).getBukkitEntityType());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name name
-        // @input ElementTag
-        // @description
-        // Sets the name of the NPC.
-        // @tags
-        // <NPCTag.name>
-        // -->
-        if (mechanism.matches("name") || mechanism.matches("set_name")) {
-            getCitizen().setName(mechanism.getValue().asString().length() > 256 ? mechanism.getValue().asString().substring(0, 256) : mechanism.getValue().asString());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name owner
-        // @input PlayerTag
-        // @description
-        // Sets the owner of the NPC.
-        // @tags
-        // <NPCTag.owner>
-        // -->
-        if (mechanism.matches("owner")) {
-            if (PlayerTag.matches(mechanism.getValue().asString())) {
-                getCitizen().getOrAddTrait(Owner.class).setOwner(mechanism.valueAsType(PlayerTag.class).getPlayerEntity());
-            }
-            else {
-                getCitizen().getOrAddTrait(Owner.class).setOwner(mechanism.getValue().asString());
-            }
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name skin_blob
-        // @input ElementTag
-        // @description
-        // Sets the skin blob of an NPC, in the form of "texture;signature;name".
-        // Call with no value to clear the custom skin value.
-        // See also <@link language Player Entity Skins (Skin Blobs)>.
-        // @tags
-        // <NPCTag.skin>
-        // -->
-        if (mechanism.matches("skin_blob")) {
-            if (!mechanism.hasValue()) {
-                if (getCitizen().hasTrait(SkinTrait.class)) {
-                    getCitizen().getOrAddTrait(SkinTrait.class).clearTexture();
-                    if (getCitizen().isSpawned()) {
-                        getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
-                        getCitizen().spawn(getCitizen().getStoredLocation());
-                    }
-                }
-            }
-            else {
-                SkinTrait skinTrait = getCitizen().getOrAddTrait(SkinTrait.class);
-                String[] dat = mechanism.getValue().asString().split(";");
-                if (dat.length < 2) {
-                    Debug.echoError("Invalid skin_blob input. Must specify texture;signature;name in full.");
-                    return;
-                }
-                skinTrait.setSkinPersistent(dat.length > 2 ? dat[2] : UUID.randomUUID().toString(), dat[1], dat[0]);
-                if (getCitizen().isSpawned() && getCitizen().getEntity() instanceof SkinnableEntity) {
-                    ((SkinnableEntity) getCitizen().getEntity()).getSkinTracker().notifySkinChange(true);
-                }
-            }
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name skin
-        // @input ElementTag
-        // @description
-        // Sets the skin of an NPC by name.
-        // Call with no value to clear the custom skin value.
-        // See also <@link language Player Entity Skins (Skin Blobs)>.
-        // @tags
-        // <NPCTag.skin>
-        // -->
-        if (mechanism.matches("skin")) {
-            if (!mechanism.hasValue()) {
-                if (getCitizen().hasTrait(SkinTrait.class)) {
-                    getCitizen().getOrAddTrait(SkinTrait.class).clearTexture();
-                }
-            }
-            else {
-                SkinTrait skinTrait = getCitizen().getOrAddTrait(SkinTrait.class);
-                skinTrait.setSkinName(mechanism.getValue().asString());
-            }
-            if (getCitizen().isSpawned()) {
-                getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
-                getCitizen().spawn(getCitizen().getStoredLocation());
-            }
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name auto_update_skin
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether the NPC will automatically update its skin based on the skin name used.
-        // If true, the NPC's skin will change when the relevant account owner changes their skin.
-        // @tags
-        // <NPCTag.auto_update_skin>
-        // -->
-        if (mechanism.matches("auto_update_skin") && mechanism.requireBoolean()) {
-            getCitizen().getOrAddTrait(SkinTrait.class).setShouldUpdateSkins(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name item_type
-        // @input ItemTag
-        // @description
-        // Sets the item type of the item.
-        // -->
-        if (mechanism.matches("item_type") && mechanism.requireObject(ItemTag.class)) {
-            ItemTag item = mechanism.valueAsType(ItemTag.class);
-            Material mat = item.getMaterial().getMaterial();
-            Entity npcEntity = getEntity();
-            if (npcEntity instanceof Item droppedItem) {
-                droppedItem.getItemStack().setType(mat);
-            }
-            else if (npcEntity instanceof ItemFrame itemFrame) {
-                itemFrame.getItem().setType(mat);
-            }
-            else if (npcEntity instanceof FallingBlock) {
-                getCitizen().data().setPersistent(NPC.Metadata.ITEM_ID, mat.name());
-                getCitizen().data().setPersistent(NPC.Metadata.ITEM_DATA, 0);
-            }
-            else {
-                Debug.echoError("NPC is the not an item type!");
-            }
-            if (getCitizen().isSpawned()) {
-                getCitizen().despawn();
-                getCitizen().spawn(getCitizen().getStoredLocation());
-            }
-        }
-
-        if (mechanism.matches("spawn")) {
-            BukkitImplDeprecations.npcSpawnMechanism.warn(mechanism.context);
-            if (mechanism.requireObject("Invalid LocationTag specified. Assuming last known NPC location.", LocationTag.class)) {
-                getCitizen().spawn(mechanism.valueAsType(LocationTag.class));
-            }
-            else {
-                getCitizen().spawn(getCitizen().getStoredLocation());
-            }
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name range
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the maximum movement distance of the NPC.
-        // @tags
-        // <NPCTag.range>
-        // -->
-        if (mechanism.matches("range") && mechanism.requireFloat()) {
-            getCitizen().getNavigator().getDefaultParameters().range(mechanism.getValue().asFloat());
-            getCitizen().getNavigator().getLocalParameters().range(mechanism.getValue().asFloat());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name attack_range
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the maximum attack distance of the NPC.
-        // @tags
-        // <NPCTag.attack_range>
-        // -->
-        if (mechanism.matches("attack_range") && mechanism.requireFloat()) {
-            getCitizen().getNavigator().getDefaultParameters().attackRange(mechanism.getValue().asFloat());
-            getCitizen().getNavigator().getLocalParameters().attackRange(mechanism.getValue().asFloat());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name speed
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the movement speed of the NPC.
-        // @tags
-        // <NPCTag.speed>
-        // -->
-        if (mechanism.matches("speed") && mechanism.requireFloat()) {
-            getCitizen().getNavigator().getDefaultParameters().speedModifier(mechanism.getValue().asFloat());
-            getCitizen().getNavigator().getLocalParameters().speedModifier(mechanism.getValue().asFloat());
-        }
-
-        if (mechanism.matches("despawn")) {
-            BukkitImplDeprecations.npcDespawnMech.warn(mechanism.context);
-            getCitizen().despawn(DespawnReason.PLUGIN);
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name set_sneaking
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether the NPC is sneaking or not. Only works for player-type NPCs.
-        // @tags
-        // <NPCTag.is_sneaking>
-        // -->
-        if (mechanism.matches("set_sneaking") && mechanism.requireBoolean()) {
-            if (!getCitizen().hasTrait(SneakingTrait.class)) {
-                getCitizen().addTrait(SneakingTrait.class);
-            }
-            SneakingTrait trait = getCitizen().getOrAddTrait(SneakingTrait.class);
-            if (trait.isSneaking() && !mechanism.getValue().asBoolean()) {
-                trait.stand();
-            }
-            else if (!trait.isSneaking() && mechanism.getValue().asBoolean()) {
-                trait.sneak();
-            }
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name set_protected
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether or not the NPC is protected.
-        // @tags
-        // <NPCTag.is_protected>
-        // -->
-        if (mechanism.matches("set_protected") && mechanism.requireBoolean()) {
-            getCitizen().setProtected(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name lookclose
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets the NPC's lookclose value.
-        // @tags
-        // <NPCTag.lookclose>
-        // -->
-        if (mechanism.matches("lookclose") && mechanism.requireBoolean()) {
-            getLookCloseTrait().lookClose(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name controllable
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether the NPC is controllable.
-        // @tags
-        // <NPCTag.controllable>
-        // -->
-        if (mechanism.matches("controllable") && mechanism.requireBoolean()) {
-            getCitizen().getOrAddTrait(Controllable.class).setEnabled(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name targetable
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether the NPC is targetable.
-        // @tags
-        // <NPCTag.targetable>
-        // -->
-        if (mechanism.matches("targetable") && mechanism.requireBoolean()) {
-            getCitizen().getOrAddTrait(TargetableTrait.class).setTargetable(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name teleport_on_stuck
-        // @input ElementTag(Boolean)
-        // @description
-        // Sets whether the NPC teleports when it is stuck.
-        // @tags
-        // <NPCTag.teleport_on_stuck>
-        // -->
-        if (mechanism.matches("teleport_on_stuck") && mechanism.requireBoolean()) {
-            if (mechanism.getValue().asBoolean()) {
-                getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
-            }
-            else {
-                getNavigator().getDefaultParameters().stuckAction(null);
-            }
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name distance_margin
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the NPC's distance margin.
-        // @tags
-        // <NPCTag.distance_margin>
-        // -->
-        if ((mechanism.matches("distance_margin") || mechanism.matches("set_distance")) && mechanism.requireDouble()) {
-            getNavigator().getDefaultParameters().distanceMargin(mechanism.getValue().asDouble());
-            getNavigator().getLocalParameters().distanceMargin(mechanism.getValue().asDouble());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name path_distance_margin
-        // @input ElementTag(Decimal)
-        // @description
-        // Sets the NPC's path distance margin.
-        // @tags
-        // <NPCTag.path_distance_margin>
-        // -->
-        if (mechanism.matches("path_distance_margin") && mechanism.requireDouble()) {
-            getNavigator().getDefaultParameters().pathDistanceMargin(mechanism.getValue().asDouble());
-            getNavigator().getLocalParameters().pathDistanceMargin(mechanism.getValue().asDouble());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name use_new_finder
-        // @input ElementTag(Boolean)
-        // @description
-        // If input is 'true', causes the NPC to use the 'new' Citizens A-Star pathfinder.
-        // if 'false', causes the NPC to use the 'old' minecraft vanilla mob pathfinder.
-        // @tags
-        // <NPCTag.use_new_finder>
-        // -->
-        if (mechanism.matches("use_new_finder") && mechanism.requireBoolean()) {
-            getNavigator().getDefaultParameters().useNewPathfinder(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name navigator_look_at
-        // @input LocationTag
-        // @description
-        // Sets the location the NPC will currently look at while moving.
-        // Give no value to let the NPC automatically look where it's going.
-        // Should be set after the NPC has started moving.
-        // @tags
-        // <NPCTag.navigator_look_at>
-        // -->
-        if (mechanism.matches("navigator_look_at")) {
-            if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
-                final LocationTag loc = mechanism.valueAsType(LocationTag.class);
-                getNavigator().getLocalParameters().lookAtFunction((n) -> loc);
-            }
-            else {
-                getNavigator().getLocalParameters().lookAtFunction(null);
-            }
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name name_visible
-        // @input ElementTag
-        // @description
-        // Sets whether the NPC's nameplate is visible. Input is 'true' (always visible), 'false' (never visible), or 'hover' (only visible while looking at the NPC).
-        // @tags
-        // TODO
-        // -->
-        if (mechanism.matches("name_visible")) {
-            getCitizen().data().setPersistent(NPC.Metadata.NAMEPLATE_VISIBLE, mechanism.getValue().asString());
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name glow_color
-        // @input ElementTag
-        // @description
-        // Sets the color the NPC will glow with, when it's glowing. Input must be from <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html>.
-        // @tags
-        // TODO
-        // -->
-        if (mechanism.matches("glow_color") && mechanism.requireEnum(ChatColor.class)) {
-            getCitizen().getOrAddTrait(ScoreboardTrait.class).setColor(ChatColor.valueOf(mechanism.getValue().asString().toUpperCase()));
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name clear_waypoints
-        // @input None
-        // @description
-        // Clears all waypoint locations in the NPC's path.
-        // @tags
-        // TODO
-        // -->
-        if (mechanism.matches("clear_waypoints")) {
-            Waypoints wp = getCitizen().getOrAddTrait(Waypoints.class);
-            if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
-                ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()).clear();
-            }
-            else if ((wp.getCurrentProvider() instanceof WanderWaypointProvider)) {
-                List<Location> locs = ((WanderWaypointProvider) wp.getCurrentProvider()).getRegionCentres();
-                for (Location loc : locs) {
-                    locs.remove(loc); // Manual clear to ensure recalculation for the forwarding list
-                }
-
-            }
-        }
-
-        // <--[mechanism]
-        // @object NPCTag
-        // @name add_waypoint
-        // @input LocationTag
-        // @description
-        // Add a waypoint location to the NPC's path.
-        // @tags
-        // TODO
-        // -->
-        if (mechanism.matches("add_waypoint") && mechanism.requireObject(LocationTag.class)) {
-            Location target = mechanism.valueAsType(LocationTag.class).clone();
-            Waypoints wp = getCitizen().getOrAddTrait(Waypoints.class);
-            if ((wp.getCurrentProvider() instanceof LinearWaypointProvider)) {
-                ((LinearWaypointProvider) wp.getCurrentProvider()).addWaypoint(new Waypoint(target));
-            }
-            else if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
-                ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()).add(new Waypoint(target));
-            }
-            else if ((wp.getCurrentProvider() instanceof WanderWaypointProvider)) {
-                ((WanderWaypointProvider) wp.getCurrentProvider()).getRegionCentres().add(target);
-            }
-        }
-
         tagProcessor.processMechanism(this, mechanism);
-
         // Pass along to EntityTag mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {
             if (isSpawned()) {
