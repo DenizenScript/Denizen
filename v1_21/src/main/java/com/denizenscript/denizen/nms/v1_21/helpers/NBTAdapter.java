@@ -105,11 +105,11 @@ public class NBTAdapter {
     }
 
     public static ListBinaryTag toAPI(ListTag nmsListTag) {
-        List<BinaryTag> tags = new ArrayList<>(nmsListTag.size());
+        ListBinaryTag.Builder<BinaryTag> builder = ListBinaryTag.heterogeneousListBinaryTag(nmsListTag.size());
         for (Tag nmsValue : nmsListTag) {
-            tags.add(toAPI(nmsValue));
+            builder.add(toAPI(nmsValue));
         }
-        return ListBinaryTag.listBinaryTag(BinaryTagTypes.LIST_WILDCARD, tags);
+        return builder.build();
     }
 
     public static ListTag toNMS(ListBinaryTag listTag) {
@@ -121,11 +121,11 @@ public class NBTAdapter {
     }
 
     public static CompoundBinaryTag toAPI(CompoundTag nmsCompoundTag) {
-        Map<String, BinaryTag> tags = new HashMap<>(nmsCompoundTag.size());
+        CompoundBinaryTag.Builder builder = CompoundBinaryTag.builder(nmsCompoundTag.size());
         for (Map.Entry<String, Tag> nmsEntry : nmsCompoundTag.entrySet()) {
-            tags.put(nmsEntry.getKey(), toAPI(nmsEntry.getValue()));
+            builder.put(nmsEntry.getKey(), toAPI(nmsEntry.getValue()));
         }
-        return CompoundBinaryTag.from(tags);
+        return builder.build();
     }
 
     public static CompoundTag toNMS(CompoundBinaryTag compoundTag) {

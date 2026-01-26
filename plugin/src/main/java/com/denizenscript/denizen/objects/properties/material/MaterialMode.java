@@ -10,25 +10,26 @@ import org.bukkit.block.data.type.*;
 
 public class MaterialMode extends MaterialProperty<ElementTag> {
 
-    // <--[tag]
+    // <--[property]
     // @object MaterialTag
     // @name mode
     // @input ElementTag
     // @description
     // Controls a block's mode.
-    // For comparators, values are COMPARE and SUBTRACT.
-    // For piston_heads, values are NORMAL and SHORT.
-    // For bubble_columns, values are NORMAL and DRAG.
-    // For structure_blocks, values are CORNER, DATA, LOAD, and SAVE.
-    // For sculk_sensors, values are ACTIVE, COOLDOWN, and INACTIVE.
-    // For daylight_detectors, values are INVERTED and NORMAL.
-    // For command_blocks, values are CONDITIONAL and NORMAL.
-    // For big_dripleafs, values are FULL, NONE, PARTIAL, and UNSTABLE.
-    // For sculk_catalysts, values are BLOOM and NORMAL.
-    // For sculk_shriekers, values are SHRIEKING and NORMAL.
-    // For tripwires, values are ARMED and DISARMED.
-    // For trial_spawners, values are ACTIVE, COOLDOWN, EJECTING_REWARD, INACTIVE, WAITING_FOR_PLAYERS, and WAITING_FOR_REWARD_EJECTION.
-    // For vaults, values are ACTIVE, EJECTING, INACTIVE, and UNLOCKING.
+    // For comparators, modes are COMPARE and SUBTRACT.
+    // For piston_heads, modes are NORMAL and SHORT.
+    // For bubble_columns, modes are NORMAL and DRAG.
+    // For structure_blocks, modes are CORNER, DATA, LOAD, and SAVE.
+    // For sculk_sensors, modes are ACTIVE, COOLDOWN, and INACTIVE.
+    // For daylight_detectors, modes are INVERTED and NORMAL.
+    // For command_blocks, modes are CONDITIONAL and NORMAL.
+    // For big_dripleafs, modes are FULL, NONE, PARTIAL, and UNSTABLE.
+    // For sculk_catalysts, modes are BLOOM and NORMAL.
+    // For sculk_shriekers, modes are SHRIEKING and NORMAL.
+    // For tripwires, modes are ARMED and DISARMED.
+    // For creaking_hearts, modes are AWAKE, DORMANT, and UPROOTED.
+    // For trial_spawners, modes are ACTIVE, COOLDOWN, EJECTING_REWARD, INACTIVE, WAITING_FOR_PLAYERS, and WAITING_FOR_REWARD_EJECTION.
+    // For vaults, modes are ACTIVE, EJECTING, INACTIVE, and UNLOCKING.
     // -->
 
     public static boolean describes(MaterialTag material) {
@@ -44,14 +45,15 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
                 || data instanceof Tripwire
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && (data instanceof SculkCatalyst
                                                                         || data instanceof SculkShrieker))
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (data instanceof TrialSpawner
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (data instanceof CreakingHeart
+                                                                        || data instanceof TrialSpawner
                                                                         || data instanceof Vault));
     }
 
     @Override
     public ElementTag getPropertyValue() {
         if (getBlockData() instanceof Comparator comparator) {
-            return new ElementTag(comparator.getMode().name(), true);
+            return new ElementTag(comparator.getMode());
         }
         else if (getBlockData() instanceof BubbleColumn bubbleColumn) {
             return new ElementTag(bubbleColumn.isDrag() ? "DRAG" : "NORMAL", true);
@@ -60,19 +62,19 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             return new ElementTag(pistonHead.isShort() ? "SHORT" : "NORMAL", true);
         }
         else if (getBlockData() instanceof StructureBlock structureBlock) {
-            return new ElementTag(structureBlock.getMode().name(), true);
+            return new ElementTag(structureBlock.getMode());
         }
         else if (getBlockData() instanceof DaylightDetector daylightDetector) {
             return new ElementTag(daylightDetector.isInverted() ? "INVERTED" : "NORMAL", true);
         }
-        else if (getBlockData() instanceof CommandBlock commandBlock) {
-            return new ElementTag(commandBlock.isConditional() ? "CONDITIONAL" : "NORMAL", true);
+        else if (getBlockData() instanceof CommandBlock cmdBlock) {
+            return new ElementTag(cmdBlock.isConditional() ? "CONDITIONAL" : "NORMAL", true);
         }
         else if (getBlockData() instanceof SculkSensor sculkSensor) {
-            return new ElementTag(sculkSensor.getPhase().name(), true);
+            return new ElementTag(sculkSensor.getPhase());
         }
         else if (getBlockData() instanceof BigDripleaf bigDripleaf) {
-            return new ElementTag(bigDripleaf.getTilt().name(), true);
+            return new ElementTag(bigDripleaf.getTilt());
         }
         else if (getBlockData() instanceof Tripwire tripwire) {
             return new ElementTag(tripwire.isDisarmed() ? "DISARMED" : "ARMED", true);
@@ -83,13 +85,16 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkShrieker sculkShrieker) {
             return new ElementTag(sculkShrieker.isShrieking() ? "SHRIEKING" : "NORMAL", true);
         }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof CreakingHeart creakingHeart) {
+            return new ElementTag(creakingHeart.getCreakingHeartState());
+        }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof TrialSpawner trialSpawner) {
             return new ElementTag(trialSpawner.getTrialSpawnerState());
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof Vault vault) {
             return new ElementTag(vault.getVaultState());
         }
-        return null; // Unreachable
+        return null;
     }
 
     @Override
@@ -113,8 +118,8 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
         else if (getBlockData() instanceof DaylightDetector daylightDetector) {
             daylightDetector.setInverted(value.asLowerString().equals("inverted"));
         }
-        else if (getBlockData() instanceof CommandBlock commandBlock) {
-            commandBlock.setConditional(value.asLowerString().equals("conditional"));
+        else if (getBlockData() instanceof CommandBlock cmdBlock) {
+            cmdBlock.setConditional(value.asLowerString().equals("conditional"));
         }
         else if (getBlockData() instanceof SculkSensor sculkSensor) {
             if (mechanism.requireEnum(SculkSensor.Phase.class)) {
@@ -134,6 +139,11 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkShrieker sculkShrieker) {
             sculkShrieker.setShrieking(value.asLowerString().equals("shrieking"));
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof CreakingHeart creakingHeart) {
+            if (mechanism.requireEnum(CreakingHeart.State.class)) {
+                creakingHeart.setCreakingHeartState(value.asEnum(CreakingHeart.State.class));
+            }
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof TrialSpawner trialSpawner) {
             if (mechanism.requireEnum(TrialSpawner.State.class)) {

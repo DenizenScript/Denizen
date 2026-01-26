@@ -80,32 +80,24 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "entity":
-                return entity.getDenizenObject();
-            case "duration":
-                return new DurationTag(event.getDuration());
-            case "source":
-                if (event instanceof EntityCombustByEntityEvent) {
-                    return new EntityTag(((EntityCombustByEntityEvent) event).getCombuster()).getDenizenObject();
+        return switch (name) {
+            case "entity" -> entity.getDenizenObject();
+            case "duration" -> new DurationTag(event.getDuration());
+            case "source" -> {
+                if (event instanceof EntityCombustByEntityEvent byEntityEvent) {
+                    yield new EntityTag(byEntityEvent.getCombuster()).getDenizenObject();
                 }
-                else if (event instanceof EntityCombustByBlockEvent) {
-                    Block combuster = ((EntityCombustByBlockEvent) event).getCombuster();
+                else if (event instanceof EntityCombustByBlockEvent byBlockEvent) {
+                    Block combuster = byBlockEvent.getCombuster();
                     if (combuster != null) {
-                        return new LocationTag(combuster.getLocation());
+                        yield new LocationTag(combuster.getLocation());
                     }
                 }
-                break;
-            case "source_type":
-                if (event instanceof EntityCombustByEntityEvent) {
-                    return new ElementTag("ENTITY");
-                }
-                else if (event instanceof EntityCombustByBlockEvent) {
-                    return new ElementTag("LOCATION");
-                }
-                return new ElementTag("NONE");
-        }
-        return super.getContext(name);
+                yield null;
+            }
+            case "source_type" -> new ElementTag(event instanceof EntityCombustByEntityEvent ? "ENTITY" : (event instanceof EntityCombustByBlockEvent ? "LOCATION" : "NONE"));
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

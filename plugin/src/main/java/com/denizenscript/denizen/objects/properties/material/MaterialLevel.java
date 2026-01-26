@@ -9,10 +9,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Brushable;
 import org.bukkit.block.data.Levelled;
-import org.bukkit.block.data.type.Beehive;
-import org.bukkit.block.data.type.Cake;
-import org.bukkit.block.data.type.Farmland;
-import org.bukkit.block.data.type.Snow;
+import org.bukkit.block.data.type.*;
 
 public class MaterialLevel extends MaterialProperty<ElementTag> {
 
@@ -32,6 +29,7 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
     // For farmland, this is the moisture level.
     // For composters, this is the amount of compost.
     // For brushable blocks (also referred to as "suspicious blocks"), this is the level of dusting. 1.20+ only.
+    // For dried ghasts, this is the level of hydration. 1.21+ only.
     // See also <@link tag MaterialTag.maximum_level> and <@link tag MaterialTag.minimum_level>.
     // -->
 
@@ -42,12 +40,34 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
                 || data instanceof Snow 
                 || data instanceof Farmland 
                 || data instanceof Beehive 
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && data instanceof Brushable);
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && data instanceof Brushable)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && data instanceof DriedGhast);
     }
 
     @Override
     public ElementTag getPropertyValue() {
-        return new ElementTag(getCurrent());
+        if (getBlockData() instanceof Cake cake) {
+            return new ElementTag(cake.getBites());
+        }
+        else if (getBlockData() instanceof Snow snow) {
+            return new ElementTag(snow.getLayers());
+        }
+        else if (getBlockData() instanceof Beehive beehive) {
+            return new ElementTag(beehive.getHoneyLevel());
+        }
+        else if (getBlockData() instanceof Farmland farmland) {
+            return new ElementTag(farmland.getMoisture());
+        }
+        else if (getBlockData() instanceof Levelled levelled) {
+            return new ElementTag(levelled.getLevel());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && getBlockData() instanceof Brushable brushable) {
+            return new ElementTag(brushable.getDusted());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof DriedGhast driedGhast) {
+            return new ElementTag(driedGhast.getHydration());
+        }
+        return null;
     }
 
     @Override
@@ -65,7 +85,27 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
             mechanism.echoError("Level value '" + level + "' is not valid. Must be between " + getMin() + " and " + getMax() + " for material '" + getBlockData().getMaterial().name() + "'.");
             return;
         }
-        setCurrent(level);
+        if (getBlockData() instanceof Cake cake) {
+            cake.setBites(level);
+        }
+        else if (getBlockData() instanceof Snow snow) {
+            snow.setLayers(level);
+        }
+        else if (getBlockData() instanceof Beehive beehive) {
+            beehive.setHoneyLevel(level);
+        }
+        else if (getBlockData() instanceof Farmland farmland) {
+            farmland.setMoisture(level);
+        }
+        else if (getBlockData() instanceof Levelled levelled) {
+            levelled.setLevel(level);
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && getBlockData() instanceof Brushable brushable) {
+            brushable.setDusted(level);
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof DriedGhast driedGhast) {
+            driedGhast.setHydration(level);
+        }
     }
 
     public static void register() {
@@ -96,112 +136,35 @@ public class MaterialLevel extends MaterialProperty<ElementTag> {
         autoRegister("level", MaterialLevel.class, ElementTag.class, false);
     }
 
-    public Levelled getLevelled() {
-        return (Levelled) getBlockData();
-    }
-
-    public boolean isCake() {
-        return getBlockData() instanceof Cake;
-    }
-
-    public Cake getCake() {
-        return (Cake) getBlockData();
-    }
-
-    public boolean isSnow() {
-        return getBlockData() instanceof Snow;
-    }
-
-    public Snow getSnow() {
-        return (Snow) getBlockData();
-    }
-
-    public boolean isHive() {
-        return getBlockData() instanceof Beehive;
-    }
-
-    public Beehive getHive() {
-        return (Beehive) getBlockData();
-    }
-
-    public boolean isFarmland() {
-        return getBlockData() instanceof Farmland;
-    }
-
-    public Farmland getFarmland() {
-        return (Farmland) getBlockData();
-    }
-
-    public boolean isBrushable() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && getBlockData() instanceof Brushable;
-    }
-
-    public int getCurrent() {
-        if (isCake()) {
-            return getCake().getBites();
-        }
-        else if (isSnow()) {
-            return getSnow().getLayers();
-        }
-        else if (isHive()) {
-            return getHive().getHoneyLevel();
-        }
-        else if (isFarmland()) {
-            return getFarmland().getMoisture();
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
-            return ((Brushable) getBlockData()).getDusted();
-        }
-        return getLevelled().getLevel();
-    }
-
     public int getMax() {
-        if (isCake()) {
-            return getCake().getMaximumBites();
+        if (getBlockData() instanceof Cake cake) {
+            return cake.getMaximumBites();
         }
-        else if (isSnow()) {
-            return getSnow().getMaximumLayers();
+        else if (getBlockData() instanceof Snow snow) {
+            return snow.getMaximumLayers();
         }
-        else if (isHive()) {
-            return getHive().getMaximumHoneyLevel();
+        else if (getBlockData() instanceof Beehive beehive) {
+            return beehive.getMaximumHoneyLevel();
         }
-        else if (isFarmland()) {
-            return getFarmland().getMaximumMoisture();
+        else if (getBlockData() instanceof Farmland farmland) {
+            return farmland.getMaximumMoisture();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
-            return ((Brushable) getBlockData()).getMaximumDusted();
+        else if (getBlockData() instanceof Levelled levelled) {
+            return levelled.getMaximumLevel();
         }
-        return getLevelled().getMaximumLevel();
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && getBlockData() instanceof Brushable brushable) {
+            return brushable.getMaximumDusted();
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof DriedGhast driedGhast) {
+            return driedGhast.getMaximumHydration();
+        }
+        throw new UnsupportedOperationException();
     }
 
     public int getMin() {
-        if (isSnow()) {
-            return getSnow().getMinimumLayers();
+        if (getBlockData() instanceof Snow snow) {
+            return snow.getMinimumLayers();
         }
         return 0;
-    }
-
-    public void setCurrent(int level) {
-        if (isCake()) {
-            getCake().setBites(level);
-            return;
-        }
-        else if (isSnow()) {
-            getSnow().setLayers(level);
-            return;
-        }
-        else if (isHive()) {
-            getHive().setHoneyLevel(level);
-            return;
-        }
-        else if (isFarmland()) {
-            getFarmland().setMoisture(level);
-            return;
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && isBrushable()) {
-            ((Brushable) getBlockData()).setDusted(level);
-            return;
-        }
-        getLevelled().setLevel(level);
     }
 }
