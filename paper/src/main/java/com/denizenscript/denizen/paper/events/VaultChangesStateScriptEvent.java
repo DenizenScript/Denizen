@@ -10,7 +10,7 @@ import io.papermc.paper.event.block.VaultChangeStateEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class VaultChangeStateScriptEvent extends BukkitScriptEvent implements Listener {
+public class VaultChangesStateScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -24,7 +24,7 @@ public class VaultChangeStateScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Location true
     //
-    // @Triggers when a vault block's state changes. A list of states can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/data/type/TrialSpawner.State.html>.
+    // @Triggers when a vault block's state changes. A list of states can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/data/type/Vault.State.html>.
     //
     // @Context
     // <context.location> returns the LocationTag of the vault block.
@@ -35,7 +35,7 @@ public class VaultChangeStateScriptEvent extends BukkitScriptEvent implements Li
     //
     // -->
 
-    public VaultChangeStateScriptEvent() {
+    public VaultChangesStateScriptEvent() {
         registerCouldMatcher("vault changes state");
     }
 
@@ -66,7 +66,7 @@ public class VaultChangeStateScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @EventHandler
-    public void onVaultChangeStateEvent(VaultChangeStateEvent event) {
+    public void onVaultChangesStateEvent(VaultChangeStateEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
         this.event = event;
         fire(event);

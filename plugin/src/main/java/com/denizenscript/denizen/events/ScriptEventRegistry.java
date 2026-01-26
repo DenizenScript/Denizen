@@ -69,7 +69,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BlockCooksSmeltsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockDestroyedByExplosionEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            ScriptEvent.registerScriptEvent(BlockDispenseLootScriptEvent.class);
+            ScriptEvent.registerScriptEvent(BlockDispensesLootScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(BlockDispensesScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockEquipsItemScriptEvent.class);

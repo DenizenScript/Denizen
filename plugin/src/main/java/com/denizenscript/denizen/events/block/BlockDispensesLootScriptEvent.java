@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockDispenseLootScriptEvent extends BukkitScriptEvent implements Listener {
+public class BlockDispensesLootScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -31,7 +31,7 @@ public class BlockDispenseLootScriptEvent extends BukkitScriptEvent implements L
     // @Triggers when a block dispenses loot containing multiple items.
     //
     // @Context
-    // <context.loot> returns a ListTag(ItemTag) of outcome items.
+    // <context.loot> returns a ListTag(ItemTag) of loot items.
     // <context.location> returns a LocationTag of the block that is dispensing the items.
     //
     // @Determine
@@ -39,9 +39,9 @@ public class BlockDispenseLootScriptEvent extends BukkitScriptEvent implements L
     //
     // -->
 
-    public BlockDispenseLootScriptEvent() {
+    public BlockDispensesLootScriptEvent() {
         registerCouldMatcher("loot dispenses from <block>");
-        this.<BlockDispenseLootScriptEvent, ListTag>registerDetermination("loot", ListTag.class, (evt, context, input) -> {
+        this.<BlockDispensesLootScriptEvent, ListTag>registerDetermination("loot", ListTag.class, (evt, context, input) -> {
             List<ItemStack> items = new ArrayList<>(input.size());
             for (ItemTag item : input.filter(ItemTag.class, context)) {
                 items.add(item.getItemStack());
@@ -80,7 +80,7 @@ public class BlockDispenseLootScriptEvent extends BukkitScriptEvent implements L
     }
 
     @EventHandler
-    public void onBlockLootDispense(BlockDispenseLootEvent event) {
+    public void onBlockDispensesLoot(BlockDispenseLootEvent event) {
         block = new MaterialTag(event.getBlock().getType());
         location = new LocationTag(event.getBlock().getLocation());
         this.event = event;

@@ -104,7 +104,7 @@ public class PaperModule {
         }
         ScriptEvent.registerScriptEvent(UnknownCommandScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            ScriptEvent.registerScriptEvent(VaultChangeStateScriptEvent.class);
+            ScriptEvent.registerScriptEvent(VaultChangesStateScriptEvent.class);
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             ScriptEvent.registerScriptEvent(WardenChangesAngerLevelScriptEvent.class);

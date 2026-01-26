@@ -27,26 +27,28 @@ public class VaultDisplayItemScriptEvent extends BukkitScriptEvent implements Li
     // <context.item> returns the ItemTag being displayed.
     //
     // @Determine
-    // ItemTag to set the item being displayed.
+    // "ITEM:<ItemTag>" to set the item being displayed.
     //
     // -->
 
     public VaultDisplayItemScriptEvent() {
         registerCouldMatcher("vault displays <item>");
-        this.<VaultDisplayItemScriptEvent, ItemTag>registerDetermination(null, ItemTag.class, (evt, context, input) -> {
-            evt.event.setDisplayItem(input.getItemStack());
+        this.<VaultDisplayItemScriptEvent, ItemTag>registerDetermination("item", ItemTag.class, (evt, context, input) -> {
+            evt.item = input;
+            evt.event.setDisplayItem(item.getItemStack());
         });
     }
 
     public LocationTag location;
     public VaultDisplayItemEvent event;
+    public ItemTag item;
 
     @Override
     public boolean matches(ScriptPath path) {
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!path.tryArgObject(2, new ItemTag(event.getDisplayItem()))) {
+        if (!path.tryArgObject(2, item)) {
             return false;
         }
         return super.matches(path);
@@ -55,7 +57,7 @@ public class VaultDisplayItemScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "item" -> new ItemTag(event.getDisplayItem());
+            case "item" -> item;
             case "location" -> location;
             default -> super.getContext(name);
         };
@@ -64,6 +66,7 @@ public class VaultDisplayItemScriptEvent extends BukkitScriptEvent implements Li
     @EventHandler
     public void onVaultDisplayItemEvent(VaultDisplayItemEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
+        item = new ItemTag(event.getDisplayItem());
         this.event = event;
         fire(event);
     }
