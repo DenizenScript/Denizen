@@ -35,6 +35,17 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
 
     public FurnaceBurnsItemScriptEvent() {
         registerCouldMatcher("furnace burns <item>");
+        this.<FurnaceBurnsItemScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, time) -> {
+            if (time instanceof ElementTag elementTag && elementTag.isInt()) { // Backwards compatibility for non-duration tick input
+                evt.event.setBurnTime(elementTag.asInt());
+                return true;
+            }
+            else if (time.canBeType(DurationTag.class)) {
+                evt.event.setBurnTime(time.asType(DurationTag.class, context).getTicksAsInt());
+                return true;
+            }
+            return false;
+        });
     }
 
     public ItemTag item;
@@ -53,29 +64,16 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            event.setBurnTime(element.asInt());
-            return true;
-        }
-        else if (determinationObj.canBeType(DurationTag.class)) {
-            event.setBurnTime(determinationObj.asType(DurationTag.class, getTagContext(path)).getTicksAsInt());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "item": return item;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "item" -> item;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
-    public void onBrews(FurnaceBurnEvent event) {
+    public void onFurnaceBurns(FurnaceBurnEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
         item = new ItemTag(event.getFuel());
         this.event = event;
