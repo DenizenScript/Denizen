@@ -22,7 +22,7 @@ public class EntityItem extends EntityProperty<ItemTag> {
     // - an eye-of-ender's item, which is both displayed and dropped.
     // - a fireball's display item.
     // - an item display's display item.
-    // - an ominous item's display item.
+    // - an ominous item spawner's display item.
     // -->
 
     public static boolean describes(EntityTag object) {
