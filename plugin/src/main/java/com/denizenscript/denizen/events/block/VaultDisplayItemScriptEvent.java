@@ -34,8 +34,7 @@ public class VaultDisplayItemScriptEvent extends BukkitScriptEvent implements Li
     public VaultDisplayItemScriptEvent() {
         registerCouldMatcher("vault displays <item>");
         this.<VaultDisplayItemScriptEvent, ItemTag>registerDetermination("item", ItemTag.class, (evt, context, input) -> {
-            evt.item = input;
-            evt.event.setDisplayItem(item.getItemStack());
+            evt.event.setDisplayItem(input.getItemStack());
         });
     }
 
