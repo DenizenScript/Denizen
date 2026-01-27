@@ -28,7 +28,7 @@ public class EntityState extends EntityProperty<ElementTag> {
 
     @Override
     public boolean isDefaultValue(ElementTag val) {
-        return val.asLowerString().equals("idle");
+        return val.asEnum(ArmadilloState.class).equals(ArmadilloState.IDLE);
     }
 
     @Override
