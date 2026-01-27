@@ -23,7 +23,7 @@ public class EntityState extends EntityProperty<ElementTag> {
     }
 
     public enum ArmadilloState {
-        IDLE, ROLLING, SCARED, UNROLLING;
+        IDLE, ROLLING, SCARED, UNROLLING
     }
 
     @Override
