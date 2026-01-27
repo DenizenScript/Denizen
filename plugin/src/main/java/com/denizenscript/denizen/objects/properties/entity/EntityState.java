@@ -28,7 +28,7 @@ public class EntityState extends EntityProperty<ElementTag> {
 
     @Override
     public boolean isDefaultValue(ElementTag val) {
-        return NMSHandler.entityHelper.getArmadilloState(as(Armadillo.class)).equals(ArmadilloState.IDLE);
+        return val.asLowerString().equals("idle");
     }
 
     @Override
