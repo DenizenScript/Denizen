@@ -57,7 +57,7 @@ public class VaultDisplayItemScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "item" -> item;
+            case "item" -> new ItemTag(event.getDisplayItem());
             case "location" -> location;
             default -> super.getContext(name);
         };
