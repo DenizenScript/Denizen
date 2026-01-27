@@ -243,7 +243,8 @@ public class ItemHelperImpl extends ItemHelper {
         Ingredient templateItemRecipe = templateItem.length == 0 ? null : itemArrayToRecipe(templateItem, templateExact);
         Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
         Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
-        SmithingTransformRecipe recipe = new SmithingTransformRecipe(Optional.ofNullable(templateItemRecipe), baseItemRecipe, Optional.of(upgradeItemRecipe), new TransmuteResult(CraftItemStack.asNMSCopy(result).getItem()));
+        net.minecraft.world.item.ItemStack nmsCopy = CraftItemStack.asNMSCopy(result);
+        SmithingTransformRecipe recipe = new SmithingTransformRecipe(Optional.ofNullable(templateItemRecipe), baseItemRecipe, Optional.of(upgradeItemRecipe), new TransmuteResult(nmsCopy.getItemHolder(), nmsCopy.getCount(), nmsCopy.getComponentsPatch()));
         RecipeHolder<SmithingTransformRecipe> holder = new RecipeHolder<>(key, recipe);
         getRecipeManager().addRecipe(holder);
     }
