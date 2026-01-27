@@ -15,7 +15,7 @@ public class EntityState extends EntityProperty<ElementTag> {
     // @description
     // Controls the current state of an armadillo.
     // Valid states are IDLE, ROLLING, SCARED, and UNROLLING.
-    // The entity may roll or unroll due to normal vanilla conditions. If this is not desired, disable <@link mechanism EntityTag.has_ai>.
+    // The entity may roll or unroll due to normal vanilla conditions. If this is not desired, disable <@link property EntityTag.has_ai>.
     // -->
 
     public static boolean describes(EntityTag entity) {
@@ -24,6 +24,11 @@ public class EntityState extends EntityProperty<ElementTag> {
 
     public enum ArmadilloState {
         IDLE, ROLLING, SCARED, UNROLLING;
+    }
+
+    @Override
+    public boolean isDefaultValue(ElementTag val) {
+        return NMSHandler.entityHelper.getArmadilloState(as(Armadillo.class)).equals(ArmadilloState.IDLE);
     }
 
     @Override

@@ -867,6 +867,6 @@ public class EntityHelperImpl extends EntityHelper {
             case ROLLING -> Armadillo.ArmadilloState.ROLLING;
             case SCARED -> Armadillo.ArmadilloState.SCARED;
             case UNROLLING -> Armadillo.ArmadilloState.UNROLLING;
-            });
+        });
     }
 }
