@@ -10,7 +10,6 @@ import com.denizenscript.denizen.objects.properties.entity.EntityState;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.commands.core.ReflectionSetCommand;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
