@@ -28,14 +28,20 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.new_current> returns what the redstone power level is becoming.
     //
     // @Determine
-    // ElementTag (Number) set the current value to a specific value.
+    // ElementTag(Number) set the current value to a specific value.
     //
     // -->
 
     public RedstoneScriptEvent() {
         registerCouldMatcher("redstone recalculated");
+        this.<RedstoneScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, power) -> {
+            if (power.isInt()) {
+                evt.event.setNewCurrent(power.asInt());
+                return true;
+            }
+            return false;
+        });
     }
-
 
     public LocationTag location;
     public BlockRedstoneEvent event;
@@ -49,22 +55,13 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            event.setNewCurrent(element.asInt());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "old_current": return new ElementTag(event.getOldCurrent());
-            case "new_current": return new ElementTag(event.getNewCurrent());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "old_current" -> new ElementTag(event.getOldCurrent());
+            case "new_current" -> new ElementTag(event.getNewCurrent());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

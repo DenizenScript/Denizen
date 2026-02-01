@@ -7,6 +7,7 @@ import com.denizenscript.denizen.nms.v1_21.Handler;
 import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.properties.entity.EntityState;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
@@ -45,6 +46,7 @@ import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.animal.armadillo.Armadillo;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
@@ -842,5 +844,27 @@ public class EntityHelperImpl extends EntityHelper {
         UUID uuid = nmsEntity.getUUID();
         Handler.useValueInput(nmsMergedTag, nmsEntity::load);
         nmsEntity.setUUID(uuid);
+    }
+
+    @Override
+    public EntityState.ArmadilloState getArmadilloState(org.bukkit.entity.Armadillo entity) {
+        Armadillo armadillo = (Armadillo) ((CraftEntity) entity).getHandle();
+        return switch (armadillo.getState()) {
+            case IDLE -> EntityState.ArmadilloState.IDLE;
+            case ROLLING -> EntityState.ArmadilloState.ROLLING;
+            case SCARED -> EntityState.ArmadilloState.SCARED;
+            case UNROLLING -> EntityState.ArmadilloState.UNROLLING;
+        };
+    }
+
+    @Override
+    public void setArmadilloState(org.bukkit.entity.Armadillo entity, EntityState.ArmadilloState state) {
+        Armadillo armadillo = (Armadillo) ((CraftEntity) entity).getHandle();
+        armadillo.switchToState(switch (state) {
+            case IDLE -> Armadillo.ArmadilloState.IDLE;
+            case ROLLING -> Armadillo.ArmadilloState.ROLLING;
+            case SCARED -> Armadillo.ArmadilloState.SCARED;
+            case UNROLLING -> Armadillo.ArmadilloState.UNROLLING;
+        });
     }
 }

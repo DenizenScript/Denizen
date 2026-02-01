@@ -856,12 +856,13 @@ public class ItemTag implements ObjectTag, Adjustable, FlaggableObject {
                 return BukkitScriptEvent.coreFlaggedCheck(matcher.substring("item_flagged:".length()), getFlagTracker());
             }
             else if (matcherLow.startsWith("item_enchanted:")) {
-                String enchMatcher = matcher.substring("item_enchanted:".length());
+                String enchMatcherStr = matcher.substring("item_enchanted:".length());
                 if (getBukkitMaterial().isAir() || !getItemMeta().hasEnchants()) {
                     return false;
                 }
+                ScriptEvent.MatchHelper enchMatcher = ScriptEvent.createMatcher(enchMatcherStr);
                 for (Enchantment enchant : getItemMeta().getEnchants().keySet()) {
-                    if (BukkitScriptEvent.runGenericCheck(enchMatcher, enchant.getKey().getKey())) {
+                    if (enchMatcher.doesMatch(enchant.getKey().getKey()) || enchMatcher.doesMatch(enchant.getKey().toString())) {
                         return true;
                     }
                 }
