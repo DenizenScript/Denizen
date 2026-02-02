@@ -1677,6 +1677,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the movement velocity of the entity.
         // Note: Does not accurately calculate player clientside movement velocity.
+        // @example
+        // # Narrates the linked player's server side velocity.
+        // # To run this in-game: /ex narrate <player.velocity>
+        // - narrate <player.velocity>
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "velocity", (attribute, object) -> {
             return new LocationTag(object.getBukkitEntity().getVelocity().toLocation(object.getBukkitEntity().getWorld()));
