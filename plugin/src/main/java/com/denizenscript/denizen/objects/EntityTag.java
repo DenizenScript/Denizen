@@ -1692,6 +1692,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @group location
         // @description
         // Returns the world the entity is in. Works with offline players.
+        // @example
+        // # Narrates the world's name that the Entity is in.
+        // # To run this in-game: /ex narrate <player.world.name>
+        // - narrate <player.world.name>
         // -->
         registerSpawnedOnlyTag(WorldTag.class, "world", (attribute, object) -> {
             return new WorldTag(object.getBukkitEntity().getWorld());
