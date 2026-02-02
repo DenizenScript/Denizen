@@ -2347,7 +2347,10 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism EntityTag.glowing
         // @group attributes
         // @description
-        // Returns whether this entity is glowing.
+        // Returns whether this entity is glowing (Has an outline around them).
+        // @example
+        // # Narrate's if the player is glowing. (True / False)
+        // - narrate <player.glowing>
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "glowing", (attribute, object) -> {
             return new ElementTag(object.getBukkitEntity().isGlowing());
