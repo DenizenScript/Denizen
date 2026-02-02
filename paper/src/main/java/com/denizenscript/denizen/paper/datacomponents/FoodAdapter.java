@@ -6,7 +6,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.FoodProperties;
 
-public class FoodAdapter extends DataComponentAdapter<FoodProperties, MapTag> {
+public class FoodAdapter extends DataComponentAdapter.Valued<MapTag, FoodProperties> {
 
     // <--[property]
     // @object ItemTag
@@ -18,10 +18,12 @@ public class FoodAdapter extends DataComponentAdapter<FoodProperties, MapTag> {
     // - "nutrition", ElementTag(Number) representing the amount of food points restored by this item.
     // - "saturation", ElementTag(Decimal) representing the amount of saturation points restored by this item.
     // - "can_always_eat", ElementTag(Boolean) controlling whether the item can always be eaten, even if the player isn't hungry.
+    // @mechanism
+    // Provide no input to reset the item to its default value.
     // -->
 
     public FoodAdapter() {
-        super(DataComponentTypes.FOOD, MapTag.class, "food");
+        super(MapTag.class, DataComponentTypes.FOOD, "food");
     }
 
     @Override

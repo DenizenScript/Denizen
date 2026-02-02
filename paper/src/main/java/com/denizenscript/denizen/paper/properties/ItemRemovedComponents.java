@@ -8,14 +8,14 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import io.papermc.paper.datacomponent.DataComponentType;
 
-public class ItemRemoved extends ItemProperty<ListTag> {
+public class ItemRemovedComponents extends ItemProperty<ListTag> {
 
     // <--[property]
     // @object ItemTag
-    // @name removed
+    // @name removed_components
     // @input ListTag
     // @description
-    // Controls the properties explicitly removed from an item.
+    // Controls the item components explicitly removed from an item.
     // This can be used to remove item's default behavior, such as making consumable items non-consumable.
     // See also <@link language Item Components>.
     // -->
@@ -24,11 +24,13 @@ public class ItemRemoved extends ItemProperty<ListTag> {
         return !item.getItemStack().isEmpty();
     }
 
+    public boolean isRemoved(DataComponentType componentType) {
+        return getItemStack().isDataOverridden(componentType) && !getItemStack().hasData(componentType);
+    }
+
     @Override
     public ListTag getPropertyValue() {
-        return new ListTag(getMaterial().getDefaultDataTypes(),
-                componentType -> getItemStack().isDataOverridden(componentType) && !getItemStack().hasData(componentType),
-                componentType -> new ElementTag(componentType.key().asMinimalString(), true));
+        return new ListTag(getMaterial().getDefaultDataTypes(), this::isRemoved, componentType -> new ElementTag(componentType.key().asMinimalString(), true));
     }
 
     @Override
@@ -38,6 +40,11 @@ public class ItemRemoved extends ItemProperty<ListTag> {
 
     @Override
     public void setPropertyValue(ListTag value, Mechanism mechanism) {
+        for (DataComponentType componentType : getMaterial().getDefaultDataTypes()) {
+            if (isRemoved(componentType)) {
+                getItemStack().resetData(componentType);
+            }
+        }
         for (String input : value) {
             DataComponentType componentType = DataComponentAdapter.getComponentType(input);
             if (componentType == null) {
@@ -50,10 +57,10 @@ public class ItemRemoved extends ItemProperty<ListTag> {
 
     @Override
     public String getPropertyId() {
-        return "removed";
+        return "removed_components";
     }
 
     public static void register() {
-        autoRegister("removed", ItemRemoved.class, ListTag.class, false);
+        autoRegister("removed_components", ItemRemovedComponents.class, ListTag.class, false);
     }
 }

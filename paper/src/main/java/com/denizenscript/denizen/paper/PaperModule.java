@@ -133,7 +133,7 @@ public class PaperModule {
 
         // Component adapters
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            PropertyParser.registerProperty(ItemRemoved.class, ItemTag.class);
+            PropertyParser.registerProperty(ItemRemovedComponents.class, ItemTag.class);
             ComponentAdaptersRegistry.register();
         }
 

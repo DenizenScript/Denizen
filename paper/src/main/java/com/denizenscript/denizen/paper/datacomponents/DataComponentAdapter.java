@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import io.papermc.paper.datacomponent.DataComponentType;
 import org.bukkit.Registry;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +20,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public abstract class DataComponentAdapter<TP, TD extends ObjectTag> {
-    
+public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends DataComponentType> {
+
     // <--[language]
     // @name Item Components
     // @group Minecraft Logic
@@ -43,8 +44,8 @@ public abstract class DataComponentAdapter<TP, TD extends ObjectTag> {
     // - adjust def:apple removed:food
     // # This check will pass, as the apple's "food" component is overridden to have no value.
     // - if <[apple].is_overridden[food]>:
-    //   - narrate "The apple has a changed food component! It will behave differently to a normal apple."
-    // # We reset the apple item's food component, making it a normal apple.
+    //   - narrate "The apple has a modified food component! It will behave differently to a normal apple."
+    // # We reset the apple item's food component by adjusting with no value, making it a normal apple.
     // - adjust def:apple food:
     // </code>
     // -->
@@ -61,13 +62,13 @@ public abstract class DataComponentAdapter<TP, TD extends ObjectTag> {
         return componentType;
     }
 
-    public static <TP, TD extends ObjectTag> void register(DataComponentAdapter<TP, TD> adapter) {
+    public static void register(DataComponentAdapter<?, ?> adapter) {
         DataComponentAdapter.Property.currentlyRegisteringComponentAdapter = adapter;
         PropertyParser.registerPropertyGetter(
                 item -> !item.getItemStack().isEmpty() ? adapter.new Property(item) : null,
                 ItemTag.class, EMPTY_STRING_ARRAY, EMPTY_STRING_ARRAY, DataComponentAdapter.Property.class);
         DataComponentAdapter.Property.currentlyRegisteringComponentAdapter = null;
-        String componentName = adapter.componentType.key().value();
+        String componentName = adapter.componentType.key().asMinimalString();
         ItemComponentsPatch.registerHandledComponent(componentName);
         if (!adapter.name.equals(componentName)) {
             COMPONENTS_BY_PROPERTY.put(adapter.name, adapter.componentType);
@@ -92,34 +93,94 @@ public abstract class DataComponentAdapter<TP, TD extends ObjectTag> {
         });
     }
 
-    public final DataComponentType.Valued<TP> componentType;
-    public final Class<TD> denizenType;
+    public final CT componentType;
+    public final Class<DT> denizenType;
     public final String name;
 
-    public DataComponentAdapter(DataComponentType.Valued<TP> componentType, Class<TD> denizenType, String name) {
+    public DataComponentAdapter(CT componentType, Class<DT> denizenType, String name) {
         this.componentType = componentType;
         this.denizenType = denizenType;
         this.name = name;
     }
 
-    public abstract TD toDenizen(TP value);
+    public abstract DT getValue(ItemStack item);
 
-    public abstract TP toPaper(TD value, Mechanism mechanism);
+    public abstract void setValue(ItemStack item, DT value, Mechanism mechanism);
 
-    public static <T> void setIfValid(Consumer<T> setter, MapTag data, String key, String type, Predicate<ElementTag> checker, Function<ElementTag, T> converter, Mechanism mechanism) {
-        ElementTag value = data.getElement(key);
-        if (value == null) {
-            return;
-        }
-        T converted;
-        if (!checker.test(value) || (converted = converter.apply(value)) == null) {
-            mechanism.echoError("Invalid '" + key + "' specified: must be a " + type + '.');
-            return;
-        }
-        setter.accept(converted);
+    public boolean isDefaultValue(DT value) {
+        return false;
     }
 
-    public class Property extends ItemProperty<TD> {
+    public static abstract class NonValued extends DataComponentAdapter<ElementTag, DataComponentType.NonValued> {
+
+        public NonValued(DataComponentType.NonValued componentType, String name) {
+            super(componentType, ElementTag.class, name);
+        }
+
+        @Override
+        public ElementTag getValue(ItemStack item) {
+            return new ElementTag(item.hasData(componentType));
+        }
+
+        @Override
+        public void setValue(ItemStack item, ElementTag value, Mechanism mechanism) {
+            if (!mechanism.requireBoolean()) {
+                return;
+            }
+            if (value.asBoolean()) {
+                item.setData(componentType);
+            }
+            else {
+                item.unsetData(componentType);
+            }
+        }
+
+        // Overridden and false = removed, managed by ItemTag.removed
+        @Override
+        public boolean isDefaultValue(ElementTag value) {
+            return !value.asBoolean();
+        }
+    }
+
+    public static abstract class Valued<TD extends ObjectTag, TP> extends DataComponentAdapter<TD, DataComponentType.Valued<TP>> {
+
+        public static <T> void setIfValid(Consumer<T> setter, MapTag data, String key, String type, Predicate<ElementTag> checker, Function<ElementTag, T> converter, Mechanism mechanism) {
+            ElementTag value = data.getElement(key);
+            if (value == null) {
+                return;
+            }
+            T converted;
+            if (!checker.test(value) || (converted = converter.apply(value)) == null) {
+                mechanism.echoError("Invalid '" + key + "' specified: must be a " + type + '.');
+                return;
+            }
+            setter.accept(converted);
+        }
+
+        public Valued(Class<TD> denizenType, DataComponentType.Valued<TP> componentType, String name) {
+            super(componentType, denizenType, name);
+        }
+
+        public abstract TD toDenizen(TP value);
+
+        public abstract TP toPaper(TD value, Mechanism mechanism);
+
+        @Override
+        public TD getValue(ItemStack item) {
+            TP data = item.getData(componentType);
+            return data != null ? toDenizen(data) : null;
+        }
+
+        @Override
+        public void setValue(ItemStack item, TD value, Mechanism mechanism) {
+            TP converted = toPaper(value, mechanism);
+            if (converted != null) {
+                item.setData(componentType, converted);
+            }
+        }
+    }
+
+    public class Property extends ItemProperty<DT> {
 
         private static DataComponentAdapter<?, ?> currentlyRegisteringComponentAdapter;
 
@@ -128,26 +189,30 @@ public abstract class DataComponentAdapter<TP, TD extends ObjectTag> {
         }
 
         @Override
-        public TD getPropertyValue() {
-            TP internalValue = getItemStack().getData(componentType);
-            return internalValue == null ? null : toDenizen(internalValue);
+        public DT getPropertyValue() {
+            return getValue(getItemStack());
         }
 
         @Override
-        public TD getPropertyValueNoDefault() {
-            return getItemStack().isDataOverridden(componentType) ? getPropertyValue() : null;
+        public DT getPropertyValueNoDefault() {
+            if (!getItemStack().isDataOverridden(componentType)) {
+                return null;
+            }
+            return super.getPropertyValueNoDefault();
         }
 
         @Override
-        public void setPropertyValue(TD value, Mechanism mechanism) {
+        public boolean isDefaultValue(DT value) {
+            return DataComponentAdapter.this.isDefaultValue(value);
+        }
+
+        @Override
+        public void setPropertyValue(DT value, Mechanism mechanism) {
             if (value == null) {
                 getItemStack().resetData(componentType);
                 return;
             }
-            TP converted = toPaper(value, mechanism);
-            if (converted != null) {
-                getItemStack().setData(componentType, converted);
-            }
+            setValue(getItemStack(), value, mechanism);
         }
 
         @Override
