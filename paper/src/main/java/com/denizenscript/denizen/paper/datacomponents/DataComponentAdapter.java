@@ -41,7 +41,7 @@ public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends Data
     // # We define a default apple item
     // - define apple <item[apple]>
     // # We remove the apple's "food" component, making eating it restore no food points (it is still consumable due to the "consumable" component).
-    // - adjust def:apple removed:food
+    // - adjust def:apple remove_component:food
     // # This check will pass, as the apple's "food" component is overridden to have no value.
     // - if <[apple].is_overridden[food]>:
     //   - narrate "The apple has a modified food component! It will behave differently to a normal apple."
@@ -135,7 +135,7 @@ public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends Data
             }
         }
 
-        // Overridden and false = removed, managed by ItemTag.removed
+        // Overridden and false = removed, managed by ItemTag.removed_components
         @Override
         public boolean isDefaultValue(ElementTag value) {
             return !value.asBoolean();

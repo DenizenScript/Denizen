@@ -6,6 +6,7 @@ import com.denizenscript.denizen.paper.datacomponents.DataComponentAdapter;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import io.papermc.paper.datacomponent.DataComponentType;
 
 public class ItemRemovedComponents extends ItemProperty<ListTag> {
@@ -17,7 +18,8 @@ public class ItemRemovedComponents extends ItemProperty<ListTag> {
     // @description
     // Controls the item components explicitly removed from an item.
     // This can be used to remove item's default behavior, such as making consumable items non-consumable.
-    // See also <@link language Item Components>.
+    // Use <@link mechanism ItemTag.remove_component> to remove a single component.
+    // See <@link language Item Components> for more information.
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -62,5 +64,23 @@ public class ItemRemovedComponents extends ItemProperty<ListTag> {
 
     public static void register() {
         autoRegister("removed_components", ItemRemovedComponents.class, ListTag.class, false);
+
+        // <--[mechanism]
+        // @object ItemTag
+        // @name remove_component
+        // @input ElementTag
+        // @description
+        // Removes the specified item component from the item, see <@link language Item Components> for more information.
+        // This can be used to remove item's default behavior, such as making consumable items non-consumable.
+        // See also <@link property ItemTag.removed_components>.
+        // -->
+        PropertyParser.registerMechanism(ItemRemovedComponents.class, ElementTag.class, "remove_component", (prop, mechanism, input) -> {
+            DataComponentType componentType = DataComponentAdapter.getComponentType(input.asString());
+            if (componentType == null) {
+                mechanism.echoError("Invalid type to remove '" + input + "' specified: must be a valid property or item component name.");
+                return;
+            }
+            prop.getItemStack().unsetData(componentType);
+        });
     }
 }
