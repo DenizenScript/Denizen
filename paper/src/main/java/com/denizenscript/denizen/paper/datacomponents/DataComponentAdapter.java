@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends DataComponentType> {
+public abstract class DataComponentAdapter<D extends ObjectTag, C extends DataComponentType> {
 
     // <--[language]
     // @name Item Components
@@ -93,21 +93,21 @@ public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends Data
         });
     }
 
-    public final CT componentType;
-    public final Class<DT> denizenType;
+    public final C componentType;
+    public final Class<D> denizenType;
     public final String name;
 
-    public DataComponentAdapter(CT componentType, Class<DT> denizenType, String name) {
+    public DataComponentAdapter(C componentType, Class<D> denizenType, String name) {
         this.componentType = componentType;
         this.denizenType = denizenType;
         this.name = name;
     }
 
-    public abstract DT getValue(ItemStack item);
+    public abstract D getValue(ItemStack item);
 
-    public abstract void setValue(ItemStack item, DT value, Mechanism mechanism);
+    public abstract void setValue(ItemStack item, D value, Mechanism mechanism);
 
-    public boolean isDefaultValue(DT value) {
+    public boolean isDefaultValue(D value) {
         return false;
     }
 
@@ -142,10 +142,10 @@ public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends Data
         }
     }
 
-    public static abstract class Valued<TD extends ObjectTag, TP> extends DataComponentAdapter<TD, DataComponentType.Valued<TP>> {
+    public static abstract class Valued<D extends ObjectTag, P> extends DataComponentAdapter<D, DataComponentType.Valued<P>> {
 
-        public static <T, TD extends ObjectTag> void setIfValid(Consumer<T> setter, MapTag data, String key, Class<TD> objectType, Predicate<TD> checker, Function<TD, T> converter, String type, Mechanism mechanism) {
-            TD value = data.getObjectAs(key, objectType, mechanism.context);
+        public static <T, D extends ObjectTag> void setIfValid(Consumer<T> setter, MapTag data, String key, Class<D> objectType, Predicate<D> checker, Function<D, T> converter, String type, Mechanism mechanism) {
+            D value = data.getObjectAs(key, objectType, mechanism.context);
             if (value == null) {
                 return;
             }
@@ -157,30 +157,30 @@ public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends Data
             setter.accept(converted);
         }
 
-        public Valued(Class<TD> denizenType, DataComponentType.Valued<TP> componentType, String name) {
+        public Valued(Class<D> denizenType, DataComponentType.Valued<P> componentType, String name) {
             super(componentType, denizenType, name);
         }
 
-        public abstract TD toDenizen(TP value);
+        public abstract D toDenizen(P value);
 
-        public abstract TP fromDenizen(TD value, Mechanism mechanism);
+        public abstract P fromDenizen(D value, Mechanism mechanism);
 
         @Override
-        public TD getValue(ItemStack item) {
-            TP data = item.getData(componentType);
+        public D getValue(ItemStack item) {
+            P data = item.getData(componentType);
             return data != null ? toDenizen(data) : null;
         }
 
         @Override
-        public void setValue(ItemStack item, TD value, Mechanism mechanism) {
-            TP converted = fromDenizen(value, mechanism);
+        public void setValue(ItemStack item, D value, Mechanism mechanism) {
+            P converted = fromDenizen(value, mechanism);
             if (converted != null) {
                 item.setData(componentType, converted);
             }
         }
     }
 
-    public class Property extends ItemProperty<DT> {
+    public class Property extends ItemProperty<D> {
 
         private static DataComponentAdapter<?, ?> currentlyRegisteringComponentAdapter;
 
@@ -189,12 +189,12 @@ public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends Data
         }
 
         @Override
-        public DT getPropertyValue() {
+        public D getPropertyValue() {
             return getValue(getItemStack());
         }
 
         @Override
-        public DT getPropertyValueNoDefault() {
+        public D getPropertyValueNoDefault() {
             if (!getItemStack().isDataOverridden(componentType)) {
                 return null;
             }
@@ -202,12 +202,12 @@ public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends Data
         }
 
         @Override
-        public boolean isDefaultValue(DT value) {
+        public boolean isDefaultValue(D value) {
             return DataComponentAdapter.this.isDefaultValue(value);
         }
 
         @Override
-        public void setPropertyValue(DT value, Mechanism mechanism) {
+        public void setPropertyValue(D value, Mechanism mechanism) {
             if (value == null) {
                 getItemStack().resetData(componentType);
                 return;
