@@ -36,7 +36,7 @@ public class FoodAdapter extends DataComponentAdapter.Valued<MapTag, FoodPropert
     }
 
     @Override
-    public FoodProperties toPaper(MapTag value, Mechanism mechanism) {
+    public FoodProperties fromDenizen(MapTag value, Mechanism mechanism) {
         FoodProperties.Builder builder = FoodProperties.food();
         setIfValid(builder::nutrition, value, "nutrition", ElementTag.class, ElementTag::isInt, ElementTag::asInt, "number", mechanism);
         setIfValid(builder::saturation, value, "saturation", ElementTag.class, ElementTag::isFloat, ElementTag::asFloat, "decimal number", mechanism);

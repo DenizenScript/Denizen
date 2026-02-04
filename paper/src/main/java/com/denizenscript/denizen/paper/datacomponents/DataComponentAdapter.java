@@ -163,7 +163,7 @@ public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends Data
 
         public abstract TD toDenizen(TP value);
 
-        public abstract TP toPaper(TD value, Mechanism mechanism);
+        public abstract TP fromDenizen(TD value, Mechanism mechanism);
 
         @Override
         public TD getValue(ItemStack item) {
@@ -173,7 +173,7 @@ public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends Data
 
         @Override
         public void setValue(ItemStack item, TD value, Mechanism mechanism) {
-            TP converted = toPaper(value, mechanism);
+            TP converted = fromDenizen(value, mechanism);
             if (converted != null) {
                 item.setData(componentType, converted);
             }
