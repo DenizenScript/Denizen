@@ -144,13 +144,13 @@ public abstract class DataComponentAdapter<DT extends ObjectTag, CT extends Data
 
     public static abstract class Valued<TD extends ObjectTag, TP> extends DataComponentAdapter<TD, DataComponentType.Valued<TP>> {
 
-        public static <T> void setIfValid(Consumer<T> setter, MapTag data, String key, String type, Predicate<ElementTag> checker, Function<ElementTag, T> converter, Mechanism mechanism) {
-            ElementTag value = data.getElement(key);
+        public static <T, TD extends ObjectTag> void setIfValid(Consumer<T> setter, MapTag data, String key, Class<TD> objectType, Predicate<TD> checker, Function<TD, T> converter, String type, Mechanism mechanism) {
+            TD value = data.getObjectAs(key, objectType, mechanism.context);
             if (value == null) {
                 return;
             }
             T converted;
-            if (!checker.test(value) || (converted = converter.apply(value)) == null) {
+            if ((checker != null && !checker.test(value)) || (converted = converter.apply(value)) == null) {
                 mechanism.echoError("Invalid '" + key + "' specified: must be a " + type + '.');
                 return;
             }

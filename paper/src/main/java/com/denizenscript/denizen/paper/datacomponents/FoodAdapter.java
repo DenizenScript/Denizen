@@ -38,9 +38,9 @@ public class FoodAdapter extends DataComponentAdapter.Valued<MapTag, FoodPropert
     @Override
     public FoodProperties toPaper(MapTag value, Mechanism mechanism) {
         FoodProperties.Builder builder = FoodProperties.food();
-        setIfValid(builder::nutrition, value, "nutrition", "number", ElementTag::isInt, ElementTag::asInt, mechanism);
-        setIfValid(builder::saturation, value, "saturation", "decimal number", ElementTag::isFloat, ElementTag::asFloat, mechanism);
-        setIfValid(builder::canAlwaysEat, value, "can_always_eat", "boolean", ElementTag::isBoolean, ElementTag::asBoolean, mechanism);
+        setIfValid(builder::nutrition, value, "nutrition", ElementTag.class, ElementTag::isInt, ElementTag::asInt, "number", mechanism);
+        setIfValid(builder::saturation, value, "saturation", ElementTag.class, ElementTag::isFloat, ElementTag::asFloat, "decimal number", mechanism);
+        setIfValid(builder::canAlwaysEat, value, "can_always_eat", ElementTag.class, ElementTag::isBoolean, ElementTag::asBoolean, "boolean", mechanism);
         return builder.build();
     }
 }
