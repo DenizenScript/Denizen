@@ -18,7 +18,7 @@ public class ItemRemovedComponents extends ItemProperty<ListTag> {
     // @description
     // Controls the item components explicitly removed from an item.
     // This can be used to remove item's default behavior, such as making consumable items non-consumable.
-    // Use <@link mechanism ItemTag.remove_component> to remove a single component.
+    // Alternatively, use <@link mechanism ItemTag.remove_component> to remove a single component.
     // See <@link language Item Components> for more information.
     // -->
 
