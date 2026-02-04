@@ -77,7 +77,7 @@ public class ItemRemovedComponents extends ItemProperty<ListTag> {
         PropertyParser.registerMechanism(ItemRemovedComponents.class, ElementTag.class, "remove_component", (prop, mechanism, input) -> {
             DataComponentType componentType = DataComponentAdapter.getComponentType(input.asString());
             if (componentType == null) {
-                mechanism.echoError("Invalid type to remove '" + input + "' specified: must be a valid property or item component name.");
+                mechanism.echoError("Invalid type to remove specified: must be a valid property or item component name.");
                 return;
             }
             prop.getItemStack().unsetData(componentType);
