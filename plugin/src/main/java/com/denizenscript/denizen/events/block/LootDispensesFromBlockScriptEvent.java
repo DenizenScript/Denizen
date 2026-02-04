@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockDispensesLootScriptEvent extends BukkitScriptEvent implements Listener {
+public class LootDispensesFromBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -26,7 +26,7 @@ public class BlockDispensesLootScriptEvent extends BukkitScriptEvent implements 
     //
     // @Cancellable true
     //
-    // @Player Always.
+    // @Player When a player triggered the loot to dispense.
     //
     // @Triggers when a block dispenses loot containing multiple items.
     //
@@ -39,9 +39,9 @@ public class BlockDispensesLootScriptEvent extends BukkitScriptEvent implements 
     //
     // -->
 
-    public BlockDispensesLootScriptEvent() {
+    public LootDispensesFromBlockScriptEvent() {
         registerCouldMatcher("loot dispenses from <block>");
-        this.<BlockDispensesLootScriptEvent, ListTag>registerDetermination("loot", ListTag.class, (evt, context, input) -> {
+        this.<LootDispensesFromBlockScriptEvent, ListTag>registerDetermination("loot", ListTag.class, (evt, context, input) -> {
             List<ItemStack> items = new ArrayList<>(input.size());
             for (ItemTag item : input.filter(ItemTag.class, context)) {
                 items.add(item.getItemStack());
@@ -80,7 +80,7 @@ public class BlockDispensesLootScriptEvent extends BukkitScriptEvent implements 
     }
 
     @EventHandler
-    public void onBlockDispensesLoot(BlockDispenseLootEvent event) {
+    public void onLootDispensesFromBlock(BlockDispenseLootEvent event) {
         block = new MaterialTag(event.getBlock().getType());
         location = new LocationTag(event.getBlock().getLocation());
         this.event = event;

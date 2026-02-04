@@ -68,9 +68,6 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BlockBurnsScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockCooksSmeltsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockDestroyedByExplosionEvent.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            ScriptEvent.registerScriptEvent(BlockDispensesLootScriptEvent.class);
-        }
         ScriptEvent.registerScriptEvent(BlockDispensesScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockEquipsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockExplodesScriptEvent.class);
@@ -97,6 +94,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(LeafDecaysScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidSpreadScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(LootDispensesFromBlockScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(MoistureChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(NoteBlockPlaysNoteScriptEvent.class);
         ScriptEvent.registerScriptEvent(PistonExtendsScriptEvent.class);

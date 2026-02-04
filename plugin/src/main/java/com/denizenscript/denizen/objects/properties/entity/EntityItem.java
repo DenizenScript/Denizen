@@ -50,7 +50,7 @@ public class EntityItem extends EntityProperty<ItemTag> {
         else if (getEntity() instanceof EnderSignal signal) {
             return new ItemTag(signal.getItem());
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getEntity() instanceof ItemDisplay itemDisplay) { // TODO: 1.19: when 1.19 is minimum, make a 'getDisplay'
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getEntity() instanceof ItemDisplay itemDisplay) {
             return new ItemTag(itemDisplay.getItemStack());
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getEntity() instanceof OminousItemSpawner ominousItemSpawner) {
