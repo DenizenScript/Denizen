@@ -131,7 +131,7 @@ public class PaperModule {
         PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
 
-        // Component adapters
+        // Components system
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
             PropertyParser.registerProperty(ItemRemovedComponents.class, ItemTag.class);
             ComponentAdaptersRegistry.register();
