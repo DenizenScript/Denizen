@@ -1683,7 +1683,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Will return a constant negative velocity when standing on a solid block.
         // Note: Does not accurately calculate player clientside movement velocity.
         // @example
-        // # Checks if the player is jumping:
+        // # Checks if the player is moving upwards.
         // - if <player.velocity.y> > 0:
         //     - narrate "The player is moving upwards!"
         // - else:
@@ -4672,3 +4672,4 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return false;
     }
 }
+
