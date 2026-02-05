@@ -1258,7 +1258,6 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @deprecated Use 'EntityTag.type' on MC 1.20+.
         // @description
         // Returns the entities type.
-        // Note: For NPC's this will return the value "Player".
         // Deprecated in favor of <@link tag EntityTag.type> on MC 1.20+, which returns entity type names as specified by Mojang (scripts using this may need an update when switching).
         // -->
         tagProcessor.registerTag(ElementTag.class, "entity_type", (attribute, object) -> {
@@ -1567,7 +1566,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Returns the location of the entity's eyes.
         // @example
         // # Shoots a snowball from the direct center of the players screen.
-        // - shoot snowball origin:<player.eye_location> destination:<player.location.facing> speed:1
+        // - shoot snowball origin:<player.eye_location> speed:2
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "eye_location", (attribute, object) -> {
             return new LocationTag(object.getEyeLocation());
@@ -1681,17 +1680,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism EntityTag.velocity
         // @description
         // Returns the movement velocity of the entity.
-        // There is a constant negative velocity of '-0.08' when standing on a block.
+        // Will return a constant negative velocity when standing on a solid block.
         // Note: Does not accurately calculate player clientside movement velocity.
         // @example
         // # Checks if the player is jumping:
-        // - if <player.velocity.y.is_more_than[0]>:
-        //     - narrate "The player is jumping!"
+        // - if <player.velocity.y> > 0:
+        //     - narrate "The player is moving upwards!"
         // - else:
-        //     - narrate "The player is not jumping!"
-        // @example
-        // # Makes the player jump:
-        // - adjust <player> velocity:<location[0,1,0]>
+        //     - narrate "The player is not moving upwards!"
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "velocity", (attribute, object) -> {
             return new LocationTag(object.getBukkitEntity().getVelocity().toLocation(object.getBukkitEntity().getWorld()));
@@ -1704,7 +1700,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @description
         // Returns the world the entity is in. Works with offline players.
         // @example
-        // # Narrates the world name that the linked player is in.
+        // # Narrates the name of the world that the linked player is in.
         // - narrate <player.world.name>
         // -->
         registerSpawnedOnlyTag(WorldTag.class, "world", (attribute, object) -> {
@@ -2357,7 +2353,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism EntityTag.glowing
         // @group attributes
         // @description
-        // Returns whether this entity is glowing (Has an outline around them).
+        // Returns whether this entity is glowing (has an outline around them).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "glowing", (attribute, object) -> {
             return new ElementTag(object.getBukkitEntity().isGlowing());
@@ -3911,8 +3907,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @tags
         // <EntityTag.velocity>
         // @example
-        // # Launches the player upwards by adjusting their velocity.
-        // - adjust <player> velocity:<location[0,1,0]>
+        // # Launches the player upwards.
+        // - adjust <player> velocity:0,1,0
         // -->
         if (mechanism.matches("velocity") && mechanism.requireObject(LocationTag.class)) {
             setVelocity(mechanism.valueAsType(LocationTag.class).toVector());
