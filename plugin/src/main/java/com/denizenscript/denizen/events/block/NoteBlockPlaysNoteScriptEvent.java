@@ -62,55 +62,39 @@ public class NoteBlockPlaysNoteScriptEvent extends BukkitScriptEvent implements 
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             return event.getInstrument().getSound();
         }
-        switch (event.getInstrument()) {
-            case PIANO:
-                return Sound.BLOCK_NOTE_BLOCK_HARP;
-            case BASS_DRUM:
-                return Sound.BLOCK_NOTE_BLOCK_BASEDRUM;
-            case SNARE_DRUM:
-                return Sound.BLOCK_NOTE_BLOCK_SNARE;
-            case STICKS:
-                return Sound.BLOCK_NOTE_BLOCK_HAT;
-            case BASS_GUITAR:
-                return Sound.BLOCK_NOTE_BLOCK_BASS;
-            case FLUTE:
-                return Sound.BLOCK_NOTE_BLOCK_FLUTE;
-            case BELL:
-                return Sound.BLOCK_NOTE_BLOCK_BELL;
-            case GUITAR:
-                return Sound.BLOCK_NOTE_BLOCK_GUITAR;
-            case CHIME:
-                return Sound.BLOCK_NOTE_BLOCK_CHIME;
-            case XYLOPHONE:
-                return Sound.BLOCK_NOTE_BLOCK_XYLOPHONE;
-            case IRON_XYLOPHONE:
-                return Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE;
-            case COW_BELL:
-                return Sound.BLOCK_NOTE_BLOCK_COW_BELL;
-            case DIDGERIDOO:
-                return Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO;
-            case BIT:
-                return Sound.BLOCK_NOTE_BLOCK_BIT;
-            case BANJO:
-                return Sound.BLOCK_NOTE_BLOCK_BANJO;
-            case PLING:
-                return Sound.BLOCK_NOTE_BLOCK_PLING;
-        }
-        return null;
+        return switch (event.getInstrument()) {
+            case PIANO -> Sound.BLOCK_NOTE_BLOCK_HARP;
+            case BASS_DRUM -> Sound.BLOCK_NOTE_BLOCK_BASEDRUM;
+            case SNARE_DRUM -> Sound.BLOCK_NOTE_BLOCK_SNARE;
+            case STICKS -> Sound.BLOCK_NOTE_BLOCK_HAT;
+            case BASS_GUITAR -> Sound.BLOCK_NOTE_BLOCK_BASS;
+            case FLUTE -> Sound.BLOCK_NOTE_BLOCK_FLUTE;
+            case BELL -> Sound.BLOCK_NOTE_BLOCK_BELL;
+            case GUITAR -> Sound.BLOCK_NOTE_BLOCK_GUITAR;
+            case CHIME -> Sound.BLOCK_NOTE_BLOCK_CHIME;
+            case XYLOPHONE -> Sound.BLOCK_NOTE_BLOCK_XYLOPHONE;
+            case IRON_XYLOPHONE -> Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE;
+            case COW_BELL -> Sound.BLOCK_NOTE_BLOCK_COW_BELL;
+            case DIDGERIDOO -> Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO;
+            case BIT -> Sound.BLOCK_NOTE_BLOCK_BIT;
+            case BANJO -> Sound.BLOCK_NOTE_BLOCK_BANJO;
+            case PLING -> Sound.BLOCK_NOTE_BLOCK_PLING;
+            default -> null;
+        };
     }
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "instrument": return new ElementTag(event.getInstrument());
-            case "sound": return Utilities.enumLikeToLegacyElement(getSound());
-            case "tone": return new ElementTag(event.getNote().getTone());
-            case "octave": return new ElementTag(event.getNote().getOctave());
-            case "sharp": return new ElementTag(event.getNote().isSharped());
-            case "pitch": return new ElementTag(Math.pow(2.0, (double) (event.getNote().getId() - 12) / 12.0)); // based on minecraft source
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "instrument" -> new ElementTag(event.getInstrument());
+            case "sound" -> Utilities.enumLikeToLegacyElement(getSound());
+            case "tone" -> new ElementTag(event.getNote().getTone());
+            case "octave" -> new ElementTag(event.getNote().getOctave());
+            case "sharp" -> new ElementTag(event.getNote().isSharped());
+            case "pitch" -> new ElementTag(Math.pow(2.0, (double) (event.getNote().getId() - 12) / 12.0)); // based on minecraft source
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

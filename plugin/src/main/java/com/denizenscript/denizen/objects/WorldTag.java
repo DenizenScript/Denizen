@@ -1096,7 +1096,12 @@ public class WorldTag implements ObjectTag, Adjustable, FlaggableObject {
                 mechanism.echoError("Provided world is not an end world!");
                 return;
             }
-            battle.initiateRespawn();
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) { // workaround for upstream bug
+                battle.initiateRespawn(List.of());
+            }
+            else {
+                battle.initiateRespawn();
+            }
         });
 
         // <--[mechanism]
