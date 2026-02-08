@@ -198,7 +198,8 @@ public class PaperEntityExtensions {
                 // @group paper
                 // @description
                 // Restocks a villager's trades.
-                // Note: this mechanism will fire the <@link event villager replenishes trade> event for every trade the villager is offering. This mechanism also update the villager's demand for offers, which may cause item trade prices to rise or fall.
+                // Note: this mechanism will fire the <@link event villager replenishes trade> event for every trade the villager is offering.
+                // This mechanism also updates the villager's demand for offers, which may cause item trade prices to rise or fall.
                 // -->
                 EntityTag.registerSpawnedOnlyMechanism("restock_trades", false, (object, mechanism) -> {
                     if (!(object.getBukkitEntity() instanceof Villager villager)) {
