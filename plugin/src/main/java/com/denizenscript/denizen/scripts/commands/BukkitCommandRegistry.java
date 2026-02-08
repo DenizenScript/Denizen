@@ -68,7 +68,7 @@ public class BukkitCommandRegistry {
         registerCommand(FishCommand.class);
         registerCommand(LookcloseCommand.class);
         registerCommand(PauseCommand.class);
-        registerCommand(PauseCommand.ResumeCommand.class);
+        registerCommand(ResumeCommand.class);
         registerCommand(PoseCommand.class);
         registerCommand(PushableCommand.class);
         registerCommand(SitCommand.class);
