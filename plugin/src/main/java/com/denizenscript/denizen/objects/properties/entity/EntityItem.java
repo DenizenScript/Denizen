@@ -61,8 +61,8 @@ public class EntityItem extends EntityProperty<ItemTag> {
 
     @Override
     public void setPropertyValue(ItemTag item, Mechanism mechanism) {
-        if (item.asType(EntityTag.class, mechanism.context).isCitizensNPC()) {
-            item.asType(EntityTag.class, mechanism.context).getDenizenNPC().getCitizen().data().setPersistent(NPC.Metadata.ITEM_ID, item.getItemStack().getType().name());
+        if (object.asType(EntityTag.class, mechanism.context).isCitizensNPC()) {
+            object.asType(EntityTag.class, mechanism.context).getDenizenNPC().getCitizen().data().setPersistent(NPC.Metadata.ITEM_ID, item.getBukkitMaterial().name());
         }
         if (getEntity() instanceof Item droppedItem) {
             droppedItem.setItemStack(item.getItemStack());
