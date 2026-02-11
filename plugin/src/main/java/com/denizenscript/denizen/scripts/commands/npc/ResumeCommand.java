@@ -42,6 +42,6 @@ public class ResumeCommand extends AbstractCommand {
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("action") PauseCommand.Type type,
                                    @ArgName("duration") @ArgLinear @ArgDefaultNull DurationTag duration) {
-        PauseCommand.autoExecute(scriptEntry, type, duration);
+        PauseCommand.executeToggle(scriptEntry, type, duration, false);
     }
 }

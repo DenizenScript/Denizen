@@ -69,11 +69,14 @@ public class PauseCommand extends AbstractCommand {
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("action") Type type,
                                    @ArgName("duration") @ArgLinear @ArgDefaultNull DurationTag duration) {
+        executeToggle(scriptEntry, type, duration, true);
+    }
+
+    public static void executeToggle(ScriptEntry scriptEntry, Type type, DurationTag duration, boolean pause) {
         if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsRuntimeException("Need to provide an NPC");
         }
         NPCData data = new NPCData(Utilities.getEntryNPC(scriptEntry), type);
-        boolean pause = scriptEntry.getCommandName().equalsIgnoreCase("PAUSE");
         toggle(data, pause);
         if (duration != null) {
             if (durations.containsKey(data)) {
@@ -85,14 +88,11 @@ public class PauseCommand extends AbstractCommand {
                     Debug.echoError(scriptEntry, e);
                 }
             }
-            final NPCData copyData = data;
-            final ScriptEntry copyScriptEntry = scriptEntry;
             durations.put(data, Denizen.getInstance()
                     .getServer().getScheduler().scheduleSyncDelayedTask(Denizen.getInstance(),
                             () -> {
-                                Debug.echoDebug(copyScriptEntry, "Running delayed task: " + (!pause ? "Pausing" : "Resuming") + " " + type);
-                                toggle(copyData, !pause);
-
+                                Debug.echoDebug(scriptEntry, "Running delayed task: " + (!pause ? "Pausing" : "Resuming") + " " + type);
+                                toggle(data, !pause);
                             }, duration.getTicks()));
         }
     }
