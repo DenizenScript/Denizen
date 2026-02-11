@@ -6,7 +6,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
@@ -59,22 +58,16 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "material": return material;
-            case "sticky": return new ElementTag(event.isSticky());
-            case "direction": return new LocationTag(event.getDirection().getDirection());
-            case "relative": return new LocationTag(event.getBlock().getRelative(event.getDirection()).getLocation()); // Silently deprecated
-            case "blocks": {
-                ListTag blocks = new ListTag();
-                for (Block block : event.getBlocks()) {
-                    blocks.addObject(new LocationTag(block.getLocation()));
-                }
-                return blocks;
-            }
-            case "length": return new ElementTag(event.getBlocks().size());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "material" -> material;
+            case "sticky" -> new ElementTag(event.isSticky());
+            case "direction" -> new LocationTag(event.getDirection().getDirection());
+            case "relative" -> new LocationTag(event.getBlock().getRelative(event.getDirection()).getLocation()); // Silently deprecated
+            case "blocks" -> new ListTag(event.getBlocks(), block -> new LocationTag(block.getLocation()));
+            case "length" -> new ElementTag(event.getBlocks().size());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

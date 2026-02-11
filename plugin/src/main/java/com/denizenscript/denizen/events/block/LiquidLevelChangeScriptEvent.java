@@ -62,12 +62,12 @@ public class LiquidLevelChangeScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "old_material": return old_material;
-            case "new_material": return new MaterialTag(event.getNewData());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "old_material" -> old_material;
+            case "new_material" -> new MaterialTag(event.getNewData());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
