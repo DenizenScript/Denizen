@@ -1121,6 +1121,16 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         });
 
         // <--[tag]
+        // @attribute <server.bukkit_name>
+        // @returns ElementTag
+        // @description
+        // Returns the name of the Bukkit platform, such as "Paper".
+        // -->
+        tagProcessor.registerStaticTag(ElementTag.class, "bukkit_name", (attribute, object) -> {
+            return new ElementTag(Bukkit.getName());
+        });
+
+        // <--[tag]
         // @attribute <server.bukkit_version>
         // @returns ElementTag
         // @description
