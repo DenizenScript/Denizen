@@ -55,6 +55,7 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -240,15 +241,13 @@ public class ItemHelperImpl extends ItemHelper {
     @Override
     public void registerSmithingRecipe(String keyName, ItemStack result, ItemStack[] baseItem, boolean baseExact, ItemStack[] upgradeItem, boolean upgradeExact, ItemStack[] templateItem, boolean templateExact) {
         ResourceKey<Recipe<?>> key = createRecipeKey(keyName);
-        Ingredient templateItemRecipe = itemArrayToRecipe(templateItem, templateExact);
+        Ingredient templateItemRecipe = templateItem.length == 0 ? null : itemArrayToRecipe(templateItem, templateExact);
         Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
         Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
-        // TODO: 1.21.5: TransmuteRecipe?
-        /*
-        SmithingTransformRecipe recipe = new SmithingTransformRecipe(Optional.of(templateItemRecipe), baseItemRecipe, Optional.of(upgradeItemRecipe), CraftItemStack.asNMSCopy(result));
+        net.minecraft.world.item.ItemStack nmsCopy = CraftItemStack.asNMSCopy(result);
+        SmithingTransformRecipe recipe = new SmithingTransformRecipe(Optional.ofNullable(templateItemRecipe), baseItemRecipe, Optional.of(upgradeItemRecipe), new TransmuteResult(nmsCopy.getItemHolder(), nmsCopy.getCount(), nmsCopy.getComponentsPatch()));
         RecipeHolder<SmithingTransformRecipe> holder = new RecipeHolder<>(key, recipe);
         getRecipeManager().addRecipe(holder);
-        */
     }
 
     @Override

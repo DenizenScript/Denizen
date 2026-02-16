@@ -4637,7 +4637,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         });
     }
 
-    public static final ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
+    public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
