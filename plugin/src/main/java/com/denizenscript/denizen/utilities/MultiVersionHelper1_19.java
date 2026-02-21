@@ -20,6 +20,7 @@ public class MultiVersionHelper1_19 {
     // TODO Frog variants technically have registries on all supported versions
     public static String getColor(Entity entity, boolean includeDeprecated) {
         if (entity instanceof Frog frog) {
+            BukkitImplDeprecations.colorToVariantProperty.warn();
             return String.valueOf(frog.getVariant());
         }
         else if (entity instanceof Boat boat) {
@@ -36,6 +37,7 @@ public class MultiVersionHelper1_19 {
 
     public static ListTag getAllowedColors(EntityType type) {
         if (type == EntityType.FROG) {
+            BukkitImplDeprecations.allowedColorsToVariants.warn();
             return Utilities.listTypes(Frog.Variant.class);
         }
         else if (Boat.class.isAssignableFrom(type.getEntityClass())) {
@@ -49,6 +51,7 @@ public class MultiVersionHelper1_19 {
 
     public static void setColor(Entity entity, Mechanism mech) {
         if (entity instanceof Frog frog && Utilities.requireEnumlike(mech, Frog.Variant.class)) {
+            BukkitImplDeprecations.colorToVariantProperty.warn();
             frog.setVariant(Utilities.elementToEnumlike(mech.getValue(), Frog.Variant.class));
         }
         else if (entity instanceof Boat boat && mech.requireEnum(Boat.Type.class)) {

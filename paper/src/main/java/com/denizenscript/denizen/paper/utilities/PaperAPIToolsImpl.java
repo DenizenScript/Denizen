@@ -10,9 +10,11 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -421,12 +423,17 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
-    public String getCopperGolemState(CopperGolem copperGolem) {
+    public ListTag getCopperGolemVariants() {
+        return Utilities.listTypes(WeatheringCopperState.class);
+    }
+
+    @Override
+    public String getCopperGolemVariant(CopperGolem copperGolem) {
         return copperGolem.getWeatheringState().name();
     }
 
     @Override
-    public void setCopperGolemState(ElementTag variant, CopperGolem copperGolem, Mechanism mechanism) {
+    public void setCopperGolemVariant(ElementTag variant, CopperGolem copperGolem, Mechanism mechanism) {
         if (mechanism.requireEnum(WeatheringCopperState.class)) {
             copperGolem.setWeatheringState(variant.asEnum(WeatheringCopperState.class));
         }
