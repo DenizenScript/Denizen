@@ -25,7 +25,7 @@ public class ItemModelAdapter extends DataComponentAdapter.Valued<ElementTag, Ke
 
     @Override
     public ElementTag toDenizen(Key value) {
-        return new ElementTag(value.toString());
+        return new ElementTag(value.asMinimalString());
     }
 
     @Override
