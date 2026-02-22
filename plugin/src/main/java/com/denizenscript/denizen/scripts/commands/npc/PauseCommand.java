@@ -159,7 +159,7 @@ public class PauseCommand extends AbstractCommand {
                 }
                 return;
             case ACTIVITY:
-                denizen.getCitizen().getDefaultGoalController().setPaused(pause);
+                denizen.getCitizen().getDefaultBehaviorController().setPaused(pause);
                 return;
             case NAVIGATION:
                 // TODO: Finish this

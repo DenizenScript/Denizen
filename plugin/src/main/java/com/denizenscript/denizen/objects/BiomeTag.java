@@ -508,7 +508,7 @@ public class BiomeTag implements ObjectTag, Adjustable, FlaggableObject {
         });
     }
 
-    public static final ObjectTagProcessor<BiomeTag> tagProcessor = new ObjectTagProcessor<>();
+    public static ObjectTagProcessor<BiomeTag> tagProcessor = new ObjectTagProcessor<>();
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
