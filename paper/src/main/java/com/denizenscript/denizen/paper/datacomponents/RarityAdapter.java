@@ -29,6 +29,6 @@ public class RarityAdapter extends DataComponentAdapter.Valued<ElementTag, ItemR
 
     @Override
     public ItemRarity fromDenizen(ElementTag value, Mechanism mechanism) {
-        return value.asEnum(ItemRarity.class);
+        return mechanism.requireEnum(ItemRarity.class) ? value.asEnum(ItemRarity.class) : null;
     }
 }
