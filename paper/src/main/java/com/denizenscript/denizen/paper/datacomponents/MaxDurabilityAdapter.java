@@ -27,6 +27,6 @@ public class MaxDurabilityAdapter extends DataComponentAdapter.Valued<ElementTag
 
     @Override
     public Integer fromDenizen(ElementTag value, Mechanism mechanism) {
-        return value.asInt();
+        return mechanism.requireInteger() ? value.asInt() : null;
     }
 }

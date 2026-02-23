@@ -15,6 +15,7 @@ public class ItemCustomModel extends ItemProperty<ElementTag> {
     // @description
     // Controls the custom model data ID number of the item.
     // Use with no input to remove the custom model data.
+    // Prefer <@link property ItemTag.item_model> on MC 1.21+.
     // See also <@link tag ItemTag.has_custom_model_data>
     // -->
     public static boolean describes(ItemTag item) {
@@ -56,6 +57,7 @@ public class ItemCustomModel extends ItemProperty<ElementTag> {
         // @group properties
         // @description
         // Returns whether the item has a custom model data ID number set on it.
+        // Prefer <@link property ItemTag.item_model> on MC 1.21+.
         // See also <@link tag ItemTag.custom_model_data>.
         // -->
         PropertyParser.registerTag(ItemCustomModel.class, ElementTag.class, "has_custom_model_data", (attribute, prop) -> {

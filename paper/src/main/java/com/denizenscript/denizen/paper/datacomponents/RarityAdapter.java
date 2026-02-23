@@ -13,7 +13,7 @@ public class RarityAdapter extends DataComponentAdapter.Valued<ElementTag, ItemR
     // @input ElementTag
     // @description
     // Controls an item's rarity <@link language Item Components>.
-    // See https://jd.papermc.io/paper/1.21.11/org/bukkit/inventory/ItemRarity.html for valid rarity values.
+    // See <@link url https://jd.papermc.io/paper/org/bukkit/inventory/ItemRarity.html> for valid rarity values.
     // @mechanism
     // Provide no input to reset the item to its default value.
     // -->
