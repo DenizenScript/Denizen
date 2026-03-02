@@ -16,7 +16,7 @@ public class ItemSignContentsBack extends ItemProperty<ListTag> {
     // @name sign_back_contents
     // @input ListTag
     // @description
-    // Controls the contents of a sign item.
+    // Controls the contents on the back of a sign item.
     // For the front of the sign, see <@link property ItemTag.sign_contents>.
     // -->
 
