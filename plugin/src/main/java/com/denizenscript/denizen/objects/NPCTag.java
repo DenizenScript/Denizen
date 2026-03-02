@@ -40,6 +40,7 @@ import net.citizensnpcs.trait.waypoint.*;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -1304,7 +1305,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether an NPC can navigate to a specified location.
         // -->
         tagProcessor.registerTag(ElementTag.class, LocationTag.class, "can_navigate_to", (attribute, object, param) -> {
-            return new ElementTag(object.npc.getNavigator().canNavigateTo(param));
+            return new ElementTag(object.getCitizen().getNavigator().canNavigateTo(param));
         });
 
         // <--[mechanism]
@@ -1384,14 +1385,15 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.wander_xrange>
         // -->
         tagProcessor.registerMechanism("wander_xrange", false, ElementTag.class, (object, mechanism, input) -> {
-            if (mechanism.requireInteger()) {
-                Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
-                if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
-                    wanderWaypointProvider.setXYRange(input.asInt(), wanderWaypointProvider.getYRange());
-                }
-                else {
-                    mechanism.echoError("Must set waypoint_provider to 'wander' before setting wander_xrange!");
-                }
+            if (!mechanism.requireInteger()) {
+                return;
+            }
+            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
+                wanderWaypointProvider.setXYRange(input.asInt(), wanderWaypointProvider.getYRange());
+            }
+            else {
+                mechanism.echoError("Must set waypoint_provider to 'wander' before setting wander_xrange!");
             }
         });
 
@@ -1457,7 +1459,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.script>
         // -->
         tagProcessor.registerMechanism("remove_assignment", false, (object, mechanism) -> {
-            if (!object.npc.hasTrait(AssignmentTrait.class)) {
+            if (!object.getCitizen().hasTrait(AssignmentTrait.class)) {
                 mechanism.echoError("The npc used in the 'NPCTag.remove_assignment' mechanism does not have any assignments.");
             }
             else if (mechanism.hasValue()) {
@@ -1468,7 +1470,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             else {
                 BukkitImplDeprecations.assignmentRemove.warn(mechanism.context);
                 object.getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
-                object.npc.removeTrait(AssignmentTrait.class);
+                object.getCitizen().removeTrait(AssignmentTrait.class);
             }
         });
 
@@ -1520,8 +1522,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerMechanism("hologram_line_height", false, ElementTag.class, (object, mechanism, input) -> {
             if (mechanism.requireDouble()) {
-                HologramTrait hologram = object.getCitizen().getOrAddTrait(HologramTrait.class);
-                hologram.setLineHeight(input.asDouble());
+                object.getCitizen().getOrAddTrait(HologramTrait.class).setLineHeight(input.asDouble());
             }
         });
 
@@ -1530,7 +1531,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @name set_nickname
         // @input ElementTag
         // @description
-        // Sets the NPC's nickname.
+        // Sets the NPC's nickname. Leave blank to remove the nickname.
         // @tags
         // <NPCTag.nickname>
         // -->
@@ -1587,12 +1588,17 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @name owner
         // @input PlayerTag
         // @description
-        // Sets the owner of the NPC.
+        // Sets the owner of the NPC. Provide no input to set the server as the owner.
         // @tags
         // <NPCTag.owner>
         // -->
-        tagProcessor.registerMechanism("owner", false, PlayerTag.class, (object, mechanism, input) -> {
-            object.getCitizen().getOrAddTrait(Owner.class).setOwner(input.getPlayerEntity());
+        tagProcessor.registerMechanism("owner", false, (object, mechanism) -> {
+            if (mechanism.getValue().canBeType(PlayerTag.class)) {
+                object.getCitizen().getOrAddTrait(Owner.class).setOwner(mechanism.valueAsType(PlayerTag.class).getPlayerEntity());
+            }
+            else {
+                object.getCitizen().getOrAddTrait(Owner.class).setOwner((CommandSender) null);
+            }
         });
 
         // <--[mechanism]
@@ -1681,7 +1687,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Sets the item type of the item.
         // -->
         tagProcessor.registerMechanism("item_type", false, ItemTag.class, (object, mechanism, input) -> {
-            Material mat = input.getMaterial().getMaterial();
+            Material mat = input.getBukkitMaterial();
             Entity npcEntity = object.getEntity();
             NPC citizen = object.getCitizen();
             if (npcEntity instanceof Item droppedItem) {
@@ -1776,17 +1782,15 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.is_sneaking>
         // -->
         tagProcessor.registerMechanism("set_sneaking", false, ElementTag.class, (object, mechanism, input) -> {
-            if (mechanism.requireBoolean()) {
-                if (!object.getCitizen().hasTrait(SneakingTrait.class)) {
-                    object.getCitizen().addTrait(SneakingTrait.class);
-                }
-                SneakingTrait trait = object.getCitizen().getOrAddTrait(SneakingTrait.class);
-                if (trait.isSneaking() && !mechanism.getValue().asBoolean()) {
-                    trait.stand();
-                }
-                else if (!trait.isSneaking() && mechanism.getValue().asBoolean()) {
-                    trait.sneak();
-                }
+            if (!mechanism.requireBoolean()) {
+                return;
+            }
+            SneakingTrait trait = object.getCitizen().getOrAddTrait(SneakingTrait.class);
+            if (trait.isSneaking() && !mechanism.getValue().asBoolean()) {
+                trait.stand();
+            }
+            else if (!trait.isSneaking() && mechanism.getValue().asBoolean()) {
+                trait.sneak();
             }
         });
 
@@ -1931,7 +1935,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerMechanism("navigator_look_at", false, (object, mechanism) -> {
             if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
-                object.getNavigator().getLocalParameters().lookAtFunction((n) -> mechanism.valueAsType(LocationTag.class));
+                final LocationTag loc = mechanism.valueAsType(LocationTag.class);
+                object.getNavigator().getLocalParameters().lookAtFunction((n) -> loc);
             }
             else {
                 object.getNavigator().getLocalParameters().lookAtFunction(null);
