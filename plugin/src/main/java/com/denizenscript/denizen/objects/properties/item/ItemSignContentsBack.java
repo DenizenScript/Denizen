@@ -13,7 +13,7 @@ public class ItemSignContentsBack extends ItemProperty<ListTag> {
 
     // <--[property]
     // @object ItemTag
-    // @name sign_contents_back
+    // @name sign_back_contents
     // @input ListTag
     // @description
     // Controls the contents of a sign item.
@@ -50,10 +50,10 @@ public class ItemSignContentsBack extends ItemProperty<ListTag> {
 
     @Override
     public String getPropertyId() {
-        return "sign_contents_back";
+        return "sign_back_contents";
     }
 
     public static void register() {
-        autoRegister("sign_contents_back", ItemSignContentsBack.class, ListTag.class, false);
+        autoRegister("sign_back_contents", ItemSignContentsBack.class, ListTag.class, false);
     }
 }

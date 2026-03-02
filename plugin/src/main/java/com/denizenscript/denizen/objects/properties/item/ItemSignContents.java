@@ -19,7 +19,7 @@ public class ItemSignContents extends ItemProperty<ListTag> {
     // @description
     // Controls the contents of a sign item.
     // For MC 1.20+, this is the contents on the front of the sign.
-    // For the back of the sign, see <@link property ItemTag.sign_contents_back>.
+    // For the back of the sign, see <@link property ItemTag.sign_back_contents>.
     // -->
 
     public static boolean describes(ItemTag item) {
