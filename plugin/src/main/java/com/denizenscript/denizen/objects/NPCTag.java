@@ -40,7 +40,6 @@ import net.citizensnpcs.trait.waypoint.*;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
 import org.bukkit.*;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -1593,12 +1592,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.owner>
         // -->
         tagProcessor.registerMechanism("owner", false, (object, mechanism) -> {
-            if (mechanism.getValue().canBeType(PlayerTag.class)) {
-                object.getCitizen().getOrAddTrait(Owner.class).setOwner(mechanism.valueAsType(PlayerTag.class).getPlayerEntity());
-            }
-            else {
-                object.getCitizen().getOrAddTrait(Owner.class).setOwner((CommandSender) null);
-            }
+            object.getCitizen().getOrAddTrait(Owner.class).setOwner(mechanism.getValue().canBeType(PlayerTag.class) ? mechanism.valueAsType(PlayerTag.class).getPlayerEntity() : null);
         });
 
         // <--[mechanism]
@@ -1865,12 +1859,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerMechanism("teleport_on_stuck", false, ElementTag.class, (object, mechanism, input) -> {
             if (mechanism.requireBoolean()) {
-                if (input.asBoolean()) {
-                    object.getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
-                }
-                else {
-                    object.getNavigator().getDefaultParameters().stuckAction(null);
-                }
+                object.getNavigator().getDefaultParameters().stuckAction(input.asBoolean() ? TeleportStuckAction.INSTANCE : null);
             }
         });
 
