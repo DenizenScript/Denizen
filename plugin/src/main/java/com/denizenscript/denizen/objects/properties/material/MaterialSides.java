@@ -21,14 +21,14 @@ public class MaterialSides extends MaterialProperty<ListTag> {
     // Controls the heights for a wall block or mossy carpet, or connections for a redstone wire, in order North|East|South|West|Vertical.
     // For wall blocks: For n/e/s/w, can be "tall", "low", or "none". For vertical, can be "tall" or "none".
     // For redstone wires: For n/e/s/w, can be "none", "side", or "up". No vertical.
-    // For mossy carpets: For n/e/s/w, can be "tall", "low", or "none". Vertical controls the bottom, and can either be "true" or "false".
+    // For mossy carpets: For n/e/s/w, can be "tall", "low", or "none". Vertical controls the bottom, and can either be "bottom" or "none".
     // -->
 
     public static boolean describes(MaterialTag material) {
         BlockData data = material.getModernData();
-        return (data instanceof Wall
+        return data instanceof Wall
                 || data instanceof RedstoneWire
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && data instanceof MossyCarpet));
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && data instanceof MossyCarpet);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class MaterialSides extends MaterialProperty<ListTag> {
             list.add(carpet.getHeight(BlockFace.EAST).name());
             list.add(carpet.getHeight(BlockFace.SOUTH).name());
             list.add(carpet.getHeight(BlockFace.WEST).name());
-            list.add(carpet.isBottom() ? "TRUE" : "FALSE");
+            list.add(carpet.isBottom() ? "BOTTOM" : "NONE");
         }
         return list;
     }
