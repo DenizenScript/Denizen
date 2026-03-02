@@ -26,7 +26,7 @@ public class LootDispensesFromBlockScriptEvent extends BukkitScriptEvent impleme
     //
     // @Cancellable true
     //
-    // @Player When a player triggered the loot to dispense.
+    // @Player when a player triggered the loot to dispense.
     //
     // @Triggers when a block dispenses loot containing multiple items.
     //
@@ -67,7 +67,7 @@ public class LootDispensesFromBlockScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new PlayerTag(event.getPlayer()), null);
+        return new BukkitScriptEntryData(event.getPlayer() != null ? new PlayerTag(event.getPlayer()) : null, null);
     }
 
     @Override
