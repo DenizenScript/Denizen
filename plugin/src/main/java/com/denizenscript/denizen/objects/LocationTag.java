@@ -1251,7 +1251,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @description
         // Returns a list of lines on a sign.
         // For MC 1.20+, this returns the contents on the front of the sign.
-        // To get the contents of the back, see <@link tag LocationTag.sign_contents_back>.
+        // To get the contents of the back, see <@link tag LocationTag.sign_back_contents>.
         // -->
         tagProcessor.registerTag(ListTag.class, "sign_contents", (attribute, object) -> {
             if (object.getBlockStateForTag(attribute) instanceof Sign sign) {
@@ -4158,7 +4158,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @description
         // Returns whether the location is a Sign block that is glowing.
         // For MC 1.20+, this returns the glowing status of the front of the sign.
-        // To get the glowing state of the back, see <@link tag LocationTag.sign_glowing_back>.
+        // To get the glowing state of the back, see <@link tag LocationTag.sign_back_glowing>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "sign_glowing", (attribute, object) -> {
             if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
@@ -4176,7 +4176,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @description
         // Returns the name of the glow-color of the sign at the location.
         // For MC 1.20+, this returns the color on the front of the sign.
-        // To get the color of the back, see <@link tag LocationTag.sign_glow_color_back>.
+        // To get the color of the back, see <@link tag LocationTag.sign_back_glow_color>.
         // See also <@link tag LocationTag.sign_glowing>
         // -->
         tagProcessor.registerTag(ElementTag.class, "sign_glow_color", (attribute, object) -> {
@@ -4573,15 +4573,15 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             });
 
             // <--[tag]
-            // @attribute <LocationTag.sign_contents_back>
+            // @attribute <LocationTag.sign_back_contents>
             // @returns ListTag
-            // @mechanism LocationTag.sign_contents_back
+            // @mechanism LocationTag.sign_back_contents
             // @group world
             // @description
             // Returns the contents on the back of a sign block.
             // For the contents on the front, see <@link tag LocationTag.sign_contents>.
             // -->
-            tagProcessor.registerTag(ListTag.class, "sign_contents_back", (attribute, object) -> {
+            tagProcessor.registerTag(ListTag.class, "sign_back_contents", (attribute, object) -> {
                 if (object.getBlockStateForTag(attribute) instanceof Sign sign) {
                     return new ListTag(Arrays.asList(PaperAPITools.instance.getBackSignLines(sign)), true);
                 }
@@ -4590,17 +4590,17 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
 
             // <--[mechanism]
             // @object LocationTag
-            // @name sign_contents_back
+            // @name sign_back_contents
             // @input ListTag
             // @description
             // Sets the contents on the back of a sign block.
             // To set the contents of the front, see <@link mechanism LocationTag.sign_contents>.
             // @tags
-            // <LocationTag.sign_contents_back>
+            // <LocationTag.sign_back_contents>
             // -->
-            tagProcessor.registerMechanism("sign_contents_back", false, ListTag.class, (object, mechanism, input) -> {
+            tagProcessor.registerMechanism("sign_back_contents", false, ListTag.class, (object, mechanism, input) -> {
                 if (!(object.getBlockState() instanceof Sign sign)) {
-                    mechanism.echoError("Mechanism 'LocationTag.sign_contents_back' is only valid for Sign blocks.");
+                    mechanism.echoError("Mechanism 'LocationTag.sign_back_contents' is only valid for Sign blocks.");
                     return;
                 }
                 for (int i = 0; i < 4; i++) {
@@ -4617,15 +4617,15 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             });
 
             // <--[tag]
-            // @attribute <LocationTag.sign_glowing_back>
+            // @attribute <LocationTag.sign_back_glowing>
             // @returns ElementTag(Boolean)
-            // @mechanism LocationTag.sign_glowing_back
+            // @mechanism LocationTag.sign_back_glowing
             // @group world
             // @description
             // Returns whether the back of a Sign block at this location is glowing.
             // To get the glowing state of the front, see <@link tag LocationTag.sign_glowing>.
             // -->
-            tagProcessor.registerTag(ElementTag.class, "sign_glowing_back", (attribute, object) -> {
+            tagProcessor.registerTag(ElementTag.class, "sign_back_glowing", (attribute, object) -> {
                 if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
                     attribute.echoError("Location is not a valid Sign block.");
                     return null;
@@ -4635,18 +4635,18 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
 
             // <--[mechanism]
             // @object LocationTag
-            // @name sign_glowing_back
+            // @name sign_back_glowing
             // @input ElementTag(Boolean)
             // @description
             // Changes whether the back of the sign at the location is glowing.
             // To set the glowing state of the front, see <@link mechanism LocationTag.sign_glowing>.
             // @tags
-            // <LocationTag.sign_glow_color_back>
-            // <LocationTag.sign_glowing_back>
+            // <LocationTag.sign_back_glow_color>
+            // <LocationTag.sign_back_glowing>
             // -->
-            tagProcessor.registerMechanism("sign_glowing_back", false, ElementTag.class, (object, mechanism, input) -> {
+            tagProcessor.registerMechanism("sign_back_glowing", false, ElementTag.class, (object, mechanism, input) -> {
                 if (!(object.getBlockState() instanceof Sign sign)) {
-                    mechanism.echoError("'sign_glowing_back' mechanism can only be called on Sign blocks.");
+                    mechanism.echoError("'sign_back_glowing' mechanism can only be called on Sign blocks.");
                 }
                 else if (mechanism.requireBoolean()) {
                     sign.getSide(Side.BACK).setGlowingText(input.asBoolean());
@@ -4655,16 +4655,16 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             });
 
             // <--[tag]
-            // @attribute <LocationTag.sign_glow_color_back>
+            // @attribute <LocationTag.sign_back_glow_color>
             // @returns ElementTag
-            // @mechanism LocationTag.sign_glow_color_back
+            // @mechanism LocationTag.sign_back_glow_color
             // @group world
             // @description
             // Returns the name of the glow-color on the back of the sign at the location.
             // To get the color of the front, see <@link tag LocationTag.sign_glow_color>.
-            // See also <@link tag LocationTag.sign_glowing_back>.
+            // See also <@link tag LocationTag.sign_back_glowing>.
             // -->
-            tagProcessor.registerTag(ElementTag.class, "sign_glow_color_back", (attribute, object) -> {
+            tagProcessor.registerTag(ElementTag.class, "sign_back_glow_color", (attribute, object) -> {
                 if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
                     attribute.echoError("Location is not a valid Sign block.");
                     return null;
@@ -4674,7 +4674,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
 
             // <--[mechanism]
             // @object LocationTag
-            // @name sign_glow_color_back
+            // @name sign_back_glow_color
             // @input ElementTag
             // @description
             // Changes the glow color on the back of a sign.
@@ -4682,12 +4682,12 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // If a sign is not glowing, this is equivalent to applying a chat color to the sign.
             // Use <@link mechanism LocationTag.sign_glowing> to toggle whether the front of the sign is glowing.
             // @tags
-            // <LocationTag.sign_glow_color_back>
-            // <LocationTag.sign_glowing_back>
+            // <LocationTag.sign_back_glow_color>
+            // <LocationTag.sign_back_glowing>
             // -->
-            tagProcessor.registerMechanism("sign_glow_color_back", false, ElementTag.class, (object, mechanism, input) -> {
+            tagProcessor.registerMechanism("sign_back_glow_color", false, ElementTag.class, (object, mechanism, input) -> {
                 if (!(object.getBlockState() instanceof Sign sign)) {
-                    mechanism.echoError("'sign_glow_color_back' mechanism can only be called on Sign blocks.");
+                    mechanism.echoError("'sign_back_glow_color' mechanism can only be called on Sign blocks.");
                 }
                 else if (mechanism.requireEnum(DyeColor.class)) {
                     sign.getSide(Side.BACK).setColor(input.asEnum(DyeColor.class));
@@ -4769,7 +4769,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @description
         // Sets the contents of a sign block.
         // For MC 1.20+, this sets the contents on the front of the sign.
-        // To set the contents of the back, see <@link mechanism LocationTag.sign_contents_back>.
+        // To set the contents of the back, see <@link mechanism LocationTag.sign_back_contents>.
         // @tags
         // <LocationTag.sign_contents>
         // -->
@@ -4798,7 +4798,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @description
         // Changes whether the sign at the location is glowing.
         // For MC 1.20+, this sets the glowing status on the front of the sign.
-        // To set the glowing status of the back, see <@link mechanism LocationTag.sign_glowing_back>.
+        // To set the glowing status of the back, see <@link mechanism LocationTag.sign_back_glowing>.
         // @tags
         // <LocationTag.sign_glow_color>
         // <LocationTag.sign_glowing>
@@ -4829,7 +4829,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // If a sign is not glowing, this is equivalent to applying a chat color to the sign.
         // Use <@link mechanism LocationTag.sign_glowing> to toggle whether the sign is glowing.
         // For MC 1.20+, this sets the color on the front of the sign.
-        // To set the color of the back, see <@link mechanism LocationTag.sign_glow_color_back>.
+        // To set the color of the back, see <@link mechanism LocationTag.sign_back_glow_color>.
         // @tags
         // <LocationTag.sign_glow_color>
         // <LocationTag.sign_glowing>
