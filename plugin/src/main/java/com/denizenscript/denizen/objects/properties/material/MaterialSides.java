@@ -3,13 +3,18 @@ package com.denizenscript.denizen.objects.properties.material;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
+import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.MossyCarpet;
 import org.bukkit.block.data.type.RedstoneWire;
 import org.bukkit.block.data.type.Wall;
+
+import java.util.function.BiConsumer;
 
 public class MaterialSides extends MaterialProperty<ListTag> {
 
@@ -64,10 +69,10 @@ public class MaterialSides extends MaterialProperty<ListTag> {
                 mechanism.echoError("Invalid sides list, size must be 5.");
                 return;
             }
-            wall.setHeight(BlockFace.NORTH, Wall.Height.valueOf(list.get(0).toUpperCase()));
-            wall.setHeight(BlockFace.EAST, Wall.Height.valueOf(list.get(1).toUpperCase()));
-            wall.setHeight(BlockFace.SOUTH, Wall.Height.valueOf(list.get(2).toUpperCase()));
-            wall.setHeight(BlockFace.WEST, Wall.Height.valueOf(list.get(3).toUpperCase()));
+            setSide(wall::setHeight, Wall.Height.class, BlockFace.NORTH, list, 0, mechanism);
+            setSide(wall::setHeight, Wall.Height.class, BlockFace.EAST, list, 1, mechanism);
+            setSide(wall::setHeight, Wall.Height.class, BlockFace.SOUTH, list, 2, mechanism);
+            setSide(wall::setHeight, Wall.Height.class, BlockFace.WEST, list, 3, mechanism);
             wall.setUp(list.get(4).equalsIgnoreCase("tall"));
         }
         else if (getBlockData() instanceof RedstoneWire wire) {
@@ -75,22 +80,31 @@ public class MaterialSides extends MaterialProperty<ListTag> {
                 mechanism.echoError("Invalid sides list, size must be 4.");
                 return;
             }
-            wire.setFace(BlockFace.NORTH, RedstoneWire.Connection.valueOf(list.get(0).toUpperCase()));
-            wire.setFace(BlockFace.EAST, RedstoneWire.Connection.valueOf(list.get(1).toUpperCase()));
-            wire.setFace(BlockFace.SOUTH, RedstoneWire.Connection.valueOf(list.get(2).toUpperCase()));
-            wire.setFace(BlockFace.WEST, RedstoneWire.Connection.valueOf(list.get(3).toUpperCase()));
+            setSide(wire::setFace, RedstoneWire.Connection.class, BlockFace.NORTH, list, 0, mechanism);
+            setSide(wire::setFace, RedstoneWire.Connection.class, BlockFace.EAST, list, 1, mechanism);
+            setSide(wire::setFace, RedstoneWire.Connection.class, BlockFace.SOUTH, list, 2, mechanism);
+            setSide(wire::setFace, RedstoneWire.Connection.class, BlockFace.WEST, list, 3, mechanism);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof MossyCarpet carpet) {
             if (list.size() != 5) {
                 mechanism.echoError("Invalid sides list, size must be 5.");
                 return;
             }
-            carpet.setHeight(BlockFace.NORTH, MossyCarpet.Height.valueOf(list.get(0).toUpperCase()));
-            carpet.setHeight(BlockFace.EAST, MossyCarpet.Height.valueOf(list.get(1).toUpperCase()));
-            carpet.setHeight(BlockFace.SOUTH, MossyCarpet.Height.valueOf(list.get(2).toUpperCase()));
-            carpet.setHeight(BlockFace.WEST, MossyCarpet.Height.valueOf(list.get(3).toUpperCase()));
-            carpet.setBottom(list.get(4).equalsIgnoreCase("true"));
+            setSide(carpet::setHeight, MossyCarpet.Height.class, BlockFace.NORTH, list, 0, mechanism);
+            setSide(carpet::setHeight, MossyCarpet.Height.class, BlockFace.EAST, list, 1, mechanism);
+            setSide(carpet::setHeight, MossyCarpet.Height.class, BlockFace.SOUTH, list, 2, mechanism);
+            setSide(carpet::setHeight, MossyCarpet.Height.class, BlockFace.WEST, list, 3, mechanism);
+            carpet.setBottom(list.get(4).equalsIgnoreCase("bottom"));
         }
+    }
+
+    public static <T> void setSide(BiConsumer<BlockFace, T> consumer, Class<T> type, BlockFace face, ListTag list, int index, Mechanism mechanism) {
+        T value = Utilities.elementToEnumlike(new ElementTag(list.get(index)), type);
+        if (value == null) {
+            mechanism.echoError("'"+ list.get(index) + "' is not a valid " + DebugInternals.getClassNameOpti(type) + ".");
+            return;
+        }
+        consumer.accept(face, value);
     }
 
     @Override
