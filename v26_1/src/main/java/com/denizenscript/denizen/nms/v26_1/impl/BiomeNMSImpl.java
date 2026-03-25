@@ -1,0 +1,242 @@
+package com.denizenscript.denizen.nms.v1_21.impl;
+
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList;
+import net.minecraft.world.attribute.EnvironmentAttribute;
+import net.minecraft.world.attribute.EnvironmentAttributeMap;
+import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSpecialEffects;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.chunk.LevelChunk;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftEntityType;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftLocation;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftNamespacedKey;
+import org.bukkit.entity.EntityType;
+
+import java.lang.invoke.MethodHandle;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+public class BiomeNMSImpl extends BiomeNMS {
+
+    public static final MethodHandle BIOME_CLIMATESETTINGS_CONSTRUCTOR = ReflectionHelper.getConstructor(Biome.ClimateSettings.class, boolean.class, float.class, Biome.TemperatureModifier.class, float.class);
+    public static final MethodHandle MAPPED_REGISTRY_REGISTRATION_INFOS = ReflectionHelper.getFields(MappedRegistry.class).getGetter(ReflectionMappingsInfo.MappedRegistry_registrationInfos);
+    public static final MethodHandle BIOME_ATTRIBUTES_SETTER = ReflectionHelper.getFields(Biome.class).getSetter(ReflectionMappingsInfo.Biome_attributes);
+
+    public Holder.Reference<Biome> biomeHolder;
+    public ServerLevel world;
+
+    public BiomeNMSImpl(ServerLevel world, NamespacedKey key) {
+        super(world.getWorld(), key);
+        this.world = world;
+        this.biomeHolder = getBiomeRegistry().get(ResourceKey.create(Registries.BIOME, CraftNamespacedKey.toMinecraft(key))).orElse(null);
+    }
+
+    private MappedRegistry<Biome> getBiomeRegistry() {
+        return (MappedRegistry<Biome>) world.registryAccess().lookupOrThrow(Registries.BIOME);
+    }
+
+    @Override
+    public DownfallType getDownfallTypeAt(Location location) {
+        Biome.Precipitation precipitation = biomeHolder.value().getPrecipitationAt(CraftLocation.toBlockPosition(location), world.getSeaLevel());
+        return switch (precipitation) {
+            case RAIN -> DownfallType.RAIN;
+            case SNOW -> DownfallType.SNOW;
+            case NONE -> DownfallType.NONE;
+        };
+    }
+
+    @Override
+    public float getHumidity() {
+        return biomeHolder.value().climateSettings.downfall();
+    }
+
+    @Override
+    public float getBaseTemperature() {
+        return biomeHolder.value().getBaseTemperature();
+    }
+
+    @Override
+    public float getTemperatureAt(Location location) {
+        return biomeHolder.value().getTemperature(CraftLocation.toBlockPosition(location), world.getSeaLevel());
+    }
+
+    @Override
+    public boolean hasDownfall() {
+        return biomeHolder.value().hasPrecipitation();
+    }
+
+    @Override
+    public List<EntityType> getAmbientEntities() {
+        return getSpawnableEntities(MobCategory.AMBIENT);
+    }
+
+    @Override
+    public List<EntityType> getCreatureEntities() {
+        return getSpawnableEntities(MobCategory.CREATURE);
+    }
+
+    @Override
+    public List<EntityType> getMonsterEntities() {
+        return getSpawnableEntities(MobCategory.MONSTER);
+    }
+
+    @Override
+    public List<EntityType> getWaterEntities() {
+        return getSpawnableEntities(MobCategory.WATER_CREATURE);
+    }
+
+    @Override
+    public int getFoliageColor() {
+        // Check if the biome already has a default color
+        if (biomeHolder.value().getFoliageColor() != 0) {
+            return biomeHolder.value().getFoliageColor();
+        }
+        // Based on net.minecraft.world.level.biome.Biome#getFoliageColorFromTexture()
+        float temperature = clampColor(getBaseTemperature());
+        float humidity = clampColor(getHumidity());
+        // Based on net.minecraft.world.level.FoliageColor#get()
+        humidity *= temperature;
+        int humidityValue = (int)((1.0f - humidity) * 255.0f);
+        int temperatureValue = (int)((1.0f - temperature) * 255.0f);
+        int index = temperatureValue << 8 | humidityValue;
+        return index >= 65536 ? 4764952 : getColor(index / 256, index % 256).asRGB();
+    }
+
+    public void setClimate(boolean hasPrecipitation, float temperature, Biome.TemperatureModifier temperatureModifier, float downfall) {
+        try {
+            Object newClimate = BIOME_CLIMATESETTINGS_CONSTRUCTOR.invoke(hasPrecipitation, temperature, temperatureModifier, downfall);
+            ReflectionHelper.setFieldValue(Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeHolder.value(), newClimate);
+            setNetworkedRegistrationInfo();
+        }
+        catch (Throwable ex) {
+            Debug.echoError(ex);
+        }
+    }
+
+    @Override
+    public void setHumidity(float humidity) {
+        setClimate(hasDownfall(), getBaseTemperature(), getTemperatureModifier(), humidity);
+    }
+
+    @Override
+    public void setBaseTemperature(float baseTemperature) {
+        setClimate(hasDownfall(), baseTemperature, getTemperatureModifier(), getHumidity());
+    }
+
+    @Override
+    public void setHasDownfall(boolean hasDownfall) {
+        setClimate(hasDownfall, getBaseTemperature(), getTemperatureModifier(), getHumidity());
+    }
+
+    @Override
+    public void setFoliageColor(int color) {
+        BiomeSpecialEffects nmsCurrEffects = biomeHolder.value().getSpecialEffects();
+        BiomeSpecialEffects nmsNewEffects = new BiomeSpecialEffects(
+                nmsCurrEffects.waterColor(), Optional.of(color), nmsCurrEffects.dryFoliageColorOverride(), nmsCurrEffects.grassColorOverride(), nmsCurrEffects.grassColorModifier()
+        );
+        ReflectionHelper.setFieldValue(Biome.class, ReflectionMappingsInfo.Biome_specialEffects, biomeHolder.value(), nmsNewEffects);
+        setNetworkedRegistrationInfo();
+    }
+
+    @Override
+    public int getFogColor() {
+        return getEnvironmentAttribute(EnvironmentAttributes.FOG_COLOR);
+    }
+
+    @Override
+    public void setFogColor(int color) {
+        setEnvironmentAttribute(EnvironmentAttributes.FOG_COLOR, color);
+    }
+
+    @Override
+    public int getWaterFogColor() {
+        return getEnvironmentAttribute(EnvironmentAttributes.WATER_FOG_COLOR);
+    }
+
+    @Override
+    public void setWaterFogColor(int color) {
+        setEnvironmentAttribute(EnvironmentAttributes.WATER_FOG_COLOR, color);
+    }
+
+    public <T> T getEnvironmentAttribute(EnvironmentAttribute<T> attribute) {
+        return biomeHolder.value().getAttributes().applyModifier(attribute, attribute.defaultValue());
+    }
+
+    public <T> void setEnvironmentAttribute(EnvironmentAttribute<T> attribute, T value) {
+        Biome nmsBiome = biomeHolder.value();
+        EnvironmentAttributeMap newAttributeMap = EnvironmentAttributeMap.builder().putAll(nmsBiome.getAttributes()).set(attribute, value).build();
+        try {
+            BIOME_ATTRIBUTES_SETTER.invokeExact(nmsBiome, newAttributeMap);
+        }
+        catch (Throwable e) {
+            Debug.echoError(e);
+        }
+        setNetworkedRegistrationInfo();
+    }
+
+    private List<EntityType> getSpawnableEntities(MobCategory creatureType) {
+        MobSpawnSettings mobs = biomeHolder.value().getMobSettings();
+        WeightedList<MobSpawnSettings.SpawnerData> typeSettingList = mobs.getMobs(creatureType);
+        List<EntityType> entityTypes = new ArrayList<>();
+        if (typeSettingList == null) {
+            return entityTypes;
+        }
+        for (Weighted<MobSpawnSettings.SpawnerData> meta : typeSettingList.unwrap()) {
+            entityTypes.add(CraftEntityType.minecraftToBukkit(meta.value().type()));
+        }
+        return entityTypes;
+    }
+
+    @Override
+    public void setTo(Block block) {
+        if (((CraftWorld) block.getWorld()).getHandle() != this.world) {
+            NMSHandler.instance.getBiomeNMS(block.getWorld(), getKey()).setTo(block);
+            return;
+        }
+        // Based on CraftWorld source
+        BlockPos pos = new BlockPos(block.getX(), 0, block.getZ());
+        if (world.hasChunkAt(pos)) {
+            LevelChunk chunk = world.getChunkAt(pos);
+            if (chunk != null) {
+                chunk.setBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2, biomeHolder);
+                chunk.markUnsaved();
+            }
+        }
+    }
+
+    public Biome.TemperatureModifier getTemperatureModifier() {
+        return biomeHolder.value().climateSettings.temperatureModifier();
+    }
+
+    private void setNetworkedRegistrationInfo() {
+        try {
+            Map<ResourceKey<Biome>, RegistrationInfo> registrationInfos = (Map<ResourceKey<Biome>, RegistrationInfo>) MAPPED_REGISTRY_REGISTRATION_INFOS.invokeExact(getBiomeRegistry());
+            registrationInfos.put(biomeHolder.key(), RegistrationInfo.BUILT_IN);
+        }
+        catch (Throwable e) {
+            Debug.echoError("Failed to set biome registration info, changes may not be synced correctly.");
+            Debug.echoError(e);
+        }
+    }
+}
