@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v1_21.impl;
+package com.denizenscript.denizen.nms.v26_1.impl;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
@@ -25,10 +25,10 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R7.entity.CraftEntityType;
-import org.bukkit.craftbukkit.v1_21_R7.util.CraftLocation;
-import org.bukkit.craftbukkit.v1_21_R7.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftEntityType;
+import org.bukkit.craftbukkit.util.CraftLocation;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 
 import java.lang.invoke.MethodHandle;

@@ -1,9 +1,9 @@
-package com.denizenscript.denizen.nms.v1_21.impl.entities;
+package com.denizenscript.denizen.nms.v26_1.impl.entities;
 
-import com.denizenscript.denizen.nms.v1_21.Handler;
-import com.denizenscript.denizen.nms.v1_21.impl.network.fakes.FakeNetworkManagerImpl;
-import com.denizenscript.denizen.nms.v1_21.impl.network.fakes.FakePlayerConnectionImpl;
-import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_1.Handler;
+import com.denizenscript.denizen.nms.v26_1.impl.network.fakes.FakeNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.network.fakes.FakePlayerConnectionImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.protocol.PacketFlow;
@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
+import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class EntityFakePlayerImpl extends ServerPlayer {

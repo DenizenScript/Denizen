@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v1_21.impl.network.handlers;
+package com.denizenscript.denizen.nms.v26_1.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerSendPacketScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
@@ -31,7 +31,7 @@ import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R7.entity.CraftPlayer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.lang.invoke.MethodHandle;

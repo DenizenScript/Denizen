@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v1_21.impl;
+package com.denizenscript.denizen.nms.v26_1.impl;
 
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
-import com.denizenscript.denizen.nms.v1_21.Handler;
-import com.denizenscript.denizen.nms.v1_21.helpers.PacketHelperImpl;
+import com.denizenscript.denizen.nms.v26_1.Handler;
+import com.denizenscript.denizen.nms.v26_1.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.ChatColor;

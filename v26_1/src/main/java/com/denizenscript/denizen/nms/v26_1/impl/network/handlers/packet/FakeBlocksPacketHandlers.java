@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v1_21.impl.network.handlers.packet;
+package com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet;
 
-import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
-import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
-import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.FakeBlockHelper;
+import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.FakeBlockHelper;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;

@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v1_21.impl;
+package com.denizenscript.denizen.nms.v26_1.impl;
 
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
-import com.denizenscript.denizen.nms.v1_21.Handler;
-import com.denizenscript.denizen.nms.v1_21.helpers.NBTAdapter;
+import com.denizenscript.denizen.nms.v26_1.Handler;
+import com.denizenscript.denizen.nms.v26_1.helpers.NBTAdapter;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
@@ -24,10 +24,10 @@ import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.inventory.CraftInventory;
+import org.bukkit.craftbukkit.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;

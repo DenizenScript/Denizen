@@ -1,6 +1,6 @@
-package com.denizenscript.denizen.nms.v1_21.impl.network.handlers.packet;
+package com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet;
 
-import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
 import com.mojang.datafixers.util.Pair;
@@ -11,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v1_21.impl.network.handlers.packet;
+package com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.events.player.PlayerReceivesMessageScriptEvent;
-import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
-import com.denizenscript.denizen.nms.v1_21.impl.network.packets.PacketOutChatImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.network.packets.PacketOutChatImpl;
 import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;

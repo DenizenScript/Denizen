@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v1_21.helpers;
+package com.denizenscript.denizen.nms.v26_1.helpers;
 
 
 import com.denizenscript.denizencore.objects.ArgumentHelper;

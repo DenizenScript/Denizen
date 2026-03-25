@@ -1,6 +1,6 @@
-package com.denizenscript.denizen.nms.v1_21.impl.network.handlers.packet;
+package com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet;
 
-import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.network.protocol.Packet;

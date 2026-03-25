@@ -1,7 +1,7 @@
-package com.denizenscript.denizen.nms.v1_21.helpers;
+package com.denizenscript.denizen.nms.v26_1.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
-import com.denizenscript.denizen.nms.v1_21.Handler;
+import com.denizenscript.denizen.nms.v26_1.Handler;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.google.common.collect.ImmutableMap;
 import net.md_5.bungee.api.ChatColor;
@@ -14,10 +14,10 @@ import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R7.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R7.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 
 import java.util.*;

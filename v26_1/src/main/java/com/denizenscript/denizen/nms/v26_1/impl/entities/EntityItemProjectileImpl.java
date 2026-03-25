@@ -1,6 +1,6 @@
-package com.denizenscript.denizen.nms.v1_21.impl.entities;
+package com.denizenscript.denizen.nms.v26_1.impl.entities;
 
-import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.base.Preconditions;

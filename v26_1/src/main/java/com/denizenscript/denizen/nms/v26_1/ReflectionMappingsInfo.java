@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v1_21;
+package com.denizenscript.denizen.nms.v26_1;
 
 public class ReflectionMappingsInfo {
 

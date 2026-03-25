@@ -1,10 +1,10 @@
-package com.denizenscript.denizen.nms.v1_21.impl.network.handlers;
+package com.denizenscript.denizen.nms.v26_1.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerReceivesPacketScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
-import com.denizenscript.denizen.nms.v1_21.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.packet.*;
+import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet.*;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptCodeGen;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -32,9 +32,9 @@ import net.minecraft.server.network.ServerPlayerConnection;
 import net.minecraft.util.debugchart.LocalSampleLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R7.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R7.entity.CraftPlayer;
+import org.bukkit.craftbukkit.CraftRegistry;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;

@@ -1,11 +1,11 @@
-package com.denizenscript.denizen.nms.v1_21.impl.network.packets;
+package com.denizenscript.denizen.nms.v26_1.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.network.protocol.game.ClientboundPlayerChatPacket;
 import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
-import org.bukkit.craftbukkit.v1_21_R7.util.CraftChatMessage;
+import org.bukkit.craftbukkit.util.CraftChatMessage;
 
 public class PacketOutChatImpl extends PacketOutChat {
 

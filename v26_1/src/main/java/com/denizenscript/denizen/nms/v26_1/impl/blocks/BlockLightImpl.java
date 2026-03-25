@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v1_21.impl.blocks;
+package com.denizenscript.denizen.nms.v26_1.impl.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
-import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -21,8 +21,8 @@ import net.minecraft.world.level.lighting.LayerLightEventListener;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_21_R7.CraftChunk;
-import org.bukkit.craftbukkit.v1_21_R7.block.CraftBlock;
+import org.bukkit.craftbukkit.CraftChunk;
+import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.util.Vector;
 
 import java.lang.invoke.MethodHandle;

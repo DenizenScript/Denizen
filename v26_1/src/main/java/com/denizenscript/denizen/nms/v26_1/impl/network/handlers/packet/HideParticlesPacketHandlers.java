@@ -1,10 +1,10 @@
-package com.denizenscript.denizen.nms.v1_21.impl.network.handlers.packet;
+package com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet;
 
-import com.denizenscript.denizen.nms.v1_21.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.utilities.packets.HideParticles;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import org.bukkit.Particle;
-import org.bukkit.craftbukkit.v1_21_R7.CraftParticle;
+import org.bukkit.craftbukkit.CraftParticle;
 
 import java.util.Set;
 

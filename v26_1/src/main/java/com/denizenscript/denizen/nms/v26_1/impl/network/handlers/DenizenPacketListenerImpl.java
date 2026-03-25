@@ -1,10 +1,10 @@
-package com.denizenscript.denizen.nms.v1_21.impl.network.handlers;
+package com.denizenscript.denizen.nms.v26_1.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerChangesSignScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerSteersEntityScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v1_21.impl.network.packets.PacketInResourcePackStatusImpl;
-import com.denizenscript.denizen.nms.v1_21.impl.network.packets.PacketInSteerVehicleImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.network.packets.PacketInResourcePackStatusImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.network.packets.PacketInSteerVehicleImpl;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
@@ -17,7 +17,7 @@ import net.minecraft.network.protocol.common.ServerboundResourcePackPacket;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_21_R7.block.CraftBlock;
+import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.event.block.SignChangeEvent;
 
 public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {

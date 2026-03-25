@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v1_21.helpers;
+package com.denizenscript.denizen.nms.v26_1.helpers;
 
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
-import com.denizenscript.denizen.nms.v1_21.impl.BiomeNMSImpl;
+import com.denizenscript.denizen.nms.v26_1.impl.BiomeNMSImpl;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -20,8 +20,8 @@ import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.bukkit.Chunk;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R7.CraftChunk;
-import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.CraftChunk;
+import org.bukkit.craftbukkit.CraftWorld;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;

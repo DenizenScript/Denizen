@@ -1,7 +1,7 @@
-package com.denizenscript.denizen.nms.v1_21.impl.network.handlers;
+package com.denizenscript.denizen.nms.v26_1.impl.network.handlers;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -24,10 +24,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraft.world.level.chunk.Strategy;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R7.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R7.block.CraftBlockStates;
-import org.bukkit.craftbukkit.v1_21_R7.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.CraftRegistry;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.block.CraftBlockStates;
+import org.bukkit.craftbukkit.block.data.CraftBlockData;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;

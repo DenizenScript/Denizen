@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v1_21.helpers;
+package com.denizenscript.denizen.nms.v26_1.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.WorldHelper;
-import com.denizenscript.denizen.nms.v1_21.ReflectionMappingsInfo;
-import com.denizenscript.denizen.nms.v1_21.impl.BiomeNMSImpl;
+import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
+import com.denizenscript.denizen.nms.v26_1.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.mojang.datafixers.util.Pair;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.storage.PrimaryLevelData;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.CraftWorld;
 
 public class WorldHelperImpl implements WorldHelper {
 

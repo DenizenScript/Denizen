@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v1_21.impl.network.packets;
+package com.denizenscript.denizen.nms.v26_1.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketInResourcePackStatus;
 import net.minecraft.network.protocol.common.ServerboundResourcePackPacket;
