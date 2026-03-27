@@ -54,7 +54,7 @@ public class BlockLightImpl extends BlockLight {
         if (lightEngine instanceof ThreadedLevelLightEngine) {
             ChunkPos coord = chunk.getPos();
             try {
-                LIGHTENGINETHREADED_QUEUERUNNABLE.invoke(lightEngine, coord.x, coord.z, LIGHTENGINETHREADED_TASKTYPE_PRE, runnable);
+                LIGHTENGINETHREADED_QUEUERUNNABLE.invoke(lightEngine, coord.x(), coord.z(), LIGHTENGINETHREADED_TASKTYPE_PRE, runnable);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
@@ -241,7 +241,7 @@ public class BlockLightImpl extends BlockLight {
     public static void sendNearbyChunkUpdates(LevelChunk chunk) {
         ChunkPos pos = chunk.getPos();
         for (Vector vec : RELATIVE_CHUNKS) {
-            ChunkAccess other = chunk.getLevel().getChunk(pos.x + vec.getBlockX(), pos.z + vec.getBlockZ(), ChunkStatus.FULL, false);
+            ChunkAccess other = chunk.getLevel().getChunk(pos.x() + vec.getBlockX(), pos.z() + vec.getBlockZ(), ChunkStatus.FULL, false);
             if (other instanceof LevelChunk) {
                 sendSingleChunkUpdate((LevelChunk) other);
             }

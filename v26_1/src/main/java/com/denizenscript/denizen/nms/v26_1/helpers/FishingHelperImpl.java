@@ -37,7 +37,7 @@ public class FishingHelperImpl implements FishingHelper {
             case DEFAULT -> {
                 ServerLevel nmsWorld = ((CraftWorld) fishHook.getWorld()).getHandle();
                 ItemStack nmsFishingRod = nmsHook.getPlayerOwner().getMainHandItem();
-                float f = nmsWorld.random.nextFloat();
+                float f = nmsWorld.getRandom().nextFloat();
                 float i = EnchantmentHelper.getFishingTimeReduction(nmsWorld, nmsFishingRod, nmsHook.getPlayerOwner());
                 int j = EnchantmentHelper.getFishingLuckBonus(nmsWorld, nmsFishingRod, nmsHook.getPlayerOwner());
                 float f1 = 0.1F - i * 0.025F - (float) j * 0.01F;
@@ -73,7 +73,7 @@ public class FishingHelperImpl implements FishingHelper {
                 .withParameter(LootContextParams.TOOL, new ItemStack(Items.FISHING_ROD))
                 .create(LootContextParamSets.FISHING);
         List<ItemStack> nmsItems = nmsWorld.getServer().reloadableRegistries().getLootTable(key).getRandomItems(nmsLootParams);
-        return nmsItems.get(nmsWorld.random.nextInt(nmsItems.size()));
+        return nmsItems.get(nmsWorld.getRandom().nextInt(nmsItems.size()));
     }
 
     @Override

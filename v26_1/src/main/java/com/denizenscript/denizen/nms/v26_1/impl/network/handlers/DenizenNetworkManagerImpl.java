@@ -271,7 +271,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         else if (packet instanceof ClientboundSetEntityMotionPacket) {
             ClientboundSetEntityMotionPacket velPacket = (ClientboundSetEntityMotionPacket) packet;
-            doPacketOutput("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.getId() + ": " + velPacket.getMovement());
+            doPacketOutput("Packet: ClientboundSetEntityMotionPacket sent to " + player.getScoreboardName() + " for entity ID: " + velPacket.id() + ": " + velPacket.movement());
         }
         else if (packet instanceof ClientboundAddEntityPacket) {
             ClientboundAddEntityPacket addEntityPacket = (ClientboundAddEntityPacket) packet;

@@ -52,6 +52,7 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.BlastingRecipe;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
@@ -96,21 +97,20 @@ import java.util.function.Predicate;
 
 public class ItemHelperImpl extends ItemHelper {
 
+    public static final Recipe.CommonInfo BASE_RECIPE_INFO = new Recipe.CommonInfo(true);
+
     public static net.minecraft.world.item.crafting.RecipeHolder<?> getNMSRecipe(NamespacedKey key) {
         ResourceKey<Recipe<?>> nmsKey = ResourceKey.create(Registries.RECIPE, CraftNamespacedKey.toMinecraft(key));
         return ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().byKey(nmsKey).orElse(null);
     }
-
-    public static final Field Item_components = ReflectionHelper.getFields(Item.class).get("components", DataComponentMap.class);
 
     public static final Field RecipeManager_featureFlagSet = ReflectionHelper.getFields(RecipeManager.class).getFirstOfType(FeatureFlagSet.class);
 
     public void setMaxStackSize(Material material, int size) {
         try {
             ReflectionHelper.getFinalSetter(Material.class, "maxStack").invoke(material, size);
-            Item nmsItem = BuiltInRegistries.ITEM.getValue(CraftNamespacedKey.toMinecraft(material.getKey()));
-            DataComponentMap currentComponents = nmsItem.components();
-            Item_components.set(nmsItem, DataComponentMap.composite(currentComponents, DataComponentMap.builder().set(DataComponents.MAX_STACK_SIZE, size).build()));
+            Holder.Reference<Item> nmsItemHolder = BuiltInRegistries.ITEM.get(CraftNamespacedKey.toMinecraft(material.getKey())).orElseThrow();
+            nmsItemHolder.bindComponents(DataComponentMap.composite(nmsItemHolder.components(), DataComponentMap.builder().set(DataComponents.MAX_STACK_SIZE, size).build()));
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -211,18 +211,18 @@ public class ItemHelperImpl extends ItemHelper {
         ResourceKey<Recipe<?>> key = createRecipeKey(keyName);
         Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
         AbstractCookingRecipe recipe;
-        CookingBookCategory categoryValue = category == null ? CookingBookCategory.MISC : CookingBookCategory.valueOf(CoreUtilities.toUpperCase(category));
+        AbstractCookingRecipe.CookingBookInfo bookInfo = new AbstractCookingRecipe.CookingBookInfo(category == null ? CookingBookCategory.MISC : CookingBookCategory.valueOf(CoreUtilities.toUpperCase(category)), group);
         if (type.equalsIgnoreCase("smoker")) {
-            recipe = new SmokingRecipe(group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new SmokingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, CraftItemStack.asNMSTemplate(result), exp, time);
         }
         else if (type.equalsIgnoreCase("blast")) {
-            recipe = new BlastingRecipe(group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new BlastingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, CraftItemStack.asNMSTemplate(result), exp, time);
         }
         else if (type.equalsIgnoreCase("campfire")) {
-            recipe = new CampfireCookingRecipe(group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new CampfireCookingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, CraftItemStack.asNMSTemplate(result), exp, time);
         }
         else {
-            recipe = new SmeltingRecipe(group, categoryValue, itemRecipe, CraftItemStack.asNMSCopy(result), exp, time);
+            recipe = new SmeltingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, CraftItemStack.asNMSTemplate(result), exp, time);
         }
         RecipeHolder<AbstractCookingRecipe> holder = new RecipeHolder<>(key, recipe);
         getRecipeManager().addRecipe(holder);
@@ -232,7 +232,7 @@ public class ItemHelperImpl extends ItemHelper {
     public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {
         ResourceKey<Recipe<?>> key = createRecipeKey(keyName);
         Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
-        StonecutterRecipe recipe = new StonecutterRecipe(group, itemRecipe, CraftItemStack.asNMSCopy(result));
+        StonecutterRecipe recipe = new StonecutterRecipe(BASE_RECIPE_INFO, itemRecipe, CraftItemStack.asNMSTemplate(result));
         RecipeHolder<StonecutterRecipe> holder = new RecipeHolder<>(key, recipe);
         getRecipeManager().addRecipe(holder);
     }
@@ -243,8 +243,7 @@ public class ItemHelperImpl extends ItemHelper {
         Ingredient templateItemRecipe = templateItem.length == 0 ? null : itemArrayToRecipe(templateItem, templateExact);
         Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
         Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
-        net.minecraft.world.item.ItemStack nmsCopy = CraftItemStack.asNMSCopy(result);
-        SmithingTransformRecipe recipe = new SmithingTransformRecipe(Optional.ofNullable(templateItemRecipe), baseItemRecipe, Optional.of(upgradeItemRecipe), new TransmuteResult(nmsCopy.getItemHolder(), nmsCopy.getCount(), nmsCopy.getComponentsPatch()));
+        SmithingTransformRecipe recipe = new SmithingTransformRecipe(BASE_RECIPE_INFO, Optional.ofNullable(templateItemRecipe), baseItemRecipe, Optional.of(upgradeItemRecipe), CraftItemStack.asNMSTemplate(result));
         RecipeHolder<SmithingTransformRecipe> holder = new RecipeHolder<>(key, recipe);
         getRecipeManager().addRecipe(holder);
     }
@@ -257,8 +256,7 @@ public class ItemHelperImpl extends ItemHelper {
         for (int i = 0; i < ingredients.size(); i++) {
             ingredientList.add(itemArrayToRecipe(ingredients.get(i), exact[i]));
         }
-        // TODO: 1.19.3: Add support for choosing a CraftingBookCategory
-        ShapelessRecipe recipe = new ShapelessRecipe(group, categoryValue, CraftItemStack.asNMSCopy(result), NonNullList.of(null, ingredientList.toArray(new Ingredient[0])));
+        ShapelessRecipe recipe = new ShapelessRecipe(BASE_RECIPE_INFO, new CraftingRecipe.CraftingBookInfo(categoryValue, group), CraftItemStack.asNMSTemplate(result), NonNullList.of(null, ingredientList.toArray(new Ingredient[0])));
         RecipeHolder<ShapelessRecipe> holder = new RecipeHolder<>(key, recipe);
         getRecipeManager().addRecipe(holder);
     }

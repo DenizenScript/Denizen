@@ -16,6 +16,7 @@ import net.minecraft.world.level.storage.PrimaryLevelData;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.event.world.TimeSkipEvent;
 
 public class WorldHelperImpl implements WorldHelper {
 
@@ -77,7 +78,8 @@ public class WorldHelperImpl implements WorldHelper {
 
     @Override
     public void setDayTime(World world, long time) {
-        ((CraftWorld) world).getHandle().setDayTime(time);
+        ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
+        nmsWorld.dimensionType().defaultClock().ifPresent((clock) -> nmsWorld.clockManager().setTotalTicks(clock, time, TimeSkipEvent.SkipReason.CUSTOM));
     }
 
     @Override
@@ -94,17 +96,8 @@ public class WorldHelperImpl implements WorldHelper {
         nmsWorld.getPlayers(LivingEntity::isSleeping).forEach((player) -> player.stopSleepInBed(false, false));
     }
 
-    // net.minecraft.server.level.ServerLevel#resetWeatherCycle()
     @Override
     public void clearWeather(World world) {
-        PrimaryLevelData data = ((CraftWorld) world).getHandle().serverLevelData;
-        data.setRaining(false);
-        if (!data.isRaining()) {
-            data.setRainTime(0);
-        }
-        data.setThundering(false);
-        if (!data.isThundering()) {
-            data.setThunderTime(0);
-        }
+        ((CraftWorld) world).getHandle().resetWeatherCycle();
     }
 }

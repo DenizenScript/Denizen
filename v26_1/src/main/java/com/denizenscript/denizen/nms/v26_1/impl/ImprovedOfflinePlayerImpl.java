@@ -145,12 +145,10 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     protected boolean loadPlayerData(UUID uuid) {
         try {
             this.player = uuid;
-            for (org.bukkit.World w : Bukkit.getWorlds()) {
-                this.file = new File(w.getWorldFolder(), "playerdata" + File.separator + this.player + ".dat");
-                if (this.file.exists()) {
-                    this.compound = NBTAdapter.toAPI(NbtIo.readCompressed(new FileInputStream(this.file), NbtAccounter.unlimitedHeap()));
-                    return true;
-                }
+            this.file = new File(MinecraftServer.getServer().playerDataStorage.getPlayerDir(), this.player + ".dat");
+            if (this.file.exists()) {
+                this.compound = NBTAdapter.toAPI(NbtIo.readCompressed(new FileInputStream(this.file), NbtAccounter.unlimitedHeap()));
+                return true;
             }
         }
         catch (Exception e) {

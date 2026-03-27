@@ -47,7 +47,7 @@ public class HiddenEntitiesPacketHandlers {
                 ider = ((ClientboundSetEntityDataPacket) packet).id();
             }
             else if (packet instanceof ClientboundSetEntityMotionPacket) {
-                ider = ((ClientboundSetEntityMotionPacket) packet).getId();
+                ider = ((ClientboundSetEntityMotionPacket) packet).id();
             }
             else if (packet instanceof ClientboundTeleportEntityPacket) {
                 ider = ((ClientboundTeleportEntityPacket) packet).id();

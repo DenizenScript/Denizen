@@ -70,14 +70,6 @@ public class EntityItemProjectileImpl extends ThrowableProjectile {
     }
 
     @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> datawatcherobject) {
-        super.onSyncedDataUpdated(datawatcherobject);
-        if (ITEM.equals(datawatcherobject)) {
-            this.getItemStack().setEntityRepresentation(this);
-        }
-    }
-
-    @Override
     public boolean save(ValueOutput nmsValueOutput) {
         if (!this.getItemStack().isEmpty()) {
             nmsValueOutput.store("Item", ItemStack.CODEC, this.getItemStack());

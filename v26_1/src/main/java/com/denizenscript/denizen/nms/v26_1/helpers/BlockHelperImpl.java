@@ -184,11 +184,11 @@ public class BlockHelperImpl implements BlockHelper {
         net.minecraft.world.level.block.state.BlockState nmsBlock = nmsChunk.getBlockState(pos);
         ServerLevel nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
         if (nmsBlock.isRandomlyTicking()) {
-            nmsBlock.randomTick(nmsWorld, pos, nmsWorld.random);
+            nmsBlock.randomTick(nmsWorld, pos, nmsWorld.getRandom());
         }
         FluidState fluid = nmsBlock.getFluidState();
         if (fluid.isRandomlyTicking()) {
-            fluid.animateTick(nmsWorld, pos, nmsWorld.random);
+            fluid.animateTick(nmsWorld, pos, nmsWorld.getRandom());
         }
     }
 

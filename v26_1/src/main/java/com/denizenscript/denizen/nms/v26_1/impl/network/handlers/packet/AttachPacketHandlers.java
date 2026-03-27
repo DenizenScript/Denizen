@@ -267,7 +267,7 @@ public class AttachPacketHandlers {
                 return EntityAttachmentHelper.denyOriginalPacketSend(networkManager.player.getUUID(), e.getUUID()) ? null : packet;
             }
             else if (packet instanceof ClientboundSetEntityMotionPacket setEntityMotionPacket) {
-                int ider = setEntityMotionPacket.getId();
+                int ider = setEntityMotionPacket.id();
                 Entity e = networkManager.player.level().getEntity(ider);
                 if (e == null) {
                     return packet;
