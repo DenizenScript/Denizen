@@ -147,10 +147,13 @@ public class Denizen extends JavaPlugin {
             Debug.log("Running on fully supported Java 17.");
         }
         else if (javaVersion.startsWith("18") || javaVersion.startsWith("19")) {
-            getLogger().warning("Running unreliable Java version. modern Minecraft versions are built for Java 21 or 17. Other Java versions are not guaranteed to function properly.");
+            getLogger().warning("Running unreliable Java version. modern Minecraft versions are built for Java 25, 21, or 17. Other Java versions are not guaranteed to function properly.");
         }
         else if (javaVersion.startsWith("21")) {
             Debug.log("Running on fully supported Java 21.");
+        }
+        else if (javaVersion.startsWith("25")) {
+            Debug.log("Running on fully supported Java 25.");
         }
         else {
             Debug.log("Running on unrecognized (future?) Java version. May or may not work.");
