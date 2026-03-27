@@ -259,7 +259,7 @@ public class EntityColor extends EntityProperty<ElementTag> {
             case CAT -> {
                 Cat cat = as(Cat.class);
                 // TODO once 1.21 is the minimum supported version, replace with direct registry-based handling
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
                     yield Utilities.namespacedKeyToString(cat.getCatType().getKey()) + "|" + cat.getCollarColor().name();
                 }
                 yield cat.getCatType() + "|" + cat.getCollarColor().name();
