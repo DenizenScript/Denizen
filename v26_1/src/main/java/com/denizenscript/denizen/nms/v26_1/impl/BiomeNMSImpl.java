@@ -2,7 +2,6 @@ package com.denizenscript.denizen.nms.v26_1.impl;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
@@ -40,8 +39,8 @@ import java.util.Optional;
 public class BiomeNMSImpl extends BiomeNMS {
 
     public static final MethodHandle BIOME_CLIMATESETTINGS_CONSTRUCTOR = ReflectionHelper.getConstructor(Biome.ClimateSettings.class, boolean.class, float.class, Biome.TemperatureModifier.class, float.class);
-    public static final MethodHandle MAPPED_REGISTRY_REGISTRATION_INFOS = ReflectionHelper.getFields(MappedRegistry.class).getGetter(ReflectionMappingsInfo.MappedRegistry_registrationInfos);
-    public static final MethodHandle BIOME_ATTRIBUTES_SETTER = ReflectionHelper.getFields(Biome.class).getSetter(ReflectionMappingsInfo.Biome_attributes);
+    public static final MethodHandle MAPPED_REGISTRY_REGISTRATION_INFOS = ReflectionHelper.getFields(MappedRegistry.class).getGetter("registrationInfos");
+    public static final MethodHandle BIOME_ATTRIBUTES_SETTER = ReflectionHelper.getFields(Biome.class).getSetter("attributes");
 
     public Holder.Reference<Biome> biomeHolder;
     public ServerLevel world;
@@ -126,7 +125,7 @@ public class BiomeNMSImpl extends BiomeNMS {
     public void setClimate(boolean hasPrecipitation, float temperature, Biome.TemperatureModifier temperatureModifier, float downfall) {
         try {
             Object newClimate = BIOME_CLIMATESETTINGS_CONSTRUCTOR.invoke(hasPrecipitation, temperature, temperatureModifier, downfall);
-            ReflectionHelper.setFieldValue(Biome.class, ReflectionMappingsInfo.Biome_climateSettings, biomeHolder.value(), newClimate);
+            ReflectionHelper.setFieldValue(Biome.class, "climateSettings", biomeHolder.value(), newClimate);
             setNetworkedRegistrationInfo();
         }
         catch (Throwable ex) {
@@ -155,7 +154,7 @@ public class BiomeNMSImpl extends BiomeNMS {
         BiomeSpecialEffects nmsNewEffects = new BiomeSpecialEffects(
                 nmsCurrEffects.waterColor(), Optional.of(color), nmsCurrEffects.dryFoliageColorOverride(), nmsCurrEffects.grassColorOverride(), nmsCurrEffects.grassColorModifier()
         );
-        ReflectionHelper.setFieldValue(Biome.class, ReflectionMappingsInfo.Biome_specialEffects, biomeHolder.value(), nmsNewEffects);
+        ReflectionHelper.setFieldValue(Biome.class, "specialEffects", biomeHolder.value(), nmsNewEffects);
         setNetworkedRegistrationInfo();
     }
 

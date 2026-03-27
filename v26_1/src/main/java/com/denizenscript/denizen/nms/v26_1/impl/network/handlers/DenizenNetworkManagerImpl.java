@@ -2,7 +2,6 @@ package com.denizenscript.denizen.nms.v26_1.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerReceivesPacketScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet.*;
 import com.denizenscript.denizen.utilities.Settings;
@@ -528,10 +527,10 @@ public class DenizenNetworkManagerImpl extends Connection {
     //// Reflection Methods/Fields
     ///////////
 
-    private static final Field protocolDirectionField = ReflectionHelper.getFields(Connection.class).get(ReflectionMappingsInfo.Connection_receiving, PacketFlow.class);
-    public static final Field Connection_packetListener = ReflectionHelper.getFields(Connection.class).get(ReflectionMappingsInfo.Connection_packetListener, PacketListener.class);
-    private static final Field ServerGamePacketListener_ConnectionField = ReflectionHelper.getFields(ServerCommonPacketListenerImpl.class).get(ReflectionMappingsInfo.ServerCommonPacketListenerImpl_connection);
-    private static final MethodHandle ServerGamePacketListener_ConnectionSetter = ReflectionHelper.getFinalSetter(ServerCommonPacketListenerImpl.class, ReflectionMappingsInfo.ServerCommonPacketListenerImpl_connection);
+    private static final Field protocolDirectionField = ReflectionHelper.getFields(Connection.class).get("receiving", PacketFlow.class);
+    public static final Field Connection_packetListener = ReflectionHelper.getFields(Connection.class).get("packetListener", PacketListener.class);
+    private static final Field ServerGamePacketListener_ConnectionField = ReflectionHelper.getFields(ServerCommonPacketListenerImpl.class).get("connection");
+    private static final MethodHandle ServerGamePacketListener_ConnectionSetter = ReflectionHelper.getFinalSetter(ServerCommonPacketListenerImpl.class, "connection");
 
     private static PacketFlow getProtocolDirection(Connection networkManager) {
         PacketFlow direction = null;

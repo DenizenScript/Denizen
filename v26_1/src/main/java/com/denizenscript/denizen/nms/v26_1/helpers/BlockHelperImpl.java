@@ -3,7 +3,6 @@ package com.denizenscript.denizen.nms.v26_1.helpers;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -131,7 +130,7 @@ public class BlockHelperImpl implements BlockHelper {
         if (block == null) {
             return false;
         }
-        ReflectionHelper.setFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, ReflectionMappingsInfo.BlockBehaviour_explosionResistance, block, resistance);
+        ReflectionHelper.setFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, "explosionResistance", block, resistance);
         return true;
     }
 
@@ -141,7 +140,7 @@ public class BlockHelperImpl implements BlockHelper {
         if (block == null) {
             return 0;
         }
-        return ReflectionHelper.getFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, ReflectionMappingsInfo.BlockBehaviour_explosionResistance, block);
+        return ReflectionHelper.getFieldValue(net.minecraft.world.level.block.state.BlockBehaviour.class, "explosionResistance", block);
     }
 
     public static final MethodHandle MATERIAL_PUSH_REACTION_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(BlockBehaviour.BlockStateBase.class, PushReaction.class);

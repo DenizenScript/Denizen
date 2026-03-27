@@ -4,7 +4,6 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityState;
@@ -92,9 +91,9 @@ import java.util.function.BiConsumer;
 
 public class EntityHelperImpl extends EntityHelper {
 
-    public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, ReflectionMappingsInfo.Entity_onGround, boolean.class);
+    public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, "onGround", boolean.class);
 
-    public static final EntityDataAccessor<Boolean> ENDERMAN_DATA_ACCESSOR_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, ReflectionMappingsInfo.EnderMan_DATA_CREEPY, null);
+    public static final EntityDataAccessor<Boolean> ENDERMAN_DATA_ACCESSOR_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, "DATA_CREEPY", null);
 
     @Override
     public void setInvisible(Entity entity, boolean invisible) {
@@ -152,8 +151,8 @@ public class EntityHelperImpl extends EntityHelper {
         return damage;
     }
 
-    public static final MethodHandle LIVINGENTITY_AUTOSPINATTACK_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.LivingEntity.class, ReflectionMappingsInfo.LivingEntity_autoSpinAttackTicks);
-    public static final MethodHandle LIVINGENTITY_SETLIVINGENTITYFLAG = ReflectionHelper.getMethodHandle(net.minecraft.world.entity.LivingEntity.class, ReflectionMappingsInfo.LivingEntity_setLivingEntityFlag_method, int.class, boolean.class);
+    public static final MethodHandle LIVINGENTITY_AUTOSPINATTACK_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.LivingEntity.class, "autoSpinAttackTicks");
+    public static final MethodHandle LIVINGENTITY_SETLIVINGENTITYFLAG = ReflectionHelper.getMethodHandle(net.minecraft.world.entity.LivingEntity.class, "setLivingEntityFlag", int.class, boolean.class);
 
     @Override
     public void setRiptide(Entity entity, boolean state) {
@@ -548,7 +547,7 @@ public class EntityHelperImpl extends EntityHelper {
         ((CraftEntity) entity).getHandle().setBoundingBox(new AABB(box.getMinX(), box.getMinY(), box.getMinZ(), box.getMaxX(), box.getMaxY(), box.getMaxZ()));
     }
 
-    public static final Field EXPERIENCE_ORB_AGE = ReflectionHelper.getFields(net.minecraft.world.entity.ExperienceOrb.class).get(ReflectionMappingsInfo.ExperienceOrb_age, int.class);
+    public static final Field EXPERIENCE_ORB_AGE = ReflectionHelper.getFields(net.minecraft.world.entity.ExperienceOrb.class).get("age", int.class);
 
     @Override
     public void setTicksLived(Entity entity, int ticks) {
@@ -687,7 +686,7 @@ public class EntityHelperImpl extends EntityHelper {
         return new EntityTag(nmsEntity.getBukkitEntity());
     }
 
-    public static final Field ZOMBIE_INWATERTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.zombie.Zombie.class).get(ReflectionMappingsInfo.Zombie_inWaterTime, int.class);
+    public static final Field ZOMBIE_INWATERTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.zombie.Zombie.class).get("inWaterTime", int.class);
 
     @Override
     public int getInWaterTime(Zombie zombie) {
@@ -767,7 +766,7 @@ public class EntityHelperImpl extends EntityHelper {
         }
     }
 
-    public static final Field SynchedEntityData_itemsById = ReflectionHelper.getFields(SynchedEntityData.class).get(ReflectionMappingsInfo.SynchedEntityData_itemsById);
+    public static final Field SynchedEntityData_itemsById = ReflectionHelper.getFields(SynchedEntityData.class).get("itemsById");
 
     public static Int2ObjectMap<SynchedEntityData.DataItem<Object>> getDataItems(Entity entity) {
         try {

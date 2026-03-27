@@ -5,7 +5,6 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v26_1.helpers.PacketHelperImpl;
 import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
@@ -140,10 +139,10 @@ public class ProfileEditorImpl extends ProfileEditor {
         return createGameProfile(playerProfile.getUniqueId(), playerProfile.getName(), playerProfile.getTexture(), playerProfile.getTextureSignature());
     }
 
-    public static final MethodHandle RESOLVABLEPROFILE_UNPACK = ReflectionHelper.getMethodHandle(ResolvableProfile.class, ReflectionMappingsInfo.ResolvableProfile_unpack_method);
+    public static final MethodHandle RESOLVABLEPROFILE_UNPACK = ReflectionHelper.getMethodHandle(ResolvableProfile.class, "unpack");
     public static final MethodHandle RESOLVABLEPROFILE_PARTIAL_ID = ReflectionHelper
             .getFields(ReflectionHelper.getClassOrThrow("net.minecraft.world.item.component.ResolvableProfile$Partial"))
-            .getGetter(ReflectionMappingsInfo.ResolvableProfilePartial_id, Optional.class);
+            .getGetter("id", Optional.class);
 
     public static UUID getUUID(ResolvableProfile resolvableProfile) {
         try {

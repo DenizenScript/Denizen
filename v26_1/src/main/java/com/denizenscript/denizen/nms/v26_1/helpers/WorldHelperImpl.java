@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.nms.v26_1.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.WorldHelper;
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v26_1.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -28,7 +27,7 @@ public class WorldHelperImpl implements WorldHelper {
     @Override
     public void setStatic(World world, boolean isStatic) {
         ServerLevel worldServer = ((CraftWorld) world).getHandle();
-        ReflectionHelper.setFieldValue(net.minecraft.world.level.Level.class, ReflectionMappingsInfo.Level_isClientSide, worldServer, isStatic);
+        ReflectionHelper.setFieldValue(net.minecraft.world.level.Level.class, "isClientSide", worldServer, isStatic);
     }
 
     @Override
@@ -50,14 +49,14 @@ public class WorldHelperImpl implements WorldHelper {
 
     @Override
     public boolean areEnoughSleeping(World world, int percentage) {
-        SleepStatus status = ReflectionHelper.getFieldValue(ServerLevel.class, ReflectionMappingsInfo.ServerLevel_sleepStatus, ((CraftWorld) world).getHandle());
+        SleepStatus status = ReflectionHelper.getFieldValue(ServerLevel.class, "sleepStatus", ((CraftWorld) world).getHandle());
         return status.areEnoughSleeping(percentage);
     }
 
     @Override
     public boolean areEnoughDeepSleeping(World world, int percentage) {
         ServerLevel level = ((CraftWorld) world).getHandle();
-        SleepStatus status = ReflectionHelper.getFieldValue(ServerLevel.class, ReflectionMappingsInfo.ServerLevel_sleepStatus, level);
+        SleepStatus status = ReflectionHelper.getFieldValue(ServerLevel.class, "sleepStatus", level);
         return status.areEnoughDeepSleeping(percentage, level.players());
     }
 
@@ -90,7 +89,7 @@ public class WorldHelperImpl implements WorldHelper {
     @Override
     public void wakeUpAllPlayers(World world) {
         ServerLevel nmsWorld = ((CraftWorld) world).getHandle();
-        SleepStatus status = ReflectionHelper.getFieldValue(ServerLevel.class, ReflectionMappingsInfo.ServerLevel_sleepStatus, nmsWorld);
+        SleepStatus status = ReflectionHelper.getFieldValue(ServerLevel.class, "sleepStatus", nmsWorld);
         status.removeAllSleepers();
         nmsWorld.getPlayers(LivingEntity::isSleeping).forEach((player) -> player.stopSleepInBed(false, false));
     }

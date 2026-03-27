@@ -2,7 +2,6 @@ package com.denizenscript.denizen.nms.v26_1.impl.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -39,7 +38,7 @@ public class BlockLightImpl extends BlockLight {
     static {
         Object preObj = null;
         try {
-            preObj = ReflectionHelper.getFields(LIGHTENGINETHREADED_TASKTYPE).get(ReflectionMappingsInfo.ThreadedLevelLightEngineTaskType_PRE_UPDATE).get(null);
+            preObj = ReflectionHelper.getFields(LIGHTENGINETHREADED_TASKTYPE).get("PRE_UPDATE").get(null);
         }
         catch (Throwable ex) {
             ex.printStackTrace();
@@ -47,7 +46,7 @@ public class BlockLightImpl extends BlockLight {
         LIGHTENGINETHREADED_TASKTYPE_PRE = preObj;
     }
 
-    public static final MethodHandle LIGHTENGINETHREADED_QUEUERUNNABLE = ReflectionHelper.getMethodHandle(ThreadedLevelLightEngine.class, ReflectionMappingsInfo.ThreadedLevelLightEngine_addTask_method,
+    public static final MethodHandle LIGHTENGINETHREADED_QUEUERUNNABLE = ReflectionHelper.getMethodHandle(ThreadedLevelLightEngine.class, "addTask",
             int.class, int.class,  LIGHTENGINETHREADED_TASKTYPE, Runnable.class);
 
     public static void enqueueRunnable(LevelChunk chunk, Runnable runnable) {

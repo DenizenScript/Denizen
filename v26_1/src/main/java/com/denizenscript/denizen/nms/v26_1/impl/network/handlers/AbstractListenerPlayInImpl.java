@@ -2,7 +2,6 @@ package com.denizenscript.denizen.nms.v26_1.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerSendPacketScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
@@ -41,9 +40,9 @@ import java.util.Set;
 
 public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
 
-    public static final Field ServerGamePacketListenerImpl_chunkSender = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_chunkSender);
+    public static final Field ServerGamePacketListenerImpl_chunkSender = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get("chunkSender");
 
-    public static final MethodHandle SERVER_COMMON_PACKET_LISTENER_IMPL_CREATE_COOKIE = ReflectionHelper.getMethodHandle(ServerCommonPacketListenerImpl.class, ReflectionMappingsInfo.ServerCommonPacketListenerImpl_createCookie_method, ClientInformation.class);
+    public static final MethodHandle SERVER_COMMON_PACKET_LISTENER_IMPL_CREATE_COOKIE = ReflectionHelper.getMethodHandle(ServerCommonPacketListenerImpl.class, "createCookie", ClientInformation.class);
 
     public static CommonListenerCookie createCookie(ServerPlayer nmsPlayer) {
         try {
@@ -179,8 +178,8 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
         oldListener.send(packet, channelfuturelistener);
     }
 
-    public static Field AWAITING_POS_FIELD = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_awaitingPositionFromClient, Vec3.class);
-    public static Field AWAITING_TELEPORT_FIELD = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_awaitingTeleport, int.class);
+    public static Field AWAITING_POS_FIELD = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get("awaitingPositionFromClient", Vec3.class);
+    public static Field AWAITING_TELEPORT_FIELD = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get("awaitingTeleport", int.class);
 
     public void debugPacketOutput(Packet<?> packet) {
         try {

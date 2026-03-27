@@ -6,7 +6,6 @@ import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.enums.CustomEntityType;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
 import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v26_1.impl.ImprovedOfflinePlayerImpl;
 import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.nms.v26_1.impl.entities.CraftFakePlayerImpl;
@@ -81,13 +80,13 @@ import java.util.function.Predicate;
 
 public class PlayerHelperImpl extends PlayerHelper {
 
-    public static final Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(LivingEntity.class).get(ReflectionMappingsInfo.LivingEntity_attackStrengthTicker, int.class);
+    public static final Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(LivingEntity.class).get("attackStrengthTicker", int.class);
 
-    public static final Field FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundTickCount, int.class);
-    public static final Field VEHICLE_FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get(ReflectionMappingsInfo.ServerGamePacketListenerImpl_aboveGroundVehicleTickCount, int.class);
-    public static final Field PASSENGERS_PACKET_PASSENGERS = ReflectionHelper.getFields(ClientboundSetPassengersPacket.class).get(ReflectionMappingsInfo.ClientboundSetPassengersPacket_passengers, int[].class);
-    public static final MethodHandle PLAYER_RESPAWNCONFIG_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, ReflectionMappingsInfo.ServerPlayer_respawnConfig, ServerPlayer.RespawnConfig.class);
-    public static final MethodHandle SERVER_RECIPE_BOOK_ADD_HIGHLIGHT = ReflectionHelper.getMethodHandle(ServerRecipeBook.class, ReflectionMappingsInfo.ServerRecipeBook_addHighlight_method, ResourceKey.class);
+    public static final Field FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get("aboveGroundTickCount", int.class);
+    public static final Field VEHICLE_FLY_TICKS = ReflectionHelper.getFields(ServerGamePacketListenerImpl.class).get("aboveGroundVehicleTickCount", int.class);
+    public static final Field PASSENGERS_PACKET_PASSENGERS = ReflectionHelper.getFields(ClientboundSetPassengersPacket.class).get("passengers", int[].class);
+    public static final MethodHandle PLAYER_RESPAWNCONFIG_SETTER = ReflectionHelper.getFinalSetter(ServerPlayer.class, "respawnConfig", ServerPlayer.RespawnConfig.class);
+    public static final MethodHandle SERVER_RECIPE_BOOK_ADD_HIGHLIGHT = ReflectionHelper.getMethodHandle(ServerRecipeBook.class, "addHighlight", ResourceKey.class);
 
     @Override
     public void stopSound(Player player, NamespacedKey sound, SoundCategory category) {
@@ -465,7 +464,7 @@ public class PlayerHelperImpl extends PlayerHelper {
     @Override
     public void sendClimbableMaterials(Player player, List<Material> materials) {
         Map<ResourceKey<? extends Registry<?>>, TagNetworkSerialization.NetworkPayload> packetInput = TagNetworkSerialization.serializeTagsToNetwork(((CraftServer) Bukkit.getServer()).getServer().registries());
-        Map<Identifier, IntList> tags = ReflectionHelper.getFieldValue(TagNetworkSerialization.NetworkPayload.class, ReflectionMappingsInfo.TagNetworkSerializationNetworkPayload_tags, packetInput.get(BuiltInRegistries.BLOCK.key()));
+        Map<Identifier, IntList> tags = ReflectionHelper.getFieldValue(TagNetworkSerialization.NetworkPayload.class, "tags", packetInput.get(BuiltInRegistries.BLOCK.key()));
         IntList climbableBlocks = tags.get(BlockTags.CLIMBABLE.location());
         climbableBlocks.clear();
         for (Material material : materials) {

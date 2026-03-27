@@ -5,8 +5,8 @@ import com.denizenscript.denizen.nms.interfaces.EnchantmentHelper;
 public class EnchantmentHelperImpl extends EnchantmentHelper {
     // TODO: 1.21: Enchantments were entirely reworked, need to update this
     /*
-    public static final Field REGISTRY_FROZEN = ReflectionHelper.getFields(MappedRegistry.class).get(ReflectionMappingsInfo.MappedRegistry_frozen, boolean.class);
-    public static final Field REGISTRY_INTRUSIVE_HOLDERS = ReflectionHelper.getFields(MappedRegistry.class).get(ReflectionMappingsInfo.MappedRegistry_unregisteredIntrusiveHolders, Map.class);
+    public static final Field REGISTRY_FROZEN = ReflectionHelper.getFields(MappedRegistry.class).get("frozen", boolean.class);
+    public static final Field REGISTRY_INTRUSIVE_HOLDERS = ReflectionHelper.getFields(MappedRegistry.class).get("unregisteredIntrusiveHolders", Map.class);
 
     @Override
     public org.bukkit.enchantments.Enchantment registerFakeEnchantment(EnchantmentScriptContainer.EnchantmentReference script) {

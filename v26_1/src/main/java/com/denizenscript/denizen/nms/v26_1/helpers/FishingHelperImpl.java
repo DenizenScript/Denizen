@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.nms.v26_1.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.resources.ResourceKey;
@@ -97,9 +96,9 @@ public class FishingHelperImpl implements FishingHelper {
         return getRandomReward(fishHook, BuiltInLootTables.FISHING_FISH);
     }
 
-    public static final Field FISHING_HOOK_NIBBLE = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_nibble, int.class);
-    public static final Field FISHING_HOOK_LURE_TIME = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilLured, int.class);
-    public static final Field FISHING_HOOK_HOOK_TIME = ReflectionHelper.getFields(FishingHook.class).get(ReflectionMappingsInfo.FishingHook_timeUntilHooked, int.class);
+    public static final Field FISHING_HOOK_NIBBLE = ReflectionHelper.getFields(FishingHook.class).get("nibble", int.class);
+    public static final Field FISHING_HOOK_LURE_TIME = ReflectionHelper.getFields(FishingHook.class).get("timeUntilLured", int.class);
+    public static final Field FISHING_HOOK_HOOK_TIME = ReflectionHelper.getFields(FishingHook.class).get("timeUntilHooked", int.class);
 
     @Override
     public FishHook getHookFrom(Player player) {

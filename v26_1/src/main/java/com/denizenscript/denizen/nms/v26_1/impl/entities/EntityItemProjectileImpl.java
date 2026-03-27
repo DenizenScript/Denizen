@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.nms.v26_1.impl.entities;
 
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.base.Preconditions;
@@ -28,7 +27,7 @@ public class EntityItemProjectileImpl extends ThrowableProjectile {
     static {
         EntityDataAccessor<ItemStack> watcher = null;
         try {
-            watcher = (EntityDataAccessor<ItemStack>) ReflectionHelper.getFields(ItemEntity.class).get(ReflectionMappingsInfo.ItemEntity_DATA_ITEM).get(null);
+            watcher = (EntityDataAccessor<ItemStack>) ReflectionHelper.getFields(ItemEntity.class).get("DATA_ITEM").get(null);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);

@@ -4,7 +4,6 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.ReflectionMappingsInfo;
 import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.item.ItemComponentsPatch;
@@ -102,7 +101,7 @@ public class ItemHelperImpl extends ItemHelper {
         return ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().byKey(nmsKey).orElse(null);
     }
 
-    public static final Field Item_components = ReflectionHelper.getFields(Item.class).get(ReflectionMappingsInfo.Item_components, DataComponentMap.class);
+    public static final Field Item_components = ReflectionHelper.getFields(Item.class).get("components", DataComponentMap.class);
 
     public static final Field RecipeManager_featureFlagSet = ReflectionHelper.getFields(RecipeManager.class).getFirstOfType(FeatureFlagSet.class);
 
@@ -484,7 +483,7 @@ public class ItemHelperImpl extends ItemHelper {
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 
-    public static final Field AdventureModePredicate_predicates = ReflectionHelper.getFields(AdventureModePredicate.class).get(ReflectionMappingsInfo.AdventureModePredicate_predicates);
+    public static final Field AdventureModePredicate_predicates = ReflectionHelper.getFields(AdventureModePredicate.class).get("predicates");
 
     @Override
     public List<Material> getCanPlaceOn(ItemStack item) {
