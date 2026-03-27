@@ -82,7 +82,7 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             return new ElementTag(sculkShrieker.isShrieking() ? "SHRIEKING" : "NORMAL", true);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof CreakingHeart creakingHeart) {
-            return new ElementTag(creakingHeart.getCreakingHeartState());
+            return new ElementTag(creakingHeart.getCreakingHeartState().name(), true); // TODO: once 1.21 is the minimum supported version, use the enum constructor
         }
         return null;
     }
