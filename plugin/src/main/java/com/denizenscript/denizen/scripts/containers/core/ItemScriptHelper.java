@@ -60,14 +60,17 @@ public class ItemScriptHelper implements Listener {
         Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
         ArrayList<NamespacedKey> keys = new ArrayList<>();
         while (recipeIterator.hasNext()) {
-            if (recipeIterator.next() instanceof Keyed keyed && keyed.getKey().getNamespace().equals("denizen")) {
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                    keys.add(keyed.getKey());
-                }
-                else {
-                    recipeIterator.remove();
+            try {
+                if (recipeIterator.next() instanceof Keyed keyed && keyed.getKey().getNamespace().equals("denizen")) {
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+                        keys.add(keyed.getKey());
+                    }
+                    else {
+                        recipeIterator.remove();
+                    }
                 }
             }
+            catch (AbstractMethodError ignored) {} // TODO: 26.1: work around Spigot bug
         }
         if (!keys.isEmpty()) {
             NMSHandler.itemHelper.removeRecipes(keys);
