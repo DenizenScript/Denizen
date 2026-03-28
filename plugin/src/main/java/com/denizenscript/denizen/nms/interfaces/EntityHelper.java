@@ -5,6 +5,7 @@ import com.denizenscript.denizen.events.entity.EntityExitsVehicleScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.objects.properties.entity.EntityState;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
@@ -513,5 +514,13 @@ public abstract class EntityHelper {
 
     public Class<? extends EntityExitsVehicleScriptEvent> getExitsVehicleEventImpl() { // TODO: once 1.20 is the minimum supported version, implement in the ScriptEvent class as usual
         return EntityExitsVehicleScriptEventImpl.class;
+    }
+
+    public EntityState.ArmadilloState getArmadilloState(Armadillo entity) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setArmadilloState(Armadillo entity, EntityState.ArmadilloState state) {
+        throw new UnsupportedOperationException();
     }
 }
