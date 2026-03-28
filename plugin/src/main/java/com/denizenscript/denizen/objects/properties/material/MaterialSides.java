@@ -3,10 +3,10 @@ package com.denizenscript.denizen.objects.properties.material;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.DebugInternals;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
@@ -73,7 +73,7 @@ public class MaterialSides extends MaterialProperty<ListTag> {
             setSide(wall::setHeight, Wall.Height.class, BlockFace.EAST, list, 1, mechanism);
             setSide(wall::setHeight, Wall.Height.class, BlockFace.SOUTH, list, 2, mechanism);
             setSide(wall::setHeight, Wall.Height.class, BlockFace.WEST, list, 3, mechanism);
-            wall.setUp(list.get(4).equalsIgnoreCase("tall"));
+            wall.setUp(CoreUtilities.equalsIgnoreCase(list.get(4), "tall"));
         }
         else if (getBlockData() instanceof RedstoneWire wire) {
             if (list.size() != 4) {
@@ -94,14 +94,14 @@ public class MaterialSides extends MaterialProperty<ListTag> {
             setSide(carpet::setHeight, MossyCarpet.Height.class, BlockFace.EAST, list, 1, mechanism);
             setSide(carpet::setHeight, MossyCarpet.Height.class, BlockFace.SOUTH, list, 2, mechanism);
             setSide(carpet::setHeight, MossyCarpet.Height.class, BlockFace.WEST, list, 3, mechanism);
-            carpet.setBottom(list.get(4).equalsIgnoreCase("bottom"));
+            carpet.setBottom(CoreUtilities.equalsIgnoreCase(list.get(4), "bottom"));
         }
     }
 
-    public static <T> void setSide(BiConsumer<BlockFace, T> consumer, Class<T> type, BlockFace face, ListTag list, int index, Mechanism mechanism) {
-        T value = Utilities.elementToEnumlike(new ElementTag(list.get(index)), type);
+    public static <T extends Enum<T>> void setSide(BiConsumer<BlockFace, T> consumer, Class<T> type, BlockFace face, ListTag list, int index, Mechanism mechanism) {
+        T value = new ElementTag(list.get(index)).asEnum(type);
         if (value == null) {
-            mechanism.echoError("'"+ list.get(index) + "' is not a valid " + DebugInternals.getClassNameOpti(type) + ".");
+            mechanism.echoError("'" + list.get(index) + "' is not a valid " + DebugInternals.getClassNameOpti(type) + ".");
             return;
         }
         consumer.accept(face, value);
@@ -117,7 +117,7 @@ public class MaterialSides extends MaterialProperty<ListTag> {
     // @returns ListTag
     // @mechanism MaterialTag.heights
     // @group properties
-    // @deprecated Use 'sides'
+    // @deprecated use 'sides'
     // @description
     // Deprecated in favor of <@link property MaterialTag.sides>
     // -->
@@ -126,7 +126,7 @@ public class MaterialSides extends MaterialProperty<ListTag> {
     // @object MaterialTag
     // @name heights
     // @input ElementTag
-    // @deprecated Use 'sides'
+    // @deprecated use 'sides'
     // @description
     // Deprecated in favor of <@link property MaterialTag.sides>
     // @tags
