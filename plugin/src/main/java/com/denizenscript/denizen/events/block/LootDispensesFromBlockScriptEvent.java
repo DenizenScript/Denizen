@@ -67,7 +67,7 @@ public class LootDispensesFromBlockScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(event.getPlayer() != null ? new PlayerTag(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(event.getPlayer());
     }
 
     @Override
