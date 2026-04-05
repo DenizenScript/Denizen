@@ -90,6 +90,7 @@ import org.bukkit.inventory.SmithingTrimRecipe;
 import org.bukkit.inventory.TransmuteRecipe;
 import org.bukkit.map.MapView;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
@@ -261,6 +262,9 @@ public class ItemHelperImpl extends ItemHelper {
         getRecipeManager().addRecipe(holder);
     }
 
+    // TODO: Paper renamed 'CraftRecipe#addToCraftingManager', switch back once on Paper NMS
+    public static final MethodHandle CRAFT_RECIPE_ADD_TO_MANAGER = ReflectionHelper.getMethodHandle(CraftRecipe.class, Denizen.supportsPaper ? "addToRecipeManager" : "addToCraftingManager");
+
     @Override
     public void registerOtherRecipe(org.bukkit.inventory.Recipe recipe) {
         // This method copied from Bukkit CraftServer source, just to bypass unwanted paper patch
@@ -304,7 +308,12 @@ public class ItemHelperImpl extends ItemHelper {
             }
             toAdd = CraftTransmuteRecipe.fromBukkitRecipe((TransmuteRecipe)recipe);
         }
-        toAdd.addToCraftingManager();
+        try {
+            CRAFT_RECIPE_ADD_TO_MANAGER.invokeExact(toAdd);
+        }
+        catch (Throwable e) {
+            Debug.echoError(e);
+        }
     }
 
     @Override
