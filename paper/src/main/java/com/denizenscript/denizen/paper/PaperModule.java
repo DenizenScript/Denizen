@@ -140,7 +140,9 @@ public class PaperModule {
         // Paper object extensions
         PaperElementExtensions.register();
         PaperEntityExtensions.register();
-        PaperItemExtensions.register();
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) {
+            PaperItemExtensions.register();
+        }
         PaperPlayerExtensions.register();
         PaperWorldExtensions.register();
         // Paper Tags
