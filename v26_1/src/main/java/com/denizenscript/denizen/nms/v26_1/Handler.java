@@ -79,7 +79,10 @@ import org.bukkit.craftbukkit.inventory.CraftInventoryView;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.legacy.FieldRename;
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.util.*;
+import org.bukkit.craftbukkit.util.ApiVersion;
+import org.bukkit.craftbukkit.util.CraftChatMessage;
+import org.bukkit.craftbukkit.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -99,6 +102,10 @@ import java.util.function.Function;
 
 public class Handler extends NMSHandler {
 
+    public static BlockPos toBlockPos(Location location) { // TODO: Paper renamed 'CraftLocation#toBlockPosition', switch back once on Paper NMS
+        return new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    }
+
     public Handler() {
         advancementHelper = new AdvancementHelperImpl();
         animationHelper = new AnimationHelperImpl();
@@ -117,7 +124,7 @@ public class Handler extends NMSHandler {
         registerConversion(ElementTag.class, Component.class, element -> componentToNMS(FormattedTextHelper.parse(element.asString(), ChatColor.WHITE)));
         registerConversion(MaterialTag.class, BlockState.class, material -> ((CraftBlockData) material.getModernData()).getState());
         registerConversion(LocationTag.class, Rotations.class, location -> new Rotations((float) location.getX(), (float) location.getY(), (float) location.getZ()));
-        registerConversion(LocationTag.class, BlockPos.class, CraftLocation::toBlockPosition);
+        registerConversion(LocationTag.class, BlockPos.class, Handler::toBlockPos);
         registerConversion(MapTag.class, CompoundTag.class, map -> {
             CompoundBinaryTag compoundTag = (CompoundBinaryTag) ItemRawNBT.convertObjectToNbt(map, CoreUtilities.noDebugContext, "(item).");
             return compoundTag != null ? NBTAdapter.toNMS(compoundTag) : null;

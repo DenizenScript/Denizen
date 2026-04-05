@@ -2,6 +2,7 @@ package com.denizenscript.denizen.nms.v26_1.impl;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
+import com.denizenscript.denizen.nms.v26_1.Handler;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;
@@ -26,7 +27,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntityType;
-import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 
@@ -57,7 +57,7 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public DownfallType getDownfallTypeAt(Location location) {
-        Biome.Precipitation precipitation = biomeHolder.value().getPrecipitationAt(CraftLocation.toBlockPosition(location), world.getSeaLevel());
+        Biome.Precipitation precipitation = biomeHolder.value().getPrecipitationAt(Handler.toBlockPos(location), world.getSeaLevel());
         return switch (precipitation) {
             case RAIN -> DownfallType.RAIN;
             case SNOW -> DownfallType.SNOW;
@@ -77,7 +77,7 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public float getTemperatureAt(Location location) {
-        return biomeHolder.value().getTemperature(CraftLocation.toBlockPosition(location), world.getSeaLevel());
+        return biomeHolder.value().getTemperature(Handler.toBlockPos(location), world.getSeaLevel());
     }
 
     @Override

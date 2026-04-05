@@ -55,7 +55,6 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.map.CraftMapCanvas;
 import org.bukkit.craftbukkit.map.CraftMapView;
-import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -144,7 +143,7 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showBlockAction(Player player, Location location, int action, int state) {
-        BlockPos position = CraftLocation.toBlockPosition(location);
+        BlockPos position = Handler.toBlockPos(location);
         Block block = ((CraftWorld) location.getWorld()).getHandle().getBlockState(position).getBlock();
         send(player, new ClientboundBlockEventPacket(position, block, action, state));
     }
@@ -187,12 +186,12 @@ public class PacketHelperImpl implements PacketHelper {
             }
             else {
                 sign = null;
-                toOpen = CraftLocation.toBlockPosition(toCheck);
+                toOpen = Handler.toBlockPos(toCheck);
                 break;
             }
         }
         if (sign != null) {
-            toOpen = CraftLocation.toBlockPosition(sign.getLocation());
+            toOpen = Handler.toBlockPos(sign.getLocation());
             SignSide front = sign.getSide(Side.FRONT);
             for (int line = 0; line < 4; line++) {
                 front.setLine(line, "");
@@ -350,9 +349,9 @@ public class PacketHelperImpl implements PacketHelper {
 
     @Override
     public void showDebugTestMarker(Player player, Location location, ColorTag color, String name, int time) {
-        BlockPos nmsPos = CraftLocation.toBlockPosition(location);
+        BlockPos nmsPos = Handler.toBlockPos(location);
         LocationTag displayPos = !name.isEmpty() ? LocationTag.valueOf(name, CoreUtilities.noDebugContext) : null;
-        send(player, new ClientboundGameTestHighlightPosPacket(nmsPos, displayPos != null ? CraftLocation.toBlockPosition(displayPos) : nmsPos));
+        send(player, new ClientboundGameTestHighlightPosPacket(nmsPos, displayPos != null ? Handler.toBlockPos(displayPos) : nmsPos));
     }
 
     @Override

@@ -75,7 +75,6 @@ import org.bukkit.craftbukkit.block.CraftCreatureSpawner;
 import org.bukkit.craftbukkit.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.entity.*;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -171,7 +170,7 @@ public class EntityHelperImpl extends EntityHelper {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         ((CraftBlock) location.getBlock()).getNMS().useItemOn(nmsPlayer.getMainHandItem(), ((CraftWorld) location.getWorld()).getHandle(),
                 nmsPlayer, InteractionHand.MAIN_HAND,
-                new BlockHitResult(new Vec3(0, 0, 0), null, CraftLocation.toBlockPosition(location), false));
+                new BlockHitResult(new Vec3(0, 0, 0), null, Handler.toBlockPos(location), false));
     }
 
     @Override

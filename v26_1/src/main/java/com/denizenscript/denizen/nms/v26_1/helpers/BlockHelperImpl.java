@@ -42,7 +42,6 @@ import org.bukkit.craftbukkit.block.CraftCreatureSpawner;
 import org.bukkit.craftbukkit.block.CraftSkull;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.util.CraftLocation;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 
 import java.lang.invoke.MethodHandle;
@@ -65,7 +64,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public void applyPhysics(Location location) {
-        ((CraftWorld) location.getWorld()).getHandle().updateNeighborsAt(CraftLocation.toBlockPosition(location), CraftMagicNumbers.getBlock(location.getBlock().getType()));
+        ((CraftWorld) location.getWorld()).getHandle().updateNeighborsAt(Handler.toBlockPos(location), CraftMagicNumbers.getBlock(location.getBlock().getType()));
     }
 
     public static <T extends BlockEntity> T getTE(CraftBlockEntityState<T> cbs) {
@@ -179,7 +178,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public void doRandomTick(Location location) {
-        BlockPos pos = CraftLocation.toBlockPosition(location);
+        BlockPos pos = Handler.toBlockPos(location);
         ChunkAccess nmsChunk = ((CraftChunk) location.getChunk()).getHandle(ChunkStatus.FULL);
         net.minecraft.world.level.block.state.BlockState nmsBlock = nmsChunk.getBlockState(pos);
         ServerLevel nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
