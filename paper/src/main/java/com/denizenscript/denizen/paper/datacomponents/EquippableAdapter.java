@@ -29,7 +29,7 @@ public class EquippableAdapter extends DataComponentAdapter.Valued<MapTag, Equip
     // - "equip_sound", an ElementTag representing the sound played when equipping this item in namespaced key format.
     // - "asset_id", an ElementTag representing the asset id for this item in namespaced key format.
     // - "camera_overlay", an ElementTag representing the camera overlay to use when the item is equipped in namespaced key format.
-    // - "allowed_entities", a ListTag(EntityTag) representing entity types that can equip this item. If not specified, all entities are allowed to wear this item.
+    // - "allowed_entities", a ListTag(EntityTag) representing entity types that can equip this item. If not set, all entities are allowed to wear this item.
     // - "dispensable", a ElementTag(Boolean) controlling whether the item can be dispensed.
     // - "swappable", a ElementTag(Boolean) controlling whether the item can be swapped.
     // - "damage_on_hurt", a ElementTag(Boolean) controlling whether the item takes damage when the wearer is hurt.
