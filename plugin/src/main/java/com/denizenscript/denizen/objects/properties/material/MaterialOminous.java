@@ -26,21 +26,19 @@ public class MaterialOminous extends MaterialProperty<ElementTag> {
         if (getBlockData() instanceof TrialSpawner trialSpawner) {
             return new ElementTag(trialSpawner.isOminous());
         }
-        else if (getBlockData() instanceof Vault vault) {
-            return new ElementTag(vault.isOminous());
-        }
-        return null;
+        return new ElementTag(as(Vault.class).isOminous());
     }
 
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        if (mechanism.requireBoolean()) {
-            if (getBlockData() instanceof TrialSpawner trialSpawner) {
-                trialSpawner.setOminous(value.asBoolean());
-            }
-            else if (getBlockData() instanceof Vault vault) {
-                vault.setOminous(value.asBoolean());
-            }
+        if (!mechanism.requireBoolean()) {
+            return;
+        }
+        if (getBlockData() instanceof TrialSpawner trialSpawner) {
+            trialSpawner.setOminous(value.asBoolean());
+        }
+        else {
+            as(Vault.class).setOminous(value.asBoolean());
         }
     }
 

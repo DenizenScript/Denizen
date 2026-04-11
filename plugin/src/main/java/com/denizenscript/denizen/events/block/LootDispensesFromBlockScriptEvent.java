@@ -26,7 +26,7 @@ public class LootDispensesFromBlockScriptEvent extends BukkitScriptEvent impleme
     //
     // @Cancellable true
     //
-    // @Player when a player triggered the loot to dispense.
+    // @Player when the loot dispensing is triggered by a player.
     //
     // @Triggers when a block dispenses loot containing multiple items.
     //
@@ -35,7 +35,7 @@ public class LootDispensesFromBlockScriptEvent extends BukkitScriptEvent impleme
     // <context.location> returns a LocationTag of the block that is dispensing the items.
     //
     // @Determine
-    // "LOOT:<ListTag(ItemTag)>" to determine the new items that are outputted.
+    // "LOOT:<ListTag(ItemTag)>" to set the loot items being dispensed.
     //
     // -->
 

@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.VaultDisplayItemEvent;
 
-public class VaultDisplayItemScriptEvent extends BukkitScriptEvent implements Listener {
+public class VaultDisplaysItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -31,9 +31,9 @@ public class VaultDisplayItemScriptEvent extends BukkitScriptEvent implements Li
     //
     // -->
 
-    public VaultDisplayItemScriptEvent() {
+    public VaultDisplaysItemScriptEvent() {
         registerCouldMatcher("vault displays <item>");
-        this.<VaultDisplayItemScriptEvent, ItemTag>registerDetermination("item", ItemTag.class, (evt, context, input) -> {
+        this.<VaultDisplaysItemScriptEvent, ItemTag>registerDetermination("item", ItemTag.class, (evt, context, input) -> {
             evt.event.setDisplayItem(input.getItemStack());
         });
     }

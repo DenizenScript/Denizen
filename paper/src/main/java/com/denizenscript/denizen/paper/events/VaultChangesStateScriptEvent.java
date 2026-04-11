@@ -24,14 +24,14 @@ public class VaultChangesStateScriptEvent extends BukkitScriptEvent implements L
     //
     // @Location true
     //
-    // @Triggers when a vault block's state changes. A list of states can be found at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/data/type/Vault.State.html>.
+    // @Triggers when a vault block's state changes. A list of states can be found at <@link url https://jd.papermc.io/paper/org/bukkit/block/data/type/Vault.State.html>.
     //
     // @Context
     // <context.location> returns the LocationTag of the vault block.
     // <context.old_state> returns the vault state before the change.
     // <context.new_state> returns the vault state after the change.
     //
-    // @Player when the entity who triggered the change is a player.
+    // @Player when the change is triggered by a player.
     //
     // -->
 
