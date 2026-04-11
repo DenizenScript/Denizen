@@ -35,7 +35,7 @@ public class EquippableAdapter extends DataComponentAdapter.Valued<MapTag, Equip
     // - "damage_on_hurt", a ElementTag(Boolean) controlling whether the item takes damage when the wearer is hurt.
     // - "equip_on_interact", a ElementTag(Boolean) controlling whether the item is equipped on entity interaction.
     // - "can_be_sheared", a ElementTag(Boolean) controlling whether the item can be sheared off an entity.
-    // - "shear_sound", an ElementTag representing the sound played when shearing using this item, in namespaced key format.
+    // - "shear_sound", an ElementTag representing the sound played when shearing using this item in namespaced key format.
     // @mechanism
     // Provide no input to reset the item to its default value.
     // -->
