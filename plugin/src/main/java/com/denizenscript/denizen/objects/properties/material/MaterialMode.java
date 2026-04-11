@@ -28,6 +28,8 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
     // For sculk_shriekers, modes are SHRIEKING and NORMAL.
     // For tripwires, modes are ARMED and DISARMED.
     // For creaking_hearts, modes are AWAKE, DORMANT, and UPROOTED.
+    // For trial_spawners, modes are ACTIVE, COOLDOWN, EJECTING_REWARD, INACTIVE, WAITING_FOR_PLAYERS, and WAITING_FOR_REWARD_EJECTION.
+    // For vaults, modes are ACTIVE, EJECTING, INACTIVE, and UNLOCKING.
     // -->
 
     public static boolean describes(MaterialTag material) {
@@ -42,8 +44,10 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
                 || data instanceof BigDripleaf
                 || data instanceof Tripwire
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && (data instanceof SculkCatalyst
-                                                                        || data instanceof  SculkShrieker))
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && data instanceof CreakingHeart);
+                                                                        || data instanceof SculkShrieker))
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (data instanceof CreakingHeart
+                                                                        || data instanceof TrialSpawner
+                                                                        || data instanceof Vault));
     }
 
     @Override
@@ -83,6 +87,12 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof CreakingHeart creakingHeart) {
             return new ElementTag(creakingHeart.getCreakingHeartState().name(), true); // TODO: once 1.21 is the minimum supported version, use the enum constructor
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof TrialSpawner trialSpawner) {
+            return new ElementTag(trialSpawner.getTrialSpawnerState().name(), true); // TODO: once 1.21 is the minimum supported version, use the enum constructor
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof Vault vault) {
+            return new ElementTag(vault.getVaultState().name(), true); // TODO: once 1.21 is the minimum supported version, use the enum constructor
         }
         return null;
     }
@@ -133,6 +143,16 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof CreakingHeart creakingHeart) {
             if (mechanism.requireEnum(CreakingHeart.State.class)) {
                 creakingHeart.setCreakingHeartState(value.asEnum(CreakingHeart.State.class));
+            }
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof TrialSpawner trialSpawner) {
+            if (mechanism.requireEnum(TrialSpawner.State.class)) {
+                trialSpawner.setTrialSpawnerState(value.asEnum(TrialSpawner.State.class));
+            }
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof Vault vault) {
+            if (mechanism.requireEnum(Vault.State.class)) {
+                vault.setVaultState(value.asEnum(Vault.State.class));
             }
         }
     }

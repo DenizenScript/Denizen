@@ -230,11 +230,6 @@ public class BukkitImplDeprecations {
     public static Warning itemEnchantmentsLegacy = new Warning("itemEnchantmentsLegacy", "The tag 'ItemTag.enchantments' is deprecated: use enchantment_map, or enchantment_types.");
     public static Warning echantmentTagUpdate = new Warning("echantmentTagUpdate", "Several legacy enchantment-related tags are deprecated in favor of using EnchantmentTag.");
 
-    // Added 2022/01/30, made very-slow 2022/12/31, made slow 2024/01/02, made normal 2025/01/15.
-    // 2023-year-end commonality: #29
-    // Safe to remove now.
-    public static Warning entityItemEnderman = new Warning("entityItemEnderman", "The property 'entity.item' for endermen has been replaced by 'entity.material' due to usage of block materials.");
-
     // Added 2021/06/19, made very-slow 2022/12/31, made slow 2024/01/02, made normal 2025/01/15.
     public static Warning entityMapTraceTag = new Warning("entityMapTraceTag", "The tag 'EntityTag.map_trace' is deprecated in favor of EntityTag.trace_framed_map");
 
