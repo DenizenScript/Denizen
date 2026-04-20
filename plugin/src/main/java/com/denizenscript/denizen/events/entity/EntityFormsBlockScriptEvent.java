@@ -4,7 +4,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
@@ -28,9 +27,8 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
     // For example, when a snowman forms snow.
     //
     // @Context
-    // <context.location> returns the LocationTag the block.
-    // <context.old_material> returns the MaterialTag of the original block.
-    // <context.new_material> returns the MaterialTag of the block that will be formed.
+    // <context.location> returns the LocationTag of the block.
+    // <context.material> returns the MaterialTag of what the block will become.
     // <context.entity> returns the EntityTag that formed the block.
     //
     // -->
@@ -39,8 +37,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
         registerCouldMatcher("<entity> forms <block>");
     }
 
-    public MaterialTag old_material;
-    public MaterialTag new_material;
+    public MaterialTag material;
     public LocationTag location;
     public EntityTag entity;
     public EntityBlockFormEvent event;
@@ -50,7 +47,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
         if (!path.tryArgObject(0, entity)) {
             return false;
         }
-        if (!path.tryArgObject(2, new_material)) {
+        if (!path.tryArgObject(2, material)) {
             return false;
         }
         if (!runInCheck(path, location)) {
@@ -68,12 +65,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "location" -> location;
-            case "material" -> {
-                BukkitImplDeprecations.entityFormsBlockMaterialContext.warn();
-                yield old_material;
-            }
-            case "old_material" -> old_material;
-            case "new_material" -> new_material;
+            case "material" -> material;
             case "entity" -> entity;
             default -> super.getContext(name);
         };
@@ -82,8 +74,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
     @EventHandler
     public void onEntityFormsBlock(EntityBlockFormEvent event) {
         location = new LocationTag(event.getBlock().getLocation());
-        old_material = new MaterialTag(event.getBlock());
-        new_material = new MaterialTag(event.getNewState());
+        material = new MaterialTag(event.getNewState());
         entity = new EntityTag(event.getEntity());
         this.event = event;
         fire(event);
