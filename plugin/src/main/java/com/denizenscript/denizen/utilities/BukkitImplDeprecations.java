@@ -489,6 +489,9 @@ public class BukkitImplDeprecations {
     // Added 2025/09/22
     public static Warning playerSteerEntityEvent = new FutureWarning("playerSteerEntityEvent", "The 'player steers <entity>' event is deprecated in favor of the 'player input' event in MC 1.21+.");
 
+    // Added 2026/04/19
+    public static Warning entityFormsBlockMaterialContext = new FutureWarning("entityFormsBlockMaterialContext", "'context.material' in the 'entity forms block' script event is deprecated in favor of 'context.old_material'.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2023/10/29 without warning.
