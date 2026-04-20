@@ -16,7 +16,6 @@ import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 
@@ -174,7 +173,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         AdvancementHolder parent = advancement.parent != null
                 ? getNMSAdvancementManager().advancements.get(CraftNamespacedKey.toMinecraft(advancement.parent))
                 : null;
-        DisplayInfo display = new DisplayInfo(CraftItemStack.asNMSTemplate(advancement.icon),
+        DisplayInfo display = new DisplayInfo(ItemHelperImpl.asNMSTemplate(advancement.icon),
                 Handler.componentToNMS(FormattedTextHelper.parse(advancement.title, ChatColor.WHITE)), Handler.componentToNMS(FormattedTextHelper.parse(advancement.description, ChatColor.WHITE)),
                 Optional.ofNullable(advancement.background).map(CraftNamespacedKey::toMinecraft).map(ClientAsset.ResourceTexture::new), AdvancementType.valueOf(advancement.frame.name()),
                 advancement.toast, advancement.announceToChat, advancement.hidden);

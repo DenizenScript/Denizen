@@ -45,6 +45,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.AdventureModePredicate;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
@@ -103,6 +104,17 @@ public class ItemHelperImpl extends ItemHelper {
     public static net.minecraft.world.item.crafting.RecipeHolder<?> getNMSRecipe(NamespacedKey key) {
         ResourceKey<Recipe<?>> nmsKey = ResourceKey.create(Registries.RECIPE, CraftNamespacedKey.toMinecraft(key));
         return ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().byKey(nmsKey).orElse(null);
+    }
+
+    public static final MethodHandle CRAFT_ITEM_STACK_AS_TEMPLATE = Handler.reflectPaperRenamed(CraftItemStack.class, "asNMSTemplate", "asTemplate", ItemStack.class);
+
+    public static ItemStackTemplate asNMSTemplate(ItemStack item) {
+        try {
+            return (ItemStackTemplate) CRAFT_ITEM_STACK_AS_TEMPLATE.invokeExact(item);
+        }
+        catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static final Field RecipeManager_featureFlagSet = ReflectionHelper.getFields(RecipeManager.class).getFirstOfType(FeatureFlagSet.class);
@@ -214,16 +226,16 @@ public class ItemHelperImpl extends ItemHelper {
         AbstractCookingRecipe recipe;
         AbstractCookingRecipe.CookingBookInfo bookInfo = new AbstractCookingRecipe.CookingBookInfo(category == null ? CookingBookCategory.MISC : CookingBookCategory.valueOf(CoreUtilities.toUpperCase(category)), group);
         if (type.equalsIgnoreCase("smoker")) {
-            recipe = new SmokingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, CraftItemStack.asNMSTemplate(result), exp, time);
+            recipe = new SmokingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, asNMSTemplate(result), exp, time);
         }
         else if (type.equalsIgnoreCase("blast")) {
-            recipe = new BlastingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, CraftItemStack.asNMSTemplate(result), exp, time);
+            recipe = new BlastingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, asNMSTemplate(result), exp, time);
         }
         else if (type.equalsIgnoreCase("campfire")) {
-            recipe = new CampfireCookingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, CraftItemStack.asNMSTemplate(result), exp, time);
+            recipe = new CampfireCookingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, asNMSTemplate(result), exp, time);
         }
         else {
-            recipe = new SmeltingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, CraftItemStack.asNMSTemplate(result), exp, time);
+            recipe = new SmeltingRecipe(BASE_RECIPE_INFO, bookInfo, itemRecipe, asNMSTemplate(result), exp, time);
         }
         RecipeHolder<AbstractCookingRecipe> holder = new RecipeHolder<>(key, recipe);
         getRecipeManager().addRecipe(holder);
@@ -233,7 +245,7 @@ public class ItemHelperImpl extends ItemHelper {
     public void registerStonecuttingRecipe(String keyName, String group, ItemStack result, ItemStack[] ingredient, boolean exact) {
         ResourceKey<Recipe<?>> key = createRecipeKey(keyName);
         Ingredient itemRecipe = itemArrayToRecipe(ingredient, exact);
-        StonecutterRecipe recipe = new StonecutterRecipe(BASE_RECIPE_INFO, itemRecipe, CraftItemStack.asNMSTemplate(result));
+        StonecutterRecipe recipe = new StonecutterRecipe(BASE_RECIPE_INFO, itemRecipe, asNMSTemplate(result));
         RecipeHolder<StonecutterRecipe> holder = new RecipeHolder<>(key, recipe);
         getRecipeManager().addRecipe(holder);
     }
@@ -244,7 +256,7 @@ public class ItemHelperImpl extends ItemHelper {
         Ingredient templateItemRecipe = templateItem.length == 0 ? null : itemArrayToRecipe(templateItem, templateExact);
         Ingredient baseItemRecipe = itemArrayToRecipe(baseItem, baseExact);
         Ingredient upgradeItemRecipe = itemArrayToRecipe(upgradeItem, upgradeExact);
-        SmithingTransformRecipe recipe = new SmithingTransformRecipe(BASE_RECIPE_INFO, Optional.ofNullable(templateItemRecipe), baseItemRecipe, Optional.of(upgradeItemRecipe), CraftItemStack.asNMSTemplate(result));
+        SmithingTransformRecipe recipe = new SmithingTransformRecipe(BASE_RECIPE_INFO, Optional.ofNullable(templateItemRecipe), baseItemRecipe, Optional.of(upgradeItemRecipe), asNMSTemplate(result));
         RecipeHolder<SmithingTransformRecipe> holder = new RecipeHolder<>(key, recipe);
         getRecipeManager().addRecipe(holder);
     }
@@ -257,13 +269,12 @@ public class ItemHelperImpl extends ItemHelper {
         for (int i = 0; i < ingredients.size(); i++) {
             ingredientList.add(itemArrayToRecipe(ingredients.get(i), exact[i]));
         }
-        ShapelessRecipe recipe = new ShapelessRecipe(BASE_RECIPE_INFO, new CraftingRecipe.CraftingBookInfo(categoryValue, group), CraftItemStack.asNMSTemplate(result), NonNullList.of(null, ingredientList.toArray(new Ingredient[0])));
+        ShapelessRecipe recipe = new ShapelessRecipe(BASE_RECIPE_INFO, new CraftingRecipe.CraftingBookInfo(categoryValue, group), asNMSTemplate(result), NonNullList.of(null, ingredientList.toArray(new Ingredient[0])));
         RecipeHolder<ShapelessRecipe> holder = new RecipeHolder<>(key, recipe);
         getRecipeManager().addRecipe(holder);
     }
 
-    // TODO: Paper renamed 'CraftRecipe#addToCraftingManager', switch back once on Paper NMS
-    public static final MethodHandle CRAFT_RECIPE_ADD_TO_MANAGER = ReflectionHelper.getMethodHandle(CraftRecipe.class, Denizen.supportsPaper ? "addToRecipeManager" : "addToCraftingManager");
+    public static final MethodHandle CRAFT_RECIPE_ADD_TO_MANAGER = Handler.reflectPaperRenamed(CraftRecipe.class, "addToCraftingManager", "addToRecipeManager");
 
     @Override
     public void registerOtherRecipe(org.bukkit.inventory.Recipe recipe) {

@@ -106,6 +106,11 @@ public class Handler extends NMSHandler {
         return new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
+    // TODO: Paper renamed some NMS methods, switch back to direct calls once on Paper NMS
+    public static MethodHandle reflectPaperRenamed(Class<?> clazz, String spigot, String paper, Class<?>... params) {
+        return ReflectionHelper.getMethodHandle(clazz, Denizen.supportsPaper ? paper : spigot, params);
+    }
+
     public Handler() {
         advancementHelper = new AdvancementHelperImpl();
         animationHelper = new AnimationHelperImpl();
