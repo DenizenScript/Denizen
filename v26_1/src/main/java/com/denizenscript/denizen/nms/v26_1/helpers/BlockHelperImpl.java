@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.nms.v26_1.helpers;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.nms.v26_1.Handler;
@@ -19,6 +20,7 @@ import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.BaseSpawner;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
@@ -46,6 +48,7 @@ import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 public class BlockHelperImpl implements BlockHelper {
@@ -100,8 +103,23 @@ public class BlockHelperImpl implements BlockHelper {
     }
 
     public BlockEntity getBlockEntity(Block block) {
-        CraftBlock craftBlock = ((CraftBlock) block);
-        return craftBlock.getHandle().getBlockEntity(craftBlock.getPosition());
+        CraftBlock craftBlock = (CraftBlock) block;
+        Class<?> blockClass = craftBlock.getClass();
+        Method method;
+        // TODO: Paper renamed 'CraftBlock#getHandle', switch back once on Paper NMS
+        try {
+            if (Denizen.supportsPaper) {
+                method = blockClass.getMethod("getLevel");
+            }
+            else {
+                method = blockClass.getMethod("getHandle");
+            }
+            return ((LevelAccessor) method.invoke(craftBlock)).getBlockEntity(craftBlock.getPosition());
+        }
+        catch (Exception e) {
+            Debug.echoError(e);
+            return null;
+        }
     }
 
     @Override
