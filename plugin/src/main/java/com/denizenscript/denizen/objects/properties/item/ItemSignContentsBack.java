@@ -26,14 +26,13 @@ public class ItemSignContentsBack extends ItemProperty<ListTag> {
 
     @Override
     public ListTag getPropertyValue() {
-        Sign sign = (((Sign) ((BlockStateMeta) getItemMeta()).getBlockState()));
-        return new ListTag(PaperAPITools.instance.getBackSignLines(sign), true);
+        return new ListTag(PaperAPITools.instance.getBackSignLines((Sign) ((BlockStateMeta) getItemMeta()).getBlockState()), true);
     }
 
     @Override
     public void setPropertyValue(ListTag value, Mechanism mechanism) {
-        BlockStateMeta meta = ((BlockStateMeta) getItemMeta());
-        Sign sign = (Sign) meta.getBlockState();
+        BlockStateMeta bsm = as(BlockStateMeta.class);
+        Sign sign = (Sign) bsm.getBlockState();
         for (int i = 0; i < 4; i++) {
             PaperAPITools.instance.setBackSignLine(sign, i, "");
         }
@@ -46,8 +45,8 @@ public class ItemSignContentsBack extends ItemProperty<ListTag> {
                 PaperAPITools.instance.setBackSignLine(sign, i, value.get(i));
             }
         }
-        meta.setBlockState(sign);
-        setItemMeta(meta);
+        bsm.setBlockState(sign);
+        setItemMeta(bsm);
     }
 
     @Override

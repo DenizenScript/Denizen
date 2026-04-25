@@ -33,7 +33,7 @@ public class ItemSignContents extends ItemProperty<ListTag> {
     @Override
     public void setPropertyValue(ListTag value, Mechanism mechanism) {
         BlockStateMeta bsm = as(BlockStateMeta.class);
-        Sign sign = (Sign) as(BlockStateMeta.class).getBlockState();
+        Sign sign = (Sign) bsm.getBlockState();
         for (int i = 0; i < 4; i++) {
             PaperAPITools.instance.setSignLine(sign, i, "");
         }
