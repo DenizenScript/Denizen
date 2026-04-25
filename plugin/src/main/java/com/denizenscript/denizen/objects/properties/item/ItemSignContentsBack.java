@@ -4,10 +4,9 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.meta.BlockStateMeta;
-
-import java.util.Arrays;
 
 public class ItemSignContentsBack extends ItemProperty<ListTag> {
 
@@ -28,7 +27,7 @@ public class ItemSignContentsBack extends ItemProperty<ListTag> {
     @Override
     public ListTag getPropertyValue() {
         Sign sign = (((Sign) ((BlockStateMeta) getItemMeta()).getBlockState()));
-        return new ListTag(Arrays.asList(PaperAPITools.instance.getBackSignLines(sign)), true);
+        return new ListTag(PaperAPITools.instance.getBackSignLines(sign), true);
     }
 
     @Override
@@ -38,14 +37,17 @@ public class ItemSignContentsBack extends ItemProperty<ListTag> {
         for (int i = 0; i < 4; i++) {
             PaperAPITools.instance.setBackSignLine(sign, i, "");
         }
+        CoreUtilities.fixNewLinesToListSeparation(value);
         if (value.size() > 4) {
             mechanism.echoError("Sign can only hold four lines!");
         }
-        for (int i = 0; i < value.size(); i++) {
-            PaperAPITools.instance.setBackSignLine(sign, i, value.get(i));
+        else {
+            for (int i = 0; i < value.size(); i++) {
+                PaperAPITools.instance.setBackSignLine(sign, i, value.get(i));
+            }
         }
         meta.setBlockState(sign);
-        getItemStack().setItemMeta(meta);
+        setItemMeta(meta);
     }
 
     @Override

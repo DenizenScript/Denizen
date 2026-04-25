@@ -102,24 +102,13 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
-    public String[] getSignLines(Sign sign) {
-        String[] output = new String[4];
-        int i = 0;
-        List<Component> list = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? sign.getSide(Side.FRONT).lines() : sign.lines();
-        for (Component component : list) {
-            output[i++] = PaperModule.stringifyComponent(component);
-        }
-        return output;
+    public List<String> getSignLines(Sign sign) {
+        return PaperModule.stringifyComponentList(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? sign.getSide(Side.FRONT).lines() : sign.lines());
     }
 
     @Override
-    public String[] getBackSignLines(Sign sign) {
-        String[] output = new String[4];
-        int i = 0;
-        for (Component component : sign.getSide(Side.BACK).lines()) {
-            output[i++] = PaperModule.stringifyComponent(component);
-        }
-        return output;
+    public List<String> getBackSignLines(Sign sign) {
+        return PaperModule.stringifyComponentList(sign.getSide(Side.BACK).lines());
     }
 
     @Override

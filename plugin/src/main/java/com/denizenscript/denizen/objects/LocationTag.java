@@ -1251,11 +1251,11 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @description
         // Returns a list of lines on a sign.
         // For MC 1.20+, this returns the contents on the front of the sign.
-        // To get the contents of the back, see <@link tag LocationTag.sign_back_contents>.
+        // To get the contents on the back, see <@link tag LocationTag.sign_back_contents>.
         // -->
         tagProcessor.registerTag(ListTag.class, "sign_contents", (attribute, object) -> {
             if (object.getBlockStateForTag(attribute) instanceof Sign sign) {
-                return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines(sign)));
+                return new ListTag(PaperAPITools.instance.getSignLines(sign), true);
             }
             return null;
         });
@@ -4583,7 +4583,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // -->
             tagProcessor.registerTag(ListTag.class, "sign_back_contents", (attribute, object) -> {
                 if (object.getBlockStateForTag(attribute) instanceof Sign sign) {
-                    return new ListTag(Arrays.asList(PaperAPITools.instance.getBackSignLines(sign)), true);
+                    return new ListTag(PaperAPITools.instance.getBackSignLines(sign), true);
                 }
                 return null;
             });
@@ -4600,7 +4600,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // -->
             tagProcessor.registerMechanism("sign_back_contents", false, ListTag.class, (object, mechanism, input) -> {
                 if (!(object.getBlockState() instanceof Sign sign)) {
-                    mechanism.echoError("Mechanism 'LocationTag.sign_back_contents' is only valid for Sign blocks.");
+                    mechanism.echoError("This mechanism is only valid for Sign blocks.");
                     return;
                 }
                 for (int i = 0; i < 4; i++) {
@@ -4610,8 +4610,10 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 if (input.size() > 4) {
                     mechanism.echoError("Sign can only hold four lines!");
                 }
-                for (int i = 0; i < input.size(); i++) {
-                    PaperAPITools.instance.setBackSignLine(sign, i, input.get(i));
+                else {
+                    for (int i = 0; i < input.size(); i++) {
+                        PaperAPITools.instance.setBackSignLine(sign, i, input.get(i));
+                    }
                 }
                 sign.update();
             });
@@ -4646,7 +4648,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // -->
             tagProcessor.registerMechanism("sign_back_glowing", false, ElementTag.class, (object, mechanism, input) -> {
                 if (!(object.getBlockState() instanceof Sign sign)) {
-                    mechanism.echoError("'sign_back_glowing' mechanism can only be called on Sign blocks.");
+                    mechanism.echoError("This mechanism can only be called on Sign blocks.");
                 }
                 else if (mechanism.requireBoolean()) {
                     sign.getSide(Side.BACK).setGlowingText(input.asBoolean());
@@ -4687,7 +4689,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // -->
             tagProcessor.registerMechanism("sign_back_glow_color", false, ElementTag.class, (object, mechanism, input) -> {
                 if (!(object.getBlockState() instanceof Sign sign)) {
-                    mechanism.echoError("'sign_back_glow_color' mechanism can only be called on Sign blocks.");
+                    mechanism.echoError("This mechanism can only be called on Sign blocks.");
                 }
                 else if (mechanism.requireEnum(DyeColor.class)) {
                     sign.getSide(Side.BACK).setColor(input.asEnum(DyeColor.class));
@@ -4775,7 +4777,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // -->
         tagProcessor.registerMechanism("sign_contents", false, ListTag.class, (object, mechanism, value) -> {
             if (!(object.getBlockState() instanceof Sign sign)) {
-                mechanism.echoError("Mechanism 'LocationTag.sign_contents' is only valid for Sign blocks.");
+                mechanism.echoError("This mechanism is only valid for Sign blocks.");
                 return;
             }
             for (int i = 0; i < 4; i++) {
@@ -4785,8 +4787,10 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             if (value.size() > 4) {
                 mechanism.echoError("Sign can only hold four lines!");
             }
-            for (int i = 0; i < value.size(); i++) {
-                PaperAPITools.instance.setSignLine(sign, i, value.get(i));
+            else {
+                for (int i = 0; i < value.size(); i++) {
+                    PaperAPITools.instance.setSignLine(sign, i, value.get(i));
+                }
             }
             sign.update();
         });
@@ -4804,19 +4808,20 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // <LocationTag.sign_glowing>
         // -->
         tagProcessor.registerMechanism("sign_glowing", false, ElementTag.class, (object, mechanism, input) -> {
-            if (mechanism.requireBoolean()) {
-                if (!(object.getBlockState() instanceof Sign sign)) {
-                    mechanism.echoError("'sign_glowing' mechanism can only be called on Sign blocks.");
-                    return;
-                }
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                    sign.getSide(Side.FRONT).setGlowingText(input.asBoolean());
-                }
-                else {
-                    sign.setGlowingText(input.asBoolean());
-                }
-                sign.update();
+            if (!mechanism.requireBoolean()) {
+                return;
             }
+            if (!(object.getBlockState() instanceof Sign sign)) {
+                mechanism.echoError("This mechanism can only be called on Sign blocks.");
+                return;
+            }
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                sign.getSide(Side.FRONT).setGlowingText(input.asBoolean());
+            }
+            else {
+                sign.setGlowingText(input.asBoolean());
+            }
+            sign.update();
         });
 
         // <--[mechanism]
@@ -4835,19 +4840,20 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // <LocationTag.sign_glowing>
         // -->
         tagProcessor.registerMechanism("sign_glow_color", false, ElementTag.class, (object, mechanism, input) -> {
-            if (mechanism.requireEnum(DyeColor.class)) {
-                if (!(object.getBlockState() instanceof Sign sign)) {
-                    mechanism.echoError("'sign_glow_color' mechanism can only be called on Sign blocks.");
-                    return;
-                }
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-                    sign.getSide(Side.FRONT).setColor(input.asEnum(DyeColor.class));
-                }
-                else {
-                    sign.setColor(mechanism.getValue().asEnum(DyeColor.class));
-                }
-                sign.update();
+            if (!mechanism.requireEnum(DyeColor.class)) {
+                return;
             }
+            if (!(object.getBlockState() instanceof Sign sign)) {
+                mechanism.echoError("This mechanism can only be called on Sign blocks.");
+                return;
+            }
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                sign.getSide(Side.FRONT).setColor(input.asEnum(DyeColor.class));
+            }
+            else {
+                sign.setColor(input.asEnum(DyeColor.class));
+            }
+            sign.update();
         });
     }
 

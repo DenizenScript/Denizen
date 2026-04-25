@@ -26,6 +26,8 @@ import org.bukkit.util.Consumer;
 
 import java.lang.invoke.MethodHandle;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -85,15 +87,16 @@ public class PaperAPITools {
         return player.getPlayerListName();
     }
 
-    public String[] getSignLines(Sign sign) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            return sign.getSide(Side.FRONT).getLines();
-        }
-        return sign.getLines();
+    public List<String> getSignLines(Sign sign) {
+        List<String> lines = new ArrayList<>(4);
+        lines.addAll(Arrays.asList(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? sign.getSide(Side.FRONT).getLines() : sign.getLines()));
+        return lines;
     }
 
-    public String[] getBackSignLines(Sign sign) {
-        return sign.getSide(Side.BACK).getLines();
+    public List<String> getBackSignLines(Sign sign) {
+        List<String> lines = new ArrayList<>(4);
+        lines.addAll(Arrays.asList(sign.getSide(Side.BACK).getLines()));
+        return lines;
     }
 
     public void setSignLine(Sign sign, int line, String text) {

@@ -1,14 +1,12 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.meta.BlockStateMeta;
-
-import java.util.Arrays;
 
 public class ItemSignContents extends ItemProperty<ListTag> {
 
@@ -29,13 +27,13 @@ public class ItemSignContents extends ItemProperty<ListTag> {
 
     @Override
     public ListTag getPropertyValue() {
-        return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines((Sign) ((BlockStateMeta) getItemMeta()).getBlockState())), true);
+        return new ListTag(PaperAPITools.instance.getSignLines((Sign) ((BlockStateMeta) getItemMeta()).getBlockState()), true);
     }
 
     @Override
     public void setPropertyValue(ListTag value, Mechanism mechanism) {
-        BlockStateMeta bsm = ((BlockStateMeta) getItemMeta());
-        Sign sign = (Sign) bsm.getBlockState();
+        BlockStateMeta bsm = as(BlockStateMeta.class);
+        Sign sign = (Sign) as(BlockStateMeta.class).getBlockState();
         for (int i = 0; i < 4; i++) {
             PaperAPITools.instance.setSignLine(sign, i, "");
         }
@@ -49,7 +47,7 @@ public class ItemSignContents extends ItemProperty<ListTag> {
             }
         }
         bsm.setBlockState(sign);
-        getItemStack().setItemMeta(bsm);
+        setItemMeta(bsm);
     }
 
     @Override

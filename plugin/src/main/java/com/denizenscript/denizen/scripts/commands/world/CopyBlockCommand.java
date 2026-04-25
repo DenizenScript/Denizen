@@ -114,6 +114,7 @@ public class CopyBlockCommand extends AbstractCommand {
                     PaperAPITools.instance.setSignLine(((Sign) updateState), n++, line);
                 }
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                    n = 0;
                     for (String line : ((Sign) sourceState).getSide(Side.BACK).getLines()) {
                         PaperAPITools.instance.setBackSignLine(((Sign) updateState), n++, line);
                     }
