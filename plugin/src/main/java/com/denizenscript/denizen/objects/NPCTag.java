@@ -648,7 +648,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(LocationTag.class, ElementTag.class, "pose", (attribute, object, param) -> {
             Pose pose = object.getCitizen().getOrAddTrait(Poses.class).getPose(param.asString());
-            return new LocationTag(org.bukkit.Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch());
+            return new LocationTag(Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch());
         }, "get_pose");
 
         // <--[tag]
@@ -1407,14 +1407,15 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.wander_yrange>
         // -->
         tagProcessor.registerMechanism("wander_yrange", false, ElementTag.class, (object, mechanism, input) -> {
-            if (mechanism.requireInteger()) {
-                Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
-                if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
-                    wanderWaypointProvider.setXYRange(wanderWaypointProvider.getXRange(), input.asInt());
-                }
-                else {
-                    mechanism.echoError("Must set waypoint_provider to 'wander' before setting wander_yrange!");
-                }
+            if (!mechanism.requireInteger()) {
+                return;
+            }
+            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            if (wp.getCurrentProvider() instanceof WanderWaypointProvider wanderWaypointProvider) {
+                wanderWaypointProvider.setXYRange(wanderWaypointProvider.getXRange(), input.asInt());
+            }
+            else {
+                mechanism.echoError("Must set waypoint_provider to 'wander' before setting wander_yrange!");
             }
         });
 
@@ -1458,10 +1459,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.script>
         // -->
         tagProcessor.registerMechanism("remove_assignment", false, (object, mechanism) -> {
-            if (!object.getCitizen().hasTrait(AssignmentTrait.class)) {
-                mechanism.echoError("The npc used in the 'NPCTag.remove_assignment' mechanism does not have any assignments.");
-            }
-            else if (mechanism.hasValue()) {
+            if (mechanism.hasValue()) {
                 AssignmentTrait trait = object.getCitizen().getOrAddTrait(AssignmentTrait.class);
                 trait.removeAssignmentScript(mechanism.getValue().asString(), null);
                 trait.checkAutoRemove();
