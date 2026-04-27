@@ -902,7 +902,7 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
                 getBukkitWorld().regenerateChunk(getX(), getZ());
             }
             else {
-                mechanism.echoError("The 'ChunkTag.regenerate' mechanism has been deprecated upstream and is no longer supported.");
+                BukkitImplDeprecations.chunkRegeneration.warn(mechanism.context);
             }
         }
 
