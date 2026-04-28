@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -53,7 +55,9 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     //
     // -->
 
-    public static final EnumSet<Material> raisableItems = EnumSet.of(Material.SHIELD, Material.CROSSBOW, Material.BOW, Material.TRIDENT, Material.SPYGLASS);
+    public static final EnumSet<Material> raisableItems = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) ?
+            EnumSet.of(Material.SHIELD, Material.CROSSBOW, Material.BOW, Material.TRIDENT, Material.SPYGLASS, Material.COPPER_SPEAR, Material.DIAMOND_SPEAR, Material.GOLDEN_SPEAR, Material.IRON_SPEAR, Material.NETHERITE_SPEAR, Material.STONE_SPEAR, Material.WOODEN_SPEAR)
+            : EnumSet.of(Material.SHIELD, Material.CROSSBOW, Material.BOW, Material.TRIDENT, Material.SPYGLASS);
 
     public PlayerRaiseLowerItemScriptEvent() {
         registerCouldMatcher("player raises|lowers|toggles <item>");
