@@ -1459,6 +1459,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.script>
         // -->
         tagProcessor.registerMechanism("remove_assignment", false, (object, mechanism) -> {
+            if (!object.getCitizen().hasTrait(AssignmentTrait.class)) {
+                return;
+            }
             if (mechanism.hasValue()) {
                 AssignmentTrait trait = object.getCitizen().getOrAddTrait(AssignmentTrait.class);
                 trait.removeAssignmentScript(mechanism.getValue().asString(), null);
@@ -1485,9 +1488,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 object.getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
                 object.npc.removeTrait(AssignmentTrait.class);
             }
-            else {
-                mechanism.echoError("The npc used in the 'NPCTag.clear_assignments' mechanism did not have any assignments.");
-            }
         });
 
         // <--[mechanism]
@@ -1500,7 +1500,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.hologram_direction>
         // -->
-        tagProcessor.registerMechanism("hologram_direction", false, ElementTag.class, (object, mechanism, param) -> {
+        tagProcessor.registerMechanism("hologram_direction", false, (object, mechanism) -> {
             //if (mechanism.requireEnum(HologramTrait.HologramDirection.class)) {
                 //HologramTrait hologram = object.getCitizen().getOrAddTrait(HologramTrait.class);
                 //hologram.setDirection(HologramTrait.HologramDirection.valueOf(param.asString().toUpperCase()));
