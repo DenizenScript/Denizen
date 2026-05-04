@@ -1484,9 +1484,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.script>
         // -->
         tagProcessor.registerMechanism("clear_assignments", false, (object, mechanism) -> {
-            if (object.npc.hasTrait(AssignmentTrait.class)) {
+            if (object.getCitizen().hasTrait(AssignmentTrait.class)) {
                 object.getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
-                object.npc.removeTrait(AssignmentTrait.class);
+                object.getCitizen().removeTrait(AssignmentTrait.class);
             }
         });
 
