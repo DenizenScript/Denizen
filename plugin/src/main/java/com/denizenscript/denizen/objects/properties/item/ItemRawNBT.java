@@ -153,11 +153,10 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
     public static BinaryTag convertObjectToNbt(ObjectTag inputObject, TagContext context, String path) {
         if (inputObject.canBeType(MapTag.class)) {
             MapTag map = inputObject.asType(MapTag.class, context);
-            // TODO: adventure-nbt: builders initial size
-            Map<String, BinaryTag> result = new HashMap<>(map.size());
+            CompoundBinaryTag.Builder resultBuilder = CompoundBinaryTag.builder(map.size());
             for (Map.Entry<StringHolder, ObjectTag> entry : map.entrySet()) {
                 try {
-                    result.put(entry.getKey().str, convertObjectToNbt(entry.getValue(), context, path + "." + entry.getKey().str));
+                    resultBuilder.put(entry.getKey().str, convertObjectToNbt(entry.getValue(), context, path + "." + entry.getKey().str));
                 }
                 catch (Exception ex) {
                     Debug.echoError("Object NBT interpretation failed for key '" + path + "." + entry.getKey().str + "'.");
@@ -165,15 +164,14 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
                     return null;
                 }
             }
-            return CompoundBinaryTag.from(result);
+            return resultBuilder.build();
         }
         else if (!HAS_NBT_LIST_TYPES && inputObject.shouldBeType(ListTag.class)) {
             ListTag list = inputObject.asType(ListTag.class, context);
-            // TODO: adventure-nbt: builders initial size
-            List<BinaryTag> result = new ArrayList<>(list.size());
+            ListBinaryTag.Builder<BinaryTag> resultBuilder = ListBinaryTag.heterogeneousListBinaryTag(list.size());
             for (int i = 0; i < list.size(); i++) {
                 try {
-                    result.add(convertObjectToNbt(list.getObject(i), context, path + '[' + i + ']'));
+                    resultBuilder.add(convertObjectToNbt(list.getObject(i), context, path + '[' + i + ']'));
                 }
                 catch (Exception ex) {
                     Debug.echoError("Object NBT interpretation failed for list key '" + path + "' at index " + i + '.');
@@ -181,7 +179,7 @@ public class ItemRawNBT extends ItemProperty<MapTag> {
                     return null;
                 }
             }
-            return ListBinaryTag.listBinaryTag(BinaryTagTypes.LIST_WILDCARD, result);
+            return resultBuilder.build();
         }
         String input = inputObject.identify();
         if (input.equals("end")) {

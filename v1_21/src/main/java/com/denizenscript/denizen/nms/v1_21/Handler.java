@@ -45,7 +45,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
@@ -67,19 +67,19 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BossBar;
-import org.bukkit.craftbukkit.v1_21_R6.CraftRegistry;
-import org.bukkit.craftbukkit.v1_21_R6.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R6.CraftWorld;
-import org.bukkit.craftbukkit.v1_21_R6.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_21_R6.boss.CraftBossBar;
-import org.bukkit.craftbukkit.v1_21_R6.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftInventoryView;
-import org.bukkit.craftbukkit.v1_21_R6.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_21_R6.legacy.FieldRename;
-import org.bukkit.craftbukkit.v1_21_R6.persistence.CraftPersistentDataContainer;
-import org.bukkit.craftbukkit.v1_21_R6.util.*;
+import org.bukkit.craftbukkit.v1_21_R7.CraftRegistry;
+import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R7.CraftWorld;
+import org.bukkit.craftbukkit.v1_21_R7.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_21_R7.boss.CraftBossBar;
+import org.bukkit.craftbukkit.v1_21_R7.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_21_R7.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_21_R7.legacy.FieldRename;
+import org.bukkit.craftbukkit.v1_21_R7.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_21_R7.util.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -150,7 +150,7 @@ public class Handler extends NMSHandler {
 
     @Override
     public boolean isExactServerVersionMatch() {
-        return Denizen.supportsPaper ? SharedConstants.getCurrentVersion().id().equals("1.21.10") : CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("614efe5192cd0510bc2ddc5feefa155d");
+        return Denizen.supportsPaper ? SharedConstants.getCurrentVersion().id().equals("1.21.11") : CraftMagicNumbers.INSTANCE.getMappingsVersion().equals("e3cd927e07e6ff434793a0474c51b2b9");
     }
 
     @Override
@@ -294,7 +294,7 @@ public class Handler extends NMSHandler {
     public List<BiomeNMS> getBiomes(World world) {
         ServerLevel level = ((CraftWorld) world).getHandle();
         ArrayList<BiomeNMS> output = new ArrayList<>();
-        for (ResourceLocation key : level.registryAccess().lookupOrThrow(Registries.BIOME).keySet()) {
+        for (Identifier key : level.registryAccess().lookupOrThrow(Registries.BIOME).keySet()) {
             output.add(new BiomeNMSImpl(level, CraftNamespacedKey.fromMinecraft(key)));
         }
         return output;
@@ -314,7 +314,7 @@ public class Handler extends NMSHandler {
         // Based on CraftWorld source
         ServerLevel level = ((CraftWorld) block.getWorld()).getHandle();
         Holder<Biome> biome = level.getNoiseBiome(block.getX() >> 2, block.getY() >> 2, block.getZ() >> 2);
-        ResourceLocation key = level.registryAccess().lookupOrThrow(Registries.BIOME).getKey(biome.value());
+        Identifier key = level.registryAccess().lookupOrThrow(Registries.BIOME).getKey(biome.value());
         return new BiomeNMSImpl(level, CraftNamespacedKey.fromMinecraft(key));
     }
 

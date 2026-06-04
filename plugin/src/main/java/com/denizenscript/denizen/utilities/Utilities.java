@@ -13,8 +13,10 @@ import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.AsciiMatcher;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
@@ -38,6 +40,8 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -644,5 +648,54 @@ public class Utilities {
             return false;
         }
         return true;
+    }
+
+    // <--[language]
+    // @name Server Links Format
+    // @group Minecraft Logic
+    // @description
+    // Server links are represented in Denizen as <@link ObjectType MapTag>s with the following keys:
+    // - link: The address of the link, required.
+    // And one of:
+    // - type: The type of the link, valid types are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ServerLinks.Type.html>.
+    // - display: The display name of the link.
+    // -->
+
+    public static ServerLinks replaceServerLinks(ServerLinks serverLinks, ListTag list, TagContext context) {
+        serverLinks.getLinks().forEach(serverLinks::removeLink);
+        return fillServerLinks(serverLinks, list, context);
+    }
+
+    public static ServerLinks fillServerLinks(ServerLinks serverLinks, ListTag list, TagContext context) {
+        for (MapTag map : list.filter(MapTag.class, context)) {
+            if (!map.containsKey("link")) {
+                Debug.echoError("Invalid server links map '" + map + "': missing 'link' key!");
+                continue;
+            }
+            URI uri;
+            String strUri = map.getElement("link").asString();
+            try {
+                uri = new URI(strUri);
+            }
+            catch (URISyntaxException e) {
+                Debug.echoError("Invalid server links map '" + map + "': invalid 'link' value '" + strUri + "'.");
+                continue;
+            }
+            if (map.containsKey("display")) {
+                PaperAPITools.instance.addLink(serverLinks, map.getElement("display").asString(), uri);
+            }
+            else if (map.containsKey("type")) {
+                ServerLinks.Type type = map.getElement("type").asEnum(ServerLinks.Type.class);
+                if (type == null) {
+                    Debug.echoError("Invalid server links map '" + map + "': invalid 'type' value '" + map.getElement("type") + "'.");
+                    continue;
+                }
+                serverLinks.addLink(type, uri);
+            }
+            else {
+                Debug.echoError("Invalid server links map '" + map + "': must have either a 'display' or 'type' key!");
+            }
+        }
+        return serverLinks;
     }
 }

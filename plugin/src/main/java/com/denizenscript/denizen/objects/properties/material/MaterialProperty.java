@@ -17,4 +17,8 @@ public abstract class MaterialProperty<TData extends ObjectTag> extends ObjectPr
     public BlockData getBlockData() {
         return object.getModernData();
     }
+
+    public <T extends BlockData> T as(Class<T> dataType) {
+        return (T) getBlockData();
+    }
 }

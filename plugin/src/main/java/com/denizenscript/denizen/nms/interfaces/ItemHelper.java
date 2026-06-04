@@ -85,8 +85,7 @@ public abstract class ItemHelper {
     public ItemStack setEntityData(ItemStack item, CompoundBinaryTag entityNbt, EntityType entityType) { // TODO: once 1.20 is the minimum supported version, remove default impl
         boolean shouldRemove = entityNbt == null || entityNbt.isEmpty();
         CompoundBinaryTag nbt = getNbtData(item);
-        // TODO: adventure-nbt: contains
-        if (shouldRemove && !nbt.keySet().contains("EntityTag")) {
+        if (shouldRemove && !nbt.contains("EntityTag")) {
             return item;
         }
         if (shouldRemove) {

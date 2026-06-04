@@ -66,13 +66,11 @@ public class EntitySwimScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("state")) {
-            return new ElementTag(state);
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity.getDenizenObject();
+            case "state" -> new ElementTag(state);
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.events.entity;
 
-import com.denizenscript.denizen.objects.EntityTag;
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.event.EventHandler;
@@ -62,7 +62,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     public ObjectTag getContext(String name) {
         return switch (name) {
             case "entity" -> entity.getDenizenObject();
-            case "portal_type" -> new ElementTag(event.getPortalType().toString());
+            case "portal_type" -> new ElementTag(event.getPortalType());
             case "blocks" -> new ListTag(event.getBlocks(), block -> new LocationTag(block.getLocation()));
             default -> super.getContext(name);
         };

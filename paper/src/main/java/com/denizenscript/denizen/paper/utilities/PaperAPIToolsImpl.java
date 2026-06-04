@@ -40,6 +40,7 @@ import org.bukkit.potion.PotionBrewer;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Consumer;
 
+import java.net.URI;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -409,6 +410,11 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         BlockTagsSetter.INSTANCE.setTags(type, tags);
     }
 
+    @Override
+    public void addLink(ServerLinks links, String display, URI uri) {
+        links.addLink(PaperModule.parseFormattedText(display, ChatColor.WHITE), uri);
+    }
+  
     @Override
     public double[] getRecentTps() {
         return Bukkit.getTPS();
