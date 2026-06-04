@@ -31,19 +31,13 @@ public class FurnaceStartsSmeltingScriptEvent extends BukkitScriptEvent implemen
     // @Determine
     // DurationTag to set the total cook time for the item being smelted.
     //
-    // @Example
-    // # Sets the total cook time of every item to always be 2 seconds.
-    // on furnace starts smelting item:
-    // - determine 2s
-    //
-    // @Example
-    // # Sets the total cook time of iron ore to be 2 seconds.
-    // on furnace starts smelting iron_ore:
-    // - determine 2s
     // -->
 
     public FurnaceStartsSmeltingScriptEvent() {
         registerCouldMatcher("furnace starts smelting <item>");
+        this.<FurnaceStartsSmeltingScriptEvent, DurationTag>registerDetermination(null, DurationTag.class, (evt, context, time) -> {
+            evt.event.setTotalCookTime(time.getTicksAsInt());
+        });
     }
 
     public ItemTag item;
@@ -62,23 +56,14 @@ public class FurnaceStartsSmeltingScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj.canBeType(DurationTag.class)) {
-            event.setTotalCookTime(determinationObj.asType(DurationTag.class, getTagContext(path)).getTicksAsInt());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "item": return item;
-            case "recipe_id": return new ElementTag(event.getRecipe().getKey().toString());
-            case "total_cook_time": return new DurationTag((long) event.getTotalCookTime());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "item" -> item;
+            case "recipe_id" -> new ElementTag(event.getRecipe().getKey().toString(), true);
+            case "total_cook_time" -> new DurationTag((long) event.getTotalCookTime());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

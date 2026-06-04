@@ -43,7 +43,7 @@ public class CustomNBT {
         }
         CompoundBinaryTag compoundTag = NMSHandler.itemHelper.getNbtData(itemStack);
         List<Material> materials = new ArrayList<>();
-        if (compoundTag.keySet().contains(key)) {
+        if (compoundTag.contains(key)) {
             ListBinaryTag temp = compoundTag.getList(key, BinaryTagTypes.STRING);
             for (BinaryTag tag : temp) {
                 materials.add(Material.matchMaterial(((StringBinaryTag) tag).value()));
@@ -114,7 +114,7 @@ public class CustomNBT {
         if (customData == null) {
             return false;
         }
-        return customData.getCompound(basekey).keySet().contains(CoreUtilities.toLowerCase(key));
+        return customData.getCompound(basekey).contains(CoreUtilities.toLowerCase(key));
     }
 
     public static String getCustomNBT(ItemStack itemStack, String key, String basekey) {

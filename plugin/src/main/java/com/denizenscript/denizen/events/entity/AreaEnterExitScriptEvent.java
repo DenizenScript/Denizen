@@ -1,9 +1,10 @@
 package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizen.objects.*;
+import com.denizenscript.denizen.objects.AreaContainmentObject;
+import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.NotedAreaTracker;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
@@ -13,6 +14,7 @@ import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
@@ -53,7 +55,6 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         registerCouldMatcher("<entity> enters|exits <area>");
     }
 
-
     public EntityTag currentEntity;
     public AreaContainmentObject area;
     public boolean isEntering;
@@ -87,52 +88,48 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("area")) {
-            return area;
-        }
-        else if (name.equals("cause")) {
-            String cause;
-            if (currentEvent instanceof PlayerJoinEvent) {
-                cause = "JOIN";
+        return switch (name) {
+            case "area" -> area;
+            case "cause" -> {
+                String cause;
+                if (currentEvent instanceof PlayerJoinEvent) {
+                    cause = "JOIN";
+                }
+                else if (currentEvent instanceof PlayerQuitEvent) {
+                    cause = "QUIT";
+                }
+                else if (currentEvent instanceof PlayerChangedWorldEvent) {
+                    cause = "WORLD_CHANGE";
+                }
+                else if (currentEvent instanceof PlayerTeleportEvent) {
+                    cause = "TELEPORT";
+                }
+                else if (currentEvent instanceof VehicleMoveEvent) {
+                    cause = "VEHICLE";
+                }
+                else if (currentEvent instanceof PlayerMoveEvent) {
+                    cause = "WALK";
+                }
+                else {
+                    cause = "UNKNOWN";
+                }
+                yield new ElementTag(cause, true);
             }
-            else if (currentEvent instanceof PlayerQuitEvent) {
-                cause = "QUIT";
+            case "to" -> to != null ? new LocationTag(to) : null;
+            case "from" -> {
+                if (currentEvent instanceof PlayerMoveEvent playerMove) {
+                    yield new LocationTag(playerMove.getFrom());
+                }
+                else if (currentEvent instanceof VehicleMoveEvent vehicleMove) {
+                    yield new LocationTag(vehicleMove.getFrom());
+                }
+                else {
+                    yield new LocationTag(currentEntity.getLocation());
+                }
             }
-            else if (currentEvent instanceof PlayerChangedWorldEvent) {
-                cause = "WORLD_CHANGE";
-            }
-            else if (currentEvent instanceof PlayerTeleportEvent) {
-                cause = "TELEPORT";
-            }
-            else if (currentEvent instanceof VehicleMoveEvent) {
-                cause = "VEHICLE";
-            }
-            else if (currentEvent instanceof PlayerMoveEvent) {
-                cause = "WALK";
-            }
-            else {
-                cause = "UNKNOWN";
-            }
-            return new ElementTag(cause);
-        }
-        else if (name.equals("to") && to != null) {
-            return new LocationTag(to);
-        }
-        else if (name.equals("from")) {
-            if (currentEvent instanceof PlayerMoveEvent) {
-                return new LocationTag(((PlayerMoveEvent) currentEvent).getFrom());
-            }
-            else if (currentEvent instanceof VehicleMoveEvent) {
-                return new LocationTag(((VehicleMoveEvent) currentEvent).getFrom());
-            }
-            else {
-                return new LocationTag(currentEntity.getLocation());
-            }
-        }
-        else if (name.equals("entity")) {
-            return currentEntity.getDenizenObject();
-        }
-        return super.getContext(name);
+            case "entity" -> currentEntity.getDenizenObject();
+            default -> super.getContext(name);
+        };
     }
 
     public void registerCorrectClass() {
@@ -178,7 +175,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         }
         exactTracked = needsMatchers ? null : exacts.toArray(new String[0]);
         matchers = needsMatchers ? matchList.toArray(new MatchHelper[0]) : null;
-        flagTracked = flags.size() > 0 ? flags.toArray(new String[0]) : null;
+        flagTracked = !flags.isEmpty() ? flags.toArray(new String[0]) : null;
         registerCorrectClass();
     }
 
@@ -258,7 +255,7 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         if (doTrackAll || matchers != null || flagTracked != null) {
             if (pos != null) {
                 NotedAreaTracker.forEachAreaThatContains(new LocationTag(pos), (a) -> {
-                    if (a instanceof FlaggableObject && anyMatch(a.getNoteName(), (FlaggableObject) a)) {
+                    if (a instanceof FlaggableObject flaggable && anyMatch(a.getNoteName(), flaggable)) {
                         processSingle(a, entity, inAreas, pos, eventCause);
                     }
                 });
@@ -279,11 +276,11 @@ public class AreaEnterExitScriptEvent extends BukkitScriptEvent implements Liste
         else {
             for (String name : exactTracked) {
                 Notable obj = NoteManager.getSavedObject(name);
-                if (!(obj instanceof AreaContainmentObject)) {
+                if (!(obj instanceof AreaContainmentObject areaObject)) {
                     Debug.echoError("Invalid area enter/exit event area '" + name + "'");
                     continue;
                 }
-                processSingle((AreaContainmentObject) obj, entity, inAreas, pos, eventCause);
+                processSingle(areaObject, entity, inAreas, pos, eventCause);
             }
         }
         if (inAreas != null && inAreas.isEmpty()) {

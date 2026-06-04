@@ -14,6 +14,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizen.utilities.inventory.SlotHelper;
+import com.denizenscript.denizen.utilities.world.GameRuleReflect;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -639,11 +640,7 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // Returns a list of all available gamerules on the server.
         // -->
         tagProcessor.registerStaticTag(ListTag.class, "gamerules", (attribute, object) -> {
-            ListTag gamerules = new ListTag();
-            for (GameRule<?> rule : GameRule.values()) {
-                gamerules.add(rule.getName());
-            }
-            return gamerules;
+            return new ListTag(Arrays.asList(GameRuleReflect.values()), gameRule -> new ElementTag(GameRuleReflect.getName(gameRule), true));
         });
 
         // <--[tag]
@@ -1121,6 +1118,16 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
         // -->
         tagProcessor.registerStaticTag(ElementTag.class, "denizen_version", (attribute, object) -> {
             return new ElementTag(Denizen.versionTag);
+        });
+
+        // <--[tag]
+        // @attribute <server.bukkit_name>
+        // @returns ElementTag
+        // @description
+        // Returns the name of the Bukkit platform, such as "Paper".
+        // -->
+        tagProcessor.registerStaticTag(ElementTag.class, "bukkit_name", (attribute, object) -> {
+            return new ElementTag(Bukkit.getName());
         });
 
         // <--[tag]
@@ -2024,6 +2031,32 @@ public class ServerTagBase extends PseudoObjectTagBase<ServerTagBase> {
                 DefaultPermissions.registerPermission(name.asString(), description == null ? null : description.asString(), permissionDefault, parent);
             }
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+
+            // <--[mechanism]
+            // @object server
+            // @name links
+            // @input ListTag(MapTag)
+            // @description
+            // Sets the default server links. Each item in the list must be a MapTag in <@link language Server Links Format>.
+            // Generally prefer <@link mechanism server.add_links>.
+            // -->
+            tagProcessor.registerMechanism("links", false, ListTag.class, (object, mechanism, input) -> {
+                Utilities.replaceServerLinks(Bukkit.getServerLinks(), input, mechanism.context);
+            });
+
+            // <--[mechanism]
+            // @object server
+            // @name add_links
+            // @input ListTag(MapTag)
+            // @description
+            // Adds links to the default server links. Each item in the list must be a MapTag in <@link language Server Links Format>.
+            // -->
+            tagProcessor.registerMechanism("add_links", false, ListTag.class, (object, mechanism, input) -> {
+                Utilities.fillServerLinks(Bukkit.getServerLinks(), input, mechanism.context);
+            });
+        }
 
         // <--[mechanism]
         // @object server

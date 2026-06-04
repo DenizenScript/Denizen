@@ -1,11 +1,11 @@
 package com.denizenscript.denizen.events.entity;
 
+import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
-import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -79,19 +79,13 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ObjectTag getContext(String name) {
-        if (name.equals("entity")) {
-            return entity;
-        }
-        else if (name.equals("location")) {
-            return location;
-        }
-        else if (name.equals("reason")) {
-            return reason;
-        }
-        else if (name.equals("spawner_location") && event instanceof SpawnerSpawnEvent) {
-            return new LocationTag(((SpawnerSpawnEvent) event).getSpawner().getLocation());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity;
+            case "location" -> location;
+            case "reason" -> reason;
+            case "spawner_location" -> event instanceof SpawnerSpawnEvent spawnerEvent ? new LocationTag(spawnerEvent.getSpawner().getLocation()) : null;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
@@ -99,8 +93,8 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         Entity entity = event.getEntity();
         this.entity = new EntityTag(entity);
         location = new LocationTag(event.getLocation());
-        if (event instanceof CreatureSpawnEvent) {
-            CreatureSpawnEvent.SpawnReason creatureReason = ((CreatureSpawnEvent) event).getSpawnReason();
+        if (event instanceof CreatureSpawnEvent creatureSpawnEvent) {
+            CreatureSpawnEvent.SpawnReason creatureReason = creatureSpawnEvent.getSpawnReason();
             if (creatureReason == CreatureSpawnEvent.SpawnReason.SPAWNER) {
                 return; // Let the SpawnerSpawnEvent happen and handle it instead
             }

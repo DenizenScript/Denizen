@@ -2,9 +2,8 @@ package com.denizenscript.denizen.events.entity;
 
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,13 +24,36 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     // @Triggers when an entity decides to explode.
     //
     // @Context
-    // <context.entity> returns the EntityTag.
-    // <context.radius> returns an ElementTag of the explosion's radius.
-    // <context.fire> returns an ElementTag with a value of "true" if the explosion will create fire and "false" otherwise.
+    // <context.entity> returns an EntityTag of the exploding entity.
+    // <context.radius> returns the explosion's radius.
+    // <context.fire> returns whether the explosion will create fire.
+    //
+    // @Determine
+    // ElementTag(Decimal) to change the explosion radius.
+    // "FIRE:<ElementTag(Boolean)>" to set whether the explosion will produce fire.
     // -->
 
     public EntityExplosionPrimesScriptEvent() {
         registerCouldMatcher("<entity> explosion primes");
+        this.<EntityExplosionPrimesScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isFloat()) {
+                evt.event.setRadius(value.asFloat());
+                return true;
+            }
+            if (value.isBoolean()) {
+                BukkitImplDeprecations.explosionPrimeDetermination.warn();
+                evt.event.setFire(value.asBoolean());
+                return true;
+            }
+            return false;
+        });
+        this.<EntityExplosionPrimesScriptEvent, ElementTag>registerOptionalDetermination("fire", ElementTag.class, (evt, context, value) -> {
+            if (value.isBoolean()) {
+                evt.event.setFire(value.asBoolean());
+                return true;
+            }
+            return false;
+        });
     }
 
     public EntityTag entity;
@@ -49,30 +71,13 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (ArgumentHelper.matchesDouble(determination)) {
-            event.setRadius(Float.parseFloat(determination));
-            return true;
-        }
-        if (Argument.valueOf(determination).matchesBoolean()) {
-            event.setFire(determination.equalsIgnoreCase("true"));
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
-    }
-
-    @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "entity":
-                return entity;
-            case "radius":
-                return new ElementTag(event.getRadius());
-            case "fire":
-                return new ElementTag(event.getFire());
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "entity" -> entity.getDenizenObject();
+            case "radius" -> new ElementTag(event.getRadius());
+            case "fire" -> new ElementTag(event.getFire());
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler

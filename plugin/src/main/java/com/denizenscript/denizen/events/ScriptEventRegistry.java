@@ -80,14 +80,23 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(BlockShearEntityScriptEvent.class);
         ScriptEvent.registerScriptEvent(BlockSpreadsScriptEvent.class);
         ScriptEvent.registerScriptEvent(BrewingStandFueledScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+            ScriptEvent.registerScriptEvent(BrewingStartsScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(BrewsScriptEvent.class);
         ScriptEvent.registerScriptEvent(CauldronLevelChangeScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(CrafterCraftsScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(DragonEggMovesScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceBurnsItemScriptEvent.class);
         ScriptEvent.registerScriptEvent(FurnaceStartsSmeltingScriptEvent.class);
         ScriptEvent.registerScriptEvent(LeafDecaysScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidLevelChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(LiquidSpreadScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(LootDispensesFromBlockScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(MoistureChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(NoteBlockPlaysNoteScriptEvent.class);
         ScriptEvent.registerScriptEvent(PistonExtendsScriptEvent.class);
@@ -95,11 +104,10 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(RedstoneScriptEvent.class);
         ScriptEvent.registerScriptEvent(SpongeAbsorbsScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-            ScriptEvent.registerScriptEvent(BrewingStartsScriptEvent.class);
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            ScriptEvent.registerScriptEvent(CrafterCraftsScriptEvent.class);
+            ScriptEvent.registerScriptEvent(VaultDisplaysItemScriptEvent.class);
         }
 
         // Entity events
