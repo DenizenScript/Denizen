@@ -147,21 +147,16 @@ public class Denizen extends JavaPlugin {
             Debug.log("Running on fully supported Java 17.");
         }
         else if (javaVersion.startsWith("18") || javaVersion.startsWith("19")) {
-            getLogger().warning("Running unreliable Java version. modern Minecraft versions are built for Java 21 or 17. Other Java versions are not guaranteed to function properly.");
+            getLogger().warning("Running unreliable Java version. modern Minecraft versions are built for Java 25, 21, or 17. Other Java versions are not guaranteed to function properly.");
         }
         else if (javaVersion.startsWith("21")) {
             Debug.log("Running on fully supported Java 21.");
         }
+        else if (javaVersion.startsWith("25")) {
+            Debug.log("Running on fully supported Java 25.");
+        }
         else {
             Debug.log("Running on unrecognized (future?) Java version. May or may not work.");
-        }
-        if (!NMSHandler.initialize(this)) {
-            getLogger().warning("-------------------------------------");
-            getLogger().warning("This build of Denizen is not compatible with this Spigot version! Deactivating Denizen!");
-            getLogger().warning("-------------------------------------");
-            getServer().getPluginManager().disablePlugin(this);
-            startedSuccessful = false;
-            return;
         }
         try {
             if (Class.forName("com.destroystokyo.paper.PaperConfig") != null) {
@@ -173,6 +168,14 @@ public class Denizen extends JavaPlugin {
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
+        }
+        if (!NMSHandler.initialize(this)) {
+            getLogger().warning("-------------------------------------");
+            getLogger().warning("This build of Denizen is not compatible with this Spigot version! Deactivating Denizen!");
+            getLogger().warning("-------------------------------------");
+            getServer().getPluginManager().disablePlugin(this);
+            startedSuccessful = false;
+            return;
         }
         if (!NMSHandler.instance.isExactServerVersionMatch()) {
             String serverSoftware = supportsPaper ? "Paper" : "Spigot";
