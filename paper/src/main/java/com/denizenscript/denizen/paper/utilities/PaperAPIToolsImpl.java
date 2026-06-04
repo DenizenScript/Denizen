@@ -117,32 +117,37 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         sign.line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
     }
 
-    public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt, UUID uuid, boolean replace) {
-        ResourcePackInfo.Builder builder = ResourcePackInfo.resourcePackInfo();
-        builder.hash(hash);
-        builder.uri(URI.create(url));
-        if (uuid != null) {
-            builder.id(uuid);
+    public static class ResourcePackSender {
+        
+        public static void send(Player player, String url, String hash, boolean forced, String prompt, UUID uuid, boolean replace) {
+            ResourcePackInfo.Builder builder = ResourcePackInfo.resourcePackInfo();
+            builder.hash(hash);
+            builder.uri(URI.create(url));
+            if (uuid != null) {
+                builder.id(uuid);
+            }
+            player.sendResourcePacks(
+                    ResourcePackRequest.resourcePackRequest().prompt(PaperModule.parseFormattedText(prompt, ChatColor.WHITE)).required(forced).replace(replace).packs(builder.build())
+            );
         }
-        player.sendResourcePacks(
-                ResourcePackRequest.resourcePackRequest().prompt(PaperModule.parseFormattedText(prompt, ChatColor.WHITE)).required(forced).replace(replace).packs(builder.build())
-        );
     }
 
     @Override
     public void setResourcePack(Player player, String url, String hash, boolean forced, String prompt, UUID uuid) {
-        if (prompt == null && !forced && uuid == null) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) || (prompt == null && !forced && uuid == null)) {
             super.setResourcePack(player, url, hash, false, null, null);
+            return;
         }
-        sendResourcePack(player, url, hash, forced, prompt, uuid, true);
+        ResourcePackSender.send(player, url, hash, forced, prompt, uuid, true);
     }
 
     @Override
     public void addResourcePack(Player player, String url, String hash, boolean forced, String prompt, UUID uuid) {
         if (prompt == null && !forced) {
             super.addResourcePack(player, url, hash, false, null, uuid);
+            return;
         }
-        sendResourcePack(player, url, hash, forced, prompt, uuid, false);
+        ResourcePackSender.send(player, url, hash, forced, prompt, uuid, false);
     }
 
     @Override
