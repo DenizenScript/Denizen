@@ -19,10 +19,12 @@ import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.BaseSpawner;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.material.FluidState;
@@ -62,6 +64,17 @@ public class BlockHelperImpl implements BlockHelper {
         craftBlockEntityState_tileEntity = blockEntityField;
     }
 
+    public static final MethodHandle CRAFT_BLOCK_GET_STATE = Handler.reflectPaperRenamed(CraftBlock.class, "getNMS", "getBlockState");
+
+    public static BlockState getNMSState(Block block) {
+        try {
+            return (BlockState) CRAFT_BLOCK_GET_STATE.invokeExact((CraftBlock) block);
+        }
+        catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void applyPhysics(Location location) {
         ((CraftWorld) location.getWorld()).getHandle().updateNeighborsAt(Handler.toBlockPos(location), CraftMagicNumbers.getBlock(location.getBlock().getType()));
@@ -99,9 +112,16 @@ public class BlockHelperImpl implements BlockHelper {
         skull.update();
     }
 
+    public static final MethodHandle CRAFT_BLOCK_GET_LEVEL = Handler.reflectPaperRenamed(CraftBlock.class, "getHandle", "getLevel");
+
     public BlockEntity getBlockEntity(Block block) {
         CraftBlock craftBlock = ((CraftBlock) block);
-        return craftBlock.getHandle().getBlockEntity(craftBlock.getPosition());
+        try {
+            return ((LevelAccessor) CRAFT_BLOCK_GET_LEVEL.invokeExact(craftBlock)).getBlockEntity(craftBlock.getPosition());
+        }
+        catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -202,7 +222,7 @@ public class BlockHelperImpl implements BlockHelper {
         if (blockType == null) {
             return 0;
         }
-        return blockType.getExpDrop(((CraftBlock) block).getNMS(), ((CraftBlock) block).getCraftWorld().getHandle(), ((CraftBlock) block).getPosition(),
+        return blockType.getExpDrop(getNMSState(block), ((CraftBlock) block).getCraftWorld().getHandle(), ((CraftBlock) block).getPosition(),
                 item == null ? null : CraftItemStack.asNMSCopy(item), true);
     }
 

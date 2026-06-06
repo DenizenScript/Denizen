@@ -22,7 +22,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     //
     // @Cancellable true
     //
-    // @Triggers when a block dispenses an item.
+    // @Triggers when a block dispenses a single item.
     //
     // @Context
     // <context.location> returns the LocationTag of the dispenser.

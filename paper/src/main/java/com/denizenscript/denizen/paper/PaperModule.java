@@ -68,7 +68,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerLecternPageChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerLoomPatternSelectScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerNameEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerNamesEntityScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             ScriptEvent.registerScriptEvent(PlayerOpenSignScriptEvent.class);
         }
@@ -104,6 +104,9 @@ public class PaperModule {
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(UnknownCommandScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(VaultChangesStateScriptEvent.class);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             ScriptEvent.registerScriptEvent(WardenChangesAngerLevelScriptEvent.class);
         }

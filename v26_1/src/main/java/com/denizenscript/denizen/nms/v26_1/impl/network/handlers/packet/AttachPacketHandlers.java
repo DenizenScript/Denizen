@@ -34,7 +34,6 @@ public class AttachPacketHandlers {
     public static Field POS_Z_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("za", short.class);
     public static Field YAW_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("yRot", byte.class);
     public static Field PITCH_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("xRot", byte.class);
-    public static Field ENTITY_ID_PACKVELENT = ReflectionHelper.getFields(ClientboundSetEntityMotionPacket.class).get("id", int.class);
 
     public static Vector VECTOR_ZERO = new Vector(0, 0, 0);
 
@@ -170,14 +169,13 @@ public class AttachPacketHandlers {
         }
     }
 
-    public static void tryProcessVelocityPacketForAttach(DenizenNetworkManagerImpl networkManager, ClientboundSetEntityMotionPacket packet, Entity e) throws IllegalAccessException {
+    public static void tryProcessVelocityPacketForAttach(DenizenNetworkManagerImpl networkManager, ClientboundSetEntityMotionPacket packet, Entity e) {
         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());
         if (attList != null) {
             for (EntityAttachmentHelper.PlayerAttachMap attMap : attList.attachedToMap.values()) {
                 EntityAttachmentHelper.AttachmentData att = attMap.getAttachment(networkManager.player.getUUID());
                 if (attMap.attached.isValid() && att != null) {
-                    ClientboundSetEntityMotionPacket pNew = DenizenNetworkManagerImpl.copyPacket(packet, ClientboundSetEntityMotionPacket.STREAM_CODEC);
-                    ENTITY_ID_PACKVELENT.setInt(pNew, att.attached.getBukkitEntity().getEntityId());
+                    ClientboundSetEntityMotionPacket pNew = new ClientboundSetEntityMotionPacket(att.attached.getBukkitEntity().getEntityId(), packet.movement());
                     if (NMSHandler.debugPackets) {
                         DenizenNetworkManagerImpl.doPacketOutput("Attach Velocity Packet: " + pNew.getClass().getCanonicalName() + " for " + att.attached.getUUID() + " sent to " + networkManager.player.getScoreboardName());
                     }

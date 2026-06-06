@@ -70,7 +70,6 @@ import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.block.CraftCreatureSpawner;
 import org.bukkit.craftbukkit.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.entity.*;
@@ -168,7 +167,7 @@ public class EntityHelperImpl extends EntityHelper {
     @Override
     public void forceInteraction(Player player, Location location) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        ((CraftBlock) location.getBlock()).getNMS().useItemOn(nmsPlayer.getMainHandItem(), ((CraftWorld) location.getWorld()).getHandle(),
+        BlockHelperImpl.getNMSState(location.getBlock()).useItemOn(nmsPlayer.getMainHandItem(), ((CraftWorld) location.getWorld()).getHandle(),
                 nmsPlayer, InteractionHand.MAIN_HAND,
                 new BlockHitResult(new Vec3(0, 0, 0), null, Handler.toBlockPos(location), false));
     }
