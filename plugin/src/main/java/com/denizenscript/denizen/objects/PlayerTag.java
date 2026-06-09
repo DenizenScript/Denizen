@@ -20,19 +20,13 @@ import com.denizenscript.denizen.utilities.entity.FakeEntity;
 import com.denizenscript.denizen.utilities.entity.HideEntitiesHelper;
 import com.denizenscript.denizen.utilities.flags.PlayerFlagHandler;
 import com.denizenscript.denizen.utilities.inventory.InventoryViewUtil;
-import com.denizenscript.denizen.utilities.packets.DenizenPacketHandler;
-import com.denizenscript.denizen.utilities.packets.HideParticles;
-import com.denizenscript.denizen.utilities.packets.ItemChangeMessage;
-import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
+import com.denizenscript.denizen.utilities.packets.*;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.flags.AbstractFlagTracker;
 import com.denizenscript.denizencore.flags.FlaggableObject;
 import com.denizenscript.denizencore.objects.*;
 import com.denizenscript.denizencore.objects.core.*;
-import com.denizenscript.denizencore.tags.Attribute;
-import com.denizenscript.denizencore.tags.ObjectTagProcessor;
-import com.denizenscript.denizencore.tags.TagContext;
-import com.denizenscript.denizencore.tags.TagRunnable;
+import com.denizenscript.denizencore.tags.*;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -726,7 +720,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(ElementTag.class, "formatted_money", (attribute, object) -> {
             if (Depends.economy == null) {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                    attribute.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 }
                 return null;
             }
@@ -744,7 +738,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(ElementTag.class, "money", (attribute, object) -> {
             if (Depends.economy == null) {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                    attribute.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 }
                 return null;
             }
@@ -1099,7 +1093,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(ListTag.class, "groups", (attribute, object) -> {
             if (Depends.permissions == null) {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                    attribute.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 }
                 return null;
             }
@@ -1108,7 +1102,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.hasParam()) {
                 world = attribute.paramAsType(WorldTag.class);
                 if (world == null) {
-                    Debug.echoError("Invalid world specified: " + attribute.getParam());
+                    attribute.echoError("Invalid world specified: " + attribute.getParam());
                     return null;
                 }
             }
@@ -1254,7 +1248,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(ElementTag.class, "in_group", (attribute, object) -> {
             if (Depends.permissions == null) {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                    attribute.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                 }
                 return null;
             }
@@ -1281,7 +1275,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @attribute <PlayerTag.in_group[<group_name>].world[<world>]>
             // @returns ElementTag(Boolean)
             // @description
-            // Returns whether the player has the group in regards to a specific world.
+            // Returns whether the player has the group in regard to a specific world.
             // (Works with offline players)
             // (Note: This may or may not be functional with your permissions system.)
             // -->
@@ -1292,7 +1286,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 if (attribute.hasContext(2)) {
                     world = attribute.contextAsType(2, WorldTag.class);
                     if (world == null) {
-                        Debug.echoError("Invalid world specified: " + attribute.getContext(2));
+                        attribute.echoError("Invalid world specified: " + attribute.getContext(2));
                         return null;
                     }
                 }
@@ -1333,7 +1327,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             if (attribute.startsWith("global", 2)) {
                 if (Depends.permissions == null) {
                     if (!attribute.hasAlternative()) {
-                        Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                        attribute.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                     }
                     return null;
                 }
@@ -1346,8 +1340,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             // @attribute <PlayerTag.has_permission[permission.node].world[<world>]>
             // @returns ElementTag(Boolean)
             // @description
-            // Returns whether the player has the specified node in regards to the
-            // specified world.
+            // Returns whether the player has the specified node in regard to the specified world.
             // (Works with offline players)
             // (Note: This may or may not be functional with your permissions system.)
             // -->
@@ -1357,7 +1350,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 String world = attribute.getContext(2);
                 if (Depends.permissions == null) {
                     if (!attribute.hasAlternative()) {
-                        Debug.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                        attribute.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
                     }
                     return null;
                 }
@@ -1423,7 +1416,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     }
                 }
                 catch (Exception e) {
-                    Debug.echoError("Invalid statistic: " + statistic + " for this player!");
+                    attribute.echoError("Invalid statistic: " + statistic + " for this player!");
                     return null;
                 }
             }
@@ -1431,7 +1424,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return new ElementTag(object.getOfflinePlayer().getStatistic(statistic));
             }
             catch (Exception e) {
-                Debug.echoError("Invalid statistic: " + statistic + " for this player!");
+                attribute.echoError("Invalid statistic: " + statistic + " for this player!");
                 return null;
             }
         });
@@ -1761,7 +1754,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return new ElementTag(object.getPlayerEntity().getAttackCooldown() * 100);
             }
 
-            Debug.echoError("The tag 'player.attack_cooldown...' must be followed by a sub-tag.");
+            attribute.echoError("The tag 'player.attack_cooldown...' must be followed by a sub-tag.");
 
             return null;
         });
@@ -2121,7 +2114,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             Advancement adv = AdvancementHelper.getAdvancement(attribute.getParam());
             if (adv == null) {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("Advancement '" + attribute.getParam() + "' does not exist.");
+                    attribute.echoError("Advancement '" + attribute.getParam() + "' does not exist.");
                 }
                 return null;
             }
@@ -2269,7 +2262,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(ElementTag.class, "chat_prefix", (attribute, object) -> {
             if (Depends.chat == null) {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("'chat_prefix' tag unavailable: Vault and a chat plugin are required.");
+                    attribute.echoError("No chat system loaded! Have you installed Vault and a compatible chat plugin?");
                 }
                 return null;
             }
@@ -2293,7 +2286,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(ElementTag.class, "chat_suffix", (attribute, object) -> {
             if (Depends.chat == null) {
                 if (!attribute.hasAlternative()) {
-                    Debug.echoError("'chat_suffix' tag unavailable: Vault and a chat plugin are required.");
+                    attribute.echoError("No chat system loaded! Have you installed Vault and a compatible chat plugin?");
                 }
                 return null;
             }
@@ -2512,6 +2505,28 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         });
 
         // <--[tag]
+        // @attribute <PlayerTag.chat_meta[<key>]>
+        // @returns ElementTag
+        // @plugin Vault
+        // @description
+        // Returns the player's meta info with the provided key.
+        // NOTE: Requires the player to be online.
+        // Requires a Vault-compatible chat plugin.
+        // -->
+        registerOnlineOnlyTag(ElementTag.class, ElementTag.class, "chat_meta", (attribute, player, param) -> {
+            if (Depends.chat == null) {
+                attribute.echoError("No chat system loaded! Have you installed Vault and a compatible chat plugin?");
+                return null;
+            }
+            String value = Depends.chat.getPlayerInfoString(player.getPlayerEntity(), param.asString(), null);
+            if (value == null) {
+                attribute.echoError("No value was found for the provided key.");
+                return null;
+            }
+            return new ElementTag(value, true);
+        });
+
+        // <--[tag]
         // @attribute <PlayerTag.bossbar_ids>
         // @returns ListTag
         // @description
@@ -2638,8 +2653,6 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             }
         }, "is_whitelisted");
 
-
-
         // <--[mechanism]
         // @object PlayerTag
         // @name bed_spawn_location
@@ -2734,6 +2747,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return null;
             }
             return runnable.run(attribute, object);
+        }, variants);
+    }
+
+    public static <R extends ObjectTag, P extends ObjectTag> void registerOnlineOnlyTag(Class<R> returnType, Class<P> paramType, String name, TagRunnable.ObjectWithParamInterface<PlayerTag, R, P> runnable, String... variants) {
+        tagProcessor.registerTag(returnType, paramType, name, (attribute, object, param) -> {
+            if (!object.isOnline()) {
+                if (!attribute.hasAlternative()) {
+                    attribute.echoError("Player is not online, but tag '" + attribute.getAttribute(1) + "' requires the player be online, for player: " + object.debuggable());
+                }
+                return null;
+            }
+            return runnable.run(attribute, object, param);
         }, variants);
     }
 
@@ -2924,17 +2949,17 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("window_property")) {
             String[] split = mechanism.getValue().asString().split(",", 2);
             if (split.length != 2) {
-                Debug.echoError("Invalid input! Must be in the form PROPERTY,VALUE");
+                mechanism.echoError("Invalid input! Must be in the form PROPERTY,VALUE");
             }
             else {
                 try {
                     getPlayerEntity().setWindowProperty(InventoryView.Property.valueOf(split[0].toUpperCase()), Integer.parseInt(split[1]));
                 }
                 catch (NumberFormatException e) {
-                    Debug.echoError("Input value must be a number!");
+                    mechanism.echoError("Input value must be a number!");
                 }
                 catch (IllegalArgumentException e) {
-                    Debug.echoError("Must specify a valid window property!");
+                    mechanism.echoError("Must specify a valid window property!");
                 }
             }
         }
@@ -2966,7 +2991,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             Advancement adv = AdvancementHelper.getAdvancement(mechanism.getValue().asString());
             if (adv == null) {
                 if (mechanism.shouldDebug()) {
-                    Debug.echoError("Advancement '" + mechanism.getValue().asString() + "' does not exist.");
+                    mechanism.echoError("Advancement '" + mechanism.getValue().asString() + "' does not exist.");
                 }
                 return;
             }
@@ -2989,7 +3014,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             Advancement adv = AdvancementHelper.getAdvancement(mechanism.getValue().asString());
             if (adv == null) {
                 if (mechanism.shouldDebug()) {
-                    Debug.echoError("Advancement '" + mechanism.getValue().asString() + "' does not exist.");
+                    mechanism.echoError("Advancement '" + mechanism.getValue().asString() + "' does not exist.");
                 }
                 return;
             }
@@ -3065,7 +3090,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 String hash = pack.substring(pipe + 1);
                 pack = pack.substring(0, pipe);
                 if (hash.length() != 40) {
-                    Debug.echoError("Invalid resource_pack hash. Should be 40 characters of hexadecimal data.");
+                    mechanism.echoError("Invalid resource_pack hash. Should be 40 characters of hexadecimal data.");
                     return;
                 }
                 byte[] hashData = new byte[20];
@@ -3112,7 +3137,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 getPlayerEntity().sendMap(map);
             }
             else {
-                Debug.echoError("No map found for ID " + mechanism.getValue().asInt() + "!");
+                mechanism.echoError("No map found for ID " + mechanism.getValue().asInt() + "!");
             }
         }
 
@@ -3184,7 +3209,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("flying") && mechanism.requireBoolean()) {
             boolean doFly = mechanism.getValue().asBoolean();
             if (doFly && !getPlayerEntity().getAllowFlight()) {
-                Debug.echoError("Must adjust 'can_fly:true' before you can adjust 'flying:true'");
+                mechanism.echoError("Must adjust 'can_fly:true' before you can adjust 'flying:true'");
                 return;
             }
             getPlayerEntity().setFlying(doFly);
@@ -3378,18 +3403,18 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 if (split.size() > 0 && new ElementTag(split.get(0)).matchesType(EntityTag.class)) {
                     EntityTag entity = EntityTag.valueOf(split.get(0), mechanism.context);
                     if (!entity.isSpawnedOrValidForTag()) {
-                        Debug.echoError("Can't hide the unspawned entity '" + split.get(0) + "'!");
+                        mechanism.echoError("Can't hide the unspawned entity '" + split.get(0) + "'!");
                     }
                     else {
                         HideEntitiesHelper.hideEntity(getPlayerEntity(), entity.getBukkitEntity());
                     }
                 }
                 else {
-                    Debug.echoError("'" + split.get(0) + "' is not a valid entity!");
+                    mechanism.echoError("'" + split.get(0) + "' is not a valid entity!");
                 }
             }
             else {
-                Debug.echoError("Must specify an entity to hide!");
+                mechanism.echoError("Must specify an entity to hide!");
             }
         }
 
@@ -3519,7 +3544,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     }
                 }
                 else {
-                    Debug.echoError("'" + split[0] + "' is not a valid decimal number!");
+                    mechanism.echoError("'" + split[0] + "' is not a valid decimal number!");
                 }
             }
             else {
@@ -3633,11 +3658,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                                     new ElementTag(split[2]).asType(ItemTag.class, mechanism.context).getItemStack());
                         }
                         else if (split.length > 2) {
-                            Debug.echoError("'" + split[2] + "' is not a valid ItemTag!");
+                            mechanism.echoError("'" + split[2] + "' is not a valid ItemTag!");
                         }
                     }
                     else if (split.length > 1) {
-                        Debug.echoError("'" + split[1] + "' is not a valid slot; must be HAND, OFF_HAND, BOOTS, LEGS, CHEST, or HEAD!");
+                        mechanism.echoError("'" + split[1] + "' is not a valid slot; must be HAND, OFF_HAND, BOOTS, LEGS, CHEST, or HEAD!");
                     }
                     else {
                         NMSHandler.packetHelper.resetEquipment(getPlayerEntity(),
@@ -3645,7 +3670,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     }
                 }
                 else {
-                    Debug.echoError("'" + split[0] + "' is not a valid EntityTag!");
+                    mechanism.echoError("'" + split[0] + "' is not a valid EntityTag!");
                 }
             }
         }
@@ -3919,11 +3944,11 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                     PaperAPITools.instance.sendSignUpdate(getPlayerEntity(), location, lines.toArray(new String[4]));
                 }
                 else {
-                    Debug.echoError("Must specify a valid location and at least one sign line!");
+                    mechanism.echoError("Must specify a valid location and at least one sign line!");
                 }
             }
             else {
-                Debug.echoError("Must specify a valid location and at least one sign line!");
+                mechanism.echoError("Must specify a valid location and at least one sign line!");
             }
         }
 
@@ -3953,14 +3978,14 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                                     PatternType.valueOf(splitList.get(1).toUpperCase())));
                         }
                         catch (Exception e) {
-                            Debug.echoError("Could not apply pattern to banner: " + string);
+                            mechanism.echoError("Could not apply pattern to banner: " + string);
                         }
                     }
                     LocationTag location = LocationTag.valueOf(split[0], mechanism.context);
                     NMSHandler.packetHelper.showBannerUpdate(getPlayerEntity(), location, patterns);
                 }
                 else {
-                    Debug.echoError("Must specify a valid location and pattern list!");
+                    mechanism.echoError("Must specify a valid location and pattern list!");
                 }
             }
         }
@@ -4016,7 +4041,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         if (mechanism.matches("name") && mechanism.hasValue()) {
             String name = mechanism.getValue().asString();
             if (name.length() > 16) {
-                Debug.echoError("Must specify a name with no more than 16 characters.");
+                mechanism.echoError("Must specify a name with no more than 16 characters.");
             }
             else {
                 NMSHandler.instance.getProfileEditor().setPlayerName(getPlayerEntity(), mechanism.getValue().asString());
@@ -4094,7 +4119,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("chat_prefix")) {
             if (Depends.chat == null) {
-                Debug.echoError("Chat_Prefix mechanism invalid: No linked Chat plugin.");
+                mechanism.echoError("No chat system loaded! Have you installed Vault and a compatible chat plugin?");
                 return;
             }
             Depends.chat.setPlayerPrefix(getPlayerEntity(), mechanism.getValue().asString());
@@ -4113,7 +4138,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("chat_suffix")) {
             if (Depends.chat == null) {
-                Debug.echoError("Chat_Suffix mechanism invalid: No linked Chat plugin.");
+                mechanism.echoError("No chat system loaded! Have you installed Vault and a compatible chat plugin?");
                 return;
             }
             Depends.chat.setPlayerSuffix(getPlayerEntity(), mechanism.getValue().asString());
@@ -4165,7 +4190,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("send_to") && mechanism.hasValue()) {
             if (!isOnline()) {
-                Debug.echoError("Cannot use send_to on offline player.");
+                mechanism.echoError("Cannot use send_to on offline player.");
                 return;
             }
             Depends.bungeeSendPlayer(getPlayerEntity(), mechanism.getValue().asString());
@@ -4180,7 +4205,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // -->
         if (mechanism.matches("send_server_brand") && mechanism.hasValue()) {
             if (!isOnline()) {
-                Debug.echoError("Cannot use send_server_brand on offline player.");
+                mechanism.echoError("Cannot use send_server_brand on offline player.");
                 return;
             }
             NMSHandler.packetHelper.sendBrand(getPlayerEntity(), mechanism.getValue().asString());
