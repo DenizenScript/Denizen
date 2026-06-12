@@ -889,15 +889,21 @@ public class ChunkTag implements ObjectTag, Adjustable, FlaggableObject {
         // <--[mechanism]
         // @object ChunkTag
         // @name regenerate
+        // @deprecated This functionality was removed from Spigot and Paper as of 1.21.
         // @input None
         // @description
+        // Deprecated on MC 1.21+.
         // Causes the chunk to be entirely deleted and reformed from the world's seed.
-        // At time of writing this method only works as expected on Paper, and will error on Spigot.
         // @example
         // - adjust <player.location.chunk> regenerate
         // -->
         if (mechanism.matches("regenerate")) {
-            getBukkitWorld().regenerateChunk(getX(), getZ());
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) {
+                getBukkitWorld().regenerateChunk(getX(), getZ());
+            }
+            else {
+                BukkitImplDeprecations.chunkRegeneration.warn(mechanism.context);
+            }
         }
 
         // <--[mechanism]
