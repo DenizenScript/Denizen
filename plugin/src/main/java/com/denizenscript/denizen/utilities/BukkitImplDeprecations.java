@@ -492,7 +492,7 @@ public class BukkitImplDeprecations {
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2025/02/15
-    public static Warning chunkRegeneration = new StrongWarning("chunkRegeneration", "The 'ChunkTag.regenerate' mechanism has been deprecated upstream and is no longer supported.");
+    public static Warning chunkRegeneration = new StrongWarning("chunkRegeneration", "'ChunkTag.regenerate' is deprecated: support for chunk regeneration has been removed upstream.");
 
     // Removed upstream 2023/10/29 without warning.
     public static Warning npcHologramDirection = new StrongWarning("npcHologramDirection", "NPCTag's 'hologram_direction' is deprecated: it was removed from Citizens. Ask in the Citizens channel on the Discord if you need it.");

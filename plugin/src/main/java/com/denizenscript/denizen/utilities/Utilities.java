@@ -60,6 +60,11 @@ public class Utilities {
         }
     }
 
+    // Needed due to bytecode differences between versions (e.g. enum to interface changes)
+    public static String keyedToString(Keyed keyed) {
+        return namespacedKeyToString(keyed.getKey());
+    }
+
     public static String namespacedKeyToString(NamespacedKey key) {
         return key.getNamespace().equals(NamespacedKey.MINECRAFT) ? key.getKey() : key.toString();
     }
@@ -567,11 +572,11 @@ public class Utilities {
     }
 
     public static ElementTag enumlikeToElement(Object val) {
-        if (val instanceof Enum) {
-            return new ElementTag(((Enum<?>) val).name());
+        if (val instanceof Enum enumVal) {
+            return new ElementTag(enumVal);
         }
-        if (val instanceof Keyed) {
-            return new ElementTag(namespacedKeyToString(((Keyed) val).getKey()), true);
+        if (val instanceof Keyed keyed) {
+            return new ElementTag(keyedToString(keyed), true);
         }
         return new ElementTag(val.toString());
     }

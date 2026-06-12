@@ -202,10 +202,9 @@ public class PaperEntityExtensions {
                 // This mechanism also updates the villager's demand for offers, which may cause item trade prices to rise or fall.
                 // -->
                 EntityTag.registerSpawnedOnlyMechanism("restock_trades", false, (object, mechanism) -> {
-                    if (!(object.getBukkitEntity() instanceof Villager villager)) {
-                        return;
+                    if (object.getBukkitEntity() instanceof Villager villager) {
+                        villager.restock();
                     }
-                    villager.restock();
                 });
             }
 

@@ -20,10 +20,7 @@ public class MultiVersionHelper1_19 {
     // TODO Frog variants technically have registries on all supported versions
     public static String getColor(Entity entity, boolean includeDeprecated) {
         if (entity instanceof Frog frog) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                return Utilities.namespacedKeyToString(frog.getVariant().getKey());
-            }
-            return frog.getVariant().toString();
+            return Utilities.keyedToString(frog.getVariant());
         }
         else if (entity instanceof Boat boat) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
