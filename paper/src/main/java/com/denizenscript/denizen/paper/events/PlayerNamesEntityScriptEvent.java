@@ -13,7 +13,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerNamesEntityScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -43,16 +43,16 @@ public class PlayerNameEntityScriptEvent extends BukkitScriptEvent implements Li
     //
     // -->
 
-    public PlayerNameEntityScriptEvent() {
+    public PlayerNamesEntityScriptEvent() {
         registerCouldMatcher("player names <entity>");
-        this.<PlayerNameEntityScriptEvent, ElementTag>registerOptionalDetermination("persistent", ElementTag.class, (evt, context, determination) -> {
+        this.<PlayerNamesEntityScriptEvent, ElementTag>registerOptionalDetermination("persistent", ElementTag.class, (evt, context, determination) -> {
             if (determination.isBoolean()) {
                 evt.event.setPersistent(determination.asBoolean());
                 return true;
             }
             return false;
         });
-        this.<PlayerNameEntityScriptEvent, ElementTag>registerDetermination("name", ElementTag.class, (evt, context, determination) -> {
+        this.<PlayerNamesEntityScriptEvent, ElementTag>registerDetermination("name", ElementTag.class, (evt, context, determination) -> {
             evt.event.setName(PaperModule.parseFormattedText(determination.toString(), ChatColor.WHITE));
         });
     }

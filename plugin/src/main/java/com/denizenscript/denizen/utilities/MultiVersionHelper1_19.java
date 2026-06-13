@@ -4,10 +4,7 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.objects.core.*;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 
@@ -21,7 +18,7 @@ public class MultiVersionHelper1_19 {
     public static String getColor(Entity entity, boolean includeDeprecated) {
         if (entity instanceof Frog frog) {
             BukkitImplDeprecations.colorToVariantProperty.warn();
-            return String.valueOf(frog.getVariant());
+            return Utilities.keyedToString(frog.getVariant());
         }
         else if (entity instanceof Boat boat) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {

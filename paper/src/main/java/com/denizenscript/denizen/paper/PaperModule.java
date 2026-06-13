@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.paper.datacomponents.ComponentAdaptersRegistry;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
@@ -67,7 +68,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerLecternPageChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerLoomPatternSelectScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerNameEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerNamesEntityScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             ScriptEvent.registerScriptEvent(PlayerOpenSignScriptEvent.class);
         }
@@ -103,6 +104,9 @@ public class PaperModule {
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(UnknownCommandScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(VaultChangesStateScriptEvent.class);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             ScriptEvent.registerScriptEvent(WardenChangesAngerLevelScriptEvent.class);
         }
@@ -129,6 +133,12 @@ public class PaperModule {
         }
         PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
+
+        // Components system
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            PropertyParser.registerProperty(ItemRemovedComponents.class, ItemTag.class);
+            ComponentAdaptersRegistry.register();
+        }
 
         // Paper object extensions
         PaperElementExtensions.register();

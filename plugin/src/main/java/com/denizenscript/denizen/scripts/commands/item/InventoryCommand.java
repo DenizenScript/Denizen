@@ -442,7 +442,8 @@ public class InventoryCommand extends AbstractCommand implements Listener {
                     }
                     ItemTag toAdjust = new ItemTag(destination.getInventory().getItem(slotId));
                     Argument mechanismArgument = new Argument(dataAction);
-                    toAdjust.safeAdjust(new Mechanism(mechanismArgument.getPrefix().getValue(), mechanismArgument.object, scriptEntry.getContext()));
+                    boolean hasValue = mechanismArgument.hasPrefix();
+                    toAdjust.safeAdjust(new Mechanism(hasValue ? mechanismArgument.getPrefix().getValue() : mechanismArgument.getValue(), hasValue ? mechanismArgument.object : null, scriptEntry.getContext()));
                     NMSHandler.itemHelper.setInventoryItem(destination.getInventory(), toAdjust.getItemStack(), slotId);
                     break;
                 case FLAG:
