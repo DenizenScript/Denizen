@@ -45,10 +45,10 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
                 || data instanceof StructureBlock
                 || data instanceof Tripwire
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && (data instanceof SculkCatalyst
-                || data instanceof SculkShrieker))
+                                                                        || data instanceof SculkShrieker))
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (data instanceof CreakingHeart
-                || data instanceof TrialSpawner
-                || data instanceof Vault))
+                                                                        || data instanceof TrialSpawner
+                                                                        || data instanceof Vault))
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_2) && data instanceof PotentSulfur);
     }
 
@@ -96,7 +96,6 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof Vault vault) {
             return new ElementTag(vault.getVaultState().name(), true); // TODO: once 1.21 is the minimum supported version, use the enum constructor
         }
-
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_2) && getBlockData() instanceof PotentSulfur potentSulfur) {
             return new ElementTag(potentSulfur.getPotentSulfurState().name(), true); // TODO: once 1.21. is the minimum supported version, use the enum constructor
         }
