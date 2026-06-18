@@ -21,12 +21,12 @@ public class EntitySize extends EntityProperty<ElementTag> {
     // Pufferfish mob sizes are between 0 and 2.
     // -->
 
-    public static boolean describes(EntityTag entity) {
-        Entity bukkitEntity = entity.getBukkitEntity();
-        return bukkitEntity instanceof Phantom
-                || bukkitEntity instanceof PufferFish
-                || bukkitEntity instanceof Slime
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_2) && bukkitEntity instanceof AbstractCubeMob);
+    public static boolean describes(EntityTag entityTag) {
+        Entity entity = entityTag.getBukkitEntity();
+        return entity instanceof Phantom
+                || entity instanceof PufferFish
+                || entity instanceof Slime
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_2) && entity instanceof AbstractCubeMob);
     }
 
     @Override

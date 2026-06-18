@@ -22,7 +22,7 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
     // For comparators, modes are COMPARE and SUBTRACT.
     // For creaking_hearts, modes are AWAKE, DORMANT, and UPROOTED.
     // For daylight_detectors, modes are INVERTED and NORMAL.
-    // For potent sulfur, modes are CONTINUOUS, DORMANT, DRY, ERUPTING, and WET. CONTINUOUS is only available on Paper.
+    // For potent_sulfur, modes are CONTINUOUS, DORMANT, DRY, ERUPTING, and WET.
     // For piston_heads, modes are NORMAL and SHORT.
     // For sculk_catalysts, modes are BLOOM and NORMAL.
     // For sculk_sensors, modes are ACTIVE, COOLDOWN, and INACTIVE.
@@ -97,7 +97,7 @@ public class MaterialMode extends MaterialProperty<ElementTag> {
             return new ElementTag(vault.getVaultState().name(), true); // TODO: once 1.21 is the minimum supported version, use the enum constructor
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_2) && getBlockData() instanceof PotentSulfur potentSulfur) {
-            return new ElementTag(potentSulfur.getPotentSulfurState().name(), true); // TODO: once 1.21. is the minimum supported version, use the enum constructor
+            return new ElementTag(potentSulfur.getPotentSulfurState().name(), true); // TODO: once 26.2 is the minimum supported version, use the enum constructor
         }
         return null;
     }
