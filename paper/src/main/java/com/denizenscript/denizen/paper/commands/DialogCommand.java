@@ -12,6 +12,7 @@ import io.papermc.paper.dialog.Dialog;
 
 import java.util.List;
 
+// TODO add optional per_player parsing
 public class DialogCommand extends AbstractCommand {
 
     public DialogCommand() {
