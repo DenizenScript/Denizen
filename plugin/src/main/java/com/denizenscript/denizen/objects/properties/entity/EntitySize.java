@@ -1,53 +1,68 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import org.bukkit.entity.Phantom;
-import org.bukkit.entity.PufferFish;
-import org.bukkit.entity.Slime;
+import org.bukkit.entity.*;
 
-public class EntitySize implements Property {
+public class EntitySize extends EntityProperty<ElementTag> {
+    // TODO: once 26.2 is the minimum supported version, remove Slime usage in favor of AbstractCubeMob
 
-    public static boolean describes(ObjectTag entity) {
-        return entity instanceof EntityTag &&
-                (((EntityTag) entity).getBukkitEntity() instanceof Slime
-                || ((EntityTag) entity).getBukkitEntity() instanceof Phantom
-                || ((EntityTag) entity).getBukkitEntity() instanceof PufferFish);
-    }
+    // <--[property]
+    // @object MaterialTag
+    // @name mode
+    // @input ElementTag
+    // @description
+    // Controls the size of an entity.
+    // Cube-type (slime, magma cube, sulfur cube) mob sizes are between 1 and 127.
+    // Phantom mob sizes are between 0 and 64.
+    // Pufferfish mob sizes are between 0 and 2.
+    // -->
 
-    public static EntitySize getFrom(ObjectTag entity) {
-        if (!describes(entity)) {
-            return null;
-        }
-        else {
-            return new EntitySize((EntityTag) entity);
-        }
-    }
-
-    public EntitySize(EntityTag ent) {
-        entity = ent;
-    }
-
-    EntityTag entity;
-
-    public int getSize() {
-        if (isSlime()) {
-            return getSlime().getSize();
-        }
-        else if (isPhantom()) {
-            return getPhantom().getSize();
-        }
-        else {
-            return getPufferFish().getPuffState();
-        }
+    public static boolean describes(EntityTag entity) {
+        Entity bukkitEntity = entity.getBukkitEntity();
+        return bukkitEntity instanceof Phantom
+                || bukkitEntity instanceof PufferFish
+                || bukkitEntity instanceof Slime
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_2) && bukkitEntity instanceof AbstractCubeMob);
     }
 
     @Override
-    public String getPropertyString() {
-        return String.valueOf(getSize());
+    public ElementTag getPropertyValue() {
+        if (getEntity() instanceof Phantom phantom) {
+            return new ElementTag(phantom.getSize());
+        }
+        else if (getEntity() instanceof PufferFish pufferfish) {
+            return new ElementTag(pufferfish.getPuffState());
+        }
+        else if (getEntity() instanceof Slime slime) {
+            return new ElementTag(slime.getSize());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_2) && getEntity() instanceof AbstractCubeMob cube) {
+            return new ElementTag(cube.getSize());
+        }
+        return null;
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        if (!mechanism.requireInteger()) {
+            return;
+        }
+        if (getEntity() instanceof Phantom phantom) {
+            phantom.setSize(value.asInt());
+        }
+        else if (getEntity() instanceof PufferFish pufferfish) {
+            pufferfish.setPuffState(value.asInt());
+        }
+        else if (getEntity() instanceof Slime slime) {
+            slime.setSize(value.asInt());
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_2) && getEntity() instanceof AbstractCubeMob cube) {
+            cube.setSize(value.asInt());
+        }
     }
 
     @Override
@@ -56,63 +71,6 @@ public class EntitySize implements Property {
     }
 
     public static void register() {
-
-        // <--[tag]
-        // @attribute <EntityTag.size>
-        // @returns ElementTag(Number)
-        // @mechanism EntityTag.size
-        // @group properties
-        // @description
-        // Returns the size of a slime-type entity or a Phantom (1-120).
-        // If the entity is a PufferFish it returns the puff state (0-3).
-        // -->
-        PropertyParser.registerTag(EntitySize.class, ElementTag.class, "size", (attribute, object) -> {
-            return new ElementTag(object.getSize());
-        });
-
-
-        // <--[mechanism]
-        // @object EntityTag
-        // @name size
-        // @input ElementTag(Number)
-        // @description
-        // Sets the size of a slime-type entity or a Phantom (1-120).
-        // If the entity is a PufferFish it sets the puff state (0-3).
-        // @tags
-        // <EntityTag.size>
-        // -->
-        PropertyParser.registerMechanism(EntitySize.class, ElementTag.class, "size", (object, mechanism, input) -> {
-            if (mechanism.requireInteger()) {
-                if (object.isSlime()) {
-                    object.getSlime().setSize(input.asInt());
-                }
-                else if (object.isPhantom()) {
-                    object.getPhantom().setSize(input.asInt());
-                }
-                else {
-                    object.getPufferFish().setPuffState(input.asInt());
-                }
-            }
-        });
-    }
-
-    public boolean isSlime() {
-        return entity.getBukkitEntity() instanceof Slime;
-    }
-
-    public boolean isPhantom() {
-        return entity.getBukkitEntity() instanceof Phantom;
-    }
-
-    public Slime getSlime() {
-        return (Slime) entity.getBukkitEntity();
-    }
-
-    public Phantom getPhantom() {
-        return (Phantom) entity.getBukkitEntity();
-    }
-
-    public PufferFish getPufferFish() {
-        return (PufferFish) entity.getBukkitEntity();
+        autoRegister("size", EntitySize.class, ElementTag.class, false);
     }
 }
