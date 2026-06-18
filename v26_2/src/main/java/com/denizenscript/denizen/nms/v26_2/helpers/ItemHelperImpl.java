@@ -439,7 +439,7 @@ public class ItemHelperImpl extends ItemHelper {
         nmsOldTag.putString("id", item.getType().getKey().toString());
         nmsOldTag.putByte("Count", (byte) item.getAmount());
         nmsOldTag.put("tag", NBTAdapter.toNMS(oldTag));
-        CompoundTag nmsUpdatedTag = (CompoundTag) MinecraftServer.getServer().fixerUpper.update(References.ITEM_STACK, new Dynamic<>(NbtOps.INSTANCE, nmsOldTag), DATA_VERSION_1_20_4, currentDataVersion).getValue();
+        CompoundTag nmsUpdatedTag = (CompoundTag) MinecraftServer.getServer().getFixerUpper().update(References.ITEM_STACK, new Dynamic<>(NbtOps.INSTANCE, nmsOldTag), DATA_VERSION_1_20_4, currentDataVersion).getValue();
         CompoundTag nmsCurrentTag = serializeNmsItem(CraftItemStack.asNMSCopy(item));
         CompoundTag nmsMergedTag = nmsCurrentTag.merge(nmsUpdatedTag);
         return asBukkitCopy(parseNmsItem(nmsMergedTag));
@@ -502,7 +502,7 @@ public class ItemHelperImpl extends ItemHelper {
             legacyItemData.putString("id", item.getType().getKey().toString());
             legacyItemData.putInt("count", item.getAmount());
             legacyItemData.put("components", nmsRawComponents);
-            CompoundTag nmsUpdatedTag = (CompoundTag) MinecraftServer.getServer().fixerUpper.update(References.ITEM_STACK, new Dynamic<>(registryOps, legacyItemData), dataVersion, currentDataVersion).getValue();
+            CompoundTag nmsUpdatedTag = (CompoundTag) MinecraftServer.getServer().getFixerUpper().update(References.ITEM_STACK, new Dynamic<>(registryOps, legacyItemData), dataVersion, currentDataVersion).getValue();
             nmsRawComponents = nmsUpdatedTag.getCompound("components").orElseGet(CompoundTag::new);
         }
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(item);
