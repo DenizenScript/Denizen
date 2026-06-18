@@ -1,7 +1,7 @@
-package com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet;
+package com.denizenscript.denizen.nms.v26_2.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;
 import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;

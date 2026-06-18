@@ -1,17 +1,17 @@
-package com.denizenscript.denizen.nms.v26_1.helpers;
+package com.denizenscript.denizen.nms.v26_2.helpers;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import com.denizenscript.denizen.nms.enums.CustomEntityType;
 import com.denizenscript.denizen.nms.interfaces.PlayerHelper;
-import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.impl.ImprovedOfflinePlayerImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.entities.CraftFakePlayerImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.entities.EntityItemProjectileImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.AbstractListenerPlayInImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_2.Handler;
+import com.denizenscript.denizen.nms.v26_2.impl.ImprovedOfflinePlayerImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.entities.CraftFakePlayerImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.entities.EntityItemProjectileImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.AbstractListenerPlayInImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;

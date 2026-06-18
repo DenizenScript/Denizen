@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet;
+package com.denizenscript.denizen.nms.v26_2.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v26_1.helpers.PacketHelperImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_2.helpers.PacketHelperImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.commands.player.DisguiseCommand;
 import com.denizenscript.denizen.utilities.entity.EntityAttachmentHelper;

@@ -1,10 +1,10 @@
-package com.denizenscript.denizen.nms.v26_1.impl.network.handlers;
+package com.denizenscript.denizen.nms.v26_2.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerChangesSignScriptEvent;
 import com.denizenscript.denizen.events.player.PlayerSteersEntityScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v26_1.impl.network.packets.PacketInResourcePackStatusImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.network.packets.PacketInSteerVehicleImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.network.packets.PacketInResourcePackStatusImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.network.packets.PacketInSteerVehicleImpl;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;

@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_1.impl.network.packets;
+package com.denizenscript.denizen.nms.v26_2.impl.network.packets;
 
 import com.denizenscript.denizen.nms.interfaces.packets.PacketInSteerVehicle;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;

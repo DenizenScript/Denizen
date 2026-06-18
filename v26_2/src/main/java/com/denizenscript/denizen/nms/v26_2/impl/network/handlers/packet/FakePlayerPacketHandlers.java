@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet;
+package com.denizenscript.denizen.nms.v26_2.impl.network.handlers.packet;
 
 /*
 import com.denizenscript.denizen.nms.NMSHandler;

@@ -1,10 +1,10 @@
-package com.denizenscript.denizen.nms.v26_1.helpers;
+package com.denizenscript.denizen.nms.v26_2.helpers;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v26_2.Handler;
+import com.denizenscript.denizen.nms.v26_2.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.item.ItemComponentsPatch;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
@@ -24,8 +24,8 @@ import com.mojang.serialization.JsonOps;
 import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.advancements.criterion.BlockPredicate;
-import net.minecraft.advancements.criterion.DataComponentMatchers;
+import net.minecraft.advancements.predicates.BlockPredicate;
+import net.minecraft.advancements.predicates.DataComponentMatchers;
 import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
@@ -111,6 +111,17 @@ public class ItemHelperImpl extends ItemHelper {
     public static ItemStackTemplate asNMSTemplate(ItemStack item) {
         try {
             return (ItemStackTemplate) CRAFT_ITEM_STACK_AS_TEMPLATE.invokeExact(item);
+        }
+        catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static final MethodHandle CRAFT_ITEM_STACK_AS_BUKKIT_COPY = ReflectionHelper.getMethodHandle(CraftItemStack.class, "asBukkitCopy", net.minecraft.world.item.ItemStack.class);
+
+    public static ItemStack asBukkitCopy(net.minecraft.world.item.ItemStack nmsItem) {
+        try {
+            return (ItemStack) CRAFT_ITEM_STACK_AS_BUKKIT_COPY.invokeExact(nmsItem);
         }
         catch (Throwable e) {
             throw new RuntimeException(e);
@@ -374,14 +385,14 @@ public class ItemHelperImpl extends ItemHelper {
         GameProfile gameProfile = ProfileEditorImpl.getGameProfile(playerProfile);
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         nmsItemStack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(gameProfile));
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+        return asBukkitCopy(nmsItemStack);
     }
 
     @Override
     public ItemStack addNbtData(ItemStack itemStack, String key, BinaryTag value) {
         net.minecraft.world.item.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         nmsItemStack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, customData -> customData.update(nmsCompoundTag -> nmsCompoundTag.put(key, NBTAdapter.toNMS(value))));
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+        return asBukkitCopy(nmsItemStack);
     }
 
     // TODO: 1.20.6: this now needs to serialize components into NBT every single time, should probably only return custom NBT data with specialized methods for other usages
@@ -398,7 +409,7 @@ public class ItemHelperImpl extends ItemHelper {
     // TODO: 1.20.6: same as getNbtData, ideally needs to only set custom NBT data and have specialized methods for other usages
     @Override
     public ItemStack setNbtData(ItemStack itemStack, CompoundBinaryTag compoundTag) {
-        return CraftItemStack.asBukkitCopy(parseNmsItem(NBTAdapter.toNMS(compoundTag)));
+        return asBukkitCopy(parseNmsItem(NBTAdapter.toNMS(compoundTag)));
     }
 
     @Override
@@ -416,7 +427,7 @@ public class ItemHelperImpl extends ItemHelper {
         else {
             nmsItemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(NBTAdapter.toNMS(data)));
         }
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+        return asBukkitCopy(nmsItemStack);
     }
 
     public static final int DATA_VERSION_1_20_4 = 3700;
@@ -431,7 +442,7 @@ public class ItemHelperImpl extends ItemHelper {
         CompoundTag nmsUpdatedTag = (CompoundTag) MinecraftServer.getServer().fixerUpper.update(References.ITEM_STACK, new Dynamic<>(NbtOps.INSTANCE, nmsOldTag), DATA_VERSION_1_20_4, currentDataVersion).getValue();
         CompoundTag nmsCurrentTag = serializeNmsItem(CraftItemStack.asNMSCopy(item));
         CompoundTag nmsMergedTag = nmsCurrentTag.merge(nmsUpdatedTag);
-        return CraftItemStack.asBukkitCopy(parseNmsItem(nmsMergedTag));
+        return asBukkitCopy(parseNmsItem(nmsMergedTag));
     }
 
     @Override
@@ -451,7 +462,7 @@ public class ItemHelperImpl extends ItemHelper {
             nmsEntityNbt.remove("id");
             nmsItemStack.set(DataComponents.ENTITY_DATA, TypedEntityData.of(CraftEntityType.bukkitToMinecraft(entityType), nmsEntityNbt));
         }
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+        return asBukkitCopy(nmsItemStack);
     }
 
     @Override
@@ -498,7 +509,7 @@ public class ItemHelperImpl extends ItemHelper {
         DataComponentPatch.CODEC.parse(registryOps, nmsRawComponents)
                 .ifError(error -> errorHandler.accept(error.message()))
                 .ifSuccess(nmsItemStack::applyComponents);
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+        return asBukkitCopy(nmsItemStack);
     }
 
     public static final Field AdventureModePredicate_predicates = ReflectionHelper.getFields(AdventureModePredicate.class).get("predicates");
@@ -555,13 +566,13 @@ public class ItemHelperImpl extends ItemHelper {
                 return item;
             }
             nmsItemStack.remove(nmsComponent);
-            return CraftItemStack.asBukkitCopy(nmsItemStack);
+            return asBukkitCopy(nmsItemStack);
         }
         BlockPredicate nmsPredicate = new BlockPredicate(Optional.of(
                 HolderSet.direct(material -> BuiltInRegistries.BLOCK.get(CraftNamespacedKey.toMinecraft(material.getKey())).orElseThrow(), materials)
         ), Optional.empty(), Optional.empty(), DataComponentMatchers.ANY);
         nmsItemStack.set(nmsComponent, new AdventureModePredicate(List.of(nmsPredicate)));
-        return CraftItemStack.asBukkitCopy(nmsItemStack);
+        return asBukkitCopy(nmsItemStack);
     }
 
     @Override
@@ -607,7 +618,7 @@ public class ItemHelperImpl extends ItemHelper {
         else {
             nmsItemStack.set(DataComponents.CUSTOM_NAME, Handler.componentToNMS(FormattedTextHelper.parse(name, ChatColor.WHITE)));
         }
-        item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
+        item.setItemStack(asBukkitCopy(nmsItemStack));
     }
 
     @Override
@@ -623,7 +634,7 @@ public class ItemHelperImpl extends ItemHelper {
             }
             nmsItemStack.set(DataComponents.LORE, new ItemLore(nmsLore));
         }
-        item.setItemStack(CraftItemStack.asBukkitCopy(nmsItemStack));
+        item.setItemStack(asBukkitCopy(nmsItemStack));
     }
 
     /**
@@ -769,7 +780,7 @@ public class ItemHelperImpl extends ItemHelper {
                 }
                 RecipeChoice ingredient = convertChoice(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "ingredient", paperMix));
                 RecipeChoice input = convertChoice(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "input", paperMix));
-                ItemStack result = CraftItemStack.asBukkitCopy(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "result", paperMix));
+                ItemStack result = asBukkitCopy(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "result", paperMix));
                 return new BrewingRecipe(input, ingredient, result);
             });
         }

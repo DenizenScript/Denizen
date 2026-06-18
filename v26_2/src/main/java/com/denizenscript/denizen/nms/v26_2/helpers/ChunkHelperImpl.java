@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v26_1.helpers;
+package com.denizenscript.denizen.nms.v26_2.helpers;
 
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.interfaces.ChunkHelper;
-import com.denizenscript.denizen.nms.v26_1.impl.BiomeNMSImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.BiomeNMSImpl;
 import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;

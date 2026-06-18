@@ -1,6 +1,6 @@
-package com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet;
+package com.denizenscript.denizen.nms.v26_2.impl.network.handlers.packet;
 
-import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.scripts.commands.entity.FakeEquipCommand;
 import com.mojang.datafixers.util.Pair;

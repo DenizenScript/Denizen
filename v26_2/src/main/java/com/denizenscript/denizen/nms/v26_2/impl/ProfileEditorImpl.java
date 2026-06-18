@@ -1,12 +1,12 @@
-package com.denizenscript.denizen.nms.v26_1.impl;
+package com.denizenscript.denizen.nms.v26_2.impl;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.helpers.PacketHelperImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_2.Handler;
+import com.denizenscript.denizen.nms.v26_2.helpers.PacketHelperImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.scripts.commands.entity.RenameCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;

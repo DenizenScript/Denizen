@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_1.helpers;
+package com.denizenscript.denizen.nms.v26_2.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.FishingHelper;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -63,7 +63,7 @@ public class FishingHelperImpl implements FishingHelper {
             case FISH -> catchRandomFish(nmsHook);
             default -> null;
         };
-        return result != null ? CraftItemStack.asBukkitCopy(result) : null;
+        return result != null ? ItemHelperImpl.asBukkitCopy(result) : null;
     }
 
     public ItemStack getRandomReward(FishingHook nmsHook, ResourceKey<LootTable> key) {

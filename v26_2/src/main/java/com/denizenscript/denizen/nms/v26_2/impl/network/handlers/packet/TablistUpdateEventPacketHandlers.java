@@ -1,9 +1,9 @@
-package com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet;
+package com.denizenscript.denizen.nms.v26_2.impl.network.handlers.packet;
 
 import com.denizenscript.denizen.events.player.PlayerReceivesTablistUpdateScriptEvent;
-import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_2.Handler;
+import com.denizenscript.denizen.nms.v26_2.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;

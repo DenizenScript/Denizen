@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_1.helpers;
+package com.denizenscript.denizen.nms.v26_2.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.EnchantmentHelper;
 

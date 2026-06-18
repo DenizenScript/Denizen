@@ -1,7 +1,7 @@
-package com.denizenscript.denizen.nms.v26_1.helpers;
+package com.denizenscript.denizen.nms.v26_2.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.WorldHelper;
-import com.denizenscript.denizen.nms.v26_1.impl.BiomeNMSImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.BiomeNMSImpl;
 import com.denizenscript.denizen.objects.BiomeTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.mojang.datafixers.util.Pair;

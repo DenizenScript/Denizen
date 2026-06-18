@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_1.impl.blocks;
+package com.denizenscript.denizen.nms.v26_2.impl.blocks;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BlockLight;

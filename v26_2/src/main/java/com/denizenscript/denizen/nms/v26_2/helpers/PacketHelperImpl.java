@@ -1,10 +1,10 @@
-package com.denizenscript.denizen.nms.v26_1.helpers;
+package com.denizenscript.denizen.nms.v26_2.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
-import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.impl.SidebarImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_2.Handler;
+import com.denizenscript.denizen.nms.v26_2.impl.SidebarImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
@@ -27,6 +27,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -118,16 +119,16 @@ public class PacketHelperImpl implements PacketHelper {
     public void setVision(Player player, EntityType entityType) {
         final net.minecraft.world.entity.LivingEntity entity;
         if (entityType == EntityType.CREEPER) {
-            entity = new Creeper(net.minecraft.world.entity.EntityType.CREEPER, ((CraftWorld) player.getWorld()).getHandle());
+            entity = new Creeper(EntityTypes.CREEPER, ((CraftWorld) player.getWorld()).getHandle());
         }
         else if (entityType == EntityType.SPIDER) {
-            entity = new Spider(net.minecraft.world.entity.EntityType.SPIDER, ((CraftWorld) player.getWorld()).getHandle());
+            entity = new Spider(EntityTypes.SPIDER, ((CraftWorld) player.getWorld()).getHandle());
         }
         else if (entityType == EntityType.CAVE_SPIDER) {
-            entity = new CaveSpider(net.minecraft.world.entity.EntityType.CAVE_SPIDER, ((CraftWorld) player.getWorld()).getHandle());
+            entity = new CaveSpider(EntityTypes.CAVE_SPIDER, ((CraftWorld) player.getWorld()).getHandle());
         }
         else if (entityType == EntityType.ENDERMAN) {
-            entity = new EnderMan(net.minecraft.world.entity.EntityType.ENDERMAN, ((CraftWorld) player.getWorld()).getHandle());
+            entity = new EnderMan(EntityTypes.ENDERMAN, ((CraftWorld) player.getWorld()).getHandle());
         }
         else {
             return;

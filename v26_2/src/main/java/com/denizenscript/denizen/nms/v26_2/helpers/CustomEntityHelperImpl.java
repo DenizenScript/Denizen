@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_1.helpers;
+package com.denizenscript.denizen.nms.v26_2.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.CustomEntityHelper;
@@ -6,11 +6,11 @@ import com.denizenscript.denizen.nms.interfaces.FakeArrow;
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.entities.CraftFakePlayerImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.entities.EntityFakeArrowImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.entities.EntityFakePlayerImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.entities.EntityItemProjectileImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.entities.CraftFakePlayerImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.entities.EntityFakeArrowImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.entities.EntityFakePlayerImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.entities.EntityItemProjectileImpl;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;

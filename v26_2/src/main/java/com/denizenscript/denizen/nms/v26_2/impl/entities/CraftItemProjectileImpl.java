@@ -1,6 +1,7 @@
-package com.denizenscript.denizen.nms.v26_1.impl.entities;
+package com.denizenscript.denizen.nms.v26_2.impl.entities;
 
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
+import com.denizenscript.denizen.nms.v26_2.helpers.ItemHelperImpl;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.craftbukkit.CraftServer;
@@ -42,7 +43,7 @@ public class CraftItemProjectileImpl extends CraftEntity implements ItemProjecti
 
     @Override
     public ItemStack getItemStack() {
-        return CraftItemStack.asBukkitCopy(getHandle().getItemStack());
+        return ItemHelperImpl.asBukkitCopy(getHandle().getItemStack());
     }
 
     @Override

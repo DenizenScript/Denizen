@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_1.helpers;
+package com.denizenscript.denizen.nms.v26_2.helpers;
 
 
 import com.denizenscript.denizencore.objects.ArgumentHelper;
@@ -41,6 +41,7 @@ import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.decoration.painting.Painting;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.entity.monster.cubemob.Slime;
 import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.monster.illager.Pillager;
 import net.minecraft.world.entity.monster.illager.SpellcasterIllager;

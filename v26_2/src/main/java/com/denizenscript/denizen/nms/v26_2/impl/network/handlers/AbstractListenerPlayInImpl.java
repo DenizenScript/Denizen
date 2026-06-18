@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_1.impl.network.handlers;
+package com.denizenscript.denizen.nms.v26_2.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerSendPacketScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;

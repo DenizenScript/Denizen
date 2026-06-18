@@ -1,9 +1,9 @@
-package com.denizenscript.denizen.nms.v26_1.helpers;
+package com.denizenscript.denizen.nms.v26_2.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.BlockHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v26_2.Handler;
+import com.denizenscript.denizen.nms.v26_2.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;

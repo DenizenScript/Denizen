@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v26_1.impl;
+package com.denizenscript.denizen.nms.v26_2.impl;
 
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
-import com.denizenscript.denizen.nms.v26_1.Handler;
-import com.denizenscript.denizen.nms.v26_1.helpers.NBTAdapter;
+import com.denizenscript.denizen.nms.v26_2.Handler;
+import com.denizenscript.denizen.nms.v26_2.helpers.NBTAdapter;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
@@ -14,6 +14,7 @@ import net.minecraft.server.level.ParticleStatus;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.entity.EntityEquipment;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -132,7 +133,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     }
 
     private AttributeMap getAttributes() {
-        AttributeMap amb = new AttributeMap(DefaultAttributes.getSupplier(net.minecraft.world.entity.EntityType.PLAYER));
+        AttributeMap amb = new AttributeMap(DefaultAttributes.getSupplier(EntityTypes.PLAYER));
         Handler.useValueInput(NBTAdapter.toNMS(this.compound), valueInput -> valueInput.read("attributes", AttributeInstance.Packed.LIST_CODEC).ifPresent(amb::apply));
         return amb;
     }
@@ -145,7 +146,7 @@ public class ImprovedOfflinePlayerImpl extends ImprovedOfflinePlayer {
     protected boolean loadPlayerData(UUID uuid) {
         try {
             this.player = uuid;
-            this.file = new File(MinecraftServer.getServer().playerDataStorage.getPlayerDir(), this.player + ".dat");
+            this.file = new File(MinecraftServer.getServer().getPlayerList().playerIo.getPlayerDir(), this.player + ".dat");
             if (this.file.exists()) {
                 this.compound = NBTAdapter.toAPI(NbtIo.readCompressed(new FileInputStream(this.file), NbtAccounter.unlimitedHeap()));
                 return true;

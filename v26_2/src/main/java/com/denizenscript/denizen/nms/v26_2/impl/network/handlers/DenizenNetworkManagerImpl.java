@@ -1,9 +1,9 @@
-package com.denizenscript.denizen.nms.v26_1.impl.network.handlers;
+package com.denizenscript.denizen.nms.v26_2.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerReceivesPacketScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.network.handlers.packet.*;
+import com.denizenscript.denizen.nms.v26_2.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.packet.*;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptCodeGen;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
@@ -41,10 +41,7 @@ import javax.crypto.Cipher;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -469,8 +466,13 @@ public class DenizenNetworkManagerImpl extends Connection {
     }
 
     @Override
-    public boolean isEncrypted() {
-        return oldManager.isEncrypted();
+    public void setIntendedProfileId(UUID profileId) {
+        oldManager.setIntendedProfileId(profileId);
+    }
+
+    @Override
+    public UUID getIntendedProfileId() {
+        return oldManager.getIntendedProfileId();
     }
 
     @Override

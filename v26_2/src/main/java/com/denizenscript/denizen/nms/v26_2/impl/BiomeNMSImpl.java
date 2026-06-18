@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v26_1.impl;
+package com.denizenscript.denizen.nms.v26_2.impl;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
-import com.denizenscript.denizen.nms.v26_1.Handler;
+import com.denizenscript.denizen.nms.v26_2.Handler;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.minecraft.core.BlockPos;

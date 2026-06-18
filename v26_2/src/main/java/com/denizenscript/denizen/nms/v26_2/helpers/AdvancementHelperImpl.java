@@ -1,12 +1,13 @@
-package com.denizenscript.denizen.nms.v26_1.helpers;
+package com.denizenscript.denizen.nms.v26_2.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
-import com.denizenscript.denizen.nms.v26_1.Handler;
+import com.denizenscript.denizen.nms.v26_2.Handler;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.google.common.collect.ImmutableMap;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.criterion.ImpossibleTrigger;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.ImpossibleTrigger;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.resources.Identifier;

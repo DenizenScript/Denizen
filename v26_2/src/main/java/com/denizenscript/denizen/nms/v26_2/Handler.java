@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_1;
+package com.denizenscript.denizen.nms.v26_2;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
@@ -7,11 +7,11 @@ import com.denizenscript.denizen.nms.abstracts.BlockLight;
 import com.denizenscript.denizen.nms.abstracts.ProfileEditor;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.v26_1.helpers.*;
-import com.denizenscript.denizen.nms.v26_1.impl.BiomeNMSImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.SidebarImpl;
-import com.denizenscript.denizen.nms.v26_1.impl.blocks.BlockLightImpl;
+import com.denizenscript.denizen.nms.v26_2.helpers.*;
+import com.denizenscript.denizen.nms.v26_2.impl.BiomeNMSImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.SidebarImpl;
+import com.denizenscript.denizen.nms.v26_2.impl.blocks.BlockLightImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;

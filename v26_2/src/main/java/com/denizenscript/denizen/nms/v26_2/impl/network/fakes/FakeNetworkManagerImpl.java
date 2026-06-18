@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_1.impl.network.fakes;
+package com.denizenscript.denizen.nms.v26_2.impl.network.fakes;
 
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.PacketFlow;
