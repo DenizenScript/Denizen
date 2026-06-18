@@ -48,8 +48,7 @@ public class DialogScriptContainer extends ScriptContainer {
     // Requires Paper 1.21.6 or later.
     //
     // Use the <@link command dialog> command to show or close dialogs.
-    // Respond to button clicks via the <@link event player clicks dialog button> event,
-    // or with inline "on click:" sections inside button definitions.
+    // Respond to button clicks via the inline "on click:" sections inside button definitions.
     //
     // The following is the format for the container:
     //
@@ -86,7 +85,7 @@ public class DialogScriptContainer extends ScriptContainer {
     //     label: OK
     //     tooltip: Click to confirm
     //     on click:
-    //     - narrate "You clicked OK and entered: <context.inputs.get[my_text]>"
+    //     - narrate "You clicked OK and entered: <[inputs].get[my_text]>"
     //
     //   # For 'confirmation' type: yes and no button sections.
     //   # | Confirmation dialog scripts should have these keys.
@@ -99,7 +98,7 @@ public class DialogScriptContainer extends ScriptContainer {
     //     on click:
     //     - narrate "Declined."
     //
-    //   # For 'multi_action' type: a map of buttons where the YAML key is the button ID.
+    //   # For 'multi_action' type: a map of buttons where the key is the button ID.
     //   # | Multi-action dialog scripts should have this key.
     //   buttons:
     //     option_1:
@@ -112,8 +111,7 @@ public class DialogScriptContainer extends ScriptContainer {
     //       on click:
     //       - narrate "Chose option 2"
     //
-    //   # Optional input fields. The YAML key is the input ID (used in context.inputs).
-    //   # Supported types: text, boolean, number, option
+    //   # Optional input fields. Supported types: text, boolean, number, option
     //   # | SOME dialog scripts should have this key.
     //   inputs:
     //     my_text:
@@ -143,24 +141,78 @@ public class DialogScriptContainer extends ScriptContainer {
     //
     // -->
 
-    public static Map<String, DialogScriptContainer> dialogScripts = new HashMap<>();
+    public static final Map<StringHolder, DialogScriptContainer> dialogScripts = new HashMap<>();
 
-    // input ID -> input type ("text", "boolean", "number", "option")
     public Map<String, String> inputTypes = new HashMap<>();
+
+    public final ParseableTag titleTag;
+    public final ParseableTag bodyTag;
+    public final ParseableTag externalTitleTag;
+    public final Map<String, ParseableTag> buttonLabelTags = new HashMap<>();
+    public final Map<String, ParseableTag> buttonTooltipTags = new HashMap<>();
+    public final Map<String, ParseableTag> inputLabelTags = new HashMap<>();
+    public final Map<String, ParseableTag> inputInitialTags = new HashMap<>();
+    public final Map<String, List<ParseableTag>> inputOptionTags = new HashMap<>();
 
     public DialogScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
         canRunScripts = false;
-        dialogScripts.put(getName(), this);
+        dialogScripts.put(new StringHolder(getName()), this);
         if (contains("inputs", Map.class)) {
             YamlConfiguration inputsSection = getConfigurationSection("inputs");
             for (StringHolder inputIdHolder : inputsSection.getKeys(false)) {
                 String inputId = inputIdHolder.str;
                 YamlConfiguration inputSection = inputsSection.getConfigurationSection(inputId);
-                if (inputSection != null && inputSection.contains("type")) {
+                if (inputSection == null) {
+                    continue;
+                }
+                if (inputSection.contains("type")) {
                     inputTypes.put(inputId, inputSection.getString("type").toLowerCase());
                 }
+                String labelText = inputSection.contains("label") ? inputSection.getString("label") : inputId;
+                inputLabelTags.put(inputId, TagManager.parseTextToTag(labelText, CoreUtilities.basicContext));
+                String inputType = inputTypes.getOrDefault(inputId, "text");
+                if (inputType.equals("text") && inputSection.contains("initial")) {
+                    inputInitialTags.put(inputId, TagManager.parseTextToTag(inputSection.getString("initial"), CoreUtilities.basicContext));
+                }
+                if (inputType.equals("option") && inputSection.contains("options")) {
+                    List<ParseableTag> optionTags = new ArrayList<>();
+                    for (String opt : inputSection.getStringList("options")) {
+                        optionTags.add(TagManager.parseTextToTag(opt, CoreUtilities.basicContext));
+                    }
+                    inputOptionTags.put(inputId, optionTags);
+                }
             }
+        }
+        titleTag = TagManager.parseTextToTag(getString("title", "Dialog"), CoreUtilities.basicContext);
+        bodyTag = contains("body", String.class) ? TagManager.parseTextToTag(getString("body"), CoreUtilities.basicContext) : null;
+        externalTitleTag = contains("external_title", String.class) ? TagManager.parseTextToTag(getString("external_title"), CoreUtilities.basicContext) : null;
+        if (contains("button", Map.class)) {
+            loadButton("button", getConfigurationSection("button"));
+        }
+        if (contains("yes_button", Map.class)) {
+            loadButton("yes_button", getConfigurationSection("yes_button"));
+        }
+        if (contains("no_button", Map.class)) {
+            loadButton("no_button", getConfigurationSection("no_button"));
+        }
+        if (contains("buttons", Map.class)) {
+            YamlConfiguration buttonsSection = getConfigurationSection("buttons");
+            for (StringHolder buttonIdHolder : buttonsSection.getKeys(false)) {
+                String buttonId = buttonIdHolder.str;
+                YamlConfiguration btnSection = buttonsSection.getConfigurationSection(buttonId);
+                if (btnSection != null) {
+                    loadButton(buttonId, btnSection);
+                }
+            }
+        }
+    }
+
+    public void loadButton(String buttonId, YamlConfiguration section) {
+        String labelText = section.contains("label") ? section.getString("label") : buttonId;
+        buttonLabelTags.put(buttonId, TagManager.parseTextToTag(labelText, CoreUtilities.basicContext));
+        if (section.contains("tooltip")) {
+            buttonTooltipTags.put(buttonId, TagManager.parseTextToTag(section.getString("tooltip"), CoreUtilities.basicContext));
         }
     }
 
@@ -178,14 +230,14 @@ public class DialogScriptContainer extends ScriptContainer {
         return Key.key("denizen", toKeyValue(getName()) + "/" + toKeyValue(buttonId));
     }
 
-    public ActionButton parseButton(String buttonId, YamlConfiguration buttonSection, TagContext context) {
-        ParseableTag tag;
-        String labelText = buttonSection.contains("label") ?
-            TagManager.tag(buttonSection.getString("label"), context) : buttonId;
+    public ActionButton parseButton(String buttonId, TagContext context) {
+        ParseableTag labelTag = buttonLabelTags.get(buttonId);
+        String labelText = labelTag != null ? labelTag.parse(context).toString() : buttonId;
         Component label = PaperModule.parseFormattedText(labelText, ChatColor.WHITE);
         Component tooltip = null;
-        if (buttonSection.contains("tooltip")) {
-            tooltip = PaperModule.parseFormattedText(TagManager.tag(buttonSection.getString("tooltip"), context), ChatColor.WHITE);
+        ParseableTag tooltipTag = buttonTooltipTags.get(buttonId);
+        if (tooltipTag != null) {
+            tooltip = PaperModule.parseFormattedText(tooltipTag.parse(context).toString(), ChatColor.WHITE);
         }
         return ActionButton.builder(label)
             .tooltip(tooltip)
@@ -206,8 +258,8 @@ public class DialogScriptContainer extends ScriptContainer {
                 continue;
             }
             String type = inputSection.contains("type") ? inputSection.getString("type").toLowerCase() : "text";
-            String labelText = inputSection.contains("label") ?
-                TagManager.tag(inputSection.getString("label"), context) : inputId;
+            ParseableTag labelTagCached = inputLabelTags.get(inputId);
+            String labelText = labelTagCached != null ? labelTagCached.parse(context).toString() : inputId;
             Component labelComp = PaperModule.parseFormattedText(labelText, ChatColor.WHITE);
             try {
                 DialogInput input = switch (type) {
@@ -235,18 +287,17 @@ public class DialogScriptContainer extends ScriptContainer {
                                 Debug.echoError(this, "Invalid max for input '" + inputId + "'");
                             }
                         }
-                        //float min = inputSection.contains("min") ? Float.parseFloat(inputSection.getString("min")) : 0f;
-                        //float max = inputSection.contains("max") ? Float.parseFloat(inputSection.getString("max")) : 100f;
                         Float initial = inputSection.contains("initial") ? Float.parseFloat(inputSection.getString("initial")) : null;
                         Float step = inputSection.contains("step") ? Float.parseFloat(inputSection.getString("step")) : null;
                         yield DialogInput.numberRange(inputId, labelComp, min, max).initial(initial).step(step).build();
                     }
                     case "option" -> {
                         List<SingleOptionDialogInput.OptionEntry> entries = new ArrayList<>();
-                        if (inputSection.contains("options")) {
+                        List<ParseableTag> optTags = inputOptionTags.get(inputId);
+                        if (optTags != null) {
                             boolean firstSelected = true;
-                            for (String opt : inputSection.getStringList("options")) {
-                                String taggedOpt = TagManager.tag(opt, context);
+                            for (ParseableTag optTag : optTags) {
+                                String taggedOpt = optTag.parse(context).toString();
                                 entries.add(SingleOptionDialogInput.OptionEntry.create(taggedOpt, null, firstSelected));
                                 firstSelected = false;
                             }
@@ -254,8 +305,8 @@ public class DialogScriptContainer extends ScriptContainer {
                         yield DialogInput.singleOption(inputId, labelComp, entries).build();
                     }
                     default -> { // "text"
-                        String initial = inputSection.contains("initial") ?
-                            TagManager.tag(inputSection.getString("initial"), context) : "";
+                        ParseableTag initTag = inputInitialTags.get(inputId);
+                        String initial = initTag != null ? initTag.parse(context).toString() : "";
                         int maxLength = 32;
                         if (inputSection.contains("max_length")) {
                             try {
@@ -280,36 +331,37 @@ public class DialogScriptContainer extends ScriptContainer {
     public Dialog buildDialog(TagContext context) {
         context = fixContext(context);
         Debug.pushErrorContext(this);
+        if (contains("on close")) {
+
+        }
         try {
-            String titleText = TagManager.tag(getString("title", "Dialog"), context);
+            String titleText = titleTag.parse(context).toString();
             Component title = PaperModule.parseFormattedText(titleText, ChatColor.WHITE);
             List<DialogBody> body = new ArrayList<>();
-            if (contains("body", String.class)) {
-                String bodyText = TagManager.tag(getString("body"), context);
-                body.add(DialogBody.plainMessage(PaperModule.parseFormattedText(bodyText, ChatColor.WHITE)));
+            if (bodyTag != null) {
+                body.add(DialogBody.plainMessage(PaperModule.parseFormattedText(bodyTag.parse(context).toString(), ChatColor.WHITE)));
             }
             List<DialogInput> inputs = parseInputs(context);
             boolean closeable = !contains("closeable", String.class) ||
                 CoreUtilities.equalsIgnoreCase(getString("closeable", "true"), "true");
             Component externalTitle = null;
-            if (contains("external_title", String.class)) {
-                externalTitle = PaperModule.parseFormattedText(TagManager.tag(getString("external_title"), context), ChatColor.WHITE);
+            if (externalTitleTag != null) {
+                externalTitle = PaperModule.parseFormattedText(externalTitleTag.parse(context).toString(), ChatColor.WHITE);
             }
             DialogBase base = DialogBase.builder(title)
-                .externalTitle(externalTitle)
-                .canCloseWithEscape(closeable)
-                .body(body)
-                .inputs(inputs)
-                .build();
-            String dialogTypeStr = contains("dialog_type", String.class) ?
-                getString("dialog_type").toLowerCase() : "notice";
+                    .externalTitle(externalTitle)
+                    .canCloseWithEscape(closeable)
+                    .body(body)
+                    .inputs(inputs)
+                    .build();
+            String dialogTypeStr = contains("dialog_type", String.class) ? getString("dialog_type").toLowerCase() : "notice";
             DialogType type = switch (dialogTypeStr) {
                 case "confirmation" -> {
                     ActionButton yesButton = contains("yes_button", Map.class) ?
-                        parseButton("yes_button", getConfigurationSection("yes_button"), context) :
+                        parseButton("yes_button", context) :
                         ActionButton.builder(Component.text("Yes")).action(DialogAction.customClick(buttonKey("yes_button"), null)).build();
                     ActionButton noButton = contains("no_button", Map.class) ?
-                        parseButton("no_button", getConfigurationSection("no_button"), context) :
+                        parseButton("no_button", context) :
                         ActionButton.builder(Component.text("No")).action(DialogAction.customClick(buttonKey("no_button"), null)).build();
                     yield DialogType.confirmation(yesButton, noButton);
                 }
@@ -321,7 +373,7 @@ public class DialogScriptContainer extends ScriptContainer {
                             String buttonId = buttonIdHolder.str;
                             YamlConfiguration btnSection = buttonsSection.getConfigurationSection(buttonId);
                             if (btnSection != null) {
-                                buttons.add(parseButton(buttonId, btnSection, context));
+                                buttons.add(parseButton(buttonId, context));
                             }
                         }
                     }
@@ -329,7 +381,7 @@ public class DialogScriptContainer extends ScriptContainer {
                 }
                 default -> { // "notice"
                     ActionButton button = contains("button", Map.class) ?
-                        parseButton("button", getConfigurationSection("button"), context) :
+                        parseButton("button", context) :
                         ActionButton.builder(Component.text("OK")).action(DialogAction.customClick(buttonKey("button"), null)).build();
                     yield DialogType.notice(button);
                 }
@@ -401,8 +453,8 @@ public class DialogScriptContainer extends ScriptContainer {
             }
             String scriptKeyPart = value.substring(0, slashIdx);
             DialogScriptContainer container = null;
-            for (Map.Entry<String, DialogScriptContainer> entry : DialogScriptContainer.dialogScripts.entrySet()) {
-                if (DialogScriptContainer.toKeyValue(entry.getKey()).equals(scriptKeyPart)) {
+            for (Map.Entry<StringHolder, DialogScriptContainer> entry : DialogScriptContainer.dialogScripts.entrySet()) {
+                if (DialogScriptContainer.toKeyValue(entry.getKey().str).equals(scriptKeyPart)) {
                     container = entry.getValue();
                 }
             }
@@ -433,4 +485,6 @@ public class DialogScriptContainer extends ScriptContainer {
             }
         }
     }
+
+    public record ButtonData(String id, int width, ParseableTag label, ParseableTag tooltip) {}
 }
