@@ -11,7 +11,9 @@ public class MaxDurabilityAdapter extends DataComponentAdapter.Valued<ElementTag
     // @name max_durability
     // @input ElementTag(Number)
     // @description
-    // Controls an item's max durability <@link language Item Components>.
+    // Controls the maximum durability (number of uses) of this item.
+    // For use with <@link tag ItemTag.durability> and <@link mechanism ItemTag.durability>.
+    // See also <@link language Item Components>.
     // @mechanism
     // Provide no input to reset the item to its default value.
     // -->

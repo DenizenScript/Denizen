@@ -11,8 +11,8 @@ public class EntitySize extends EntityProperty<ElementTag> {
     // TODO: once 26.2 is the minimum supported version, remove Slime usage in favor of AbstractCubeMob
 
     // <--[property]
-    // @object MaterialTag
-    // @name mode
+    // @object EntityTag
+    // @name size
     // @input ElementTag
     // @description
     // Controls the size of an entity.
