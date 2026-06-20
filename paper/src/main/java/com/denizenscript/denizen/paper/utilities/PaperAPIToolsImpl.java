@@ -22,6 +22,8 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.potion.PotionMix;
 import io.papermc.paper.world.WeatheringCopperState;
+import net.kyori.adventure.resource.ResourcePackInfo;
+import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
@@ -115,14 +117,37 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         sign.line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
     }
 
+    public static class ResourcePackSender {
+        
+        public static void send(Player player, String url, String hash, boolean forced, String prompt, UUID uuid, boolean replace) {
+            ResourcePackInfo.Builder builder = ResourcePackInfo.resourcePackInfo();
+            builder.hash(hash);
+            builder.uri(URI.create(url));
+            if (uuid != null) {
+                builder.id(uuid);
+            }
+            player.sendResourcePacks(
+                    ResourcePackRequest.resourcePackRequest().prompt(PaperModule.parseFormattedText(prompt, ChatColor.WHITE)).required(forced).replace(replace).packs(builder.build())
+            );
+        }
+    }
+
     @Override
-    public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt) {
+    public void setResourcePack(Player player, String url, String hash, boolean forced, String prompt, UUID uuid) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) || (prompt == null && !forced && uuid == null)) {
+            super.setResourcePack(player, url, hash, false, null, null);
+            return;
+        }
+        ResourcePackSender.send(player, url, hash, forced, prompt, uuid, true);
+    }
+
+    @Override
+    public void addResourcePack(Player player, String url, String hash, boolean forced, String prompt, UUID uuid) {
         if (prompt == null && !forced) {
-            super.sendResourcePack(player, url, hash, false, null);
+            super.addResourcePack(player, url, hash, false, null, uuid);
+            return;
         }
-        else {
-            player.setResourcePack(url, CoreUtilities.toLowerCase(hash), forced, PaperModule.parseFormattedText(prompt, ChatColor.WHITE));
-        }
+        ResourcePackSender.send(player, url, hash, forced, prompt, uuid, false);
     }
 
     @Override
@@ -414,7 +439,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     public void addLink(ServerLinks links, String display, URI uri) {
         links.addLink(PaperModule.parseFormattedText(display, ChatColor.WHITE), uri);
     }
-  
+
     @Override
     public double[] getRecentTps() {
         return Bukkit.getTPS();
