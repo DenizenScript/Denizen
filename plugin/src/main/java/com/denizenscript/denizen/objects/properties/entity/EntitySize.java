@@ -13,7 +13,7 @@ public class EntitySize extends EntityProperty<ElementTag> {
     // <--[property]
     // @object EntityTag
     // @name size
-    // @input ElementTag
+    // @input ElementTag(Number)
     // @description
     // Controls the size of an entity.
     // Cube-type (slime, magma cube, sulfur cube) mob sizes are between 1 and 127.
