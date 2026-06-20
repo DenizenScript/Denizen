@@ -155,7 +155,7 @@ public class SignCommand extends AbstractCommand {
         if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             return false;
         }
-        for (Material signType : Tag.ALL_HANGING_SIGNS.getValues()) {
+        for (Material signType : Tag.CEILING_HANGING_SIGNS.getValues()) {
             if (signType == material) {
                 return true;
             }
