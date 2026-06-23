@@ -2,11 +2,13 @@ package com.denizenscript.denizen.paper.commands;
 
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.paper.scripts.containers.DialogScriptContainer;
+import com.denizenscript.denizen.tags.BukkitTagContext;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.papermc.paper.dialog.Dialog;
 
@@ -17,7 +19,7 @@ public class DialogCommand extends AbstractCommand {
 
     public DialogCommand() {
         setName("dialog");
-        setSyntax("dialog [show/close] (<script>) (targets:<player>|...)");
+        setSyntax("dialog [show/close] (<script>) (targets:<player>|...) (per_player)");
         setRequiredArguments(1, 3);
         autoCompile();
         isProcedural = false;
@@ -25,7 +27,7 @@ public class DialogCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Dialog
-    // @Syntax dialog [show/close] (<script>) (targets:<player>|...)
+    // @Syntax dialog [show/close] (<script>) (targets:<player>|...) (per_player)
     // @Required 1
     // @Maximum 3
     // @Short Shows or closes a Paper dialog for one or more players.
@@ -51,8 +53,12 @@ public class DialogCommand extends AbstractCommand {
     // - dialog show my_dialog
     //
     // @Usage
-    // Use to show a dialog to multiple players.
+    // Use to show the same dialog to all online players.
     // - dialog show my_dialog targets:<server.online_players>
+    //
+    // @Usage
+    // Use to show a dialog script to all online players, per-player.
+    // - dialog show my_dialog targets:<server.online_players> per_player
     //
     // @Usage
     // Use to close the dialog for the current player.
@@ -64,7 +70,8 @@ public class DialogCommand extends AbstractCommand {
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("action") Action action,
                                    @ArgName("script") @ArgLinear @ArgDefaultNull ScriptTag dialogScript,
-                                   @ArgName("targets") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> targets) {
+                                   @ArgName("targets") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> targets,
+                                   @ArgName("per_player") boolean perPlayer) {
         if (targets == null) {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
                 Debug.echoError("Must specify target player(s).");
@@ -82,15 +89,27 @@ public class DialogCommand extends AbstractCommand {
                     Debug.echoError("Script '" + dialogScript.getName() + "' is not a dialog script container.");
                     return;
                 }
-                Dialog dialog = container.buildDialog(scriptEntry.getContext());
-                if (dialog == null) {
-                    Debug.echoError("Failed to build dialog from script '" + dialogScript.getName() + "'.");
-                    return;
+                Dialog dialog = null;
+                BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
+                if (!perPlayer) {
+                    dialog = container.buildDialog(context);
+                    if (dialog == null) {
+                        Debug.echoError("Failed to build dialog from script '" + dialogScript.getName() + "'.");
+                        return;
+                    }
                 }
                 for (PlayerTag playerTag : targets) {
                     if (!playerTag.isOnline()) {
                         Debug.echoError("Player '" + playerTag + "' is offline. Skipping...");
                         continue;
+                    }
+                    if (perPlayer) {
+                        context.player = playerTag;
+                        dialog = container.buildDialog(context);
+                        if (dialog == null) {
+                            Debug.echoError("Failed to build dialog from script '" + dialogScript.getName() + "' for player '" + playerTag + "'.");
+                            continue;
+                        }
                     }
                     playerTag.getPlayerEntity().showDialog(dialog);
                 }
