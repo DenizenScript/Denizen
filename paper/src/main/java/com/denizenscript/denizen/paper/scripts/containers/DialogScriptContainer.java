@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.paper.scripts.containers;
 
+import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -22,13 +23,14 @@ import io.papermc.paper.registry.data.dialog.ActionButton;
 import io.papermc.paper.registry.data.dialog.DialogBase;
 import io.papermc.paper.registry.data.dialog.action.DialogAction;
 import io.papermc.paper.registry.data.dialog.body.DialogBody;
-import io.papermc.paper.registry.data.dialog.input.DialogInput;
-import io.papermc.paper.registry.data.dialog.input.SingleOptionDialogInput;
+import io.papermc.paper.registry.data.dialog.body.ItemDialogBody;
+import io.papermc.paper.registry.data.dialog.input.*;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -64,7 +66,7 @@ public class DialogScriptContainer extends ScriptContainer {
     //   # The dialog type. Can be: notice, confirmation, multi_action
     //   # 'notice' shows a single button, 'confirmation' shows yes/no buttons,
     //   # 'multi_action' shows a map of custom buttons.
-    //   # | Most dialog scripts SHOULD have this key (defaults to notice).
+    //   # | All dialog scripts MUST have this key.
     //   dialog_type: notice
     //
     //   # Optional body text shown below the title.
@@ -80,7 +82,7 @@ public class DialogScriptContainer extends ScriptContainer {
     //   external_title: Open my dialog
     //
     //   # For 'notice' type: a single button section.
-    //   # | MOST notice dialog scripts should have this key.
+    //   # | MOST notice dialog scripts MUST have this key.
     //   button:
     //     label: OK
     //     tooltip: Click to confirm
@@ -88,7 +90,7 @@ public class DialogScriptContainer extends ScriptContainer {
     //     - narrate "You clicked OK and entered: <[inputs].get[my_text]>"
     //
     //   # For 'confirmation' type: yes and no button sections.
-    //   # | Confirmation dialog scripts should have these keys.
+    //   # | Confirmation dialog scripts MUST have these keys.
     //   yes_button:
     //     label: Accept
     //     on click:
@@ -99,7 +101,7 @@ public class DialogScriptContainer extends ScriptContainer {
     //     - narrate "Declined."
     //
     //   # For 'multi_action' type: a map of buttons where the key is the button ID.
-    //   # | Multi-action dialog scripts should have this key.
+    //   # | Multi-action dialog scripts MUST have this key.
     //   buttons:
     //     option_1:
     //       label: Option 1
@@ -137,27 +139,87 @@ public class DialogScriptContainer extends ScriptContainer {
     //       - Choice A
     //       - Choice B
     //       - Choice C
+    //
+    //   # Optional map of items to display in the dialog body (shown after the body text).
+    //   # | SOME dialog scripts should have this key.
+    //   items:
+    //     sword:
+    //       item: diamond_sword
+    //       description: A powerful weapon
+    //       show_tooltip: true
+    //       width: 64
+    //       height: 64
+    //     held:
+    //       item: <player.item_in_hand>
+    //       description: Your held item
     // </code>
     //
     // -->
 
     public static final Map<StringHolder, DialogScriptContainer> dialogScripts = new HashMap<>();
 
-    public Map<String, String> inputTypes = new HashMap<>();
+    public final Map<String, String> inputTypes = new HashMap<>();
 
-    public final ParseableTag titleTag;
-    public final ParseableTag bodyTag;
-    public final ParseableTag externalTitleTag;
-    public final Map<String, ParseableTag> buttonLabelTags = new HashMap<>();
-    public final Map<String, ParseableTag> buttonTooltipTags = new HashMap<>();
-    public final Map<String, ParseableTag> inputLabelTags = new HashMap<>();
-    public final Map<String, ParseableTag> inputInitialTags = new HashMap<>();
-    public final Map<String, List<ParseableTag>> inputOptionTags = new HashMap<>();
+    public ParseableTag titleTag;
+    public ParseableTag bodyTag;
+    public ParseableTag externalTitleTag;
+    public boolean closeable;
+
+    public final Map<String, TextInputEntry> textInputEntries = new HashMap<>();
+    public final Map<String, NumberInputEntry> numberInputEntries = new HashMap<>();
+    public final Map<String, BooleanInputEntry> booleanInputEntries = new HashMap<>();
+    public final Map<String, OptionInputEntry> optionInputEntries = new HashMap<>();
+    public final Map<String, ButtonEntry> buttonEntries = new HashMap<>();
+    public final Map<String, ItemBodyEntry> itemBodyEntries = new HashMap<>();
 
     public DialogScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
         canRunScripts = false;
+        if (!contains("dialog_type", String.class)) {
+            Debug.echoError(this, "Dialog script '" + getName() + "' missing required 'dialog_type' key.");
+            return;
+        }
+        switch (CoreUtilities.toLowerCase(getString("dialog_type"))) {
+            case "notice" -> {
+                if (!contains("button", Map.class)) {
+                    Debug.echoError(this, "Dialog script '" + getName() + "' missing required 'button' key when 'notice' dialog type.");
+                    return;
+                }
+                loadButton("button", getConfigurationSection("button"));
+            }
+            case "confirmation" -> {
+                if (!contains("yes_button", Map.class) || !contains("no_button", Map.class)) {
+                    Debug.echoError(this, "Dialog script '" + getName() + "' missing required 'yes_button' and 'no_button' keys when 'confirmation' dialog type.");
+                    return;
+                }
+                loadButton("yes_button", getConfigurationSection("yes_button"));
+                loadButton("no_button", getConfigurationSection("no_button"));
+            }
+            case "multi_action" -> {
+                if (!contains("buttons", Map.class)) {
+                    Debug.echoError(this, "Dialog script '" + getName() + "' missing required 'buttons' key when 'multi_action' dialog type.");
+                    return;
+                }
+                YamlConfiguration buttonsSection = getConfigurationSection("buttons");
+                for (StringHolder buttonIdHolder : buttonsSection.getKeys(false)) {
+                    String buttonId = buttonIdHolder.str;
+                    YamlConfiguration btnSection = buttonsSection.getConfigurationSection(buttonId);
+                    if (btnSection == null) {
+                        continue;
+                    }
+                    loadButton(buttonId, btnSection);
+                }
+            }
+            default -> {
+                Debug.echoError(this, "Dialog script '" + getName() + "' has invalid 'dialog_type' key: " + getString("dialog_type"));
+                return;
+            }
+        }
         dialogScripts.put(new StringHolder(getName()), this);
+        titleTag = TagManager.parseTextToTag(getString("title", "Dialog"), CoreUtilities.basicContext);
+        bodyTag = parseSection("body", getContents(), CoreUtilities.basicContext, null);
+        externalTitleTag = parseSection("external_title", getContents(), CoreUtilities.basicContext, null);
+        closeable = !contains("closeable", String.class) || CoreUtilities.equalsIgnoreCase(getString("closeable", "true"), "true");
         if (contains("inputs", Map.class)) {
             YamlConfiguration inputsSection = getConfigurationSection("inputs");
             for (StringHolder inputIdHolder : inputsSection.getKeys(false)) {
@@ -166,54 +228,80 @@ public class DialogScriptContainer extends ScriptContainer {
                 if (inputSection == null) {
                     continue;
                 }
-                if (inputSection.contains("type")) {
-                    inputTypes.put(inputId, inputSection.getString("type").toLowerCase());
-                }
-                String labelText = inputSection.contains("label") ? inputSection.getString("label") : inputId;
-                inputLabelTags.put(inputId, TagManager.parseTextToTag(labelText, CoreUtilities.basicContext));
-                String inputType = inputTypes.getOrDefault(inputId, "text");
-                if (inputType.equals("text") && inputSection.contains("initial")) {
-                    inputInitialTags.put(inputId, TagManager.parseTextToTag(inputSection.getString("initial"), CoreUtilities.basicContext));
-                }
-                if (inputType.equals("option") && inputSection.contains("options")) {
-                    List<ParseableTag> optionTags = new ArrayList<>();
-                    for (String opt : inputSection.getStringList("options")) {
-                        optionTags.add(TagManager.parseTextToTag(opt, CoreUtilities.basicContext));
+                String type = inputSection.contains("type") ? inputSection.getString("type").toLowerCase() : "text";
+                switch (type) {
+                    case "text" -> {
+                        ParseableTag label = parseSection("label", inputSection, CoreUtilities.basicContext, new ParseableTag(inputId));
+                        ParseableTag initial = parseSection("initial", inputSection, CoreUtilities.basicContext, null);
+                        ParseableTag maxLength = parseSection("max_length", inputSection, CoreUtilities.basicContext, null);
+                        textInputEntries.put(inputId, new TextInputEntry(inputId, label, initial, maxLength));
+                        inputTypes.put(inputId, "text");
                     }
-                    inputOptionTags.put(inputId, optionTags);
+                    case "number" -> {
+                        ParseableTag label = parseSection("label", inputSection, CoreUtilities.basicContext, new ParseableTag(inputId));
+                        ParseableTag initial = parseSection("initial", inputSection, CoreUtilities.basicContext, null);
+                        ParseableTag min = parseSection("min", inputSection, CoreUtilities.basicContext, null);
+                        ParseableTag max = parseSection("max", inputSection, CoreUtilities.basicContext, null);
+                        ParseableTag step = parseSection("step", inputSection, CoreUtilities.basicContext, null);
+                        ParseableTag width = parseSection("width", inputSection, CoreUtilities.basicContext, null);
+                        numberInputEntries.put(inputId, new NumberInputEntry(inputId, label, initial, min, max, step, width));
+                        inputTypes.put(inputId, "number");
+                    }
+                    case "boolean" -> {
+                        ParseableTag label = parseSection("label", inputSection, CoreUtilities.basicContext, new ParseableTag(inputId));
+                        ParseableTag initial = parseSection("initial", inputSection, CoreUtilities.basicContext, null);
+                        booleanInputEntries.put(inputId, new BooleanInputEntry(inputId, label, initial));
+                        inputTypes.put(inputId, "boolean");
+                    }
+                    case "option" -> {
+                        if (!inputSection.contains("options")) {
+                            Debug.echoError(this, "Dialog input '" + inputId + "' missing required 'options' key, skipping.");
+                            continue;
+                        }
+                        ParseableTag width = parseSection("width", inputSection, CoreUtilities.basicContext, null);
+                        ParseableTag label = parseSection("label", inputSection, CoreUtilities.basicContext, new ParseableTag(inputId));
+                        List<String> stringOptions = inputSection.getStringList("options");
+                        List<ParseableTag> options = new ArrayList<>(stringOptions.size());
+                        for (String opt : stringOptions) {
+                            options.add(TagManager.parseTextToTag(opt, CoreUtilities.basicContext));
+                        }
+                        optionInputEntries.put(inputId, new OptionInputEntry(inputId, label, options, width));
+                        inputTypes.put(inputId, "option");
+                    }
                 }
             }
         }
-        titleTag = TagManager.parseTextToTag(getString("title", "Dialog"), CoreUtilities.basicContext);
-        bodyTag = contains("body", String.class) ? TagManager.parseTextToTag(getString("body"), CoreUtilities.basicContext) : null;
-        externalTitleTag = contains("external_title", String.class) ? TagManager.parseTextToTag(getString("external_title"), CoreUtilities.basicContext) : null;
-        if (contains("button", Map.class)) {
-            loadButton("button", getConfigurationSection("button"));
-        }
-        if (contains("yes_button", Map.class)) {
-            loadButton("yes_button", getConfigurationSection("yes_button"));
-        }
-        if (contains("no_button", Map.class)) {
-            loadButton("no_button", getConfigurationSection("no_button"));
-        }
-        if (contains("buttons", Map.class)) {
-            YamlConfiguration buttonsSection = getConfigurationSection("buttons");
-            for (StringHolder buttonIdHolder : buttonsSection.getKeys(false)) {
-                String buttonId = buttonIdHolder.str;
-                YamlConfiguration btnSection = buttonsSection.getConfigurationSection(buttonId);
-                if (btnSection != null) {
-                    loadButton(buttonId, btnSection);
+        if (contains("items", Map.class)) {
+            YamlConfiguration itemsSection = getConfigurationSection("items");
+            for (StringHolder itemIdHolder : itemsSection.getKeys(false)) {
+                YamlConfiguration itemSection = itemsSection.getConfigurationSection(itemIdHolder.str);
+                if (itemSection == null) {
+                    continue;
                 }
+                if (!itemSection.contains("item")) {
+                    Debug.echoError(this, "Dialog items entry '" + itemIdHolder.str + "' missing required 'item' key, skipping.");
+                    continue;
+                }
+                ParseableTag item = TagManager.parseTextToTag(itemSection.getString("item"), CoreUtilities.basicContext);
+                ParseableTag description = parseSection("description", itemSection, CoreUtilities.basicContext, null);
+                ParseableTag showTooltip = parseSection("show_tooltip", itemSection, CoreUtilities.basicContext, new ParseableTag("true"));
+                ParseableTag showDecorations = parseSection("show_decorations", itemSection, CoreUtilities.basicContext, new ParseableTag("true"));
+                ParseableTag width = parseSection("width", itemSection, CoreUtilities.basicContext, null);
+                ParseableTag height = parseSection("height", itemSection, CoreUtilities.basicContext, null);
+                itemBodyEntries.put(itemIdHolder.str, new ItemBodyEntry(item, description, showTooltip, showDecorations, width, height));
             }
         }
     }
 
+    public static ParseableTag parseSection(String sectionName, YamlConfiguration section, TagContext context, ParseableTag defaultValue) {
+        return section.contains(sectionName) ? TagManager.parseTextToTag(section.getString(sectionName), context) : defaultValue;
+    }
+
     public void loadButton(String buttonId, YamlConfiguration section) {
-        String labelText = section.contains("label") ? section.getString("label") : buttonId;
-        buttonLabelTags.put(buttonId, TagManager.parseTextToTag(labelText, CoreUtilities.basicContext));
-        if (section.contains("tooltip")) {
-            buttonTooltipTags.put(buttonId, TagManager.parseTextToTag(section.getString("tooltip"), CoreUtilities.basicContext));
-        }
+        ParseableTag label = parseSection("label", section, CoreUtilities.basicContext, new ParseableTag(buttonId));
+        ParseableTag tooltip = parseSection("tooltip", section, CoreUtilities.basicContext, null);
+        ParseableTag width = parseSection("width", section, CoreUtilities.basicContext, null);
+        buttonEntries.put(buttonId, new ButtonEntry(buttonId, width, label, tooltip));
     }
 
     public TagContext fixContext(TagContext context) {
@@ -231,160 +319,220 @@ public class DialogScriptContainer extends ScriptContainer {
     }
 
     public ActionButton parseButton(String buttonId, TagContext context) {
-        ParseableTag labelTag = buttonLabelTags.get(buttonId);
-        String labelText = labelTag != null ? labelTag.parse(context).toString() : buttonId;
-        Component label = PaperModule.parseFormattedText(labelText, ChatColor.WHITE);
-        Component tooltip = null;
-        ParseableTag tooltipTag = buttonTooltipTags.get(buttonId);
-        if (tooltipTag != null) {
-            tooltip = PaperModule.parseFormattedText(tooltipTag.parse(context).toString(), ChatColor.WHITE);
-        }
-        return ActionButton.builder(label)
-            .tooltip(tooltip)
-            .action(DialogAction.customClick(buttonKey(buttonId), (BinaryTagHolder) null))
-            .build();
+        return parseButton(buttonEntries.get(buttonId), context);
     }
 
-    public List<DialogInput> parseInputs(TagContext context) {
-        if (!contains("inputs", Map.class)) {
-            return List.of();
+    public ActionButton parseButton(ButtonEntry buttonEntry, TagContext context) {
+        Component label = PaperModule.parseFormattedText(buttonEntry.label().parse(context).toString(), ChatColor.WHITE);
+        ActionButton.Builder buttonBuilder = ActionButton.builder(label);
+        if (buttonEntry.tooltip() != null) {
+            buttonBuilder.tooltip(PaperModule.parseFormattedText(buttonEntry.tooltip().parse(context).toString(), ChatColor.WHITE));
         }
-        List<DialogInput> inputs = new ArrayList<>();
-        YamlConfiguration inputsSection = getConfigurationSection("inputs");
-        for (StringHolder inputIdHolder : inputsSection.getKeys(false)) {
-            String inputId = inputIdHolder.str;
-            YamlConfiguration inputSection = inputsSection.getConfigurationSection(inputId);
-            if (inputSection == null) {
-                continue;
-            }
-            String type = inputSection.contains("type") ? inputSection.getString("type").toLowerCase() : "text";
-            ParseableTag labelTagCached = inputLabelTags.get(inputId);
-            String labelText = labelTagCached != null ? labelTagCached.parse(context).toString() : inputId;
-            Component labelComp = PaperModule.parseFormattedText(labelText, ChatColor.WHITE);
+        if (buttonEntry.width() != null) {
+            String widthStr = buttonEntry.width().parse(context).toString();
             try {
-                DialogInput input = switch (type) {
-                    case "boolean" -> {
-                        boolean initial = inputSection.contains("initial") &&
-                            CoreUtilities.equalsIgnoreCase(inputSection.getString("initial"), "true");
-                        yield DialogInput.bool(inputId, labelComp).initial(initial).build();
-                    }
-                    case "number" -> {
-                        float min = 0f;
-                        if (inputSection.contains("min")) {
-                            try {
-                                min = Float.parseFloat(inputSection.getString("min"));
-                            }
-                            catch (NumberFormatException ex) {
-                                Debug.echoError(this, "Invalid min for input '" + inputId + "'");
-                            }
-                        }
-                        float max = 100f;
-                        if (inputSection.contains("max")) {
-                            try {
-                                max = Float.parseFloat(inputSection.getString("max"));
-                            }
-                            catch (NumberFormatException ex) {
-                                Debug.echoError(this, "Invalid max for input '" + inputId + "'");
-                            }
-                        }
-                        Float initial = inputSection.contains("initial") ? Float.parseFloat(inputSection.getString("initial")) : null;
-                        Float step = inputSection.contains("step") ? Float.parseFloat(inputSection.getString("step")) : null;
-                        yield DialogInput.numberRange(inputId, labelComp, min, max).initial(initial).step(step).build();
-                    }
-                    case "option" -> {
-                        List<SingleOptionDialogInput.OptionEntry> entries = new ArrayList<>();
-                        List<ParseableTag> optTags = inputOptionTags.get(inputId);
-                        if (optTags != null) {
-                            boolean firstSelected = true;
-                            for (ParseableTag optTag : optTags) {
-                                String taggedOpt = optTag.parse(context).toString();
-                                entries.add(SingleOptionDialogInput.OptionEntry.create(taggedOpt, null, firstSelected));
-                                firstSelected = false;
-                            }
-                        }
-                        yield DialogInput.singleOption(inputId, labelComp, entries).build();
-                    }
-                    default -> { // "text"
-                        ParseableTag initTag = inputInitialTags.get(inputId);
-                        String initial = initTag != null ? initTag.parse(context).toString() : "";
-                        int maxLength = 32;
-                        if (inputSection.contains("max_length")) {
-                            try {
-                                maxLength = Integer.parseInt(inputSection.getString("max_length"));
-                            }
-                            catch (NumberFormatException ex) {
-                                Debug.echoError(this, "Invalid max_length for input '" + inputId + "'");
-                            }
-                        }
-                        yield DialogInput.text(inputId, labelComp).initial(initial).maxLength(maxLength).build();
-                    }
-                };
-                inputs.add(input);
+                buttonBuilder.width(Integer.parseInt(widthStr));
             }
-            catch (Exception ex) {
-                Debug.echoError(this, "Failed to parse input '" + inputId + "': " + ex.getMessage());
+            catch (NumberFormatException ex) {
+                Debug.echoError(this, "Invalid width for button '" + buttonEntry.id() + "': " + widthStr);
+                return null;
             }
         }
-        return inputs;
+        return buttonBuilder.action(DialogAction.customClick(buttonKey(buttonEntry.id()), (BinaryTagHolder) null)).build();
     }
 
     public Dialog buildDialog(TagContext context) {
         context = fixContext(context);
         Debug.pushErrorContext(this);
-        if (contains("on close")) {
-
-        }
         try {
-            String titleText = titleTag.parse(context).toString();
-            Component title = PaperModule.parseFormattedText(titleText, ChatColor.WHITE);
             List<DialogBody> body = new ArrayList<>();
             if (bodyTag != null) {
                 body.add(DialogBody.plainMessage(PaperModule.parseFormattedText(bodyTag.parse(context).toString(), ChatColor.WHITE)));
             }
-            List<DialogInput> inputs = parseInputs(context);
-            boolean closeable = !contains("closeable", String.class) ||
-                CoreUtilities.equalsIgnoreCase(getString("closeable", "true"), "true");
-            Component externalTitle = null;
-            if (externalTitleTag != null) {
-                externalTitle = PaperModule.parseFormattedText(externalTitleTag.parse(context).toString(), ChatColor.WHITE);
+            for (Map.Entry<String, ItemBodyEntry> entry : itemBodyEntries.entrySet()) {
+                ItemBodyEntry itemEntry = entry.getValue();
+                String itemStr = itemEntry.item().parse(context).toString();
+                ItemTag item = ItemTag.valueOf(itemStr, context);
+                if (item == null) {
+                    Debug.echoError(this, "Invalid item for dialog body: " + itemStr);
+                    continue;
+                }
+                if (item.getBukkitMaterial() == Material.AIR) {
+                    Debug.echoError(this, "Invalid item for dialog body: cannot be air");
+                    continue;
+                }
+                ItemDialogBody.Builder itemBuilder = DialogBody.item(item.getItemStack());
+                if (itemEntry.showTooltip() != null) {
+                    itemBuilder.showTooltip(CoreUtilities.equalsIgnoreCase(itemEntry.showTooltip().parse(context).toString(), "true"));
+                }
+                if (itemEntry.showDecorations() != null) {
+                    itemBuilder.showDecorations(CoreUtilities.equalsIgnoreCase(itemEntry.showDecorations().parse(context).toString(), "true"));
+                }
+                if (itemEntry.description() != null) {
+                    Component descComp = PaperModule.parseFormattedText(itemEntry.description().parse(context).toString(), ChatColor.WHITE);
+                    itemBuilder.description(DialogBody.plainMessage(descComp));
+                }
+                if (itemEntry.width() != null) {
+                    String widthStr = itemEntry.width().parse(context).toString();
+                    try {
+                        itemBuilder.width(Integer.parseInt(widthStr));
+                    }
+                    catch (NumberFormatException ex) {
+                        Debug.echoError(this, "Invalid width for dialog body: " + widthStr);
+                        continue;
+                    }
+                }
+                if (itemEntry.height() != null) {
+                    String heightStr = itemEntry.height().parse(context).toString();
+                    try {
+                        itemBuilder.height(Integer.parseInt(heightStr));
+                    }
+                    catch (NumberFormatException ex) {
+                        Debug.echoError(this, "Invalid height for dialog body: " + heightStr);
+                        continue;
+                    }
+                }
+                body.add(itemBuilder.build());
             }
-            DialogBase base = DialogBase.builder(title)
-                    .externalTitle(externalTitle)
-                    .canCloseWithEscape(closeable)
-                    .body(body)
-                    .inputs(inputs)
-                    .build();
-            String dialogTypeStr = contains("dialog_type", String.class) ? getString("dialog_type").toLowerCase() : "notice";
-            DialogType type = switch (dialogTypeStr) {
+            List<DialogInput> inputs = new ArrayList<>(textInputEntries.size() + numberInputEntries.size() + booleanInputEntries.size() + optionInputEntries.size());
+            for (Map.Entry<String, TextInputEntry> entry : textInputEntries.entrySet()) {
+                TextInputEntry textEntry = entry.getValue();
+                Component labelComp = PaperModule.parseFormattedText(textEntry.label().parse(context).toString(), ChatColor.WHITE);
+                TextDialogInput.Builder textBuilder = DialogInput.text(entry.getKey(), labelComp);
+                if (textEntry.initial() != null) {
+                    String initialStr = textEntry.initial().parse(context).toString();
+                    textBuilder.initial(initialStr);
+                }
+                if (textEntry.maxLength() != null) {
+                    String maxLengthStr = textEntry.maxLength().parse(context).toString();
+                    try {
+                        int maxLength = Integer.parseInt(maxLengthStr);
+                        textBuilder.maxLength(maxLength);
+                    }
+                    catch (NumberFormatException ex) {
+                        Debug.echoError(this, "Invalid max_length for text input: " + maxLengthStr);
+                        continue;
+                    }
+                }
+                inputs.add(textBuilder.build());
+            }
+            for (Map.Entry<String, NumberInputEntry> entry : numberInputEntries.entrySet()) {
+                NumberInputEntry numberEntry = entry.getValue();
+                Component labelComp = PaperModule.parseFormattedText(numberEntry.label().parse(context).toString(), ChatColor.WHITE);
+                float min = 0f;
+                if (numberEntry.min() != null) {
+                    String minStr = numberEntry.min().parse(context).toString();
+                    try {
+                        min = Float.parseFloat(minStr);
+                    }
+                    catch (NumberFormatException ex) {
+                        Debug.echoError(this, "Invalid min for number input: " + minStr);
+                    }
+                }
+                float max = 100f;
+                if (numberEntry.max() != null) {
+                    String maxStr = numberEntry.max().parse(context).toString();
+                    try {
+                        max = Float.parseFloat(maxStr);
+                    }
+                    catch (NumberFormatException ex) {
+                        Debug.echoError(this, "Invalid max for number input: " + maxStr);
+                    }
+                }
+                NumberRangeDialogInput.Builder numberBuilder = DialogInput.numberRange(entry.getKey(), labelComp, min, max);
+                if (numberEntry.width() != null) {
+                    String widthStr = numberEntry.width().parse(context).toString();
+                    try {
+                        int width = Integer.parseInt(widthStr);
+                        numberBuilder.width(width);
+                    }
+                    catch (NumberFormatException ex) {
+                        Debug.echoError(this, "Invalid width for number input: " + widthStr);
+                        continue;
+                    }
+                }
+                if (numberEntry.initial() != null) {
+                    String initialStr = numberEntry.initial().parse(context).toString();
+                    try {
+                        Float initial = Float.parseFloat(initialStr);
+                        numberBuilder.initial(initial);
+                    }
+                    catch (NumberFormatException ex) {
+                        Debug.echoError(this, "Invalid initial for number input: " + initialStr);
+                        continue;
+                    }
+                }
+                if (numberEntry.step() != null) {
+                    String stepStr = numberEntry.step().parse(context).toString();
+                    try {
+                        Float step = Float.parseFloat(stepStr);
+                        numberBuilder.step(step);
+                    }
+                    catch (NumberFormatException ex) {
+                        Debug.echoError(this, "Invalid step for number input: " + stepStr);
+                    }
+                }
+                inputs.add(numberBuilder.build());
+            }
+            for (Map.Entry<String, BooleanInputEntry> entry : booleanInputEntries.entrySet()) {
+                BooleanInputEntry boolEntry = entry.getValue();
+                Component labelComp = PaperModule.parseFormattedText(boolEntry.label().parse(context).toString(), ChatColor.WHITE);
+                BooleanDialogInput.Builder boolBuilder = DialogInput.bool(entry.getKey(), labelComp);
+                if (boolEntry.initial() != null) {
+                    boolean initial = CoreUtilities.equalsIgnoreCase(boolEntry.initial().parse(context).toString(), "true");
+                    boolBuilder.initial(initial);
+                }
+                inputs.add(boolBuilder.build());
+            }
+            for (Map.Entry<String, OptionInputEntry> entry : optionInputEntries.entrySet()) {
+                OptionInputEntry optionEntry = entry.getValue();
+                Component labelComp = PaperModule.parseFormattedText(optionEntry.label().parse(context).toString(), ChatColor.WHITE);
+                boolean isFirst = true;
+                List<SingleOptionDialogInput.OptionEntry> entries = new ArrayList<>(optionEntry.options().size());
+                for (ParseableTag optTag : optionEntry.options()) {
+                    entries.add(SingleOptionDialogInput.OptionEntry.create(optTag.parse(context).toString(), null, isFirst));
+                    isFirst = false;
+                }
+                SingleOptionDialogInput.Builder optionBuilder = DialogInput.singleOption(entry.getKey(), labelComp, entries);
+                if (optionEntry.width() != null) {
+                    String widthStr = optionEntry.width().parse(context).toString();
+                    try {
+                        int width = Integer.parseInt(widthStr);
+                        optionBuilder.width(width);
+                    }
+                    catch (NumberFormatException ex) {
+                        Debug.echoError(this, "Invalid width for option input: " + widthStr);
+                        continue;
+                    }
+                }
+                inputs.add(optionBuilder.build());
+            }
+
+            Component externalTitle = externalTitleTag != null ? PaperModule.parseFormattedText(externalTitleTag.parse(context).toString(), ChatColor.WHITE) : null;
+            Component title = PaperModule.parseFormattedText(titleTag.parse(context).toString(), ChatColor.WHITE);
+            DialogBase base = DialogBase.builder(title).externalTitle(externalTitle).canCloseWithEscape(closeable).body(body).inputs(inputs).build();
+
+            DialogType type = switch (getString("dialog_type")) {
                 case "confirmation" -> {
-                    ActionButton yesButton = contains("yes_button", Map.class) ?
-                        parseButton("yes_button", context) :
-                        ActionButton.builder(Component.text("Yes")).action(DialogAction.customClick(buttonKey("yes_button"), null)).build();
-                    ActionButton noButton = contains("no_button", Map.class) ?
-                        parseButton("no_button", context) :
-                        ActionButton.builder(Component.text("No")).action(DialogAction.customClick(buttonKey("no_button"), null)).build();
+                    ActionButton yesButton = parseButton("yes_button", context);
+                    ActionButton noButton = parseButton("no_button", context);
                     yield DialogType.confirmation(yesButton, noButton);
                 }
                 case "multi_action" -> {
-                    List<ActionButton> buttons = new ArrayList<>();
-                    if (contains("buttons", Map.class)) {
-                        YamlConfiguration buttonsSection = getConfigurationSection("buttons");
-                        for (StringHolder buttonIdHolder : buttonsSection.getKeys(false)) {
-                            String buttonId = buttonIdHolder.str;
-                            YamlConfiguration btnSection = buttonsSection.getConfigurationSection(buttonId);
-                            if (btnSection != null) {
-                                buttons.add(parseButton(buttonId, context));
-                            }
+                    List<ActionButton> buttons = new ArrayList<>(buttonEntries.size());
+                    for (ButtonEntry buttonEntry : buttonEntries.values()) {
+                        ActionButton button = parseButton(buttonEntry, context);
+                        if (button != null) {
+                            buttons.add(button);
                         }
                     }
                     yield DialogType.multiAction(buttons).build();
                 }
-                default -> { // "notice"
-                    ActionButton button = contains("button", Map.class) ?
-                        parseButton("button", context) :
-                        ActionButton.builder(Component.text("OK")).action(DialogAction.customClick(buttonKey("button"), null)).build();
+                case "notice" -> {
+                    ActionButton button = parseButton("button", context);
                     yield DialogType.notice(button);
                 }
+                default -> null; // wont happen
             };
             return Dialog.create(factory -> factory.empty().base(base).type(type));
         }
@@ -415,7 +563,7 @@ public class DialogScriptContainer extends ScriptContainer {
                         map.putObject(id, new ElementTag(val));
                     }
                 }
-                default -> { // "text", "option"
+                case "text", "option" -> {
                     String val = response.getText(id);
                     if (val != null) {
                         map.putObject(id, new ElementTag(val));
@@ -486,5 +634,15 @@ public class DialogScriptContainer extends ScriptContainer {
         }
     }
 
-    public record ButtonData(String id, int width, ParseableTag label, ParseableTag tooltip) {}
+    public record ButtonEntry(String id, ParseableTag width, ParseableTag label, ParseableTag tooltip) {}
+
+    public record ItemBodyEntry(ParseableTag item, ParseableTag description, ParseableTag showTooltip, ParseableTag showDecorations, ParseableTag width, ParseableTag height) {}
+
+    public record TextInputEntry(String id, ParseableTag label, ParseableTag initial, ParseableTag maxLength) {}
+
+    public record OptionInputEntry(String id, ParseableTag label, List<ParseableTag> options, ParseableTag width) {}
+
+    public record BooleanInputEntry(String id, ParseableTag label, ParseableTag initial) {}
+
+    public record NumberInputEntry(String id, ParseableTag label, ParseableTag initial, ParseableTag min, ParseableTag max, ParseableTag step, ParseableTag width) {}
 }
