@@ -8,19 +8,17 @@ import com.denizenscript.denizencore.objects.core.ScriptTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
-import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.papermc.paper.dialog.Dialog;
 
 import java.util.List;
 
-// TODO add optional per_player parsing
 public class DialogCommand extends AbstractCommand {
 
     public DialogCommand() {
         setName("dialog");
         setSyntax("dialog [show/close] (<script>) (targets:<player>|...) (per_player)");
-        setRequiredArguments(1, 3);
+        setRequiredArguments(1, 4);
         autoCompile();
         isProcedural = false;
     }
