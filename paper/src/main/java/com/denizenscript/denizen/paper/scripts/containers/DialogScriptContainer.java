@@ -156,7 +156,7 @@ public class DialogScriptContainer extends ScriptContainer {
     //
     // -->
 
-    public static final Map<StringHolder, DialogScriptContainer> dialogScripts = new HashMap<>();
+    public static final Map<String, DialogScriptContainer> dialogScripts = new HashMap<>();
 
     public final Map<String, String> inputTypes = new HashMap<>();
 
@@ -215,7 +215,7 @@ public class DialogScriptContainer extends ScriptContainer {
                 return;
             }
         }
-        dialogScripts.put(new StringHolder(getName()), this);
+        dialogScripts.put(toKeyValue(getName()), this);
         titleTag = TagManager.parseTextToTag(getString("title", "Dialog"), CoreUtilities.basicContext);
         bodyTag = parseSection("body", getContents(), CoreUtilities.basicContext, null);
         externalTitleTag = parseSection("external_title", getContents(), CoreUtilities.basicContext, null);
@@ -600,12 +600,7 @@ public class DialogScriptContainer extends ScriptContainer {
                 return;
             }
             String scriptKeyPart = value.substring(0, slashIdx);
-            DialogScriptContainer container = null;
-            for (Map.Entry<StringHolder, DialogScriptContainer> entry : DialogScriptContainer.dialogScripts.entrySet()) {
-                if (DialogScriptContainer.toKeyValue(entry.getKey().str).equals(scriptKeyPart)) {
-                    container = entry.getValue();
-                }
-            }
+            DialogScriptContainer container = dialogScripts.get(scriptKeyPart);
             if (container == null) {
                 return;
             }
