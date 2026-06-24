@@ -158,8 +158,6 @@ public class DialogScriptContainer extends ScriptContainer {
 
     public static final Map<String, DialogScriptContainer> dialogScripts = new HashMap<>();
 
-    public final Map<String, String> inputTypes = new HashMap<>();
-
     public ParseableTag titleTag;
     public ParseableTag bodyTag;
     public ParseableTag externalTitleTag;
@@ -235,7 +233,6 @@ public class DialogScriptContainer extends ScriptContainer {
                         ParseableTag initial = parseSection("initial", inputSection, CoreUtilities.basicContext, null);
                         ParseableTag maxLength = parseSection("max_length", inputSection, CoreUtilities.basicContext, null);
                         textInputEntries.put(inputId, new TextInputEntry(inputId, label, initial, maxLength));
-                        inputTypes.put(inputId, "text");
                     }
                     case "number" -> {
                         ParseableTag label = parseSection("label", inputSection, CoreUtilities.basicContext, new ParseableTag(inputId));
@@ -245,13 +242,11 @@ public class DialogScriptContainer extends ScriptContainer {
                         ParseableTag step = parseSection("step", inputSection, CoreUtilities.basicContext, null);
                         ParseableTag width = parseSection("width", inputSection, CoreUtilities.basicContext, null);
                         numberInputEntries.put(inputId, new NumberInputEntry(inputId, label, initial, min, max, step, width));
-                        inputTypes.put(inputId, "number");
                     }
                     case "boolean" -> {
                         ParseableTag label = parseSection("label", inputSection, CoreUtilities.basicContext, new ParseableTag(inputId));
                         ParseableTag initial = parseSection("initial", inputSection, CoreUtilities.basicContext, null);
                         booleanInputEntries.put(inputId, new BooleanInputEntry(inputId, label, initial));
-                        inputTypes.put(inputId, "boolean");
                     }
                     case "option" -> {
                         if (!inputSection.contains("options")) {
@@ -266,7 +261,6 @@ public class DialogScriptContainer extends ScriptContainer {
                             options.add(TagManager.parseTextToTag(opt, CoreUtilities.basicContext));
                         }
                         optionInputEntries.put(inputId, new OptionInputEntry(inputId, label, options, width));
-                        inputTypes.put(inputId, "option");
                     }
                 }
             }
@@ -301,7 +295,7 @@ public class DialogScriptContainer extends ScriptContainer {
         ParseableTag label = parseSection("label", section, CoreUtilities.basicContext, new ParseableTag(buttonId));
         ParseableTag tooltip = parseSection("tooltip", section, CoreUtilities.basicContext, null);
         ParseableTag width = parseSection("width", section, CoreUtilities.basicContext, null);
-        buttonEntries.put(buttonId, new ButtonEntry(buttonId, width, label, tooltip));
+        buttonEntries.put(buttonId, new ButtonEntry(buttonId, label, tooltip, width));
     }
 
     public TagContext fixContext(TagContext context) {
@@ -548,33 +542,34 @@ public class DialogScriptContainer extends ScriptContainer {
 
     public MapTag buildInputsMap(DialogResponseView response) {
         MapTag map = new MapTag();
-        for (Map.Entry<String, String> entry : inputTypes.entrySet()) {
-            String id = entry.getKey();
-            switch (entry.getValue()) {
-                case "boolean" -> {
-                    Boolean val = response.getBoolean(id);
-                    if (val != null) {
-                        map.putObject(id, new ElementTag(val));
-                    }
-                }
-                case "number" -> {
-                    Float val = response.getFloat(id);
-                    if (val != null) {
-                        map.putObject(id, new ElementTag(val));
-                    }
-                }
-                case "text", "option" -> {
-                    String val = response.getText(id);
-                    if (val != null) {
-                        map.putObject(id, new ElementTag(val));
-                    }
-                }
+        for (String id : booleanInputEntries.keySet()) {
+            Boolean val = response.getBoolean(id);
+            if (val != null) {
+                map.putObject(id, new ElementTag(val));
+            }
+        }
+        for (String id : numberInputEntries.keySet()) {
+            Float val = response.getFloat(id);
+            if (val != null) {
+                map.putObject(id, new ElementTag(val));
+            }
+        }
+        for (String id : textInputEntries.keySet()) {
+            String val = response.getText(id);
+            if (val != null) {
+                map.putObject(id, new ElementTag(val));
+            }
+        }
+        for (String id : optionInputEntries.keySet()) {
+            String val = response.getText(id);
+            if (val != null) {
+                map.putObject(id, new ElementTag(val));
             }
         }
         return map;
     }
 
-    public String getInlineScriptPath(String buttonId) {
+    public static String getInlineScriptPath(String buttonId) {
         return switch (buttonId) {
             case "button" -> "button.on click";
             case "yes_button" -> "yes_button.on click";
@@ -629,7 +624,7 @@ public class DialogScriptContainer extends ScriptContainer {
         }
     }
 
-    public record ButtonEntry(String id, ParseableTag width, ParseableTag label, ParseableTag tooltip) {}
+    public record ButtonEntry(String id, ParseableTag label, ParseableTag tooltip, ParseableTag width) {}
 
     public record ItemBodyEntry(ParseableTag item, ParseableTag description, ParseableTag showTooltip, ParseableTag showDecorations, ParseableTag width, ParseableTag height) {}
 
