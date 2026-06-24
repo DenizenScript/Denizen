@@ -57,101 +57,101 @@ public class DialogScriptContainer extends ScriptContainer {
     // <code>
     // my_dialog:
     //
-    //   type: dialog
+    //     type: dialog
     //
-    //   # Required: the title shown at the top of the dialog.
-    //   # | All dialog scripts MUST have this key!
-    //   title: My Dialog Title
+    //     # Required: the title shown at the top of the dialog.
+    //     # | All dialog scripts MUST have this key!
+    //     title: My Dialog Title
     //
-    //   # The dialog type. Can be: notice, confirmation, multi_action
-    //   # 'notice' shows a single button, 'confirmation' shows yes/no buttons,
-    //   # 'multi_action' shows a map of custom buttons.
-    //   # | All dialog scripts MUST have this key.
-    //   dialog_type: notice
+    //     # The dialog type. Can be: notice, confirmation, multi_action
+    //     # 'notice' shows a single button, 'confirmation' shows yes/no buttons,
+    //     # 'multi_action' shows a map of custom buttons.
+    //     # | All dialog scripts MUST have this key.
+    //     dialog_type: notice
     //
-    //   # Optional body text shown below the title.
-    //   # | SOME dialog scripts should have this key.
-    //   body: This is the body text.
+    //     # Optional body text shown below the title.
+    //     # | SOME dialog scripts should have this key.
+    //     body: This is the body text.
     //
-    //   # Whether the player can press Escape to close the dialog.
-    //   # | MOST dialog scripts should NOT specify this (defaults to true).
-    //   closeable: true
+    //     # Whether the player can press Escape to close the dialog.
+    //     # | MOST dialog scripts should NOT specify this (defaults to true).
+    //     closeable: true
     //
-    //   # Optional label shown when this dialog appears as a button in a dialog list.
-    //   # | SOME dialog scripts might have this key.
-    //   external_title: Open my dialog
+    //     # Optional label shown when this dialog appears as a button in a dialog list.
+    //     # | SOME dialog scripts might have this key.
+    //     external_title: Open my dialog
     //
-    //   # For 'notice' type: a single button section.
-    //   # | MOST notice dialog scripts MUST have this key.
-    //   button:
-    //     label: OK
-    //     tooltip: Click to confirm
-    //     on click:
-    //     - narrate "You clicked OK and entered: <[inputs].get[my_text]>"
+    //     # For 'notice' type: a single button section.
+    //     # | MOST notice dialog scripts MUST have this key.
+    //     button:
+    //         label: OK
+    //         tooltip: Click to confirm
+    //         on click:
+    //         - narrate "You clicked OK and entered: <[inputs].get[my_text]>"
     //
-    //   # For 'confirmation' type: yes and no button sections.
-    //   # | Confirmation dialog scripts MUST have these keys.
-    //   yes_button:
-    //     label: Accept
-    //     on click:
-    //     - narrate "Accepted!"
-    //   no_button:
-    //     label: Decline
-    //     on click:
-    //     - narrate "Declined."
+    //     # For 'confirmation' type: yes and no button sections.
+    //     # | Confirmation dialog scripts MUST have these keys.
+    //     yes_button:
+    //         label: Accept
+    //         on click:
+    //         - narrate "Accepted!"
+    //     no_button:
+    //         label: Decline
+    //         on click:
+    //         - narrate "Declined."
     //
-    //   # For 'multi_action' type: a map of buttons where the key is the button ID.
-    //   # | Multi-action dialog scripts MUST have this key.
-    //   buttons:
-    //     option_1:
-    //       label: Option 1
-    //       tooltip: First option
-    //       on click:
-    //       - narrate "Chose option 1"
-    //     option_2:
-    //       label: Option 2
-    //       on click:
-    //       - narrate "Chose option 2"
+    //     # For 'multi_action' type: a map of buttons where the key is the button ID.
+    //     # | Multi-action dialog scripts MUST have this key.
+    //     buttons:
+    //         option_1:
+    //             label: Option 1
+    //             tooltip: First option
+    //             on click:
+    //             - narrate "Chose option 1"
+    //         option_2:
+    //             label: Option 2
+    //             on click:
+    //             - narrate "Chose option 2"
     //
-    //   # Optional input fields. Supported types: text, boolean, number, option
-    //   # | SOME dialog scripts should have this key.
-    //   inputs:
-    //     my_text:
-    //       type: text
-    //       label: Enter text:
-    //       initial: ""
-    //       max_length: 100
-    //     my_bool:
-    //       type: boolean
-    //       label: Toggle this option
-    //       initial: false
-    //     my_number:
-    //       type: number
-    //       label: Pick a number
-    //       min: 0
-    //       max: 100
-    //       initial: 50
-    //       step: 5
-    //     my_option:
-    //       type: option
-    //       label: Pick an option
-    //       options:
-    //       - Choice A
-    //       - Choice B
-    //       - Choice C
+    //     # Optional input fields. Supported types: text, boolean, number, option
+    //     # | SOME dialog scripts should have this key.
+    //     inputs:
+    //         my_text:
+    //             type: text
+    //             label: Enter text:
+    //             initial: ""
+    //             max_length: 100
+    //         my_bool:
+    //             type: boolean
+    //             label: Toggle this option
+    //             initial: false
+    //         my_number:
+    //             type: number
+    //             label: Pick a number
+    //             min: 0
+    //             max: 100
+    //             initial: 50
+    //             step: 5
+    //         my_option:
+    //             type: option
+    //             label: Pick an option
+    //             options:
+    //             - Choice A
+    //             - Choice B
+    //             - Choice C
     //
-    //   # Optional map of items to display in the dialog body (shown after the body text).
-    //   # | SOME dialog scripts should have this key.
-    //   items:
-    //     sword:
-    //       item: diamond_sword
-    //       description: A powerful weapon
-    //       show_tooltip: true
-    //       width: 64
-    //       height: 64
-    //     held:
-    //       item: <player.item_in_hand>
-    //       description: Your held item
+    //     # Optional map of items to display in the dialog body (shown after the body text).
+    //     # | SOME dialog scripts should have this key.
+    //     items:
+    //         sword:
+    //             item: diamond_sword
+    //             description: A powerful weapon
+    //             show_tooltip: true
+    //             width: 64
+    //             height: 64
+    //         held:
+    //             item: <player.item_in_hand>
+    //             description: Your held item
     // </code>
     //
     // -->
@@ -600,7 +600,7 @@ public class DialogScriptContainer extends ScriptContainer {
                 return;
             }
             String btnId = value.substring(slashIdx + 1);
-            String path = container.getInlineScriptPath(btnId);
+            String path = getInlineScriptPath(btnId);
             if (!container.containsScriptSection(path)) {
                 return;
             }
