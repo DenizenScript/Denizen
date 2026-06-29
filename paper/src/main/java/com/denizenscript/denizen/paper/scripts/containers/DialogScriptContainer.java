@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
+import com.denizenscript.denizencore.scripts.queues.ContextSource;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.tags.ParseableTag;
 import com.denizenscript.denizencore.tags.TagContext;
@@ -49,6 +50,9 @@ public class DialogScriptContainer extends ScriptContainer {
     //
     // Use the <@link command dialog> command to show or close dialogs.
     // Respond to button clicks via the inline "on click:" sections inside button definitions.
+    // In the response subscript there is available:
+    // <context.inputs> - map of all input keys and their values
+    // <context.button_id> - id of clicked button
     //
     // The following is the format for the container:
     //
@@ -75,18 +79,14 @@ public class DialogScriptContainer extends ScriptContainer {
     //     # | MOST dialog scripts should NOT specify this (defaults to true).
     //     closeable: true
     //
-    //     # Optional label shown when this dialog appears as a button in a dialog list.
-    //     # | SOME dialog scripts might have this key.
-    //     external_title: Open my dialog
-    //
-    //     # For 'notice' type: a single button section.
+    //     # For 'notice' type: a single confirmation button section.
     //     # | ALL notice dialog scripts MUST have this key.
     //     button:
     //         label: OK
     //         tooltip: Click to confirm
     //         width: 30
     //         on click:
-    //         - narrate "You clicked OK and entered: <[inputs].get[my_text]>"
+    //         - narrate "You clicked OK and entered: <context.inputs.get[my_text]>"
     //
     //     # For 'confirmation' type: yes and no button sections.
     //     # | ALL confirmation dialog scripts MUST have these keys.
@@ -100,7 +100,7 @@ public class DialogScriptContainer extends ScriptContainer {
     //         - narrate "Declined."
     //
     //     # For 'multi_action' type: a map of buttons where the key is the button ID.
-    //     # | Multi-action dialog scripts MUST have this key.
+    //     # | ALL Multi-action dialog scripts MUST have this key.
     //     buttons:
     //         option_1:
     //             label: Option 1
@@ -160,7 +160,6 @@ public class DialogScriptContainer extends ScriptContainer {
 
     public ParseableTag titleTag;
     public ParseableTag bodyTag;
-    public ParseableTag externalTitleTag;
     public boolean closeable;
 
     public final Map<String, TextInputEntry> textInputEntries = new HashMap<>();
@@ -215,7 +214,6 @@ public class DialogScriptContainer extends ScriptContainer {
         }
         titleTag = TagManager.parseTextToTag(getString("title", "Dialog"), CoreUtilities.basicContext);
         bodyTag = parseSection("body", getContents(), CoreUtilities.basicContext, null);
-        externalTitleTag = parseSection("external_title", getContents(), CoreUtilities.basicContext, null);
         closeable = Boolean.parseBoolean(getString("closeable", "true"));
         if (contains("inputs", Map.class)) {
             YamlConfiguration inputsSection = getConfigurationSection("inputs");
@@ -497,9 +495,8 @@ public class DialogScriptContainer extends ScriptContainer {
                 inputs.add(optionBuilder.build());
             }
 
-            Component externalTitle = externalTitleTag != null ? PaperModule.parseFormattedText(externalTitleTag.parse(context).toString(), ChatColor.WHITE) : null;
             Component title = PaperModule.parseFormattedText(titleTag.parse(context).toString(), ChatColor.WHITE);
-            DialogBase base = DialogBase.builder(title).externalTitle(externalTitle).canCloseWithEscape(closeable).body(body).inputs(inputs).build();
+            DialogBase base = DialogBase.builder(title).canCloseWithEscape(closeable).body(body).inputs(inputs).build();
 
             DialogType type = switch (getString("dialog_type")) {
                 case "confirmation" -> {
@@ -601,8 +598,11 @@ public class DialogScriptContainer extends ScriptContainer {
                         }
                     }
                 }
-                queue.addDefinition("inputs", inputs);
-                queue.addDefinition("button_id", new ElementTag(buttonId, true));
+                ContextSource.SimpleMap src = new ContextSource.SimpleMap();
+                src.contexts = new HashMap<>(2);
+                src.contexts.put("inputs", inputs);
+                src.contexts.put("button_id", new ElementTag(buttonId, true));
+                queue.contextSource = src;
                 queue.addEntries(entries);
                 queue.start();
             }
