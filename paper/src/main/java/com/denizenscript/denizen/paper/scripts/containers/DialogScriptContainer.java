@@ -44,8 +44,8 @@ public class DialogScriptContainer extends ScriptContainer {
     // @group Script Container System
     // @Plugin Paper
     // @description
-    // Dialog script containers define Paper client-side dialogs that can be shown to players.
-    // Requires Paper 1.21.6 or later.
+    // Dialog script containers define client-side dialogs that can be shown to players.
+    // Requires MC 1.21+.
     //
     // Use the <@link command dialog> command to show or close dialogs.
     // Respond to button clicks via the inline "on click:" sections inside button definitions.
