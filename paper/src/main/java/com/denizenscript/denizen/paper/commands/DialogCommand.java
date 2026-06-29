@@ -27,14 +27,14 @@ public class DialogCommand extends AbstractCommand {
     // @Name Dialog
     // @Syntax dialog [show/close] (<script>) (targets:<player>|...) (per_player)
     // @Required 1
-    // @Maximum 3
-    // @Short Shows or closes a Paper dialog for one or more players.
+    // @Maximum 4
+    // @Short Shows or closes a dialog for players.
     // @Group player
     // @Plugin Paper
     //
     // @Description
-    // Shows or closes a Paper client-side dialog for the specified players.
-    // Requires Paper 1.21.6 or later.
+    // Shows or closes a dialog for the specified players.
+    // Requires MC 1.21+.
     //
     // Use 'show' with a dialog script name to display the dialog to the target player(s).
     // Use 'close' to close any dialog currently open for the target player(s).

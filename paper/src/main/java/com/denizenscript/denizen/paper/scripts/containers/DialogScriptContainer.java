@@ -6,6 +6,7 @@ import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.scripts.containers.ScriptContainer;
 import com.denizenscript.denizencore.scripts.queues.core.InstantQueue;
 import com.denizenscript.denizencore.tags.ParseableTag;
@@ -34,10 +35,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DialogScriptContainer extends ScriptContainer {
 
@@ -82,15 +80,16 @@ public class DialogScriptContainer extends ScriptContainer {
     //     external_title: Open my dialog
     //
     //     # For 'notice' type: a single button section.
-    //     # | MOST notice dialog scripts MUST have this key.
+    //     # | ALL notice dialog scripts MUST have this key.
     //     button:
     //         label: OK
     //         tooltip: Click to confirm
+    //         width: 30
     //         on click:
     //         - narrate "You clicked OK and entered: <[inputs].get[my_text]>"
     //
     //     # For 'confirmation' type: yes and no button sections.
-    //     # | Confirmation dialog scripts MUST have these keys.
+    //     # | ALL confirmation dialog scripts MUST have these keys.
     //     yes_button:
     //         label: Accept
     //         on click:
@@ -118,8 +117,8 @@ public class DialogScriptContainer extends ScriptContainer {
     //     inputs:
     //         my_text:
     //             type: text
-    //             label: Enter text:
-    //             initial: ""
+    //             label: Enter text<&co>
+    //             initial: <empty>
     //             max_length: 100
     //         my_bool:
     //             type: boolean
@@ -132,9 +131,11 @@ public class DialogScriptContainer extends ScriptContainer {
     //             max: 100
     //             initial: 50
     //             step: 5
+    //             width: 80
     //         my_option:
     //             type: option
     //             label: Pick an option
+    //             width: 65
     //             options:
     //             - Choice A
     //             - Choice B
@@ -147,6 +148,7 @@ public class DialogScriptContainer extends ScriptContainer {
     //             item: diamond_sword
     //             description: A powerful weapon
     //             show_tooltip: true
+    //             show_decorations: true
     //             width: 64
     //             height: 64
     //         held:
@@ -155,8 +157,6 @@ public class DialogScriptContainer extends ScriptContainer {
     // </code>
     //
     // -->
-
-    public static final Map<String, DialogScriptContainer> dialogScripts = new HashMap<>();
 
     public ParseableTag titleTag;
     public ParseableTag bodyTag;
@@ -213,11 +213,10 @@ public class DialogScriptContainer extends ScriptContainer {
                 return;
             }
         }
-        dialogScripts.put(toKeyValue(getName()), this);
         titleTag = TagManager.parseTextToTag(getString("title", "Dialog"), CoreUtilities.basicContext);
         bodyTag = parseSection("body", getContents(), CoreUtilities.basicContext, null);
         externalTitleTag = parseSection("external_title", getContents(), CoreUtilities.basicContext, null);
-        closeable = !contains("closeable", String.class) || CoreUtilities.equalsIgnoreCase(getString("closeable", "true"), "true");
+        closeable = Boolean.parseBoolean(getString("closeable", "true"));
         if (contains("inputs", Map.class)) {
             YamlConfiguration inputsSection = getConfigurationSection("inputs");
             for (StringHolder inputIdHolder : inputsSection.getKeys(false)) {
@@ -226,8 +225,7 @@ public class DialogScriptContainer extends ScriptContainer {
                 if (inputSection == null) {
                     continue;
                 }
-                String type = inputSection.contains("type") ? inputSection.getString("type").toLowerCase() : "text";
-                switch (type) {
+                switch (inputSection.getString("type", "text").toLowerCase()) {
                     case "text" -> {
                         ParseableTag label = parseSection("label", inputSection, CoreUtilities.basicContext, new ParseableTag(inputId));
                         ParseableTag initial = parseSection("initial", inputSection, CoreUtilities.basicContext, null);
@@ -255,7 +253,7 @@ public class DialogScriptContainer extends ScriptContainer {
                         }
                         ParseableTag width = parseSection("width", inputSection, CoreUtilities.basicContext, null);
                         ParseableTag label = parseSection("label", inputSection, CoreUtilities.basicContext, new ParseableTag(inputId));
-                        List<String> stringOptions = inputSection.getStringList("options");
+                        List<String> stringOptions = getStringList("inputs." + inputId + ".options");
                         List<ParseableTag> options = new ArrayList<>(stringOptions.size());
                         for (String opt : stringOptions) {
                             options.add(TagManager.parseTextToTag(opt, CoreUtilities.basicContext));
@@ -304,12 +302,8 @@ public class DialogScriptContainer extends ScriptContainer {
         return context;
     }
 
-    public static String toKeyValue(String name) {
-        return CoreUtilities.toLowerCase(name).replaceAll("[^a-z0-9_.\\-]", "_");
-    }
-
     public Key buttonKey(String buttonId) {
-        return Key.key("denizen", toKeyValue(getName()) + "/" + toKeyValue(buttonId));
+        return Key.key("denizen", getName().toLowerCase() + "/" + buttonId.toLowerCase());
     }
 
     public ActionButton parseButton(String buttonId, TagContext context) {
@@ -357,10 +351,10 @@ public class DialogScriptContainer extends ScriptContainer {
                 }
                 ItemDialogBody.Builder itemBuilder = DialogBody.item(item.getItemStack());
                 if (itemEntry.showTooltip() != null) {
-                    itemBuilder.showTooltip(CoreUtilities.equalsIgnoreCase(itemEntry.showTooltip().parse(context).toString(), "true"));
+                    itemBuilder.showTooltip(Boolean.parseBoolean(itemEntry.showTooltip().parse(context).toString()));
                 }
                 if (itemEntry.showDecorations() != null) {
-                    itemBuilder.showDecorations(CoreUtilities.equalsIgnoreCase(itemEntry.showDecorations().parse(context).toString(), "true"));
+                    itemBuilder.showDecorations(Boolean.parseBoolean(itemEntry.showDecorations().parse(context).toString()));
                 }
                 if (itemEntry.description() != null) {
                     Component descComp = PaperModule.parseFormattedText(itemEntry.description().parse(context).toString(), ChatColor.WHITE);
@@ -473,7 +467,7 @@ public class DialogScriptContainer extends ScriptContainer {
                 Component labelComp = PaperModule.parseFormattedText(boolEntry.label().parse(context).toString(), ChatColor.WHITE);
                 BooleanDialogInput.Builder boolBuilder = DialogInput.bool(entry.getKey(), labelComp);
                 if (boolEntry.initial() != null) {
-                    boolean initial = CoreUtilities.equalsIgnoreCase(boolEntry.initial().parse(context).toString(), "true");
+                    boolean initial = Boolean.parseBoolean(boolEntry.initial().parse(context).toString());
                     boolBuilder.initial(initial);
                 }
                 inputs.add(boolBuilder.build());
@@ -484,7 +478,8 @@ public class DialogScriptContainer extends ScriptContainer {
                 boolean isFirst = true;
                 List<SingleOptionDialogInput.OptionEntry> entries = new ArrayList<>(optionEntry.options().size());
                 for (ParseableTag optTag : optionEntry.options()) {
-                    entries.add(SingleOptionDialogInput.OptionEntry.create(optTag.parse(context).toString(), null, isFirst));
+                    String parsed = optTag.parse(context).toString();
+                    entries.add(SingleOptionDialogInput.OptionEntry.create(parsed, PaperModule.parseFormattedText(parsed, ChatColor.WHITE), isFirst));
                     isFirst = false;
                 }
                 SingleOptionDialogInput.Builder optionBuilder = DialogInput.singleOption(entry.getKey(), labelComp, entries);
@@ -540,44 +535,6 @@ public class DialogScriptContainer extends ScriptContainer {
         }
     }
 
-    public MapTag buildInputsMap(DialogResponseView response) {
-        MapTag map = new MapTag();
-        for (String id : booleanInputEntries.keySet()) {
-            Boolean val = response.getBoolean(id);
-            if (val != null) {
-                map.putObject(id, new ElementTag(val));
-            }
-        }
-        for (String id : numberInputEntries.keySet()) {
-            Float val = response.getFloat(id);
-            if (val != null) {
-                map.putObject(id, new ElementTag(val));
-            }
-        }
-        for (String id : textInputEntries.keySet()) {
-            String val = response.getText(id);
-            if (val != null) {
-                map.putObject(id, new ElementTag(val));
-            }
-        }
-        for (String id : optionInputEntries.keySet()) {
-            String val = response.getText(id);
-            if (val != null) {
-                map.putObject(id, new ElementTag(val));
-            }
-        }
-        return map;
-    }
-
-    public static String getInlineScriptPath(String buttonId) {
-        return switch (buttonId) {
-            case "button" -> "button.on click";
-            case "yes_button" -> "yes_button.on click";
-            case "no_button" -> "no_button.on click";
-            default -> "buttons." + buttonId + ".on click";
-        };
-    }
-
     public static class DialogEvents implements Listener {
 
         @EventHandler
@@ -595,12 +552,17 @@ public class DialogScriptContainer extends ScriptContainer {
                 return;
             }
             String scriptKeyPart = value.substring(0, slashIdx);
-            DialogScriptContainer container = dialogScripts.get(scriptKeyPart);
+            DialogScriptContainer container = ScriptRegistry.getScriptContainerAs(scriptKeyPart, DialogScriptContainer.class);
             if (container == null) {
                 return;
             }
-            String btnId = value.substring(slashIdx + 1);
-            String path = getInlineScriptPath(btnId);
+            String buttonId = value.substring(slashIdx + 1);
+            String path = switch (buttonId) {
+                case "button" -> "button.on click";
+                case "yes_button" -> "yes_button.on click";
+                case "no_button" -> "no_button.on click";
+                default -> "buttons." + buttonId + ".on click";
+            };
             if (!container.containsScriptSection(path)) {
                 return;
             }
@@ -611,14 +573,41 @@ public class DialogScriptContainer extends ScriptContainer {
             }
             DialogResponseView responseView = event.getDialogResponseView();
             try {
-                InstantQueue queue = new InstantQueue(container.getName() + "_" + btnId);
-                queue.addDefinition("inputs", responseView != null ? container.buildInputsMap(responseView) : new MapTag());
-                queue.addDefinition("button_id", new ElementTag(btnId, true));
+                InstantQueue queue = new InstantQueue(container.getName() + "_" + buttonId);
+                MapTag inputs = new MapTag();
+                if (responseView != null) {
+                    for (String id : container.booleanInputEntries.keySet()) {
+                        Boolean val = responseView.getBoolean(id);
+                        if (val != null) {
+                            inputs.putObject(id, new ElementTag(val));
+                        }
+                    }
+                    for (String id : container.numberInputEntries.keySet()) {
+                        Float val = responseView.getFloat(id);
+                        if (val != null) {
+                            inputs.putObject(id, new ElementTag(val));
+                        }
+                    }
+                    for (String id : container.textInputEntries.keySet()) {
+                        String val = responseView.getText(id);
+                        if (val != null) {
+                            inputs.putObject(id, new ElementTag(val));
+                        }
+                    }
+                    for (String id : container.optionInputEntries.keySet()) {
+                        String val = responseView.getText(id);
+                        if (val != null) {
+                            inputs.putObject(id, new ElementTag(val));
+                        }
+                    }
+                }
+                queue.addDefinition("inputs", inputs);
+                queue.addDefinition("button_id", new ElementTag(buttonId, true));
                 queue.addEntries(entries);
                 queue.start();
             }
             catch (Exception ex) {
-                Debug.echoError("Exception while running inline script for dialog '" + container.getName() + "' button '" + btnId + "':");
+                Debug.echoError("Exception while running inline script for dialog '" + container.getName() + "' button '" + buttonId + "':");
                 Debug.echoError(ex);
             }
         }
