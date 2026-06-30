@@ -115,10 +115,9 @@ public class PaperModule {
             ScriptEvent.registerScriptEvent(WardenChangesAngerLevelScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(WorldGameRuleChangeScriptEvent.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
             ScriptRegistry._registerType("dialog", DialogScriptContainer.class);
             BukkitCommandRegistry.registerCommand(DialogCommand.class);
-            ScriptEvent.registerScriptEvent(PlayerClicksDialogButtonScriptEvent.class);
             Denizen.getInstance().getServer().getPluginManager().registerEvents(new DialogScriptContainer.DialogEvents(), Denizen.getInstance());
         }
 
