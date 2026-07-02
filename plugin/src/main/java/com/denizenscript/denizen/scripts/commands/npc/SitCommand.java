@@ -1,15 +1,19 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizen.npc.traits.SittingTrait;
-import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.entity.*;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgDefaultNull;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgLinear;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgName;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.citizensnpcs.trait.SitTrait;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Sittable;
 
 public class SitCommand extends AbstractCommand {
 
@@ -18,6 +22,7 @@ public class SitCommand extends AbstractCommand {
         setSyntax("sit (<location>)");
         setRequiredArguments(0, 1);
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -42,44 +47,26 @@ public class SitCommand extends AbstractCommand {
     //
     // -->
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (arg.matchesArgumentType(LocationTag.class)
-                    && !scriptEntry.hasObject("location")) {
-                scriptEntry.addObject("location", arg.asType(LocationTag.class));
-            }
-            else {
-                arg.reportUnhandled();
-            }
-        }
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("location") @ArgLinear @ArgDefaultNull LocationTag location) {
         if (!Utilities.entryHasNPC(scriptEntry)) {
-            throw new InvalidArgumentsException("This command requires a linked NPC!");
+            throw new InvalidArgumentsRuntimeException("This command requires a linked NPC!");
         }
-    }
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        LocationTag location = scriptEntry.getObjectTag("location");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         if (!(npc.getEntity() instanceof Player || npc.getEntity() instanceof Sittable)) {
-            Debug.echoError("Entities of type " + npc.getEntityType().getName() + " cannot sit.");
+            Debug.echoError("Entities of type " + npc.getEntityType() + " cannot sit.");
             return;
         }
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), npc, location);
-        }
-        Entity entity = npc.getEntity();
-        if (entity instanceof Sittable) {
-            ((Sittable) entity).setSitting(true);
+        if (npc.getEntity() instanceof Sittable sittable) {
+            sittable.setSitting(true);
         }
         else {
-            SittingTrait trait = npc.getCitizen().getOrAddTrait(SittingTrait.class);
+            SitTrait trait = npc.getCitizen().getOrAddTrait(SitTrait.class);
             if (location != null) {
-                trait.sit(location);
+                trait.setSitting(location);
             }
             else {
-                trait.sit();
+                trait.setSitting(npc.getLocation());
             }
         }
     }

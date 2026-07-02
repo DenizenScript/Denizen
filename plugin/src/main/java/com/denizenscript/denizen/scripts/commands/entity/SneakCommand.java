@@ -4,14 +4,13 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.npc.traits.SneakingTrait;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.citizensnpcs.trait.SneakTrait;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -25,6 +24,7 @@ public class SneakCommand extends AbstractCommand {
         setSyntax("sneak [<entity>|...] ({start}/stop) (fake/stopfake) (for:<player>|...)");
         setRequiredArguments(1, 4);
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -38,7 +38,7 @@ public class SneakCommand extends AbstractCommand {
     //
     // @Description
     // Causes an entity to start or stop sneaking.
-    // If the entity is NPC, adds the SneakingTrait to apply the sneak setting persistent.
+    // If the entity is NPC, adds the SneakTrait to apply the sneak setting persistent.
     //
     // Can optionally use the 'fake' argument to apply a fake sneak using packets, either globally or for specific players.
     // Use 'stopfake' to disable faking of sneak.
@@ -60,40 +60,54 @@ public class SneakCommand extends AbstractCommand {
     //
     // -->
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (arg.matches("fake")
-                    && !scriptEntry.hasObject("fake")
-                    && !scriptEntry.hasObject("stopfake")) {
-                scriptEntry.addObject("fake", new ElementTag(true));
+    public enum SneakMode { START, STOP }
+
+    public enum SneakFake { FAKE, STOPFAKE }
+
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("entities") @ArgLinear @ArgDefaultNull List<EntityTag> entities,
+                                   @ArgName("mode") @ArgLinear @ArgDefaultNull SneakMode mode,
+                                   @ArgName("fake") @ArgLinear @ArgDefaultNull SneakFake fake,
+                                   @ArgName("for") @ArgPrefixed @ArgDefaultNull List<PlayerTag> players) {
+        if (entities == null) {
+            throw new InvalidArgumentsRuntimeException("Missing entities argument.");
+        }
+        if (mode == null) {
+            mode = SneakMode.START;
+        }
+        boolean shouldSneak = mode.equals(SneakMode.START);
+        boolean shouldFake = fake != null && fake.equals(SneakFake.FAKE);
+        boolean shouldStopFake = fake != null && fake.equals(SneakFake.STOPFAKE);
+        for (EntityTag entity : entities) {
+            if (shouldFake || shouldStopFake) {
+                if (players == null) {
+                    updateFakeSneak(entity.getUUID(), null, shouldSneak, shouldFake);
+                    for (Player player : NMSHandler.entityHelper.getPlayersThatSee(entity.getBukkitEntity())) {
+                        NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player, entity.getBukkitEntity());
+                    }
+                }
+                else {
+                    for (PlayerTag player : players) {
+                        updateFakeSneak(entity.getUUID(), player.getUUID(), shouldSneak, shouldFake);
+                        NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player.getPlayerEntity(), entity.getBukkitEntity());
+                    }
+                }
             }
-            else if (arg.matches("stopfake")
-                    && !scriptEntry.hasObject("fake")
-                    && !scriptEntry.hasObject("stopfake")) {
-                scriptEntry.addObject("stopfake", new ElementTag(true));
+            else if (entity.isCitizensNPC()) {
+                if (entity.getDenizenNPC().getCitizen().hasTrait(SneakingTrait.class)) {
+                    entity.getDenizenNPC().getCitizen().getOrAddTrait(SneakingTrait.class).stand();
+                    entity.getDenizenNPC().getCitizen().removeTrait(SneakingTrait.class);
+                }
+                SneakTrait trait = entity.getDenizenNPC().getCitizen().getOrAddTrait(SneakTrait.class);
+                trait.setSneaking(shouldSneak);
             }
-            else if ((arg.matches("start") || arg.matches("stop"))
-                    && !scriptEntry.hasObject("mode")) {
-                scriptEntry.addObject("mode", arg.asElement());
-            }
-            else if (arg.matchesPrefix("for")
-                    && arg.matchesArgumentList(PlayerTag.class)
-                    && !scriptEntry.hasObject("for_players")) {
-                scriptEntry.addObject("for_players", arg.asType(ListTag.class).filter(PlayerTag.class, scriptEntry));
-            }
-            else if (arg.matchesArgumentList(EntityTag.class)
-                    && !scriptEntry.hasObject("entities")) {
-                scriptEntry.addObject("entities", arg.asType(ListTag.class).filter(EntityTag.class, scriptEntry));
+            else if (entity.isSpawned()) {
+                NMSHandler.entityHelper.setSneaking(entity.getBukkitEntity(), shouldSneak);
             }
             else {
-                arg.reportUnhandled();
+                Debug.echoError("Cannot make unspawned entity sneak.");
             }
         }
-        if (!scriptEntry.hasObject("entities")) {
-            throw new InvalidArgumentsException("Missing entities argument.");
-        }
-        scriptEntry.defaultObject("mode", new ElementTag("start"));
     }
 
     public static HashMap<UUID, HashMap<UUID, Boolean>> forceSetSneak = new HashMap<>();
@@ -129,51 +143,5 @@ public class SneakCommand extends AbstractCommand {
             return b;
         }
         return subMap.get(null);
-    }
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        ElementTag fake = scriptEntry.getElement("fake");
-        ElementTag stopfake = scriptEntry.getElement("stopfake");
-        ElementTag mode = scriptEntry.getElement("mode");
-        List<PlayerTag> forPlayers = (List<PlayerTag>) scriptEntry.getObject("for_players");
-        List<EntityTag> entities = (List<EntityTag>) scriptEntry.getObject("entities");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), mode, db("entities", entities), db("for_players", forPlayers), fake, stopfake);
-        }
-        boolean shouldSneak = mode.asString().equalsIgnoreCase("start");
-        boolean shouldFake = fake != null && fake.asBoolean();
-        boolean shouldStopFake = stopfake != null && stopfake.asBoolean();
-        for (EntityTag entity : entities) {
-            if (shouldFake || shouldStopFake) {
-                if (forPlayers == null) {
-                    updateFakeSneak(entity.getUUID(), null, shouldSneak, shouldFake);
-                    for (Player player : NMSHandler.entityHelper.getPlayersThatSee(entity.getBukkitEntity())) {
-                        NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player, entity.getBukkitEntity());
-                    }
-                }
-                else {
-                    for (PlayerTag player : forPlayers) {
-                        updateFakeSneak(entity.getUUID(), player.getUUID(), shouldSneak, shouldFake);
-                        NMSHandler.packetHelper.sendEntityMetadataFlagsUpdate(player.getPlayerEntity(), entity.getBukkitEntity());
-                    }
-                }
-            }
-            else if (entity.isCitizensNPC()) {
-                SneakingTrait trait = entity.getDenizenNPC().getCitizen().getOrAddTrait(SneakingTrait.class);
-                if (shouldSneak) {
-                    trait.sneak();
-                }
-                else {
-                    trait.stand();
-                }
-            }
-            else if (entity.isSpawned()) {
-                NMSHandler.entityHelper.setSneaking(entity.getBukkitEntity(), shouldSneak);
-            }
-            else {
-                Debug.echoError("Cannot make unspawned entity sneak.");
-            }
-        }
     }
 }

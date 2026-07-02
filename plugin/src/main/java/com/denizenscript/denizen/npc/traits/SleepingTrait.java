@@ -9,13 +9,11 @@ import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.data.type.Bed;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Pose;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 
+@Deprecated(forRemoval = true)
 public class SleepingTrait extends Trait {
 
     @Persist("sleeping")
@@ -47,14 +45,14 @@ public class SleepingTrait extends Trait {
     }
 
     public void internalSleepNow() {
-        if (npc.getEntity() instanceof Villager) {
-            if (!((Villager) npc.getEntity()).sleep(bedLocation.clone())) {
+        if (npc.getEntity() instanceof Villager villager) {
+            if (!villager.sleep(bedLocation.clone())) {
                 return;
             }
         }
-        else if (npc.getEntity() instanceof Player) {
+        else if (npc.getEntity() instanceof Player player) {
             if (bedLocation.getBlock().getBlockData() instanceof Bed) {
-                ((Player) npc.getEntity()).sleep(bedLocation.clone(), true);
+                player.sleep(bedLocation.clone(), true);
             }
             else {
                 NMSHandler.entityHelper.setPose(npc.getEntity(), Pose.SLEEPING);
@@ -115,8 +113,8 @@ public class SleepingTrait extends Trait {
             return;
         }
         sleeping = false;
-        if (npc.getEntity() instanceof Villager) {
-            ((Villager) npc.getEntity()).wakeup();
+        if (npc.getEntity() instanceof Villager villager) {
+            villager.wakeup();
         }
         else {
             if (((Player) npc.getEntity()).isSleeping()) {
@@ -138,7 +136,7 @@ public class SleepingTrait extends Trait {
 
     /**
      * Gets the bed the NPC is sleeping on
-     * Returns null if the NPC isnt sleeping
+     * Returns null if the NPC isn't sleeping
      *
      * @return Location
      */

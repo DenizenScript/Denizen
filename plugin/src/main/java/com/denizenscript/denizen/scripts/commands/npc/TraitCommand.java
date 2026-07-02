@@ -1,18 +1,23 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
+import com.denizenscript.denizen.npc.traits.SittingTrait;
+import com.denizenscript.denizen.npc.traits.SleepingTrait;
+import com.denizenscript.denizen.npc.traits.SneakingTrait;
 import com.denizenscript.denizen.objects.NPCTag;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.TraitInfo;
+import net.citizensnpcs.trait.SitTrait;
+import net.citizensnpcs.trait.SleepTrait;
+import net.citizensnpcs.trait.SneakTrait;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +29,7 @@ public class TraitCommand extends AbstractCommand {
         setSyntax("trait (state:true/false/{toggle}) [<trait>] (to:<npc>|...)");
         setRequiredArguments(1, 3);
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -62,7 +68,7 @@ public class TraitCommand extends AbstractCommand {
     //
     // -->
 
-    private enum Toggle {TOGGLE, TRUE, FALSE, ON, OFF}
+    public enum Toggle {TOGGLE, TRUE, FALSE, ON, OFF}
 
     @Override
     public void addCustomTabCompletions(TabCompletionsBuilder tab) {
@@ -71,66 +77,54 @@ public class TraitCommand extends AbstractCommand {
         }
     }
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("state")
-                    && arg.matchesPrefix("state", "s")
-                    && arg.matchesEnum(Toggle.class)) {
-                scriptEntry.addObject("state", new ElementTag(arg.getValue().toUpperCase()));
-            }
-            else if (!scriptEntry.hasObject("trait")) {
-                scriptEntry.addObject("trait", new ElementTag(arg.getValue()));
-            }
-            else if (!scriptEntry.hasObject("npcs")
-                    && arg.matchesArgumentList(NPCTag.class)) {
-                scriptEntry.addObject("npcs", arg.asType(ListTag.class).filter(NPCTag.class, scriptEntry));
-            }
-            else {
-                arg.reportUnhandled();
-            }
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("state") @ArgPrefixed @ArgDefaultNull Toggle toggle,
+                                   @ArgName("trait") @ArgLinear @ArgDefaultNull Trait traitName,
+                                   @ArgName("to") @ArgPrefixed @ArgDefaultNull List<NPCTag> npcs) {
+        if (traitName == null) {
+            throw new InvalidArgumentsRuntimeException("Missing trait argument!");
         }
-        if (!scriptEntry.hasObject("trait")) {
-            throw new InvalidArgumentsException("Missing trait argument!");
-        }
-        if (!scriptEntry.hasObject("npcs")) {
+        if (npcs == null) {
             if (!Utilities.entryHasNPC(scriptEntry)) {
-                throw new InvalidArgumentsException("This command requires a linked NPC!");
+                throw new InvalidArgumentsRuntimeException("This command requires a linked NPC!");
             }
-            scriptEntry.addObject("npcs", Collections.singletonList(Utilities.getEntryNPC(scriptEntry)));
+            npcs = Collections.singletonList(Utilities.getEntryNPC(scriptEntry));
         }
-        scriptEntry.defaultObject("state", new ElementTag("TOGGLE"));
-    }
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        ElementTag toggle = scriptEntry.getElement("state");
-        ElementTag traitName = scriptEntry.getElement("trait");
-        List<NPCTag> npcs = (List<NPCTag>) scriptEntry.getObject("npcs");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), traitName, toggle, db("npc", npcs));
+        if (toggle == null) {
+            toggle = Toggle.TOGGLE;
         }
-        Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.asString());
+        Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.getName());
         if (trait == null) {
-            Debug.echoError(scriptEntry, "Trait not found: " + traitName.asString());
+            Debug.echoError(scriptEntry, "Trait not found: " + traitName.getName());
             return;
         }
         for (NPCTag npcTag : npcs) {
             NPC npc = npcTag.getCitizen();
-            switch (Toggle.valueOf(toggle.asString())) {
+            switch (toggle) {
                 case TRUE:
                 case ON:
                     if (npc.hasTrait(trait)) {
-                        Debug.echoError(scriptEntry, "NPC already has trait '" + traitName.asString() + "'");
+                        Debug.echoError(scriptEntry, "NPC already has trait '" + traitName.getName() + "'");
+                        break;
                     }
-                    else {
-                        npc.addTrait(trait);
+                    if (trait == SittingTrait.class || trait == SleepingTrait.class || trait == SneakingTrait.class) {
+                        BukkitImplDeprecations.citizensTraits.warn();
+                        if (trait == SittingTrait.class) {
+                            trait = SitTrait.class;
+                        }
+                        else if (trait == SleepingTrait.class) {
+                            trait = SleepTrait.class;
+                        }
+                        else {
+                            trait = SneakTrait.class;
+                        }
                     }
+                    npc.addTrait(trait);
                     break;
                 case FALSE:
                 case OFF:
                     if (!npc.hasTrait(trait)) {
-                        Debug.echoError(scriptEntry, "NPC does not have trait '" + traitName.asString() + "'");
+                        Debug.echoError(scriptEntry, "NPC does not have trait '" + traitName.getName() + "'");
                     }
                     else {
                         npc.removeTrait(trait);
@@ -139,10 +133,21 @@ public class TraitCommand extends AbstractCommand {
                 case TOGGLE:
                     if (npc.hasTrait(trait)) {
                         npc.removeTrait(trait);
+                        break;
                     }
-                    else {
-                        npc.addTrait(trait);
+                    if (trait == SittingTrait.class || trait == SleepingTrait.class || trait == SneakingTrait.class) {
+                        BukkitImplDeprecations.citizensTraits.warn();
+                        if (trait == SittingTrait.class) {
+                            trait = SitTrait.class;
+                        }
+                        else if (trait == SleepingTrait.class) {
+                            trait = SleepTrait.class;
+                        }
+                        else {
+                            trait = SneakTrait.class;
+                        }
                     }
+                    npc.addTrait(trait);
                     break;
             }
         }

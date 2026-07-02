@@ -6,6 +6,7 @@ import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.trait.SneakTrait;
 
 public class EntitySneaking extends EntityProperty<ElementTag> {
 
@@ -36,18 +37,23 @@ public class EntitySneaking extends EntityProperty<ElementTag> {
 
     @Override
     public void setPropertyValue(ElementTag value, Mechanism mechanism) {
-        if (mechanism.requireBoolean()) {
-            boolean sneaking = value.asBoolean();
-            getEntity().setSneaking(sneaking);
-            if (object.isCitizensNPC()) {
-                NPC npc = object.getDenizenNPC().getCitizen();
-                if (sneaking) {
-                    npc.getOrAddTrait(SneakingTrait.class).sneak();
-                }
-                else if (npc.hasTrait(SneakingTrait.class)) {
-                    npc.getTraitNullable(SneakingTrait.class).stand();
-                    npc.removeTrait(SneakingTrait.class);
-                }
+        if (!mechanism.requireBoolean()) {
+            return;
+        }
+        boolean sneaking = value.asBoolean();
+        getEntity().setSneaking(sneaking);
+        if (object.isCitizensNPC()) {
+            NPC npc = object.getDenizenNPC().getCitizen();
+            if (sneaking) {
+                npc.getOrAddTrait(SneakTrait.class).setSneaking(true);
+            }
+            else if (npc.hasTrait(SneakTrait.class)) {
+                npc.getOrAddTrait(SneakTrait.class).setSneaking(false);
+                npc.removeTrait(SneakTrait.class);
+            }
+            else if (npc.hasTrait(SneakingTrait.class)) { // backsupport
+                npc.getTraitNullable(SneakingTrait.class).stand();
+                npc.removeTrait(SneakingTrait.class);
             }
         }
     }

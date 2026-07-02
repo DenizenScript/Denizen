@@ -1,14 +1,16 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
-import com.denizenscript.denizen.npc.traits.SleepingTrait;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
+import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgDefaultNull;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgLinear;
+import com.denizenscript.denizencore.scripts.commands.generator.ArgName;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.citizensnpcs.trait.SleepTrait;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 
@@ -19,6 +21,7 @@ public class SleepCommand extends AbstractCommand {
         setSyntax("sleep (<location>)");
         setRequiredArguments(0, 1);
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -43,42 +46,22 @@ public class SleepCommand extends AbstractCommand {
     //
     // -->
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (arg.matchesArgumentType(LocationTag.class)
-                    && !scriptEntry.hasObject("location")) {
-                scriptEntry.addObject("location", arg.asType(LocationTag.class));
-            }
-            else {
-                arg.reportUnhandled();
-            }
-        }
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("location") @ArgLinear @ArgDefaultNull LocationTag location) {
         if (!Utilities.entryHasNPC(scriptEntry)) {
-            throw new InvalidArgumentsException("This command requires a linked NPC!");
+            throw new InvalidArgumentsRuntimeException("This command requires a linked NPC!");
         }
-    }
-
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        LocationTag location = scriptEntry.getObjectTag("location");
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
         if (npc.getEntityType() != EntityType.PLAYER && !(npc.getEntity() instanceof Villager)) {
             Debug.echoError("Only Player or villager type NPCs can sit!");
             return;
         }
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), npc, location);
-        }
-        SleepingTrait trait = npc.getCitizen().getOrAddTrait(SleepingTrait.class);
+        SleepTrait trait = npc.getCitizen().getOrAddTrait(SleepTrait.class);
         if (location != null) {
-            trait.toSleep(location);
+            trait.setSleeping(location);
         }
         else {
-            trait.toSleep();
-        }
-        if (!trait.isSleeping()) {
-            npc.getCitizen().removeTrait(SleepingTrait.class);
+            trait.setSleeping(npc.getLocation());
         }
     }
 }

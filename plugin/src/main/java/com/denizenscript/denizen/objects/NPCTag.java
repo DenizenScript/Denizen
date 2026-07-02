@@ -479,7 +479,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_sitting", (attribute, object) -> {
             NPC citizen = object.getCitizen();
-            return new ElementTag(citizen.hasTrait(SittingTrait.class) && citizen.getOrAddTrait(SittingTrait.class).isSitting());
+            return new ElementTag((citizen.hasTrait(SitTrait.class) && citizen.getOrAddTrait(SitTrait.class).isSitting())
+                                || (citizen.hasTrait(SittingTrait.class) && citizen.getOrAddTrait(SittingTrait.class).isSitting())); // backsupport
         });
 
         // <--[tag]
@@ -490,7 +491,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_sleeping", (attribute, object) -> {
             NPC citizen = object.getCitizen();
-            return new ElementTag(citizen.hasTrait(SleepingTrait.class) && citizen.getOrAddTrait(SleepingTrait.class).isSleeping());
+            return new ElementTag(citizen.hasTrait(SleepTrait.class)
+                                    || (citizen.hasTrait(SleepingTrait.class) && citizen.getOrAddTrait(SleepingTrait.class).isSleeping())); //backsupport
         });
 
         // <--[tag]
@@ -1821,15 +1823,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.is_sneaking>
         // -->
         if (mechanism.matches("set_sneaking") && mechanism.requireBoolean()) {
-            if (!getCitizen().hasTrait(SneakingTrait.class)) {
-                getCitizen().addTrait(SneakingTrait.class);
+            if (getCitizen().hasTrait(SneakingTrait.class)) { // backsupport
+                getCitizen().getOrAddTrait(SneakingTrait.class).stand();
+                getCitizen().removeTrait(SneakingTrait.class);
             }
-            SneakingTrait trait = getCitizen().getOrAddTrait(SneakingTrait.class);
+            SneakTrait trait = getCitizen().getOrAddTrait(SneakTrait.class);
             if (trait.isSneaking() && !mechanism.getValue().asBoolean()) {
-                trait.stand();
+                trait.setSneaking(false);
             }
             else if (!trait.isSneaking() && mechanism.getValue().asBoolean()) {
-                trait.sneak();
+                trait.setSneaking(true);
             }
         }
 

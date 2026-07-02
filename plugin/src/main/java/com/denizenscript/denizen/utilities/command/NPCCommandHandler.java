@@ -2,6 +2,7 @@ package com.denizenscript.denizen.utilities.command;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.npc.traits.*;
+import com.denizenscript.denizen.npc.traits.MirrorTrait;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
@@ -16,7 +17,7 @@ import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.command.Requirements;
 import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.trait.Anchors;
+import net.citizensnpcs.trait.*;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -340,25 +341,36 @@ public class NPCCommandHandler {
             npc.getOrAddTrait(SneakingTrait.class).stand();
             npc.removeTrait(SneakingTrait.class);
         }
+        if (npc.hasTrait(SneakTrait.class)) {
+            npc.getOrAddTrait(SneakTrait.class).setSneaking(false);
+            npc.removeTrait(SneakTrait.class);
+        }
         if (npc.hasTrait(SleepingTrait.class)) {
             npc.getOrAddTrait(SleepingTrait.class).wakeUp();
             npc.removeTrait(SleepingTrait.class);
         }
-        SittingTrait trait = npc.getOrAddTrait(SittingTrait.class);
+        if (npc.hasTrait(SleepTrait.class)) {
+            npc.removeTrait(SleepTrait.class);
+        }
+        if (npc.hasTrait(SittingTrait.class)) {
+            npc.getOrAddTrait(SittingTrait.class).stand();
+            npc.removeTrait(SittingTrait.class);
+        }
+        SitTrait trait = npc.getOrAddTrait(SitTrait.class);
         if (args.hasValueFlag("location")) {
             LocationTag location = LocationTag.valueOf(args.getFlag("location"), CoreUtilities.basicContext);
             if (location == null) {
                 Messaging.sendError(sender, "Usage: /npc sit --location x,y,z,world");
                 return;
             }
-            trait.sit(location);
+            trait.setSitting(location);
             return;
         }
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
                 Anchors anchors = npc.getOrAddTrait(Anchors.class);
                 if (anchors.getAnchor(args.getFlag("anchor")) != null) {
-                    trait.sit(anchors.getAnchor(args.getFlag("anchor")).getLocation());
+                    trait.setSitting(anchors.getAnchor(args.getFlag("anchor")).getLocation());
                     Messaging.send(sender, npc.getName() + " is now sitting.");
                     return;
                 }
@@ -381,7 +393,7 @@ public class NPCCommandHandler {
         }
         Block block = targetLocation.getBlock();
         BlockData data = block.getBlockData();
-        if (data instanceof Stairs || data instanceof Bed || (data instanceof Slab && ((Slab) data).getType() == Slab.Type.BOTTOM)) {
+        if (data instanceof Stairs || data instanceof Bed || (data instanceof Slab slab && slab.getType() == Slab.Type.BOTTOM)) {
             targetLocation.setY(targetLocation.getBlockY() + 0.3);
         }
         else if (data instanceof Campfire) {
@@ -393,7 +405,7 @@ public class NPCCommandHandler {
         else if (block.getType().isSolid()) {
             targetLocation.setY(targetLocation.getBlockY() + 0.8);
         }
-        trait.sit(targetLocation);
+        trait.setSitting(targetLocation);
         Messaging.send(sender, npc.getName() + " is now sitting.");
     }
 
@@ -414,6 +426,15 @@ public class NPCCommandHandler {
             npc.removeTrait(SittingTrait.class);
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
+        else if (npc.hasTrait(SitTrait.class)) {
+            SitTrait trait = npc.getOrAddTrait(SitTrait.class);
+            if (!trait.isSitting()) {
+                Messaging.sendError(sender, npc.getName() + " is already standing!");
+                return;
+            }
+            npc.removeTrait(SitTrait.class);
+            Messaging.send(sender, npc.getName() + " is now standing.");
+        }
         else if (npc.hasTrait(SneakingTrait.class)) {
             SneakingTrait trait = npc.getOrAddTrait(SneakingTrait.class);
             if (!trait.isSneaking()) {
@@ -425,6 +446,15 @@ public class NPCCommandHandler {
             npc.removeTrait(SneakingTrait.class);
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
+        else if (npc.hasTrait(SneakTrait.class)) {
+            SneakTrait trait = npc.getOrAddTrait(SneakTrait.class);
+            if (!trait.isSneaking()) {
+                Messaging.sendError(sender, npc.getName() + " is already standing!");
+                return;
+            }
+            trait.setSneaking(false);
+            Messaging.send(sender, npc.getName() + " is now standing.");
+        }
         else if (npc.hasTrait(SleepingTrait.class)) {
             SleepingTrait trait = npc.getOrAddTrait(SleepingTrait.class);
             if (!trait.isSleeping()) {
@@ -434,6 +464,10 @@ public class NPCCommandHandler {
             }
             trait.wakeUp();
             npc.removeTrait(SleepingTrait.class);
+            Messaging.send(sender, npc.getName() + " is now standing.");
+        }
+        else if (npc.hasTrait(SleepTrait.class)) {
+            npc.removeTrait(SleepTrait.class);
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
         else {
@@ -451,30 +485,42 @@ public class NPCCommandHandler {
             npc.getOrAddTrait(SneakingTrait.class).stand();
             npc.removeTrait(SneakingTrait.class);
         }
+        if (npc.hasTrait(SneakTrait.class)) {
+            npc.getOrAddTrait(SneakTrait.class).setSneaking(false);
+            npc.removeTrait(SneakTrait.class);
+        }
         if (npc.hasTrait(SittingTrait.class)) {
             npc.getOrAddTrait(SittingTrait.class).stand();
             npc.removeTrait(SittingTrait.class);
         }
-        SleepingTrait trait = npc.getOrAddTrait(SleepingTrait.class);
-        if (trait.isSleeping()) {
+        if (npc.hasTrait(SitTrait.class)) {
+            npc.removeTrait(SitTrait.class);
+        }
+        if (npc.hasTrait(SleepingTrait.class)) {
+            npc.getOrAddTrait(SleepingTrait.class).wakeUp();
             Messaging.send(sender, npc.getName() + " was already sleeping, and is now standing!");
-            trait.wakeUp();
             npc.removeTrait(SleepingTrait.class);
             return;
         }
+        if (npc.hasTrait(SleepTrait.class)) {
+            Messaging.send(sender, npc.getName() + " was already sleeping, and is now standing!");
+            npc.removeTrait(SleepTrait.class);
+            return;
+        }
+        SleepTrait trait = npc.getOrAddTrait(SleepTrait.class);
         if (args.hasValueFlag("location")) {
             LocationTag location = LocationTag.valueOf(args.getFlag("location"), CoreUtilities.basicContext);
             if (location == null) {
                 Messaging.sendError(sender, "Usage: /npc sleep --location x,y,z,world");
                 return;
             }
-            trait.toSleep(location);
+            trait.setSleeping(location);
         }
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
                 Anchors anchors = npc.getOrAddTrait(Anchors.class);
                 if (anchors.getAnchor(args.getFlag("anchor")) != null) {
-                    trait.toSleep(anchors.getAnchor(args.getFlag("anchor")).getLocation().clone().add(0.5, 0, 0.5));
+                    trait.setSleeping(anchors.getAnchor(args.getFlag("anchor")).getLocation().clone().add(0.5, 0, 0.5));
                     Messaging.send(sender, npc.getName() + " is now sleeping.");
                     return;
                 }
@@ -483,10 +529,7 @@ public class NPCCommandHandler {
             return;
         }
         else {
-            trait.toSleep();
-        }
-        if (!trait.isSleeping()) {
-            npc.removeTrait(SleepingTrait.class);
+            trait.setSleeping(null);
         }
         Messaging.send(sender, npc.getName() + " is now sleeping.");
     }
@@ -497,15 +540,18 @@ public class NPCCommandHandler {
             min = 1, max = 1, permission = "denizen.npc.sleep")
     @Requirements(selected = true, ownership = true)
     public void wakingup(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        SleepingTrait trait = npc.getOrAddTrait(SleepingTrait.class);
-        if (!trait.isSleeping()) {
+        if (npc.hasTrait(SleepingTrait.class)) {
+            npc.getOrAddTrait(SleepingTrait.class).wakeUp();
             npc.removeTrait(SleepingTrait.class);
-            Messaging.sendError(sender, npc.getName() + " is already awake!");
-            return;
+            Messaging.send(sender, npc.getName() + " is no longer sleeping.");
         }
-        trait.wakeUp();
-        npc.removeTrait(SleepingTrait.class);
-        Messaging.send(sender, npc.getName() + " is no longer sleeping.");
+        else if (npc.hasTrait(SleepTrait.class)) {
+            npc.removeTrait(SleepTrait.class);
+            Messaging.send(sender, npc.getName() + " is no longer sleeping.");
+        }
+        else {
+            Messaging.sendError(sender, npc.getName() + " is already awake!");
+        }
     }
 
     @Command(
@@ -601,21 +647,31 @@ public class NPCCommandHandler {
             npc.getOrAddTrait(SleepingTrait.class).wakeUp();
             npc.removeTrait(SleepingTrait.class);
         }
-        if (npc.hasTrait(SleepingTrait.class)) {
-            npc.getOrAddTrait(SleepingTrait.class).wakeUp();
-            npc.removeTrait(SleepingTrait.class);
+        if (npc.hasTrait(SleepTrait.class)) {
+            npc.removeTrait(SleepTrait.class);
+        }
+        if (npc.hasTrait(SittingTrait.class)) {
+            npc.getOrAddTrait(SittingTrait.class).stand();
+            npc.removeTrait(SittingTrait.class);
+        }
+        if (npc.hasTrait(SitTrait.class)) {
+            npc.removeTrait(SitTrait.class);
+        }
+        if (npc.hasTrait(SneakingTrait.class)) {
+            npc.getOrAddTrait(SneakingTrait.class).stand();
+            npc.removeTrait(SneakingTrait.class);
         }
         if (npc.getEntity().getType() != EntityType.PLAYER) {
             Messaging.sendError(sender, npc.getName() + " needs to be a Player type NPC to sneak!");
             return;
         }
-        SneakingTrait trait = npc.getOrAddTrait(SneakingTrait.class);
+        SneakTrait trait = npc.getOrAddTrait(SneakTrait.class);
         if (trait.isSneaking()) {
-            trait.stand();
+            trait.setSneaking(false);
             Messaging.send(sender, npc.getName() + " was already sneaking, and is now standing.");
         }
         else {
-            trait.sneak();
+            trait.setSneaking(true);
             Messaging.send(sender, npc.getName() + " is now sneaking.");
         }
     }
