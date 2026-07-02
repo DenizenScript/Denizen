@@ -40,7 +40,9 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
         this.<ServerListPingScriptEventPaperImpl, ListTag>registerDetermination("exclude_players", ListTag.class, (evt, context, list) -> {
             HashSet<UUID> exclusions = new HashSet<>();
             for (PlayerTag player : list.filter(PlayerTag.class, context)) {
-                exclusions.add(player.getUUID());
+                if (player.isOnline()) {
+                    exclusions.add(player.getUUID());
+                }
             }
             if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
                 Iterator<Player> players = evt.getEvent().iterator();
@@ -87,6 +89,7 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
 
         public static void excludeListedPlayers(PaperServerListPingEvent event, Set<UUID> exclude) {
             event.getListedPlayers().removeIf(listedPlayerInfo -> exclude.contains(listedPlayerInfo.id()));
+            event.setNumPlayers(event.getNumPlayers() - exclude.size());
         }
     }
 
