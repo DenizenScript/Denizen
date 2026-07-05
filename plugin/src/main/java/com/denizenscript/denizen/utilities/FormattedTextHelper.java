@@ -799,7 +799,7 @@ public class FormattedTextHelper {
             else if (i + "https://a.".length() < chars.length && chars[i] == 'h' && chars[i + 1] == 't' && chars[i + 2] == 't' && chars[i  + 3] == 'p') {
                 String subStr = str.substring(i, i + "https://a.".length());
                 if (subStr.startsWith("https://") || subStr.startsWith("http://")) {
-                    int urlEnd = findUrlEndIndex(chars, i);
+                    int urlEnd = indexOfUrlEnd(chars, i);
                     if (urlEnd - i < "https://a.".length()) {
                         continue;
                     }
@@ -831,18 +831,11 @@ public class FormattedTextHelper {
         return new BaseComponent[] { cleanBase && !optimize ? root : base };
     }
 
-    public static final AsciiMatcher URL_VALID = new AsciiMatcher(AsciiMatcher.LETTERS_LOWER + AsciiMatcher.LETTERS_UPPER + AsciiMatcher.DIGITS + "-._~:/?#@!$&'()*+,;=");
+    public static final AsciiMatcher URL_VALID = new AsciiMatcher(AsciiMatcher.LETTERS_LOWER + AsciiMatcher.LETTERS_UPPER + AsciiMatcher.DIGITS + "-._~:/?#@!$&'()*+,;=%");
 
-    public static int findUrlEndIndex(char[] chars, int start) {
+    public static int indexOfUrlEnd(char[] chars, int start) {
         for (int i = start; i < chars.length; i++) {
-            char current = chars[i];
-            if (current == '%') {
-                if (i + 2 >= chars.length || !BinaryTag.VALID_HEX.isMatch(chars[i + 1]) || !BinaryTag.VALID_HEX.isMatch(chars[i + 2])) {
-                    return i;
-                }
-                i += 2;
-            }
-            else if (!URL_VALID.isMatch(current)) {
+            if (!URL_VALID.isMatch(chars[i])) {
                 return i;
             }
         }
