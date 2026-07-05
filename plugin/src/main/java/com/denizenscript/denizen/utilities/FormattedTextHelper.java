@@ -800,8 +800,7 @@ public class FormattedTextHelper {
                 started = i + 1;
             }
             else if (i + "https://a.".length() < chars.length && chars[i] == 'h' && chars[i + 1] == 't' && chars[i + 2] == 't' && chars[i  + 3] == 'p') {
-                String subStr = str.substring(i, i + "https://a.".length());
-                if (subStr.startsWith("https://") || subStr.startsWith("http://")) {
+                if (str.startsWith("https://", i) || str.startsWith("http://", i)) {
                     int urlEnd = indexOfUrlEnd(chars, i);
                     if (urlEnd - i < "https://a.".length()) {
                         continue;
