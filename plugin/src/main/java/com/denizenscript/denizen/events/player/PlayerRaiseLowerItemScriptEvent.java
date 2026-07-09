@@ -26,7 +26,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     // @Events
     // player raises|lowers|toggles <item>
     //
-    // @Synonyms player raises shield, player raises spyglass
+    // @Synonyms player raises shield, player raises spyglass, player raises spear
     //
     // @Group Player
     //
