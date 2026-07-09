@@ -15,6 +15,7 @@ import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.profile.PlayerTextures;
@@ -40,9 +41,7 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
         this.<ServerListPingScriptEventPaperImpl, ListTag>registerDetermination("exclude_players", ListTag.class, (evt, context, list) -> {
             HashSet<UUID> exclusions = new HashSet<>();
             for (PlayerTag player : list.filter(PlayerTag.class, context)) {
-                if (player.isOnline()) {
-                    exclusions.add(player.getUUID());
-                }
+                exclusions.add(player.getUUID());
             }
             if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_19)) {
                 Iterator<Player> players = evt.getEvent().iterator();
@@ -88,8 +87,15 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
         }
 
         public static void excludeListedPlayers(PaperServerListPingEvent event, Set<UUID> exclude) {
-            event.getListedPlayers().removeIf(listedPlayerInfo -> exclude.contains(listedPlayerInfo.id()));
-            event.setNumPlayers(event.getNumPlayers() - exclude.size());
+            MutableInt counter = new MutableInt(0);
+            event.getListedPlayers().removeIf(listedPlayerInfo -> {
+                if (exclude.contains(listedPlayerInfo.id())) {
+                    counter.increment();
+                    return true;
+                }
+                return false;
+            });
+            event.setNumPlayers(event.getNumPlayers() - counter.intValue());
         }
     }
 
