@@ -263,6 +263,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemScript.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSignContents.class, ItemTag.class); // Special case handling in ItemComponentsPatch
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(ItemSignContentsBack.class, ItemTag.class); // Special case handling in ItemComponentsPatch
             PropertyParser.registerProperty(ItemSignIsWaxed.class, ItemTag.class); // Special case handling in ItemComponentsPatch
         }
         registerItemProperty(ItemSkullskin.class, "profile");

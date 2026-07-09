@@ -12,6 +12,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -25,8 +26,7 @@ import org.bukkit.util.Consumer;
 
 import java.lang.invoke.MethodHandle;
 import java.net.URI;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class PaperAPITools {
@@ -84,12 +84,29 @@ public class PaperAPITools {
         return player.getPlayerListName();
     }
 
-    public String[] getSignLines(Sign sign) {
-        return sign.getLines();
+    public List<String> getSignLines(Sign sign) {
+        List<String> lines = new ArrayList<>(4);
+        lines.addAll(Arrays.asList(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? sign.getSide(Side.FRONT).getLines() : sign.getLines()));
+        return lines;
+    }
+
+    public List<String> getBackSignLines(Sign sign) {
+        List<String> lines = new ArrayList<>(4);
+        lines.addAll(Arrays.asList(sign.getSide(Side.BACK).getLines()));
+        return lines;
     }
 
     public void setSignLine(Sign sign, int line, String text) {
-        sign.setLine(line, text == null ? "" : text);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            sign.getSide(Side.FRONT).setLine(line, text == null ? "" : text);
+        }
+        else {
+            sign.setLine(line, text == null ? "" : text);
+        }
+    }
+
+    public void setBackSignLine(Sign sign, int line, String text) {
+        sign.getSide(Side.BACK).setLine(line, text == null ? "" : text);
     }
 
     public void sendResourcePack(Player player, String url, String hash, boolean forced, String prompt) {
@@ -237,7 +254,7 @@ public class PaperAPITools {
     public void addLink(ServerLinks links, String display, URI uri) {
         links.addLink(display, uri);
     }
-  
+
     public double[] getRecentTps() {
         return NMSHandler.instance.getRecentTps();
     }
