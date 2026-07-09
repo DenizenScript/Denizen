@@ -379,6 +379,11 @@ public class Utilities {
         for (int n = 0; n < 4; n++) {
             PaperAPITools.instance.setSignLine(sign, n, lines[n]);
         }
+        if (SignCommand.SIGN_SIDES_SUPPORTED) {
+            for (int n = 4; n < 8; n++) {
+                PaperAPITools.instance.setSignBackLine(sign, n, lines[n]);
+            }
+        }
         sign.update();
     }
 

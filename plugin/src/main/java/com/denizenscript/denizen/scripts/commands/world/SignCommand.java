@@ -38,6 +38,8 @@ public class SignCommand extends AbstractCommand {
     // @Description
     // Modifies a sign that replaces the text shown on it. If no sign is at the location, it replaces the location with the modified sign.
     //
+    // Text lines 1-4 will show on the front of the sign, and lines 5-8 will show on the back (requires MC 1.20+).
+    //
     // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
     // If there is not already a sign there, defaults to a sign_post.
     //
@@ -54,6 +56,10 @@ public class SignCommand extends AbstractCommand {
     // @Usage
     // Use to edit some text on an existing sign.
     // - sign "Hello|this is|some|text" <context.location>
+    //
+    // @Usage
+    // Use to edit some text on the front and back of an existing sign.
+    // - sign "Hi!|This is|the|front.|This|is|the|back." <context.location>
     //
     // @Usage
     // Use to show the time on a sign and ensure that it points north.
@@ -86,7 +92,7 @@ public class SignCommand extends AbstractCommand {
         }
         Block sign = location.getBlock();
         if (type != Type.AUTOMATIC || !isAnySign(sign.getType())) {
-            if (type == Type.WALL_SIGN || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && type == Type.HANGING)) {
+            if (type == Type.WALL_SIGN || (SIGN_SIDES_SUPPORTED && type == Type.HANGING)) {
                 BlockFace bf;
                 if (direction != null) {
                     bf = Utilities.chooseSignRotation(direction);
@@ -118,7 +124,7 @@ public class SignCommand extends AbstractCommand {
             }
         }
         BlockState signState = sign.getState();
-        Utilities.setSignLines((Sign) signState, text.toArray(new String[4]));
+        Utilities.setSignLines((Sign) signState, text.toArray(new String[8]));
     }
 
     public static void setWallSign(Block sign, BlockFace bf, MaterialTag material) {
@@ -154,7 +160,7 @@ public class SignCommand extends AbstractCommand {
     }
 
     public static boolean isHangingSign(Material material) {
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+        if (!SIGN_SIDES_SUPPORTED) {
             return false;
         }
         for (Material signType : Tag.CEILING_HANGING_SIGNS.getValues()) {
