@@ -17,6 +17,8 @@ import org.bukkit.block.*;
 
 public class SignCommand extends AbstractCommand {
 
+    public static final boolean SIGN_SIDES_SUPPORTED = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20);
+
     public SignCommand() {
         setName("sign");
         setSyntax("sign (type:{automatic}/sign_post/wall_sign/hanging) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)");
