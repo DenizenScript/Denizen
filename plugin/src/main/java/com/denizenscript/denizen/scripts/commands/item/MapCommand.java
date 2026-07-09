@@ -98,7 +98,7 @@ public class MapCommand extends AbstractCommand {
                                    @ArgName("resize") boolean resize,
                                    @ArgName("script") @ArgPrefixed @ArgDefaultNull ScriptTag script,
                                    @ArgName("dot") @ArgPrefixed @ArgDefaultNull ColorTag dot,
-                                   @ArgName("radius") @ArgPrefixed @ArgDefaultText("-1") int radius,
+                                   @ArgName("radius") @ArgPrefixed @ArgDefaultText("1") int radius,
                                    @ArgName("x") @ArgPrefixed @ArgDefaultText("0") double x,
                                    @ArgName("y") @ArgPrefixed @ArgDefaultText("0") double y,
                                    @ArgName("width") @ArgPrefixed @ArgDefaultText("-1") int width,
