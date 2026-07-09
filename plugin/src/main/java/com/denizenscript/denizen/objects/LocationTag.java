@@ -7,7 +7,11 @@ import com.denizenscript.denizen.nms.abstracts.BiomeNMS;
 import com.denizenscript.denizen.nms.interfaces.EntityHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
 import com.denizenscript.denizen.objects.properties.bukkit.BukkitColorExtensions;
-import com.denizenscript.denizen.objects.properties.material.*;
+import com.denizenscript.denizen.objects.properties.material.MaterialAttachmentFace;
+import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
+import com.denizenscript.denizen.objects.properties.material.MaterialDistance;
+import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
+import com.denizenscript.denizen.scripts.commands.world.SignCommand;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
@@ -22,7 +26,10 @@ import com.denizenscript.denizencore.objects.core.*;
 import com.denizenscript.denizencore.objects.notable.Notable;
 import com.denizenscript.denizencore.objects.notable.Note;
 import com.denizenscript.denizencore.objects.notable.NoteManager;
-import com.denizenscript.denizencore.tags.*;
+import com.denizenscript.denizencore.tags.Attribute;
+import com.denizenscript.denizencore.tags.ObjectTagProcessor;
+import com.denizenscript.denizencore.tags.TagContext;
+import com.denizenscript.denizencore.tags.TagManager;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.SimplexNoise;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
@@ -4159,7 +4166,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 attribute.echoError("Location is not a valid Sign block.");
                 return null;
             }
-            return new ElementTag(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? sign.getSide(Side.FRONT).isGlowingText() : sign.isGlowingText());
+            return new ElementTag(SignCommand.SIGN_SIDES_SUPPORTED ? sign.getSide(Side.FRONT).isGlowingText() : sign.isGlowingText());
         });
 
         // <--[tag]
@@ -4168,7 +4175,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @mechanism LocationTag.sign_glow_color
         // @group world
         // @description
-        // Returns the name of the glow-color of the sign at the location.
+        // Returns the name of the glow color of the sign at the location.
         // For MC 1.20+, this returns the color on the front of the sign.
         // To get the color of the back, see <@link tag LocationTag.sign_back_glow_color>.
         // See also <@link tag LocationTag.sign_glowing>
@@ -4178,7 +4185,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 attribute.echoError("Location is not a valid Sign block.");
                 return null;
             }
-            return new ElementTag(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? sign.getSide(Side.FRONT).getColor() : sign.getColor());
+            return new ElementTag(SignCommand.SIGN_SIDES_SUPPORTED ? sign.getSide(Side.FRONT).getColor() : sign.getColor());
         });
 
         // <--[tag]
@@ -4577,7 +4584,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // -->
             tagProcessor.registerTag(ListTag.class, "sign_back_contents", (attribute, object) -> {
                 if (object.getBlockStateForTag(attribute) instanceof Sign sign) {
-                    return new ListTag(PaperAPITools.instance.getBackSignLines(sign), true);
+                    return new ListTag(PaperAPITools.instance.getSignBackLines(sign), true);
                 }
                 return null;
             });
@@ -4598,7 +4605,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                     return;
                 }
                 for (int i = 0; i < 4; i++) {
-                    PaperAPITools.instance.setBackSignLine(sign, i, "");
+                    PaperAPITools.instance.setSignBackLine(sign, i, "");
                 }
                 CoreUtilities.fixNewLinesToListSeparation(input);
                 if (input.size() > 4) {
@@ -4606,7 +4613,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 }
                 else {
                     for (int i = 0; i < input.size(); i++) {
-                        PaperAPITools.instance.setBackSignLine(sign, i, input.get(i));
+                        PaperAPITools.instance.setSignBackLine(sign, i, input.get(i));
                     }
                 }
                 sign.update();
@@ -4656,7 +4663,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @mechanism LocationTag.sign_back_glow_color
             // @group world
             // @description
-            // Returns the name of the glow-color on the back of the sign at the location.
+            // Returns the name of the glow color on the back of the sign at the location.
             // To get the color of the front, see <@link tag LocationTag.sign_glow_color>.
             // See also <@link tag LocationTag.sign_back_glowing>.
             // -->
@@ -4675,8 +4682,9 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             // @description
             // Changes the glow color on the back of a sign.
             // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
+            // Use <@link mechanism LocationTag.sign_back_glowing> to toggle whether the sign is glowing.
             // If a sign is not glowing, this is equivalent to applying a chat color to the sign.
-            // Use <@link mechanism LocationTag.sign_glowing> to toggle whether the front of the sign is glowing.
+            // To set the color of the front, see <@link mechanism LocationTag.sign_glow_color>.
             // @tags
             // <LocationTag.sign_back_glow_color>
             // <LocationTag.sign_back_glowing>
@@ -4809,7 +4817,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 mechanism.echoError("This mechanism can only be called on Sign blocks.");
                 return;
             }
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            if (SignCommand.SIGN_SIDES_SUPPORTED) {
                 sign.getSide(Side.FRONT).setGlowingText(input.asBoolean());
             }
             else {
@@ -4841,7 +4849,7 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 mechanism.echoError("This mechanism can only be called on Sign blocks.");
                 return;
             }
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            if (SignCommand.SIGN_SIDES_SUPPORTED) {
                 sign.getSide(Side.FRONT).setColor(input.asEnum(DyeColor.class));
             }
             else {

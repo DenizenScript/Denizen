@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
+import com.denizenscript.denizen.scripts.commands.world.SignCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
@@ -103,17 +104,17 @@ public class PaperAPIToolsImpl extends PaperAPITools {
 
     @Override
     public List<String> getSignLines(Sign sign) {
-        return PaperModule.stringifyComponentList(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? sign.getSide(Side.FRONT).lines() : sign.lines());
+        return PaperModule.stringifyComponentList(SignCommand.SIGN_SIDES_SUPPORTED ? sign.getSide(Side.FRONT).lines() : sign.lines());
     }
 
     @Override
-    public List<String> getBackSignLines(Sign sign) {
+    public List<String> getSignBackLines(Sign sign) {
         return PaperModule.stringifyComponentList(sign.getSide(Side.BACK).lines());
     }
 
     @Override
     public void setSignLine(Sign sign, int line, String text) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+        if (SignCommand.SIGN_SIDES_SUPPORTED) {
             sign.getSide(Side.FRONT).line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
         }
         else {
@@ -122,7 +123,7 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
-    public void setBackSignLine(Sign sign, int line, String text) {
+    public void setSignBackLine(Sign sign, int line, String text) {
         sign.getSide(Side.BACK).line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
     }
 

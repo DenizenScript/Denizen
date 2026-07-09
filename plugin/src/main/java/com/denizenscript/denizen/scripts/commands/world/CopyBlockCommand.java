@@ -1,7 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.world;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.blocks.FullBlockData;
@@ -113,10 +111,10 @@ public class CopyBlockCommand extends AbstractCommand {
                 for (String line : ((Sign) sourceState).getLines()) {
                     PaperAPITools.instance.setSignLine(((Sign) updateState), n++, line);
                 }
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+                if (SignCommand.SIGN_SIDES_SUPPORTED) {
                     n = 0;
                     for (String line : ((Sign) sourceState).getSide(Side.BACK).getLines()) {
-                        PaperAPITools.instance.setBackSignLine(((Sign) updateState), n++, line);
+                        PaperAPITools.instance.setSignBackLine(((Sign) updateState), n++, line);
                     }
                 }
             }

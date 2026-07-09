@@ -179,11 +179,11 @@ public class PaperModule {
     }
 
     public static List<String> stringifyComponentList(List<Component> components) {
-        List<String> values = new ArrayList<>(components.size());
+        List<String> result = new ArrayList<>(components.size());
         for (Component component : components) {
-            values.add(stringifyComponent(component));
+            result.add(stringifyComponent(component));
         }
-        return values;
+        return result;
     }
 
     public static Component jsonToComponent(String json) {

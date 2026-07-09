@@ -3,6 +3,7 @@ package com.denizenscript.denizen.utilities;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
+import com.denizenscript.denizen.scripts.commands.world.SignCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -26,7 +27,9 @@ import org.bukkit.util.Consumer;
 
 import java.lang.invoke.MethodHandle;
 import java.net.URI;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class PaperAPITools {
@@ -85,19 +88,15 @@ public class PaperAPITools {
     }
 
     public List<String> getSignLines(Sign sign) {
-        List<String> lines = new ArrayList<>(4);
-        lines.addAll(Arrays.asList(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) ? sign.getSide(Side.FRONT).getLines() : sign.getLines()));
-        return lines;
+        return Arrays.asList(SignCommand.SIGN_SIDES_SUPPORTED ? sign.getSide(Side.FRONT).getLines() : sign.getLines());
     }
 
-    public List<String> getBackSignLines(Sign sign) {
-        List<String> lines = new ArrayList<>(4);
-        lines.addAll(Arrays.asList(sign.getSide(Side.BACK).getLines()));
-        return lines;
+    public List<String> getSignBackLines(Sign sign) {
+        return Arrays.asList(sign.getSide(Side.BACK).getLines());
     }
 
     public void setSignLine(Sign sign, int line, String text) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+        if (SignCommand.SIGN_SIDES_SUPPORTED) {
             sign.getSide(Side.FRONT).setLine(line, text == null ? "" : text);
         }
         else {
@@ -105,7 +104,7 @@ public class PaperAPITools {
         }
     }
 
-    public void setBackSignLine(Sign sign, int line, String text) {
+    public void setSignBackLine(Sign sign, int line, String text) {
         sign.getSide(Side.BACK).setLine(line, text == null ? "" : text);
     }
 
