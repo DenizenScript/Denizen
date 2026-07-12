@@ -466,7 +466,12 @@ public class NPCCommandHandler {
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
         else if (npc.hasTrait(SleepTrait.class)) {
-            npc.getOrAddTrait(SleepTrait.class).setSleeping(null);
+            SleepTrait trait = npc.getOrAddTrait(SleepTrait.class);
+            if (!trait.isSleeping()) {
+                Messaging.sendError(sender, npc.getName() + " is already standing!");
+                return;
+            }
+            trait.setSleeping(null);
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
         else {
@@ -501,6 +506,11 @@ public class NPCCommandHandler {
             return;
         }
         SleepTrait trait = npc.getOrAddTrait(SleepTrait.class);
+        if (trait.isSleeping()) {
+            trait.setSleeping(null);
+            Messaging.send(sender, npc.getName() + " was already sleeping, and is now standing!");
+            return;
+        }
         if (args.hasValueFlag("location")) {
             LocationTag location = LocationTag.valueOf(args.getFlag("location"), CoreUtilities.basicContext);
             if (location == null) {
@@ -538,7 +548,7 @@ public class NPCCommandHandler {
             npc.removeTrait(SleepingTrait.class);
             Messaging.send(sender, npc.getName() + " is no longer sleeping.");
         }
-        else if (npc.hasTrait(SleepTrait.class)) {
+        else if (npc.hasTrait(SleepTrait.class) && npc.getOrAddTrait(SleepTrait.class).isSleeping()) {
             npc.getOrAddTrait(SleepTrait.class).setSleeping(null);
             Messaging.send(sender, npc.getName() + " is no longer sleeping.");
         }

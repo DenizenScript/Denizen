@@ -491,7 +491,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_sleeping", (attribute, object) -> {
             NPC citizen = object.getCitizen();
-            return new ElementTag(citizen.hasTrait(SleepTrait.class)
+            return new ElementTag((citizen.hasTrait(SleepTrait.class) && citizen.getOrAddTrait(SleepTrait.class).isSleeping())
                                     || (citizen.hasTrait(SleepingTrait.class) && citizen.getOrAddTrait(SleepingTrait.class).isSleeping())); //backsupport
         });
 
