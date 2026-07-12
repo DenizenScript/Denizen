@@ -343,14 +343,13 @@ public class NPCCommandHandler {
         }
         if (npc.hasTrait(SneakTrait.class)) {
             npc.getOrAddTrait(SneakTrait.class).setSneaking(false);
-            npc.removeTrait(SneakTrait.class);
         }
         if (npc.hasTrait(SleepingTrait.class)) {
             npc.getOrAddTrait(SleepingTrait.class).wakeUp();
             npc.removeTrait(SleepingTrait.class);
         }
         if (npc.hasTrait(SleepTrait.class)) {
-            npc.removeTrait(SleepTrait.class);
+            npc.getOrAddTrait(SleepTrait.class).setSleeping(null);
         }
         if (npc.hasTrait(SittingTrait.class)) {
             npc.getOrAddTrait(SittingTrait.class).stand();
@@ -432,7 +431,7 @@ public class NPCCommandHandler {
                 Messaging.sendError(sender, npc.getName() + " is already standing!");
                 return;
             }
-            npc.removeTrait(SitTrait.class);
+            trait.setSitting(null);
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
         else if (npc.hasTrait(SneakingTrait.class)) {
@@ -467,7 +466,7 @@ public class NPCCommandHandler {
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
         else if (npc.hasTrait(SleepTrait.class)) {
-            npc.removeTrait(SleepTrait.class);
+            npc.getOrAddTrait(SleepTrait.class).setSleeping(null);
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
         else {
@@ -487,24 +486,18 @@ public class NPCCommandHandler {
         }
         if (npc.hasTrait(SneakTrait.class)) {
             npc.getOrAddTrait(SneakTrait.class).setSneaking(false);
-            npc.removeTrait(SneakTrait.class);
         }
         if (npc.hasTrait(SittingTrait.class)) {
             npc.getOrAddTrait(SittingTrait.class).stand();
             npc.removeTrait(SittingTrait.class);
         }
         if (npc.hasTrait(SitTrait.class)) {
-            npc.removeTrait(SitTrait.class);
+            npc.getOrAddTrait(SitTrait.class).setSitting(null);
         }
         if (npc.hasTrait(SleepingTrait.class)) {
             npc.getOrAddTrait(SleepingTrait.class).wakeUp();
             Messaging.send(sender, npc.getName() + " was already sleeping, and is now standing!");
             npc.removeTrait(SleepingTrait.class);
-            return;
-        }
-        if (npc.hasTrait(SleepTrait.class)) {
-            Messaging.send(sender, npc.getName() + " was already sleeping, and is now standing!");
-            npc.removeTrait(SleepTrait.class);
             return;
         }
         SleepTrait trait = npc.getOrAddTrait(SleepTrait.class);
@@ -546,7 +539,7 @@ public class NPCCommandHandler {
             Messaging.send(sender, npc.getName() + " is no longer sleeping.");
         }
         else if (npc.hasTrait(SleepTrait.class)) {
-            npc.removeTrait(SleepTrait.class);
+            npc.getOrAddTrait(SleepTrait.class).setSleeping(null);
             Messaging.send(sender, npc.getName() + " is no longer sleeping.");
         }
         else {
@@ -648,14 +641,14 @@ public class NPCCommandHandler {
             npc.removeTrait(SleepingTrait.class);
         }
         if (npc.hasTrait(SleepTrait.class)) {
-            npc.removeTrait(SleepTrait.class);
+            npc.getOrAddTrait(SleepTrait.class).setSleeping(null);
         }
         if (npc.hasTrait(SittingTrait.class)) {
             npc.getOrAddTrait(SittingTrait.class).stand();
             npc.removeTrait(SittingTrait.class);
         }
         if (npc.hasTrait(SitTrait.class)) {
-            npc.removeTrait(SitTrait.class);
+            npc.getOrAddTrait(SitTrait.class).setSitting(null);
         }
         if (npc.hasTrait(SneakingTrait.class)) {
             npc.getOrAddTrait(SneakingTrait.class).stand();

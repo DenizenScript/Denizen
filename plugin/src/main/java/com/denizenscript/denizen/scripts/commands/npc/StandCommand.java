@@ -8,6 +8,7 @@ import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.SitTrait;
 import net.citizensnpcs.trait.SleepTrait;
 import org.bukkit.entity.Player;
@@ -60,21 +61,20 @@ public class StandCommand extends AbstractCommand {
             sittable.setSitting(false);
         }
         else {
-            if (npc.getCitizen().hasTrait(SittingTrait.class)) {
-                SittingTrait trait = npc.getCitizen().getOrAddTrait(SittingTrait.class);
-                trait.stand();
-                npc.getCitizen().removeTrait(SittingTrait.class);
+            NPC citizen = npc.getCitizen();
+            if (citizen.hasTrait(SittingTrait.class)) {
+                citizen.getOrAddTrait(SittingTrait.class).stand();
+                citizen.removeTrait(SittingTrait.class);
             }
-            if (npc.getCitizen().hasTrait(SitTrait.class)) {
-                npc.getCitizen().removeTrait(SitTrait.class);
+            if (citizen.hasTrait(SitTrait.class)) {
+                citizen.getOrAddTrait(SitTrait.class).setSitting(null);
             }
-            if (npc.getCitizen().hasTrait(SleepingTrait.class)) {
-                SleepingTrait trait = npc.getCitizen().getOrAddTrait(SleepingTrait.class);
-                trait.wakeUp();
-                npc.getCitizen().removeTrait(SleepingTrait.class);
+            if (citizen.hasTrait(SleepingTrait.class)) {
+                citizen.getOrAddTrait(SleepingTrait.class).wakeUp();
+                citizen.removeTrait(SleepingTrait.class);
             }
-            if (npc.getCitizen().hasTrait(SleepTrait.class)) {
-                npc.getCitizen().removeTrait(SleepTrait.class);
+            if (citizen.hasTrait(SleepTrait.class)) {
+                citizen.getOrAddTrait(SleepTrait.class).setSleeping(null);
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
+import com.denizenscript.denizen.npc.traits.SittingTrait;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.utilities.Utilities;
@@ -10,6 +11,8 @@ import com.denizenscript.denizencore.scripts.commands.generator.ArgDefaultNull;
 import com.denizenscript.denizencore.scripts.commands.generator.ArgLinear;
 import com.denizenscript.denizencore.scripts.commands.generator.ArgName;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.trait.SitTrait;
 import net.citizensnpcs.trait.SleepTrait;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
@@ -56,7 +59,15 @@ public class SleepCommand extends AbstractCommand {
             Debug.echoError("Only Player or villager type NPCs can sit!");
             return;
         }
-        SleepTrait trait = npc.getCitizen().getOrAddTrait(SleepTrait.class);
+        NPC citizen = npc.getCitizen();
+        if (citizen.hasTrait(SittingTrait.class)) {
+            citizen.getOrAddTrait(SittingTrait.class).stand();
+            citizen.removeTrait(SittingTrait.class);
+        }
+        if (citizen.hasTrait(SitTrait.class)) {
+            citizen.getOrAddTrait(SitTrait.class).setSitting(null);
+        }
+        SleepTrait trait = citizen.getOrAddTrait(SleepTrait.class);
         if (location != null) {
             trait.setSleeping(location);
         }

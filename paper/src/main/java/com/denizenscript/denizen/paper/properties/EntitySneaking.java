@@ -49,7 +49,6 @@ public class EntitySneaking extends EntityProperty<ElementTag> {
             }
             else if (npc.hasTrait(SneakTrait.class)) {
                 npc.getOrAddTrait(SneakTrait.class).setSneaking(false);
-                npc.removeTrait(SneakTrait.class);
             }
             else if (npc.hasTrait(SneakingTrait.class)) { // backsupport
                 npc.getTraitNullable(SneakingTrait.class).stand();

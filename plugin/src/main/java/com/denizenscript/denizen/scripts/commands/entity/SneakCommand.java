@@ -10,6 +10,7 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.SneakTrait;
 import org.bukkit.entity.Player;
 
@@ -65,17 +66,14 @@ public class SneakCommand extends AbstractCommand {
     public enum SneakFake { FAKE, STOPFAKE }
 
     public static void autoExecute(ScriptEntry scriptEntry,
-                                   @ArgName("entities") @ArgLinear @ArgDefaultNull List<EntityTag> entities,
+                                   @ArgName("entities") @ArgLinear @ArgDefaultNull @ArgSubType(EntityTag.class) List<EntityTag> entities,
                                    @ArgName("mode") @ArgLinear @ArgDefaultNull SneakMode mode,
                                    @ArgName("fake") @ArgLinear @ArgDefaultNull SneakFake fake,
-                                   @ArgName("for") @ArgPrefixed @ArgDefaultNull List<PlayerTag> players) {
+                                   @ArgName("for") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> players) {
         if (entities == null) {
             throw new InvalidArgumentsRuntimeException("Missing entities argument.");
         }
-        if (mode == null) {
-            mode = SneakMode.START;
-        }
-        boolean shouldSneak = mode.equals(SneakMode.START);
+        boolean shouldSneak = mode == null || mode.equals(SneakMode.START);
         boolean shouldFake = fake != null && fake.equals(SneakFake.FAKE);
         boolean shouldStopFake = fake != null && fake.equals(SneakFake.STOPFAKE);
         for (EntityTag entity : entities) {
@@ -94,11 +92,12 @@ public class SneakCommand extends AbstractCommand {
                 }
             }
             else if (entity.isCitizensNPC()) {
-                if (entity.getDenizenNPC().getCitizen().hasTrait(SneakingTrait.class)) {
-                    entity.getDenizenNPC().getCitizen().getOrAddTrait(SneakingTrait.class).stand();
-                    entity.getDenizenNPC().getCitizen().removeTrait(SneakingTrait.class);
+                NPC npc = entity.getDenizenNPC().getCitizen();
+                if (npc.hasTrait(SneakingTrait.class)) {
+                    npc.getOrAddTrait(SneakingTrait.class).stand();
+                    npc.removeTrait(SneakingTrait.class);
                 }
-                SneakTrait trait = entity.getDenizenNPC().getCitizen().getOrAddTrait(SneakTrait.class);
+                SneakTrait trait = npc.getOrAddTrait(SneakTrait.class);
                 trait.setSneaking(shouldSneak);
             }
             else if (entity.isSpawned()) {

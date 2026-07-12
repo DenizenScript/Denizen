@@ -11,7 +11,6 @@ import com.denizenscript.denizencore.scripts.commands.generator.ArgLinear;
 import com.denizenscript.denizencore.scripts.commands.generator.ArgName;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.trait.SitTrait;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sittable;
 

@@ -490,7 +490,7 @@ public class BukkitImplDeprecations {
     public static Warning playerSteerEntityEvent = new FutureWarning("playerSteerEntityEvent", "The 'player steers <entity>' event is deprecated in favor of the 'player input' event in MC 1.21+.");
 
     // Added 2026/07/02
-    public static Warning citizensTraits = new FutureWarning("citizensTraits", "The Denizen-native 'SittingTrait', 'SleepingTrait', and 'SneakingTrait' traits have been removed in favor of Citizens' 'SitTrait', 'SleepTrait', and 'SneakTrait' respectively.");
+    public static Warning citizensTraits = new FutureWarning("citizensTraits", "The Denizen-native 'Sitting', 'Sleeping', and 'Sneaking' traits have been removed in favor of Citizens' 'SitTrait', 'SleepTrait', and 'Sneak' traits respectively.");
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 

@@ -79,10 +79,26 @@ public class TraitCommand extends AbstractCommand {
 
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("state") @ArgPrefixed @ArgDefaultNull Toggle toggle,
-                                   @ArgName("trait") @ArgLinear @ArgDefaultNull Trait traitName,
-                                   @ArgName("to") @ArgPrefixed @ArgDefaultNull List<NPCTag> npcs) {
+                                   @ArgName("trait") @ArgLinear @ArgDefaultNull String traitName,
+                                   @ArgName("to") @ArgPrefixed @ArgDefaultNull @ArgSubType(NPCTag.class) List<NPCTag> npcs) {
         if (traitName == null) {
             throw new InvalidArgumentsRuntimeException("Missing trait argument!");
+        }
+        Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName);
+        if (trait == null) {
+            throw new InvalidArgumentsRuntimeException("Trait not found: " + traitName);
+        }
+        if (trait == SittingTrait.class || trait == SleepingTrait.class || trait == SneakingTrait.class) {
+            BukkitImplDeprecations.citizensTraits.warn();
+            if (trait == SittingTrait.class) {
+                trait = SitTrait.class;
+            }
+            else if (trait == SleepingTrait.class) {
+                trait = SleepTrait.class;
+            }
+            else {
+                trait = SneakTrait.class;
+            }
         }
         if (npcs == null) {
             if (!Utilities.entryHasNPC(scriptEntry)) {
@@ -90,62 +106,30 @@ public class TraitCommand extends AbstractCommand {
             }
             npcs = Collections.singletonList(Utilities.getEntryNPC(scriptEntry));
         }
-        if (toggle == null) {
-            toggle = Toggle.TOGGLE;
-        }
-        Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.getName());
-        if (trait == null) {
-            Debug.echoError(scriptEntry, "Trait not found: " + traitName.getName());
-            return;
-        }
         for (NPCTag npcTag : npcs) {
             NPC npc = npcTag.getCitizen();
             switch (toggle) {
                 case TRUE:
                 case ON:
                     if (npc.hasTrait(trait)) {
-                        Debug.echoError(scriptEntry, "NPC already has trait '" + traitName.getName() + "'");
+                        Debug.echoError(scriptEntry, "NPC already has trait '" + trait.getName() + "'");
                         break;
-                    }
-                    if (trait == SittingTrait.class || trait == SleepingTrait.class || trait == SneakingTrait.class) {
-                        BukkitImplDeprecations.citizensTraits.warn();
-                        if (trait == SittingTrait.class) {
-                            trait = SitTrait.class;
-                        }
-                        else if (trait == SleepingTrait.class) {
-                            trait = SleepTrait.class;
-                        }
-                        else {
-                            trait = SneakTrait.class;
-                        }
                     }
                     npc.addTrait(trait);
                     break;
                 case FALSE:
                 case OFF:
                     if (!npc.hasTrait(trait)) {
-                        Debug.echoError(scriptEntry, "NPC does not have trait '" + traitName.getName() + "'");
+                        Debug.echoError(scriptEntry, "NPC does not have trait '" + trait.getName() + "'");
                     }
                     else {
                         npc.removeTrait(trait);
                     }
                     break;
-                case TOGGLE:
+                default:
                     if (npc.hasTrait(trait)) {
                         npc.removeTrait(trait);
                         break;
-                    }
-                    if (trait == SittingTrait.class || trait == SleepingTrait.class || trait == SneakingTrait.class) {
-                        BukkitImplDeprecations.citizensTraits.warn();
-                        if (trait == SittingTrait.class) {
-                            trait = SitTrait.class;
-                        }
-                        else if (trait == SleepingTrait.class) {
-                            trait = SleepTrait.class;
-                        }
-                        else {
-                            trait = SneakTrait.class;
-                        }
                     }
                     npc.addTrait(trait);
                     break;
