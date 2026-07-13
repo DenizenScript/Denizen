@@ -97,8 +97,7 @@ public class SneakCommand extends AbstractCommand {
                     npc.getOrAddTrait(SneakingTrait.class).stand();
                     npc.removeTrait(SneakingTrait.class);
                 }
-                SneakTrait trait = npc.getOrAddTrait(SneakTrait.class);
-                trait.setSneaking(shouldSneak);
+                npc.getOrAddTrait(SneakTrait.class).setSneaking(shouldSneak);
             }
             else if (entity.isSpawned()) {
                 NMSHandler.entityHelper.setSneaking(entity.getBukkitEntity(), shouldSneak);

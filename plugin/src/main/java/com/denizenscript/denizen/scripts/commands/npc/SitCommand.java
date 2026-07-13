@@ -56,13 +56,7 @@ public class SitCommand extends AbstractCommand {
             sittable.setSitting(true);
         }
         else if (npc.getEntity() instanceof Player) {
-            SitTrait trait = npc.getCitizen().getOrAddTrait(SitTrait.class);
-            if (location != null) {
-                trait.setSitting(location);
-            }
-            else {
-                trait.setSitting(npc.getLocation());
-            }
+            npc.getCitizen().getOrAddTrait(SitTrait.class).setSitting(location != null ? location : npc.getLocation());
         }
         else {
             Debug.echoError("Entities of type " + npc.getEntityType() + " cannot sit.");
