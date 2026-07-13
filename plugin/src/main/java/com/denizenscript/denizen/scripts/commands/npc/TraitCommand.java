@@ -1,5 +1,7 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.npc.traits.SittingTrait;
 import com.denizenscript.denizen.npc.traits.SleepingTrait;
 import com.denizenscript.denizen.npc.traits.SneakingTrait;
@@ -88,7 +90,7 @@ public class TraitCommand extends AbstractCommand {
         if (trait == null) {
             throw new InvalidArgumentsRuntimeException("Trait not found: " + traitName);
         }
-        if (trait == SittingTrait.class || trait == SleepingTrait.class || trait == SneakingTrait.class) {
+        if (trait == SittingTrait.class || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && trait == SleepingTrait.class) || trait == SneakingTrait.class) {
             BukkitImplDeprecations.citizensTraits.warn();
             if (trait == SittingTrait.class) {
                 trait = SitTrait.class;
