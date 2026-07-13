@@ -52,14 +52,10 @@ public class SitCommand extends AbstractCommand {
             throw new InvalidArgumentsRuntimeException("This command requires a linked NPC!");
         }
         NPCTag npc = Utilities.getEntryNPC(scriptEntry);
-        if (!(npc.getEntity() instanceof Player || npc.getEntity() instanceof Sittable)) {
-            Debug.echoError("Entities of type " + npc.getEntityType() + " cannot sit.");
-            return;
-        }
         if (npc.getEntity() instanceof Sittable sittable) {
             sittable.setSitting(true);
         }
-        else {
+        else if (npc.getEntity() instanceof Player) {
             SitTrait trait = npc.getCitizen().getOrAddTrait(SitTrait.class);
             if (location != null) {
                 trait.setSitting(location);
@@ -67,6 +63,9 @@ public class SitCommand extends AbstractCommand {
             else {
                 trait.setSitting(npc.getLocation());
             }
+        }
+        else {
+            Debug.echoError("Entities of type " + npc.getEntityType() + " cannot sit.");
         }
     }
 }
