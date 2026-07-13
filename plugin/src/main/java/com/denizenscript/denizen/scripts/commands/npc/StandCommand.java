@@ -59,23 +59,22 @@ public class StandCommand extends AbstractCommand {
         }
         if (npc.getEntity() instanceof Sittable sittable) {
             sittable.setSitting(false);
+            return;
         }
-        else {
-            NPC citizen = npc.getCitizen();
-            if (citizen.hasTrait(SittingTrait.class)) {
-                citizen.getOrAddTrait(SittingTrait.class).stand();
-                citizen.removeTrait(SittingTrait.class);
-            }
-            if (citizen.hasTrait(SitTrait.class)) {
-                citizen.getOrAddTrait(SitTrait.class).setSitting(null);
-            }
-            if (citizen.hasTrait(SleepingTrait.class)) {
-                citizen.getOrAddTrait(SleepingTrait.class).wakeUp();
-                citizen.removeTrait(SleepingTrait.class);
-            }
-            if (citizen.hasTrait(SleepTrait.class)) {
-                citizen.getOrAddTrait(SleepTrait.class).setSleeping(null);
-            }
+        NPC citizen = npc.getCitizen();
+        if (citizen.hasTrait(SittingTrait.class)) {
+            citizen.getOrAddTrait(SittingTrait.class).stand();
+            citizen.removeTrait(SittingTrait.class);
+        }
+        if (citizen.hasTrait(SitTrait.class)) {
+            citizen.getOrAddTrait(SitTrait.class).setSitting(null);
+        }
+        if (citizen.hasTrait(SleepingTrait.class)) {
+            citizen.getOrAddTrait(SleepingTrait.class).wakeUp();
+            citizen.removeTrait(SleepingTrait.class);
+        }
+        if (citizen.hasTrait(SleepTrait.class)) {
+            citizen.getOrAddTrait(SleepTrait.class).setSleeping(null);
         }
     }
 }
