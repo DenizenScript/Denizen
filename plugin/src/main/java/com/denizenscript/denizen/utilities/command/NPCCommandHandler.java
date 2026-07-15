@@ -8,6 +8,7 @@ import com.denizenscript.denizen.npc.traits.MirrorTrait;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
+import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -339,6 +340,7 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.sit")
     @Requirements(selected = true, ownership = true)
     public void sitting(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        BukkitImplDeprecations.npcSitCommand.warn();
         if (npc.hasTrait(SneakingTrait.class)) {
             npc.getOrAddTrait(SneakingTrait.class).stand();
             npc.removeTrait(SneakingTrait.class);
