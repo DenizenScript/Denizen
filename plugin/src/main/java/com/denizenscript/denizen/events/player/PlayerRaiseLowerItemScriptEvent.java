@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.events.player;
 
 import com.denizenscript.denizen.events.BukkitScriptEvent;
+import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
@@ -9,19 +11,14 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.*;
 
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -29,7 +26,7 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     // @Events
     // player raises|lowers|toggles <item>
     //
-    // @Synonyms player raises shield, player raises spyglass
+    // @Synonyms player raises shield, player raises spyglass, player raises spear
     //
     // @Group Player
     //
@@ -54,6 +51,12 @@ public class PlayerRaiseLowerItemScriptEvent extends BukkitScriptEvent implement
     // -->
 
     public static final EnumSet<Material> raisableItems = EnumSet.of(Material.SHIELD, Material.CROSSBOW, Material.BOW, Material.TRIDENT, Material.SPYGLASS);
+
+    static {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            raisableItems.addAll(Tag.ITEMS_SPEARS.getValues());
+        }
+    }
 
     public PlayerRaiseLowerItemScriptEvent() {
         registerCouldMatcher("player raises|lowers|toggles <item>");
