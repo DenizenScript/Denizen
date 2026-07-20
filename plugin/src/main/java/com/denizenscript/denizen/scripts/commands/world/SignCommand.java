@@ -21,7 +21,7 @@ public class SignCommand extends AbstractCommand {
 
     public SignCommand() {
         setName("sign");
-        setSyntax("sign (type:{automatic}/sign_post/wall_sign/hanging) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)");
+        setSyntax("sign (type:{automatic}/sign_post/wall_sign/hanging/hanging_wall) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)");
         setRequiredArguments(1, 5);
         isProcedural = false;
         autoCompile();
@@ -29,7 +29,7 @@ public class SignCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Sign
-    // @Syntax sign (type:{automatic}/sign_post/wall_sign/hanging) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)
+    // @Syntax sign (type:{automatic}/sign_post/wall_sign/hanging/hanging_wall) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)
     // @Required 1
     // @Maximum 5
     // @Short Modifies a sign.
@@ -76,7 +76,7 @@ public class SignCommand extends AbstractCommand {
         tab.addNotesOfType(LocationTag.class);
     }
 
-    public enum Type {AUTOMATIC, SIGN_POST, WALL_SIGN, HANGING}
+    public enum Type {AUTOMATIC, SIGN_POST, WALL_SIGN, HANGING, HANGING_WALL}
 
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("type") @ArgPrefixed @ArgDefaultText("automatic") Type type,
@@ -92,7 +92,7 @@ public class SignCommand extends AbstractCommand {
         }
         Block sign = location.getBlock();
         if (type != Type.AUTOMATIC || !isAnySign(sign.getType())) {
-            if (type == Type.WALL_SIGN || (SIGN_SIDES_SUPPORTED && type == Type.HANGING)) {
+            if (type == Type.WALL_SIGN || (SIGN_SIDES_SUPPORTED && (type == Type.HANGING || type == Type.HANGING_WALL))) {
                 BlockFace bf;
                 if (direction != null) {
                     bf = Utilities.chooseSignRotation(direction);
@@ -103,8 +103,11 @@ public class SignCommand extends AbstractCommand {
                 if (type == Type.WALL_SIGN) {
                     setWallSign(sign, bf, material);
                 }
-                else {
+                else if (type == Type.HANGING) {
                     setHangingSign(sign, bf, material);
+                }
+                else {
+                    setHangingWallSign(sign, bf, material);
                 }
             }
             else {
@@ -141,6 +144,13 @@ public class SignCommand extends AbstractCommand {
         sign.setBlockData(signMaterial.getModernData());
     }
 
+    public static void setHangingWallSign(Block sign, BlockFace bf, MaterialTag material) {
+        sign.setType(material == null ? Material.OAK_WALL_HANGING_SIGN : material.getMaterial(), false);
+        MaterialTag signMaterial = new MaterialTag(sign);
+        MaterialDirectional.getFrom(signMaterial).setFacing(bf);
+        sign.setBlockData(signMaterial.getModernData());
+    }
+
     public static boolean isStandingSign(Material material) {
         for (Material signType : Tag.STANDING_SIGNS.getValues()) {
             if (signType == material) {
@@ -171,7 +181,19 @@ public class SignCommand extends AbstractCommand {
         return false;
     }
 
+    public static boolean isHangingWallSign(Material material) {
+        if (!SIGN_SIDES_SUPPORTED) {
+            return false;
+        }
+        for (Material signType : Tag.WALL_HANGING_SIGNS.getValues()) {
+            if (signType == material) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isAnySign(Material material) {
-        return isStandingSign(material) || isWallSign(material) || isHangingSign(material);
+        return isStandingSign(material) || isWallSign(material) || isHangingSign(material) || isHangingWallSign(material);
     }
 }
