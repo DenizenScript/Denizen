@@ -15,6 +15,7 @@ import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.profile.PlayerTextures;
@@ -97,7 +98,15 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
         }
 
         public static void excludeListedPlayers(PaperServerListPingEvent event, Set<UUID> exclude) {
-            event.getListedPlayers().removeIf(listedPlayerInfo -> exclude.contains(listedPlayerInfo.id()));
+            MutableInt counter = new MutableInt();
+            event.getListedPlayers().removeIf(listedPlayerInfo -> {
+                if (exclude.contains(listedPlayerInfo.id())) {
+                    counter.increment();
+                    return true;
+                }
+                return false;
+            });
+            event.setNumPlayers(event.getNumPlayers() - counter.intValue());
         }
     }
 
