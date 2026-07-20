@@ -1528,17 +1528,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @name set_nickname
         // @input ElementTag
         // @description
-        // Sets the NPC's nickname. Leave blank to remove the nickname.
+        // Sets the NPC's nickname.
         // @tags
         // <NPCTag.nickname>
         // -->
-        tagProcessor.registerMechanism("set_nickname", false, (object, mechanism) -> {
-            if (mechanism.hasValue()) {
-                object.getNicknameTrait().setNickname(mechanism.getValue().asString());
-            }
-            else {
-                object.getNicknameTrait().removeNickname();
-            }
+        tagProcessor.registerMechanism("set_nickname", false, ElementTag.class, (object, mechanism, input) -> {
+            object.getNicknameTrait().setNickname(input.asString());
         });
 
         // <--[mechanism]
@@ -1590,7 +1585,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.owner>
         // -->
         tagProcessor.registerMechanism("owner", false, (object, mechanism) -> {
-            object.getCitizen().getOrAddTrait(Owner.class).setOwner(mechanism.getValue().canBeType(PlayerTag.class) ? mechanism.valueAsType(PlayerTag.class).getPlayerEntity() : null);
+            object.getCitizen().getOrAddTrait(Owner.class).setOwner(mechanism.getValue().canBeType(PlayerTag.class) ? mechanism.valueAsType(PlayerTag.class).getUUID() : null);
         });
 
         // <--[mechanism]
@@ -1778,10 +1773,10 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return;
             }
             SneakingTrait trait = object.getCitizen().getOrAddTrait(SneakingTrait.class);
-            if (trait.isSneaking() && !mechanism.getValue().asBoolean()) {
+            if (trait.isSneaking() && !input.asBoolean()) {
                 trait.stand();
             }
-            else if (!trait.isSneaking() && mechanism.getValue().asBoolean()) {
+            else if (!trait.isSneaking() && input.asBoolean()) {
                 trait.sneak();
             }
         });
