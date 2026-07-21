@@ -26,17 +26,17 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
 
     public CreateWorldCommand() {
         setName("createworld");
-        setSyntax("createworld [<name>] (generator:<id>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>) (generate_structures:true/false)");
-        setRequiredArguments(1, 8);
-        setPrefixesHandled("generator", "worldtype", "environment", "copy_from", "seed", "settings", "generate_structures");
+        setSyntax("createworld [<name>] (generator:<id>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>) (generate_structures:true/false) (copy_to:<path>)");
+        setRequiredArguments(1, 9);
+        setPrefixesHandled("generator", "worldtype", "environment", "copy_from", "seed", "settings", "generate_structures", "copy_to");
         isProcedural = false;
     }
 
     // <--[command]
     // @Name CreateWorld
-    // @Syntax createworld [<name>] (generator:<id>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>) (generate_structures:true/false)
+    // @Syntax createworld [<name>] (generator:<id>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>) (settings:<json>) (generate_structures:true/false) (copy_to:<path>)
     // @Required 1
-    // @Maximum 8
+    // @Maximum 9
     // @Short Creates a new world, or loads an existing world.
     // @Synonyms LoadWorld
     // @Group world
@@ -59,6 +59,8 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
     //
     // Optionally specify an existing world to copy files from.
     // The 'copy_from' argument is ~waitable. Refer to <@link language ~waitable>.
+    //
+    // Optionally specify a 'copy_to' path, which overrides the folder name the files are copied into (useful for datapack dimensions).
     //
     // It's often ideal to put this command inside <@link event server prestart>.
     //
@@ -121,17 +123,21 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
         ElementTag worldType = scriptEntry.argForPrefixAsElement("worldtype", "NORMAL");
         ElementTag environment = scriptEntry.argForPrefixAsElement("environment", "NORMAL");
         ElementTag copy_from = scriptEntry.argForPrefixAsElement("copy_from", null);
+        ElementTag copy_to = scriptEntry.argForPrefixAsElement("copy_to", null);
         ElementTag settings = scriptEntry.argForPrefixAsElement("settings", null);
         ElementTag seed = scriptEntry.argForPrefixAsElement("seed", null);
         ElementTag generateStructures = scriptEntry.argForPrefixAsElement("generate_structures", null);
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), worldName, generator, environment, copy_from, settings, worldType, seed, generateStructures);
+            Debug.report(scriptEntry, getName(), worldName, generator, environment, copy_from, copy_to, settings, worldType, seed, generateStructures);
         }
         if (Bukkit.getWorld(worldName.asString()) != null) {
             Debug.echoDebug(scriptEntry, "CreateWorld doing nothing, world by that name already loaded.");
             scriptEntry.setFinished(true);
             return;
         }
+        String targetFolder = copy_to != null ? copy_to.asString() : worldName.asString();
+        String sourceFolder = copy_from != null ? copy_from.asString().replace("w@", "") : null;
+
         if (!Settings.cache_createWorldSymbols) {
             if (forbiddenSymbols.containsAnyMatch(worldName.asString())) {
                 Debug.echoError("Cannot use world names with non-alphanumeric symbols due to security settings in Denizen/config.yml.");
@@ -140,7 +146,7 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
             }
         }
         else if (!Settings.cache_createWorldWeirdPaths) {
-            String cleaned = worldName.asLowerString().replace('\\', '/');
+            String cleaned = targetFolder.toLowerCase().replace('\\', '/');
             while (cleaned.contains("//")) {
                 cleaned = cleaned.replace("//", "/");
             }
@@ -157,8 +163,28 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                 scriptEntry.setFinished(true);
                 return;
             }
+
+            if (sourceFolder != null) {
+                String cleanedSource = sourceFolder.toLowerCase().replace('\\', '/');
+                while (cleanedSource.contains("//")) {
+                    cleanedSource = cleanedSource.replace("//", "/");
+                }
+                if (cleanedSource.startsWith("/")) {
+                    cleanedSource = cleanedSource.substring(1);
+                }
+                if (cleanedSource.startsWith("plugins/")) {
+                    Debug.echoError("CreateWorld cannot copy from a folder inside plugins due to security settings in Denizen/config.yml.");
+                    scriptEntry.setFinished(true);
+                    return;
+                }
+                if (cleanedSource.startsWith("..")) {
+                    Debug.echoError("CreateWorld cannot copy from a world with a raised path (contains '..') due to security settings in Denizen/config.yml.");
+                    scriptEntry.setFinished(true);
+                    return;
+                }
+            }
         }
-        final File newFolder = new File(Bukkit.getWorldContainer(), worldName.asString());
+        final File newFolder = new File(Bukkit.getWorldContainer(), targetFolder);
         if (!Utilities.canWriteToFile(newFolder)) {
             Debug.echoError("Cannot copy to that new folder path due to security settings in Denizen/config.yml.");
             scriptEntry.setFinished(true);
@@ -175,14 +201,10 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
             scriptEntry.setFinished(true);
             return;
         }
-        if (copy_from != null && !Settings.cache_createWorldSymbols && forbiddenSymbols.containsAnyMatch(copy_from.asString())) {
-            Debug.echoError("Cannot use copy_from world names with non-alphanumeric symbols due to security settings in Denizen/config.yml.");
-            scriptEntry.setFinished(true);
-            return;
-        }
+
         Supplier<Boolean> copyRunnable = () -> {
             try {
-                File folder = new File(Bukkit.getWorldContainer(), copy_from.asString().replace("w@", ""));
+                File folder = new File(Bukkit.getWorldContainer(), sourceFolder);
                 if (!Utilities.canReadFile(folder)) {
                     Debug.echoError(scriptEntry, "Cannot copy from that folder path due to security settings in Denizen/config.yml.");
                     return false;
@@ -197,11 +219,11 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
                 }
                 CoreUtilities.copyDirectory(folder, newFolder, excludedExtensionsForCopyFrom);
                 Debug.echoDebug(scriptEntry, "Copied " + folder.getName() + " to " + newFolder.getName());
-                File file = new File(Bukkit.getWorldContainer(), worldName.asString() + "/uid.dat");
+                File file = new File(Bukkit.getWorldContainer(), targetFolder + "/uid.dat");
                 if (file.exists()) {
                     file.delete();
                 }
-                File file2 = new File(Bukkit.getWorldContainer(), worldName.asString() + "/session.lock");
+                File file2 = new File(Bukkit.getWorldContainer(), targetFolder + "/session.lock");
                 if (file2.exists()) {
                     file2.delete();
                 }
