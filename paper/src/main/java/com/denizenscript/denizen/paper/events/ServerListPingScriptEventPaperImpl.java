@@ -98,6 +98,7 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
         }
 
         public static void excludeListedPlayers(PaperServerListPingEvent event, Set<UUID> exclude) {
+            int size = event.getListedPlayers().size();
             MutableInt counter = new MutableInt();
             event.getListedPlayers().removeIf(listedPlayerInfo -> {
                 if (exclude.contains(listedPlayerInfo.id())) {
@@ -106,7 +107,9 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
                 }
                 return false;
             });
-            event.setNumPlayers(event.getNumPlayers() - counter.intValue());
+            if (size == event.getNumPlayers()) {
+                event.setNumPlayers(event.getNumPlayers() - counter.intValue());
+            }
         }
     }
 
