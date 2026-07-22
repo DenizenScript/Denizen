@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -19,6 +20,8 @@ import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.trait.CurrentLocation;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
@@ -153,8 +156,8 @@ public class TeleportCommand extends AbstractCommand {
                 Debug.echoError("Cannot interpret object '" + entityObj + "' as an EntityTag.");
                 continue;
             }
-            org.bukkit.entity.Entity bukkitEntity = entity.getBukkitEntity();
-            org.bukkit.entity.Entity vehicle = bukkitEntity.getVehicle();
+            Entity bukkitEntity = entity.getBukkitEntity();
+            Entity vehicle = bukkitEntity.getVehicle();
             if (vehicle != null) {
                 bukkitEntity.leaveVehicle();
             }
@@ -164,7 +167,7 @@ public class TeleportCommand extends AbstractCommand {
                 NMSHandler.entityHelper.look(bukkitEntity, location.getYaw(), location.getPitch());
                 if (vehicle != null) {
                     vehicle.teleport(location, cause);
-                    org.bukkit.Bukkit.getScheduler().runTask(com.denizenscript.denizen.Denizen.getInstance(), () -> {
+                    Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
                         if (vehicle.isValid() && bukkitEntity.isValid()) {
                             vehicle.addPassenger(bukkitEntity);
                         }
@@ -204,7 +207,7 @@ public class TeleportCommand extends AbstractCommand {
 
                 if (vehicle != null) {
                     vehicle.teleport(location, cause);
-                    org.bukkit.Bukkit.getScheduler().runTask(com.denizenscript.denizen.Denizen.getInstance(), () -> {
+                    Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
                         if (vehicle.isValid() && bukkitEntity.isValid()) {
                             vehicle.addPassenger(bukkitEntity);
                         }
@@ -233,7 +236,7 @@ public class TeleportCommand extends AbstractCommand {
 
             if (vehicle != null) {
                 vehicle.teleport(location, cause);
-                org.bukkit.Bukkit.getScheduler().runTask(com.denizenscript.denizen.Denizen.getInstance(), () -> {
+                Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
                     if (vehicle.isValid() && bukkitEntity.isValid()) {
                         vehicle.addPassenger(bukkitEntity);
                     }
