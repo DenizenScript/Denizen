@@ -36,7 +36,7 @@ public class AnvilBlockDamagedScriptEvent extends BukkitScriptEvent implements L
     //
     // @Determine
     // "STATE:<ElementTag>" to set the anvil's new damage state.
-    // "BREAK:<ElementTag(Boolean)>" to set weather the anvil will break.
+    // "BREAK:<ElementTag(Boolean)>" to set whether the anvil will break.
     // -->
 
     public AnvilBlockDamagedScriptEvent() {

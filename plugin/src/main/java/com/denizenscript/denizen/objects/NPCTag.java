@@ -503,7 +503,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, "nickname", (attribute, object) -> {
             return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getOrAddTrait(NicknameTrait.class)
-                    .getNickname() : object.getName());
+                    .getNickname() : object.getName(), true);
         });
 
         // Documented in EntityTag
@@ -512,16 +512,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 BukkitImplDeprecations.npcNicknameTag.warn(attribute.context);
                 attribute.fulfill(1);
                 return new ElementTag(object.getCitizen().hasTrait(NicknameTrait.class) ? object.getCitizen().getOrAddTrait(NicknameTrait.class)
-                        .getNickname() : object.getName());
+                        .getNickname() : object.getName(), true);
             }
-            return new ElementTag(object.getName());
+            return new ElementTag(object.getName(), true);
         });
 
         // <--[tag]
         // @attribute <NPCTag.traits>
         // @returns ListTag
         // @description
-        // Returns a list of all of the NPC's traits.
+        // Returns a list of all the NPC's traits.
         // -->
         tagProcessor.registerTag(ListTag.class, "traits", (attribute, object) -> {
             List<String> list = new ArrayList<>();
@@ -537,14 +537,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has a specified trait.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "has_trait", (attribute, object) -> {
-            if (attribute.hasParam()) {
-                Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(attribute.getParam());
-                if (trait != null) {
-                    return new ElementTag(object.getCitizen().hasTrait(trait));
-                }
-            }
-            return null;
+        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "has_trait", (attribute, object, param) -> {
+            Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(param.asString());
+            return trait != null ? new ElementTag(object.getCitizen().hasTrait(trait)) : null;
         });
 
         // <--[tag]
@@ -563,15 +558,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns whether the NPC has a specified trigger.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "has_trigger", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
+        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "has_trigger", (attribute, object, param) -> {
             if (!object.getCitizen().hasTrait(TriggerTrait.class)) {
                 return new ElementTag(false);
             }
             TriggerTrait trait = object.getCitizen().getOrAddTrait(TriggerTrait.class);
-            return new ElementTag(trait.hasTrigger(attribute.getParam()));
+            return new ElementTag(trait.hasTrigger(param.asString()));
         });
 
         // <--[tag]
@@ -581,7 +573,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns whether the NPC has anchors assigned.
         // -->
         tagProcessor.registerTag(ElementTag.class, "has_anchors", (attribute, object) -> {
-            return (new ElementTag(object.getCitizen().getOrAddTrait(Anchors.class).getAnchors().size() > 0));
+            return new ElementTag(!object.getCitizen().getOrAddTrait(Anchors.class).getAnchors().isEmpty());
         });
 
         // <--[tag]
@@ -591,11 +583,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns a list of anchor names currently assigned to the NPC.
         // -->
         tagProcessor.registerTag(ListTag.class, "list_anchors", (attribute, object) -> {
-            ListTag list = new ListTag();
-            for (Anchor anchor : object.getCitizen().getOrAddTrait(Anchors.class).getAnchors()) {
-                list.add(anchor.getName());
-            }
-            return list;
+            return new ListTag(object.getCitizen().getOrAddTrait(Anchors.class).getAnchors(), anchor -> new ElementTag(anchor.getName(), true));
         });
 
         // <--[tag]
@@ -608,22 +596,18 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             Anchors trait = object.getCitizen().getOrAddTrait(Anchors.class);
             if (attribute.hasParam()) {
                 Anchor anchor = trait.getAnchor(attribute.getParam());
-                    if (anchor != null) {
-                        return new LocationTag(anchor.getLocation());
-                    }
-                    else {
-                        attribute.echoError("NPC Anchor '" + attribute.getParam() + "' is not defined.");
-                        return null;
-                    }
+                if (anchor != null) {
+                    return new LocationTag(anchor.getLocation());
+                }
+                else {
+                    attribute.echoError("NPC Anchor '" + attribute.getParam() + "' is not defined.");
+                    return null;
+                }
             }
             else if (attribute.startsWith("list", 2)) {
                 attribute.fulfill(1);
                 BukkitImplDeprecations.npcAnchorListTag.warn(attribute.context);
-                ListTag list = new ListTag();
-                for (Anchor anchor : trait.getAnchors()) {
-                    list.add(anchor.getName());
-                }
-                return list;
+                return new ListTag(trait.getAnchors(), anchor -> new ElementTag(anchor.getName(), true));
             }
             else {
                 attribute.echoError("npc.anchor[...] tag must have an input.");
@@ -637,18 +621,14 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the specified constant from the NPC.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "constant", (attribute, object) -> {
-            if (attribute.hasParam()) {
-                if (object.getCitizen().hasTrait(ConstantsTrait.class)
-                        && object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(attribute.getParam()) != null) {
-                    return new ElementTag(object.getCitizen().getOrAddTrait(ConstantsTrait.class)
-                            .getConstant(attribute.getParam()));
-                }
-                else {
-                    return null;
-                }
+        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "constant", (attribute, object, param) -> {
+            if (object.getCitizen().hasTrait(ConstantsTrait.class)
+                    && object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(param.asString()) != null) {
+                return new ElementTag(object.getCitizen().getOrAddTrait(ConstantsTrait.class).getConstant(param.asString()), true);
             }
-            return null;
+            else {
+                return null;
+            }
         });
 
         // <--[tag]
@@ -657,13 +637,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns true if the NPC has the specified pose, otherwise returns false.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "has_pose", (attribute, object) -> {
-            if (attribute.hasParam()) {
-                return new ElementTag(object.getCitizen().getOrAddTrait(Poses.class).hasPose(attribute.getParam()));
-            }
-            else {
-                return null;
-            }
+        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "has_pose", (attribute, object, param) -> {
+            return new ElementTag(object.getCitizen().getOrAddTrait(Poses.class).hasPose(param.asString()));
         });
 
         // <--[tag]
@@ -673,14 +648,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the pose as a LocationTag with x, y, and z set to 0, and the world set to the first
         // possible available world Bukkit knows about.
         // -->
-        tagProcessor.registerTag(LocationTag.class, "pose", (attribute, object) -> {
-            if (attribute.hasParam()) {
-                Pose pose = object.getCitizen().getOrAddTrait(Poses.class).getPose(attribute.getParam());
-                return new LocationTag(org.bukkit.Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch());
-            }
-            else {
-                return null;
-            }
+        tagProcessor.registerTag(LocationTag.class, ElementTag.class, "pose", (attribute, object, param) -> {
+            Pose pose = object.getCitizen().getOrAddTrait(Poses.class).getPose(param.asString());
+            return new LocationTag(Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch());
         }, "get_pose");
 
         // <--[tag]
@@ -718,11 +688,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             if (stands == null || stands.isEmpty()) {
                 return null;
             }
-            ListTag output = new ListTag();
-            for (Entity stand : stands) {
-                output.addObject(new EntityTag(stand).getDenizenObject());
-            }
-            return output;
+            return new ListTag(stands, stand -> new EntityTag(stand).getDenizenObject());
         });
 
         // <--[tag]
@@ -867,7 +833,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 if (skin.getSignature() != null) {
                     sign = ";" + skin.getSignature();
                 }
-                return new ElementTag(tex + sign);
+                return new ElementTag(tex + sign, true);
             }
             return null;
         });
@@ -885,7 +851,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             SkinTrait skin = object.getCitizen().getOrAddTrait(SkinTrait.class);
-            return new ElementTag(skin.getSkinName() + "|" + skin.getTexture());
+            return new ElementTag(skin.getSkinName() + "|" + skin.getTexture(), true);
         });
 
         // <--[tag]
@@ -897,7 +863,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, "skin", (attribute, object) -> {
             if (object.getCitizen().hasTrait(SkinTrait.class)) {
-                return new ElementTag(object.getCitizen().getOrAddTrait(SkinTrait.class).getSkinName());
+                return new ElementTag(object.getCitizen().getOrAddTrait(SkinTrait.class).getSkinName(), true);
             }
             return null;
         });
@@ -1046,13 +1012,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return null;
             }
             else {
-                ListTag result = new ListTag();
-                for (AssignmentScriptContainer container : citizen.getOrAddTrait(AssignmentTrait.class).containerCache) {
-                    if (container != null) {
-                       result.addObject(new ScriptTag(container));
-                    }
-                }
-                return result;
+                return new ListTag(citizen.getOrAddTrait(AssignmentTrait.class).containerCache, Objects::nonNull, ScriptTag::new);
             }
         });
 
@@ -1141,7 +1101,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Not related to Sentinel combat.
         // -->
         tagProcessor.registerTag(ElementTag.class, "attack_strategy", (attribute, object) -> {
-            return new ElementTag(object.getNavigator().getLocalParameters().attackStrategy().toString());
+            return new ElementTag(object.getNavigator().getLocalParameters().attackStrategy().toString(), true);
         });
 
         // <--[tag]
@@ -1226,7 +1186,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
             if (object.getNavigator().getTargetType() == null) {
                 return null;
             }
-            return new ElementTag(object.getNavigator().getTargetType().toString());
+            return new ElementTag(object.getNavigator().getTargetType().toString(), true);
         });
 
         // <--[tag]
@@ -1249,7 +1209,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // Returns the name of the registry this NPC came from.
         // -->
         tagProcessor.registerTag(ElementTag.class, "registry_name", (attribute, object) -> {
-            return new ElementTag(object.getCitizen().getOwningRegistry().getName());
+            return new ElementTag(object.getCitizen().getOwningRegistry().getName(), true);
         });
 
         // <--[tag]
@@ -1258,15 +1218,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Returns the value of a Citizens NPC metadata key.
         // -->
-        tagProcessor.registerTag(ElementTag.class, "citizens_data", (attribute, object) -> {
-            if (!attribute.hasParam()) {
-                return null;
-            }
-            Object val = object.getCitizen().data().get(attribute.getParam());
-            if (val == null) {
-                return null;
-            }
-            return new ElementTag(val.toString());
+        tagProcessor.registerTag(ElementTag.class, ElementTag.class, "citizens_data", (attribute, object, param) -> {
+            Object val = object.getCitizen().data().get(param.asString());
+            return val != null ? new ElementTag(val.toString(), true) : null;
         });
 
         // <--[tag]
@@ -1343,6 +1297,16 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 return new ElementTag(wanderWaypointProvider.getYRange());
             }
             return null;
+        });
+
+        // <--[tag]
+        // @attribute <NPCTag.can_navigate_to[<location>]>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether an NPC can navigate to a specified location.
+        // -->
+        tagProcessor.registerTag(ElementTag.class, LocationTag.class, "can_navigate_to", (attribute, object, param) -> {
+            return new ElementTag(object.getCitizen().getNavigator().canNavigateTo(param));
         });
 
         // <--[mechanism]
@@ -1456,29 +1420,6 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 mechanism.echoError("Must set waypoint_provider to 'wander' before setting wander_yrange!");
             }
         });
-    }
-
-    public static ObjectTagProcessor<NPCTag> tagProcessor = new ObjectTagProcessor<>();
-
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-        return tagProcessor.getObjectAttribute(this, attribute);
-    }
-
-    @Override
-    public ObjectTag getNextObjectTypeDown() {
-        if (getEntity() != null) {
-            return new EntityTag(this);
-        }
-        return new ElementTag(identify());
-    }
-
-    public void applyProperty(Mechanism mechanism) {
-        mechanism.echoError("Cannot apply properties to an NPC!");
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
 
         // TODO: For all the mechanism tags, add the @Mechanism link!
 
@@ -1491,11 +1432,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.script>
         // -->
-        if (mechanism.matches("set_assignment") && mechanism.requireObject(ScriptTag.class)) {
-            AssignmentTrait trait = getCitizen().getOrAddTrait(AssignmentTrait.class);
+        tagProcessor.registerMechanism("set_assignment", false, ScriptTag.class, (object, mechanism, input) -> {
+            AssignmentTrait trait = object.getCitizen().getOrAddTrait(AssignmentTrait.class);
             trait.clearAssignments(null);
-            trait.addAssignmentScript((AssignmentScriptContainer) mechanism.valueAsType(ScriptTag.class).getContainer(), null);
-        }
+            trait.addAssignmentScript((AssignmentScriptContainer) input.getContainer(), null);
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1506,9 +1447,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.script>
         // -->
-        if (mechanism.matches("add_assignment") && mechanism.requireObject(ScriptTag.class)) {
-            getCitizen().getOrAddTrait(AssignmentTrait.class).addAssignmentScript((AssignmentScriptContainer) mechanism.valueAsType(ScriptTag.class).getContainer(), null);
-        }
+        tagProcessor.registerMechanism("add_assignment", false, ScriptTag.class, (object, mechanism, input) -> {
+            object.getCitizen().getOrAddTrait(AssignmentTrait.class).addAssignmentScript((AssignmentScriptContainer) input.getContainer(), null);
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1519,20 +1460,21 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.script>
         // -->
-        if (mechanism.matches("remove_assignment")) {
-            if (npc.hasTrait(AssignmentTrait.class)) {
-                if (mechanism.hasValue()) {
-                    AssignmentTrait trait = getCitizen().getOrAddTrait(AssignmentTrait.class);
-                    trait.removeAssignmentScript(mechanism.getValue().asString(), null);
-                    trait.checkAutoRemove();
-                }
-                else {
-                    BukkitImplDeprecations.assignmentRemove.warn(mechanism.context);
-                    getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
-                    npc.removeTrait(AssignmentTrait.class);
-                }
+        tagProcessor.registerMechanism("remove_assignment", false, (object, mechanism) -> {
+            if (!object.getCitizen().hasTrait(AssignmentTrait.class)) {
+                return;
             }
-        }
+            if (mechanism.hasValue()) {
+                AssignmentTrait trait = object.getCitizen().getOrAddTrait(AssignmentTrait.class);
+                trait.removeAssignmentScript(mechanism.getValue().asString(), null);
+                trait.checkAutoRemove();
+            }
+            else {
+                BukkitImplDeprecations.assignmentRemove.warn(mechanism.context);
+                object.getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
+                object.getCitizen().removeTrait(AssignmentTrait.class);
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1543,12 +1485,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.script>
         // -->
-        if (mechanism.matches("clear_assignments")) {
-            if (npc.hasTrait(AssignmentTrait.class)) {
-                getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
-                npc.removeTrait(AssignmentTrait.class);
+        tagProcessor.registerMechanism("clear_assignments", false, (object, mechanism) -> {
+            if (object.getCitizen().hasTrait(AssignmentTrait.class)) {
+                object.getCitizen().getOrAddTrait(AssignmentTrait.class).clearAssignments(null);
+                object.getCitizen().removeTrait(AssignmentTrait.class);
             }
-        }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1560,11 +1502,13 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.hologram_direction>
         // -->
-        if (mechanism.matches("hologram_direction")) { //  && mechanism.requireEnum(HologramTrait.HologramDirection.class)
+        tagProcessor.registerMechanism("hologram_direction", false, (object, mechanism) -> {
+            //if (mechanism.requireEnum(HologramTrait.HologramDirection.class)) {
+                //HologramTrait hologram = object.getCitizen().getOrAddTrait(HologramTrait.class);
+                //hologram.setDirection(HologramTrait.HologramDirection.valueOf(param.asString().toUpperCase()));
+            //}
             BukkitImplDeprecations.npcHologramDirection.warn(mechanism.context);
-            //HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
-            //hologram.setDirection(HologramTrait.HologramDirection.valueOf(mechanism.getValue().asString().toUpperCase()));
-        }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1575,10 +1519,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.hologram_line_height>
         // -->
-        if (mechanism.matches("hologram_line_height") && mechanism.requireDouble()) {
-            HologramTrait hologram = getCitizen().getOrAddTrait(HologramTrait.class);
-            hologram.setLineHeight(mechanism.getValue().asDouble());
-        }
+        tagProcessor.registerMechanism("hologram_line_height", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireDouble()) {
+                object.getCitizen().getOrAddTrait(HologramTrait.class).setLineHeight(input.asDouble());
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1589,9 +1534,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.nickname>
         // -->
-        if (mechanism.matches("set_nickname")) {
-            getNicknameTrait().setNickname(mechanism.getValue().asString());
-        }
+        tagProcessor.registerMechanism("set_nickname", false, ElementTag.class, (object, mechanism, input) -> {
+            object.getNicknameTrait().setNickname(input.asString());
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1602,9 +1547,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.has_nickname>
         // -->
-        if (mechanism.matches("remove_nickname")) {
-            getNicknameTrait().removeNickname();
-        }
+        tagProcessor.registerMechanism("remove_nickname", false, (object, mechanism) -> {
+            object.getNicknameTrait().removeNickname();
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1615,9 +1560,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.entity_type>
         // -->
-        if (mechanism.matches("set_entity_type") && mechanism.requireObject(EntityTag.class)) {
-            getCitizen().setBukkitEntityType(mechanism.valueAsType(EntityTag.class).getBukkitEntityType());
-        }
+        tagProcessor.registerMechanism("set_entity_type", false, EntityTag.class, (object, mechanism, input) -> {
+            object.getCitizen().setBukkitEntityType(input.getBukkitEntityType());
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1628,27 +1573,22 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.name>
         // -->
-        if (mechanism.matches("name") || mechanism.matches("set_name")) {
-            getCitizen().setName(mechanism.getValue().asString().length() > 256 ? mechanism.getValue().asString().substring(0, 256) : mechanism.getValue().asString());
-        }
+        tagProcessor.registerMechanism("name", false, ElementTag.class, (object, mechanism, input) -> {
+            object.getCitizen().setName(input.asString().length() > 256 ? input.asString().substring(0, 256) : input.asString());
+        }, "set_name");
 
         // <--[mechanism]
         // @object NPCTag
         // @name owner
         // @input PlayerTag
         // @description
-        // Sets the owner of the NPC.
+        // Sets the owner of the NPC. Provide no input to set the server as the owner.
         // @tags
         // <NPCTag.owner>
         // -->
-        if (mechanism.matches("owner")) {
-            if (PlayerTag.matches(mechanism.getValue().asString())) {
-                getCitizen().getOrAddTrait(Owner.class).setOwner(mechanism.valueAsType(PlayerTag.class).getPlayerEntity());
-            }
-            else {
-                getCitizen().getOrAddTrait(Owner.class).setOwner(mechanism.getValue().asString());
-            }
-        }
+        tagProcessor.registerMechanism("owner", false, (object, mechanism) -> {
+            object.getCitizen().getOrAddTrait(Owner.class).setOwner(mechanism.getValue().canBeType(PlayerTag.class) ? mechanism.valueAsType(PlayerTag.class).getUUID() : null);
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1661,29 +1601,29 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.skin>
         // -->
-        if (mechanism.matches("skin_blob")) {
+        tagProcessor.registerMechanism("skin_blob", false, (object, mechanism) -> {
             if (!mechanism.hasValue()) {
-                if (getCitizen().hasTrait(SkinTrait.class)) {
-                    getCitizen().getOrAddTrait(SkinTrait.class).clearTexture();
-                    if (getCitizen().isSpawned()) {
-                        getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
-                        getCitizen().spawn(getCitizen().getStoredLocation());
+                if (object.getCitizen().hasTrait(SkinTrait.class)) {
+                    object.getCitizen().getOrAddTrait(SkinTrait.class).clearTexture();
+                    if (object.getCitizen().isSpawned()) {
+                        object.getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
+                        object.getCitizen().spawn(object.getCitizen().getStoredLocation());
                     }
                 }
             }
             else {
-                SkinTrait skinTrait = getCitizen().getOrAddTrait(SkinTrait.class);
+                SkinTrait skinTrait = object.getCitizen().getOrAddTrait(SkinTrait.class);
                 String[] dat = mechanism.getValue().asString().split(";");
                 if (dat.length < 2) {
                     Debug.echoError("Invalid skin_blob input. Must specify texture;signature;name in full.");
                     return;
                 }
                 skinTrait.setSkinPersistent(dat.length > 2 ? dat[2] : UUID.randomUUID().toString(), dat[1], dat[0]);
-                if (getCitizen().isSpawned() && getCitizen().getEntity() instanceof SkinnableEntity) {
-                    ((SkinnableEntity) getCitizen().getEntity()).getSkinTracker().notifySkinChange(true);
+                if (object.getCitizen().isSpawned() && object.getCitizen().getEntity() instanceof SkinnableEntity skinnable) {
+                    skinnable.getSkinTracker().notifySkinChange(true);
                 }
             }
-        }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1696,21 +1636,21 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.skin>
         // -->
-        if (mechanism.matches("skin")) {
+        tagProcessor.registerMechanism("skin", false, (object, mechanism) -> {
             if (!mechanism.hasValue()) {
-                if (getCitizen().hasTrait(SkinTrait.class)) {
-                    getCitizen().getOrAddTrait(SkinTrait.class).clearTexture();
+                if (object.getCitizen().hasTrait(SkinTrait.class)) {
+                    object.getCitizen().getOrAddTrait(SkinTrait.class).clearTexture();
                 }
             }
             else {
-                SkinTrait skinTrait = getCitizen().getOrAddTrait(SkinTrait.class);
+                SkinTrait skinTrait = object.getCitizen().getOrAddTrait(SkinTrait.class);
                 skinTrait.setSkinName(mechanism.getValue().asString());
             }
-            if (getCitizen().isSpawned()) {
-                getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
-                getCitizen().spawn(getCitizen().getStoredLocation());
+            if (object.getCitizen().isSpawned()) {
+                object.getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
+                object.getCitizen().spawn(object.getCitizen().getStoredLocation());
             }
-        }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1722,9 +1662,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.auto_update_skin>
         // -->
-        if (mechanism.matches("auto_update_skin") && mechanism.requireBoolean()) {
-            getCitizen().getOrAddTrait(SkinTrait.class).setShouldUpdateSkins(mechanism.getValue().asBoolean());
-        }
+        tagProcessor.registerMechanism("auto_update_skin", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getCitizen().getOrAddTrait(SkinTrait.class).setShouldUpdateSkins(input.asBoolean());
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1733,10 +1675,10 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @description
         // Sets the item type of the item.
         // -->
-        if (mechanism.matches("item_type") && mechanism.requireObject(ItemTag.class)) {
-            ItemTag item = mechanism.valueAsType(ItemTag.class);
-            Material mat = item.getMaterial().getMaterial();
-            Entity npcEntity = getEntity();
+        tagProcessor.registerMechanism("item_type", false, ItemTag.class, (object, mechanism, input) -> {
+            Material mat = input.getBukkitMaterial();
+            Entity npcEntity = object.getEntity();
+            NPC citizen = object.getCitizen();
             if (npcEntity instanceof Item droppedItem) {
                 droppedItem.getItemStack().setType(mat);
             }
@@ -1744,27 +1686,27 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
                 itemFrame.getItem().setType(mat);
             }
             else if (npcEntity instanceof FallingBlock) {
-                getCitizen().data().setPersistent(NPC.Metadata.ITEM_ID, mat.name());
-                getCitizen().data().setPersistent(NPC.Metadata.ITEM_DATA, 0);
+                citizen.data().setPersistent(NPC.Metadata.ITEM_ID, mat.name());
+                citizen.data().setPersistent(NPC.Metadata.ITEM_DATA, 0);
             }
             else {
                 Debug.echoError("NPC is the not an item type!");
             }
-            if (getCitizen().isSpawned()) {
-                getCitizen().despawn();
-                getCitizen().spawn(getCitizen().getStoredLocation());
+            if (citizen.isSpawned()) {
+                citizen.despawn();
+                citizen.spawn(citizen.getStoredLocation());
             }
-        }
+        });
 
-        if (mechanism.matches("spawn")) {
+        tagProcessor.registerMechanism("spawn", false, (object, mechanism) -> {
             BukkitImplDeprecations.npcSpawnMechanism.warn(mechanism.context);
             if (mechanism.requireObject("Invalid LocationTag specified. Assuming last known NPC location.", LocationTag.class)) {
-                getCitizen().spawn(mechanism.valueAsType(LocationTag.class));
+                object.getCitizen().spawn(mechanism.valueAsType(LocationTag.class));
             }
             else {
-                getCitizen().spawn(getCitizen().getStoredLocation());
+                object.getCitizen().spawn(object.getCitizen().getStoredLocation());
             }
-        }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1775,10 +1717,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.range>
         // -->
-        if (mechanism.matches("range") && mechanism.requireFloat()) {
-            getCitizen().getNavigator().getDefaultParameters().range(mechanism.getValue().asFloat());
-            getCitizen().getNavigator().getLocalParameters().range(mechanism.getValue().asFloat());
-        }
+        tagProcessor.registerMechanism("range", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireFloat()) {
+                object.getCitizen().getNavigator().getDefaultParameters().range(input.asFloat());
+                object.getCitizen().getNavigator().getLocalParameters().range(input.asFloat());
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1789,10 +1733,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.attack_range>
         // -->
-        if (mechanism.matches("attack_range") && mechanism.requireFloat()) {
-            getCitizen().getNavigator().getDefaultParameters().attackRange(mechanism.getValue().asFloat());
-            getCitizen().getNavigator().getLocalParameters().attackRange(mechanism.getValue().asFloat());
-        }
+        tagProcessor.registerMechanism("attack_range", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireFloat()) {
+                object.getCitizen().getNavigator().getDefaultParameters().attackRange(input.asFloat());
+                object.getCitizen().getNavigator().getLocalParameters().attackRange(input.asFloat());
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1803,15 +1749,17 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.speed>
         // -->
-        if (mechanism.matches("speed") && mechanism.requireFloat()) {
-            getCitizen().getNavigator().getDefaultParameters().speedModifier(mechanism.getValue().asFloat());
-            getCitizen().getNavigator().getLocalParameters().speedModifier(mechanism.getValue().asFloat());
-        }
+        tagProcessor.registerMechanism("speed", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireFloat()) {
+                object.getCitizen().getNavigator().getDefaultParameters().speedModifier(input.asFloat());
+                object.getCitizen().getNavigator().getLocalParameters().speedModifier(input.asFloat());
+            }
+        });
 
-        if (mechanism.matches("despawn")) {
+        tagProcessor.registerMechanism("despawn", false, (object, mechanism) -> {
             BukkitImplDeprecations.npcDespawnMech.warn(mechanism.context);
-            getCitizen().despawn(DespawnReason.PLUGIN);
-        }
+            object.getCitizen().despawn(DespawnReason.PLUGIN);
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1822,19 +1770,18 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.is_sneaking>
         // -->
-        if (mechanism.matches("set_sneaking") && mechanism.requireBoolean()) {
-            if (getCitizen().hasTrait(SneakingTrait.class)) { // backsupport
-                getCitizen().getOrAddTrait(SneakingTrait.class).stand();
-                getCitizen().removeTrait(SneakingTrait.class);
+        tagProcessor.registerMechanism("set_sneaking", false, ElementTag.class, (object, mechanism, input) -> {
+            if (!mechanism.requireBoolean()) {
+                return;
             }
-            SneakTrait trait = getCitizen().getOrAddTrait(SneakTrait.class);
-            if (trait.isSneaking() && !mechanism.getValue().asBoolean()) {
-                trait.setSneaking(false);
+            SneakingTrait trait = object.getCitizen().getOrAddTrait(SneakingTrait.class);
+            if (trait.isSneaking() && !input.asBoolean()) {
+                trait.stand();
             }
-            else if (!trait.isSneaking() && mechanism.getValue().asBoolean()) {
-                trait.setSneaking(true);
+            else if (!trait.isSneaking() && input.asBoolean()) {
+                trait.sneak();
             }
-        }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1845,9 +1792,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.is_protected>
         // -->
-        if (mechanism.matches("set_protected") && mechanism.requireBoolean()) {
-            getCitizen().setProtected(mechanism.getValue().asBoolean());
-        }
+        tagProcessor.registerMechanism("set_protected", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getCitizen().setProtected(input.asBoolean());
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1858,9 +1807,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.lookclose>
         // -->
-        if (mechanism.matches("lookclose") && mechanism.requireBoolean()) {
-            getLookCloseTrait().lookClose(mechanism.getValue().asBoolean());
-        }
+        tagProcessor.registerMechanism("lookclose", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getLookCloseTrait().lookClose(input.asBoolean());
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1871,9 +1822,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.controllable>
         // -->
-        if (mechanism.matches("controllable") && mechanism.requireBoolean()) {
-            getCitizen().getOrAddTrait(Controllable.class).setEnabled(mechanism.getValue().asBoolean());
-        }
+        tagProcessor.registerMechanism("controllable", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getCitizen().getOrAddTrait(Controllable.class).setEnabled(input.asBoolean());
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1884,9 +1837,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.targetable>
         // -->
-        if (mechanism.matches("targetable") && mechanism.requireBoolean()) {
-            getCitizen().getOrAddTrait(TargetableTrait.class).setTargetable(mechanism.getValue().asBoolean());
-        }
+        tagProcessor.registerMechanism("targetable", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getCitizen().getOrAddTrait(TargetableTrait.class).setTargetable(input.asBoolean());
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1897,14 +1852,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.teleport_on_stuck>
         // -->
-        if (mechanism.matches("teleport_on_stuck") && mechanism.requireBoolean()) {
-            if (mechanism.getValue().asBoolean()) {
-                getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
+        tagProcessor.registerMechanism("teleport_on_stuck", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getNavigator().getDefaultParameters().stuckAction(input.asBoolean() ? TeleportStuckAction.INSTANCE : null);
             }
-            else {
-                getNavigator().getDefaultParameters().stuckAction(null);
-            }
-        }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1915,10 +1867,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.distance_margin>
         // -->
-        if ((mechanism.matches("distance_margin") || mechanism.matches("set_distance")) && mechanism.requireDouble()) {
-            getNavigator().getDefaultParameters().distanceMargin(mechanism.getValue().asDouble());
-            getNavigator().getLocalParameters().distanceMargin(mechanism.getValue().asDouble());
-        }
+        tagProcessor.registerMechanism("distance_margin", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireDouble()) {
+                object.getNavigator().getDefaultParameters().distanceMargin(input.asDouble());
+                object.getNavigator().getLocalParameters().distanceMargin(input.asDouble());
+            }
+        }, "set_distance");
 
         // <--[mechanism]
         // @object NPCTag
@@ -1929,10 +1883,12 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.path_distance_margin>
         // -->
-        if (mechanism.matches("path_distance_margin") && mechanism.requireDouble()) {
-            getNavigator().getDefaultParameters().pathDistanceMargin(mechanism.getValue().asDouble());
-            getNavigator().getLocalParameters().pathDistanceMargin(mechanism.getValue().asDouble());
-        }
+        tagProcessor.registerMechanism("path_distance_margin", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireDouble()) {
+                object.getNavigator().getDefaultParameters().pathDistanceMargin(input.asDouble());
+                object.getNavigator().getLocalParameters().pathDistanceMargin(input.asDouble());
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1944,9 +1900,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.use_new_finder>
         // -->
-        if (mechanism.matches("use_new_finder") && mechanism.requireBoolean()) {
-            getNavigator().getDefaultParameters().useNewPathfinder(mechanism.getValue().asBoolean());
-        }
+        tagProcessor.registerMechanism("use_new_finder", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireBoolean()) {
+                object.getNavigator().getDefaultParameters().useNewPathfinder(input.asBoolean());
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1959,15 +1917,15 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // <NPCTag.navigator_look_at>
         // -->
-        if (mechanism.matches("navigator_look_at")) {
+        tagProcessor.registerMechanism("navigator_look_at", false, (object, mechanism) -> {
             if (mechanism.hasValue() && mechanism.requireObject(LocationTag.class)) {
                 final LocationTag loc = mechanism.valueAsType(LocationTag.class);
-                getNavigator().getLocalParameters().lookAtFunction((n) -> loc);
+                object.getNavigator().getLocalParameters().lookAtFunction((n) -> loc);
             }
             else {
-                getNavigator().getLocalParameters().lookAtFunction(null);
+                object.getNavigator().getLocalParameters().lookAtFunction(null);
             }
-        }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1978,9 +1936,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // TODO
         // -->
-        if (mechanism.matches("name_visible")) {
-            getCitizen().data().setPersistent(NPC.Metadata.NAMEPLATE_VISIBLE, mechanism.getValue().asString());
-        }
+        tagProcessor.registerMechanism("name_visible", false, ElementTag.class, (object, mechanism, input) -> {
+            object.getCitizen().data().setPersistent(NPC.Metadata.NAMEPLATE_VISIBLE, input.asString());
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -1991,9 +1949,11 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // TODO
         // -->
-        if (mechanism.matches("glow_color") && mechanism.requireEnum(ChatColor.class)) {
-            getCitizen().getOrAddTrait(ScoreboardTrait.class).setColor(ChatColor.valueOf(mechanism.getValue().asString().toUpperCase()));
-        }
+        tagProcessor.registerMechanism("glow_color", false, ElementTag.class, (object, mechanism, input) -> {
+            if (mechanism.requireEnum(ChatColor.class)) {
+                object.getCitizen().getOrAddTrait(ScoreboardTrait.class).setColor(input.asEnum(ChatColor.class));
+            }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -2004,19 +1964,18 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // TODO
         // -->
-        if (mechanism.matches("clear_waypoints")) {
-            Waypoints wp = getCitizen().getOrAddTrait(Waypoints.class);
-            if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
-                ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()).clear();
+        tagProcessor.registerMechanism("clear_waypoints", false, (object, mechanism) -> {
+            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            if (wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider provider) {
+                ((List<Waypoint>) provider.waypoints()).clear();
             }
-            else if ((wp.getCurrentProvider() instanceof WanderWaypointProvider)) {
-                List<Location> locs = ((WanderWaypointProvider) wp.getCurrentProvider()).getRegionCentres();
+            else if (wp.getCurrentProvider() instanceof WanderWaypointProvider provider) {
+                List<Location> locs = provider.getRegionCentres();
                 for (Location loc : locs) {
                     locs.remove(loc); // Manual clear to ensure recalculation for the forwarding list
                 }
-
             }
-        }
+        });
 
         // <--[mechanism]
         // @object NPCTag
@@ -2027,22 +1986,39 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // @tags
         // TODO
         // -->
-        if (mechanism.matches("add_waypoint") && mechanism.requireObject(LocationTag.class)) {
-            Location target = mechanism.valueAsType(LocationTag.class).clone();
-            Waypoints wp = getCitizen().getOrAddTrait(Waypoints.class);
-            if ((wp.getCurrentProvider() instanceof LinearWaypointProvider)) {
-                ((LinearWaypointProvider) wp.getCurrentProvider()).addWaypoint(new Waypoint(target));
+        tagProcessor.registerMechanism("add_waypoint", false, LocationTag.class, (object, mechanism, input) -> {
+            Waypoints wp = object.getCitizen().getOrAddTrait(Waypoints.class);
+            if (wp.getCurrentProvider() instanceof LinearWaypointProvider provider) {
+                provider.addWaypoint(new Waypoint(input));
             }
-            else if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
-                ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()).add(new Waypoint(target));
+            else if (wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider provider) {
+                ((List<Waypoint>) provider.waypoints()).add(new Waypoint(input));
             }
-            else if ((wp.getCurrentProvider() instanceof WanderWaypointProvider)) {
-                ((WanderWaypointProvider) wp.getCurrentProvider()).getRegionCentres().add(target);
+            else if (wp.getCurrentProvider() instanceof WanderWaypointProvider provider) {
+                provider.getRegionCentres().add(input);
             }
-        }
+        });
+    }
 
+    public static ObjectTagProcessor<NPCTag> tagProcessor = new ObjectTagProcessor<>();
+
+    @Override
+    public ObjectTag getObjectAttribute(Attribute attribute) {
+        return tagProcessor.getObjectAttribute(this, attribute);
+    }
+
+    @Override
+    public ObjectTag getNextObjectTypeDown() {
+        return getEntity() != null ? new EntityTag(this) : new ElementTag(identify());
+    }
+
+    public void applyProperty(Mechanism mechanism) {
+        mechanism.echoError("Cannot apply properties to an NPC!");
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
         tagProcessor.processMechanism(this, mechanism);
-
         // Pass along to EntityTag mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {
             if (isSpawned()) {
