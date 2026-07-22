@@ -4608,6 +4608,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return isMobType();
             case "animal":
                 return isAnimalType();
+            case "enemy":
+                return isEnemyType();
         }
         return false;
     }
