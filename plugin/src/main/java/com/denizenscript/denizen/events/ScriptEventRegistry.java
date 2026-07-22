@@ -4,10 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.block.*;
 import com.denizenscript.denizen.events.entity.*;
 import com.denizenscript.denizen.events.item.*;
-import com.denizenscript.denizen.events.npc.NPCNavigationScriptEvent;
-import com.denizenscript.denizen.events.npc.NPCOpensScriptEvent;
-import com.denizenscript.denizen.events.npc.NPCSpawnScriptEvent;
-import com.denizenscript.denizen.events.npc.NPCStuckScriptEvent;
+import com.denizenscript.denizen.events.npc.*;
 import com.denizenscript.denizen.events.player.*;
 import com.denizenscript.denizen.events.server.*;
 import com.denizenscript.denizen.events.vehicle.*;
@@ -25,6 +22,9 @@ public class ScriptEventRegistry {
     public static void registerCitizensEvents() {
         ScriptEvent.registerScriptEvent(NPCNavigationScriptEvent.class);
         ScriptEvent.registerScriptEvent(NPCOpensScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(NPCShopTradeScriptEvent.class);
+        }
         ScriptEvent.registerScriptEvent(NPCSpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(NPCStuckScriptEvent.class);
     }
