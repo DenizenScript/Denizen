@@ -23,11 +23,14 @@ import com.denizenscript.denizencore.scripts.commands.generator.ArgName;
 import com.denizenscript.denizencore.scripts.commands.generator.ArgPrefixed;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -125,8 +128,8 @@ public class LookCommand extends AbstractCommand {
         final float pitchRaw = pitch == null ? 0 : pitch.asFloat();
         for (EntityTag entity : entities) {
             if (entity.isSpawned()) {
-                org.bukkit.entity.Entity bukkitEntity = entity.getBukkitEntity();
-                org.bukkit.entity.Entity vehicle = bukkitEntity.getVehicle();
+                Entity bukkitEntity = entity.getBukkitEntity();
+                Entity vehicle = bukkitEntity.getVehicle();
 
                 if (vehicle != null) {
                     bukkitEntity.leaveVehicle();
@@ -134,68 +137,72 @@ public class LookCommand extends AbstractCommand {
 
                 if (loc != null) {
                     NMSHandler.entityHelper.faceLocation(bukkitEntity, loc);
-                } else {
-                    if (entity.isPlayer()) {
-                        Location playerTeleDest = entity.getLocation().clone();
-                        float relYaw = (yawRaw - playerTeleDest.getYaw()) % 360;
-                        if (relYaw > 180) {
-                            relYaw -= 360;
-                        }
-                        final float actualRelYaw = relYaw;
-                        float relPitch = pitchRaw - playerTeleDest.getPitch();
-                        playerTeleDest.setYaw(yawRaw);
-                        playerTeleDest.setPitch(pitchRaw);
-                        Player player = entity.getPlayer();
-
-                        if (vehicle != null) {
-                            PaperAPITools.instance.teleport(player, playerTeleDest, PlayerTeleportEvent.TeleportCause.PLUGIN, null, Arrays.asList(TeleportCommand.Relative.values()));
-                        } else {
-                            final int times = offthreadRepeats != null ? offthreadRepeats.asInt() : 0;
-                            final float stepYaw = times > 0 ? actualRelYaw / (times + 1) : actualRelYaw;
-                            final float stepPitch = times > 0 ? relPitch / (times + 1) : relPitch;
-
-                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-                                NetworkInterceptHelper.enable();
-                                NMSHandler.packetHelper.sendRelativeLookPacket(player, stepYaw, stepPitch);
-                            } else {
-                                PaperAPITools.instance.teleport(player, playerTeleDest, PlayerTeleportEvent.TeleportCause.PLUGIN, null, Arrays.asList(TeleportCommand.Relative.values()));
-                            }
-
-                            if (offthreadRepeats != null) {
-                                NetworkInterceptHelper.enable();
-                                int ms = 50 / (times + 1);
-                                DenizenCore.runAsync(() -> {
-                                    try {
-                                        for (int i = 0; i < times; i++) {
-                                            Thread.sleep(ms);
-                                            NMSHandler.packetHelper.sendRelativeLookPacket(player, stepYaw, stepPitch);
-                                        }
-                                    } catch (Throwable ex) {
-                                        Debug.echoError(ex);
-                                    }
-                                });
-                            }
-                        }
-                    } else {
-                        NMSHandler.entityHelper.rotate(bukkitEntity, yawRaw, pitchRaw);
+                }
+                else if (entity.isPlayer()) {
+                    Location playerTeleDest = entity.getLocation().clone();
+                    float relYaw = (yawRaw - playerTeleDest.getYaw()) % 360;
+                    if (relYaw > 180) {
+                        relYaw -= 360;
                     }
+                    final float actualRelYaw = relYaw;
+                    float relPitch = pitchRaw - playerTeleDest.getPitch();
+                    playerTeleDest.setYaw(yawRaw);
+                    playerTeleDest.setPitch(pitchRaw);
+                    Player player = entity.getPlayer();
+
+                    if (vehicle != null) {
+                        PaperAPITools.instance.teleport(player, playerTeleDest, PlayerTeleportEvent.TeleportCause.PLUGIN, null, Arrays.asList(TeleportCommand.Relative.values()));
+                    }
+                    else {
+                        final int times = offthreadRepeats != null ? offthreadRepeats.asInt() : 0;
+                        final float stepYaw = times > 0 ? actualRelYaw / (times + 1) : actualRelYaw;
+                        final float stepPitch = times > 0 ? relPitch / (times + 1) : relPitch;
+
+                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                            NetworkInterceptHelper.enable();
+                            NMSHandler.packetHelper.sendRelativeLookPacket(player, stepYaw, stepPitch);
+                        }
+                        else {
+                            PaperAPITools.instance.teleport(player, playerTeleDest, PlayerTeleportEvent.TeleportCause.PLUGIN, null, Arrays.asList(TeleportCommand.Relative.values()));
+                        }
+
+                        if (offthreadRepeats != null) {
+                            NetworkInterceptHelper.enable();
+                            int ms = 50 / (times + 1);
+                            DenizenCore.runAsync(() -> {
+                                try {
+                                    for (int i = 0; i < times; i++) {
+                                        Thread.sleep(ms);
+                                        NMSHandler.packetHelper.sendRelativeLookPacket(player, stepYaw, stepPitch);
+                                    }
+                                }
+                                catch (Throwable ex) {
+                                    Debug.echoError(ex);
+                                }
+                            });
+                        }
+                    }
+                }
+                else {
+                    NMSHandler.entityHelper.rotate(bukkitEntity, yawRaw, pitchRaw);
                 }
 
                 if (vehicle != null) {
                     Location vLoc = vehicle.getLocation().clone();
                     if (loc != null) {
-                        org.bukkit.util.Vector dir = loc.toVector().subtract(vLoc.toVector());
+                        Vector dir = loc.toVector().subtract(vLoc.toVector());
                         if (dir.lengthSquared() > 0) {
                             vLoc.setDirection(dir);
                         }
-                    } else {
+                    }
+                    else {
                         vLoc.setYaw(yawRaw);
                         vLoc.setPitch(pitchRaw);
                     }
                     
                     vehicle.teleport(vLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
-                    org.bukkit.Bukkit.getScheduler().runTask(com.denizenscript.denizen.Denizen.getInstance(), () -> {
+                    Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
                         if (vehicle.isValid() && bukkitEntity.isValid()) {
                             vehicle.addPassenger(bukkitEntity);
                         }
@@ -216,15 +223,16 @@ public class LookCommand extends AbstractCommand {
                             return;
                         }
                         if (entity.isSpawned()) {
-                            org.bukkit.entity.Entity target = entity.getBukkitEntity();
-                            org.bukkit.entity.Entity vehicle = target.getVehicle();
+                            Entity target = entity.getBukkitEntity();
+                            Entity vehicle = target.getVehicle();
 
                             if (loc != null) {
                                 NMSHandler.entityHelper.faceLocation(target, loc);
                                 if (vehicle != null) {
                                     NMSHandler.entityHelper.faceLocation(vehicle, loc);
                                 }
-                            } else {
+                            }
+                            else {
                                 NMSHandler.entityHelper.rotate(target, yawRaw, pitchRaw);
                                 if (vehicle != null) {
                                     NMSHandler.entityHelper.rotate(vehicle, yawRaw, pitchRaw);
