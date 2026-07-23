@@ -1,8 +1,5 @@
 package com.denizenscript.denizen.scripts.commands.npc;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
-import com.denizenscript.denizen.npc.traits.SittingTrait;
 import com.denizenscript.denizen.npc.traits.SleepingTrait;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.NPCTag;
@@ -63,14 +60,10 @@ public class SleepCommand extends AbstractCommand {
             return;
         }
         NPC citizen = npc.getCitizen();
-        if (citizen.hasTrait(SittingTrait.class)) {
-            citizen.getOrAddTrait(SittingTrait.class).stand();
-            citizen.removeTrait(SittingTrait.class);
-        }
         if (citizen.hasTrait(SitTrait.class)) {
             citizen.getOrAddTrait(SitTrait.class).setSitting(null);
         }
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_20)) { // backsupport
+        if (SleepingTrait.isSupported()) {
             SleepingTrait trait = citizen.getOrAddTrait(SleepingTrait.class);
             if (location != null) {
                 trait.toSleep(location);

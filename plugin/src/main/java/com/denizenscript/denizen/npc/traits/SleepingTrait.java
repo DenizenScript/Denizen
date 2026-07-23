@@ -2,6 +2,7 @@ package com.denizenscript.denizen.npc.traits;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
+import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.api.persistence.Persist;
@@ -15,6 +16,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 @Deprecated(forRemoval = true)
 public class SleepingTrait extends Trait {
+
+    public static boolean isSupported() {
+        return NMSHandler.getVersion().isAtMost(NMSVersion.v1_20);
+    }
 
     @Persist("sleeping")
     private boolean sleeping = false;

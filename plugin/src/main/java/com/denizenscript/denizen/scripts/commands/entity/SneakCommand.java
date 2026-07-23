@@ -1,7 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.npc.traits.SneakingTrait;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
@@ -10,7 +9,6 @@ import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.SneakTrait;
 import org.bukkit.entity.Player;
 
@@ -92,12 +90,7 @@ public class SneakCommand extends AbstractCommand {
                 }
             }
             else if (entity.isCitizensNPC()) {
-                NPC npc = entity.getDenizenNPC().getCitizen();
-                if (npc.hasTrait(SneakingTrait.class)) {
-                    npc.getOrAddTrait(SneakingTrait.class).stand();
-                    npc.removeTrait(SneakingTrait.class);
-                }
-                npc.getOrAddTrait(SneakTrait.class).setSneaking(shouldSneak);
+                entity.getDenizenNPC().getCitizen().getOrAddTrait(SneakTrait.class).setSneaking(shouldSneak);
             }
             else if (entity.isSpawned()) {
                 NMSHandler.entityHelper.setSneaking(entity.getBukkitEntity(), shouldSneak);

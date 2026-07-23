@@ -1,14 +1,11 @@
 package com.denizenscript.denizen.utilities.command;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.npc.traits.*;
 import com.denizenscript.denizen.npc.traits.MirrorTrait;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
-import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
 import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.scripts.ScriptRegistry;
@@ -340,26 +337,14 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.sit")
     @Requirements(selected = true, ownership = true)
     public void sitting(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        BukkitImplDeprecations.npcSitCommand.warn();
-        if (npc.hasTrait(SneakingTrait.class)) {
-            npc.getOrAddTrait(SneakingTrait.class).stand();
-            npc.removeTrait(SneakingTrait.class);
-        }
         if (npc.hasTrait(SneakTrait.class)) {
             npc.getOrAddTrait(SneakTrait.class).setSneaking(false);
         }
-        if (npc.hasTrait(SleepingTrait.class)) {
+        if (SleepingTrait.isSupported() && npc.hasTrait(SleepingTrait.class)) {
             npc.getOrAddTrait(SleepingTrait.class).wakeUp();
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                npc.removeTrait(SleepingTrait.class);
-            }
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && npc.hasTrait(SleepTrait.class)) {
+        if (!SleepingTrait.isSupported() && npc.hasTrait(SleepTrait.class)) {
             npc.getOrAddTrait(SleepTrait.class).setSleeping(null);
-        }
-        if (npc.hasTrait(SittingTrait.class)) {
-            npc.getOrAddTrait(SittingTrait.class).stand();
-            npc.removeTrait(SittingTrait.class);
         }
         SitTrait trait = npc.getOrAddTrait(SitTrait.class);
         if (args.hasValueFlag("location")) {
@@ -420,35 +405,13 @@ public class NPCCommandHandler {
             min = 1, max = 1, permission = "denizen.npc.stand")
     @Requirements(selected = true, ownership = true)
     public void standing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (npc.hasTrait(SittingTrait.class)) {
-            SittingTrait trait = npc.getOrAddTrait(SittingTrait.class);
-            if (!trait.isSitting()) {
-                npc.removeTrait(SittingTrait.class);
-                Messaging.sendError(sender, npc.getName() + " is already standing!");
-                return;
-            }
-            trait.stand();
-            npc.removeTrait(SittingTrait.class);
-            Messaging.send(sender, npc.getName() + " is now standing.");
-        }
-        else if (npc.hasTrait(SitTrait.class)) {
+        if (npc.hasTrait(SitTrait.class)) {
             SitTrait trait = npc.getOrAddTrait(SitTrait.class);
             if (!trait.isSitting()) {
                 Messaging.sendError(sender, npc.getName() + " is already standing!");
                 return;
             }
             trait.setSitting(null);
-            Messaging.send(sender, npc.getName() + " is now standing.");
-        }
-        else if (npc.hasTrait(SneakingTrait.class)) {
-            SneakingTrait trait = npc.getOrAddTrait(SneakingTrait.class);
-            if (!trait.isSneaking()) {
-                npc.removeTrait(SneakingTrait.class);
-                Messaging.sendError(sender, npc.getName() + " is already standing!");
-                return;
-            }
-            trait.stand();
-            npc.removeTrait(SneakingTrait.class);
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
         else if (npc.hasTrait(SneakTrait.class)) {
@@ -460,22 +423,16 @@ public class NPCCommandHandler {
             trait.setSneaking(false);
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
-        else if (npc.hasTrait(SleepingTrait.class)) {
+        else if (SleepingTrait.isSupported() && npc.hasTrait(SleepingTrait.class)) {
             SleepingTrait trait = npc.getOrAddTrait(SleepingTrait.class);
             if (!trait.isSleeping()) {
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                    npc.removeTrait(SleepingTrait.class);
-                }
                 Messaging.sendError(sender, npc.getName() + " is already standing!");
                 return;
             }
             trait.wakeUp();
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                npc.removeTrait(SleepingTrait.class);
-            }
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && npc.hasTrait(SleepTrait.class)) {
+        else if (!SleepingTrait.isSupported() && npc.hasTrait(SleepTrait.class)) {
             SleepTrait trait = npc.getOrAddTrait(SleepTrait.class);
             if (!trait.isSleeping()) {
                 Messaging.sendError(sender, npc.getName() + " is already standing!");
@@ -495,30 +452,47 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.sleep")
     @Requirements(selected = true, ownership = true, types = { EntityType.VILLAGER, EntityType.PLAYER })
     public void sleeping(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (npc.hasTrait(SneakingTrait.class)) {
-            npc.getOrAddTrait(SneakingTrait.class).stand();
-            npc.removeTrait(SneakingTrait.class);
-        }
         if (npc.hasTrait(SneakTrait.class)) {
             npc.getOrAddTrait(SneakTrait.class).setSneaking(false);
-        }
-        if (npc.hasTrait(SittingTrait.class)) {
-            npc.getOrAddTrait(SittingTrait.class).stand();
-            npc.removeTrait(SittingTrait.class);
         }
         if (npc.hasTrait(SitTrait.class)) {
             npc.getOrAddTrait(SitTrait.class).setSitting(null);
         }
-        if (npc.hasTrait(SleepingTrait.class)) {
+        if (SleepingTrait.isSupported() && npc.hasTrait(SleepingTrait.class)) {
             npc.getOrAddTrait(SleepingTrait.class).wakeUp();
             Messaging.send(sender, npc.getName() + " was already sleeping, and is now standing!");
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                npc.removeTrait(SleepingTrait.class);
+            return;
+        }
+        if (SleepingTrait.isSupported()) {
+            SleepingTrait trait = npc.getOrAddTrait(SleepingTrait.class);
+            if (args.hasValueFlag("location")) {
+                LocationTag location = LocationTag.valueOf(args.getFlag("location"), CoreUtilities.basicContext);
+                if (location == null) {
+                    Messaging.sendError(sender, "Usage: /npc sleep --location x,y,z,world");
+                    return;
+                }
+                trait.toSleep(location);
             }
+            else if (args.hasValueFlag("anchor")) {
+                if (npc.hasTrait(Anchors.class)) {
+                    Anchors anchors = npc.getOrAddTrait(Anchors.class);
+                    if (anchors.getAnchor(args.getFlag("anchor")) != null) {
+                        trait.toSleep(anchors.getAnchor(args.getFlag("anchor")).getLocation().clone().add(0.5, 0, 0.5));
+                        Messaging.send(sender, npc.getName() + " is now sleeping.");
+                        return;
+                    }
+                }
+                Messaging.sendError(sender, "NPC " + npc.getName() + "<f> does not have the anchor '" + args.getFlag("anchor") + "'!");
+                return;
+            }
+            else {
+                trait.toSleep(npc.getStoredLocation());
+            }
+            Messaging.send(sender, npc.getName() + " is now sleeping.");
             return;
         }
         SleepTrait trait = npc.getOrAddTrait(SleepTrait.class);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && trait.isSleeping()) {
+        if (trait.isSleeping()) {
             trait.setSleeping(null);
             Messaging.send(sender, npc.getName() + " was already sleeping, and is now standing!");
             return;
@@ -555,14 +529,11 @@ public class NPCCommandHandler {
             min = 1, max = 1, permission = "denizen.npc.sleep")
     @Requirements(selected = true, ownership = true)
     public void wakingup(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (npc.hasTrait(SleepingTrait.class)) {
+        if (SleepingTrait.isSupported() && npc.hasTrait(SleepingTrait.class)) {
             npc.getOrAddTrait(SleepingTrait.class).wakeUp();
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                npc.removeTrait(SleepingTrait.class);
-            }
             Messaging.send(sender, npc.getName() + " is no longer sleeping.");
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && npc.hasTrait(SleepTrait.class) && npc.getOrAddTrait(SleepTrait.class).isSleeping()) {
+        else if (!SleepingTrait.isSupported() && npc.hasTrait(SleepTrait.class) && npc.getOrAddTrait(SleepTrait.class).isSleeping()) {
             npc.getOrAddTrait(SleepTrait.class).setSleeping(null);
             Messaging.send(sender, npc.getName() + " is no longer sleeping.");
         }
@@ -660,25 +631,14 @@ public class NPCCommandHandler {
             min = 1, max = 1, permission = "denizen.npc.sneak")
     @Requirements(selected = true, ownership = true)
     public void sneaking(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (npc.hasTrait(SleepingTrait.class)) {
+        if (SleepingTrait.isSupported() && npc.hasTrait(SleepingTrait.class)) {
             npc.getOrAddTrait(SleepingTrait.class).wakeUp();
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                npc.removeTrait(SleepingTrait.class);
-            }
         }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && npc.hasTrait(SleepTrait.class)) {
+        if (!SleepingTrait.isSupported() && npc.hasTrait(SleepTrait.class)) {
             npc.getOrAddTrait(SleepTrait.class).setSleeping(null);
-        }
-        if (npc.hasTrait(SittingTrait.class)) {
-            npc.getOrAddTrait(SittingTrait.class).stand();
-            npc.removeTrait(SittingTrait.class);
         }
         if (npc.hasTrait(SitTrait.class)) {
             npc.getOrAddTrait(SitTrait.class).setSitting(null);
-        }
-        if (npc.hasTrait(SneakingTrait.class)) {
-            npc.getOrAddTrait(SneakingTrait.class).stand();
-            npc.removeTrait(SneakingTrait.class);
         }
         if (npc.getEntity().getType() != EntityType.PLAYER) {
             Messaging.sendError(sender, npc.getName() + " needs to be a Player type NPC to sneak!");
