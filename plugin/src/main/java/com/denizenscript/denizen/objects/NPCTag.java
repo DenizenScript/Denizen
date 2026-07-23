@@ -479,8 +479,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_sitting", (attribute, object) -> {
             NPC citizen = object.getCitizen();
-            return new ElementTag((citizen.hasTrait(SitTrait.class) && citizen.getOrAddTrait(SitTrait.class).isSitting())
-                                || (citizen.hasTrait(SittingTrait.class) && citizen.getOrAddTrait(SittingTrait.class).isSitting())); // backsupport
+            return new ElementTag(citizen.hasTrait(SitTrait.class) && citizen.getOrAddTrait(SitTrait.class).isSitting());
         });
 
         // <--[tag]
@@ -491,8 +490,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_sleeping", (attribute, object) -> {
             NPC citizen = object.getCitizen();
-            return new ElementTag((NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && citizen.hasTrait(SleepTrait.class) && citizen.getOrAddTrait(SleepTrait.class).isSleeping())
-                                    || (citizen.hasTrait(SleepingTrait.class) && citizen.getOrAddTrait(SleepingTrait.class).isSleeping())); //backsupport
+            return new ElementTag((!SleepingTrait.isSupported() && citizen.hasTrait(SleepTrait.class) && citizen.getOrAddTrait(SleepTrait.class).isSleeping())
+                                    || (SleepingTrait.isSupported() && citizen.hasTrait(SleepingTrait.class) && citizen.getOrAddTrait(SleepingTrait.class).isSleeping()));
         });
 
         // <--[tag]
