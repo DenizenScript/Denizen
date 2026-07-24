@@ -4,7 +4,8 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import com.denizenscript.denizen.paper.PaperModule;
+import net.md_5.bungee.api.ChatColor;
 
 public class ItemNameAdapter extends DataComponentAdapter.Valued<ElementTag, Component> {
 
@@ -25,11 +26,11 @@ public class ItemNameAdapter extends DataComponentAdapter.Valued<ElementTag, Com
 
     @Override
     public ElementTag toDenizen(Component value) {
-        return new ElementTag(LegacyComponentSerializer.legacyAmpersand().serialize(value));
+        return new ElementTag(PaperModule.stringifyComponent(value));
     }
 
     @Override
     public Component fromDenizen(ElementTag value, Mechanism mechanism) {
-        return Component.text(value.toString());
+        return PaperModule.parseFormattedText(value.toString(), ChatColor.WHITE);
     }
 }
