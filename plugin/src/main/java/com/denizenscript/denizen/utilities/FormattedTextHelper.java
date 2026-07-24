@@ -19,6 +19,8 @@ import net.md_5.bungee.chat.ChatVersion;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.chat.VersionedComponentSerializer;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public class FormattedTextHelper {
@@ -798,13 +800,18 @@ public class FormattedTextHelper {
                 started = i + 1;
             }
             else if (i + "https://a.".length() < chars.length && chars[i] == 'h' && chars[i + 1] == 't' && chars[i + 2] == 't' && chars[i  + 3] == 'p') {
-                String subStr = str.substring(i, i + "https://a.".length());
-                if (subStr.startsWith("https://") || subStr.startsWith("http://")) {
-                    int nextSpace = CoreUtilities.indexOfAny(str, i, ' ', '\t', '\n', ChatColor.COLOR_CHAR);
-                    if (nextSpace == -1) {
-                        nextSpace = str.length();
+                if (str.startsWith("https://", i) || str.startsWith("http://", i)) {
+                    int urlEnd = indexOfUrlEnd(chars, i);
+                    if (urlEnd - i < "https://a.".length()) {
+                        continue;
                     }
-                    String url = str.substring(i, nextSpace);
+                    String url = str.substring(i, urlEnd);
+                    try {
+                        new URI(url);
+                    }
+                    catch (URISyntaxException ignored) {
+                        continue;
+                    }
                     nextText.setText(nextText.getText() + str.substring(started, i));
                     base.addExtra(nextText);
                     lastText = nextText;
@@ -813,8 +820,8 @@ public class FormattedTextHelper {
                     TextComponent clickableText = new TextComponent(url);
                     clickableText.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
                     lastText.addExtra(clickableText);
-                    i = nextSpace - 1;
-                    started = nextSpace;
+                    i = urlEnd - 1;
+                    started = urlEnd;
                     continue;
                 }
             }
@@ -824,6 +831,17 @@ public class FormattedTextHelper {
             base.addExtra(nextText);
         }
         return new BaseComponent[] { cleanBase && !optimize ? root : base };
+    }
+
+    public static final AsciiMatcher URL_VALID = new AsciiMatcher(AsciiMatcher.LETTERS_LOWER + AsciiMatcher.LETTERS_UPPER + AsciiMatcher.DIGITS + "-._~:/?#@!$&'()*+,;=%");
+
+    public static int indexOfUrlEnd(char[] chars, int start) {
+        for (int i = start; i < chars.length; i++) {
+            if (!URL_VALID.isMatch(chars[i])) {
+                return i;
+            }
+        }
+        return chars.length;
     }
 
     public static int indexOfLastColorBlockStart(String text) {

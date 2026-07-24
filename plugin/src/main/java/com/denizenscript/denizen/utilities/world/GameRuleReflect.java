@@ -40,7 +40,7 @@ public class GameRuleReflect {
 
     public static String getName(GameRule<?> gameRule) {
         if (MODERN_GAMERULE_NAMING) {
-            return Utilities.namespacedKeyToString(((Keyed) gameRule).getKey());
+            return Utilities.keyedToString(gameRule);
         }
         try {
             return (String) GAMERULE_GET_NAME.invokeExact(gameRule);

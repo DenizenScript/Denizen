@@ -1,84 +1,63 @@
 package com.denizenscript.denizen.objects.properties.item;
 
-import com.denizenscript.denizen.utilities.PaperAPITools;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
-import java.util.Arrays;
+public class ItemSignContents extends ItemProperty<ListTag> {
 
-public class ItemSignContents implements Property {
+    // <--[property]
+    // @object ItemTag
+    // @name sign_contents
+    // @input ListTag
+    // @description
+    // Controls the contents of a sign item.
+    // For MC 1.20+, this is the contents on the front of the sign.
+    // For the back of the sign, see <@link property ItemTag.sign_back_contents>.
+    // -->
 
-    public static boolean describes(ObjectTag item) {
-        return item instanceof ItemTag
-                && ((ItemTag) item).getItemMeta() instanceof BlockStateMeta
-                && ((BlockStateMeta) ((ItemTag) item).getItemMeta()).getBlockState() instanceof Sign;
-    }
-
-    public static ItemSignContents getFrom(ObjectTag _item) {
-        if (!describes(_item)) {
-            return null;
-        }
-        else {
-            return new ItemSignContents((ItemTag) _item);
-        }
-    }
-
-    public static final String[] handledTags = new String[] {
-            "sign_contents"
-    };
-
-    public static final String[] handledMechs = new String[] {
-            "sign_contents"
-    };
-
-    public ListTag getSignContents() {
-        return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines((Sign) ((BlockStateMeta) item.getItemMeta()).getBlockState())), true);
-    }
-
-    public ItemSignContents(ItemTag _item) {
-        item = _item;
-    }
-
-    ItemTag item;
-
-    @Override
-    public ObjectTag getObjectAttribute(Attribute attribute) {
-
-        if (attribute == null) {
-            return null;
-        }
-
-        // <--[tag]
-        // @attribute <ItemTag.sign_contents>
-        // @returns ListTag
-        // @mechanism ItemTag.sign_contents
-        // @group properties
-        // @description
-        // Returns a list of lines on a sign item.
-        // -->
-        if (attribute.startsWith("sign_contents")) {
-            return getSignContents().getObjectAttribute(attribute.fulfill(1));
-        }
-
-        return null;
+    public static boolean describes(ItemTag item) {
+        return item.getItemMeta() instanceof BlockStateMeta blockStateMeta
+                && blockStateMeta.getBlockState() instanceof Sign;
     }
 
     @Override
-    public String getPropertyString() {
-        for (String line : getSignContents()) {
-            if (line.length() > 0) {
-                return getSignContents().identify();
+    public ListTag getPropertyValue() {
+        return new ListTag(PaperAPITools.instance.getSignLines((Sign) as(BlockStateMeta.class).getBlockState()), true);
+    }
+
+    @Override
+    public boolean isDefaultValue(ListTag value) {
+        for (String line : value) {
+            if (!line.isEmpty()) {
+                return false;
             }
         }
-        return null;
+        return true;
+    }
+
+    @Override
+    public void setPropertyValue(ListTag value, Mechanism mechanism) {
+        BlockStateMeta blockStateMeta = as(BlockStateMeta.class);
+        Sign sign = (Sign) blockStateMeta.getBlockState();
+        for (int i = 0; i < 4; i++) {
+            PaperAPITools.instance.setSignLine(sign, i, "");
+        }
+        CoreUtilities.fixNewLinesToListSeparation(value);
+        if (value.size() > 4) {
+            mechanism.echoError("Sign can only hold four lines!");
+        }
+        else {
+            for (int i = 0; i < value.size(); i++) {
+                PaperAPITools.instance.setSignLine(sign, i, value.get(i));
+            }
+        }
+        blockStateMeta.setBlockState(sign);
+        setItemMeta(blockStateMeta);
     }
 
     @Override
@@ -86,36 +65,7 @@ public class ItemSignContents implements Property {
         return "sign_contents";
     }
 
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object ItemTag
-        // @name sign_contents
-        // @input ListTag
-        // @description
-        // Sets the contents of a sign item.
-        // @tags
-        // <ItemTag.sign_contents>
-        // -->
-        if (mechanism.matches("sign_contents")) {
-            BlockStateMeta bsm = ((BlockStateMeta) item.getItemMeta());
-            Sign sign = (Sign) bsm.getBlockState();
-            for (int i = 0; i < 4; i++) {
-                PaperAPITools.instance.setSignLine(sign, i, "");
-            }
-            ListTag list = mechanism.valueAsType(ListTag.class);
-            CoreUtilities.fixNewLinesToListSeparation(list);
-            if (list.size() > 4) {
-                Debug.echoError("Sign can only hold four lines!");
-            }
-            else {
-                for (int i = 0; i < list.size(); i++) {
-                    PaperAPITools.instance.setSignLine(sign, i, list.get(i));
-                }
-            }
-            bsm.setBlockState(sign);
-            item.setItemMeta(bsm);
-        }
+    public static void register() {
+        autoRegister("sign_contents", ItemSignContents.class, ListTag.class, false);
     }
 }

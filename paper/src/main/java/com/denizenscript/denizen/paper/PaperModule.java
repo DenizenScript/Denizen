@@ -21,6 +21,9 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PaperModule {
 
     public static void init() {
@@ -173,6 +176,14 @@ public class PaperModule {
             return null;
         }
         return FormattedTextHelper.stringify(FormattedTextHelper.parseJson(componentToJson(component)));
+    }
+
+    public static List<String> stringifyComponentList(List<Component> components) {
+        List<String> result = new ArrayList<>(components.size());
+        for (Component component : components) {
+            result.add(stringifyComponent(component));
+        }
+        return result;
     }
 
     public static Component jsonToComponent(String json) {
