@@ -1,6 +1,8 @@
 package com.denizenscript.denizen.paper.datacomponents;
 
+import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizen.utilities.entity.DenizenEntityType;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -56,9 +58,8 @@ public class EquippableAdapter extends DataComponentAdapter.Valued<MapTag, Equip
             map.putObject("camera_overlay", new ElementTag(value.cameraOverlay().asMinimalString(), true));
         }
         if (value.allowedEntities() != null) {
-            ListTag entities = new ListTag();
-            value.allowedEntities().forEach(key -> entities.addObject(new ElementTag(key.key().asMinimalString(), true)));
-            map.putObject("allowed_entities", entities);
+            ListTag allowedEntities = new ListTag(value.allowedEntities().values(), key -> new EntityTag(DenizenEntityType.getByName(key.key().value())));
+            map.putObject("allowed_entities", allowedEntities);
         }
         map.putObject("dispensable", new ElementTag(value.dispensable()));
         map.putObject("swappable", new ElementTag(value.swappable()));
@@ -71,7 +72,7 @@ public class EquippableAdapter extends DataComponentAdapter.Valued<MapTag, Equip
 
     @Override
     public Equippable fromDenizen(MapTag value, Mechanism mechanism) {
-        ElementTag slot = value.getObjectAs("slot", ElementTag.class, mechanism.context);
+        ElementTag slot = value.getElement("slot");
         if (slot == null) {
             mechanism.echoError("Equippable map must have a 'slot' key.");
             return null;
@@ -92,7 +93,7 @@ public class EquippableAdapter extends DataComponentAdapter.Valued<MapTag, Equip
         setIfValid(builder::shearSound, value, "shear_sound", ElementTag.class, null, element -> Utilities.parseNamespacedKey(element.asString()), "namespaced key", mechanism);
         ListTag entityList = value.getObjectAs("allowed_entities", ListTag.class, mechanism.context);
         if (entityList != null) {
-            List<TypedKey<EntityType>> keys = new ArrayList<>();
+            List<TypedKey<EntityType>> keys = new ArrayList<>(entityList.size());
             for (String entry : entityList) {
                 keys.add(TypedKey.create(RegistryKey.ENTITY_TYPE, Utilities.parseNamespacedKey(entry)));
             }
