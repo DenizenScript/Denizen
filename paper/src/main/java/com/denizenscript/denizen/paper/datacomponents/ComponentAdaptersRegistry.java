@@ -6,9 +6,9 @@ public class ComponentAdaptersRegistry {
         DataComponentAdapter.register(new FoodAdapter());
         DataComponentAdapter.register(new GliderAdapter());
         DataComponentAdapter.register(new ItemModelAdapter());
+        DataComponentAdapter.register(new ItemNameAdapter());
         DataComponentAdapter.register(new MaxDurabilityAdapter());
         DataComponentAdapter.register(new MaxStackSizeAdapter());
         DataComponentAdapter.register(new RarityAdapter());
-        DataComponentAdapter.register(new ItemNameAdapter());
     }
 }
