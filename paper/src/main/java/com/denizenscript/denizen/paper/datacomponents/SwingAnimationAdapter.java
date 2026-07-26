@@ -37,7 +37,7 @@ public class SwingAnimationAdapter extends DataComponentAdapter.Valued<MapTag, S
     public SwingAnimation fromDenizen(MapTag value, Mechanism mechanism) {
         SwingAnimation.Builder builder = SwingAnimation.swingAnimation();
         setIfValid(builder::type, value, "type", ElementTag.class,
-                element -> element.matchesEnum(SwingAnimation.Animation.class),
+                null,
                 element -> element.asEnum(SwingAnimation.Animation.class),
                 "swing animation type", mechanism);
         setIfValid(builder::duration, value, "duration", ElementTag.class, ElementTag::isInt, ElementTag::asInt, "number", mechanism);
