@@ -96,9 +96,9 @@ public class NPCShopTradeScriptEvent extends BukkitScriptEvent implements Listen
             else if (action instanceof MoneyAction moneyAction) {
                 result.putObject("money", new ElementTag(moneyAction.money));
             }
-            //else if (action instanceof OpenShopAction openShopAction) {
-            //    result.putObject("open_shop", new ElementTag(openShopAction.describe(), true));
-            //}
+            else if (action instanceof OpenShopAction openShopAction) {
+                result.putObject("open_shop", new ElementTag(openShopAction.shopName, true));
+            }
             else if (action instanceof PermissionAction permissionAction) {
                 result.putObject("permissions", new ListTag(permissionAction.permissions, true));
             }
