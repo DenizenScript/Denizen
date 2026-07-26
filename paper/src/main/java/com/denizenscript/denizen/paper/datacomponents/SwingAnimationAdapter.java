@@ -30,7 +30,7 @@ public class SwingAnimationAdapter extends DataComponentAdapter.Valued<MapTag, S
     public MapTag toDenizen(SwingAnimation value) {
         MapTag result = new MapTag();
         result.putObject("type", new ElementTag(value.type()));
-        result.putObject("duration", new DurationTag(value.duration()));
+        result.putObject("duration", new DurationTag((long) value.duration()));
         return result;
     }
 
