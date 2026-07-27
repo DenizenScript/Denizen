@@ -62,7 +62,7 @@ public class ItemDisplayname implements Property {
         // @group properties
         // @description
         // Returns the display name of the item, as set by plugin or an anvil.
-        // Use <@link property ItemTag.item_name> to get the item's item name component, which cannot be changed by an anvil.
+        // See also <@link property ItemTag.item_name>.
         // -->
         if (attribute.startsWith("display")) {
             if (hasDisplayName()) {
@@ -78,7 +78,7 @@ public class ItemDisplayname implements Property {
         // @group properties
         // @description
         // Returns whether the item has a custom set display name.
-        // Use <@link property ItemTag.item_name> for the item's item_display component, which also controls its name.
+        // See also <@link property ItemTag.item_name>.
         // -->
         if (attribute.startsWith("has_display")) {
             return new ElementTag(hasDisplayName())
@@ -118,7 +118,7 @@ public class ItemDisplayname implements Property {
         // @description
         // Changes the item's display name.
         // Give no input to remove the item's display name.
-        // Use <@link property ItemTag.item_name> to set the item's item name component, which persists through changes to its display, and shows when no display is set.
+        // See also <@link property ItemTag.item_name> to set the item's default name, which cannot be changed by players.
         // @tags
         // <ItemTag.display>
         // -->

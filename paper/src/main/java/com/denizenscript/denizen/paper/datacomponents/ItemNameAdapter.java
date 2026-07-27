@@ -28,7 +28,7 @@ public class ItemNameAdapter extends DataComponentAdapter.Valued<ElementTag, Com
 
     @Override
     public ElementTag toDenizen(Component value) {
-        return new ElementTag(PaperModule.stringifyComponent(value));
+        return new ElementTag(PaperModule.stringifyComponent(value), true);
     }
 
     @Override
