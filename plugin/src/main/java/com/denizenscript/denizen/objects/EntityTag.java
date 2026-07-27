@@ -100,6 +100,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     // "projectile" plaintext: matches for any projectile type (arrow, trident, fish hook, snowball, etc).
     // "hanging" plaintext: matches for any hanging type (painting, item_frame, etc).
     // "monster" plaintext: matches for any monster type (creepers, zombies, etc).
+    // "enemy" plaintext: matches for any hostile entities (zombies, shulkers, ect).
     // "animal" plaintext: matches for any animal type (pigs, cows, etc).
     // "mob" plaintext: matches for any mob type (creepers, pigs, etc).
     // "living" plaintext: matches for any living type (players, pigs, creepers, etc).
