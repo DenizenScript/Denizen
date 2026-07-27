@@ -119,84 +119,52 @@ public class EntityVariant extends EntityProperty<ElementTag> {
     @Override
     public void setPropertyValue(ElementTag variant, Mechanism mechanism) {
         Entity entity = getEntity();
-        if (entity instanceof Fox fox) {
-            Fox.Type foxVariant = Utilities.elementToRequiredEnumLike(variant, Fox.Type.class, mechanism);
-            if (foxVariant != null) {
-                fox.setFoxType(foxVariant);
+        if (entity instanceof Fox fox && mechanism.requireEnum(Fox.Type.class)) {
+            fox.setFoxType(variant.asEnum(Fox.Type.class));
+        }
+        else if (entity instanceof Llama llama && mechanism.requireEnum(Llama.Color.class)) {
+            llama.setColor(variant.asEnum(Llama.Color.class));
+        }
+        else if (entity instanceof Parrot parrot && mechanism.requireEnum(Parrot.Variant.class)) {
+            parrot.setVariant(variant.asEnum(Parrot.Variant.class));
+        }
+        else if (entity instanceof Rabbit rabbit && mechanism.requireEnum(Rabbit.Type.class)) {
+            rabbit.setRabbitType(variant.asEnum(Rabbit.Type.class));
+        }
+        else if (entity instanceof Villager || entity instanceof ZombieVillager && mechanism.requireEnum(Villager.Type.class)) {
+            Villager.Type villagerVariant = variant.asEnum(Villager.Type.class);
+            if (entity instanceof Villager villager) {
+                villager.setVillagerType(villagerVariant);
+            }
+            else {
+                as(ZombieVillager.class).setVillagerType(villagerVariant);
             }
         }
-        else if (entity instanceof Llama llama) {
-            Llama.Color llamaVariant = Utilities.elementToRequiredEnumLike(variant, Llama.Color.class, mechanism);
-            if (llamaVariant != null) {
-                llama.setColor(llamaVariant);
-            }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && entity instanceof Frog frog && mechanism.requireEnum(Frog.Variant.class)) {
+            frog.setVariant(variant.asEnum(Frog.Variant.class));
         }
-        else if (entity instanceof Parrot parrot) {
-            Parrot.Variant parrotVariant = Utilities.elementToRequiredEnumLike(variant, Parrot.Variant.class, mechanism);
-            if (parrotVariant != null) {
-                parrot.setVariant(parrotVariant);
-            }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && entity instanceof Wolf wolf && mechanism.requireEnum(Wolf.Variant.class)) {
+            wolf.setVariant(variant.asEnum(Wolf.Variant.class));
         }
-        else if (entity instanceof Rabbit rabbit) {
-            Rabbit.Type rabbitVariant = Utilities.elementToRequiredEnumLike(variant, Rabbit.Type.class, mechanism);
-            if (rabbitVariant != null) {
-                rabbit.setRabbitType(rabbitVariant);
-            }
-        }
-        else if (entity instanceof Villager || entity instanceof ZombieVillager) {
-            Villager.Type villagerVariant = Utilities.elementToRequiredEnumLike(variant, Villager.Type.class, mechanism);
-            if (villagerVariant != null) {
-                if (entity instanceof Villager villager) {
-                    villager.setVillagerType(villagerVariant);
-                }
-                else {
-                    as(ZombieVillager.class).setVillagerType(villagerVariant);
-                }
-            }
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && entity instanceof Frog frog) {
-            Frog.Variant frogVariant = Utilities.elementToRequiredEnumLike(variant, Frog.Variant.class, mechanism);
-            if (frogVariant != null) {
-                frog.setVariant(frogVariant);
-            }
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && entity instanceof Wolf wolf) {
-            Wolf.Variant wolfVariant = Utilities.elementToRequiredEnumLike(variant, Wolf.Variant.class, mechanism);
-            if (wolfVariant != null) {
-                wolf.setVariant(wolfVariant);
-            }
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof Chicken chicken) {
-            Chicken.Variant chickenVariant = Utilities.elementToRequiredEnumLike(variant, Chicken.Variant.class, mechanism);
-            if (chickenVariant != null) {
-                chicken.setVariant(chickenVariant);
-            }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof Chicken chicken && mechanism.requireEnum(Chicken.Variant.class)) {
+            chicken.setVariant(variant.asEnum(Chicken.Variant.class));
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof CopperGolem copperGolem) {
             PaperAPITools.instance.setCopperGolemVariant(variant, copperGolem, mechanism);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && COW_SET_VARIANT != null && entity instanceof Cow cow) {
-            Cow.Variant cowVariant = Utilities.elementToRequiredEnumLike(variant, Cow.Variant.class, mechanism);
-            if (cowVariant != null) {
-                try {
-                    COW_SET_VARIANT.invoke(cow, cowVariant);
-                }
-                catch (Throwable e) {
-                    Debug.echoError(e);
-                }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && COW_SET_VARIANT != null && entity instanceof Cow cow && mechanism.requireEnum(Cow.Variant.class)) {
+            try {
+                COW_SET_VARIANT.invoke(cow, variant.asEnum(Cow.Variant.class));
+            }
+            catch (Throwable e) {
+                Debug.echoError(e);
             }
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof Pig pig) {
-            Pig.Variant pigVariant = Utilities.elementToRequiredEnumLike(variant, Pig.Variant.class, mechanism);
-            if (pigVariant != null) {
-                pig.setVariant(pigVariant);
-            }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof Pig pig && mechanism.requireEnum(Pig.Variant.class)) {
+            pig.setVariant(variant.asEnum(Pig.Variant.class));
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof ZombieNautilus zombieNautilus) {
-            ZombieNautilus.Variant zombieNautilusVariant = Utilities.elementToRequiredEnumLike(variant, ZombieNautilus.Variant.class, mechanism);
-            if (zombieNautilusVariant != null) {
-                zombieNautilus.setVariant(zombieNautilusVariant);
-            }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof ZombieNautilus zombieNautilus && mechanism.requireEnum(ZombieNautilus.Variant.class)) {
+            zombieNautilus.setVariant(variant.asEnum(ZombieNautilus.Variant.class));
         }
     }
 
@@ -218,44 +186,48 @@ public class EntityVariant extends EntityProperty<ElementTag> {
         // See also <@link tag EntityTag.variant>.
         // -->
         PropertyParser.registerTag(EntityVariant.class, ListTag.class, "allowed_variants", (attribute, object) -> {
-            Entity entity = object.getEntity();
-            if (entity instanceof Fox) {
-                return new ListTag(Utilities.listTypes(Fox.Type.class));
-            }
-            else if (entity instanceof Llama) {
-                return new ListTag(Utilities.listTypes(Llama.Color.class));
-            }
-            else if (entity instanceof Parrot) {
-                return new ListTag(Utilities.listTypes(Parrot.Variant.class));
-            }
-            else if (entity instanceof Rabbit) {
-                return new ListTag(Utilities.listTypes(Rabbit.Type.class));
-            }
-            else if (entity instanceof Villager || entity instanceof ZombieVillager) {
-                return new ListTag(Utilities.listTypes(Villager.Type.class));
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && entity instanceof Frog) {
-                return new ListTag(Utilities.listTypes(Frog.Variant.class));
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && entity instanceof Wolf) {
-                return new ListTag(Utilities.listTypes(Wolf.Variant.class));
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof Chicken) {
-                return new ListTag(Utilities.listTypes(Chicken.Variant.class));
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof CopperGolem) {
-                return PaperAPITools.instance.getCopperGolemVariants();
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof Cow) {
-                return new ListTag(Utilities.listTypes(Cow.Variant.class));
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof Pig) {
-                return new ListTag(Utilities.listTypes(Pig.Variant.class));
-            }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof ZombieNautilus) {
-                return new ListTag(Utilities.listTypes(ZombieNautilus.Variant.class));
-            }
-            return null;
+            return getVariants(object.getEntity());
         });
+    }
+
+    private static ListTag getVariants(Entity entity) {
+        Class<?> enumType = null;
+        if (entity instanceof Fox) {
+            enumType = Fox.Type.class;
+        }
+        else if (entity instanceof Llama) {
+            enumType = Llama.Color.class;
+        }
+        else if (entity instanceof Parrot) {
+            enumType = Parrot.Variant.class;
+        }
+        else if (entity instanceof Rabbit) {
+            enumType = Rabbit.Type.class;
+        }
+        else if (entity instanceof Villager || entity instanceof ZombieVillager) {
+            enumType = Villager.Type.class;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && entity instanceof Frog) {
+            enumType = Frog.Variant.class;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20) && entity instanceof Wolf) {
+            enumType = Wolf.Variant.class;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof Chicken) {
+            enumType = Chicken.Variant.class;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof CopperGolem) {
+            return PaperAPITools.instance.getCopperGolemVariants();
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof Cow) {
+            enumType = Cow.Variant.class;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof Pig) {
+            enumType = Pig.Variant.class;
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && entity instanceof ZombieNautilus) {
+            enumType = ZombieNautilus.Variant.class;
+        }
+        return enumType != null ? Utilities.listTypes(enumType) : null;
     }
 }

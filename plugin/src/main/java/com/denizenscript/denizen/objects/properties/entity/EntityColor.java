@@ -62,16 +62,16 @@ public class EntityColor extends EntityProperty<ElementTag> {
 
     @Override
     public ElementTag getPropertyValue() {
-        return getCleanedValue(false);
+        return getCleanedValue(null);
     }
 
     @Override
     public ElementTag getTagValue(Attribute attribute) {
-        return getCleanedValue(true);
+        return getCleanedValue(attribute);
     }
 
-    public ElementTag getCleanedValue(boolean includeDeprecated) {
-        String color = getColor(includeDeprecated);
+    public ElementTag getCleanedValue(Attribute attribute) {
+        String color = getColor(attribute);
         return color == null ? null : new ElementTag(CoreUtilities.toLowerCase(color));
     }
 
@@ -230,10 +230,10 @@ public class EntityColor extends EntityProperty<ElementTag> {
         }
     }
 
-    public String getColor(boolean includeDeprecated) {
+    public String getColor(Attribute attribute) {
         EntityType type = getType();
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && MultiVersionHelper1_19.colorIsApplicable(type)) {
-            return MultiVersionHelper1_19.getColor(getEntity(), includeDeprecated);
+            return MultiVersionHelper1_19.getColor(getEntity(), attribute);
         }
         if (getEntity() instanceof MushroomCow mushroomCow) {
             return mushroomCow.getVariant().name();
@@ -246,21 +246,27 @@ public class EntityColor extends EntityProperty<ElementTag> {
             case SHEEP -> as(Sheep.class).getColor().name();
             case WOLF -> as(Wolf.class).getCollarColor().name();
             case OCELOT -> {
-                if (includeDeprecated) {
+                if (attribute != null) {
                     yield as(Ocelot.class).getCatType().name();
                 }
                 yield null;
             }
             case RABBIT -> {
-                BukkitImplDeprecations.colorToVariantProperty.warn();
+                if (attribute != null) {
+                    BukkitImplDeprecations.colorToVariantProperty.warn(attribute.context);
+                }
                 yield as(Rabbit.class).getRabbitType().name();
             }
             case LLAMA, TRADER_LLAMA -> {
-                BukkitImplDeprecations.colorToVariantProperty.warn();
+                if (attribute != null) {
+                    BukkitImplDeprecations.colorToVariantProperty.warn(attribute.context);
+                }
                 yield as(Llama.class).getColor().name();
             }
             case PARROT -> {
-                BukkitImplDeprecations.colorToVariantProperty.warn();
+                if (attribute != null) {
+                    BukkitImplDeprecations.colorToVariantProperty.warn(attribute.context);
+                }
                 yield as(Parrot.class).getVariant().name();
             }
             case SHULKER -> {
@@ -272,7 +278,9 @@ public class EntityColor extends EntityProperty<ElementTag> {
                 yield new ListTag(Arrays.asList(fish.getPattern().name(), fish.getBodyColor().name(), fish.getPatternColor().name())).identify();
             }
             case FOX -> {
-                BukkitImplDeprecations.colorToVariantProperty.warn();
+                if (attribute != null) {
+                    BukkitImplDeprecations.colorToVariantProperty.warn(attribute.context);
+                }
                 yield as(Fox.class).getFoxType().name();
             }
             case CAT -> {
@@ -289,11 +297,15 @@ public class EntityColor extends EntityProperty<ElementTag> {
             }
             // TODO This technically has registries on all supported versions
             case VILLAGER -> {
-                BukkitImplDeprecations.colorToVariantProperty.warn();
+                if (attribute != null) {
+                    BukkitImplDeprecations.colorToVariantProperty.warn(attribute.context);
+                }
                 yield String.valueOf(as(Villager.class).getVillagerType());
             }
             case ZOMBIE_VILLAGER -> {
-                BukkitImplDeprecations.colorToVariantProperty.warn();
+                if (attribute != null) {
+                    BukkitImplDeprecations.colorToVariantProperty.warn(attribute.context);
+                }
                 yield String.valueOf(as(ZombieVillager.class).getVillagerType());
             }
             case ARROW -> {
