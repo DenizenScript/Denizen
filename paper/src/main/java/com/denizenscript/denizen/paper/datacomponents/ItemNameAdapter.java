@@ -14,12 +14,14 @@ public class ItemNameAdapter extends DataComponentAdapter.Valued<ElementTag, Com
     // @name item_name
     // @input ElementTag
     // @description
-    // Controls the item's item_name component. In effect, this changes its display name.
-    // Unlike <@link mechanism ItemTag.display>, this name cannot be changed by an anvil, but will be hidden when the display is set, such as with an anvil.
-    // That is, it will remain under the display name and be shown again if the display is removed.
+    // Controls the item's default name.
+    // The item's default name cannot be modified by a player and is displayed when <@link mechanism ItemTag.display> is not set.
+    // If a display name is set, item_name will still retain its original value but will be hidden.
     // See also <@link language Item Components>.
     // @mechanism
     // Provide no input to reset the item to its default value.
+    // @tag
+    // By default, this will return the item's vanilla display name.
     // -->
 
     public ItemNameAdapter() {
