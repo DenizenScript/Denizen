@@ -5,6 +5,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -21,7 +22,7 @@ public class SignCommand extends AbstractCommand {
 
     public SignCommand() {
         setName("sign");
-        setSyntax("sign (type:{automatic}/sign_post/wall_sign/hanging/hanging_wall) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)");
+        setSyntax("sign (type:{automatic}/sign_post/wall_sign/hanging/hanging_wall) (material:<material>) (side:{both}/front/back) [<line>|...] [<location>] (direction:north/east/south/west)");
         setRequiredArguments(1, 5);
         isProcedural = false;
         autoCompile();
@@ -29,7 +30,7 @@ public class SignCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Sign
-    // @Syntax sign (type:{automatic}/sign_post/wall_sign/hanging/hanging_wall) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)
+    // @Syntax sign (type:{automatic}/sign_post/wall_sign/hanging/hanging_wall) (material:<material>) (side:{both}/front/back) [<line>|...] [<location>] (direction:north/east/south/west)
     // @Required 1
     // @Maximum 5
     // @Short Modifies a sign.
@@ -38,7 +39,8 @@ public class SignCommand extends AbstractCommand {
     // @Description
     // Modifies a sign that replaces the text shown on it. If no sign is at the location, it replaces the location with the modified sign.
     //
-    // Text lines 1-4 will show on the front of the sign, and lines 5-8 will show on the back (requires MC 1.20+).
+    // For MC 1.20+, optionally specify a side to set the text of. If 'both' is used, the first four entries in the 'line' argument will be used on the front, and the second four on the back.
+    // If 'front' or 'back' is specified, sets the lines on that side while leaving the other one as-is.
     //
     // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
     // If there is not already a sign there, defaults to a sign_post.
@@ -59,7 +61,11 @@ public class SignCommand extends AbstractCommand {
     //
     // @Usage
     // Use to edit some text on the front and back of an existing sign.
-    // - sign "Hi!|This is|the|front.|This|is|the|back." <context.location>
+    // - sign side:both "Hi!|This is|the|front.|This|is|the|back." <context.location>
+    //
+    // @Usage
+    // Use to edit some text on just the back of an existing sign.
+    // - sign side:back "This is|the back.|The front|is unchanged." <context.location>
     //
     // @Usage
     // Use to show the time on a sign and ensure that it points north.
@@ -78,9 +84,12 @@ public class SignCommand extends AbstractCommand {
 
     public enum Type {AUTOMATIC, SIGN_POST, WALL_SIGN, HANGING, HANGING_WALL}
 
+    public enum Side {BOTH, FRONT, BACK}
+
     public static void autoExecute(ScriptEntry scriptEntry,
                                    @ArgName("type") @ArgPrefixed @ArgDefaultText("automatic") Type type,
                                    @ArgName("material") @ArgPrefixed @ArgDefaultNull MaterialTag material,
+                                   @ArgName("side") @ArgPrefixed @ArgDefaultNull Side side,
                                    @ArgName("text") @ArgLinear @ArgDefaultNull ListTag text,
                                    @ArgName("location") @ArgLinear @ArgDefaultNull LocationTag location,
                                    @ArgName("direction") @ArgPrefixed @ArgDefaultNull String direction) {
@@ -126,8 +135,28 @@ public class SignCommand extends AbstractCommand {
                 setWallSign(sign, bf, material);
             }
         }
-        BlockState signState = sign.getState();
-        Utilities.setSignLines((Sign) signState, text.toArray(new String[8]));
+        Sign signBlock = (Sign) sign.getState();
+        String[] lines4 = text.toArray(new String[4]);
+        String[] lines8 = text.toArray(new String[8]);
+        if (!SIGN_SIDES_SUPPORTED || side == Side.FRONT) {
+            for (int n = 0; n < 4; n++) {
+                PaperAPITools.instance.setSignLine(signBlock, n, lines4[n]);
+            }
+        }
+        else if (side == Side.BACK) {
+            for (int n = 0; n < 4; n++) {
+                PaperAPITools.instance.setSignBackLine(signBlock, n, lines4[n]);
+            }
+        }
+        else {
+            for (int n = 0; n < 4; n++) {
+                PaperAPITools.instance.setSignLine(signBlock, n, lines8[n]);
+            }
+            for (int n = 4; n < 8; n++) {
+                PaperAPITools.instance.setSignBackLine(signBlock, n, lines8[n]);
+            }
+        }
+        signBlock.update();
     }
 
     public static void setWallSign(Block sign, BlockFace bf, MaterialTag material) {
