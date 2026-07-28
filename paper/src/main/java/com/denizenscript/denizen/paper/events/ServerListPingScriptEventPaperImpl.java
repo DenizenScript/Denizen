@@ -15,6 +15,7 @@ import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.profile.PlayerTextures;
@@ -70,6 +71,17 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
             ListedPlayersEditor.setListedPlayerInfo(evt.getEvent(), text);
             return true;
         });
+        this.<ServerListPingScriptEventPaperImpl, ElementTag>registerOptionalDetermination("player_count", ElementTag.class, (evt, context, input) -> {
+            if (!CoreConfiguration.allowRestrictedActions) {
+                Debug.echoError("Cannot use 'player_count' in list ping event: 'Allow restricted actions' is disabled in Denizen config.yml.");
+                return false;
+            }
+            if (input.isInt()) {
+                evt.getEvent().setNumPlayers(input.asInt());
+                return true;
+            }
+            return false;
+        });
     }
 
     public PaperServerListPingEvent getEvent() {
@@ -86,7 +98,18 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
         }
 
         public static void excludeListedPlayers(PaperServerListPingEvent event, Set<UUID> exclude) {
-            event.getListedPlayers().removeIf(listedPlayerInfo -> exclude.contains(listedPlayerInfo.id()));
+            int size = event.getListedPlayers().size();
+            MutableInt counter = new MutableInt();
+            event.getListedPlayers().removeIf(listedPlayerInfo -> {
+                if (exclude.contains(listedPlayerInfo.id())) {
+                    counter.increment();
+                    return true;
+                }
+                return false;
+            });
+            if (size == event.getNumPlayers()) {
+                event.setNumPlayers(event.getNumPlayers() - counter.intValue());
+            }
         }
     }
 
