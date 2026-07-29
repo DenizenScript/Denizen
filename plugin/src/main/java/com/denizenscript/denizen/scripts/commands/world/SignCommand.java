@@ -7,11 +7,12 @@ import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.*;
@@ -23,7 +24,7 @@ public class SignCommand extends AbstractCommand {
     public SignCommand() {
         setName("sign");
         setSyntax("sign (type:{automatic}/sign_post/wall_sign/hanging/hanging_wall) (material:<material>) (side:{both}/front/back) [<line>|...] [<location>] (direction:north/east/south/west)");
-        setRequiredArguments(1, 5);
+        setRequiredArguments(1, 6);
         isProcedural = false;
         autoCompile();
     }
@@ -32,7 +33,7 @@ public class SignCommand extends AbstractCommand {
     // @Name Sign
     // @Syntax sign (type:{automatic}/sign_post/wall_sign/hanging/hanging_wall) (material:<material>) (side:{both}/front/back) [<line>|...] [<location>] (direction:north/east/south/west)
     // @Required 1
-    // @Maximum 5
+    // @Maximum 6
     // @Short Modifies a sign.
     // @Group world
     //
@@ -87,17 +88,22 @@ public class SignCommand extends AbstractCommand {
     public enum Side {BOTH, FRONT, BACK}
 
     public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("location") @ArgLinear ObjectTag locationObj,
+                                   @ArgName("text") @ArgLinear ObjectTag textObj,
                                    @ArgName("type") @ArgPrefixed @ArgDefaultText("automatic") Type type,
                                    @ArgName("material") @ArgPrefixed @ArgDefaultNull MaterialTag material,
                                    @ArgName("side") @ArgPrefixed @ArgDefaultNull Side side,
-                                   @ArgName("text") @ArgLinear @ArgDefaultNull ListTag text,
-                                   @ArgName("location") @ArgLinear @ArgDefaultNull LocationTag location,
                                    @ArgName("direction") @ArgPrefixed @ArgDefaultNull String direction) {
-        if (location == null) {
-            throw new InvalidArgumentsRuntimeException("Must specify a Sign location!");
+        LocationTag location;
+        ListTag text;
+        if (!(locationObj instanceof LocationTag) && !(textObj instanceof ListTag)) {
+            Deprecations.outOfOrderArgs.warn(scriptEntry);
+            location = textObj.asType(LocationTag.class, scriptEntry.context);
+            text = locationObj.asType(ListTag.class, scriptEntry.context);
         }
-        if (text == null) {
-            throw new InvalidArgumentsRuntimeException("Must specify sign text!");
+        else {
+            location = locationObj.asType(LocationTag.class, scriptEntry.context);
+            text = textObj.asType(ListTag.class, scriptEntry.context);
         }
         Block sign = location.getBlock();
         if (type != Type.AUTOMATIC || !isAnySign(sign.getType())) {
@@ -151,9 +157,7 @@ public class SignCommand extends AbstractCommand {
         else {
             for (int n = 0; n < 4; n++) {
                 PaperAPITools.instance.setSignLine(signBlock, n, lines8[n]);
-            }
-            for (int n = 4; n < 8; n++) {
-                PaperAPITools.instance.setSignBackLine(signBlock, n, lines8[n]);
+                PaperAPITools.instance.setSignBackLine(signBlock, n, lines8[n + 4]);
             }
         }
         signBlock.update();
