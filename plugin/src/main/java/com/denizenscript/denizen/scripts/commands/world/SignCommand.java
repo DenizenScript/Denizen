@@ -88,22 +88,22 @@ public class SignCommand extends AbstractCommand {
     public enum Side {BOTH, FRONT, BACK}
 
     public static void autoExecute(ScriptEntry scriptEntry,
-                                   @ArgName("location") @ArgLinear ObjectTag locationObj,
                                    @ArgName("text") @ArgLinear ObjectTag textObj,
+                                   @ArgName("location") @ArgLinear ObjectTag locationObj,
                                    @ArgName("type") @ArgPrefixed @ArgDefaultText("automatic") Type type,
                                    @ArgName("material") @ArgPrefixed @ArgDefaultNull MaterialTag material,
                                    @ArgName("side") @ArgPrefixed @ArgDefaultNull Side side,
                                    @ArgName("direction") @ArgPrefixed @ArgDefaultNull String direction) {
-        LocationTag location;
         ListTag text;
-        if (!(locationObj instanceof LocationTag) && !(textObj instanceof ListTag)) {
+        LocationTag location;
+        if (!(textObj instanceof ListTag) && !(locationObj instanceof LocationTag) ) {
             Deprecations.outOfOrderArgs.warn(scriptEntry);
-            location = textObj.asType(LocationTag.class, scriptEntry.context);
             text = locationObj.asType(ListTag.class, scriptEntry.context);
+            location = textObj.asType(LocationTag.class, scriptEntry.context);
         }
         else {
-            location = locationObj.asType(LocationTag.class, scriptEntry.context);
             text = textObj.asType(ListTag.class, scriptEntry.context);
+            location = locationObj.asType(LocationTag.class, scriptEntry.context);
         }
         Block sign = location.getBlock();
         if (type != Type.AUTOMATIC || !isAnySign(sign.getType())) {
