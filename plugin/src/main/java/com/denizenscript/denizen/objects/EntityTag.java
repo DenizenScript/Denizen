@@ -100,6 +100,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
     // "projectile" plaintext: matches for any projectile type (arrow, trident, fish hook, snowball, etc).
     // "hanging" plaintext: matches for any hanging type (painting, item_frame, etc).
     // "monster" plaintext: matches for any monster type (creepers, zombies, etc).
+    // "enemy" plaintext: matches for any hostile entities (zombies, shulkers, ect).
     // "animal" plaintext: matches for any animal type (pigs, cows, etc).
     // "mob" plaintext: matches for any mob type (creepers, pigs, etc).
     // "living" plaintext: matches for any living type (players, pigs, creepers, etc).
@@ -608,6 +609,13 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
             return Monster.class.isAssignableFrom(entity_type.getBukkitEntityType().getEntityClass());
         }
         return getBukkitEntity() instanceof Monster;
+    }
+
+    public boolean isEnemyType() {
+        if (getBukkitEntity() == null && entity_type != null) {
+            return Enemy.class.isAssignableFrom(entity_type.getBukkitEntityType().getEntityClass());
+        }
+        return getBukkitEntity() instanceof Enemy;
     }
 
     public boolean isMobType() {
@@ -2371,6 +2379,20 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.registerTag(ElementTag.class, "is_monster", (attribute, object) -> {
             return new ElementTag(object.isMonsterType());
         });
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+
+            // <--[tag]
+            // @attribute <EntityTag.is_enemy>
+            // @returns ElementTag(Boolean)
+            // @group data
+            // @description
+            // Returns whether the entity type is an enemy. See <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Enemy.html>
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "is_enemy", (attribute, object) -> {
+                return new ElementTag(object.isEnemyType());
+            });
+        }
 
         // <--[tag]
         // @attribute <EntityTag.is_mob>
@@ -4587,6 +4609,8 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 return isMobType();
             case "animal":
                 return isAnimalType();
+            case "enemy":
+                return isEnemyType();
         }
         return false;
     }
