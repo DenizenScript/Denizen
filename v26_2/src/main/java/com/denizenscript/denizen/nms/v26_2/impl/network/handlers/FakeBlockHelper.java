@@ -122,6 +122,7 @@ public class FakeBlockHelper {
             Registry<Biome> biomeRegistry = ((CraftWorld) world).getHandle().registryAccess().lookupOrThrow(Registries.BIOME);
             for (int y = minChunkY; y < maxChunkY; y++) {
                 int blockCount = serial.readShort();
+                int fluidCount = serial.readShort();
                 // reflected constructors as workaround for spigot remapper bug - Mojang "IdMap" became Spigot "IRegistry" but should be "Registry"
                 PalettedContainer<BlockState> states = (PalettedContainer<BlockState>) PALETTEDCONTAINER_CTOR.newInstance(Blocks.AIR.defaultBlockState(), Strategy.createForBlockStates(Block.BLOCK_STATE_REGISTRY));
                 states.read(serial);
@@ -151,6 +152,7 @@ public class FakeBlockHelper {
                     }
                 }
                 outputSerial.writeShort(blockCount);
+                outputSerial.writeShort(fluidCount);
                 states.write(outputSerial);
                 biomes.write(outputSerial);
             }
