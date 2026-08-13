@@ -34,7 +34,7 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     public EntityDespawnScriptEvent() {
         instance = this;
         registerCouldMatcher("<entity> despawns");
-        registerSwitches("cause");
+        registerSwitches("cause", "entity");
     }
 
     public static EntityDespawnScriptEvent instance;
@@ -51,6 +51,9 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
             return false;
         }
         if (!runInCheck(path, entity.getLocation())) {
+            return false;
+        }
+        if (!path.tryObjectSwitch("entity", entity)) {
             return false;
         }
         return super.matches(path);

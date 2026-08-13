@@ -32,7 +32,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
 
     public ItemDespawnsScriptEvent() {
         registerCouldMatcher("<item> despawns");
-        registerSwitches("type");
+        registerSwitches("item");
     }
 
     public ItemTag item;
@@ -48,7 +48,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
         if (!runInCheck(path, location)) {
             return false;
         }
-        if (!path.tryObjectSwitch("type", item)) {
+        if (!path.tryObjectSwitch("item", item)) {
             return false;
         }
         return super.matches(path);
