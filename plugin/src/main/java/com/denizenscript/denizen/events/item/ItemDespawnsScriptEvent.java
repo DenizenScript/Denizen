@@ -32,6 +32,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
 
     public ItemDespawnsScriptEvent() {
         registerCouldMatcher("<item> despawns");
+        registerSwitches("type");
     }
 
     public ItemTag item;
@@ -47,17 +48,20 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
         if (!runInCheck(path, location)) {
             return false;
         }
+        if (!path.tryObjectSwitch("type", item)) {
+            return false;
+        }
         return super.matches(path);
     }
 
     @Override
     public ObjectTag getContext(String name) {
-        switch (name) {
-            case "location": return location;
-            case "item": return item;
-            case "entity": return entity;
-        }
-        return super.getContext(name);
+        return switch (name) {
+            case "location" -> location;
+            case "item" -> item;
+            case "entity" -> entity;
+            default -> super.getContext(name);
+        };
     }
 
     @EventHandler
