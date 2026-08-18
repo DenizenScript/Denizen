@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.paper.datacomponents.ComponentAdaptersRegistry;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
@@ -19,6 +20,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PaperModule {
 
@@ -67,7 +71,7 @@ public class PaperModule {
         ScriptEvent.registerScriptEvent(PlayerJumpsScriptEventPaperImpl.class);
         ScriptEvent.registerScriptEvent(PlayerLecternPageChangeScriptEvent.class);
         ScriptEvent.registerScriptEvent(PlayerLoomPatternSelectScriptEvent.class);
-        ScriptEvent.registerScriptEvent(PlayerNameEntityScriptEvent.class);
+        ScriptEvent.registerScriptEvent(PlayerNamesEntityScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
             ScriptEvent.registerScriptEvent(PlayerOpenSignScriptEvent.class);
         }
@@ -103,6 +107,9 @@ public class PaperModule {
             ScriptEvent.registerScriptEvent(TNTPrimesScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(UnknownCommandScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptEvent.registerScriptEvent(VaultChangesStateScriptEvent.class);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             ScriptEvent.registerScriptEvent(WardenChangesAngerLevelScriptEvent.class);
         }
@@ -129,6 +136,12 @@ public class PaperModule {
         }
         PropertyParser.registerProperty(EntityWitherInvulnerable.class, EntityTag.class);
         PropertyParser.registerProperty(ItemArmorStand.class, ItemTag.class);
+
+        // Components system
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            PropertyParser.registerProperty(ItemRemovedComponents.class, ItemTag.class);
+            ComponentAdaptersRegistry.register();
+        }
 
         // Paper object extensions
         PaperElementExtensions.register();
@@ -163,6 +176,14 @@ public class PaperModule {
             return null;
         }
         return FormattedTextHelper.stringify(FormattedTextHelper.parseJson(componentToJson(component)));
+    }
+
+    public static List<String> stringifyComponentList(List<Component> components) {
+        List<String> result = new ArrayList<>(components.size());
+        for (Component component : components) {
+            result.add(stringifyComponent(component));
+        }
+        return result;
     }
 
     public static Component jsonToComponent(String json) {

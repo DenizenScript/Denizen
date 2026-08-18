@@ -173,6 +173,9 @@ public class PropertyRegistry {
         }
         PropertyParser.registerProperty(EntitySpeed.class, EntityTag.class);
         PropertyParser.registerProperty(EntitySpell.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(EntityState.class, EntityTag.class);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityStepHeight.class, EntityTag.class);
         }
@@ -260,6 +263,7 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(ItemScript.class, ItemTag.class);
         PropertyParser.registerProperty(ItemSignContents.class, ItemTag.class); // Special case handling in ItemComponentsPatch
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
+            PropertyParser.registerProperty(ItemSignBackContents.class, ItemTag.class); // Special case handling in ItemComponentsPatch
             PropertyParser.registerProperty(ItemSignIsWaxed.class, ItemTag.class); // Special case handling in ItemComponentsPatch
         }
         registerItemProperty(ItemSkullskin.class, "profile");
@@ -296,6 +300,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(MaterialLightable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialMode.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialNote.class, MaterialTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            PropertyParser.registerProperty(MaterialOminous.class, MaterialTag.class);
+        }
         PropertyParser.registerProperty(MaterialPersistent.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialPowerable.class, MaterialTag.class);
         PropertyParser.registerProperty(MaterialPower.class, MaterialTag.class);

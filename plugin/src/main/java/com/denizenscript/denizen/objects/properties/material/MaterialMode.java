@@ -4,207 +4,167 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.*;
 
-public class MaterialMode implements Property {
+public class MaterialMode extends MaterialProperty<ElementTag> {
 
-    public static boolean describes(ObjectTag material) {
-        if (!(material instanceof MaterialTag)) {
-            return false;
-        }
-        MaterialTag mat = (MaterialTag) material;
-        if (!mat.hasModernData()) {
-            return false;
-        }
-        BlockData data = mat.getModernData();
-        return data instanceof Comparator
-                || data instanceof PistonHead
+    // <--[property]
+    // @object MaterialTag
+    // @name mode
+    // @input ElementTag
+    // @description
+    // Controls a block's mode.
+    // For big_dripleafs, modes are FULL, NONE, PARTIAL, and UNSTABLE.
+    // For bubble_columns, modes are NORMAL and DRAG.
+    // For command_blocks, modes are CONDITIONAL and NORMAL.
+    // For comparators, modes are COMPARE and SUBTRACT.
+    // For creaking_hearts, modes are AWAKE, DORMANT, and UPROOTED.
+    // For daylight_detectors, modes are INVERTED and NORMAL.
+    // For potent_sulfur, modes are CONTINUOUS, DORMANT, DRY, ERUPTING, and WET.
+    // For piston_heads, modes are NORMAL and SHORT.
+    // For sculk_catalysts, modes are BLOOM and NORMAL.
+    // For sculk_sensors, modes are ACTIVE, COOLDOWN, and INACTIVE.
+    // For sculk_shriekers, modes are SHRIEKING and NORMAL.
+    // For structure_blocks, modes are CORNER, DATA, LOAD, and SAVE.
+    // For tripwires, modes are ARMED and DISARMED.
+    // For trial_spawners, modes are ACTIVE, COOLDOWN, EJECTING_REWARD, INACTIVE, WAITING_FOR_PLAYERS, and WAITING_FOR_REWARD_EJECTION.
+    // For vaults, modes are ACTIVE, EJECTING, INACTIVE, and UNLOCKING.
+    // -->
+
+    public static boolean describes(MaterialTag material) {
+        BlockData data = material.getModernData();
+        return data instanceof BigDripleaf
                 || data instanceof BubbleColumn
-                || data instanceof StructureBlock
-                || data instanceof DaylightDetector
                 || data instanceof CommandBlock
+                || data instanceof Comparator
+                || data instanceof DaylightDetector
+                || data instanceof PistonHead
                 || data instanceof SculkSensor
-                || data instanceof BigDripleaf
+                || data instanceof StructureBlock
                 || data instanceof Tripwire
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && (data instanceof SculkCatalyst
-                                                                        || data instanceof  SculkShrieker));
+                                                                        || data instanceof SculkShrieker))
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && (data instanceof CreakingHeart
+                                                                        || data instanceof TrialSpawner
+                                                                        || data instanceof Vault))
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_2) && data instanceof PotentSulfur);
     }
-
-    public static MaterialMode getFrom(ObjectTag _material) {
-        if (!describes(_material)) {
-            return null;
-        }
-        else {
-            return new MaterialMode((MaterialTag) _material);
-        }
-    }
-
-    public static final String[] handledMechs = new String[] {
-            "mode"
-    };
-
-    public MaterialMode(MaterialTag _material) {
-        material = _material;
-    }
-
-    public MaterialTag material;
-
-    public static void register() {
-
-        // <--[tag]
-        // @attribute <MaterialTag.mode>
-        // @returns ElementTag
-        // @mechanism MaterialTag.mode
-        // @group properties
-        // @description
-        // Returns a block's mode.
-        // For comparators, output is COMPARE or SUBTRACT.
-        // For piston_heads, output is NORMAL or SHORT.
-        // For bubble_columns, output is NORMAL or DRAG.
-        // For structure_blocks, output is CORNER, DATA, LOAD, or SAVE.
-        // For sculk_sensors, output is ACTIVE, COOLDOWN, or INACTIVE.
-        // For daylight_detectors, output is INVERTED or NORMAL.
-        // For command_blocks, output is CONDITIONAL or NORMAL.
-        // For big_dripleafs, output is FULL, NONE, PARTIAL, or UNSTABLE.
-        // For sculk_catalysts, output is BLOOM or NORMAL.
-        // For sculk_shriekers, output is SHRIEKING or NORMAL.
-        // For tripwires, output is ARMED or DISARMED.
-        // -->
-        PropertyParser.registerStaticTag(MaterialMode.class, ElementTag.class, "mode", (attribute, material) -> {
-            return new ElementTag(material.getPropertyString());
-        });
-    }
-
-    public boolean isComparator() {
-        return material.getModernData() instanceof Comparator;
-    }
-
-    public boolean isPistonHead() {
-        return material.getModernData() instanceof PistonHead;
-    }
-
-    public boolean isBubbleColumn() {
-        return material.getModernData() instanceof BubbleColumn;
-    }
-
-    public boolean isStructureBlock() {
-        return material.getModernData() instanceof StructureBlock;
-    }
-
-    public boolean isDaylightDetector() {
-        return material.getModernData() instanceof DaylightDetector;
-    }
-
-    public boolean isCommandBlock() {
-        return material.getModernData() instanceof CommandBlock;
-    }
-
-    public boolean isSculkSensor() {
-        return material.getModernData() instanceof SculkSensor;
-    }
-
-    public boolean isBigDripleaf() {
-        return material.getModernData() instanceof BigDripleaf;
-    }
-
-    public boolean isTripwire() {
-        return material.getModernData() instanceof Tripwire;
-    }
-
-    public boolean isSculkCatalyst() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && material.getModernData() instanceof SculkCatalyst;
-    }
-
-    public boolean isSculkShrieker() {
-        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && material.getModernData() instanceof SculkShrieker;
-    }
-
-    public Comparator getComparator() {
-        return (Comparator) material.getModernData();
-    }
-
-    public PistonHead getPistonHead() {
-        return (PistonHead) material.getModernData();
-    }
-
-    public BubbleColumn getBubbleColumn() {
-        return (BubbleColumn) material.getModernData();
-    }
-
-    public StructureBlock getStructureBlock() {
-        return (StructureBlock) material.getModernData();
-    }
-
-    public DaylightDetector getDaylightDetector() {
-        return (DaylightDetector) material.getModernData();
-    }
-
-    public CommandBlock getCommandBlock() {
-        return (CommandBlock) material.getModernData();
-    }
-
-    public SculkSensor getSculkSensor() {
-        return (SculkSensor) material.getModernData();
-    }
-
-    public BigDripleaf getBigDripleaf() {
-        return (BigDripleaf) material.getModernData();
-    }
-
-    public Tripwire getTripwire() {
-        return (Tripwire) material.getModernData();
-    }
-
-    /*public SculkCatalyst getSculkCatalyst() { // TODO: 1.19
-        return (SculkCatalyst) material.getModernData();
-    }
-
-    public SculkShrieker getSculkShrieker() {
-        return (SculkShrieker) material.getModernData();
-    }*/
 
     @Override
-    public String getPropertyString() {
-        if (isComparator()) {
-            return getComparator().getMode().name();
+    public ElementTag getPropertyValue() {
+        if (getBlockData() instanceof BigDripleaf bigDripleaf) {
+            return new ElementTag(bigDripleaf.getTilt());
         }
-        else if (isBubbleColumn()) {
-            return getBubbleColumn().isDrag() ? "DRAG" : "NORMAL";
+        else if (getBlockData() instanceof BubbleColumn bubbleColumn) {
+            return new ElementTag(bubbleColumn.isDrag() ? "DRAG" : "NORMAL", true);
         }
-        else if (isPistonHead()) {
-            return getPistonHead().isShort() ? "SHORT" : "NORMAL";
+        else if (getBlockData() instanceof CommandBlock cmdBlock) {
+            return new ElementTag(cmdBlock.isConditional() ? "CONDITIONAL" : "NORMAL", true);
         }
-        else if (isStructureBlock()) {
-            return getStructureBlock().getMode().name();
+        else if (getBlockData() instanceof Comparator comparator) {
+            return new ElementTag(comparator.getMode());
         }
-        else if (isDaylightDetector()) {
-            return getDaylightDetector().isInverted() ? "INVERTED" : "NORMAL";
+        else if (getBlockData() instanceof DaylightDetector daylightDetector) {
+            return new ElementTag(daylightDetector.isInverted() ? "INVERTED" : "NORMAL", true);
         }
-        else if (isCommandBlock()) {
-            return getCommandBlock().isConditional() ? "CONDITIONAL" : "NORMAL";
+        else if (getBlockData() instanceof PistonHead pistonHead) {
+            return new ElementTag(pistonHead.isShort() ? "SHORT" : "NORMAL", true);
         }
-        else if (isSculkSensor()) {
-            return getSculkSensor().getPhase().name();
+        else if (getBlockData() instanceof SculkSensor sculkSensor) {
+            return new ElementTag(sculkSensor.getPhase());
         }
-        else if (isBigDripleaf()) {
-            return getBigDripleaf().getTilt().name();
+        else if (getBlockData() instanceof StructureBlock structureBlock) {
+            return new ElementTag(structureBlock.getMode());
         }
-        else if (isTripwire()) {
-            return getTripwire().isDisarmed() ? "DISARMED" : "ARMED";
+        else if (getBlockData() instanceof Tripwire tripwire) {
+            return new ElementTag(tripwire.isDisarmed() ? "DISARMED" : "ARMED", true);
         }
-        else if (isSculkCatalyst()) {
-            return ((SculkCatalyst) material.getModernData()).isBloom() ? "BLOOM" : "NORMAL"; // TODO: 1.19
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkCatalyst sculkCatalyst) {
+            return new ElementTag(sculkCatalyst.isBloom() ? "BLOOM" : "NORMAL", true);
         }
-        else if (isSculkShrieker()) {
-            return  ((SculkShrieker) material.getModernData()).isShrieking() ? "SHRIEKING" : "NORMAL"; // TODO: 1.19
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkShrieker sculkShrieker) {
+            return new ElementTag(sculkShrieker.isShrieking() ? "SHRIEKING" : "NORMAL", true);
         }
-        return null; // Unreachable
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof CreakingHeart creakingHeart) {
+            return new ElementTag(creakingHeart.getCreakingHeartState().name(), true); // TODO: once 1.21 is the minimum supported version, use the enum constructor
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof TrialSpawner trialSpawner) {
+            return new ElementTag(trialSpawner.getTrialSpawnerState().name(), true); // TODO: once 1.21 is the minimum supported version, use the enum constructor
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof Vault vault) {
+            return new ElementTag(vault.getVaultState().name(), true); // TODO: once 1.21 is the minimum supported version, use the enum constructor
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_2) && getBlockData() instanceof PotentSulfur potentSulfur) {
+            return new ElementTag(potentSulfur.getPotentSulfurState().name(), true); // TODO: once 26.2 is the minimum supported version, use the enum constructor
+        }
+        return null;
+    }
+
+    @Override
+    public void setPropertyValue(ElementTag value, Mechanism mechanism) {
+        if (getBlockData() instanceof BigDripleaf bigDripleaf) {
+            if (mechanism.requireEnum(BigDripleaf.Tilt.class)) {
+                bigDripleaf.setTilt(value.asEnum(BigDripleaf.Tilt.class));
+            }
+        }
+        else if (getBlockData() instanceof BubbleColumn bubbleColumn) {
+            bubbleColumn.setDrag(value.asLowerString().equals("drag"));
+        }
+        else if (getBlockData() instanceof CommandBlock cmdBlock) {
+            cmdBlock.setConditional(value.asLowerString().equals("conditional"));
+        }
+        else if (getBlockData() instanceof Comparator comparator) {
+            if (mechanism.requireEnum(Comparator.Mode.class)) {
+                comparator.setMode(value.asEnum(Comparator.Mode.class));
+            }
+        }
+        else if (getBlockData() instanceof DaylightDetector daylightDetector) {
+            daylightDetector.setInverted(value.asLowerString().equals("inverted"));
+        }
+        else if (getBlockData() instanceof PistonHead pistonHead) {
+            pistonHead.setShort(value.asLowerString().equals("short"));
+        }
+        else if (getBlockData() instanceof SculkSensor sculkSensor) {
+            if (mechanism.requireEnum(SculkSensor.Phase.class)) {
+                sculkSensor.setPhase(value.asEnum(SculkSensor.Phase.class));
+            }
+        }
+        else if (getBlockData() instanceof StructureBlock structureBlock) {
+            if (mechanism.requireEnum(StructureBlock.Mode.class)) {
+                structureBlock.setMode(value.asEnum(StructureBlock.Mode.class));
+            }
+        }
+        else if (getBlockData() instanceof Tripwire tripwire) {
+            tripwire.setDisarmed(value.asLowerString().equals("disarmed"));
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkCatalyst sculkCatalyst) {
+            sculkCatalyst.setBloom(value.asLowerString().equals("bloom"));
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19) && getBlockData() instanceof SculkShrieker sculkShrieker) {
+            sculkShrieker.setShrieking(value.asLowerString().equals("shrieking"));
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof CreakingHeart creakingHeart) {
+            if (mechanism.requireEnum(CreakingHeart.State.class)) {
+                creakingHeart.setCreakingHeartState(value.asEnum(CreakingHeart.State.class));
+            }
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof TrialSpawner trialSpawner) {
+            if (mechanism.requireEnum(TrialSpawner.State.class)) {
+                trialSpawner.setTrialSpawnerState(value.asEnum(TrialSpawner.State.class));
+            }
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21) && getBlockData() instanceof Vault vault) {
+            if (mechanism.requireEnum(Vault.State.class)) {
+                vault.setVaultState(value.asEnum(Vault.State.class));
+            }
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_2) && getBlockData() instanceof PotentSulfur potentSulfur) {
+            if (mechanism.requireEnum(PotentSulfur.State.class)) {
+                potentSulfur.setPotentSulfurState(value.asEnum(PotentSulfur.State.class));
+            }
+        }
     }
 
     @Override
@@ -212,63 +172,7 @@ public class MaterialMode implements Property {
         return "mode";
     }
 
-    @Override
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object MaterialTag
-        // @name mode
-        // @input ElementTag
-        // @description
-        // Set a block's mode.
-        // For comparators, input is COMPARE or SUBTRACT.
-        // For piston_heads, input is NORMAL or SHORT.
-        // For bubble_columns, input is NORMAL or DRAG.
-        // For structure_blocks, input is CORNER, DATA, LOAD, or SAVE.
-        // For sculk_sensors, input is ACTIVE, COOLDOWN, or INACTIVE.
-        // For daylight_detectors, input is INVERTED or NORMAL.
-        // For command_blocks, input is CONDITIONAL or NORMAL.
-        // For big_dripleafs, input is FULL, NONE, PARTIAL, or UNSTABLE.
-        // For sculk_catalysts, input is BLOOM or NORMAL.
-        // For sculk_shriekers, input is SHRIEKING or NORMAL.
-        // For tripwires, input is ARMED or DISARMED.
-        // @tags
-        // <MaterialTag.mode>
-        // -->
-        if (mechanism.matches("mode")) {
-            if (isComparator() && mechanism.requireEnum(Comparator.Mode.class)) {
-                getComparator().setMode(Comparator.Mode.valueOf(mechanism.getValue().asString().toUpperCase()));
-            }
-            else if (isBubbleColumn()) {
-                getBubbleColumn().setDrag(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "drag"));
-            }
-            else if (isPistonHead()) {
-                getPistonHead().setShort(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "short"));
-            }
-            else if (isStructureBlock() && mechanism.requireEnum(StructureBlock.Mode.class)) {
-                getStructureBlock().setMode(StructureBlock.Mode.valueOf(mechanism.getValue().asString().toUpperCase()));
-            }
-            else if (isDaylightDetector()) {
-                getDaylightDetector().setInverted(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "inverted"));
-            }
-            else if (isCommandBlock()) {
-                getCommandBlock().setConditional(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "conditional"));
-            }
-            else if (isSculkSensor() && mechanism.requireEnum(SculkSensor.Phase.class)) {
-                getSculkSensor().setPhase(SculkSensor.Phase.valueOf(mechanism.getValue().asString().toUpperCase()));
-            }
-            else if (isBigDripleaf() && mechanism.requireEnum(BigDripleaf.Tilt.class)) {
-                getBigDripleaf().setTilt(BigDripleaf.Tilt.valueOf(mechanism.getValue().asString().toUpperCase()));
-            }
-            else if (isTripwire()) {
-                getTripwire().setDisarmed(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "disarmed"));
-            }
-            else if (isSculkCatalyst()) {
-                ((SculkCatalyst) material.getModernData()).setBloom(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "bloom")); // TODO: 1.19
-            }
-            else if (isSculkShrieker()) {
-                ((SculkShrieker) material.getModernData()).setShrieking(CoreUtilities.equalsIgnoreCase(mechanism.getValue().asString(), "shrieking")); // TODO: 1.19
-            }
-        }
+    public static void register() {
+        autoRegister("mode", MaterialMode.class, ElementTag.class, false);
     }
 }

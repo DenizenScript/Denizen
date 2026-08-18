@@ -30,16 +30,13 @@ public class StatsRecord extends Thread {
         String deprecations = String.join("\n", Deprecations.firedRecently.keySet());
         Deprecations.firedRecently.clear();
         String mcVersion = Bukkit.getVersion();
-        int firstDash = mcVersion.indexOf('-');
-        int secondDash = firstDash == -1 ? -1 : mcVersion.indexOf('-', firstDash + 1);
         int mcPart = mcVersion.indexOf("(MC: ");
         int endPart = mcPart == -1 ? -1 : mcVersion.indexOf(")", mcPart);
-        String platform = secondDash == -1 ? "" : mcVersion.substring(firstDash + 1, secondDash);
         mcVersion = (endPart == -1) ? "" : mcVersion.substring(mcPart + "(MC: ".length(), endPart);
         content = "postid=pluginstats&plugin=Denizen"
                 + "&differentiator=" + differentiator
                 + "&pl_plugin_version=" + URLEncoder.encode(denizenVersion)
-                + "&pl_platform=" + URLEncoder.encode(platform)
+                + "&pl_platform=" + URLEncoder.encode(Bukkit.getName())
                 + "&pl_minecraft_version=" + URLEncoder.encode(mcVersion)
                 + "&pl_player_count=" + Bukkit.getOnlinePlayers().size()
                 + "&pl_script_count=" + ScriptRegistry.scriptContainers.size()

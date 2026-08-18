@@ -11,6 +11,7 @@ import com.denizenscript.denizen.objects.properties.material.MaterialAttachmentF
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
 import com.denizenscript.denizen.objects.properties.material.MaterialDistance;
 import com.denizenscript.denizen.objects.properties.material.MaterialHalf;
+import com.denizenscript.denizen.scripts.commands.world.SignCommand;
 import com.denizenscript.denizen.scripts.commands.world.SwitchCommand;
 import com.denizenscript.denizen.utilities.*;
 import com.denizenscript.denizen.utilities.blocks.SpawnableHelper;
@@ -40,6 +41,7 @@ import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.sign.Side;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.block.structure.UsageMode;
@@ -52,8 +54,8 @@ import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 import org.bukkit.util.*;
+import org.bukkit.util.Vector;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -1249,14 +1251,14 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @group world
         // @description
         // Returns a list of lines on a sign.
+        // For MC 1.20+, this returns the contents on the front of the sign.
+        // To get the contents on the back, see <@link tag LocationTag.sign_back_contents>.
         // -->
         tagProcessor.registerTag(ListTag.class, "sign_contents", (attribute, object) -> {
-            if (object.getBlockStateForTag(attribute) instanceof Sign) {
-                return new ListTag(Arrays.asList(PaperAPITools.instance.getSignLines(((Sign) object.getBlockStateForTag(attribute)))));
+            if (object.getBlockStateForTag(attribute) instanceof Sign sign) {
+                return new ListTag(PaperAPITools.instance.getSignLines(sign), true);
             }
-            else {
-                return null;
-            }
+            return null;
         });
 
         // <--[tag]
@@ -4156,14 +4158,15 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @group world
         // @description
         // Returns whether the location is a Sign block that is glowing.
+        // For MC 1.20+, this returns the glowing status of the front of the sign.
+        // To get the glowing state of the back, see <@link tag LocationTag.sign_back_glowing>.
         // -->
         tagProcessor.registerTag(ElementTag.class, "sign_glowing", (attribute, object) -> {
-            BlockState state = object.getBlockStateForTag(attribute);
-            if (!(state instanceof Sign)) {
+            if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
                 attribute.echoError("Location is not a valid Sign block.");
                 return null;
             }
-            return new ElementTag(((Sign) state).isGlowingText());
+            return new ElementTag(SignCommand.SIGN_SIDES_SUPPORTED ? sign.getSide(Side.FRONT).isGlowingText() : sign.isGlowingText());
         });
 
         // <--[tag]
@@ -4172,16 +4175,17 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         // @mechanism LocationTag.sign_glow_color
         // @group world
         // @description
-        // Returns the name of the glow-color of the sign at the location.
+        // Returns the name of the glow color of the sign at the location.
+        // For MC 1.20+, this returns the color on the front of the sign.
+        // To get the color of the back, see <@link tag LocationTag.sign_back_glow_color>.
         // See also <@link tag LocationTag.sign_glowing>
         // -->
         tagProcessor.registerTag(ElementTag.class, "sign_glow_color", (attribute, object) -> {
-            BlockState state = object.getBlockStateForTag(attribute);
-            if (!(state instanceof Sign)) {
+            if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
                 attribute.echoError("Location is not a valid Sign block.");
                 return null;
             }
-            return new ElementTag(((Sign) state).getColor());
+            return new ElementTag(SignCommand.SIGN_SIDES_SUPPORTED ? sign.getSide(Side.FRONT).getColor() : sign.getColor());
         });
 
         // <--[tag]
@@ -4568,6 +4572,132 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 }
                 crafter.update();
             });
+
+            // <--[tag]
+            // @attribute <LocationTag.sign_back_contents>
+            // @returns ListTag
+            // @mechanism LocationTag.sign_back_contents
+            // @group world
+            // @description
+            // Returns the contents on the back of a sign block.
+            // For the contents on the front, see <@link tag LocationTag.sign_contents>.
+            // -->
+            tagProcessor.registerTag(ListTag.class, "sign_back_contents", (attribute, object) -> {
+                if (object.getBlockStateForTag(attribute) instanceof Sign sign) {
+                    return new ListTag(PaperAPITools.instance.getSignBackLines(sign), true);
+                }
+                return null;
+            });
+
+            // <--[mechanism]
+            // @object LocationTag
+            // @name sign_back_contents
+            // @input ListTag
+            // @description
+            // Sets the contents on the back of a sign block.
+            // To set the contents of the front, see <@link mechanism LocationTag.sign_contents>.
+            // @tags
+            // <LocationTag.sign_back_contents>
+            // -->
+            tagProcessor.registerMechanism("sign_back_contents", false, ListTag.class, (object, mechanism, input) -> {
+                if (!(object.getBlockState() instanceof Sign sign)) {
+                    mechanism.echoError("This mechanism is only valid for Sign blocks.");
+                    return;
+                }
+                for (int i = 0; i < 4; i++) {
+                    PaperAPITools.instance.setSignBackLine(sign, i, "");
+                }
+                CoreUtilities.fixNewLinesToListSeparation(input);
+                if (input.size() > 4) {
+                    mechanism.echoError("Sign can only hold four lines!");
+                }
+                else {
+                    for (int i = 0; i < input.size(); i++) {
+                        PaperAPITools.instance.setSignBackLine(sign, i, input.get(i));
+                    }
+                }
+                sign.update();
+            });
+
+            // <--[tag]
+            // @attribute <LocationTag.sign_back_glowing>
+            // @returns ElementTag(Boolean)
+            // @mechanism LocationTag.sign_back_glowing
+            // @group world
+            // @description
+            // Returns whether the back of a Sign block at this location is glowing.
+            // To get the glowing state of the front, see <@link tag LocationTag.sign_glowing>.
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "sign_back_glowing", (attribute, object) -> {
+                if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
+                    attribute.echoError("Location is not a valid Sign block.");
+                    return null;
+                }
+                return new ElementTag(sign.getSide(Side.BACK).isGlowingText());
+            });
+
+            // <--[mechanism]
+            // @object LocationTag
+            // @name sign_back_glowing
+            // @input ElementTag(Boolean)
+            // @description
+            // Changes whether the back of the sign at the location is glowing.
+            // To set the glowing state of the front, see <@link mechanism LocationTag.sign_glowing>.
+            // @tags
+            // <LocationTag.sign_back_glow_color>
+            // <LocationTag.sign_back_glowing>
+            // -->
+            tagProcessor.registerMechanism("sign_back_glowing", false, ElementTag.class, (object, mechanism, input) -> {
+                if (!(object.getBlockState() instanceof Sign sign)) {
+                    mechanism.echoError("This mechanism can only be called on Sign blocks.");
+                }
+                else if (mechanism.requireBoolean()) {
+                    sign.getSide(Side.BACK).setGlowingText(input.asBoolean());
+                    sign.update();
+                }
+            });
+
+            // <--[tag]
+            // @attribute <LocationTag.sign_back_glow_color>
+            // @returns ElementTag
+            // @mechanism LocationTag.sign_back_glow_color
+            // @group world
+            // @description
+            // Returns the name of the glow color on the back of the sign at the location.
+            // To get the color of the front, see <@link tag LocationTag.sign_glow_color>.
+            // See also <@link tag LocationTag.sign_back_glowing>.
+            // -->
+            tagProcessor.registerTag(ElementTag.class, "sign_back_glow_color", (attribute, object) -> {
+                if (!(object.getBlockStateForTag(attribute) instanceof Sign sign)) {
+                    attribute.echoError("Location is not a valid Sign block.");
+                    return null;
+                }
+                return new ElementTag(sign.getSide(Side.BACK).getColor());
+            });
+
+            // <--[mechanism]
+            // @object LocationTag
+            // @name sign_back_glow_color
+            // @input ElementTag
+            // @description
+            // Changes the glow color on the back of a sign.
+            // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
+            // Use <@link mechanism LocationTag.sign_back_glowing> to toggle whether the sign is glowing.
+            // If a sign is not glowing, this is equivalent to applying a chat color to the sign.
+            // To set the color of the front, see <@link mechanism LocationTag.sign_glow_color>.
+            // @tags
+            // <LocationTag.sign_back_glow_color>
+            // <LocationTag.sign_back_glowing>
+            // -->
+            tagProcessor.registerMechanism("sign_back_glow_color", false, ElementTag.class, (object, mechanism, input) -> {
+                if (!(object.getBlockState() instanceof Sign sign)) {
+                    mechanism.echoError("This mechanism can only be called on Sign blocks.");
+                }
+                else if (mechanism.requireEnum(DyeColor.class)) {
+                    sign.getSide(Side.BACK).setColor(input.asEnum(DyeColor.class));
+                    sign.update();
+                }
+            });
         }
 
         // <--[mechanism]
@@ -4635,9 +4765,101 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
                 mechanism.echoError("The 'LocationTag.page' mechanism can only be called on a lectern block.");
             }
         });
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name sign_contents
+        // @input ListTag
+        // @description
+        // Sets the contents of a sign block.
+        // For MC 1.20+, this sets the contents on the front of the sign.
+        // To set the contents of the back, see <@link mechanism LocationTag.sign_back_contents>.
+        // @tags
+        // <LocationTag.sign_contents>
+        // -->
+        tagProcessor.registerMechanism("sign_contents", false, ListTag.class, (object, mechanism, value) -> {
+            if (!(object.getBlockState() instanceof Sign sign)) {
+                mechanism.echoError("This mechanism is only valid for Sign blocks.");
+                return;
+            }
+            for (int i = 0; i < 4; i++) {
+                PaperAPITools.instance.setSignLine(sign, i, "");
+            }
+            CoreUtilities.fixNewLinesToListSeparation(value);
+            if (value.size() > 4) {
+                mechanism.echoError("Sign can only hold four lines!");
+            }
+            else {
+                for (int i = 0; i < value.size(); i++) {
+                    PaperAPITools.instance.setSignLine(sign, i, value.get(i));
+                }
+            }
+            sign.update();
+        });
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name sign_glowing
+        // @input ElementTag(Boolean)
+        // @description
+        // Changes whether the sign at the location is glowing.
+        // For MC 1.20+, this sets the glowing status on the front of the sign.
+        // To set the glowing status of the back, see <@link mechanism LocationTag.sign_back_glowing>.
+        // @tags
+        // <LocationTag.sign_glow_color>
+        // <LocationTag.sign_glowing>
+        // -->
+        tagProcessor.registerMechanism("sign_glowing", false, ElementTag.class, (object, mechanism, input) -> {
+            if (!mechanism.requireBoolean()) {
+                return;
+            }
+            if (!(object.getBlockState() instanceof Sign sign)) {
+                mechanism.echoError("This mechanism can only be called on Sign blocks.");
+                return;
+            }
+            if (SignCommand.SIGN_SIDES_SUPPORTED) {
+                sign.getSide(Side.FRONT).setGlowingText(input.asBoolean());
+            }
+            else {
+                sign.setGlowingText(input.asBoolean());
+            }
+            sign.update();
+        });
+
+        // <--[mechanism]
+        // @object LocationTag
+        // @name sign_glow_color
+        // @input ElementTag
+        // @description
+        // Changes the glow color of a sign.
+        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
+        // If a sign is not glowing, this is equivalent to applying a chat color to the sign.
+        // Use <@link mechanism LocationTag.sign_glowing> to toggle whether the sign is glowing.
+        // For MC 1.20+, this sets the color on the front of the sign.
+        // To set the color of the back, see <@link mechanism LocationTag.sign_back_glow_color>.
+        // @tags
+        // <LocationTag.sign_glow_color>
+        // <LocationTag.sign_glowing>
+        // -->
+        tagProcessor.registerMechanism("sign_glow_color", false, ElementTag.class, (object, mechanism, input) -> {
+            if (!mechanism.requireEnum(DyeColor.class)) {
+                return;
+            }
+            if (!(object.getBlockState() instanceof Sign sign)) {
+                mechanism.echoError("This mechanism can only be called on Sign blocks.");
+                return;
+            }
+            if (SignCommand.SIGN_SIDES_SUPPORTED) {
+                sign.getSide(Side.FRONT).setColor(input.asEnum(DyeColor.class));
+            }
+            else {
+                sign.setColor(input.asEnum(DyeColor.class));
+            }
+            sign.update();
+        });
     }
 
-    public static final ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
+    public static ObjectTagProcessor<LocationTag> tagProcessor = new ObjectTagProcessor<>();
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
@@ -4827,33 +5049,6 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
         if (mechanism.matches("lock") && getBlockState() instanceof Lockable) {
             BlockState state = getBlockState();
             ((Lockable) state).setLock(mechanism.hasValue() ? mechanism.getValue().asString() : null);
-            state.update();
-        }
-
-        // <--[mechanism]
-        // @object LocationTag
-        // @name sign_contents
-        // @input ListTag
-        // @description
-        // Sets the contents of a sign block.
-        // @tags
-        // <LocationTag.sign_contents>
-        // -->
-        if (mechanism.matches("sign_contents") && getBlockState() instanceof Sign) {
-            Sign state = (Sign) getBlockState();
-            for (int i = 0; i < 4; i++) {
-                PaperAPITools.instance.setSignLine(state, i, "");
-            }
-            ListTag list = mechanism.valueAsType(ListTag.class);
-            CoreUtilities.fixNewLinesToListSeparation(list);
-            if (list.size() > 4) {
-                mechanism.echoError("Sign can only hold four lines!");
-            }
-            else {
-                for (int i = 0; i < list.size(); i++) {
-                    PaperAPITools.instance.setSignLine(state, i, list.get(i));
-                }
-            }
             state.update();
         }
 
@@ -5500,53 +5695,6 @@ public class LocationTag extends org.bukkit.Location implements VectorObject, Ob
             }
             else {
                 NMSHandler.blockHelper.ringBell((Bell) state);
-            }
-        }
-
-        // <--[mechanism]
-        // @object LocationTag
-        // @name sign_glowing
-        // @input ElementTag(Boolean)
-        // @description
-        // Changes whether the sign at the location is glowing.
-        // @tags
-        // <LocationTag.sign_glow_color>
-        // <LocationTag.sign_glowing>
-        // -->
-        if (mechanism.matches("sign_glowing") && mechanism.requireBoolean()) {
-            BlockState state = getBlockState();
-            if (!(state instanceof Sign)) {
-                mechanism.echoError("'sign_glowing' mechanism can only be called on Sign blocks.");
-            }
-            else {
-                Sign sign = (Sign) state;
-                sign.setGlowingText(mechanism.getValue().asBoolean());
-                sign.update();
-            }
-        }
-
-        // <--[mechanism]
-        // @object LocationTag
-        // @name sign_glow_color
-        // @input ElementTag
-        // @description
-        // Changes the glow color of a sign.
-        // For the list of possible colors, see <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/DyeColor.html>.
-        // If a sign is not glowing, this is equivalent to applying a chat color to the sign.
-        // Use <@link mechanism LocationTag.sign_glowing> to toggle whether the sign is glowing.
-        // @tags
-        // <LocationTag.sign_glow_color>
-        // <LocationTag.sign_glowing>
-        // -->
-        if (mechanism.matches("sign_glow_color") && mechanism.requireEnum(DyeColor.class)) {
-            BlockState state = getBlockState();
-            if (!(state instanceof Sign)) {
-                mechanism.echoError("'sign_glow_color' mechanism can only be called on Sign blocks.");
-            }
-            else {
-                Sign sign = (Sign) state;
-                sign.setColor(mechanism.getValue().asEnum(DyeColor.class));
-                sign.update();
             }
         }
 

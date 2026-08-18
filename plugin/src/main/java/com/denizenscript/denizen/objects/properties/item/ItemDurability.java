@@ -58,14 +58,7 @@ public class ItemDurability implements Property {
                     .getObjectAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <ItemTag.max_durability>
-        // @returns ElementTag(Number)
-        // @group properties
-        // @description
-        // Returns the maximum durability (number of uses) of this item.
-        // For use with <@link tag ItemTag.durability> and <@link mechanism ItemTag.durability>.
-        // -->
+        // replaced by paper->MaxDurabilityAdapter
         if (attribute.startsWith("max_durability")) {
             return new ElementTag(item.getMaterial().getMaterial().getMaxDurability())
                     .getObjectAttribute(attribute.fulfill(1));

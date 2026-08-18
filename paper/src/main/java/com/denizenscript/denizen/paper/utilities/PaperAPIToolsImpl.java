@@ -6,6 +6,7 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.paper.PaperModule;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
+import com.denizenscript.denizen.scripts.commands.world.SignCommand;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
@@ -28,6 +29,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -101,18 +103,28 @@ public class PaperAPIToolsImpl extends PaperAPITools {
     }
 
     @Override
-    public String[] getSignLines(Sign sign) {
-        String[] output = new String[4];
-        int i = 0;
-        for (Component component : sign.lines()) {
-            output[i++] = PaperModule.stringifyComponent(component);
-        }
-        return output;
+    public List<String> getSignLines(Sign sign) {
+        return PaperModule.stringifyComponentList(SignCommand.SIGN_SIDES_SUPPORTED ? sign.getSide(Side.FRONT).lines() : sign.lines());
+    }
+
+    @Override
+    public List<String> getSignBackLines(Sign sign) {
+        return PaperModule.stringifyComponentList(sign.getSide(Side.BACK).lines());
     }
 
     @Override
     public void setSignLine(Sign sign, int line, String text) {
-        sign.line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
+        if (SignCommand.SIGN_SIDES_SUPPORTED) {
+            sign.getSide(Side.FRONT).line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
+        }
+        else {
+            sign.line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
+        }
+    }
+
+    @Override
+    public void setSignBackLine(Sign sign, int line, String text) {
+        sign.getSide(Side.BACK).line(line, PaperModule.parseFormattedText(text == null ? "" : text, ChatColor.BLACK));
     }
 
     @Override
