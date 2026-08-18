@@ -12,15 +12,11 @@ public class MaterialPowerable extends MaterialProperty<ElementTag> {
     // @name powered
     // @input ElementTag(Boolean)
     // @description
-    // Controls whether the material is powered.
+    // Controls whether the material is redstone powered (receiving a redstone signal of above 0).
     // -->
 
     public static boolean describes(MaterialTag material) {
         return material.getModernData() instanceof Powerable;
-    }
-
-    public MaterialPowerable(MaterialTag material) {
-        super(material);
     }
 
     @Override
