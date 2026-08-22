@@ -19,7 +19,7 @@ public class PaperElementExtensions {
             // @Plugin Paper
             // @group paper
             // @description
-            // Returns the element with all MiniMessage tags parsed, see <@link url https://docs.adventure.kyori.net/minimessage/format.html> for more information.
+            // Returns the element with all MiniMessage tags parsed, see <@link url https://docs.papermc.io/adventure/minimessage/format/> for more information.
             // This may be useful for reading data from external plugins, but should not be used in normal scripts.
             // -->
             ElementTag.tagProcessor.registerTag(ElementTag.class, "parse_minimessage", (attribute, object) -> {
