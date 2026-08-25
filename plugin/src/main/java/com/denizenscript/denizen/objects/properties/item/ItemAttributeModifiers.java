@@ -3,16 +3,13 @@ package com.denizenscript.denizen.objects.properties.item;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.ItemTag;
-import com.denizenscript.denizen.objects.properties.entity.EntityAttributeModifiers;
+import com.denizenscript.denizen.utilities.AttributeUtil;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.text.StringHolder;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import org.bukkit.NamespacedKey;
@@ -21,8 +18,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 import java.util.UUID;
 
 public class ItemAttributeModifiers extends ItemProperty<MapTag> {
@@ -32,10 +27,10 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
     // @name attribute_modifiers
     // @input MapTag
     // @description
-    // Controls the attribute modifiers of an item, with key as the attribute name and value as a list of modifiers,
-    // where each modifier is a MapTag containing keys 'name', 'amount', 'slot', 'operation', and 'id'.
-    // For use as a mechanism, this is a SET operation, meaning pre-existing modifiers are removed.
-    // For format details, refer to <@link language attribute modifiers>.
+    // Controls the attribute modifiers of an item, with keys as the attribute names and values as a list of modifiers,
+    // see <@link language attribute modifiers> for how modifiers are formatted.
+    // @mechanism
+    // This is a SET operation, meaning pre-existing modifiers are removed.
     // -->
 
     public static boolean describes(ItemTag item) {
@@ -49,23 +44,18 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
 
     @Override
     public MapTag getPropertyValue() {
-        ItemMeta meta = getItemMeta();
-        if (meta == null) {
-            return null;
-        }
-        Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = meta.getAttributeModifiers();
-        return getAttributeModifiersFor(metaMap);
+        return getItemMeta() != null ? getAttributeModifiersFor(getItemMeta().getAttributeModifiers(), false) : null;
+    }
+
+    @Override
+    public MapTag getTagValue(com.denizenscript.denizencore.tags.Attribute attribute) {
+        return getItemMeta() != null ? getAttributeModifiersFor(getItemMeta().getAttributeModifiers(), true) : null;
     }
 
     @Override
     public void setPropertyValue(MapTag param, Mechanism mechanism) {
         Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = LinkedHashMultimap.create();
-        for (Map.Entry<StringHolder, ObjectTag> mapEntry : param.entrySet()) {
-            org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(mapEntry.getKey().str.toUpperCase());
-            for (ObjectTag listValue : CoreUtilities.objectToList(mapEntry.getValue(), mechanism.context)) {
-                metaMap.put(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue, mechanism.context));
-            }
-        }
+        AttributeUtil.parseModifiers(param, mechanism, metaMap::put);
         ItemMeta meta = getItemMeta();
         meta.setAttributeModifiers(metaMap);
         setItemMeta(meta);
@@ -76,21 +66,13 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
         return "attribute_modifiers";
     }
 
-    public static MapTag getAttributeModifiersFor(Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap) {
+    public static MapTag getAttributeModifiersFor(Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap, boolean includeDeprecated) {
         MapTag map = new MapTag();
         if (metaMap == null) {
             return map;
         }
         for (org.bukkit.attribute.Attribute attribute : metaMap.keys()) {
-            Collection<AttributeModifier> modifiers = metaMap.get(attribute);
-            if (modifiers.isEmpty()) {
-                continue;
-            }
-            ListTag subList = new ListTag();
-            for (AttributeModifier modifier : modifiers) {
-                subList.addObject(EntityAttributeModifiers.mapify(modifier));
-            }
-            map.putObject(attribute.name(), subList);
+            AttributeUtil.addToMap(map, attribute, metaMap.get(attribute), includeDeprecated);
         }
         return map;
     }
@@ -116,7 +98,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
                 attribute.echoError("Invalid slot specified: " + attribute.getParam());
                 return null;
             }
-            return getAttributeModifiersFor(prop.getMaterial().getDefaultAttributeModifiers(slot));
+            return getAttributeModifiersFor(prop.getMaterial().getDefaultAttributeModifiers(slot), true);
         });
 
         // <--[mechanism]
@@ -131,12 +113,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
         // -->
         PropertyParser.registerMechanism(ItemAttributeModifiers.class, MapTag.class, "add_attribute_modifiers", (prop, mechanism, param) -> {
             ItemMeta meta = prop.getItemMeta();
-            for (Map.Entry<StringHolder, ObjectTag> subValue : param.entrySet()) {
-                org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(subValue.getKey().str.toUpperCase());
-                for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
-                    meta.addAttributeModifier(attr, EntityAttributeModifiers.modiferForMap(attr, (MapTag) listValue, mechanism.context));
-                }
-            }
+            AttributeUtil.parseModifiers(param, mechanism, meta::addAttributeModifier);
             prop.setItemMeta(meta);
         });
 
@@ -154,17 +131,16 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
             ItemMeta meta = prop.getItemMeta();
             ArrayList<String> inputList = new ArrayList<>(param);
             for (String toRemove : new ArrayList<>(inputList)) {
-                if (Utilities.matchesEnumlike(new ElementTag(toRemove), org.bukkit.attribute.Attribute.class)) {
+                org.bukkit.attribute.Attribute attr = Utilities.elementToEnumlike(new ElementTag(toRemove, true), org.bukkit.attribute.Attribute.class);
+                if (attr != null) {
                     inputList.remove(toRemove);
-                    org.bukkit.attribute.Attribute attr = org.bukkit.attribute.Attribute.valueOf(toRemove.toUpperCase());
                     meta.removeAttributeModifier(attr);
                 }
             }
             for (String toRemove : inputList) {
                 UUID id = null;
                 NamespacedKey key = null;
-                boolean is1_21 = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21);
-                if (is1_21) {
+                if (AttributeUtil.MODERN_ATTRIBUTE_FORMAT) {
                     key = Utilities.parseNamespacedKey(toRemove);
                 }
                 else {
@@ -173,7 +149,7 @@ public class ItemAttributeModifiers extends ItemProperty<MapTag> {
                 Multimap<org.bukkit.attribute.Attribute, AttributeModifier> metaMap = meta.getAttributeModifiers();
                 for (org.bukkit.attribute.Attribute attribute : metaMap.keys()) {
                     for (AttributeModifier modifer : metaMap.get(attribute)) {
-                        if (is1_21 ? modifer.getKey().equals(key) : modifer.getUniqueId().equals(id)) {
+                        if (AttributeUtil.MODERN_ATTRIBUTE_FORMAT ? modifer.getKey().equals(key) : modifer.getUniqueId().equals(id)) {
                             meta.removeAttributeModifier(attribute, modifer);
                             break;
                         }
