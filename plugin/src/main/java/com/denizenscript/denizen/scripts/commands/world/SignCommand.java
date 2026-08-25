@@ -5,19 +5,17 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.MaterialTag;
 import com.denizenscript.denizen.objects.properties.material.MaterialDirectional;
+import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
-import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.utilities.Deprecations;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
+import org.bukkit.Tag;
+import org.bukkit.block.*;
 
 public class SignCommand extends AbstractCommand {
 
@@ -25,21 +23,25 @@ public class SignCommand extends AbstractCommand {
 
     public SignCommand() {
         setName("sign");
-        setSyntax("sign (type:{automatic}/sign_post/wall_sign) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)");
-        setRequiredArguments(1, 5);
+        setSyntax("sign (type:{automatic}/sign_post/wall_sign/hanging/hanging_wall) (material:<material>) (side:{both}/front/back) [<line>|...] [<location>] (direction:north/east/south/west)");
+        setRequiredArguments(1, 6);
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
     // @Name Sign
-    // @Syntax sign (type:{automatic}/sign_post/wall_sign) (material:<material>) [<line>|...] [<location>] (direction:north/east/south/west)
+    // @Syntax sign (type:{automatic}/sign_post/wall_sign/hanging/hanging_wall) (material:<material>) (side:{both}/front/back) [<line>|...] [<location>] (direction:north/east/south/west)
     // @Required 1
-    // @Maximum 5
+    // @Maximum 6
     // @Short Modifies a sign.
     // @Group world
     //
     // @Description
     // Modifies a sign that replaces the text shown on it. If no sign is at the location, it replaces the location with the modified sign.
+    //
+    // For MC 1.20+, optionally specify a side to set the text of. If 'both' is used, the first four entries in the 'line' argument will be used on the front, and the second four on the back.
+    // If 'front' or 'back' is specified, sets the lines on that side while leaving the other one as-is.
     //
     // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
     // If there is not already a sign there, defaults to a sign_post.
@@ -59,6 +61,14 @@ public class SignCommand extends AbstractCommand {
     // - sign "Hello|this is|some|text" <context.location>
     //
     // @Usage
+    // Use to edit some text on the front and back of an existing sign.
+    // - sign side:both "Hi!|This is|the|front.|This|is|the|back." <context.location>
+    //
+    // @Usage
+    // Use to edit some text on just the back of an existing sign.
+    // - sign side:back "This is|the back.|The front|is unchanged." <context.location>
+    //
+    // @Usage
     // Use to show the time on a sign and ensure that it points north.
     // - sign "I point|North.|System Time<&co>|<util.time_now.formatted>" <[location]> direction:north
     //
@@ -73,101 +83,31 @@ public class SignCommand extends AbstractCommand {
         tab.addNotesOfType(LocationTag.class);
     }
 
-    private enum Type {AUTOMATIC, SIGN_POST, WALL_SIGN}
+    public enum Type {AUTOMATIC, SIGN_POST, WALL_SIGN, HANGING, HANGING_WALL}
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        for (Argument arg : scriptEntry) {
-            if (!scriptEntry.hasObject("type")
-                    && arg.matchesEnum(Type.class)) {
-                scriptEntry.addObject("type", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(LocationTag.class)) {
-                scriptEntry.addObject("location", arg.asType(LocationTag.class).setPrefix("location"));
-            }
-            else if (!scriptEntry.hasObject("direction")
-                    && arg.matchesPrefix("direction", "dir")) {
-                scriptEntry.addObject("direction", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("material")
-                    && arg.matchesPrefix("material")
-                    && arg.matchesArgumentType(MaterialTag.class)) {
-                scriptEntry.addObject("material", arg.asType(MaterialTag.class));
-            }
-            else if (!scriptEntry.hasObject("text")) {
-                scriptEntry.addObject("text", arg.asType(ListTag.class));
-            }
-            else {
-                arg.reportUnhandled();
-            }
-        }
-        if (!scriptEntry.hasObject("location")) {
-            throw new InvalidArgumentsException("Must specify a Sign location!");
-        }
-        if (!scriptEntry.hasObject("text")) {
-            throw new InvalidArgumentsException("Must specify sign text!");
-        }
-        scriptEntry.defaultObject("type", new ElementTag(Type.AUTOMATIC));
-    }
+    public enum Side {BOTH, FRONT, BACK}
 
-    public void setWallSign(Block sign, BlockFace bf, MaterialTag material) {
-        sign.setType(material == null ? Material.OAK_WALL_SIGN : material.getMaterial(), false);
-        MaterialTag signMaterial = new MaterialTag(sign);
-        MaterialDirectional.getFrom(signMaterial).setFacing(bf);
-        sign.setBlockData(signMaterial.getModernData());
-    }
-
-    public static boolean isStandingSign(Material material) {
-        switch (material) {
-            case CRIMSON_SIGN:
-            case WARPED_SIGN:
-            case ACACIA_SIGN:
-            case BIRCH_SIGN:
-            case DARK_OAK_SIGN:
-            case JUNGLE_SIGN:
-            case OAK_SIGN:
-            case SPRUCE_SIGN:
-                return true;
-            default:
-                return false;
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("text") @ArgLinear ObjectTag textObj,
+                                   @ArgName("location") @ArgLinear ObjectTag locationObj,
+                                   @ArgName("type") @ArgPrefixed @ArgDefaultText("automatic") Type type,
+                                   @ArgName("material") @ArgPrefixed @ArgDefaultNull MaterialTag material,
+                                   @ArgName("side") @ArgPrefixed @ArgDefaultNull Side side,
+                                   @ArgName("direction") @ArgPrefixed @ArgDefaultNull String direction) {
+        ListTag text;
+        LocationTag location;
+        if (!(textObj instanceof ListTag) && !(locationObj instanceof LocationTag) ) {
+            Deprecations.outOfOrderArgs.warn(scriptEntry);
+            text = locationObj.asType(ListTag.class, scriptEntry.context);
+            location = textObj.asType(LocationTag.class, scriptEntry.context);
         }
-    }
-
-    public static boolean isWallSign(Material material) {
-        switch (material) {
-            case CRIMSON_WALL_SIGN:
-            case WARPED_WALL_SIGN:
-            case ACACIA_WALL_SIGN:
-            case BIRCH_WALL_SIGN:
-            case DARK_OAK_WALL_SIGN:
-            case JUNGLE_WALL_SIGN:
-            case OAK_WALL_SIGN:
-            case SPRUCE_WALL_SIGN:
-                return true;
-            default:
-                return false;
+        else {
+            text = textObj.asType(ListTag.class, scriptEntry.context);
+            location = locationObj.asType(LocationTag.class, scriptEntry.context);
         }
-    }
-
-    public static boolean isAnySign(Material material) {
-        return isStandingSign(material) || isWallSign(material);
-    }
-
-    @Override
-    public void execute(final ScriptEntry scriptEntry) {
-        String direction = scriptEntry.hasObject("direction") ? ((ElementTag) scriptEntry.getObject("direction")).asString() : null;
-        ElementTag typeElement = scriptEntry.getElement("type");
-        ListTag text = scriptEntry.getObjectTag("text");
-        LocationTag location = scriptEntry.getObjectTag("location");
-        MaterialTag material = scriptEntry.getObjectTag("material");
-        if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), typeElement, location, db("direction", direction), material, text);
-        }
-        Type type = Type.valueOf(typeElement.asString().toUpperCase());
         Block sign = location.getBlock();
         if (type != Type.AUTOMATIC || !isAnySign(sign.getType())) {
-            if (type == Type.WALL_SIGN) {
+            if (type == Type.WALL_SIGN || (SIGN_SIDES_SUPPORTED && (type == Type.HANGING || type == Type.HANGING_WALL))) {
                 BlockFace bf;
                 if (direction != null) {
                     bf = Utilities.chooseSignRotation(direction);
@@ -175,7 +115,15 @@ public class SignCommand extends AbstractCommand {
                 else {
                     bf = Utilities.chooseSignRotation(sign);
                 }
-                setWallSign(sign, bf, material);
+                if (type == Type.WALL_SIGN) {
+                    setWallSign(sign, bf, material);
+                }
+                else if (type == Type.HANGING) {
+                    setHangingSign(sign, bf, material);
+                }
+                else {
+                    setHangingWallSign(sign, bf, material);
+                }
             }
             else {
                 sign.setType(material == null ? Material.OAK_SIGN : material.getMaterial(), false);
@@ -193,7 +141,92 @@ public class SignCommand extends AbstractCommand {
                 setWallSign(sign, bf, material);
             }
         }
-        BlockState signState = sign.getState();
-        Utilities.setSignLines((Sign) signState, text.toArray(new String[4]));
+        Sign signBlock = (Sign) sign.getState();
+        String[] lines4 = text.toArray(new String[4]);
+        String[] lines8 = text.toArray(new String[8]);
+        if (!SIGN_SIDES_SUPPORTED || side == Side.FRONT) {
+            for (int n = 0; n < 4; n++) {
+                PaperAPITools.instance.setSignLine(signBlock, n, lines4[n]);
+            }
+        }
+        else if (side == Side.BACK) {
+            for (int n = 0; n < 4; n++) {
+                PaperAPITools.instance.setSignBackLine(signBlock, n, lines4[n]);
+            }
+        }
+        else {
+            for (int n = 0; n < 4; n++) {
+                PaperAPITools.instance.setSignLine(signBlock, n, lines8[n]);
+                PaperAPITools.instance.setSignBackLine(signBlock, n, lines8[n + 4]);
+            }
+        }
+        signBlock.update();
+    }
+
+    public static void setWallSign(Block sign, BlockFace bf, MaterialTag material) {
+        sign.setType(material == null ? Material.OAK_WALL_SIGN : material.getMaterial(), false);
+        MaterialTag signMaterial = new MaterialTag(sign);
+        MaterialDirectional.getFrom(signMaterial).setFacing(bf);
+        sign.setBlockData(signMaterial.getModernData());
+    }
+
+    public static void setHangingSign(Block sign, BlockFace bf, MaterialTag material) {
+        sign.setType(material == null ? Material.OAK_HANGING_SIGN : material.getMaterial(), false);
+        MaterialTag signMaterial = new MaterialTag(sign);
+        MaterialDirectional.getFrom(signMaterial).setFacing(bf);
+        sign.setBlockData(signMaterial.getModernData());
+    }
+
+    public static void setHangingWallSign(Block sign, BlockFace bf, MaterialTag material) {
+        sign.setType(material == null ? Material.OAK_WALL_HANGING_SIGN : material.getMaterial(), false);
+        MaterialTag signMaterial = new MaterialTag(sign);
+        MaterialDirectional.getFrom(signMaterial).setFacing(bf);
+        sign.setBlockData(signMaterial.getModernData());
+    }
+
+    public static boolean isStandingSign(Material material) {
+        for (Material signType : Tag.STANDING_SIGNS.getValues()) {
+            if (signType == material) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isWallSign(Material material) {
+        for (Material signType : Tag.WALL_SIGNS.getValues()) {
+            if (signType == material) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isHangingSign(Material material) {
+        if (!SIGN_SIDES_SUPPORTED) {
+            return false;
+        }
+        for (Material signType : Tag.CEILING_HANGING_SIGNS.getValues()) {
+            if (signType == material) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isHangingWallSign(Material material) {
+        if (!SIGN_SIDES_SUPPORTED) {
+            return false;
+        }
+        for (Material signType : Tag.WALL_HANGING_SIGNS.getValues()) {
+            if (signType == material) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAnySign(Material material) {
+        return isStandingSign(material) || isWallSign(material) || isHangingSign(material) || isHangingWallSign(material);
     }
 }
