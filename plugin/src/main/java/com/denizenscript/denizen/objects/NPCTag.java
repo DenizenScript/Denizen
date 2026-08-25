@@ -479,7 +479,7 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_sitting", (attribute, object) -> {
             NPC citizen = object.getCitizen();
-            return new ElementTag(citizen.hasTrait(SittingTrait.class) && citizen.getOrAddTrait(SittingTrait.class).isSitting());
+            return new ElementTag(citizen.hasTrait(SitTrait.class) && citizen.getOrAddTrait(SitTrait.class).isSitting());
         });
 
         // <--[tag]
@@ -490,7 +490,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerTag(ElementTag.class, "is_sleeping", (attribute, object) -> {
             NPC citizen = object.getCitizen();
-            return new ElementTag(citizen.hasTrait(SleepingTrait.class) && citizen.getOrAddTrait(SleepingTrait.class).isSleeping());
+            return new ElementTag((!SleepingTrait.isSupported() && citizen.hasTrait(SleepTrait.class) && citizen.getOrAddTrait(SleepTrait.class).isSleeping())
+                                    || (SleepingTrait.isSupported() && citizen.hasTrait(SleepingTrait.class) && citizen.getOrAddTrait(SleepingTrait.class).isSleeping()));
         });
 
         // <--[tag]
@@ -1769,15 +1770,8 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // <NPCTag.is_sneaking>
         // -->
         tagProcessor.registerMechanism("set_sneaking", false, ElementTag.class, (object, mechanism, input) -> {
-            if (!mechanism.requireBoolean()) {
-                return;
-            }
-            SneakingTrait trait = object.getCitizen().getOrAddTrait(SneakingTrait.class);
-            if (trait.isSneaking() && !input.asBoolean()) {
-                trait.stand();
-            }
-            else if (!trait.isSneaking() && input.asBoolean()) {
-                trait.sneak();
+            if (mechanism.requireBoolean()) {
+                object.getCitizen().getOrAddTrait(SneakTrait.class).setSneaking(input.asBoolean());
             }
         });
 
