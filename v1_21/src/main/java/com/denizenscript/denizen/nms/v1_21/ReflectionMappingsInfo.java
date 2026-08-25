@@ -8,8 +8,7 @@ public class ReflectionMappingsInfo {
     public static String BlockBehaviour_explosionResistance = "G";
 
     // net.minecraft.core.MappedRegistry
-    public static String MappedRegistry_frozen = "l";
-    public static String MappedRegistry_unregisteredIntrusiveHolders = "m";
+    public static String MappedRegistry_registrationInfos = "h";
 
     // net.minecraft.world.entity.Entity
     public static String Entity_onGround = "bc";
@@ -104,7 +103,6 @@ public class ReflectionMappingsInfo {
     public static String ClientboundLevelChunkPacketData_blockEntitiesData = "e";
 
     // net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData$BlockEntityInfo
-    public static String ClientboundLevelChunkPacketDataBlockEntityInfo_create_method = "a";
     public static String ClientboundLevelChunkPacketDataBlockEntityInfo_packedXZ = "c";
     public static String ClientboundLevelChunkPacketDataBlockEntityInfo_y = "d";
 
@@ -133,7 +131,4 @@ public class ReflectionMappingsInfo {
 
     // net.minecraft.stats.ServerRecipeBook
     public static String ServerRecipeBook_addHighlight_method = "e";
-
-    // net.minecraft.world.level.block.entity.BlockEntityType
-    public static String BlockEntityType_validBlocks = "aa";
 }
