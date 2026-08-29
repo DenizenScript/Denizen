@@ -2,19 +2,18 @@ package com.denizenscript.denizen.scripts.commands.player;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.utilities.Utilities;
+import com.denizenscript.denizencore.objects.ObjectTag;
+import com.denizenscript.denizencore.scripts.commands.generator.*;
+import com.denizenscript.denizencore.tags.ParseableTag;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.abstracts.Sidebar;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.tags.BukkitTagContext;
-import com.denizenscript.denizencore.exceptions.InvalidArgumentsException;
-import com.denizenscript.denizencore.objects.Argument;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.ArgumentHelper;
 import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
-import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.TagManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,9 +28,15 @@ public class SidebarCommand extends AbstractCommand {
         setName("sidebar");
         setSyntax("sidebar (add/remove/{set}/set_line) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)");
         setRequiredArguments(1, 8);
-        setParseArgs(false);
         Denizen.getInstance().getServer().getPluginManager().registerEvents(new SidebarEvents(), Denizen.getInstance());
+        addRemappedPrefixes("title", "t", "objective", "obj", "o");
+        addRemappedPrefixes("scores", "score", "lines", "line", "l");
+        addRemappedPrefixes("values", "value", "val", "v");
+        addRemappedPrefixes("increment", "inc", "i");
+        addRemappedPrefixes("start", "s");
+        addRemappedPrefixes("players", "player", "p");
         isProcedural = false;
+        autoCompile();
     }
 
     // <--[command]
@@ -99,63 +104,201 @@ public class SidebarCommand extends AbstractCommand {
     // - sidebar remove
     // -->
 
-    // TODO: Clean me!
+    public enum Action { ADD, REMOVE, SET, SET_LINE }
 
-    private enum Action {ADD, REMOVE, SET, SET_LINE}
+    public static void autoExecute(ScriptEntry scriptEntry,
+                                   @ArgName("action") @ArgDefaultText("set") Action action,
+                                   @ArgName("title") @ArgPrefixed @ArgUnparsed @ArgDefaultNull String stringTitle,
+                                   @ArgName("scores") @ArgPrefixed @ArgUnparsed @ArgDefaultNull String stringScores,
+                                   @ArgName("values") @ArgPrefixed @ArgUnparsed @ArgDefaultNull String stringValues,
+                                   @ArgName("start") @ArgPrefixed @ArgUnparsed @ArgDefaultNull String stringStart,
+                                   @ArgName("increment") @ArgPrefixed @ArgUnparsed @ArgDefaultText("-1") String stringIncrement,
+                                   @ArgName("players") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> players,
+                                   @ArgName("per_player") boolean perPlayer) {
+        if (action == Action.ADD && stringValues == null) {
+            Debug.echoError("Missing 'values' parameter!");
+            return;
+        }
+        if (action == Action.SET && stringValues == null && stringTitle == null) {
+            Debug.echoError("Must specify 'values' or 'title' for action 'set'!");
+            return;
+        }
+        if (action == Action.SET && stringScores != null && stringValues == null) {
+            Debug.echoError("Must specify value(s) when setting scores!");
+            return;
+        }
+        if (players == null) {
+            players = Utilities.entryHasPlayer(scriptEntry) ? List.of(Utilities.getEntryPlayer(scriptEntry)) : List.of();
+        }
+        BukkitTagContext globalCtx = (BukkitTagContext) scriptEntry.getContext();
+        BukkitTagContext perPlayerCtx = perPlayer ? new BukkitTagContext(globalCtx) : null;
+        ParseableTag titleTag = stringTitle == null ? null : TagManager.parseTextToTag(stringTitle, globalCtx);
+        ParseableTag scoresTag = stringScores == null ? null : TagManager.parseTextToTag(stringScores, globalCtx);
+        ParseableTag valuesTag = stringValues == null ? null : TagManager.parseTextToTag(stringValues, globalCtx);
+        ParseableTag startTag = stringStart == null ? null : TagManager.parseTextToTag(stringStart, globalCtx);
+        ParseableTag incrementTag = TagManager.parseTextToTag(stringIncrement, globalCtx);
+        List<PlayerTag> cleanedList = new ArrayList<>(players.size());
+        for (PlayerTag player : players) {
+            if (player == null || !player.isValid() || !player.isOnline()) {
+                Debug.echoError("Invalid player!");
+                continue;
+            }
+            Sidebar sidebar = createSidebar(player);
+            if (sidebar == null) {
+                continue;
+            }
+            cleanedList.add(player);
+        }
+        switch (action) {
+            case ADD -> {
+                for (PlayerTag player : cleanedList) {
+                    BukkitTagContext context = globalCtx;
+                    if (perPlayer) {
+                        perPlayerCtx.player = player;
+                        context = perPlayerCtx;
+                    }
+                    Sidebar sidebar = createSidebar(player);
+                    ListTag values = valuesTag == null ? null : ListTag.getListFor(valuesTag.parse(context), context);
+                    if (values == null || values.isEmpty()) {
+                        continue;
+                    }
+                    List<Sidebar.SidebarLine> current = sidebar.getLines();
+                    int incr = incrementTag.parse(context).asElement().asInt();
+                    int index = startTag == null ? (!current.isEmpty() ? current.get(current.size() - 1).score : values.size()) : startTag.parse(context).asElement().asInt();
+                    List<Integer> scores = parseScores(scoresTag, context);
+                    for (int i = 0; i < values.size(); i++, index += incr) {
+                        int score = (scores != null && i < scores.size()) ? scores.get(i) : index;
+                        while (hasScoreAlready(current, score)) {
+                            score += (incr == 0 ? 1 : incr);
+                        }
+                        current.add(new Sidebar.SidebarLine(values.get(i), score));
+                    }
+                    sidebar.setLines(current);
+                    sidebar.sendUpdate();
+                }
+            }
+            case REMOVE -> {
+                for (PlayerTag player : cleanedList) {
+                    BukkitTagContext context = globalCtx;
+                    if (perPlayer) {
+                        perPlayerCtx.player = player;
+                        context = perPlayerCtx;
+                    }
+                    Sidebar sidebar = createSidebar(player);
+                    List<Sidebar.SidebarLine> current = sidebar.getLines();
+                    boolean removedAny = false;
+                    List<Integer> scores = parseScores(scoresTag, context);
+                    if (scores != null && !scores.isEmpty()) {
+                        for (int score : scores) {
+                            for (int i = 0; i < current.size(); i++) {
+                                if (current.get(i).score == score) {
+                                    current.remove(i--);
+                                }
+                            }
+                        }
+                        removedAny = true;
+                    }
+                    ListTag values = valuesTag == null ? null : ListTag.getListFor(valuesTag.parse(context), context);
+                    if (values != null && !values.isEmpty()) {
+                        for (String line : values) {
+                            for (int i = 0; i < current.size(); i++) {
+                                if (current.get(i).text.equalsIgnoreCase(line)) {
+                                    current.remove(i--);
+                                }
+                            }
+                        }
+                        removedAny = true;
+                    }
+                    if (!removedAny) {
+                        sidebar.remove();
+                        sidebars.remove(player.getPlayerEntity().getUniqueId());
+                    }
+                    else {
+                        sidebar.setLines(current);
+                        sidebar.sendUpdate();
+                    }
+                }
+            }
+            case SET_LINE -> {
+                for (PlayerTag player : cleanedList) {
+                    BukkitTagContext context = globalCtx;
+                    if (perPlayer) {
+                        perPlayerCtx.player = player;
+                        context = perPlayerCtx;
+                    }
+                    List<Integer> scores = parseScores(scoresTag, context);
+                    if (scores == null || scores.isEmpty()) {
+                        Debug.echoError("Missing or invalid 'scores' parameter!");
+                        return;
+                    }
+                    ListTag values = valuesTag == null ? null : ListTag.getListFor(valuesTag.parse(context), context);
+                    if (values == null || values.size() != scores.size()) {
+                        Debug.echoError("Missing or invalid 'values' parameter!");
+                        return;
+                    }
+                    Sidebar sidebar = getSidebar(player);
+                    List<Sidebar.SidebarLine> current = sidebar.getLines();
+                    for (int i = 0; i < values.size(); i++) {
+                        int score = scores.get(i);
+                        if (hasScoreAlready(current, score)) {
+                            for (Sidebar.SidebarLine line : current) {
+                                if (line.score == score) {
+                                    line.text = values.get(i);
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            current.add(new Sidebar.SidebarLine(values.get(i), score));
+                        }
+                    }
+                    sidebar.setLines(current);
+                    sidebar.sendUpdate();
+                }
+            }
+            case SET -> {
+                for (PlayerTag player : cleanedList) {
+                    BukkitTagContext context = globalCtx;
+                    if (perPlayer) {
+                        perPlayerCtx.player = player;
+                        context = perPlayerCtx;
+                    }
+                    Sidebar sidebar = getSidebar(player);
+                    ListTag values = valuesTag == null ? null : ListTag.getListFor(valuesTag.parse(context), context);
+                    if (values != null && !values.isEmpty()) {
+                        List<Integer> scores = parseScores(scoresTag, context);
+                        List<Sidebar.SidebarLine> current = new ArrayList<>(values.size());
+                        int index = startTag == null ? values.size() : startTag.parse(context).asElement().asInt();
+                        int incr = incrementTag.parse(context).asElement().asInt();
+                        for (int i = 0; i < values.size(); i++, index += incr) {
+                            int score = (scores != null && i < scores.size()) ? scores.get(i) : index;
+                            current.add(new Sidebar.SidebarLine(values.get(i), score));
+                        }
+                        sidebar.setLines(current);
+                    }
+                    ElementTag title = titleTag == null ? null : titleTag.parse(context).asElement();
+                    if (title != null) {
+                        sidebar.setTitle(title.asString());
+                    }
+                    sidebar.sendUpdate();
+                }
+            }
+        }
+    }
 
-    @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        Action action = Action.SET;
-        for (Argument arg : ArgumentHelper.interpret(scriptEntry, scriptEntry.getOriginalArguments())) {
-            if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(Action.class)) {
-                action = Action.valueOf(arg.getValue().toUpperCase());
-            }
-            else if (!scriptEntry.hasObject("title")
-                    && arg.matchesPrefix("title", "t", "objective", "obj", "o")) {
-                scriptEntry.addObject("title", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("scores")
-                    && arg.matchesPrefix("scores", "score", "lines", "line", "l")) {
-                scriptEntry.addObject("scores", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("value")
-                    && arg.matchesPrefix("value", "values", "val", "v")) {
-                scriptEntry.addObject("value", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("increment")
-                    && arg.matchesPrefix("increment", "inc", "i")) {
-                scriptEntry.addObject("increment", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("start")
-                    && arg.matchesPrefix("start", "s")) {
-                scriptEntry.addObject("start", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("players")
-                    && arg.matchesPrefix("players", "player", "p")) {
-                scriptEntry.addObject("players", arg.asElement());
-            }
-            else if (!scriptEntry.hasObject("per_player")
-                    && arg.matches("per_player")) {
-                scriptEntry.addObject("per_player", new ElementTag(true));
-            }
-            else {
-                arg.reportUnhandled();
-            }
+    private static List<Integer> parseScores(ParseableTag scoresTag, BukkitTagContext context) {
+        if (scoresTag == null) {
+            return null;
         }
-        if (action == Action.ADD && !scriptEntry.hasObject("value")) {
-            throw new InvalidArgumentsException("Must specify value(s) for that action!");
+        ListTag parsed = ListTag.getListFor(scoresTag.parse(context), context);
+        if (parsed == null) {
+            return null;
         }
-        if (action == Action.SET && !scriptEntry.hasObject("value") && !scriptEntry.hasObject("title")
-                && !scriptEntry.hasObject("increment") && !scriptEntry.hasObject("start")) {
-            throw new InvalidArgumentsException("Must specify at least one of: value(s), title, increment, or start for that action!");
+        List<Integer> scores = new ArrayList<>(parsed.size());
+        for (ObjectTag s : parsed.objectForms) {
+            scores.add(s.asElement().asInt());
         }
-        if (action == Action.SET && scriptEntry.hasObject("scores") && !scriptEntry.hasObject("value")) {
-            throw new InvalidArgumentsException("Must specify value(s) when setting scores!");
-        }
-        scriptEntry.addObject("action", new ElementTag(action));
-        scriptEntry.defaultObject("per_player", new ElementTag(false));
-        scriptEntry.defaultObject("players", new ElementTag(Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).identify() : "li@"));
+        return scores;
     }
 
     public static boolean hasScoreAlready(List<Sidebar.SidebarLine> lines, int score) {
@@ -167,278 +310,6 @@ public class SidebarCommand extends AbstractCommand {
         return false;
     }
 
-    @Override
-    public void execute(ScriptEntry scriptEntry) {
-        ElementTag action = scriptEntry.getElement("action");
-        ElementTag elTitle = scriptEntry.getElement("title");
-        ElementTag elScores = scriptEntry.getElement("scores");
-        ElementTag elValue = scriptEntry.getElement("value");
-        ElementTag elIncrement = scriptEntry.getElement("increment");
-        ElementTag elStart = scriptEntry.getElement("start");
-        ElementTag elPlayers = scriptEntry.getElement("players");
-        ElementTag elPerPlayer = scriptEntry.getElement("per_player");
-        ListTag players = ListTag.valueOf(TagManager.tag(elPlayers.asString(), scriptEntry.getContext()), scriptEntry.getContext());
-        boolean per_player = elPerPlayer.asBoolean();
-        String perTitle = null;
-        String perScores = null;
-        String perValue = null;
-        String perIncrement = null;
-        String perStart = null;
-        ElementTag title = null;
-        ListTag scores = null;
-        ListTag value = null;
-        ElementTag increment = null;
-        ElementTag start = null;
-        if (per_player) {
-            if (elTitle != null) {
-                perTitle = elTitle.asString();
-            }
-            if (elScores != null) {
-                perScores = elScores.asString();
-            }
-            if (elValue != null) {
-                perValue = elValue.asString();
-            }
-            if (elIncrement != null) {
-                perIncrement = elIncrement.asString();
-            }
-            if (elStart != null) {
-                perStart = elStart.asString();
-            }
-            if (scriptEntry.dbCallShouldDebug()) {
-                Debug.report(scriptEntry, getName(), action, elTitle, elScores, elValue, elIncrement, elStart, db("players", players));
-            }
-        }
-        else {
-            BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
-            if (elTitle != null) {
-                title = new ElementTag(TagManager.tag(elTitle.asString(), context));
-            }
-            if (elScores != null) {
-                scores = ListTag.getListFor(TagManager.tagObject(elScores.asString(), context), context);
-            }
-            if (elValue != null) {
-                value = ListTag.getListFor(TagManager.tagObject(elValue.asString(), context), context);
-            }
-            if (elIncrement != null) {
-                increment = new ElementTag(TagManager.tag(elIncrement.asString(), context));
-            }
-            if (elStart != null) {
-                start = new ElementTag(TagManager.tag(elStart.asString(), context));
-            }
-            if (scriptEntry.dbCallShouldDebug()) {
-                Debug.report(scriptEntry, getName(), action, title, scores, value, increment, start, db("players", players));
-            }
-        }
-        switch (Action.valueOf(action.asString())) {
-            case ADD:
-                for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
-                    if (player == null || !player.isValid()) {
-                        Debug.echoError("Invalid player!");
-                        continue;
-                    }
-                    Sidebar sidebar = createSidebar(player);
-                    if (sidebar == null) {
-                        continue;
-                    }
-                    List<Sidebar.SidebarLine> current = sidebar.getLines();
-                    if (per_player) {
-                        TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
-                                scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
-                        value = ListTag.getListFor(TagManager.tagObject(perValue, context), context);
-                        if (perScores != null) {
-                            scores = ListTag.getListFor(TagManager.tagObject(perScores, context), context);
-                        }
-                    }
-                    try {
-                        int index = start != null ? start.asInt() : (current.size() > 0 ? current.get(current.size() - 1).score : value.size());
-                        int incr = increment != null ? increment.asInt() : -1;
-                        for (int i = 0; i < value.size(); i++, index += incr) {
-                            int score = (scores != null && i < scores.size()) ? Integer.parseInt(scores.get(i)) : index;
-                            while (hasScoreAlready(current, score)) {
-                                score += (incr == 0 ? 1 : incr);
-                            }
-                            current.add(new Sidebar.SidebarLine(value.get(i), score));
-                        }
-                    }
-                    catch (Exception e) {
-                        Debug.echoError(e);
-                        continue;
-                    }
-                    sidebar.setLines(current);
-                    sidebar.sendUpdate();
-                }
-                break;
-            case REMOVE:
-                for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
-                    if (player == null || !player.isValid()) {
-                        Debug.echoError("Invalid player!");
-                        continue;
-                    }
-                    Sidebar sidebar = createSidebar(player);
-                    if (sidebar == null) {
-                        continue;
-                    }
-                    List<Sidebar.SidebarLine> current = sidebar.getLines();
-                    if (per_player) {
-                        TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
-                                scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
-                        if (perValue != null) {
-                            value = ListTag.getListFor(TagManager.tagObject(perValue, context), context);
-                        }
-                        if (perScores != null) {
-                            scores = ListTag.getListFor(TagManager.tagObject(perScores, context), context);
-                        }
-                    }
-                    boolean removedAny = false;
-                    if (scores != null) {
-                        try {
-                            for (String scoreString : scores) {
-                                int score = Integer.parseInt(scoreString);
-                                for (int i = 0; i < current.size(); i++) {
-                                    if (current.get(i).score == score) {
-                                        current.remove(i--);
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception e) {
-                            Debug.echoError(e);
-                            continue;
-                        }
-                        sidebar.setLines(current);
-                        sidebar.sendUpdate();
-                        removedAny = true;
-                    }
-                    if (value != null) {
-                        for (String line : value) {
-                            for (int i = 0; i < current.size(); i++) {
-                                if (current.get(i).text.equalsIgnoreCase(line)) {
-                                    current.remove(i--);
-                                }
-                            }
-                        }
-                        sidebar.setLines(current);
-                        sidebar.sendUpdate();
-                        removedAny = true;
-                    }
-                    if (!removedAny) {
-                        sidebar.remove();
-                        sidebars.remove(player.getPlayerEntity().getUniqueId());
-                    }
-                }
-                break;
-            case SET_LINE:
-                for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
-                    if (player == null || !player.isValid()) {
-                        Debug.echoError("Invalid player!");
-                        continue;
-                    }
-                    if ((scores == null || scores.isEmpty()) && perScores == null) {
-                        Debug.echoError("Missing or invalid 'scores' parameter.");
-                        return;
-                    }
-                    if ((value == null || value.size() != scores.size()) && perValue == null) {
-                        Debug.echoError("Missing or invalid 'values' parameter.");
-                        return;
-                    }
-                    Sidebar sidebar = createSidebar(player);
-                    if (sidebar == null) {
-                        continue;
-                    }
-                    List<Sidebar.SidebarLine> current = sidebar.getLines();
-                    if (per_player) {
-                        TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
-                                scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
-                        if (perValue != null) {
-                            value = ListTag.getListFor(TagManager.tagObject(perValue, context), context);
-                        }
-                        if (perScores != null) {
-                            scores = ListTag.getListFor(TagManager.tagObject(perScores, context), context);
-                        }
-                    }
-                    try {
-                        for (int i = 0; i < value.size(); i++) {
-                            if (!ArgumentHelper.matchesInteger(scores.get(i))) {
-                                Debug.echoError("Sidebar command scores input contains not-a-valid-number: " + scores.get(i));
-                                return;
-                            }
-                            int score = Integer.parseInt(scores.get(i));
-                            if (hasScoreAlready(current, score)) {
-                                for (Sidebar.SidebarLine line : current) {
-                                    if (line.score == score) {
-                                        line.text = value.get(i);
-                                        break;
-                                    }
-                                }
-                            }
-                            else {
-                                current.add(new Sidebar.SidebarLine(value.get(i), score));
-                            }
-                        }
-                    }
-                    catch (Exception e) {
-                        Debug.echoError(e);
-                        continue;
-                    }
-                    sidebar.setLines(current);
-                    sidebar.sendUpdate();
-                }
-                break;
-            case SET:
-                for (PlayerTag player : players.filter(PlayerTag.class, scriptEntry)) {
-                    if (player == null || !player.isValid()) {
-                        Debug.echoError("Invalid player!");
-                        continue;
-                    }
-                    Sidebar sidebar = createSidebar(player);
-                    if (sidebar == null) {
-                        continue;
-                    }
-                    List<Sidebar.SidebarLine> current = new ArrayList<>();
-                    if (per_player) {
-                        TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
-                                scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
-                        if (perValue != null) {
-                            value = ListTag.getListFor(TagManager.tagObject(perValue, context), context);
-                        }
-                        if (perScores != null) {
-                            scores = ListTag.getListFor(TagManager.tagObject(perScores, context), context);
-                        }
-                        if (perStart != null) {
-                            start = new ElementTag(TagManager.tag(perStart, context));
-                        }
-                        if (perIncrement != null) {
-                            increment = new ElementTag(TagManager.tag(perIncrement, context));
-                        }
-                        if (perTitle != null) {
-                            title = new ElementTag(TagManager.tag(perTitle, context));
-                        }
-                    }
-                    if (value != null) {
-                        try {
-                            int index = start != null ? start.asInt() : value.size();
-                            int incr = increment != null ? increment.asInt() : -1;
-                            for (int i = 0; i < value.size(); i++, index += incr) {
-                                int score = (scores != null && i < scores.size()) ? Integer.parseInt(scores.get(i)) : index;
-                                current.add(new Sidebar.SidebarLine(value.get(i), score));
-                            }
-                        }
-                        catch (Exception e) {
-                            Debug.echoError(e);
-                            continue;
-                        }
-                        sidebar.setLines(current);
-                    }
-                    if (title != null) {
-                        sidebar.setTitle(title.asString());
-                    }
-                    sidebar.sendUpdate();
-                }
-                break;
-        }
-    }
-
     private static final Map<UUID, Sidebar> sidebars = new HashMap<>();
 
     private static Sidebar createSidebar(PlayerTag denizenPlayer) {
@@ -446,18 +317,11 @@ public class SidebarCommand extends AbstractCommand {
             return null;
         }
         Player player = denizenPlayer.getPlayerEntity();
-        UUID uuid = player.getUniqueId();
-        if (!sidebars.containsKey(uuid)) {
-            sidebars.put(uuid, NMSHandler.instance.createSidebar(player));
-        }
-        return sidebars.get(player.getUniqueId());
+        return sidebars.computeIfAbsent(player.getUniqueId(), uuid -> NMSHandler.instance.createSidebar(player));
     }
 
     public static Sidebar getSidebar(PlayerTag denizenPlayer) {
-        if (!denizenPlayer.isOnline()) {
-            return null;
-        }
-        return sidebars.get(denizenPlayer.getPlayerEntity().getUniqueId());
+        return denizenPlayer.isOnline() ? sidebars.get(denizenPlayer.getPlayerEntity().getUniqueId()) : null;
     }
 
     public static class SidebarEvents implements Listener {
