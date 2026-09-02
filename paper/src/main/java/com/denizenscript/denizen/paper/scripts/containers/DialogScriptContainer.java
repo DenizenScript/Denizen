@@ -120,6 +120,7 @@ public class DialogScriptContainer extends ScriptContainer {
     //             label: Enter text<&co>
     //             initial: <empty>
     //             max_length: 100
+    //             height: 4
     //         my_bool:
     //             type: boolean
     //             label: Toggle this option
@@ -228,7 +229,8 @@ public class DialogScriptContainer extends ScriptContainer {
                         ParseableTag label = parseSection("label", inputSection, CoreUtilities.basicContext, new ParseableTag(inputId));
                         ParseableTag initial = parseSection("initial", inputSection, CoreUtilities.basicContext, null);
                         ParseableTag maxLength = parseSection("max_length", inputSection, CoreUtilities.basicContext, null);
-                        textInputEntries.put(inputId, new TextInputEntry(inputId, label, initial, maxLength));
+                        ParseableTag height = parseSection("height", inputSection, CoreUtilities.basicContext, null);
+                        textInputEntries.put(inputId, new TextInputEntry(inputId, label, initial, maxLength, height));
                     }
                     case "number" -> {
                         ParseableTag label = parseSection("label", inputSection, CoreUtilities.basicContext, new ParseableTag(inputId));
@@ -397,6 +399,16 @@ public class DialogScriptContainer extends ScriptContainer {
                     }
                     catch (NumberFormatException ex) {
                         Debug.echoError(this, "Invalid max_length for text input: " + maxLengthStr);
+                        continue;
+                    }
+                }
+                if (textEntry.height() != null) {
+                    String heightStr = textEntry.height().parse(context).toString();
+                    try {
+                        int height = Integer.parseInt(heightStr);
+                        textBuilder.multiline(TextDialogInput.MultilineOptions.create(null, height));
+                    } catch (NumberFormatException e) {
+                        Debug.echoError(this, "Invalid height for text input: " + heightStr);
                         continue;
                     }
                 }
@@ -617,7 +629,7 @@ public class DialogScriptContainer extends ScriptContainer {
 
     public record ItemBodyEntry(ParseableTag item, ParseableTag description, ParseableTag showTooltip, ParseableTag showDecorations, ParseableTag width, ParseableTag height) {}
 
-    public record TextInputEntry(String id, ParseableTag label, ParseableTag initial, ParseableTag maxLength) {}
+    public record TextInputEntry(String id, ParseableTag label, ParseableTag initial, ParseableTag maxLength, ParseableTag height) {}
 
     public record OptionInputEntry(String id, ParseableTag label, List<ParseableTag> options, ParseableTag width) {}
 
