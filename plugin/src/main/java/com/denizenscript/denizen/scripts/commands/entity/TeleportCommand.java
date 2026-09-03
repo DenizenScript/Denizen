@@ -161,7 +161,6 @@ public class TeleportCommand extends AbstractCommand {
             if (vehicle != null) {
                 bukkitEntity.leaveVehicle();
             }
-
             if (entity.isFake && entity.getWorld().equals(location.getWorld())) {
                 NMSHandler.entityHelper.snapPositionTo(bukkitEntity, location.toVector());
                 NMSHandler.entityHelper.look(bukkitEntity, location.getYaw(), location.getPitch());
@@ -204,7 +203,6 @@ public class TeleportCommand extends AbstractCommand {
                 }
                 List<Relative> finalRelativeAxes = relativeAxes;
                 NMSHandler.packetHelper.sendRelativePositionPacket(player, x, y, z, yaw, pitch, finalRelativeAxes);
-
                 if (vehicle != null) {
                     vehicle.teleport(location, cause);
                     Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
@@ -213,7 +211,6 @@ public class TeleportCommand extends AbstractCommand {
                         }
                     });
                 }
-
                 DenizenCore.runAsync(() -> {
                     try {
                         for (int i = 0; i < times - 1; i++) {
