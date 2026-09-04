@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.entity;
 
+import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.LocationTag;
@@ -19,6 +20,8 @@ import com.denizenscript.denizencore.scripts.commands.generator.*;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.trait.CurrentLocation;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
@@ -153,9 +156,22 @@ public class TeleportCommand extends AbstractCommand {
                 Debug.echoError("Cannot interpret object '" + entityObj + "' as an EntityTag.");
                 continue;
             }
+            Entity bukkitEntity = entity.getBukkitEntity();
+            Entity vehicle = bukkitEntity.getVehicle();
+            if (vehicle != null) {
+                bukkitEntity.leaveVehicle();
+            }
             if (entity.isFake && entity.getWorld().equals(location.getWorld())) {
-                NMSHandler.entityHelper.snapPositionTo(entity.getBukkitEntity(), location.toVector());
-                NMSHandler.entityHelper.look(entity.getBukkitEntity(), location.getYaw(), location.getPitch());
+                NMSHandler.entityHelper.snapPositionTo(bukkitEntity, location.toVector());
+                NMSHandler.entityHelper.look(bukkitEntity, location.getYaw(), location.getPitch());
+                if (vehicle != null) {
+                    vehicle.teleport(location, cause);
+                    Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
+                        if (vehicle.isValid() && bukkitEntity.isValid()) {
+                            vehicle.addPassenger(bukkitEntity);
+                        }
+                    });
+                }
                 return;
             }
             if (offthreadRepeats != null && relativeAxes != null && entity.isPlayer()) {
@@ -187,6 +203,14 @@ public class TeleportCommand extends AbstractCommand {
                 }
                 List<Relative> finalRelativeAxes = relativeAxes;
                 NMSHandler.packetHelper.sendRelativePositionPacket(player, x, y, z, yaw, pitch, finalRelativeAxes);
+                if (vehicle != null) {
+                    vehicle.teleport(location, cause);
+                    Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
+                        if (vehicle.isValid() && bukkitEntity.isValid()) {
+                            vehicle.addPassenger(bukkitEntity);
+                        }
+                    });
+                }
                 DenizenCore.runAsync(() -> {
                     try {
                         for (int i = 0; i < times - 1; i++) {
@@ -201,10 +225,20 @@ public class TeleportCommand extends AbstractCommand {
                 continue;
             }
             if (entityOptions != null || relativeAxes != null) {
-                PaperAPITools.instance.teleport(entity.getBukkitEntity(), location, cause, entityOptions, relativeAxes);
-                continue;
+                PaperAPITools.instance.teleport(bukkitEntity, location, cause, entityOptions, relativeAxes);
             }
-            entity.teleport(location, cause);
+            else {
+                entity.teleport(location, cause);
+            }
+
+            if (vehicle != null) {
+                vehicle.teleport(location, cause);
+                Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
+                    if (vehicle.isValid() && bukkitEntity.isValid()) {
+                        vehicle.addPassenger(bukkitEntity);
+                    }
+                });
+            }
         }
     }
 }
