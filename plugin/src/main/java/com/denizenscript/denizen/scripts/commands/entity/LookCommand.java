@@ -127,87 +127,87 @@ public class LookCommand extends AbstractCommand {
         final float yawRaw = yaw == null ? 0 : yaw.asFloat();
         final float pitchRaw = pitch == null ? 0 : pitch.asFloat();
         for (EntityTag entity : entities) {
-            if (entity.isSpawned()) {
-                Entity bukkitEntity = entity.getBukkitEntity();
-                Entity vehicle = bukkitEntity.getVehicle();
+            if (!entity.isSpawned()) {
+                continue;
+            }
+            Entity bukkitEntity = entity.getBukkitEntity();
+            Entity vehicle = bukkitEntity.getVehicle();
+
+            if (vehicle != null) {
+                bukkitEntity.leaveVehicle();
+            }
+
+            if (loc != null) {
+                NMSHandler.entityHelper.faceLocation(bukkitEntity, loc);
+            }
+            else if (entity.isPlayer()) {
+                Location playerTeleDest = entity.getLocation().clone();
+                float relYaw = (yawRaw - playerTeleDest.getYaw()) % 360;
+                if (relYaw > 180) {
+                    relYaw -= 360;
+                }
+                float relPitch = pitchRaw - playerTeleDest.getPitch();
+                playerTeleDest.setYaw(yawRaw);
+                playerTeleDest.setPitch(pitchRaw);
+                Player player = entity.getPlayer();
 
                 if (vehicle != null) {
-                    bukkitEntity.leaveVehicle();
+                    PaperAPITools.instance.teleport(player, playerTeleDest, PlayerTeleportEvent.TeleportCause.PLUGIN, null, Arrays.asList(TeleportCommand.Relative.values()));
                 }
+                else {
+                    final int times = offthreadRepeats != null ? offthreadRepeats.asInt() : 0;
+                    final float stepYaw = times > 0 ? relYaw / (times + 1) : relYaw;
+                    final float stepPitch = times > 0 ? relPitch / (times + 1) : relPitch;
 
-                if (loc != null) {
-                    NMSHandler.entityHelper.faceLocation(bukkitEntity, loc);
-                }
-                else if (entity.isPlayer()) {
-                    Location playerTeleDest = entity.getLocation().clone();
-                    float relYaw = (yawRaw - playerTeleDest.getYaw()) % 360;
-                    if (relYaw > 180) {
-                        relYaw -= 360;
-                    }
-                    final float actualRelYaw = relYaw;
-                    float relPitch = pitchRaw - playerTeleDest.getPitch();
-                    playerTeleDest.setYaw(yawRaw);
-                    playerTeleDest.setPitch(pitchRaw);
-                    Player player = entity.getPlayer();
-
-                    if (vehicle != null) {
-                        PaperAPITools.instance.teleport(player, playerTeleDest, PlayerTeleportEvent.TeleportCause.PLUGIN, null, Arrays.asList(TeleportCommand.Relative.values()));
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
+                        NetworkInterceptHelper.enable();
+                        NMSHandler.packetHelper.sendRelativeLookPacket(player, stepYaw, stepPitch);
                     }
                     else {
-                        final int times = offthreadRepeats != null ? offthreadRepeats.asInt() : 0;
-                        final float stepYaw = times > 0 ? actualRelYaw / (times + 1) : actualRelYaw;
-                        final float stepPitch = times > 0 ? relPitch / (times + 1) : relPitch;
+                        PaperAPITools.instance.teleport(player, playerTeleDest, PlayerTeleportEvent.TeleportCause.PLUGIN, null, Arrays.asList(TeleportCommand.Relative.values()));
+                    }
 
-                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
-                            NetworkInterceptHelper.enable();
-                            NMSHandler.packetHelper.sendRelativeLookPacket(player, stepYaw, stepPitch);
-                        }
-                        else {
-                            PaperAPITools.instance.teleport(player, playerTeleDest, PlayerTeleportEvent.TeleportCause.PLUGIN, null, Arrays.asList(TeleportCommand.Relative.values()));
-                        }
+                    if (offthreadRepeats != null) {
+                        NetworkInterceptHelper.enable();
+                        int ms = 50 / (times + 1);
+                        DenizenCore.runAsync(() -> {
+                            try {
+                                for (int i = 0; i < times; i++) {
+                                    Thread.sleep(ms);
+                                    NMSHandler.packetHelper.sendRelativeLookPacket(player, stepYaw, stepPitch);
+                                }
+                            }
+                            catch (Throwable ex) {
+                                Debug.echoError(ex);
+                            }
+                        });
+                    }
+                }
+            }
+            else {
+                NMSHandler.entityHelper.rotate(bukkitEntity, yawRaw, pitchRaw);
+            }
 
-                        if (offthreadRepeats != null) {
-                            NetworkInterceptHelper.enable();
-                            int ms = 50 / (times + 1);
-                            DenizenCore.runAsync(() -> {
-                                try {
-                                    for (int i = 0; i < times; i++) {
-                                        Thread.sleep(ms);
-                                        NMSHandler.packetHelper.sendRelativeLookPacket(player, stepYaw, stepPitch);
-                                    }
-                                }
-                                catch (Throwable ex) {
-                                    Debug.echoError(ex);
-                                }
-                            });
-                        }
+            if (vehicle != null) {
+                Location vLoc = vehicle.getLocation().clone();
+                if (loc != null) {
+                    Vector dir = loc.toVector().subtract(vLoc.toVector());
+                    if (dir.lengthSquared() > 0) {
+                        vLoc.setDirection(dir);
                     }
                 }
                 else {
-                    NMSHandler.entityHelper.rotate(bukkitEntity, yawRaw, pitchRaw);
+                    vLoc.setYaw(yawRaw);
+                    vLoc.setPitch(pitchRaw);
                 }
+                
+                vehicle.teleport(vLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
-                if (vehicle != null) {
-                    Location vLoc = vehicle.getLocation().clone();
-                    if (loc != null) {
-                        Vector dir = loc.toVector().subtract(vLoc.toVector());
-                        if (dir.lengthSquared() > 0) {
-                            vLoc.setDirection(dir);
-                        }
+                Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
+                    if (vehicle.isValid() && bukkitEntity.isValid()) {
+                        vehicle.addPassenger(bukkitEntity);
                     }
-                    else {
-                        vLoc.setYaw(yawRaw);
-                        vLoc.setPitch(pitchRaw);
-                    }
-                    
-                    vehicle.teleport(vLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
-
-                    Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
-                        if (vehicle.isValid() && bukkitEntity.isValid()) {
-                            vehicle.addPassenger(bukkitEntity);
-                        }
-                    });
-                }
+                });
             }
         }
         if (duration != null && duration.getTicks() > 1) {
