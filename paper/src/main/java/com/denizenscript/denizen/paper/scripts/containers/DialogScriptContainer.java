@@ -71,6 +71,10 @@ public class DialogScriptContainer extends ScriptContainer {
     //     # | All dialog scripts MUST have this key.
     //     dialog_type: notice
     //
+    //     # The optional number of columns of buttons for 'multi_action' dialog type.
+    //     # Defaults to 2.
+    //     columns: 4
+    //
     //     # Optional body text shown below the title.
     //     # | SOME dialog scripts should have this key.
     //     body: This is the body text.
@@ -161,14 +165,15 @@ public class DialogScriptContainer extends ScriptContainer {
 
     public ParseableTag titleTag;
     public ParseableTag bodyTag;
+    public ParseableTag columnsTag;
     public boolean closeable;
 
-    public final Map<String, TextInputEntry> textInputEntries = new HashMap<>();
-    public final Map<String, NumberInputEntry> numberInputEntries = new HashMap<>();
-    public final Map<String, BooleanInputEntry> booleanInputEntries = new HashMap<>();
-    public final Map<String, OptionInputEntry> optionInputEntries = new HashMap<>();
-    public final Map<String, ButtonEntry> buttonEntries = new HashMap<>();
-    public final Map<String, ItemBodyEntry> itemBodyEntries = new HashMap<>();
+    public final LinkedHashMap<String, TextInputEntry> textInputEntries = new LinkedHashMap<>();
+    public final LinkedHashMap<String, NumberInputEntry> numberInputEntries = new LinkedHashMap<>();
+    public final LinkedHashMap<String, BooleanInputEntry> booleanInputEntries = new LinkedHashMap<>();
+    public final LinkedHashMap<String, OptionInputEntry> optionInputEntries = new LinkedHashMap<>();
+    public final LinkedHashMap<String, ButtonEntry> buttonEntries = new LinkedHashMap<>();
+    public final LinkedHashMap<String, ItemBodyEntry> itemBodyEntries = new LinkedHashMap<>();
 
     public DialogScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
@@ -198,6 +203,7 @@ public class DialogScriptContainer extends ScriptContainer {
                     Debug.echoError(this, "Dialog script '" + getName() + "' missing required 'buttons' key when 'multi_action' dialog type.");
                     return;
                 }
+                columnsTag = parseSection("columns", getContents(), CoreUtilities.basicContext, null);
                 YamlConfiguration buttonsSection = getConfigurationSection("buttons");
                 for (StringHolder buttonIdHolder : buttonsSection.getKeys(false)) {
                     String buttonId = buttonIdHolder.str;
@@ -517,6 +523,16 @@ public class DialogScriptContainer extends ScriptContainer {
                     yield DialogType.confirmation(yesButton, noButton);
                 }
                 case "multi_action" -> {
+                    int col = 2;
+                    if (columnsTag != null) {
+                        String colString = columnsTag.parse(context).toString();
+                        try {
+                            col = Integer.parseInt(colString);
+                        }
+                        catch (NumberFormatException ex) {
+                            Debug.echoError(this, "Invalid columns for multi-action dialog: " + colString);
+                        }
+                    }
                     List<ActionButton> buttons = new ArrayList<>(buttonEntries.size());
                     for (ButtonEntry buttonEntry : buttonEntries.values()) {
                         ActionButton button = parseButton(buttonEntry, context);
@@ -524,7 +540,7 @@ public class DialogScriptContainer extends ScriptContainer {
                             buttons.add(button);
                         }
                     }
-                    yield DialogType.multiAction(buttons).build();
+                    yield DialogType.multiAction(buttons).columns(col).build();
                 }
                 case "notice" -> {
                     ActionButton button = parseButton("button", context);
@@ -611,9 +627,8 @@ public class DialogScriptContainer extends ScriptContainer {
                     }
                 }
                 ContextSource.SimpleMap src = new ContextSource.SimpleMap();
-                src.contexts = new HashMap<>(2);
-                src.contexts.put("inputs", inputs);
-                src.contexts.put("button_id", new ElementTag(buttonId, true));
+                src.contexts = Map.of("inputs", inputs,
+                                      "button_id", new ElementTag(buttonId, true));
                 queue.contextSource = src;
                 queue.addEntries(entries);
                 queue.start();
