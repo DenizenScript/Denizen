@@ -106,7 +106,7 @@ public class ItemHelperImpl extends ItemHelper {
         return ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().byKey(nmsKey).orElse(null);
     }
 
-    public static final MethodHandle CRAFT_ITEM_STACK_AS_TEMPLATE = Handler.reflectPaperRenamed(CraftItemStack.class, "asNMSTemplate", "asTemplate", ItemStack.class);
+    public static final MethodHandle CRAFT_ITEM_STACK_AS_TEMPLATE = Handler.reflectPaperRenamed(CraftItemStack.class, "asNMSTemplate", "asTemplate", new Class<?>[] {ItemStack.class});
 
     public static ItemStackTemplate asNMSTemplate(ItemStack item) {
         try {
