@@ -9,5 +9,9 @@ public class ComponentAdaptersRegistry {
         DataComponentAdapter.register(new MaxDurabilityAdapter());
         DataComponentAdapter.register(new MaxStackSizeAdapter());
         DataComponentAdapter.register(new RarityAdapter());
+        DataComponentAdapter.register(new WeaponAdapter());
+        DataComponentAdapter.register(new BreakSoundAdapter());
+        DataComponentAdapter.register(new SwingAnimationAdapter());
+        DataComponentAdapter.register(new EquippableAdapter());
     }
 }
