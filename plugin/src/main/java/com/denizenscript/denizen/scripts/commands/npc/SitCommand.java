@@ -60,6 +60,8 @@ public class SitCommand extends AbstractCommand {
         }
         else {
             Debug.echoError("Entities of type " + npc.getEntityType() + " cannot sit.");
+            return;
         }
+        npc.action("sit", null);
     }
 }

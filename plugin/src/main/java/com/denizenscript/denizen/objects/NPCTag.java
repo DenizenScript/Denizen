@@ -1771,6 +1771,9 @@ public class NPCTag implements ObjectTag, Adjustable, InventoryHolder, EntityFor
         // -->
         tagProcessor.registerMechanism("set_sneaking", false, ElementTag.class, (object, mechanism, input) -> {
             if (mechanism.requireBoolean()) {
+                if (input.asBoolean()) {
+                    object.action("sneak", null);
+                }
                 object.getCitizen().getOrAddTrait(SneakTrait.class).setSneaking(input.asBoolean());
             }
         });

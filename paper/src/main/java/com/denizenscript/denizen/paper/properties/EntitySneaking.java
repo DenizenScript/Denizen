@@ -1,6 +1,7 @@
 package com.denizenscript.denizen.paper.properties;
 
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.properties.entity.EntityProperty;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
@@ -44,11 +45,14 @@ public class EntitySneaking extends EntityProperty<ElementTag> {
         if (!object.isCitizensNPC()) {
             return;
         }
-        NPC npc = object.getDenizenNPC().getCitizen();
+        NPCTag npcTag = object.getDenizenNPC();
+        NPC npc = npcTag.getCitizen();
         if (sneaking) {
+            npcTag.action("sneak", null);
             npc.getOrAddTrait(SneakTrait.class).setSneaking(true);
         }
         else if (npc.hasTrait(SneakTrait.class)) {
+            npcTag.action("stand", null);
             npc.getOrAddTrait(SneakTrait.class).setSneaking(false);
         }
     }

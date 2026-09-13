@@ -2,6 +2,7 @@ package com.denizenscript.denizen.scripts.commands.entity;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
@@ -90,7 +91,11 @@ public class SneakCommand extends AbstractCommand {
                 }
             }
             else if (entity.isCitizensNPC()) {
-                entity.getDenizenNPC().getCitizen().getOrAddTrait(SneakTrait.class).setSneaking(shouldSneak);
+                NPCTag npc = entity.getDenizenNPC();
+                if (shouldSneak) {
+                    npc.action("sneak", null);
+                }
+                npc.getCitizen().getOrAddTrait(SneakTrait.class).setSneaking(shouldSneak);
             }
             else if (entity.isSpawned()) {
                 NMSHandler.entityHelper.setSneaking(entity.getBukkitEntity(), shouldSneak);

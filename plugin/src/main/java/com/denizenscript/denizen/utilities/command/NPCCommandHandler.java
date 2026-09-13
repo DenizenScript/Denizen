@@ -4,6 +4,7 @@ import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.npc.traits.*;
 import com.denizenscript.denizen.npc.traits.MirrorTrait;
 import com.denizenscript.denizen.objects.LocationTag;
+import com.denizenscript.denizen.objects.NPCTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.scripts.containers.core.AssignmentScriptContainer;
 import com.denizenscript.denizen.utilities.command.manager.messaging.Messaging;
@@ -353,6 +354,7 @@ public class NPCCommandHandler {
                 Messaging.sendError(sender, "Usage: /npc sit --location x,y,z,world");
                 return;
             }
+            new NPCTag(npc).action("sit", null);
             trait.setSitting(location);
             return;
         }
@@ -360,6 +362,7 @@ public class NPCCommandHandler {
             if (npc.hasTrait(Anchors.class)) {
                 Anchors anchors = npc.getOrAddTrait(Anchors.class);
                 if (anchors.getAnchor(args.getFlag("anchor")) != null) {
+                    new NPCTag(npc).action("sit", null);
                     trait.setSitting(anchors.getAnchor(args.getFlag("anchor")).getLocation());
                     Messaging.send(sender, npc.getName() + " is now sitting.");
                     return;
@@ -395,6 +398,7 @@ public class NPCCommandHandler {
         else if (block.getType().isSolid()) {
             targetLocation.setY(targetLocation.getBlockY() + 0.8);
         }
+        new NPCTag(npc).action("sit", null);
         trait.setSitting(targetLocation);
         Messaging.send(sender, npc.getName() + " is now sitting.");
     }
@@ -411,6 +415,7 @@ public class NPCCommandHandler {
                 Messaging.sendError(sender, npc.getName() + " is already standing!");
                 return;
             }
+            new NPCTag(npc).action("stand", null);
             trait.setSitting(null);
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
@@ -420,6 +425,7 @@ public class NPCCommandHandler {
                 Messaging.sendError(sender, npc.getName() + " is already standing!");
                 return;
             }
+            new NPCTag(npc).action("stand", null);
             trait.setSneaking(false);
             Messaging.send(sender, npc.getName() + " is now standing.");
         }
@@ -645,14 +651,18 @@ public class NPCCommandHandler {
             return;
         }
         SneakTrait trait = npc.getOrAddTrait(SneakTrait.class);
+        String action;
         if (trait.isSneaking()) {
+            action = "stand";
             trait.setSneaking(false);
             Messaging.send(sender, npc.getName() + " was already sneaking, and is now standing.");
         }
         else {
+            action = "sneak";
             trait.setSneaking(true);
             Messaging.send(sender, npc.getName() + " is now sneaking.");
         }
+        new NPCTag(npc).action(action, null);
     }
 
     @Command(
