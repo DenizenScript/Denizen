@@ -184,8 +184,13 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
         }
         final File newFolder;
         if (worldNameStr.contains(":")) {
-            String[] split = worldNameStr.split(":", 2);
-            newFolder = new File(new File(new File(Bukkit.getWorlds().get(0).getWorldFolder(), "dimensions"), split[0]), split[1]);
+            org.bukkit.NamespacedKey key = org.bukkit.NamespacedKey.fromString(worldNameStr);
+            if (key == null) {
+                Debug.echoError("CreateWorld failed: '" + worldNameStr + "' is not a valid NamespacedKey.");
+                scriptEntry.setFinished(true);
+                return;
+            }
+            newFolder = new File(new File(new File(new File(Bukkit.getWorldContainer(), Bukkit.getWorlds().get(0).getName()), "dimensions"), key.getNamespace()), key.getKey());
         }
         else {
             newFolder = new File(Bukkit.getWorldContainer(), worldNameStr);
@@ -195,6 +200,29 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
             Debug.echoError("Cannot copy to that new folder path due to security settings in Denizen/config.yml.");
             scriptEntry.setFinished(true);
             return;
+        }
+        final File folder;
+        if (sourceFolder != null) {
+            if (sourceFolder.contains(":")) {
+                org.bukkit.NamespacedKey sourceKey = org.bukkit.NamespacedKey.fromString(sourceFolder);
+                if (sourceKey == null) {
+                    Debug.echoError("CreateWorld failed: copy_from '" + sourceFolder + "' is not a valid NamespacedKey.");
+                    scriptEntry.setFinished(true);
+                    return;
+                }
+                folder = new File(new File(new File(new File(Bukkit.getWorldContainer(), Bukkit.getWorlds().get(0).getName()), "dimensions"), sourceKey.getNamespace()), sourceKey.getKey());
+            }
+            else {
+                folder = new File(Bukkit.getWorldContainer(), sourceFolder);
+            }
+            if (!Utilities.canReadFile(folder)) {
+                Debug.echoError("Cannot copy from that folder path due to security settings in Denizen/config.yml.");
+                scriptEntry.setFinished(true);
+                return;
+            }
+        }
+        else {
+            folder = null;
         }
         WorldType enumWorldType;
         World.Environment enumEnvironment;
@@ -210,11 +238,6 @@ public class CreateWorldCommand extends AbstractCommand implements Holdable {
 
         Supplier<Boolean> copyRunnable = () -> {
             try {
-                File folder = new File(Bukkit.getWorldContainer(), sourceFolder);
-                if (!Utilities.canReadFile(folder)) {
-                    Debug.echoError(scriptEntry, "Cannot copy from that folder path due to security settings in Denizen/config.yml.");
-                    return false;
-                }
                 if (!folder.exists() || !folder.isDirectory()) {
                     Debug.echoError(scriptEntry, "Invalid copy from world folder - does not exist!");
                     return false;
