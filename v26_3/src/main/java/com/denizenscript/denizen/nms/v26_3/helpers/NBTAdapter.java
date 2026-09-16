@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_2.helpers;
+package com.denizenscript.denizen.nms.v26_3.helpers;
 
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import net.kyori.adventure.nbt.*;

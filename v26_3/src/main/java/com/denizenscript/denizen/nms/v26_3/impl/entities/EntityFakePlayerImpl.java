@@ -1,9 +1,9 @@
-package com.denizenscript.denizen.nms.v26_2.impl.entities;
+package com.denizenscript.denizen.nms.v26_3.impl.entities;
 
-import com.denizenscript.denizen.nms.v26_2.Handler;
-import com.denizenscript.denizen.nms.v26_2.impl.network.fakes.FakeNetworkManagerImpl;
-import com.denizenscript.denizen.nms.v26_2.impl.network.fakes.FakePlayerConnectionImpl;
-import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_3.Handler;
+import com.denizenscript.denizen.nms.v26_3.impl.network.fakes.FakeNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_3.impl.network.fakes.FakePlayerConnectionImpl;
+import com.denizenscript.denizen.nms.v26_3.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.protocol.PacketFlow;

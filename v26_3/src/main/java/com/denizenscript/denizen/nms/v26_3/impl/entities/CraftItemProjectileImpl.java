@@ -1,7 +1,7 @@
-package com.denizenscript.denizen.nms.v26_2.impl.entities;
+package com.denizenscript.denizen.nms.v26_3.impl.entities;
 
 import com.denizenscript.denizen.nms.interfaces.ItemProjectile;
-import com.denizenscript.denizen.nms.v26_2.helpers.ItemHelperImpl;
+import com.denizenscript.denizen.nms.v26_3.helpers.ItemHelperImpl;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import org.bukkit.craftbukkit.CraftServer;

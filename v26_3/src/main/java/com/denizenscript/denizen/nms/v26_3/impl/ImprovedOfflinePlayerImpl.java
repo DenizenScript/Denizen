@@ -1,8 +1,8 @@
-package com.denizenscript.denizen.nms.v26_2.impl;
+package com.denizenscript.denizen.nms.v26_3.impl;
 
 import com.denizenscript.denizen.nms.abstracts.ImprovedOfflinePlayer;
-import com.denizenscript.denizen.nms.v26_2.Handler;
-import com.denizenscript.denizen.nms.v26_2.helpers.NBTAdapter;
+import com.denizenscript.denizen.nms.v26_3.Handler;
+import com.denizenscript.denizen.nms.v26_3.helpers.NBTAdapter;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
 import net.kyori.adventure.nbt.CompoundBinaryTag;

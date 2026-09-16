@@ -1,7 +1,7 @@
-package com.denizenscript.denizen.nms.v26_2.helpers;
+package com.denizenscript.denizen.nms.v26_3.helpers;
 
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
-import com.denizenscript.denizen.nms.v26_2.Handler;
+import com.denizenscript.denizen.nms.v26_3.Handler;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.google.common.collect.ImmutableMap;
 import net.md_5.bungee.api.ChatColor;

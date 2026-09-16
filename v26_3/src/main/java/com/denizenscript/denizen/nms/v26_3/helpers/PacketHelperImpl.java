@@ -1,10 +1,10 @@
-package com.denizenscript.denizen.nms.v26_2.helpers;
+package com.denizenscript.denizen.nms.v26_3.helpers;
 
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
-import com.denizenscript.denizen.nms.v26_2.Handler;
-import com.denizenscript.denizen.nms.v26_2.impl.SidebarImpl;
-import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.DenizenNetworkManagerImpl;
+import com.denizenscript.denizen.nms.v26_3.Handler;
+import com.denizenscript.denizen.nms.v26_3.impl.SidebarImpl;
+import com.denizenscript.denizen.nms.v26_3.impl.network.handlers.DenizenNetworkManagerImpl;
 import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.scripts.commands.entity.TeleportCommand;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;

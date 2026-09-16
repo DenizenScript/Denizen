@@ -1,9 +1,9 @@
-package com.denizenscript.denizen.nms.v26_2.impl.network.handlers;
+package com.denizenscript.denizen.nms.v26_3.impl.network.handlers;
 
 import com.denizenscript.denizen.events.player.PlayerReceivesPacketScriptEvent;
 import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.v26_2.impl.ProfileEditorImpl;
-import com.denizenscript.denizen.nms.v26_2.impl.network.handlers.packet.*;
+import com.denizenscript.denizen.nms.v26_3.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v26_3.impl.network.handlers.packet.*;
 import com.denizenscript.denizen.utilities.Settings;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptCodeGen;
 import com.denizenscript.denizencore.utilities.CoreUtilities;

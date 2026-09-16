@@ -1,4 +1,4 @@
-package com.denizenscript.denizen.nms.v26_2.impl.entities;
+package com.denizenscript.denizen.nms.v26_3.impl.entities;
 
 import com.denizenscript.denizen.nms.interfaces.FakePlayer;
 import com.denizenscript.denizen.nms.NMSHandler;

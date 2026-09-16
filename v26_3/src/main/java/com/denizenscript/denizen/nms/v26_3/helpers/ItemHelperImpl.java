@@ -1,10 +1,10 @@
-package com.denizenscript.denizen.nms.v26_2.helpers;
+package com.denizenscript.denizen.nms.v26_3.helpers;
 
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.interfaces.ItemHelper;
 import com.denizenscript.denizen.nms.util.PlayerProfile;
-import com.denizenscript.denizen.nms.v26_2.Handler;
-import com.denizenscript.denizen.nms.v26_2.impl.ProfileEditorImpl;
+import com.denizenscript.denizen.nms.v26_3.Handler;
+import com.denizenscript.denizen.nms.v26_3.impl.ProfileEditorImpl;
 import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.item.ItemComponentsPatch;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
