@@ -66,10 +66,10 @@ public class StandCommand extends AbstractCommand {
             npc.action("stand", null);
             citizen.getOrAddTrait(SitTrait.class).setSitting(null);
         }
-        else if (SleepingTrait.isSupported() && citizen.hasTrait(SleepingTrait.class)) {
+        if (SleepingTrait.isSupported() && citizen.hasTrait(SleepingTrait.class)) {
             citizen.getOrAddTrait(SleepingTrait.class).wakeUp();
         }
-        else if (!SleepingTrait.isSupported() && citizen.hasTrait(SleepTrait.class)) {
+        if (!SleepingTrait.isSupported() && citizen.hasTrait(SleepTrait.class)) {
             citizen.getOrAddTrait(SleepTrait.class).setSleeping(null);
         }
     }
