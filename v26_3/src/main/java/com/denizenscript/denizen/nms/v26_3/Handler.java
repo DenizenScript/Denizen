@@ -107,8 +107,17 @@ public class Handler extends NMSHandler {
     }
 
     // TODO: Paper renamed some NMS methods, switch back to direct calls once on Paper NMS
-    public static MethodHandle reflectPaperRenamed(Class<?> clazz, String spigot, String paper, Class<?>... params) {
-        return ReflectionHelper.getMethodHandle(clazz, Denizen.supportsPaper ? paper : spigot, params);
+    public static MethodHandle reflectPaperRenamed(Class<?> clazz, String spigot, String paper) {
+        return reflectPaperRenamed(clazz, spigot, paper, null, null);
+    }
+
+    public static MethodHandle reflectPaperRenamed(Class<?> clazz, String spigot, String paper, Class<?>[] params) {
+        return reflectPaperRenamed(clazz, spigot, paper, params, params);
+    }
+
+    public static MethodHandle reflectPaperRenamed(Class<?> clazz, String spigot, String paper, Class<?>[] spigotParams, Class<?>[] paperParams) {
+        boolean supportsPaper = Denizen.supportsPaper;
+        return ReflectionHelper.getMethodHandle(clazz, supportsPaper ? paper : spigot, supportsPaper ? paperParams : spigotParams);
     }
 
     public Handler() {

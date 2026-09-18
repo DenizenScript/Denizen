@@ -108,7 +108,7 @@ public class ItemHelperImpl extends ItemHelper {
         return ((CraftServer) Bukkit.getServer()).getServer().getRecipeManager().byKey(nmsKey).orElse(null);
     }
 
-    public static final MethodHandle CRAFT_ITEM_STACK_AS_TEMPLATE = Handler.reflectPaperRenamed(CraftItemStack.class, "asNMSTemplate", "asTemplate", ItemStack.class);
+    public static final MethodHandle CRAFT_ITEM_STACK_AS_TEMPLATE = Handler.reflectPaperRenamed(CraftItemStack.class, "asNMSTemplate", "asTemplate", new Class<?>[] {ItemStack.class});
 
     public static ItemStackTemplate asNMSTemplate(ItemStack item) {
         try {
@@ -782,7 +782,7 @@ public class ItemHelperImpl extends ItemHelper {
         return nmsManager.getRecipeFor(RecipeType.BREWING, new BrewingInput(nmsInput, nmsIngredient), MinecraftServer.getServer().overworld()).isPresent();
     }
 
-    public static final MethodHandle CRAFT_RECIPE_TO_BUKKIT = Handler.reflectPaperRenamed(CraftRecipe.class, "toBukkit", "toChoice", Ingredient.class);
+    public static final MethodHandle CRAFT_RECIPE_TO_BUKKIT = Handler.reflectPaperRenamed(CraftRecipe.class, "toBukkit", "toChoice", new Class<?>[] {Ingredient.class});
 
     @Override
     public Map<NamespacedKey, BrewingRecipe> getCustomBrewingRecipes() {
