@@ -1604,6 +1604,7 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // <--[tag]
         // @attribute <PlayerTag.held_item_slot>
         // @returns ElementTag(Number)
+        // @synonyms PlayerTag.selected_hotbar_slot,PlayerTag.hot_bar_slot
         // @description
         // Returns the slot location of the player's selected item.
         // -->

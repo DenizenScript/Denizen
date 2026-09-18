@@ -9,7 +9,8 @@ public enum NMSVersion {
     v1_20("1.20"),
     v1_21("1.21"),
     v26_1("26.1"),
-    v26_2("26.2");
+    v26_2("26.2"),
+    v26_3("26.3");
 
     final String minecraftVersion;
 
