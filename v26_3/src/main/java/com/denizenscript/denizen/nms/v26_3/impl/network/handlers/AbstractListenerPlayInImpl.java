@@ -194,7 +194,7 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
                 int awaitTeleportId = AWAITING_TELEPORT_FIELD.getInt(oldListener);
                 ServerboundAcceptTeleportationPacket acceptPacket = (ServerboundAcceptTeleportationPacket) packet;
                 DenizenNetworkManagerImpl.doPacketOutput("Packet ServerboundAcceptTeleportationPacket sent from " + player.getScoreboardName()
-                        + " with ID=" + acceptPacket.getId() + ", awaitingTeleport=" + awaitTeleportId + ", awaitPos=" + awaitPos);
+                        + " with ID=" + acceptPacket.id() + ", awaitingTeleport=" + awaitTeleportId + ", awaitPos=" + awaitPos);
             }
             else {
                 DenizenNetworkManagerImpl.doPacketOutput("Packet: " + packet.getClass().getCanonicalName() + " sent from " + player.getScoreboardName());
@@ -439,9 +439,27 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
-    public void handleAnimate(ServerboundSwingPacket packet) {
+    public void handleSetGameRule(ServerboundSetGameRulePacket packet) {
         if (handlePacketIn(packet)) { return; }
-        oldListener.handleAnimate(packet);
+        oldListener.handleSetGameRule(packet);
+    }
+
+    @Override
+    public void handlePunch(ServerboundPunchPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handlePunch(packet);
+    }
+
+    @Override
+    public void handleAttack(ServerboundAttackPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleAttack(packet);
+    }
+
+    @Override
+    public void handleSpectatorAction(ServerboundSpectatorActionPacket packet) {
+        if (handlePacketIn(packet)) { return; }
+        oldListener.handleSpectatorAction(packet);
     }
 
     @Override
@@ -601,6 +619,21 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     }
 
     @Override
+    public boolean hasClientLoaded() {
+        return oldListener.hasClientLoaded();
+    }
+
+    @Override
+    public boolean canUseCommandBlocks() {
+        return oldListener.canUseCommandBlocks();
+    }
+
+    @Override
+    public boolean isTransferred() {
+        return oldListener.isTransferred();
+    }
+
+    @Override
     public void handleContainerSlotStateChanged(ServerboundContainerSlotStateChangedPacket packet) {
         if (handlePacketIn(packet)) { return; }
         oldListener.handleContainerSlotStateChanged(packet);
@@ -646,6 +679,21 @@ public class AbstractListenerPlayInImpl extends ServerGamePacketListenerImpl {
     public void handleCookieResponse(ServerboundCookieResponsePacket packet) {
         if (handlePacketIn(packet)) { return; }
         oldListener.handleCookieResponse(packet);
+    }
+
+    @Override
+    public void resetFlyingTicks() {
+        oldListener.resetFlyingTicks();
+    }
+
+    @Override
+    public void tickClientLoadTimeout() {
+        oldListener.tickClientLoadTimeout();
+    }
+
+    @Override
+    public void markClientUnloadedAfterDeath() {
+        oldListener.markClientUnloadedAfterDeath();
     }
 
     @Override

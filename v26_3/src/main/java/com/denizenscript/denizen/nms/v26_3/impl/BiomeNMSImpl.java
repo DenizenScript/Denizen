@@ -12,6 +12,7 @@ import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.random.Weighted;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.attribute.EnvironmentAttribute;
@@ -160,22 +161,22 @@ public class BiomeNMSImpl extends BiomeNMS {
 
     @Override
     public int getFogColor() {
-        return getEnvironmentAttribute(EnvironmentAttributes.FOG_COLOR);
+        return ARGB.colorFromVector3f(getEnvironmentAttribute(EnvironmentAttributes.FOG_COLOR));
     }
 
     @Override
     public void setFogColor(int color) {
-        setEnvironmentAttribute(EnvironmentAttributes.FOG_COLOR, color);
+        setEnvironmentAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.vector3fFromRGB24(color));
     }
 
     @Override
     public int getWaterFogColor() {
-        return getEnvironmentAttribute(EnvironmentAttributes.WATER_FOG_COLOR);
+        return ARGB.colorFromVector3f(getEnvironmentAttribute(EnvironmentAttributes.WATER_FOG_COLOR));
     }
 
     @Override
     public void setWaterFogColor(int color) {
-        setEnvironmentAttribute(EnvironmentAttributes.WATER_FOG_COLOR, color);
+        setEnvironmentAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.vector3fFromRGB24(color));
     }
 
     public <T> T getEnvironmentAttribute(EnvironmentAttribute<T> attribute) {
@@ -195,8 +196,8 @@ public class BiomeNMSImpl extends BiomeNMS {
     }
 
     private List<EntityType> getSpawnableEntities(MobCategory creatureType) {
-        MobSpawnSettings mobs = biomeHolder.value().getMobSettings();
-        WeightedList<MobSpawnSettings.SpawnerData> typeSettingList = mobs.getMobs(creatureType);
+        MobSpawnSettings mobs = getEnvironmentAttribute(EnvironmentAttributes.NATURAL_MOB_SPAWNS);
+        WeightedList<MobSpawnSettings.SpawnerData> typeSettingList = mobs.getMobsInCategory(creatureType);
         List<EntityType> entityTypes = new ArrayList<>();
         if (typeSettingList == null) {
             return entityTypes;

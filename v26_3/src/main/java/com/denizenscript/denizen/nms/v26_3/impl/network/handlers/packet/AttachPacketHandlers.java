@@ -29,9 +29,7 @@ public class AttachPacketHandlers {
         DenizenNetworkManagerImpl.registerPacketHandler(ClientboundRemoveEntitiesPacket.class, AttachPacketHandlers::processAttachToForPacket);
     }
 
-    public static Field POS_X_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("xa", short.class);
-    public static Field POS_Y_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("ya", short.class);
-    public static Field POS_Z_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("za", short.class);
+    public static Field DELTA_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("delta", VecDelta.class);
     public static Field YAW_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("yRot", byte.class);
     public static Field PITCH_PACKENT = ReflectionHelper.getFields(ClientboundMoveEntityPacket.class).get("xRot", byte.class);
 
@@ -46,13 +44,13 @@ public class AttachPacketHandlers {
                     ClientboundMoveEntityPacket pNew;
                     int newId = att.attached.getBukkitEntity().getEntityId();
                     if (packet instanceof ClientboundMoveEntityPacket.Pos) {
-                        pNew = new ClientboundMoveEntityPacket.Pos(newId, packet.getXa(), packet.getYa(), packet.getZa(), packet.isOnGround());
+                        pNew = new ClientboundMoveEntityPacket.Pos(newId, packet.getPositionDelta(), packet.isOnGround());
                     }
                     else if (packet instanceof ClientboundMoveEntityPacket.Rot) {
                         pNew = new ClientboundMoveEntityPacket.Rot(newId, Mth.packDegrees(packet.getYRot()), Mth.packDegrees(packet.getXRot()), packet.isOnGround());
                     }
                     else if (packet instanceof ClientboundMoveEntityPacket.PosRot) {
-                        pNew = new ClientboundMoveEntityPacket.PosRot(newId, packet.getXa(), packet.getYa(), packet.getZa(), Mth.packDegrees(packet.getYRot()), Mth.packDegrees(packet.getXRot()), packet.isOnGround());
+                        pNew = new ClientboundMoveEntityPacket.PosRot(newId, packet.getPositionDelta(), Mth.packDegrees(packet.getYRot()), Mth.packDegrees(packet.getXRot()), packet.isOnGround());
                     }
                     else {
                         if (CoreConfiguration.debugVerbose) {
@@ -111,9 +109,11 @@ public class AttachPacketHandlers {
                             networkManager.oldManager.send(newTeleportPacket);
                         }
                         else {
-                            POS_X_PACKENT.setShort(pNew, (short) Mth.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE));
-                            POS_Y_PACKENT.setShort(pNew, (short) Mth.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE));
-                            POS_Z_PACKENT.setShort(pNew, (short) Mth.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE));
+                            DELTA_PACKENT.set(pNew, new VecDelta.Linear(
+                                    (short) Mth.clamp(offX, Short.MIN_VALUE, Short.MAX_VALUE),
+                                    (short) Mth.clamp(offY, Short.MIN_VALUE, Short.MAX_VALUE),
+                                    (short) Mth.clamp(offZ, Short.MIN_VALUE, Short.MAX_VALUE)
+                            ));
                             if (isRotate) {
                                 YAW_PACKENT.setByte(pNew, EntityAttachmentHelper.compressAngle(yaw));
                                 PITCH_PACKENT.setByte(pNew, EntityAttachmentHelper.compressAngle(pitch));
@@ -283,7 +283,7 @@ public class AttachPacketHandlers {
                 return EntityAttachmentHelper.denyOriginalPacketSend(networkManager.player.getUUID(), e.getUUID()) ? null : packet;
             }
             else if (packet instanceof ClientboundRemoveEntitiesPacket removeEntitiesPacket) {
-                for (int id : removeEntitiesPacket.getEntityIds()) {
+                for (int id : removeEntitiesPacket.entityIds()) {
                     Entity e = networkManager.player.level().getEntity(id);
                     if (e != null) {
                         EntityAttachmentHelper.EntityAttachedToMap attList = EntityAttachmentHelper.toEntityToData.get(e.getUUID());

@@ -8,9 +8,7 @@ import com.denizenscript.denizencore.utilities.debugging.Debug;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.world.level.biome.Biome;
@@ -31,19 +29,16 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class FakeBlockHelper {
 
     public static Field CHUNKDATA_BLOCK_ENTITIES = ReflectionHelper.getFields(ClientboundLevelChunkPacketData.class).getFirstOfType(List.class);
-    public static MethodHandle CHUNKDATA_BLOCK_ENTITY_CONSTRUCTOR = ReflectionHelper.getConstructor(ClientboundLevelChunkPacketData.class.getDeclaredClasses()[0], int.class, int.class, BlockEntityType.class, CompoundTag.class);
-    public static MethodHandle CHUNKDATA_BUFFER_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(ClientboundLevelChunkPacketData.class, byte[].class);
+    public static MethodHandle CHUNKDATA_CONSTRUCTOR = ReflectionHelper.getConstructor(ClientboundLevelChunkPacketData.class, Map.class, byte[].class, List.class);
+    public static MethodHandle CHUNKDATA_BLOCK_ENTITY_CONSTRUCTOR = ReflectionHelper.getConstructor(ClientboundLevelChunkPacketData.class.getDeclaredClasses()[0], byte.class, short.class, BlockEntityType.class, Optional.class);
     public static Class CHUNKDATA_BLOCKENTITYINFO_CLASS = ClientboundLevelChunkPacketData.class.getDeclaredClasses()[0];
     public static Field CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).get("packedXZ");
     public static Field CHUNKDATA_BLOCKENTITYINFO_Y = ReflectionHelper.getFields(CHUNKDATA_BLOCKENTITYINFO_CLASS).get("y");
-    public static MethodHandle CHUNKPACKET_CHUNKDATA_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(ClientboundLevelChunkWithLightPacket.class, ClientboundLevelChunkPacketData.class);
     public static Constructor<?> PALETTEDCONTAINER_CTOR = Arrays.stream(PalettedContainer.class.getConstructors()).filter(c -> c.getParameterCount() == 2).findFirst().get();
 
     public static BlockState getNMSState(FakeBlock block) {
@@ -71,7 +66,7 @@ public class FakeBlockHelper {
         }
         try {
             if (PAPER_CHUNK_READY == null) {
-                PAPER_CHUNK_READY = ReflectionHelper.getFields(ClientboundLevelChunkWithLightPacket.class).get("ready");
+                PAPER_CHUNK_READY = ClientboundLevelChunkWithLightPacket.class.getDeclaredField("ready");
             }
         }
         catch (Throwable ex) {
@@ -90,18 +85,12 @@ public class FakeBlockHelper {
 
     public static ClientboundLevelChunkWithLightPacket handleMapChunkPacket(World world, ClientboundLevelChunkWithLightPacket originalPacket, int chunkX, int chunkZ, List<FakeBlock> blocks) {
         try {
-            ClientboundLevelChunkWithLightPacket duplicateCorePacket = DenizenNetworkManagerImpl.copyPacket(originalPacket, ClientboundLevelChunkWithLightPacket.STREAM_CODEC);
-            copyPacketPaperPatch(duplicateCorePacket, originalPacket);
-            RegistryFriendlyByteBuf copier = new RegistryFriendlyByteBuf(Unpooled.buffer(), CraftRegistry.getMinecraftRegistry());
-            originalPacket.getChunkData().write(copier);
-            ClientboundLevelChunkPacketData packet = new ClientboundLevelChunkPacketData(copier, chunkX, chunkZ);
-            FriendlyByteBuf serial = originalPacket.getChunkData().getReadBuffer();
+            FriendlyByteBuf serial = originalPacket.chunkData().getReadBuffer();
             FriendlyByteBuf outputSerial = new FriendlyByteBuf(Unpooled.buffer(serial.readableBytes()));
-            List blockEntities = new ArrayList((List) CHUNKDATA_BLOCK_ENTITIES.get(originalPacket.getChunkData()));
-            CHUNKDATA_BLOCK_ENTITIES.set(packet, blockEntities);
+            List blockEntities = new ArrayList((List) CHUNKDATA_BLOCK_ENTITIES.get(originalPacket.chunkData()));
             for (int i = 0; i < blockEntities.size(); i++) {
                 Object blockEnt = blockEntities.get(i);
-                int xz = CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ.getInt(blockEnt);
+                byte xz = CHUNKDATA_BLOCKENTITYINFO_PACKEDXZ.getByte(blockEnt);
                 int y = CHUNKDATA_BLOCKENTITYINFO_Y.getInt(blockEnt);
                 int x = (chunkX << 4) + ((xz >> 4) & 15);
                 int z = (chunkZ << 4) + (xz & 15);
@@ -109,7 +98,7 @@ public class FakeBlockHelper {
                     LocationTag loc = block.location;
                     if (loc.getBlockX() == x && loc.getBlockY() == y && loc.getBlockZ() == z && block.material != null) {
                         BlockEntity newBlockEnt = CraftBlockStates.createNewTileEntity(block.material.getMaterial());
-                        Object newData = CHUNKDATA_BLOCK_ENTITY_CONSTRUCTOR.invoke(xz, y, newBlockEnt.getType(), newBlockEnt.getUpdateTag(CraftRegistry.getMinecraftRegistry()));
+                        Object newData = CHUNKDATA_BLOCK_ENTITY_CONSTRUCTOR.invoke(xz, y, newBlockEnt.getType(), Optional.ofNullable(newBlockEnt).map(blockEntity -> blockEntity.getUpdateTag(CraftRegistry.getMinecraftRegistry())));
                         blockEntities.set(i, newData);
                         break;
                     }
@@ -157,8 +146,9 @@ public class FakeBlockHelper {
                 biomes.write(outputSerial);
             }
             byte[] outputBytes = outputSerial.array();
-            CHUNKDATA_BUFFER_SETTER.invoke(packet, outputBytes);
-            CHUNKPACKET_CHUNKDATA_SETTER.invoke(duplicateCorePacket, packet);
+            ClientboundLevelChunkPacketData modifiedChunkData = (ClientboundLevelChunkPacketData) CHUNKDATA_CONSTRUCTOR.invokeExact(originalPacket.chunkData().getHeightmaps(), outputBytes, blockEntities);
+            ClientboundLevelChunkWithLightPacket duplicateCorePacket = new ClientboundLevelChunkWithLightPacket(chunkX, chunkZ, modifiedChunkData, originalPacket.lightData());
+            copyPacketPaperPatch(duplicateCorePacket, originalPacket);
             return duplicateCorePacket;
         }
         catch (Throwable ex) {

@@ -21,10 +21,7 @@ import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
-import net.minecraft.network.protocol.game.ClientboundPlayerLookAtPacket;
-import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
-import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
@@ -39,6 +36,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.entity.ConversionTracker;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.PositionMoveRotation;
@@ -49,7 +47,7 @@ import net.minecraft.world.entity.animal.armadillo.Armadillo;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -91,7 +89,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     public static final MethodHandle ENTITY_ONGROUND_SETTER = ReflectionHelper.getFinalSetter(net.minecraft.world.entity.Entity.class, "onGround", boolean.class);
 
-    public static final EntityDataAccessor<Boolean> ENDERMAN_DATA_ACCESSOR_SCREAMING = ReflectionHelper.getFieldValue(EnderMan.class, "DATA_CREEPY", null);
+    public static final EntityDataAccessor<Boolean> ENDERMAN_DATA_ACCESSOR_SCREAMING = ReflectionHelper.getFieldValue(Enderman.class, "DATA_CREEPY", null);
 
     @Override
     public void setInvisible(Entity entity, boolean invisible) {
@@ -498,7 +496,7 @@ public class EntityHelperImpl extends EntityHelper {
         long x = entityToPacket(vector.getX());
         long y = entityToPacket(vector.getY());
         long z = entityToPacket(vector.getZ());
-        ClientboundMoveEntityPacket packet = new ClientboundMoveEntityPacket.Pos(entity.getEntityId(), (short) x, (short) y, (short) z, entity.isOnGround());
+        ClientboundMoveEntityPacket packet = new ClientboundMoveEntityPacket.Pos(entity.getEntityId(), new VecDelta.Linear((short) x, (short) y, (short) z), entity.isOnGround());
         for (Player player : getPlayersThatSee(entity)) {
             PacketHelperImpl.send(player, packet);
         }
@@ -573,7 +571,7 @@ public class EntityHelperImpl extends EntityHelper {
     }
 
     @Override
-    public void setEndermanAngry(Enderman enderman, boolean angry) {
+    public void setEndermanAngry(org.bukkit.entity.Enderman enderman, boolean angry) {
         ((CraftEnderman) enderman).getHandle().getEntityData().set(ENDERMAN_DATA_ACCESSOR_SCREAMING, angry);
     }
 
@@ -684,12 +682,12 @@ public class EntityHelperImpl extends EntityHelper {
         return new EntityTag(nmsEntity.getBukkitEntity());
     }
 
-    public static final Field ZOMBIE_INWATERTIME = ReflectionHelper.getFields(net.minecraft.world.entity.monster.zombie.Zombie.class).get("inWaterTime", int.class);
+    public static final MethodHandle CONVERSION_TRACKER_AFFLICTION_TIME = ReflectionHelper.getFields(ConversionTracker.class).getGetter("afflictionTime", int.class);
 
     @Override
     public int getInWaterTime(Zombie zombie) {
         try {
-            return ZOMBIE_INWATERTIME.getInt(((CraftZombie) zombie).getHandle());
+            return (int) CONVERSION_TRACKER_AFFLICTION_TIME.invokeExact(((CraftZombie) zombie).getHandle().drowningTracker);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -699,12 +697,7 @@ public class EntityHelperImpl extends EntityHelper {
 
     @Override
     public void setInWaterTime(Zombie zombie, int ticks) {
-        try {
-            ZOMBIE_INWATERTIME.setInt(((CraftZombie) zombie).getHandle(), ticks);
-        }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
-        }
+        ((CraftZombie) zombie).getHandle().setInWaterTime(ticks);
     }
 
     public static final MethodHandle TRACKING_RANGE_SETTER = ReflectionHelper.getFinalSetterForFirstOfType(ChunkMap.TrackedEntity.class, int.class);

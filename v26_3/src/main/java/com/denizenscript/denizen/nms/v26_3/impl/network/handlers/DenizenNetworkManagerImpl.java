@@ -41,7 +41,10 @@ import javax.crypto.Cipher;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -281,7 +284,7 @@ public class DenizenNetworkManagerImpl extends Connection {
         }
         else if (packet instanceof ClientboundRemoveEntitiesPacket) {
             ClientboundRemoveEntitiesPacket removePacket = (ClientboundRemoveEntitiesPacket) packet;
-            doPacketOutput("Packet: ClientboundRemoveEntitiesPacket sent to " + player.getScoreboardName() + " for entities: " + removePacket.getEntityIds().stream().map(Object::toString).collect(Collectors.joining(", ")));
+            doPacketOutput("Packet: ClientboundRemoveEntitiesPacket sent to " + player.getScoreboardName() + " for entities: " + removePacket.entityIds().stream().map(Object::toString).collect(Collectors.joining(", ")));
         }
         else if (packet instanceof ClientboundPlayerInfoUpdatePacket) {
             ClientboundPlayerInfoUpdatePacket playerInfoPacket = (ClientboundPlayerInfoUpdatePacket) packet;
@@ -463,16 +466,6 @@ public class DenizenNetworkManagerImpl extends Connection {
     @Override
     public void setEncryptionKey(Cipher cipher, Cipher cipher1) {
         oldManager.setEncryptionKey(cipher, cipher1);
-    }
-
-    @Override
-    public void setIntendedProfileId(UUID profileId) {
-        oldManager.setIntendedProfileId(profileId);
-    }
-
-    @Override
-    public UUID getIntendedProfileId() {
-        return oldManager.getIntendedProfileId();
     }
 
     @Override

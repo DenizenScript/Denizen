@@ -426,9 +426,9 @@ public class EntityDataNameMapper {
         registerDataName(ZombieVillager.class, 20, "villager_data");
 
         // Enderman
-        registerDataName(EnderMan.class, 16, "carried_block");
-        registerDataName(EnderMan.class, 17, "screaming");
-        registerDataName(EnderMan.class, 18, "staring");
+        registerDataName(Enderman.class, 16, "carried_block");
+        registerDataName(Enderman.class, 17, "screaming");
+        registerDataName(Enderman.class, 18, "staring");
 
         // Ender dragon
         registerDataName(EnderDragon.class, 16, "phase");

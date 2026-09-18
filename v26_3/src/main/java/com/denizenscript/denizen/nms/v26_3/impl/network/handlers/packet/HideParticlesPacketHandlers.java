@@ -22,7 +22,7 @@ public class HideParticlesPacketHandlers {
         if (hidden == null) {
             return particlesPacket;
         }
-        Particle bukkitParticle = CraftParticle.minecraftToBukkit(particlesPacket.getParticle().getType());
+        Particle bukkitParticle = CraftParticle.minecraftToBukkit(particlesPacket.particle().getType());
         if (hidden.contains(bukkitParticle)) {
             return null;
         }

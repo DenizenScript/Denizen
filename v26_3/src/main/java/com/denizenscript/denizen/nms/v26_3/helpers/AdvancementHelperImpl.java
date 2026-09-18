@@ -3,6 +3,8 @@ package com.denizenscript.denizen.nms.v26_3.helpers;
 import com.denizenscript.denizen.nms.interfaces.AdvancementHelper;
 import com.denizenscript.denizen.nms.v26_3.Handler;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
+import com.denizenscript.denizencore.utilities.ReflectionHelper;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.google.common.collect.ImmutableMap;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.advancements.*;
@@ -20,10 +22,12 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.Player;
 
+import java.lang.invoke.MethodHandle;
 import java.util.*;
 
 public class AdvancementHelperImpl extends AdvancementHelper {
 
+    public static final MethodHandle SERVER_ADVANCEMENTS_MANAGER_ADVANCEMENTS = ReflectionHelper.getFields(ServerAdvancementManager.class).getSetter("advancements", Map.class);
     private static final String IMPOSSIBLE_KEY = "impossible";
     private static final Map<String, Criterion<?>> IMPOSSIBLE_CRITERIA = Map.of(IMPOSSIBLE_KEY, new Criterion<>(new ImpossibleTrigger(), new ImpossibleTrigger.TriggerInstance()));
     private static final List<List<String>> IMPOSSIBLE_REQUIREMENTS = List.of(List.of(IMPOSSIBLE_KEY));
@@ -32,17 +36,27 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         return ((CraftServer) Bukkit.getServer()).getServer().getAdvancements();
     }
 
+    public static void setNMSManagerAdvancements(Map<Identifier, AdvancementHolder> nmsAdvancements) {
+        try {
+            SERVER_ADVANCEMENTS_MANAGER_ADVANCEMENTS.invokeExact(getNMSAdvancementManager(), nmsAdvancements);
+        }
+        catch (Throwable e) {
+            Debug.echoError(e);
+        }
+    }
+
     @Override
     public void register(com.denizenscript.denizen.nms.util.Advancement advancement) {
         if (advancement.temporary || advancement.registered) {
             return;
         }
-        AdvancementHolder nmsAdvancementHolder = asNMSCopy(advancement);
+        ClientboundUpdateAdvancementsPacket.PositionedAdvancement nmsPositionedAdvancement = asNMSCopy(advancement);
+        AdvancementHolder nmsAdvancementHolder = nmsPositionedAdvancement.advancement();
         Map<Identifier, AdvancementHolder> nmsAdvancements = getNMSAdvancementManager().advancements;
         ImmutableMap.Builder<Identifier, AdvancementHolder> mapBuilder = ImmutableMap.builderWithExpectedSize(nmsAdvancements.size() + 1);
         mapBuilder.putAll(nmsAdvancements);
         mapBuilder.put(nmsAdvancementHolder.id(), nmsAdvancementHolder);
-        getNMSAdvancementManager().advancements = mapBuilder.build();
+        setNMSManagerAdvancements(mapBuilder.build());
 
         AdvancementTree tree = getNMSAdvancementManager().tree();
         tree.addAll(List.of(nmsAdvancementHolder));
@@ -56,7 +70,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         }
         advancement.registered = true;
         if (!advancement.hidden && advancement.parent != null) {
-            PacketHelperImpl.broadcast(new ClientboundUpdateAdvancementsPacket(false, List.of(nmsAdvancementHolder), Set.of(), Map.of(), false));
+            PacketHelperImpl.broadcast(new ClientboundUpdateAdvancementsPacket(false, List.of(nmsPositionedAdvancement), Set.of(), Map.of(), false));
         }
     }
 
@@ -73,7 +87,7 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                 mapBuilder.put(entry);
             }
         }
-        getNMSAdvancementManager().advancements = mapBuilder.build();
+        setNMSManagerAdvancements(mapBuilder.build());
         getNMSAdvancementManager().tree().remove(Set.of(nmsKey));
         advancement.registered = false;
         PacketHelperImpl.broadcast(new ClientboundUpdateAdvancementsPacket(false, List.of(), Set.of(nmsKey), Map.of(), false));
@@ -86,13 +100,13 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             return;
         }
         if (advancement.temporary) {
-            AdvancementHolder nmsAdvancement = asNMSCopy(advancement);
+            ClientboundUpdateAdvancementsPacket.PositionedAdvancement nmsAdvancement = asNMSCopy(advancement);
             AdvancementProgress progress = new AdvancementProgress();
             progress.update(new AdvancementRequirements(IMPOSSIBLE_REQUIREMENTS));
             for (int i = 0; i < len; i++) {
                 progress.grantProgress(IMPOSSIBLE_KEY + i); // complete impossible criteria
             }
-            PacketHelperImpl.send(player, new ClientboundUpdateAdvancementsPacket(false, List.of(nmsAdvancement), Set.of(), Map.of(nmsAdvancement.id(), progress), false));
+            PacketHelperImpl.send(player, new ClientboundUpdateAdvancementsPacket(false, List.of(nmsAdvancement), Set.of(), Map.of(nmsAdvancement.advancement().id(), progress), false));
         }
         else {
             AdvancementHolder nmsAdvancement = getNMSAdvancementManager().advancements.get(CraftNamespacedKey.toMinecraft(advancement.key));
@@ -109,11 +123,11 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             return;
         }
         if (advancement.temporary) {
-            AdvancementHolder nmsAdvancement = asNMSCopy(advancement);
+            ClientboundUpdateAdvancementsPacket.PositionedAdvancement nmsAdvancement = asNMSCopy(advancement);
             AdvancementProgress progress = new AdvancementProgress();
             progress.update(new AdvancementRequirements(IMPOSSIBLE_REQUIREMENTS));
             progress.grantProgress(IMPOSSIBLE_KEY); // complete impossible criteria
-            PacketHelperImpl.send(player, new ClientboundUpdateAdvancementsPacket(false, List.of(nmsAdvancement), Set.of(), Map.of(nmsAdvancement.id(), progress), true));
+            PacketHelperImpl.send(player, new ClientboundUpdateAdvancementsPacket(false, List.of(nmsAdvancement), Set.of(), Map.of(nmsAdvancement.advancement().id(), progress), true));
         }
         else {
             AdvancementHolder nmsAdvancement = getNMSAdvancementManager().advancements.get(CraftNamespacedKey.toMinecraft(advancement.key));
@@ -128,13 +142,13 @@ public class AdvancementHelperImpl extends AdvancementHelper {
             return;
         }
         if (advancement.temporary) {
-            AdvancementHolder nmsAdvancement = asNMSCopy(advancement);
+            ClientboundUpdateAdvancementsPacket.PositionedAdvancement nmsAdvancement = asNMSCopy(advancement);
             AdvancementProgress progress = new AdvancementProgress();
             progress.update(new AdvancementRequirements(IMPOSSIBLE_REQUIREMENTS));
             for (int i = 0; i < len; i++) {
                 progress.grantProgress(IMPOSSIBLE_KEY + i); // complete impossible criteria
             }
-            PacketHelperImpl.send(player, new ClientboundUpdateAdvancementsPacket(false, List.of(nmsAdvancement), Set.of(), Map.of(nmsAdvancement.id(), progress), false));
+            PacketHelperImpl.send(player, new ClientboundUpdateAdvancementsPacket(false, List.of(nmsAdvancement), Set.of(), Map.of(nmsAdvancement.advancement().id(), progress), false));
         }
         else {
             AdvancementHolder nmsAdvancement = getNMSAdvancementManager().advancements.get(CraftNamespacedKey.toMinecraft(advancement.key));
@@ -170,7 +184,8 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         data.flushDirty(nmsPlayer, false); // load progress and update client
     }
 
-    private static AdvancementHolder asNMSCopy(com.denizenscript.denizen.nms.util.Advancement advancement) {
+
+    private static ClientboundUpdateAdvancementsPacket.PositionedAdvancement asNMSCopy(com.denizenscript.denizen.nms.util.Advancement advancement) {
         AdvancementHolder parent = advancement.parent != null
                 ? getNMSAdvancementManager().advancements.get(CraftNamespacedKey.toMinecraft(advancement.parent))
                 : null;
@@ -178,7 +193,6 @@ public class AdvancementHelperImpl extends AdvancementHelper {
                 Handler.componentToNMS(FormattedTextHelper.parse(advancement.title, ChatColor.WHITE)), Handler.componentToNMS(FormattedTextHelper.parse(advancement.description, ChatColor.WHITE)),
                 Optional.ofNullable(advancement.background).map(CraftNamespacedKey::toMinecraft).map(ClientAsset.ResourceTexture::new), AdvancementType.valueOf(advancement.frame.name()),
                 advancement.toast, advancement.announceToChat, advancement.hidden);
-        display.setLocation(advancement.xOffset, advancement.yOffset);
         Map<String, Criterion<?>> criteria = IMPOSSIBLE_CRITERIA;
         List<List<String>> requirements = IMPOSSIBLE_REQUIREMENTS;
         if (advancement.length > 1) {
@@ -191,6 +205,6 @@ public class AdvancementHelperImpl extends AdvancementHelper {
         }
         AdvancementRequirements reqs = new AdvancementRequirements(requirements);
         Advancement adv = new Advancement(parent == null ? Optional.empty() : Optional.of(parent.id()), Optional.of(display), AdvancementRewards.EMPTY, criteria, reqs, false); // TODO: 1.20: do we want to ever enable telemetry?
-        return new AdvancementHolder(CraftNamespacedKey.toMinecraft(advancement.key), adv);
+        return new ClientboundUpdateAdvancementsPacket.PositionedAdvancement(new AdvancementHolder(CraftNamespacedKey.toMinecraft(advancement.key), adv), advancement.xOffset, advancement.yOffset);
     }
 }

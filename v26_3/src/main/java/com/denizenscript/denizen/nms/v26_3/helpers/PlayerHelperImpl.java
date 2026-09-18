@@ -46,10 +46,7 @@ import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagNetworkSerialization;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Avatar;
-import net.minecraft.world.entity.Leashable;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PositionMoveRotation;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -214,7 +211,7 @@ public class PlayerHelperImpl extends PlayerHelper {
         fake.triggerSpawnPacket = (player) -> {
             ServerPlayer nmsPlayer = ((CraftPlayer) player.getPlayerEntity()).getHandle();
             ServerGamePacketListenerImpl conn = nmsPlayer.connection;
-            final ServerEntity tracker = new ServerEntity(world.getHandle(), nmsEntity, 1, true, new FakeEntitySynchronizer(conn), Set.of(conn));
+            final ServerEntity tracker = new ServerEntity(world.getHandle(), nmsEntity, UpdateInterval.periodic(1), true, new FakeEntitySynchronizer(conn), Set.of(conn));
             tracker.addPairing(nmsPlayer);
             final TrackerData data = new TrackerData(player, tracker);
             trackers.add(data);

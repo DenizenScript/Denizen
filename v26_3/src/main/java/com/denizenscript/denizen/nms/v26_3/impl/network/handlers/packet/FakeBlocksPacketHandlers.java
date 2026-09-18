@@ -39,8 +39,8 @@ public class FakeBlocksPacketHandlers {
                 if (map == null) {
                     return packet;
                 }
-                int chunkX = ((ClientboundLevelChunkWithLightPacket) packet).getX();
-                int chunkZ = ((ClientboundLevelChunkWithLightPacket) packet).getZ();
+                int chunkX = ((ClientboundLevelChunkWithLightPacket) packet).x();
+                int chunkZ = ((ClientboundLevelChunkWithLightPacket) packet).z();
                 ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, networkManager.player.level().getWorld().getName());
                 List<FakeBlock> blocks = FakeBlock.getFakeBlocksFor(networkManager.player.getUUID(), chunkCoord);
                 if (blocks == null || blocks.isEmpty()) {

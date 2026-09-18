@@ -9,13 +9,15 @@ import com.denizenscript.denizen.objects.ItemTag;
 import com.denizenscript.denizen.objects.properties.item.ItemComponentsPatch;
 import com.denizenscript.denizen.objects.properties.item.ItemRawNBT;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
-import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.google.common.collect.*;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedHashMultiset;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Multisets;
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -40,13 +42,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.item.AdventureModePredicate;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
@@ -69,6 +68,9 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -86,6 +88,7 @@ import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.SmithingTrimRecipe;
 import org.bukkit.inventory.TransmuteRecipe;
@@ -95,7 +98,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class ItemHelperImpl extends ItemHelper {
 
@@ -117,11 +119,11 @@ public class ItemHelperImpl extends ItemHelper {
         }
     }
 
-    public static final MethodHandle CRAFT_ITEM_STACK_AS_BUKKIT_COPY = ReflectionHelper.getMethodHandle(CraftItemStack.class, "asBukkitCopy", net.minecraft.world.item.ItemStack.class);
+    public static final MethodHandle CRAFT_ITEM_STACK_AS_BUKKIT_COPY = ReflectionHelper.getMethodHandle(CraftItemStack.class, "asBukkitCopy", Denizen.supportsPaper ? ItemInstance.class : net.minecraft.world.item.ItemStack.class);
 
     public static ItemStack asBukkitCopy(net.minecraft.world.item.ItemStack nmsItem) {
         try {
-            return (ItemStack) CRAFT_ITEM_STACK_AS_BUKKIT_COPY.invokeExact(nmsItem);
+            return (ItemStack) CRAFT_ITEM_STACK_AS_BUKKIT_COPY.invoke(nmsItem);
         }
         catch (Throwable e) {
             throw new RuntimeException(e);
@@ -198,7 +200,12 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public Integer burnTime(Material material) {
-        return MinecraftServer.getServer().fuelValues().burnDuration(new net.minecraft.world.item.ItemStack(CraftMagicNumbers.getItem(material)));
+        if (!material.isFuel()) {
+            return null;
+        }
+        ServerLevel level = ((CraftWorld) Bukkit.getWorlds().getFirst()).getHandle();
+        LootContext lootContext = new LootContext.Builder(new LootParams.Builder(level).create(LootContextParamSets.EMPTY)).create(Optional.empty());
+        return CraftItemType.bukkitToMinecraft(material).components().get(DataComponents.COOKING_FUEL).burnTime().get(lootContext, 0);
     }
 
     @Override
@@ -763,36 +770,38 @@ public class ItemHelperImpl extends ItemHelper {
 
     @Override
     public boolean isValidMix(ItemStack input, ItemStack ingredient) {
+        RecipeManager nmsManager = getRecipeManager();
         net.minecraft.world.item.ItemStack nmsInput = CraftItemStack.asNMSCopy(input);
+        if (!nmsManager.propertySet(RecipePropertySet.BREWING_INPUTS).test(nmsInput)) {
+            return false;
+        }
         net.minecraft.world.item.ItemStack nmsIngredient = CraftItemStack.asNMSCopy(ingredient);
-        return MinecraftServer.getServer().potionBrewing().hasMix(nmsInput, nmsIngredient);
+        if (!nmsManager.propertySet(RecipePropertySet.BREWING_REAGENTS).test(nmsIngredient)) {
+            return false;
+        }
+        return nmsManager.getRecipeFor(RecipeType.BREWING, new BrewingInput(nmsInput, nmsIngredient), MinecraftServer.getServer().overworld()).isPresent();
     }
 
-    public static Class<?> PaperPotionMix_CLASS = null;
-    public static Map<NamespacedKey, BrewingRecipe> customBrewingRecipes = null;
+    public static final MethodHandle CRAFT_RECIPE_TO_BUKKIT = Handler.reflectPaperRenamed(CraftRecipe.class, "toBukkit", "toChoice", Ingredient.class);
 
     @Override
     public Map<NamespacedKey, BrewingRecipe> getCustomBrewingRecipes() {
-        if (customBrewingRecipes == null) {
-            customBrewingRecipes = Maps.transformValues((Map<NamespacedKey, ?>) ReflectionHelper.getFieldValue(PotionBrewing.class, "customMixes", MinecraftServer.getServer().potionBrewing()), paperMix -> {
-                if (PaperPotionMix_CLASS == null) {
-                    PaperPotionMix_CLASS = paperMix.getClass();
-                }
-                RecipeChoice ingredient = convertChoice(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "ingredient", paperMix));
-                RecipeChoice input = convertChoice(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "input", paperMix));
-                ItemStack result = asBukkitCopy(ReflectionHelper.getFieldValue(PaperPotionMix_CLASS, "result", paperMix));
-                return new BrewingRecipe(input, ingredient, result);
-            });
+        Map<NamespacedKey, BrewingRecipe> result = new HashMap<>();
+        for (RecipeHolder<net.minecraft.world.item.crafting.BrewingRecipe> nmsBrewHolder : getRecipeManager().recipes.byType(RecipeType.BREWING)) {
+            net.minecraft.world.item.crafting.BrewingRecipe nmsBrew = nmsBrewHolder.value();
+            BrewingRecipe brewingRecipe = new BrewingRecipe(choiceToAPI(nmsBrew.getInput().ingredient()), choiceToAPI(nmsBrew.getReagent().ingredient()), asBukkitCopy(nmsBrew.getOutput().create()));
+            result.put(CraftNamespacedKey.fromMinecraft(nmsBrewHolder.id().identifier()), brewingRecipe);
         }
-        return customBrewingRecipes;
+        return result;
     }
 
-    private RecipeChoice convertChoice(Predicate<net.minecraft.world.item.ItemStack> nmsPredicate) {
-        // Not an instance of net.minecraft.world.item.crafting.Ingredient = a predicate recipe choice
-        if (nmsPredicate instanceof Ingredient ingredient) {
-            return CraftRecipe.toBukkit(ingredient);
+    public static RecipeChoice choiceToAPI(Ingredient nmsChoice) {
+        try {
+            return (RecipeChoice) CRAFT_RECIPE_TO_BUKKIT.invokeExact(nmsChoice);
         }
-        return PaperAPITools.instance.createPredicateRecipeChoice(item -> nmsPredicate.test(CraftItemStack.asNMSCopy(item)));
+        catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -140,9 +140,7 @@ public class DisguisePacketHandlers {
         if (disguise.as.getBukkitEntityType() == EntityType.ENDER_DRAGON) {
             return new ClientboundMoveEntityPacket.PosRot(
                     disguise.entity.getBukkitEntity().getEntityId(),
-                    posRotPacket.getXa(),
-                    posRotPacket.getYa(),
-                    posRotPacket.getZa(),
+                    posRotPacket.getPositionDelta(),
                     EntityAttachmentHelper.compressAngle(posRotPacket.getYRot() + 180),
                     Mth.packDegrees(posRotPacket.getXRot()),
                     posRotPacket.isOnGround()

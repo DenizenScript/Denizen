@@ -33,11 +33,12 @@ import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.monster.spider.CaveSpider;
 import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
@@ -128,7 +129,7 @@ public class PacketHelperImpl implements PacketHelper {
             entity = new CaveSpider(EntityTypes.CAVE_SPIDER, ((CraftWorld) player.getWorld()).getHandle());
         }
         else if (entityType == EntityType.ENDERMAN) {
-            entity = new EnderMan(EntityTypes.ENDERMAN, ((CraftWorld) player.getWorld()).getHandle());
+            entity = new Enderman(EntityTypes.ENDERMAN, ((CraftWorld) player.getWorld()).getHandle());
         }
         else {
             return;
@@ -203,7 +204,7 @@ public class PacketHelperImpl implements PacketHelper {
             player.sendBlockChange(new LocationTag(player.getWorld(), toOpen.getX(), toOpen.getY(), toOpen.getZ()), Material.OAK_WALL_SIGN.createBlockData());
         }
         DenizenNetworkManagerImpl.getNetworkManager(player).packetListener.fakeSignExpected = toOpen;
-        send(player, new ClientboundOpenSignEditorPacket(toOpen, true));
+        send(player, new ClientboundOpenSignEditorPacket(toOpen, SignTextSlot.FRONT));
     }
 
     @Override

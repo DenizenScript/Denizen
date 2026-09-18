@@ -132,10 +132,10 @@ public class BlockLightImpl extends BlockLight {
             return;
         }
         try {
-            int cX = packet.getX();
-            int cZ = packet.getZ();
-            BitSet bitMask = packet.getLightData().getBlockYMask();
-            List<byte[]> blockData = packet.getLightData().getBlockUpdates();
+            int cX = packet.x();
+            int cZ = packet.z();
+            BitSet bitMask = packet.lightData().blockYMask();
+            List<byte[]> blockData = packet.lightData().blockUpdates();
             Bukkit.getScheduler().scheduleSyncDelayedTask(NMSHandler.getJavaPlugin(), () -> {
                 ChunkAccess chk = world.getChunk(cX, cZ, ChunkStatus.FULL, false);
                 if (!(chk instanceof LevelChunk)) {

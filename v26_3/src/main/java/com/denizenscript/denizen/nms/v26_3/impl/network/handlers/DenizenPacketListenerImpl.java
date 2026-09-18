@@ -17,6 +17,7 @@ import net.minecraft.network.protocol.common.ServerboundResourcePackPacket;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.block.sign.Side;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.event.block.SignChangeEvent;
 
@@ -55,13 +56,23 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
         super.handlePlayerAction(packet);
     }
 
-    @Override
-    public void handleAnimate(ServerboundSwingPacket packet) {
+    public void updateFakeHeldItem() {
         FakeEquipCommand.EquipmentOverride override = FakeEquipCommand.getOverrideFor(player.getUUID(), getCraftPlayer());
         if (override != null && (override.hand != null || override.offhand != null)) {
             player.getBukkitEntity().updateInventory();
         }
-        super.handleAnimate(packet);
+    }
+
+    @Override
+    public void handlePunch(ServerboundPunchPacket packet) {
+        super.handlePunch(packet);
+        updateFakeHeldItem();
+    }
+
+    @Override
+    public void handleAttack(ServerboundAttackPacket packet) {
+        super.handleAttack(packet);
+        updateFakeHeldItem();
     }
 
     @Override
@@ -92,13 +103,12 @@ public class DenizenPacketListenerImpl extends AbstractListenerPlayInImpl {
 
     @Override
     public void handleSignUpdate(ServerboundSignUpdatePacket packet) {
-        if (fakeSignExpected != null && packet.getPos().equals(fakeSignExpected)) {
-            LocationTag loc = new LocationTag(player.getBukkitEntity().getWorld(), fakeSignExpected.getX(), fakeSignExpected.getY(), fakeSignExpected.getZ());
+        if (fakeSignExpected != null && packet.pos().equals(fakeSignExpected)) {
             this.connection.send(new ClientboundBlockUpdatePacket(player.level(), fakeSignExpected));
             PlayerChangesSignScriptEvent evt = (PlayerChangesSignScriptEvent) PlayerChangesSignScriptEvent.instance.clone();
             evt.material = new MaterialTag(org.bukkit.Material.OAK_WALL_SIGN);
             evt.location = new LocationTag(player.getBukkitEntity().getLocation());
-            evt.event = new SignChangeEvent(CraftBlock.at(player.level(), fakeSignExpected), player.getBukkitEntity(), packet.getLines());
+            evt.event = new SignChangeEvent(CraftBlock.at(player.level(), fakeSignExpected), player.getBukkitEntity(), packet.lines().toArray(new String[4]), Side.FRONT);
             fakeSignExpected = null;
             evt.fire(evt.event);
         }
