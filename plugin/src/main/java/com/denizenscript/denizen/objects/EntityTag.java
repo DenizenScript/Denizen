@@ -1265,6 +1265,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @returns ElementTag
         // @deprecated Use 'EntityTag.type' on MC 1.20+.
         // @description
+        // Returns the entities type.
         // Deprecated in favor of <@link tag EntityTag.type> on MC 1.20+, which returns entity type names as specified by Mojang (scripts using this may need an update when switching).
         // -->
         tagProcessor.registerTag(ElementTag.class, "entity_type", (attribute, object) -> {
@@ -1571,6 +1572,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @group location
         // @description
         // Returns the location of the entity's eyes.
+        // @example
+        // # Shoots a snowball from the direct center of the players screen.
+        // - shoot snowball origin:<player.eye_location> speed:2
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "eye_location", (attribute, object) -> {
             return new LocationTag(object.getEyeLocation());
@@ -1684,7 +1688,14 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism EntityTag.velocity
         // @description
         // Returns the movement velocity of the entity.
+        // Will return a constant negative velocity when standing on a solid block.
         // Note: Does not accurately calculate player clientside movement velocity.
+        // @example
+        // # Checks if the player is moving upwards.
+        // - if <player.velocity.y> > 0:
+        //     - narrate "The player is moving upwards!"
+        // - else:
+        //     - narrate "The player is not moving upwards!"
         // -->
         registerSpawnedOnlyTag(LocationTag.class, "velocity", (attribute, object) -> {
             return new LocationTag(object.getBukkitEntity().getVelocity().toLocation(object.getBukkitEntity().getWorld()));
@@ -1696,6 +1707,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @group location
         // @description
         // Returns the world the entity is in. Works with offline players.
+        // @example
+        // # Narrates the name of the world that the linked player is in.
+        // - narrate <player.world.name>
         // -->
         registerSpawnedOnlyTag(WorldTag.class, "world", (attribute, object) -> {
             return new WorldTag(object.getBukkitEntity().getWorld());
@@ -2347,7 +2361,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // @mechanism EntityTag.glowing
         // @group attributes
         // @description
-        // Returns whether this entity is glowing.
+        // Returns whether this entity is glowing (has an outline around them).
         // -->
         registerSpawnedOnlyTag(ElementTag.class, "glowing", (attribute, object) -> {
             return new ElementTag(object.getBukkitEntity().isGlowing());
@@ -3914,6 +3928,9 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         // Sets the entity's movement velocity vector.
         // @tags
         // <EntityTag.velocity>
+        // @example
+        // # Launches the player upwards.
+        // - adjust <player> velocity:0,1,0
         // -->
         if (mechanism.matches("velocity") && mechanism.requireObject(LocationTag.class)) {
             setVelocity(mechanism.valueAsType(LocationTag.class).toVector());
@@ -4679,3 +4696,4 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         return false;
     }
 }
+
