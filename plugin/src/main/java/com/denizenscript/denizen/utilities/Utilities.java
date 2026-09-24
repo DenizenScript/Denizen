@@ -375,13 +375,6 @@ public class Utilities {
         return baseLocation.distanceSquared(theLocation) < theLeeway * theLeeway;
     }
 
-    public static void setSignLines(Sign sign, String[] lines) {
-        for (int n = 0; n < 4; n++) {
-            PaperAPITools.instance.setSignLine(sign, n, lines[n]);
-        }
-        sign.update();
-    }
-
     public static BlockFace chooseSignRotation(Block signBlock) {
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
         for (BlockFace blockFace : blockFaces) {
@@ -401,13 +394,12 @@ public class Utilities {
                 return blockFace;
             }
         }
-        switch (dirUpper.charAt(0)) {
-            case 'N': return BlockFace.NORTH;
-            case 'S': return BlockFace.SOUTH;
-            case 'E': return BlockFace.EAST;
-            case 'W': return BlockFace.WEST;
-        }
-        return BlockFace.SOUTH;
+        return switch (dirUpper.charAt(0)) {
+            case 'N' -> BlockFace.NORTH;
+            case 'E' -> BlockFace.EAST;
+            case 'W' -> BlockFace.WEST;
+            default -> BlockFace.SOUTH;
+        };
     }
 
     public static void setSignRotation(BlockState signState, String direction) {
