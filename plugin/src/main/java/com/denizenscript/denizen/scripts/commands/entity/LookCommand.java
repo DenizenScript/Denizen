@@ -23,7 +23,6 @@ import com.denizenscript.denizencore.scripts.commands.generator.ArgName;
 import com.denizenscript.denizencore.scripts.commands.generator.ArgPrefixed;
 import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -200,14 +199,8 @@ public class LookCommand extends AbstractCommand {
                     vLoc.setYaw(yawRaw);
                     vLoc.setPitch(pitchRaw);
                 }
-                
-                vehicle.teleport(vLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
-                Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
-                    if (vehicle.isValid() && bukkitEntity.isValid()) {
-                        vehicle.addPassenger(bukkitEntity);
-                    }
-                });
+                TeleportCommand.handleVehicle(vehicle, bukkitEntity, vLoc, PlayerTeleportEvent.TeleportCause.PLUGIN);
             }
         }
         if (duration != null && duration.getTicks() > 1) {

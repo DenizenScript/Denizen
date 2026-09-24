@@ -21,6 +21,7 @@ import com.denizenscript.denizencore.utilities.Deprecations;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.citizensnpcs.trait.CurrentLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -164,14 +165,7 @@ public class TeleportCommand extends AbstractCommand {
             if (entity.isFake && entity.getWorld().equals(location.getWorld())) {
                 NMSHandler.entityHelper.snapPositionTo(bukkitEntity, location.toVector());
                 NMSHandler.entityHelper.look(bukkitEntity, location.getYaw(), location.getPitch());
-                if (vehicle != null) {
-                    vehicle.teleport(location, cause);
-                    Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
-                        if (vehicle.isValid() && bukkitEntity.isValid()) {
-                            vehicle.addPassenger(bukkitEntity);
-                        }
-                    });
-                }
+                handleVehicle(vehicle, bukkitEntity, location, cause);
                 return;
             }
             if (offthreadRepeats != null && relativeAxes != null && entity.isPlayer()) {
@@ -203,14 +197,7 @@ public class TeleportCommand extends AbstractCommand {
                 }
                 List<Relative> finalRelativeAxes = relativeAxes;
                 NMSHandler.packetHelper.sendRelativePositionPacket(player, x, y, z, yaw, pitch, finalRelativeAxes);
-                if (vehicle != null) {
-                    vehicle.teleport(location, cause);
-                    Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
-                        if (vehicle.isValid() && bukkitEntity.isValid()) {
-                            vehicle.addPassenger(bukkitEntity);
-                        }
-                    });
-                }
+                handleVehicle(vehicle, bukkitEntity, location, cause);
                 DenizenCore.runAsync(() -> {
                     try {
                         for (int i = 0; i < times - 1; i++) {
@@ -231,14 +218,18 @@ public class TeleportCommand extends AbstractCommand {
                 entity.teleport(location, cause);
             }
 
-            if (vehicle != null) {
-                vehicle.teleport(location, cause);
-                Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
-                    if (vehicle.isValid() && bukkitEntity.isValid()) {
-                        vehicle.addPassenger(bukkitEntity);
-                    }
-                });
-            }
+            handleVehicle(vehicle, bukkitEntity, location, cause);
+        }
+    }
+
+    public static void handleVehicle(Entity vehicle, Entity passenger, Location target, PlayerTeleportEvent.TeleportCause cause) {
+        if (vehicle != null) {
+            vehicle.teleport(target, cause);
+            Bukkit.getScheduler().runTask(Denizen.getInstance(), () -> {
+                if (vehicle.isValid() && passenger.isValid()) {
+                    vehicle.addPassenger(passenger);
+                }
+            });
         }
     }
 }
