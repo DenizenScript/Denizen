@@ -111,6 +111,10 @@ public abstract class DataComponentAdapter<D extends ObjectTag, C extends DataCo
         return false;
     }
 
+    public D processInputValue(Mechanism mechanism, D defaultInput) {
+        return defaultInput;
+    }
+
     public static abstract class NonValued extends DataComponentAdapter<ElementTag, DataComponentType.NonValued> {
 
         public NonValued(DataComponentType.NonValued componentType, String name) {
@@ -208,11 +212,12 @@ public abstract class DataComponentAdapter<D extends ObjectTag, C extends DataCo
 
         @Override
         public void setPropertyValue(D value, Mechanism mechanism) {
-            if (value == null) {
+            D processedValue = processInputValue(mechanism, value);
+            if (processedValue == null) {
                 getItemStack().resetData(componentType);
                 return;
             }
-            setValue(getItemStack(), value, mechanism);
+            setValue(getItemStack(), processedValue, mechanism);
         }
 
         @Override

@@ -29,6 +29,12 @@ public class ItemNameAdapter extends DataComponentAdapter.Valued<ElementTag, Com
     }
 
     @Override
+    public ElementTag processInputValue(Mechanism mechanism, ElementTag defaultInput) {
+        // an empty string is valid input here (see Mechanism#hasValue)
+        return defaultInput == null && mechanism.value != null ? new ElementTag("") : defaultInput;
+    }
+
+    @Override
     public ElementTag toDenizen(Component value) {
         return new ElementTag(PaperModule.stringifyComponent(value), true);
     }
