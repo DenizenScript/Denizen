@@ -23,7 +23,7 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(NPCNavigationScriptEvent.class);
         ScriptEvent.registerScriptEvent(NPCOpensScriptEvent.class);
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            ScriptEvent.registerScriptEvent(NPCShopTradeScriptEvent.class);
+            ScriptEvent.registerScriptEvent(NPCShopInteractScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(NPCSpawnScriptEvent.class);
         ScriptEvent.registerScriptEvent(NPCStuckScriptEvent.class);

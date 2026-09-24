@@ -81,9 +81,14 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     @EventHandler
     public void playerTradeEvent(PlayerPurchaseEvent event) {
         this.event = event;
-        villager = event instanceof PlayerTradeEvent tradeEvent ? tradeEvent.getVillager() : null;
-        if (event instanceof PlayerTradeEvent && EntityTag.isCitizensNPC(villager)) {
-            return;
+        if (event instanceof PlayerTradeEvent tradeEvent) {
+            villager = tradeEvent.getVillager();
+            if (EntityTag.isCitizensNPC(villager)) {
+                return;
+            }
+        }
+        else {
+            villager = null;
         }
         fire(event);
     }

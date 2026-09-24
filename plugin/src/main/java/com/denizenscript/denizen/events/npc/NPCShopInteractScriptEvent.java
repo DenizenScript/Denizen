@@ -17,11 +17,11 @@ import org.bukkit.event.Listener;
 
 import java.util.List;
 
-public class NPCShopTradeScriptEvent extends BukkitScriptEvent implements Listener {
+public class NPCShopInteractScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player trades with npc
+    // player interacts with npc shop
     //
     // @Switch shop:<shop> to only process the event if the transaction was within a specific shop.
     //
@@ -29,12 +29,13 @@ public class NPCShopTradeScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Location true
     //
-    // @Triggers when a player trades in a Citizens shop.
+    // @Triggers when a player interacts with a Citizens shop.
     //
     // @Context
+    // <context.shop> returns the name of the shop the purchase was made in.
     // <context.cost> return a MapTag of the types of costs and what their values were in the purchase.
     // <context.result> return a MapTag of the types of results and what their values were in the purchase.
-    // <context.shop> returns the name of the shop the purchase was made in.
+    // Possible keys and their values are "COMMANDS=<ListTag>", "CONDITION=<ElementTag>", "EXPERIENCE=<ElementTag(Number)>", "ITEMS=<ListTag(ItemTag)>", "MONEY=<ElementTag(Decimal)>", "OPEN_SHOP=<ElementTag>", and "PERMISSIONS=<ListTag>".
     //
     // @Player Always.
     //
@@ -42,7 +43,7 @@ public class NPCShopTradeScriptEvent extends BukkitScriptEvent implements Listen
     //
     // -->
 
-    public NPCShopTradeScriptEvent() {
+    public NPCShopInteractScriptEvent() {
         registerCouldMatcher("player trades with npc");
         registerSwitches("shop");
     }
