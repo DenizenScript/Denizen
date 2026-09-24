@@ -1,8 +1,7 @@
 package com.denizenscript.denizen.objects.properties.entity;
 
-import com.denizenscript.denizen.nms.NMSHandler;
-import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.EntityTag;
+import com.denizenscript.denizen.utilities.AttributeUtil;
 import com.denizenscript.denizen.utilities.BukkitImplDeprecations;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -12,22 +11,18 @@ import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.objects.core.MapTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
-import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.tags.core.EscapeTagUtil;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
-import com.denizenscript.denizencore.utilities.text.StringHolder;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.EquipmentSlotGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class EntityAttributeModifiers implements Property {
@@ -57,12 +52,6 @@ public class EntityAttributeModifiers implements Property {
     EntityTag entity;
 
     @Deprecated
-    public static String stringify(AttributeModifier modifier) {
-        return EscapeTagUtil.escape(modifier.getName()) + "/" + modifier.getAmount() + "/" + modifier.getOperation().name()
-                + "/" + (modifier.getSlot() == null ? "any" : modifier.getSlot().name());
-    }
-
-    @Deprecated
     public ListTag getAttributes() {
         ListTag list = new ListTag();
         for (Attribute attribute : Attribute.values()) {
@@ -72,118 +61,19 @@ public class EntityAttributeModifiers implements Property {
             }
             StringBuilder modifiers = new StringBuilder();
             for (AttributeModifier modifier : instance.getModifiers()) {
-                modifiers.append("/").append(stringify(modifier));
+                modifiers.append("/").append(AttributeUtil.modifierToLegacyString(modifier));
             }
-            list.add(EscapeTagUtil.escape(attribute.name()) + "/" + instance.getBaseValue() + modifiers);
+            list.add(EscapeTagUtil.escape(AttributeUtil.legacyName(attribute)) + "/" + instance.getBaseValue() + modifiers);
         }
         return list;
     }
 
-    public static MapTag mapify(AttributeModifier modifier) {
-        MapTag result = new MapTag();
-        result.putObject("name", new ElementTag(modifier.getName()));
-        result.putObject("amount", new ElementTag(modifier.getAmount()));
-        result.putObject("operation", new ElementTag(modifier.getOperation()));
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            result.putObject("slot", new ElementTag(modifier.getSlotGroup().toString(), true));
-        }
-        else {
-            result.putObject("slot", new ElementTag(modifier.getSlot() == null ? "any" : modifier.getSlot().name()));
-        }
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            result.putObject("key", new ElementTag(Utilities.namespacedKeyToString(modifier.getKey()), true));
-        }
-        // TODO: remove/deprecate the UUID key
-        result.putObject("id", new ElementTag(modifier.getUniqueId().toString()));
-        return result;
-    }
-
-    public static AttributeModifier modiferForMap(Attribute attr, MapTag map, TagContext context) {
-        ElementTag amount = map.getElement("amount");
-        ElementTag operation = map.getElement("operation");
-        double amountValue;
-        AttributeModifier.Operation operationValue = operation.asEnum(AttributeModifier.Operation.class);
-        if (operationValue == null) {
-            Debug.echoError("Attribute modifier operation '" + operation + "' does not exist.");
-            return null;
-        }
-        try {
-            amountValue = Double.parseDouble(amount.toString());
-        }
-        catch (NumberFormatException ex) {
-            Debug.echoError("Attribute modifier amount '" + amount + "' is not a valid decimal number.");
-            return null;
-        }
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-            return parseLegacyModifier(attr, map, amountValue, operationValue);
-        }
-        ElementTag key = map.getElement("key");
-        if (key == null && map.size() >= 2) {
-            BukkitImplDeprecations.pre1_21AttributeFormat.warn(context);
-            return parseLegacyModifier(attr, map, amountValue, operationValue);
-        }
-        if (key == null) {
-            Debug.echoError("Must specify a key.");
-            return null;
-        }
-        String slotGroupName = map.getElement("slot", "any").asString();
-        EquipmentSlotGroup group = EquipmentSlotGroup.getByName(slotGroupName);
-        if (group == null) {
-            EquipmentSlot slot = ElementTag.asEnum(EquipmentSlot.class, slotGroupName);
-            if (slot == null) {
-                Debug.echoError("Invalid equipment slot group specified: " + slotGroupName);
-                return null;
-            }
-            group = slot.getGroup();
-        }
-        return new AttributeModifier(Utilities.parseNamespacedKey(key.asString()), amountValue, operationValue, group);
-    }
-
-    @Deprecated(forRemoval = true)
-    public static AttributeModifier parseLegacyModifier(Attribute attr, MapTag map, double amount, AttributeModifier.Operation operation) {
-        ElementTag name = map.getElement("name");
-        ElementTag slot = map.getElement("slot", "any");
-        ElementTag id = map.getElement("id");
-        UUID idValue;
-        try {
-            idValue = id == null ? UUID.randomUUID() : UUID.fromString(id.toString());
-        }
-        catch (IllegalArgumentException ex) {
-            Debug.echoError("Attribute modifier ID '" + id + "' is not a valid UUID.");
-            return null;
-        }
-        EquipmentSlot slotValue = CoreUtilities.equalsIgnoreCase(slot.toString(), "any") ? null : slot.asEnum(EquipmentSlot.class);
-        if (slotValue == null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_20)) {
-            EquipmentSlotGroup group = EquipmentSlotGroup.getByName(slot.asString());
-            if (group == null) {
-                Debug.echoError("Invalid equipment slot group specified: " + slot);
-                return null;
-            }
-            return new AttributeModifier(idValue, name == null ? attr.name() : name.asString(), amount, operation, group);
-        }
-        return new AttributeModifier(idValue, name == null ? attr.name() : name.toString(), amount, operation, slotValue);
-    }
-
-    public ListTag getAttributeModifierList(AttributeInstance instance) {
-        if (instance == null) {
-            return null;
-        }
-        ListTag result = new ListTag();
-        for (AttributeModifier modifier : instance.getModifiers()) {
-            result.addObject(mapify(modifier));
-        }
-        if (result.isEmpty()) {
-            return null;
-        }
-        return result;
-    }
-
-    public MapTag getAttributeModifiers() {
+    public MapTag getAttributeModifiers(boolean includeDeprecated) {
         MapTag map = new MapTag();
         for (Attribute attribute : Utilities.listTypesRaw(Attribute.class)) {
-            ListTag list = getAttributeModifierList(getAttributable().getAttribute(attribute));
-            if (list != null) {
-                map.putObject(attribute.name(), list);
+            AttributeInstance attributeInstance = getAttributable().getAttribute(attribute);
+            if (attributeInstance != null) {
+                AttributeUtil.addToMap(map, attribute, attributeInstance.getModifiers(), includeDeprecated);
             }
         }
         return map;
@@ -195,7 +85,7 @@ public class EntityAttributeModifiers implements Property {
 
     @Override
     public String getPropertyString() {
-        MapTag map = getAttributeModifiers();
+        MapTag map = getAttributeModifiers(false);
         return map.isEmpty() ? null : map.savable();
     }
 
@@ -203,72 +93,6 @@ public class EntityAttributeModifiers implements Property {
     public String getPropertyId() {
         return "attribute_modifiers";
     }
-
-
-    // <--[language]
-    // @name Attribute Modifiers
-    // @group Properties
-    // @description
-    // In minecraft, the "attributes" system defined certain core numerical values on entities, such as max health or attack damage.
-    // The value of an "attribute" is determined by its "base value" modified mathematically by each of its "attribute modififers".
-    // "Attribute modifiers" can be added either directly to the entity, or onto items - when on an item, an entity can equip it into the correct slot to automatically apply the modifier.
-    //
-    // These can be read via such tags as <@link tag EntityTag.attribute_modifiers>, <@link tag ItemTag.attribute_modifiers>,
-    // <@link tag EntityTag.has_attribute>, <@link tag EntityTag.attribute_value>, <@link tag EntityTag.attribute_base_value>, <@link tag EntityTag.attribute_default_value>, ...
-    //
-    // These can be modified by such mechanisms as <@link mechanism EntityTag.attribute_base_values>, <@link mechanism EntityTag.attribute_modifiers>, <@link mechanism EntityTag.add_attribute_modifiers>,
-    // <@link mechanism EntityTag.remove_attribute_modifiers>, <@link mechanism ItemTag.attribute_modifiers>, <@link mechanism ItemTag.add_attribute_modifiers>, <@link mechanism ItemTag.remove_attribute_modifiers>, ...
-    //
-    // The input format of each of the 'add' and set mechanisms is slightly complicated: a MapTag where the keys are attribute names, and values are a ListTag of modifiers,
-    // where each modifier is itself a MapTag with required keys 'operation' and 'amount', and additionally:
-    // Before MC 1.21: optional 'name', 'slot', and 'id' keys.
-    // The default ID will be randomly generated, the default name will be the attribute name.
-    // After MC 1.21: required 'key' key, and optional 'slot'.
-    // The 'key' is the attribute's name/identifier in a "namespace:key" format (defaulting to the "minecraft" namespace), which has to be distinct to other modifiers of the same type on the object.
-    //
-    // Valid operations: ADD_NUMBER, ADD_SCALAR, and MULTIPLY_SCALAR_1
-    // Valid slots (used up to MC 1.20.6): HAND, OFF_HAND, FEET, LEGS, CHEST, HEAD, ANY
-    // Valid slot groups (used on MC 1.20.6+): <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlotGroup.html>
-    // Valid attribute names are listed at <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html>
-    // The default slot/slot group is "any".
-    //
-    // Operation names are based on the Bukkit enum.
-    // ADD_NUMBER corresponds to Mojang "ADDITION" - adds on top of the base value.
-    // ADD_SCALAR corresponds to Mojang "MULTIPLY_BASE" - adds to the total, multiplied by the base value.
-    // MULTIPLY_SCALAR_1 corresponds to Mojang "MULTIPLY_TOTAL", multiplies the final value (after both "add_number" and "add_scaler") by the amount given plus one.
-    //
-    // They are combined like (pseudo-code):
-    // <code>
-    // - define x <[base_value]>
-    // - foreach <all_modifiers[ADD_NUMBER]>:
-    //     - define x:+:<[value]>
-    // - define y <[x]>
-    // - foreach <all_modifiers[ADD_SCALAR]>:
-    //     - define y:+:<[x].mul[<[value]>]>
-    // - foreach <all_modifiers[MULTIPLY_SCALAR_1]>:
-    //     - define y:*:<[value].add[1]>
-    // - determine <[y]>
-    // </code>
-    //
-    // See also <@link url https://minecraft.wiki/w/Attribute#Modifiers>
-    //
-    // For a quick and dirty in-line input, you can do for example: [generic_max_health=<list[<map[key=my_project:add_health;operation=ADD_NUMBER;amount=20;slot=HEAD]>]>]
-    //
-    // For more clean/proper input, instead do something like:
-    // <code>
-    // - definemap attributes:
-    //     generic_max_health:
-    //         1:
-    //             key: my_project:add_health
-    //             operation: ADD_NUMBER
-    //             amount: 20
-    //             slot: head
-    // - inventory adjust slot:head add_attribute_modifiers:<[attributes]>
-    // </code>
-    //
-    // When pre-defining a custom item, instead of this, simply use an item script: <@link language item script containers>. That page shows an example of valid attribute modifiers on an item script.
-    //
-    // -->
 
     public static void register() {
 
@@ -278,13 +102,12 @@ public class EntityAttributeModifiers implements Property {
         // @mechanism EntityTag.attribute_modifiers
         // @group properties
         // @description
-        // Returns a map of all attribute modifiers on the entity, with key as the attribute name and value as a list of modifiers,
-        // where each modifier is a MapTag containing keys 'name', 'amount', 'slot', 'operation', and 'id'.
+        // Returns a map of all attribute modifiers on the entity, with keys as attribute names and values as a list of modifiers,
+        // see <@link language attribute modifiers> for how modifiers are formatted.
         // This is formatted in a way that can be sent back into the 'attribute_modifiers' mechanism.
-        // See also <@link language attribute modifiers>.
         // -->
         PropertyParser.registerTag(EntityAttributeModifiers.class, MapTag.class, "attribute_modifiers", (attribute, object) -> {
-            return object.getAttributeModifiers();
+            return object.getAttributeModifiers(true);
         });
 
         PropertyParser.registerTag(EntityAttributeModifiers.class, ListTag.class, "attributes", (attribute, object) -> {
@@ -315,20 +138,17 @@ public class EntityAttributeModifiers implements Property {
             try {
                 MapTag input = mechanism.valueAsType(MapTag.class);
                 Attributable ent = getAttributable();
-                for (Map.Entry<StringHolder, ObjectTag> subValue : input.entrySet()) {
-                    Attribute attr = Attribute.valueOf(subValue.getKey().str.toUpperCase());
-                    AttributeInstance instance = ent.getAttribute(attr);
+                AttributeUtil.parseModifiers(input, mechanism, attribute -> {
+                    AttributeInstance instance = ent.getAttribute(attribute);
                     if (instance == null) {
-                        mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
-                        continue;
+                        mechanism.echoError("Attribute " + attribute + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
+                        return null;
                     }
                     for (AttributeModifier modifier : instance.getModifiers()) {
                         instance.removeModifier(modifier);
                     }
-                    for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
-                        instance.addModifier(modiferForMap(attr, listValue.asType(MapTag.class, mechanism.context), mechanism.context));
-                    }
-                }
+                    return instance;
+                }, AttributeInstance::addModifier);
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
@@ -353,31 +173,29 @@ public class EntityAttributeModifiers implements Property {
             try {
                 MapTag input = mechanism.valueAsType(MapTag.class);
                 Attributable ent = getAttributable();
-                for (Map.Entry<StringHolder, ObjectTag> subValue : input.entrySet()) {
-                    Attribute attr = Attribute.valueOf(subValue.getKey().str.toUpperCase());
-                    AttributeInstance instance = ent.getAttribute(attr);
+                AttributeUtil.parseModifiers(input, mechanism, attribute -> {
+                    AttributeInstance instance = ent.getAttribute(attribute);
                     if (instance == null) {
-                        mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
-                        continue;
+                        mechanism.echoError("Attribute " + attribute + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
+                        return null;
                     }
-                    for (ObjectTag listValue : CoreUtilities.objectToList(subValue.getValue(), mechanism.context)) {
-                        AttributeModifier modifier = modiferForMap(attr, listValue.asType(MapTag.class, mechanism.context), mechanism.context);
-                        try {
-                            instance.addModifier(modifier);
+                    return instance;
+                }, (attributeInstance, modifier) -> {
+                    try {
+                        attributeInstance.addModifier(modifier);
+                    }
+                    catch (IllegalArgumentException ex) {
+                        if (!ex.getMessage().equals("Modifier is already applied on this attribute!")) {
+                            throw ex;
                         }
-                        catch (IllegalArgumentException ex) {
-                            if (!ex.getMessage().equals("Modifier is already applied on this attribute!")) {
-                                throw ex;
-                            }
-                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                                mechanism.echoError("Cannot add attribute with key '" + modifier.getKey() + "' as the entity already has a modifier with the same key.");
-                            }
-                            else {
-                                mechanism.echoError("Cannot add attribute with ID '" + modifier.getUniqueId() + "' as the entity already has a modifier with the same ID.");
-                            }
+                        if (AttributeUtil.MODERN_ATTRIBUTE_FORMAT) {
+                            mechanism.echoError("Cannot add attribute with key '" + modifier.getKey() + "' as the entity already has a modifier with the same key.");
+                        }
+                        else {
+                            mechanism.echoError("Cannot add attribute with ID '" + modifier.getUniqueId() + "' as the entity already has a modifier with the same ID.");
                         }
                     }
-                }
+                });
             }
             catch (Throwable ex) {
                 Debug.echoError(ex);
@@ -402,12 +220,12 @@ public class EntityAttributeModifiers implements Property {
             ArrayList<String> inputList = new ArrayList<>(mechanism.valueAsType(ListTag.class));
             Attributable ent = getAttributable();
             for (String toRemove : new ArrayList<>(inputList)) {
-                if (Utilities.matchesEnumlike(new ElementTag(toRemove), Attribute.class)) {
+                Attribute attr = Utilities.elementToEnumlike(new ElementTag(toRemove, true), Attribute.class);
+                if (attr != null) {
                     inputList.remove(toRemove);
-                    Attribute attr = Attribute.valueOf(toRemove.toUpperCase());
                     AttributeInstance instance = ent.getAttribute(attr);
                     if (instance == null) {
-                        mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
+                        mechanism.echoError("Attribute " + attr + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
                         continue;
                     }
                     for (AttributeModifier modifier : instance.getModifiers()) {
@@ -418,8 +236,7 @@ public class EntityAttributeModifiers implements Property {
             for (String toRemove : inputList) {
                 UUID id = null;
                 NamespacedKey key = null;
-                boolean is1_21 = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21);
-                if (is1_21) {
+                if (AttributeUtil.MODERN_ATTRIBUTE_FORMAT) {
                     key = Utilities.parseNamespacedKey(toRemove);
                 }
                 else {
@@ -430,9 +247,9 @@ public class EntityAttributeModifiers implements Property {
                     if (instance == null) {
                         continue;
                     }
-                    for (AttributeModifier modifer : instance.getModifiers()) {
-                        if (is1_21 ? modifer.getKey().equals(key) : modifer.getUniqueId().equals(id)) {
-                            instance.removeModifier(modifer);
+                    for (AttributeModifier modifier : instance.getModifiers()) {
+                        if (AttributeUtil.MODERN_ATTRIBUTE_FORMAT ? modifier.getKey().equals(key) : modifier.getUniqueId().equals(id)) {
+                            instance.removeModifier(modifier);
                             break;
                         }
                     }
@@ -446,10 +263,10 @@ public class EntityAttributeModifiers implements Property {
             ListTag list = mechanism.valueAsType(ListTag.class);
             for (String str : list) {
                 List<String> subList = CoreUtilities.split(str, '/');
-                Attribute attr = Attribute.valueOf(EscapeTagUtil.unEscape(subList.get(0)).toUpperCase());
+                Attribute attr = Utilities.elementToEnumlike(new ElementTag(EscapeTagUtil.unEscape(subList.get(0)), true), Attribute.class);
                 AttributeInstance instance = ent.getAttribute(attr);
                 if (instance == null) {
-                    mechanism.echoError("Attribute " + attr.name() + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
+                    mechanism.echoError("Attribute " + attr + " is not applicable to entity of type " + entity.getBukkitEntityType().name());
                     continue;
                 }
                 instance.setBaseValue(Double.parseDouble(subList.get(1)));
