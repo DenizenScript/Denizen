@@ -3,15 +3,20 @@ package com.denizenscript.denizen.npc;
 import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.events.entity.EntityDespawnScriptEvent;
 import com.denizenscript.denizen.npc.actions.ActionHandler;
+import com.denizenscript.denizen.npc.traits.SittingTrait;
+import com.denizenscript.denizen.npc.traits.SleepingTrait;
+import com.denizenscript.denizen.npc.traits.SneakingTrait;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.NPCTag;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.denizen.utilities.depends.Depends;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import net.citizensnpcs.api.event.NPCDespawnEvent;
-import net.citizensnpcs.api.event.NPCRemoveEvent;
-import net.citizensnpcs.api.event.NPCSpawnEvent;
+import com.denizenscript.denizencore.utilities.debugging.Debug;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.event.*;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.trait.SitTrait;
+import net.citizensnpcs.trait.SleepTrait;
+import net.citizensnpcs.trait.SneakTrait;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +24,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
-import java.util.*;
+import java.util.Arrays;
 
 public class DenizenNPCHelper implements Listener {
 
@@ -144,5 +149,30 @@ public class DenizenNPCHelper implements Listener {
     public void onRemove(NPCRemoveEvent event) {
         NPC npc = event.getNPC();
         new NPCTag(npc).action("remove", null);
+    }
+
+    // backwards compat: SittingTrait, SleepingTrait, and SneakingTrait are deprecated versions.
+    @EventHandler
+    public void onCitizensEnable(CitizensEnableEvent event) {
+        for (NPC npc : CitizensAPI.getNPCRegistry()) {
+            if (npc.hasTrait(SittingTrait.class)) {
+                if (npc.getOrAddTrait(SittingTrait.class).isSitting()) {
+                    npc.getOrAddTrait(SitTrait.class).setSitting(npc.getStoredLocation());
+                }
+                npc.removeTrait(SittingTrait.class);
+            }
+            if (!SleepingTrait.isSupported() && npc.hasTrait(SleepingTrait.class)) {
+                if (npc.getOrAddTrait(SleepingTrait.class).isSleeping()) {
+                    npc.getOrAddTrait(SleepTrait.class).setSleeping(npc.getStoredLocation());
+                }
+                npc.removeTrait(SleepingTrait.class);
+            }
+            if (npc.hasTrait(SneakingTrait.class)) {
+                if (npc.getOrAddTrait(SneakingTrait.class).isSneaking()) {
+                    npc.getOrAddTrait(SneakTrait.class).setSneaking(true);
+                }
+                npc.removeTrait(SneakingTrait.class);
+            }
+        }
     }
 }
