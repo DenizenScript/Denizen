@@ -339,8 +339,8 @@ public class PacketHelperImpl implements PacketHelper {
                     MAP_ITEM_SET_COLORS.invoke(map, mapWidth, mapHeight, true);
                 }
                 else {
-                    MAP_ITEM_SET_COLORS.invoke(map, maxX, maxY);
-                    MAP_ITEM_SET_COLORS.invoke(map, mapWidth, mapHeight);
+                    map.setColorsDirty(maxX, maxY);
+                    map.setColorsDirty(mapWidth, mapHeight);
                 }
             }
         }
@@ -349,7 +349,7 @@ public class PacketHelperImpl implements PacketHelper {
         }
     }
 
-    public static final MethodHandle MAP_ITEM_SET_COLORS = Handler.reflectPaperRenamed(MapItemSavedData.class, "setColorsDirty", "setColorsDirty", new Class<?>[] {int.class, int.class}, new Class<?>[] {int.class, int.class, boolean.class});
+    public static final MethodHandle MAP_ITEM_SET_COLORS = ReflectionHelper.getMethodHandle(MapItemSavedData.class, "setColorsDirty", int.class, int.class, boolean.class);
 
     @Override
     public void setNetworkManagerFor(Player player) {
