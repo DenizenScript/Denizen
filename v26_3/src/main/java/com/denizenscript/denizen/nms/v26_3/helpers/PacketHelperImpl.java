@@ -1,6 +1,5 @@
 package com.denizenscript.denizen.nms.v26_3.helpers;
 
-import com.denizenscript.denizen.Denizen;
 import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.interfaces.PacketHelper;
 import com.denizenscript.denizen.nms.v26_3.Handler;
@@ -331,18 +330,8 @@ public class PacketHelperImpl implements PacketHelper {
             if (anyChanged) {
                 // Flag the whole image as dirty
                 MapItemSavedData map = (MapItemSavedData) MAPVIEW_WORLDMAP.get(canvas.getMapView());
-                int maxX = Math.max(x, 0);
-                int maxY = Math.max(y, 0);
-                int mapWidth = width + x - 1;
-                int mapHeight = height + y - 1;
-                if (Denizen.supportsPaper) {
-                    MAP_ITEM_SET_COLORS.invoke(map, maxX, maxY, true);
-                    MAP_ITEM_SET_COLORS.invoke(map, mapWidth, mapHeight, true);
-                }
-                else {
-                    map.setColorsDirty(maxX, maxY);
-                    map.setColorsDirty(mapWidth, mapHeight);
-                }
+                MAP_ITEM_SET_COLORS.invoke(map, Math.max(x, 0), Math.max(y, 0));
+                MAP_ITEM_SET_COLORS.invoke(map, width + x - 1, height + y - 1);
             }
         }
         catch (Throwable ex) {
@@ -350,7 +339,7 @@ public class PacketHelperImpl implements PacketHelper {
         }
     }
 
-    public static final MethodHandle MAP_ITEM_SET_COLORS = ReflectionHelper.getMethodHandle(MapItemSavedData.class, "setColorsDirty", int.class, int.class, boolean.class);
+    public static final MethodHandle MAP_ITEM_SET_COLORS = ReflectionHelper.getMethodHandle(MapItemSavedData.class, "setColorsDirty", int.class, int.class);
 
     @Override
     public void setNetworkManagerFor(Player player) {
