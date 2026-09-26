@@ -329,14 +329,16 @@ public class PacketHelperImpl implements PacketHelper {
             if (anyChanged) {
                 // Flag the whole image as dirty
                 MapItemSavedData map = (MapItemSavedData) MAPVIEW_WORLDMAP.get(canvas.getMapView());
-                map.setColorsDirty(Math.max(x, 0), Math.max(y, 0));
-                map.setColorsDirty(width + x - 1, height + y - 1);
+                MAP_ITEM_SET_COLORS.invoke(map, Math.max(x, 0), Math.max(y, 0));
+                MAP_ITEM_SET_COLORS.invoke(map, width + x - 1, height + y - 1);
             }
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
         }
     }
+
+    public static final MethodHandle MAP_ITEM_SET_COLORS = ReflectionHelper.getMethodHandle(MapItemSavedData.class, "setColorsDirty", int.class, int.class);
 
     @Override
     public void setNetworkManagerFor(Player player) {
