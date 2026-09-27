@@ -43,6 +43,13 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     public PlayerMendsItemScriptEvent() {
         registerCouldMatcher("player mends <item>");
+        this.<PlayerMendsItemScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            if (value instanceof ElementTag element && element.isInt()) {
+                evt.event.setRepairAmount(element.asInt());
+                return true;
+            }
+            return false;
+        });
     }
 
     public PlayerItemMendEvent event;
@@ -69,15 +76,6 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
             case "slot": return new ElementTag(SlotHelper.slotForItem(event.getPlayer().getInventory(), item.getItemStack()) + 1);
         }
         return super.getContext(name);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            event.setRepairAmount(element.asInt());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
