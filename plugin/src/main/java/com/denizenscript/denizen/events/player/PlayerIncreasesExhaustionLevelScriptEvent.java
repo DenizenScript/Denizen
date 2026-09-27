@@ -42,6 +42,13 @@ public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent
     public PlayerIncreasesExhaustionLevelScriptEvent() {
         registerCouldMatcher("player exhaustion level increases");
         registerSwitches("reason");
+        this.<PlayerIncreasesExhaustionLevelScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            if (value instanceof ElementTag element && element.isFloat()) {
+                evt.event.setExhaustion(element.asFloat());
+                return true;
+            }
+            return false;
+        });
     }
 
     public EntityExhaustionEvent event;
@@ -66,18 +73,6 @@ public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent
             case "reason": return reason;
         }
         return super.getContext(name);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            ElementTag value = determinationObj.asElement();
-            if (value.isFloat()) {
-                event.setExhaustion(value.asFloat());
-                return true;
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
