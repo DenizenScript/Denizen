@@ -38,6 +38,14 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     // -->
 
     public PlayerTakesFromFurnaceScriptEvent() {
+        this.<PlayerTakesFromFurnaceScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            if (value instanceof ElementTag element && element.isInt()) {
+                int xp = element.asInt();
+                evt.event.setExpToDrop(xp);
+                return true;
+            }
+            return false;
+        });
     }
 
     public LocationTag location;
@@ -64,16 +72,6 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            int xp = element.asInt();
-            event.setExpToDrop(xp);
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
