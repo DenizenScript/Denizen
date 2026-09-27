@@ -43,9 +43,9 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
 
     public EntityAirLevelChangeScriptEvent() {
         registerCouldMatcher("<entity> changes air level");
-        this.<EntityAirLevelChangeScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value instanceof ElementTag element && element.isInt()) {
-                evt.event.setAmount(element.asInt());
+        this.<EntityAirLevelChangeScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isInt()) {
+                evt.event.setAmount(value.asInt());
                 return true;
             }
             else if (DurationTag.matches(value.toString())) {

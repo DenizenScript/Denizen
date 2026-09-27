@@ -101,9 +101,9 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 }
             }
         });
-        this.<EntityDamagedScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value instanceof ElementTag element && element.isDouble()) {
-                evt.event.setDamage(element.asDouble());
+        this.<EntityDamagedScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isDouble()) {
+                evt.event.setDamage(value.asDouble());
                 return true;
             }
             return false;

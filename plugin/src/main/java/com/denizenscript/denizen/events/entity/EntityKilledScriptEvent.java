@@ -57,9 +57,9 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         registerCouldMatcher("<entity> killed (by <'cause'>)");
         registerCouldMatcher("<entity> killed (by <entity>)");
         registerCouldMatcher("<entity> kills <entity>");
-        this.<EntityKilledScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value instanceof ElementTag element && element.isDouble()) {
-                evt.event.setDamage(element.asDouble());
+        this.<EntityKilledScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isDouble()) {
+                evt.event.setDamage(value.asDouble());
                 return true;
             }
             return false;

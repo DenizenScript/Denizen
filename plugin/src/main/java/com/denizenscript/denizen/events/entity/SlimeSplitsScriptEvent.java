@@ -33,9 +33,9 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
 
     public SlimeSplitsScriptEvent() {
         registerCouldMatcher("slime splits (into <'#'>)");
-        this.<SlimeSplitsScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value instanceof ElementTag element && element.isInt()) {
-                evt.event.setCount(element.asInt());
+        this.<SlimeSplitsScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isInt()) {
+                evt.event.setCount(value.asInt());
                 return true;
             }
             return false;

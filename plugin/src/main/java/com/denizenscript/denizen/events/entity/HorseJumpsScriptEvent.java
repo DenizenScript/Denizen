@@ -38,9 +38,9 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     public HorseJumpsScriptEvent() {
         registerCouldMatcher("<entity> jumps");
-        this.<HorseJumpsScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value instanceof ElementTag element && element.isFloat()) {
-                evt.event.setPower(element.asFloat());
+        this.<HorseJumpsScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isFloat()) {
+                evt.event.setPower(value.asFloat());
                 return true;
             }
             return false;

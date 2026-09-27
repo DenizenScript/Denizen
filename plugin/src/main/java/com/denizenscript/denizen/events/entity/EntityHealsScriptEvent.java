@@ -40,9 +40,9 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
 
     public EntityHealsScriptEvent() {
         registerCouldMatcher("<entity> heals (because <'cause'>)");
-        this.<EntityHealsScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value instanceof ElementTag element && element.isDouble()) {
-                evt.event.setAmount(element.asDouble());
+        this.<EntityHealsScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isDouble()) {
+                evt.event.setAmount(value.asDouble());
                 return true;
             }
             return false;
