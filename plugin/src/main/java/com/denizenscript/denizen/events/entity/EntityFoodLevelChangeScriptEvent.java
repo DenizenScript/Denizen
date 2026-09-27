@@ -46,6 +46,13 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     public EntityFoodLevelChangeScriptEvent() {
         registerCouldMatcher("<entity> changes food level");
         registerSwitches("item");
+        this.<EntityFoodLevelChangeScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            if (value instanceof ElementTag element && element.isInt()) {
+                evt.event.setFoodLevel(element.asInt());
+                return true;
+            }
+            return false;
+        });
     }
 
     public EntityTag entity;
@@ -65,15 +72,6 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            event.setFoodLevel(element.asInt());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
