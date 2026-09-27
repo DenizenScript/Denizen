@@ -94,6 +94,20 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         registerCouldMatcher("<entity> damaged by <entity>");
         registerCouldMatcher("<entity> damages <entity>");
         registerSwitches("with", "type", "blocker");
+        this.<EntityDamagedScriptEvent>registerTextDetermination("clear_modifiers", (evt) -> {
+            for (EntityDamageEvent.DamageModifier modifier : EntityDamageEvent.DamageModifier.values()) {
+                if (modifier != EntityDamageEvent.DamageModifier.BASE && evt.event.isApplicable(modifier)) {
+                    evt.event.setDamage(modifier, 0);
+                }
+            }
+        });
+        this.<EntityDamagedScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            if (value instanceof ElementTag element && element.isDouble()) {
+                evt.event.setDamage(element.asDouble());
+                return true;
+            }
+            return false;
+        });
     }
 
 
@@ -166,25 +180,6 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             }
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            if (CoreUtilities.equalsIgnoreCase(determinationObj.toString(), "clear_modifiers")) {
-                for (EntityDamageEvent.DamageModifier modifier : EntityDamageEvent.DamageModifier.values()) {
-                    if (modifier != EntityDamageEvent.DamageModifier.BASE && event.isApplicable(modifier)) {
-                        event.setDamage(modifier, 0);
-                    }
-                }
-                return true;
-            }
-            else if (((ElementTag) determinationObj).isDouble()) {
-                event.setDamage(((ElementTag) determinationObj).asDouble());
-                return true;
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
