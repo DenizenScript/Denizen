@@ -38,6 +38,13 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerChangesXPScriptEvent() {
+        this.<PlayerChangesXPScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            if (value instanceof ElementTag element && element.isInt()) {
+                evt.event.setAmount(element.asInt());
+                return true;
+            }
+            return false;
+        });
     }
 
     public PlayerExpChangeEvent event;
@@ -55,15 +62,6 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
         }
 
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            event.setAmount(element.asInt());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
