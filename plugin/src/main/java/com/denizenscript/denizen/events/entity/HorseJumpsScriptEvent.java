@@ -38,6 +38,13 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     public HorseJumpsScriptEvent() {
         registerCouldMatcher("<entity> jumps");
+        this.<HorseJumpsScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            if (value instanceof ElementTag element && element.isFloat()) {
+                evt.event.setPower(element.asFloat());
+                return true;
+            }
+            return false;
+        });
     }
 
     public EntityTag entity;
@@ -74,15 +81,6 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isFloat()) {
-            event.setPower(element.asFloat());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
