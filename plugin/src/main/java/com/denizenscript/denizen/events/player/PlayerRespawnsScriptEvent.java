@@ -37,6 +37,17 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     public PlayerRespawnsScriptEvent() {
         registerCouldMatcher("player respawns (at bed)");
         registerCouldMatcher("player respawns elsewhere");
+        this.<PlayerRespawnsScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
+            String determination = value.toString();
+            if (!CoreUtilities.equalsIgnoreCase(determination, "none")) {
+                LocationTag loc = LocationTag.valueOf(determination, context);
+                if (loc != null) {
+                    evt.event.setRespawnLocation(loc);
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     public PlayerRespawnEvent event;
@@ -51,19 +62,6 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        String determination = determinationObj.toString();
-        if (!CoreUtilities.equalsIgnoreCase(determination, "none")) {
-            LocationTag loc = LocationTag.valueOf(determination, getTagContext(path));
-            if (loc != null) {
-                event.setRespawnLocation(loc);
-                return true;
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
