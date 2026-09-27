@@ -38,9 +38,9 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerChangesXPScriptEvent() {
-        this.<PlayerChangesXPScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value instanceof ElementTag element && element.isInt()) {
-                evt.event.setAmount(element.asInt());
+        this.<PlayerChangesXPScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isInt()) {
+                evt.event.setAmount(value.asInt());
                 return true;
             }
             return false;

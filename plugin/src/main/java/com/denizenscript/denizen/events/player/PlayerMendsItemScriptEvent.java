@@ -43,9 +43,9 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     public PlayerMendsItemScriptEvent() {
         registerCouldMatcher("player mends <item>");
-        this.<PlayerMendsItemScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value instanceof ElementTag element && element.isInt()) {
-                evt.event.setRepairAmount(element.asInt());
+        this.<PlayerMendsItemScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isInt()) {
+                evt.event.setRepairAmount(value.asInt());
                 return true;
             }
             return false;

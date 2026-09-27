@@ -47,9 +47,9 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
 
     public PlayerItemTakesDamageScriptEvent() {
         registerCouldMatcher("player <item> takes damage");
-        this.<PlayerItemTakesDamageScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value instanceof ElementTag element && element.isInt()) {
-                evt.event.setDamage(element.asInt());
+        this.<PlayerItemTakesDamageScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isInt()) {
+                evt.event.setDamage(value.asInt());
                 return true;
             }
             return false;

@@ -42,9 +42,9 @@ public class PlayerIncreasesExhaustionLevelScriptEvent extends BukkitScriptEvent
     public PlayerIncreasesExhaustionLevelScriptEvent() {
         registerCouldMatcher("player exhaustion level increases");
         registerSwitches("reason");
-        this.<PlayerIncreasesExhaustionLevelScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (value instanceof ElementTag element && element.isFloat()) {
-                evt.event.setExhaustion(element.asFloat());
+        this.<PlayerIncreasesExhaustionLevelScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isFloat()) {
+                evt.event.setExhaustion(value.asFloat());
                 return true;
             }
             return false;
