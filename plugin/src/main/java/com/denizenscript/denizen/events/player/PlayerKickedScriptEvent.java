@@ -48,7 +48,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
             evt.event.setReason(reason.asString());
         });
         this.<PlayerKickedScriptEvent, DurationTag>registerDetermination("fly_cooldown", DurationTag.class, (evt, context, duration) -> {
-            NMSHandler.playerHelper.setFlyKickCooldown(evt.player.getPlayerEntity(), (int) duration.getTicks());
+            NMSHandler.playerHelper.setFlyKickCooldown(evt.player.getPlayerEntity(), (int) duration.getTicksAsInt());
             evt.cancelled = true;
         });
     }
