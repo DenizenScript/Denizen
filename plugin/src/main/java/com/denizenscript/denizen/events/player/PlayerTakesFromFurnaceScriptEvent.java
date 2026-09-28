@@ -40,8 +40,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     public PlayerTakesFromFurnaceScriptEvent() {
         this.<PlayerTakesFromFurnaceScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
             if (value.isInt()) {
-                int xp = value.asInt();
-                evt.event.setExpToDrop(xp);
+                evt.event.setExpToDrop(value.asInt());
                 return true;
             }
             return false;
