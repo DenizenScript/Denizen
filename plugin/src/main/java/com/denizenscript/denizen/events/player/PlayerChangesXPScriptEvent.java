@@ -17,8 +17,6 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     // @Events
     // player changes xp
     //
-    // @Regex ^on player changes xp$
-    //
     // @Group Player
     //
     // @Location true
@@ -38,6 +36,7 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     // -->
 
     public PlayerChangesXPScriptEvent() {
+        registerCouldMatcher("player changes xp");
         this.<PlayerChangesXPScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
             if (value.isInt()) {
                 evt.event.setAmount(value.asInt());
@@ -51,16 +50,10 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     public PlayerTag player;
 
     @Override
-    public boolean couldMatch(ScriptPath path) {
-        return path.eventLower.startsWith("player changes xp");
-    }
-
-    @Override
     public boolean matches(ScriptPath path) {
         if (!runInCheck(path, player.getLocation())) {
             return false;
         }
-
         return super.matches(path);
     }
 
