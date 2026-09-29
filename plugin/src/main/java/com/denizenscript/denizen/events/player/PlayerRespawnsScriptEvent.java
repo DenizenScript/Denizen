@@ -7,7 +7,6 @@ import com.denizenscript.denizen.events.BukkitScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -37,16 +36,8 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     public PlayerRespawnsScriptEvent() {
         registerCouldMatcher("player respawns (at bed)");
         registerCouldMatcher("player respawns elsewhere");
-        this.<PlayerRespawnsScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            String determination = value.toString();
-            if (!CoreUtilities.equalsIgnoreCase(determination, "none")) {
-                LocationTag loc = LocationTag.valueOf(determination, context);
-                if (loc != null) {
-                    evt.event.setRespawnLocation(loc);
-                    return true;
-                }
-            }
-            return false;
+        this.<PlayerRespawnsScriptEvent, LocationTag>registerDetermination(null, LocationTag.class, (evt, context, location) -> {
+            evt.event.setRespawnLocation(location);
         });
     }
 
