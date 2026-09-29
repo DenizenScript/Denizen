@@ -39,10 +39,9 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
     public DragonPhaseChangeScriptEvent() {
         registerCouldMatcher("<entity> changes phase");
         registerSwitches("from", "to");
-        this.<DragonPhaseChangeScriptEvent, ObjectTag>registerOptionalDetermination(null, ObjectTag.class, (evt, context, value) -> {
-            if (exactMatchesEnum(value.toString(), EnderDragon.Phase.values())) {
-                EnderDragon.Phase phase = EnderDragon.Phase.valueOf(value.toString().toUpperCase());
-                evt.event.setNewPhase(phase);
+        this.<DragonPhaseChangeScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.matchesEnum(EnderDragon.Phase.class)) {
+                evt.event.setNewPhase(value.asEnum(EnderDragon.Phase.class));
                 return true;
             }
             return false;
