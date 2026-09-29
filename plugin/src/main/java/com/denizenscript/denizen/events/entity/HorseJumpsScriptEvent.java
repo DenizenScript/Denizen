@@ -31,19 +31,12 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // <context.color> returns an ElementTag of the horse's color.
     // <context.power> returns an ElementTag(Decimal) of the jump's power.
     //
-    // @Determine
-    // ElementTag(Decimal) to set the power of the jump.
-    //
     // -->
 
     public HorseJumpsScriptEvent() {
         registerCouldMatcher("<entity> jumps");
-        this.<HorseJumpsScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
-            if (value.isFloat()) {
-                evt.event.setPower(value.asFloat());
-                return true;
-            }
-            return false;
+        this.<HorseJumpsScriptEvent, ElementTag>registerDetermination(null, ElementTag.class, (evt, context, value) -> {
+            BukkitImplDeprecations.horseJumpsPowerDetermination.warn(context);
         });
     }
 
