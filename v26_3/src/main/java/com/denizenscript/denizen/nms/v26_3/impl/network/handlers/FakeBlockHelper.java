@@ -29,6 +29,7 @@ import org.bukkit.craftbukkit.block.data.CraftBlockData;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class FakeBlockHelper {
@@ -57,16 +58,16 @@ public class FakeBlockHelper {
         return false;
     }
 
-    public static Field PAPER_CHUNK_READY;
+    public static Method PAPER_CHUNK_SET_READY;
     public static boolean tryPaperPatch = true;
 
-    public static void copyPacketPaperPatch(ClientboundLevelChunkWithLightPacket newPacket, ClientboundLevelChunkWithLightPacket oldPacket) {
+    public static void copyPacketPaperPatch(ClientboundLevelChunkWithLightPacket newPacket) {
         if (!Denizen.supportsPaper || !tryPaperPatch) {
             return;
         }
         try {
-            if (PAPER_CHUNK_READY == null) {
-                PAPER_CHUNK_READY = ClientboundLevelChunkWithLightPacket.class.getDeclaredField("ready");
+            if (PAPER_CHUNK_SET_READY == null) {
+                PAPER_CHUNK_SET_READY = ClientboundLevelChunkWithLightPacket.class.getDeclaredMethod("setReady", boolean.class);
             }
         }
         catch (Throwable ex) {
@@ -76,7 +77,7 @@ public class FakeBlockHelper {
             return;
         }
         try {
-            PAPER_CHUNK_READY.setBoolean(newPacket, true);
+            PAPER_CHUNK_SET_READY.invoke(newPacket, true);
         }
         catch (Throwable ex) {
             Debug.echoError(ex);
@@ -148,7 +149,7 @@ public class FakeBlockHelper {
             byte[] outputBytes = outputSerial.array();
             ClientboundLevelChunkPacketData modifiedChunkData = (ClientboundLevelChunkPacketData) CHUNKDATA_CONSTRUCTOR.invokeExact(originalPacket.chunkData().getHeightmaps(), outputBytes, blockEntities);
             ClientboundLevelChunkWithLightPacket duplicateCorePacket = new ClientboundLevelChunkWithLightPacket(chunkX, chunkZ, modifiedChunkData, originalPacket.lightData());
-            copyPacketPaperPatch(duplicateCorePacket, originalPacket);
+            copyPacketPaperPatch(duplicateCorePacket);
             return duplicateCorePacket;
         }
         catch (Throwable ex) {
