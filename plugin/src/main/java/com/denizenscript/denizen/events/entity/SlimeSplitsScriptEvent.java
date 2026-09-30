@@ -33,6 +33,13 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
 
     public SlimeSplitsScriptEvent() {
         registerCouldMatcher("slime splits (into <'#'>)");
+        this.<SlimeSplitsScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isInt()) {
+                evt.event.setCount(value.asInt());
+                return true;
+            }
+            return false;
+        });
     }
 
     public EntityTag entity;
@@ -58,15 +65,6 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
         }
 
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            event.setCount(element.asInt());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

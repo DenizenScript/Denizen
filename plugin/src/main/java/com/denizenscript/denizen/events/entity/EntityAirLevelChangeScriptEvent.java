@@ -43,6 +43,17 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
 
     public EntityAirLevelChangeScriptEvent() {
         registerCouldMatcher("<entity> changes air level");
+        this.<EntityAirLevelChangeScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isInt()) {
+                evt.event.setAmount(value.asInt());
+                return true;
+            }
+            else if (DurationTag.matches(value.toString())) {
+                evt.event.setAmount(DurationTag.valueOf(value.toString(), context).getTicksAsInt());
+                return true;
+            }
+            return false;
+        });
     }
 
     public EntityTag entity;
@@ -58,19 +69,6 @@ public class EntityAirLevelChangeScriptEvent extends BukkitScriptEvent implement
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isInt()) {
-            event.setAmount(element.asInt());
-            return true;
-        }
-        else if (DurationTag.matches(determinationObj.toString())) {
-            event.setAmount(DurationTag.valueOf(determinationObj.toString(), getTagContext(path)).getTicksAsInt());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
