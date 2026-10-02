@@ -489,6 +489,12 @@ public class BukkitImplDeprecations {
     // Added 2025/09/22
     public static Warning playerSteerEntityEvent = new FutureWarning("playerSteerEntityEvent", "The 'player steers <entity>' event is deprecated in favor of the 'player input' event in MC 1.21+.");
 
+    // Added 2026/02/21
+    public static Warning colorToVariantProperty = new FutureWarning("colorToVariantProperty", "The usage of the 'EntityTag.color' property for this type of entity has been deprecated in favor of 'EntityTag.variant'.");
+
+    // Added 2026/02/21
+    public static Warning allowedColorsToVariants = new FutureWarning("allowedColorsToVariants", "The usage of the 'EntityTag.allowed_colors' tag for this type of entity has been deprecated in favor of 'EntityTag.allowed_variants'.");
+
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
     // Removed upstream 2025/02/15
