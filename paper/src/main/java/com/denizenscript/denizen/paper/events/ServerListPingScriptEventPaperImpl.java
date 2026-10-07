@@ -15,7 +15,6 @@ import com.destroystokyo.paper.event.server.PaperServerListPingEvent;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.profile.PlayerTextures;
@@ -99,16 +98,16 @@ public class ServerListPingScriptEventPaperImpl extends ListPingScriptEvent {
 
         public static void excludeListedPlayers(PaperServerListPingEvent event, Set<UUID> exclude) {
             int size = event.getListedPlayers().size();
-            MutableInt counter = new MutableInt();
-            event.getListedPlayers().removeIf(listedPlayerInfo -> {
+            final int[] counter = new int[1];
+            event.getListedPlayers().removeIf(listedPlayerInfo -> { // TODO: This should probably be a normal loop not a lambda
                 if (exclude.contains(listedPlayerInfo.id())) {
-                    counter.increment();
+                    counter[0]++;
                     return true;
                 }
                 return false;
             });
             if (size == event.getNumPlayers()) {
-                event.setNumPlayers(event.getNumPlayers() - counter.intValue());
+                event.setNumPlayers(event.getNumPlayers() - counter[0]);
             }
         }
     }
