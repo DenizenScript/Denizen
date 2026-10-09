@@ -9,6 +9,7 @@ import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import io.papermc.paper.event.player.PlayerPurchaseEvent;
 import io.papermc.paper.event.player.PlayerTradeEvent;
+import org.bukkit.entity.AbstractVillager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -37,7 +38,6 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     // @Determine
     // TradeTag to change the trade that should be processed.
     //
-    //
     // @Player Always.
     //
     // -->
@@ -51,6 +51,7 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     }
 
     public PlayerPurchaseEvent event;
+    public AbstractVillager villager;
 
     @Override
     public boolean matches(ScriptPath path) {
@@ -71,7 +72,7 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     @Override
     public ObjectTag getContext(String name) {
         return switch (name) {
-            case "merchant" -> event instanceof PlayerTradeEvent tradeEvent ? new EntityTag(tradeEvent.getVillager()) : null;
+            case "merchant" -> villager != null ? new EntityTag(villager) : null;
             case "trade" -> new TradeTag(event.getTrade()).duplicate();
             default -> super.getContext(name);
         };
@@ -80,6 +81,15 @@ public class PlayerTradesWithMerchantScriptEvent extends BukkitScriptEvent imple
     @EventHandler
     public void playerTradeEvent(PlayerPurchaseEvent event) {
         this.event = event;
+        if (event instanceof PlayerTradeEvent tradeEvent) {
+            villager = tradeEvent.getVillager();
+            if (EntityTag.isCitizensNPC(villager)) {
+                return;
+            }
+        }
+        else {
+            villager = null;
+        }
         fire(event);
     }
 }
