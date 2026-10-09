@@ -4,10 +4,8 @@ import com.denizenscript.denizen.nms.NMSHandler;
 import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.Mechanism;
-import com.denizenscript.denizencore.objects.core.DurationTag;
-import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.core.MapTag;
+import com.denizenscript.denizencore.objects.core.*;
+import com.denizenscript.denizencore.tags.Attribute;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 
@@ -18,16 +16,17 @@ public class MultiVersionHelper1_19 {
     }
 
     // TODO Frog variants technically have registries on all supported versions
-    public static String getColor(Entity entity, boolean includeDeprecated) {
+    public static String getColor(Entity entity, Attribute attribute) {
         if (entity instanceof Frog frog) {
+            BukkitImplDeprecations.colorToVariantProperty.warn();
             return Utilities.keyedToString(frog.getVariant());
         }
         else if (entity instanceof Boat boat) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                if (!includeDeprecated) {
+                if (attribute == null) {
                     return null;
                 }
-                BukkitImplDeprecations.gettingBoatType.warn();
+                BukkitImplDeprecations.gettingBoatType.warn(attribute.context);
             }
             return boat.getBoatType().name();
         }
@@ -36,6 +35,7 @@ public class MultiVersionHelper1_19 {
 
     public static ListTag getAllowedColors(EntityType type) {
         if (type == EntityType.FROG) {
+            BukkitImplDeprecations.allowedColorsToVariants.warn();
             return Utilities.listTypes(Frog.Variant.class);
         }
         else if (Boat.class.isAssignableFrom(type.getEntityClass())) {
@@ -47,16 +47,17 @@ public class MultiVersionHelper1_19 {
         return null;
     }
 
-    public static void setColor(Entity entity, Mechanism mech) {
-        if (entity instanceof Frog frog && Utilities.requireEnumlike(mech, Frog.Variant.class)) {
-            frog.setVariant(Utilities.elementToEnumlike(mech.getValue(), Frog.Variant.class));
+    public static void setColor(Entity entity, Mechanism mechanism) {
+        if (entity instanceof Frog frog && Utilities.requireEnumlike(mechanism, Frog.Variant.class)) {
+            BukkitImplDeprecations.colorToVariantProperty.warn(mechanism.context);
+            frog.setVariant(Utilities.elementToEnumlike(mechanism.getValue(), Frog.Variant.class));
         }
-        else if (entity instanceof Boat boat && mech.requireEnum(Boat.Type.class)) {
+        else if (entity instanceof Boat boat && mechanism.requireEnum(Boat.Type.class)) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
-                BukkitImplDeprecations.settingBoatType.warn(mech.context);
+                BukkitImplDeprecations.settingBoatType.warn(mechanism.context);
                 return;
             }
-            boat.setBoatType(mech.getValue().asEnum(Boat.Type.class));
+            boat.setBoatType(mechanism.getValue().asEnum(Boat.Type.class));
         }
     }
 
