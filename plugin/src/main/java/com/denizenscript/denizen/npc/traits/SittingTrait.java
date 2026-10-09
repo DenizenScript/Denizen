@@ -28,6 +28,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
+@Deprecated(forRemoval = true)
 public class SittingTrait extends Trait implements Listener {
 
     @Persist("sitting")
