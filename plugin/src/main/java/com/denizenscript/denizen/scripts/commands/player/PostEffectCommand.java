@@ -1,5 +1,6 @@
 package com.denizenscript.denizen.scripts.commands.player;
 
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
@@ -7,25 +8,25 @@ import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
-import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.List;
 
 public class PostEffectCommand extends AbstractCommand {
 
     public PostEffectCommand() {
         setName("posteffect");
-        setSyntax("posteffect [{add}/remove/set/clear] (effects:<effect>|...)");
-        setRequiredArguments(1, 2);
+        setSyntax("posteffect [{add}/remove/set/clear] (effects:<effect>|...) (targets:<player>|...)");
+        setRequiredArguments(1, 3);
         isProcedural = false;
         autoCompile();
     }
 
     // <--[command]
     // @Name Posteffect
-    // @Syntax posteffect [{add}/remove/set/clear] (effects:<effect>|...)
+    // @Syntax posteffect [{add}/remove/set/clear] (effects:<effect>|...) (targets:<player>|...)
     // @Required 1
-    // @Maximum 2
+    // @Maximum 3
     // @Short Controls the posteffects on a player.
     // @Group player
     //
@@ -39,42 +40,61 @@ public class PostEffectCommand extends AbstractCommand {
     //
     // These effects can also be cleared, with no additional input required.
     //
+    // If no targets are specified, the linked player will be used.
+    //
     // @Tags
     // <PlayerTag.post_effects>
     //
     // @Usage
-    // Use to add the "blur" posteffect to a player.
+    // Use to add the "blur" posteffect to the linked player.
     // - posteffect add effects:minecraft:blur
     //
     // @Usage
-    // Use to remove the default Minecraft "entity_outline" posteffect and a custom "scary" posteffect from a player.
+    // Use to remove the default Minecraft "entity_outline" posteffect and a custom "scary" posteffect from the linked player.
     // - posteffect remove effects:entity_outline|my_resource_pack:scary
     //
     // @Usage
-    // Use to clear the posteffects on a player.
-    // - posteffect clear
+    // Use to clear the posteffects on a list of players.
+    // - posteffect clear targets:<[players]>
     // -->
 
     public enum Action { ADD, REMOVE, SET, CLEAR }
 
     public static void autoExecute(ScriptEntry scriptEntry,
-                                   @ArgName("action") @ArgLinear @ArgDefaultText("ADD") Action action,
-                                   @ArgName("effects") @ArgPrefixed @ArgDefaultNull @ArgSubType(ElementTag.class) List<ElementTag> effects) {
-        if (!Utilities.entryHasPlayer(scriptEntry)) {
-            throw new InvalidArgumentsRuntimeException("Must specify a valid player Target!");
-        }
+                                   @ArgName("action") @ArgLinear @ArgDefaultText("add") Action action,
+                                   @ArgName("effects") @ArgPrefixed @ArgDefaultNull @ArgSubType(ElementTag.class) List<ElementTag> effects,
+                                   @ArgName("targets") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> targets) {
         if (action != Action.CLEAR && effects == null) {
             throw new InvalidArgumentsRuntimeException("Missing 'effects' argument!");
         }
-        Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
-        switch (action) {
-            case ADD -> PaperAPITools.instance.addPostEffects(player, effects);
-            case REMOVE -> PaperAPITools.instance.removePostEffects(player, effects);
-            case SET -> {
-                PaperAPITools.instance.clearPostEffects(player);
-                PaperAPITools.instance.addPostEffects(player, effects);
+        if (targets == null) {
+            if (!Utilities.entryHasPlayer(scriptEntry)) {
+                throw new InvalidArgumentsRuntimeException("Must specify a valid player Target!");
             }
-            case CLEAR -> PaperAPITools.instance.clearPostEffects(player);
+            targets = Collections.singletonList(Utilities.getEntryPlayer(scriptEntry));
+        }
+        switch (action) {
+            case ADD -> {
+                for (PlayerTag player : targets) {
+                    PaperAPITools.instance.addPostEffects(player.getPlayerEntity(), effects);
+                }
+            }
+            case REMOVE -> {
+                for (PlayerTag player : targets) {
+                    PaperAPITools.instance.removePostEffects(player.getPlayerEntity(), effects);
+                }
+            }
+            case SET -> {
+                for (PlayerTag player : targets) {
+                    PaperAPITools.instance.clearPostEffects(player.getPlayerEntity());
+                    PaperAPITools.instance.addPostEffects(player.getPlayerEntity(), effects);
+                }
+            }
+            case CLEAR -> {
+                for (PlayerTag player : targets) {
+                    PaperAPITools.instance.clearPostEffects(player.getPlayerEntity());
+                }
+            }
         }
     }
 }
