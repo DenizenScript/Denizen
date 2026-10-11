@@ -142,6 +142,9 @@ public class BukkitCommandRegistry {
         registerCommand(OpenTradesCommand.class);
         registerCommand(OxygenCommand.class);
         registerCommand(PermissionCommand.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_3)) {
+            registerCommand(PostEffectCommand.class);
+        }
         registerCommand(ResourcePackCommand.class);
         registerCommand(ShowFakeCommand.class);
         registerCommand(SidebarCommand.class);

@@ -105,4 +105,20 @@ public abstract class PlayerHelper {
     public void refreshPlayer(Player player) {
         throw new UnsupportedOperationException();
     }
+
+    public void addPostEffect(Player player, String effect) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void removePostEffect(Player player, String effect) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void clearPostEffects(Player player) {
+        throw new UnsupportedOperationException();
+    }
+
+    public List<String> getPostEffects(Player player) {
+        throw new UnsupportedOperationException();
+    }
 }

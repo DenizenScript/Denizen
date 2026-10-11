@@ -23,6 +23,8 @@ import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.Registry;
@@ -501,5 +503,46 @@ public class PlayerHelperImpl extends PlayerHelper {
         nmsPlayerList.sendPlayerPermissionLevel(nmsPlayer);
         nmsPlayerList.sendLevelInfo(nmsPlayer, nmsWorld);
         nmsPlayerList.sendAllPlayerInfo(nmsPlayer);
+    }
+
+    @Override
+    public void addPostEffect(Player player, String effect) {
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        try {
+            Identifier identifier = Identifier.read(new StringReader(effect));
+            nmsPlayer.addPostEffect(identifier);
+        }
+        catch (CommandSyntaxException e) {
+            Debug.echoError(e);
+        }
+    }
+
+    @Override
+    public void removePostEffect(Player player, String effect) {
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        try {
+            Identifier identifier = Identifier.read(new StringReader(effect));
+            nmsPlayer.removePostEffect(identifier);
+        }
+        catch (CommandSyntaxException e) {
+            Debug.echoError(e);
+        }
+    }
+
+    @Override
+    public void clearPostEffects(Player player) {
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        nmsPlayer.clearPostEffects();
+    }
+
+    @Override
+    public List<String> getPostEffects(Player player) {
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        List<Identifier> nmsEffects = nmsPlayer.getPostEffects();
+        List<String> effects = new ArrayList<>(nmsEffects.size());
+        for (Identifier identifier : nmsEffects) {
+            effects.add(identifier.toString());
+        }
+        return effects;
     }
 }
