@@ -8,6 +8,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -266,5 +267,25 @@ public class PaperAPITools {
         if (mechanism.requireEnum(CopperGolem.CopperWeatherState.class)) {
             copperGolem.setWeatherState(variant.asEnum(CopperGolem.CopperWeatherState.class));
         }
+    }
+
+    public void addPostEffects(Player player, List<ElementTag> effects) {
+        for (ElementTag effect : effects) {
+            NMSHandler.playerHelper.addPostEffect(player, effect.asString());
+        }
+    }
+
+    public void removePostEffects(Player player, List<ElementTag> effects) {
+        for (ElementTag effect : effects) {
+            NMSHandler.playerHelper.removePostEffect(player, effect.asString());
+        }
+    }
+
+    public void clearPostEffects(Player player) {
+        NMSHandler.playerHelper.clearPostEffects(player);
+    }
+
+    public ListTag getPostEffects(Player player) {
+        return new ListTag(NMSHandler.playerHelper.getPostEffects(player), true);
     }
 }

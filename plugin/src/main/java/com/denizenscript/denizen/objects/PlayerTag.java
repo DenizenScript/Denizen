@@ -2707,6 +2707,20 @@ public class PlayerTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
                 player.getPlayerEntity().sendLinks(Utilities.fillServerLinks(Bukkit.getServerLinks().copy(), input, mechanism.context));
             });
         }
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_3)) {
+
+            // <--[tag]
+            // @attribute <PlayerTag.post_effects>
+            // @returns ListTag
+            // @description
+            // Returns a list of the player's post-effects in Namespace:Key format.
+            // See <@link command posteffect> to edit these.
+            // -->
+            PlayerTag.registerOnlineOnlyTag(ListTag.class, "post_effects", (attribute, player) -> {
+                return PaperAPITools.instance.getPostEffects(player.getPlayerEntity());
+            });
+        }
     }
 
     public static ObjectTagProcessor<PlayerTag> tagProcessor = new ObjectTagProcessor<>();
