@@ -31,13 +31,13 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // <context.color> returns an ElementTag of the horse's color.
     // <context.power> returns an ElementTag(Decimal) of the jump's power.
     //
-    // @Determine
-    // ElementTag(Decimal) to set the power of the jump.
-    //
     // -->
 
     public HorseJumpsScriptEvent() {
         registerCouldMatcher("<entity> jumps");
+        this.<HorseJumpsScriptEvent, ElementTag>registerDetermination(null, ElementTag.class, (evt, context, value) -> {
+            BukkitImplDeprecations.horseJumpsPowerDetermination.warn(context);
+        });
     }
 
     public EntityTag entity;
@@ -74,15 +74,6 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isFloat()) {
-            event.setPower(element.asFloat());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

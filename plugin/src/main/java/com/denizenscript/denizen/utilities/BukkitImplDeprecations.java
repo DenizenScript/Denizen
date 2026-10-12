@@ -491,6 +491,9 @@ public class BukkitImplDeprecations {
 
     // ==================== PAST deprecations of things that are already gone but still have a warning left behind ====================
 
+    // Non-functional since MC 1.9 (horse jumping moved client-side), deprecated 2026/09/29
+    public static Warning horseJumpsPowerDetermination = new StrongWarning("horseJumpsPowerDetermination", "The power determination in the '<entity> jumps' event is deprecated: horse jumping is handled client-side since MC 1.9, so it has no effect.");
+
     // Removed upstream 2025/02/15
     public static Warning chunkRegeneration = new StrongWarning("chunkRegeneration", "'ChunkTag.regenerate' is deprecated: support for chunk regeneration has been removed upstream.");
 
