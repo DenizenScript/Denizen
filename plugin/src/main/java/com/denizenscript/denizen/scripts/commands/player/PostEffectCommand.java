@@ -16,7 +16,7 @@ public class PostEffectCommand extends AbstractCommand {
 
     public PostEffectCommand() {
         setName("posteffect");
-        setSyntax("posteffect [{add}/remove/set/clear] (effects:<effect>|...) (targets:<player>|...)");
+        setSyntax("posteffect ({add}/remove/set/clear) (effects:<effect>|...) (targets:<player>|...)");
         setRequiredArguments(1, 3);
         isProcedural = false;
         autoCompile();
@@ -24,7 +24,7 @@ public class PostEffectCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Posteffect
-    // @Syntax posteffect [{add}/remove/set/clear] (effects:<effect>|...) (targets:<player>|...)
+    // @Syntax posteffect ({add}/remove/set/clear) (effects:<effect>|...) (targets:<player>|...)
     // @Required 1
     // @Maximum 3
     // @Short Controls the posteffects on a player.
@@ -33,6 +33,8 @@ public class PostEffectCommand extends AbstractCommand {
     // @Description
     // Post-processing effects are not traditional potion effects, but are used to add a layer of effect to a player's view.
     // These posteffects can be layered, allowing for a combination of different views.
+    //
+    // A list of default effects can be found at <@link url https://minecraft.wiki/w/Shader#Post-processing_effects>.
     //
     // Posteffects being added, removed, or set should be in "Namespace:Key" format.
     // If no Namespace is specified, it will be assumed to be 'MINECRAFT:'.
