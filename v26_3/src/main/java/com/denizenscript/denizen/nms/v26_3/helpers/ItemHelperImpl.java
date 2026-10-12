@@ -366,13 +366,20 @@ public class ItemHelperImpl extends ItemHelper {
                 nmsComponents -> {
                     net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
                     nmsItem.applyComponents(nmsComponents);
-                    return CraftItemStack.asCraftMirror(nmsItem);
+                    try {
+                        return (CraftItemStack) CRAFT_GET_HOVER_ITEM_STACK.invokeExact(nmsItem);
+                    }
+                    catch (Throwable e) {
+                        throw new RuntimeException(e);
+                    }
                 },
                 error -> {
                     Debug.echoError("Invalid hover item data '" + components + "': " + error.message());
                     return item;
                 });
     }
+
+    public static final MethodHandle CRAFT_GET_HOVER_ITEM_STACK = Handler.reflectPaperRenamed(CraftItemStack.class, "asCraftMirror", "asBukkitMirror", net.minecraft.world.item.ItemStack.class);
 
     @Override
     public PlayerProfile getSkullSkin(ItemStack is) {
