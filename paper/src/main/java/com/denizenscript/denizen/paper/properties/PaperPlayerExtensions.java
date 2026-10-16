@@ -234,6 +234,22 @@ public class PaperPlayerExtensions {
                     object.getPlayerEntity().setFlyingFallDamage(TriState.byBoolean(input.asBoolean()));
                 }
             });
+
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_3)) {
+
+                // <--[tag]
+                // @attribute <PlayerTag.post_effects>
+                // @returns ListTag
+                // @group paper
+                // @Plugin Paper
+                // @description
+                // Returns a list of the player's post-effects in Namespace:Key format.
+                // See <@link command posteffect> to edit these.
+                // -->
+                PlayerTag.registerOnlineOnlyTag(ListTag.class, "post_effects", (attribute, player) -> {
+                    return new ListTag(player.getPlayerEntity().postEffects().values(), effect -> new ElementTag(effect.asString(), true));
+                });
+            }
         }
     }
 }

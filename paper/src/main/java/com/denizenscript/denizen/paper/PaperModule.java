@@ -6,11 +6,13 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.paper.commands.PostEffectCommand;
 import com.denizenscript.denizen.paper.datacomponents.ComponentAdaptersRegistry;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
 import com.denizenscript.denizen.paper.utilities.PaperAPIToolsImpl;
+import com.denizenscript.denizen.scripts.commands.BukkitCommandRegistry;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.events.ScriptEvent;
@@ -141,6 +143,11 @@ public class PaperModule {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
             PropertyParser.registerProperty(ItemRemovedComponents.class, ItemTag.class);
             ComponentAdaptersRegistry.register();
+        }
+
+        // Commands
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v26_3)) {
+            BukkitCommandRegistry.registerCommand(PostEffectCommand.class);
         }
 
         // Paper object extensions
