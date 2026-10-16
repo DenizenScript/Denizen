@@ -1,22 +1,22 @@
-package com.denizenscript.denizen.scripts.commands.player;
+package com.denizenscript.denizen.paper.commands;
 
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizen.utilities.Utilities;
 import com.denizenscript.denizencore.exceptions.InvalidArgumentsRuntimeException;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.scripts.ScriptEntry;
 import com.denizenscript.denizencore.scripts.commands.AbstractCommand;
 import com.denizenscript.denizencore.scripts.commands.generator.*;
+import net.kyori.adventure.key.Key;
+import org.bukkit.entity.Player;
 
-import java.util.Collections;
 import java.util.List;
 
 public class PostEffectCommand extends AbstractCommand {
 
     public PostEffectCommand() {
         setName("posteffect");
-        setSyntax("posteffect ({add}/remove/set/clear) (effects:<effect>|...) (targets:<player>|...)");
+        setSyntax("posteffect [add/remove/set/clear] (effects:<effect>|...) (targets:<player>|...)");
         setRequiredArguments(1, 3);
         isProcedural = false;
         autoCompile();
@@ -24,11 +24,12 @@ public class PostEffectCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Posteffect
-    // @Syntax posteffect ({add}/remove/set/clear) (effects:<effect>|...) (targets:<player>|...)
+    // @Syntax posteffect [add/remove/set/clear] (effects:<effect>|...) (targets:<player>|...)
     // @Required 1
     // @Maximum 3
     // @Short Controls the posteffects on a player.
-    // @Group player
+    // @Group paper
+    // @Plugin Paper
     //
     // @Description
     // Post-processing effects are not traditional potion effects, but are used to add a layer of effect to a player's view.
@@ -63,7 +64,7 @@ public class PostEffectCommand extends AbstractCommand {
     public enum Action { ADD, REMOVE, SET, CLEAR }
 
     public static void autoExecute(ScriptEntry scriptEntry,
-                                   @ArgName("action") @ArgLinear @ArgDefaultText("add") Action action,
+                                   @ArgName("action") @ArgLinear Action action,
                                    @ArgName("effects") @ArgPrefixed @ArgDefaultNull @ArgSubType(ElementTag.class) List<ElementTag> effects,
                                    @ArgName("targets") @ArgPrefixed @ArgDefaultNull @ArgSubType(PlayerTag.class) List<PlayerTag> targets) {
         if (action != Action.CLEAR && effects == null) {
@@ -73,28 +74,38 @@ public class PostEffectCommand extends AbstractCommand {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
                 throw new InvalidArgumentsRuntimeException("Must specify a valid player Target!");
             }
-            targets = Collections.singletonList(Utilities.getEntryPlayer(scriptEntry));
+            targets = List.of(Utilities.getEntryPlayer(scriptEntry));
         }
+        Player player;
         switch (action) {
             case ADD -> {
-                for (PlayerTag player : targets) {
-                    PaperAPITools.instance.addPostEffects(player.getPlayerEntity(), effects);
+                for (PlayerTag playerTag : targets) {
+                    player = playerTag.getPlayerEntity();
+                    for (ElementTag effect : effects) {
+                        player.postEffects().add(Key.key(effect.asString(), ':'));
+                    }
                 }
             }
             case REMOVE -> {
-                for (PlayerTag player : targets) {
-                    PaperAPITools.instance.removePostEffects(player.getPlayerEntity(), effects);
+                for (PlayerTag playerTag : targets) {
+                    player = playerTag.getPlayerEntity();
+                    for (ElementTag effect : effects) {
+                        player.postEffects().remove(Key.key(effect.asString(), ':'));
+                    }
                 }
             }
             case SET -> {
-                for (PlayerTag player : targets) {
-                    PaperAPITools.instance.clearPostEffects(player.getPlayerEntity());
-                    PaperAPITools.instance.addPostEffects(player.getPlayerEntity(), effects);
+                for (PlayerTag playerTag : targets) {
+                    player = playerTag.getPlayerEntity();
+                    player.postEffects().clear();
+                    for (ElementTag effect : effects) {
+                        player.postEffects().add(Key.key(effect.asString(), ':'));
+                    }
                 }
             }
             case CLEAR -> {
-                for (PlayerTag player : targets) {
-                    PaperAPITools.instance.clearPostEffects(player.getPlayerEntity());
+                for (PlayerTag playerTag : targets) {
+                    playerTag.getPlayerEntity().postEffects().clear();
                 }
             }
         }

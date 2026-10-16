@@ -14,7 +14,6 @@ import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.DenizenCore;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
@@ -24,7 +23,6 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.entity.TeleportFlag;
 import io.papermc.paper.potion.PotionMix;
 import io.papermc.paper.world.WeatheringCopperState;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
@@ -444,29 +442,5 @@ public class PaperAPIToolsImpl extends PaperAPITools {
         if (mechanism.requireEnum(WeatheringCopperState.class)) {
             copperGolem.setWeatheringState(variant.asEnum(WeatheringCopperState.class));
         }
-    }
-
-    @Override
-    public void addPostEffects(Player player, List<ElementTag> effects) {
-        for (ElementTag effect : effects) {
-            player.postEffects().add(Key.key(effect.asString(), ':'));
-        }
-    }
-
-    @Override
-    public void removePostEffects(Player player, List<ElementTag> effects) {
-        for (ElementTag effect : effects) {
-            player.postEffects().remove(Key.key(effect.asString(), ':'));
-        }
-    }
-
-    @Override
-    public void clearPostEffects(Player player) {
-        player.postEffects().clear();
-    }
-
-    @Override
-    public ListTag getPostEffects(Player player) {
-        return new ListTag(player.postEffects().values(), effect -> new ElementTag(effect.asString(), true));
     }
 }
