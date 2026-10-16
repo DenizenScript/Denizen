@@ -367,7 +367,7 @@ public class ItemHelperImpl extends ItemHelper {
                     net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
                     nmsItem.applyComponents(nmsComponents);
                     try {
-                        return (CraftItemStack) CRAFT_GET_HOVER_ITEM_STACK.invokeExact(nmsItem);
+                        return (CraftItemStack) CRAFT_GET_HOVER_ITEM_STACK.invoke(nmsItem);
                     }
                     catch (Throwable e) {
                         throw new RuntimeException(e);
