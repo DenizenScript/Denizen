@@ -299,7 +299,7 @@ public class EntityHelperImpl extends EntityHelper {
         }
         path = entityNavigation.createPath(location.getX(), location.getY(), location.getZ(), 1);
         if (path != null) {
-            nmsMob.goalSelector.enableControlFlag(Goal.Flag.MOVE);
+            nmsMob.getGoalSelector().enableControlFlag(Goal.Flag.MOVE);
             entityNavigation.moveTo(path, 1D);
             final double oldSpeed = nmsMob.getAttribute(Attributes.MOVEMENT_SPEED).getBaseValue();
             if (speed != null) {
