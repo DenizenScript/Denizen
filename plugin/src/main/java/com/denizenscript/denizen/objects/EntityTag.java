@@ -4580,7 +4580,7 @@ public class EntityTag implements ObjectTag, Adjustable, EntityFormObject, Flagg
         tagProcessor.processMechanism(this, mechanism);
     }
 
-    public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("entity", "npc", "player", "living", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal"));
+    public static HashSet<String> specialEntityMatchables = new HashSet<>(Arrays.asList("entity", "npc", "player", "living", "vehicle", "fish", "projectile", "hanging", "monster", "mob", "animal", "enemy"));
 
     public final boolean trySpecialEntityMatcher(String text, boolean isNPC) {
         if (isNPC) {
