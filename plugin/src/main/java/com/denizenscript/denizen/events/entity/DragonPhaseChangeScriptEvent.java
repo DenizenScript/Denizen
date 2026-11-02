@@ -39,6 +39,13 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
     public DragonPhaseChangeScriptEvent() {
         registerCouldMatcher("<entity> changes phase");
         registerSwitches("from", "to");
+        this.<DragonPhaseChangeScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.matchesEnum(EnderDragon.Phase.class)) {
+                evt.event.setNewPhase(value.asEnum(EnderDragon.Phase.class));
+                return true;
+            }
+            return false;
+        });
     }
 
     public EntityTag entity;
@@ -60,16 +67,6 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (exactMatchesEnum(determinationObj.toString(), EnderDragon.Phase.values())) {
-            EnderDragon.Phase phase = EnderDragon.Phase.valueOf(determinationObj.toString().toUpperCase());
-            event.setNewPhase(phase);
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

@@ -57,6 +57,13 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         registerCouldMatcher("<entity> killed (by <'cause'>)");
         registerCouldMatcher("<entity> killed (by <entity>)");
         registerCouldMatcher("<entity> kills <entity>");
+        this.<EntityKilledScriptEvent, ElementTag>registerOptionalDetermination(null, ElementTag.class, (evt, context, value) -> {
+            if (value.isDouble()) {
+                evt.event.setDamage(value.asDouble());
+                return true;
+            }
+            return false;
+        });
     }
 
 
@@ -91,15 +98,6 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag element && element.isDouble()) {
-            event.setDamage(element.asDouble());
-            return true;
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
