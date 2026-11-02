@@ -207,6 +207,9 @@ public class PropertyRegistry {
         PropertyParser.registerProperty(EntityVillagerLevel.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVisible.class, EntityTag.class);
         PropertyParser.registerProperty(EntityVisualFire.class, EntityTag.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            PropertyParser.registerProperty(EntityWeapon.class, EntityTag.class);
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_19)) {
             PropertyParser.registerProperty(EntityWidth.class, EntityTag.class);
         }
