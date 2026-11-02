@@ -9,7 +9,6 @@ import com.denizenscript.denizencore.objects.core.DurationTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -42,6 +41,16 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
 
     public PlayerKickedScriptEvent() {
         registerCouldMatcher("player kicked (for flying)");
+        this.<PlayerKickedScriptEvent, ElementTag>registerDetermination("message", ElementTag.class, (evt, context, message) -> {
+            evt.event.setLeaveMessage(message.asString());
+        });
+        this.<PlayerKickedScriptEvent, ElementTag>registerDetermination("reason", ElementTag.class, (evt, context, reason) -> {
+            evt.event.setReason(reason.asString());
+        });
+        this.<PlayerKickedScriptEvent, DurationTag>registerDetermination("fly_cooldown", DurationTag.class, (evt, context, duration) -> {
+            NMSHandler.playerHelper.setFlyKickCooldown(evt.player.getPlayerEntity(), (int) duration.getTicksAsInt());
+            evt.cancelled = true;
+        });
     }
 
     public PlayerTag player;
@@ -57,31 +66,6 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
             return isFlying();
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            String determination = determinationObj.toString();
-            String lower = CoreUtilities.toLowerCase(determination);
-            if (lower.startsWith("message:")) {
-                event.setLeaveMessage(determination.substring("message:".length()));
-                return true;
-            }
-            else if (lower.startsWith("reason:")) {
-                event.setReason(determination.substring("reason:".length()));
-                return true;
-            }
-            else if (lower.startsWith("fly_cooldown:")) {
-                DurationTag duration = DurationTag.valueOf(determination.substring("fly_cooldown:".length()), getTagContext(path));
-                if (duration != null) {
-                    NMSHandler.playerHelper.setFlyKickCooldown(player.getPlayerEntity(), (int) duration.getTicks());
-                    cancelled = true;
-                    return true;
-                }
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override

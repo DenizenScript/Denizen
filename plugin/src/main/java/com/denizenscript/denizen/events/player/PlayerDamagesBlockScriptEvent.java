@@ -3,10 +3,8 @@ package com.denizenscript.denizen.events.player;
 import com.denizenscript.denizen.objects.*;
 import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizen.events.BukkitScriptEvent;
-import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.scripts.ScriptEntryData;
-import com.denizenscript.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDamageEvent;
@@ -40,6 +38,9 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     public PlayerDamagesBlockScriptEvent() {
         registerCouldMatcher("player damages <block>");
         registerSwitches("with");
+        this.<PlayerDamagesBlockScriptEvent>registerTextDetermination("instabreak", (evt) -> {
+            evt.event.setInstaBreak(true);
+        });
     }
 
     public LocationTag location;
@@ -58,17 +59,6 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
         return super.matches(path);
-    }
-
-    @Override
-    public boolean applyDetermination(ScriptPath path, ObjectTag determinationObj) {
-        if (determinationObj instanceof ElementTag) {
-            if (CoreUtilities.equalsIgnoreCase(determinationObj.toString(), "instabreak")) {
-                event.setInstaBreak(true);
-                return true;
-            }
-        }
-        return super.applyDetermination(path, determinationObj);
     }
 
     @Override
