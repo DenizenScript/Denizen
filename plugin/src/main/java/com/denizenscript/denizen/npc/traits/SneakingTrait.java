@@ -7,6 +7,7 @@ import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.Listener;
 
+@Deprecated(forRemoval = true)
 public class SneakingTrait extends Trait implements Listener {
 
     @Persist("sneaking")
