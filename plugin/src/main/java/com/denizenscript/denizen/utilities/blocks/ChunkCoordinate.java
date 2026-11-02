@@ -7,6 +7,10 @@ import org.bukkit.Location;
 
 public class ChunkCoordinate {
 
+    public static int blockToChunkCoord(int coordinate) {
+        return coordinate >> 4;
+    }
+
     public final int x;
 
     public final int z;
@@ -20,8 +24,8 @@ public class ChunkCoordinate {
     }
 
     public ChunkCoordinate(Location location) {
-        x = location.getBlockX() >> 4;
-        z = location.getBlockZ() >> 4;
+        x = blockToChunkCoord(location.getBlockX());
+        z = blockToChunkCoord(location.getBlockZ());
         worldName = location.getWorld().getName();
     }
 

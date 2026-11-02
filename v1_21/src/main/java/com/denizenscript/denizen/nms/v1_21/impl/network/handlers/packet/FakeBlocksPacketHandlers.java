@@ -7,106 +7,130 @@ import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.utilities.blocks.ChunkCoordinate;
 import com.denizenscript.denizen.utilities.blocks.FakeBlock;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.shorts.ShortArraySet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
+import net.minecraft.network.protocol.game.ClientboundSectionBlocksUpdatePacket;
 import net.minecraft.world.level.block.state.BlockState;
+import org.bukkit.World;
 
-import java.lang.reflect.Field;
+import java.lang.invoke.MethodHandle;
 import java.util.Arrays;
 import java.util.List;
 
 public class FakeBlocksPacketHandlers {
 
     public static void registerHandlers() {
-        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundLevelChunkWithLightPacket.class, FakeBlocksPacketHandlers::processShowFakeForPacket);
-        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundSectionBlocksUpdatePacket.class, FakeBlocksPacketHandlers::processShowFakeForPacket);
-        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundBlockUpdatePacket.class, FakeBlocksPacketHandlers::processShowFakeForPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundLevelChunkWithLightPacket.class, FakeBlocksPacketHandlers::processLevelChunkWithLightPacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundSectionBlocksUpdatePacket.class, FakeBlocksPacketHandlers::processSectionBlocksUpdatePacket);
+        DenizenNetworkManagerImpl.registerPacketHandler(ClientboundBlockUpdatePacket.class, FakeBlocksPacketHandlers::processBlockUpdatePacket);
     }
 
-    public static Field SECTIONPOS_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_sectionPos, SectionPos.class);
-    public static Field OFFSETARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_positions, short[].class);
-    public static Field BLOCKARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).get(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_states, BlockState[].class);
+    public static final MethodHandle SECTIONPOS_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).getGetter(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_sectionPos, SectionPos.class);
+    public static final MethodHandle OFFSETARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).getGetter(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_positions, short[].class);
+    public static final MethodHandle BLOCKARRAY_MULTIBLOCKCHANGE = ReflectionHelper.getFields(ClientboundSectionBlocksUpdatePacket.class).getGetter(ReflectionMappingsInfo.ClientboundSectionBlocksUpdatePacket_states, BlockState[].class);
 
-    public static Packet<ClientGamePacketListener> processShowFakeForPacket(DenizenNetworkManagerImpl networkManager, Packet<ClientGamePacketListener> packet) {
+    public static Packet<ClientGamePacketListener> processLevelChunkWithLightPacket(DenizenNetworkManagerImpl networkManager, ClientboundLevelChunkWithLightPacket chunkPacket) throws Throwable {
         if (FakeBlock.blocks.isEmpty()) {
-            return packet;
+            return chunkPacket;
         }
-        try {
-            if (packet instanceof ClientboundLevelChunkWithLightPacket) {
-                FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(networkManager.player.getUUID());
-                if (map == null) {
-                    return packet;
-                }
-                int chunkX = ((ClientboundLevelChunkWithLightPacket) packet).getX();
-                int chunkZ = ((ClientboundLevelChunkWithLightPacket) packet).getZ();
-                ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, networkManager.player.level().getWorld().getName());
-                List<FakeBlock> blocks = FakeBlock.getFakeBlocksFor(networkManager.player.getUUID(), chunkCoord);
-                if (blocks == null || blocks.isEmpty()) {
-                    return packet;
-                }
-                ClientboundLevelChunkWithLightPacket newPacket = FakeBlockHelper.handleMapChunkPacket(networkManager.player.getBukkitEntity().getWorld(), (ClientboundLevelChunkWithLightPacket) packet, chunkX, chunkZ, blocks);
-                return newPacket;
-            }
-            else if (packet instanceof ClientboundSectionBlocksUpdatePacket sectionBlocksUpdatePacket) {
-                FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(networkManager.player.getUUID());
-                if (map == null) {
-                    return sectionBlocksUpdatePacket;
-                }
-                SectionPos coord = (SectionPos) SECTIONPOS_MULTIBLOCKCHANGE.get(sectionBlocksUpdatePacket);
-                ChunkCoordinate coordinateDenizen = new ChunkCoordinate(coord.getX(), coord.getZ(), networkManager.player.level().getWorld().getName());
-                if (!map.byChunk.containsKey(coordinateDenizen)) {
-                    return sectionBlocksUpdatePacket;
-                }
-                ClientboundSectionBlocksUpdatePacket newPacket = DenizenNetworkManagerImpl.copyPacket(sectionBlocksUpdatePacket, ClientboundSectionBlocksUpdatePacket.STREAM_CODEC);
-                LocationTag location = new LocationTag(networkManager.player.level().getWorld(), 0, 0, 0);
-                short[] originalOffsetArray = (short[])OFFSETARRAY_MULTIBLOCKCHANGE.get(newPacket);
-                BlockState[] originalDataArray = (BlockState[])BLOCKARRAY_MULTIBLOCKCHANGE.get(newPacket);
-                short[] offsetArray = Arrays.copyOf(originalOffsetArray, originalOffsetArray.length);
-                BlockState[] dataArray = Arrays.copyOf(originalDataArray, originalDataArray.length);
-                OFFSETARRAY_MULTIBLOCKCHANGE.set(newPacket, offsetArray);
-                BLOCKARRAY_MULTIBLOCKCHANGE.set(newPacket, dataArray);
-                for (int i = 0; i < offsetArray.length; i++) {
-                    short offset = offsetArray[i];
-                    BlockPos pos = coord.relativeToBlockPos(offset);
-                    location.setX(pos.getX());
-                    location.setY(pos.getY());
-                    location.setZ(pos.getZ());
-                    FakeBlock block = map.byLocation.get(location);
-                    if (block != null) {
-                        dataArray[i] = FakeBlockHelper.getNMSState(block);
-                    }
-                }
-                return newPacket;
-            }
-            else if (packet instanceof ClientboundBlockUpdatePacket) {
-                BlockPos pos = ((ClientboundBlockUpdatePacket) packet).getPos();
-                LocationTag loc = new LocationTag(networkManager.player.level().getWorld(), pos.getX(), pos.getY(), pos.getZ());
-                FakeBlock block = FakeBlock.getFakeBlockFor(networkManager.player.getUUID(), loc);
-                if (block != null) {
-                    ClientboundBlockUpdatePacket newPacket = new ClientboundBlockUpdatePacket(((ClientboundBlockUpdatePacket) packet).getPos(), FakeBlockHelper.getNMSState(block));
-                    return newPacket;
-                }
-            }
-            else if (packet instanceof ClientboundBlockChangedAckPacket) {
-                // TODO: 1.19: Can no longer determine what block this packet is for. Would have to track separately? Possibly from the inbound packet rather than the outbound one.
-                /*
-                ClientboundBlockChangedAckPacket origPack = (ClientboundBlockChangedAckPacket) packet;
-                BlockPos pos = origPack.pos();
-                LocationTag loc = new LocationTag(player.getLevel().getWorld(), pos.getX(), pos.getY(), pos.getZ());
-                FakeBlock block = FakeBlock.getFakeBlockFor(player.getUUID(), loc);
-                if (block != null) {
-                    ClientboundBlockChangedAckPacket newPacket = new ClientboundBlockChangedAckPacket(origPack.pos(), FakeBlockHelper.getNMSState(block), origPack.action(), false);
-                    oldManager.send(newPacket, genericfuturelistener);
-                    return true;
-                }*/
-            }
+        FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(networkManager.player.getUUID());
+        if (map == null) {
+            return chunkPacket;
         }
-        catch (Throwable ex) {
-            Debug.echoError(ex);
+        int chunkX = chunkPacket.getX();
+        int chunkZ = chunkPacket.getZ();
+        World world = networkManager.player.level().getWorld();
+        ChunkCoordinate chunkCoord = new ChunkCoordinate(chunkX, chunkZ, world.getName());
+        Int2ObjectMap<List<FakeBlock>> blocksBySection = map.byChunk.get(chunkCoord);
+        if (blocksBySection == null || blocksBySection.isEmpty()) {
+            return chunkPacket;
         }
-        return packet;
+        return FakeBlockHelper.handleMapChunkPacket(networkManager.player.getBukkitEntity().getWorld(), chunkPacket, chunkX, chunkZ, blocksBySection, map);
+//        List<Packet<? super ClientGamePacketListener>> packets = new ArrayList<>(blocksBySection.size() + 1);
+//        packets.add(mappedPacket);
+//        for (Int2ObjectMap.Entry<List<FakeBlock>> entry : blocksBySection.int2ObjectEntrySet()) {
+//            List<FakeBlock> fakeBlocks = entry.getValue();
+//            int size = fakeBlocks.size();
+//            short[] offsets = new short[size];
+//            BlockState[] states = new BlockState[size];
+//            for (int i = 0; i < size; i++) {
+//                FakeBlock fakeBlock = fakeBlocks.get(i);
+//                offsets[i] = SectionPos.sectionRelativePos(CraftLocation.toBlockPosition(fakeBlock.location));
+//                states[i] = ((CraftBlockData) fakeBlock.material.getModernData()).getState();
+//            }
+//            packets.add(new ClientboundSectionBlocksUpdatePacket(SectionPos.of(chunkX, entry.getIntKey(), chunkZ), new ShortArraySet(offsets), states));
+//        }
+//        return new ClientboundBundlePacket(packets);
     }
+
+    public static ClientboundSectionBlocksUpdatePacket processSectionBlocksUpdatePacket(DenizenNetworkManagerImpl networkManager, ClientboundSectionBlocksUpdatePacket sectionUpdatePacket) throws Throwable {
+        if (FakeBlock.blocks.isEmpty()) {
+            return sectionUpdatePacket;
+        }
+        FakeBlock.FakeBlockMap map = FakeBlock.blocks.get(networkManager.player.getUUID());
+        if (map == null) {
+            return sectionUpdatePacket;
+        }
+        SectionPos coord = (SectionPos) SECTIONPOS_MULTIBLOCKCHANGE.invokeExact(sectionUpdatePacket);
+        ChunkCoordinate coordinateDenizen = new ChunkCoordinate(coord.getX(), coord.getZ(), networkManager.player.level().getWorld().getName());
+        if (!map.byChunk.containsKey(coordinateDenizen)) {
+            return sectionUpdatePacket;
+        }
+        short[] originalOffsetArray = (short[]) OFFSETARRAY_MULTIBLOCKCHANGE.invokeExact(sectionUpdatePacket);
+        BlockState[] originalStatesArray = (BlockState[]) BLOCKARRAY_MULTIBLOCKCHANGE.invokeExact(sectionUpdatePacket);
+        BlockState[] statesArray = Arrays.copyOf(originalStatesArray, originalStatesArray.length);
+        LocationTag location = new LocationTag(networkManager.player.level().getWorld(), 0, 0, 0);
+        boolean hasAny = false;
+        for (int i = 0; i < originalOffsetArray.length; i++) {
+            short offset = originalOffsetArray[i];
+            location.setX(coord.relativeToBlockX(offset));
+            location.setY(coord.relativeToBlockY(offset));
+            location.setZ(coord.relativeToBlockZ(offset));
+            FakeBlock block = map.byLocation.get(location);
+            if (block != null) {
+                statesArray[i] = FakeBlockHelper.getNMSState(block);
+                hasAny = true;
+            }
+        }
+        if (!hasAny) {
+            return sectionUpdatePacket;
+        }
+        return new ClientboundSectionBlocksUpdatePacket(coord, new ShortArraySet(originalOffsetArray), statesArray);
+    }
+
+    public static ClientboundBlockUpdatePacket processBlockUpdatePacket(DenizenNetworkManagerImpl networkManager, ClientboundBlockUpdatePacket blockUpdatePacket) {
+        if (FakeBlock.blocks.isEmpty()) {
+            return blockUpdatePacket;
+        }
+        BlockPos pos = blockUpdatePacket.getPos();
+        LocationTag loc = new LocationTag(networkManager.player.level().getWorld(), pos.getX(), pos.getY(), pos.getZ());
+        FakeBlock block = FakeBlock.getFakeBlockFor(networkManager.player.getUUID(), loc);
+        if (block != null) {
+            return new ClientboundBlockUpdatePacket(blockUpdatePacket.getPos(), FakeBlockHelper.getNMSState(block));
+        }
+        return blockUpdatePacket;
+    }
+
+    // TODO: 1.19: Can no longer determine what block this packet is for. Would have to track separately? Possibly from the inbound packet rather than the outbound one.
+    /*
+    public static ClientboundBlockChangedAckPacket processBlockChangedAckPacket(DenizenNetworkManagerImpl networkManager, ClientboundBlockChangedAckPacket blockChangedAckPacket) {
+        if (FakeBlock.blocks.isEmpty()) {
+            return blockChangedAckPacket;
+        }
+        BlockPos pos = blockChangedAckPacket.pos();
+        LocationTag loc = new LocationTag(player.getLevel().getWorld(), pos.getX(), pos.getY(), pos.getZ());
+        FakeBlock block = FakeBlock.getFakeBlockFor(player.getUUID(), loc);
+        if (block != null) {
+            ClientboundBlockChangedAckPacket newPacket = new ClientboundBlockChangedAckPacket(blockChangedAckPacket.pos(), FakeBlockHelper.getNMSState(block), blockChangedAckPacket.action(), false);
+            oldManager.send(newPacket, genericfuturelistener);
+            return true;
+        }
+    }
+    */
 }

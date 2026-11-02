@@ -62,7 +62,7 @@ public class DenizenNetworkManagerImpl extends Connection {
 
     @FunctionalInterface
     public interface PacketHandler<T extends Packet<ClientGamePacketListener>> {
-        Packet<ClientGamePacketListener> handlePacket(DenizenNetworkManagerImpl networkManager, T packet) throws Exception;
+        Packet<ClientGamePacketListener> handlePacket(DenizenNetworkManagerImpl networkManager, T packet) throws Throwable;
     }
 
     public static final Map<Class<? extends Packet<ClientGamePacketListener>>, List<PacketHandler<?>>> packetHandlers = new HashMap<>();
@@ -372,7 +372,7 @@ public class DenizenNetworkManagerImpl extends Connection {
                 try {
                     processed = packetHandler.handlePacket(this, packet);
                 }
-                catch (Exception ex) {
+                catch (Throwable ex) {
                     Debug.echoError("Packet handler for " + packet.getClass().getCanonicalName() + " threw an exception:");
                     Debug.echoError(ex);
                     continue;
