@@ -50,7 +50,10 @@ public class EntityAttachmentHelper {
         public void doServerSync() {
             Location goal = to.getLocation();
             if (positionalOffset != null) {
-                goal = fixedForOffset(goal.toVector(), goal.getYaw(), goal.getPitch()).toLocation(goal.getWorld());
+                float yaw = goal.getYaw();
+                float pitch = goal.getPitch();
+                Vector vec = fixedForOffset(goal.toVector(), yaw, pitch);
+                goal = offsetRelative ? vec.toLocation(goal.getWorld(), yaw, pitch) : vec.toLocation(goal.getWorld());
             }
             if (noRotate) {
                 Location attachLoc = attached.getLocation();
