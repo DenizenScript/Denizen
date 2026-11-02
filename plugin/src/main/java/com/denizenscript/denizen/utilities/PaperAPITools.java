@@ -8,6 +8,7 @@ import com.denizenscript.denizen.scripts.containers.core.ItemScriptContainer;
 import com.denizenscript.denizen.utilities.packets.NetworkInterceptHelper;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.core.ElementTag;
+import com.denizenscript.denizencore.objects.core.ListTag;
 import com.denizenscript.denizencore.utilities.ReflectionHelper;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -258,11 +259,15 @@ public class PaperAPITools {
         return NMSHandler.instance.getRecentTps();
     }
 
-    public String getCopperGolemState(CopperGolem copperGolem) {
+    public ListTag getCopperGolemVariants() {
+        return Utilities.listTypes(CopperGolem.CopperWeatherState.class);
+    }
+
+    public String getCopperGolemVariant(CopperGolem copperGolem) {
         return copperGolem.getWeatherState().name();
     }
 
-    public void setCopperGolemState(ElementTag variant, CopperGolem copperGolem, Mechanism mechanism) {
+    public void setCopperGolemVariant(ElementTag variant, CopperGolem copperGolem, Mechanism mechanism) {
         if (mechanism.requireEnum(CopperGolem.CopperWeatherState.class)) {
             copperGolem.setWeatherState(variant.asEnum(CopperGolem.CopperWeatherState.class));
         }
