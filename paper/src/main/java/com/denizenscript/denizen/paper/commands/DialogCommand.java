@@ -72,28 +72,24 @@ public class DialogCommand extends AbstractCommand {
                                    @ArgName("per_player") boolean perPlayer) {
         if (targets == null) {
             if (!Utilities.entryHasPlayer(scriptEntry)) {
-                Debug.echoError("Must specify target player(s).");
-                return;
+                throw new IllegalArgumentException("Must specify target player(s).");
             }
             targets = List.of(Utilities.getEntryPlayer(scriptEntry));
         }
         switch (action) {
             case SHOW -> {
                 if (dialogScript == null) {
-                    Debug.echoError("Must specify a dialog script name for 'show'.");
-                    return;
+                    throw new IllegalArgumentException("Must specify a dialog script name for 'show'.");
                 }
                 if (!(dialogScript.getContainer() instanceof DialogScriptContainer container)) {
-                    Debug.echoError("Script '" + dialogScript.getName() + "' is not a dialog script container.");
-                    return;
+                    throw new IllegalArgumentException("Script '" + dialogScript.getName() + "' is not a dialog script container.");
                 }
                 Dialog dialog = null;
                 BukkitTagContext context = (BukkitTagContext) scriptEntry.getContext();
                 if (!perPlayer) {
                     dialog = container.buildDialog(context);
                     if (dialog == null) {
-                        Debug.echoError("Failed to build dialog from script '" + dialogScript.getName() + "'.");
-                        return;
+                        throw new IllegalArgumentException("Failed to build dialog from script '" + dialogScript.getName() + "'.");
                     }
                 }
                 for (PlayerTag playerTag : targets) {
