@@ -6,15 +6,19 @@ import com.denizenscript.denizen.nms.NMSVersion;
 import com.denizenscript.denizen.nms.interfaces.packets.PacketOutChat;
 import com.denizenscript.denizen.objects.EntityTag;
 import com.denizenscript.denizen.objects.ItemTag;
+import com.denizenscript.denizen.paper.commands.DialogCommand;
 import com.denizenscript.denizen.paper.datacomponents.ComponentAdaptersRegistry;
 import com.denizenscript.denizen.paper.events.*;
 import com.denizenscript.denizen.paper.properties.*;
+import com.denizenscript.denizen.paper.scripts.containers.DialogScriptContainer;
 import com.denizenscript.denizen.paper.tags.PaperTagBase;
 import com.denizenscript.denizen.paper.utilities.PaperAPIToolsImpl;
+import com.denizenscript.denizen.scripts.commands.BukkitCommandRegistry;
 import com.denizenscript.denizen.utilities.FormattedTextHelper;
 import com.denizenscript.denizen.utilities.PaperAPITools;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
+import com.denizenscript.denizencore.scripts.ScriptRegistry;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -114,6 +118,11 @@ public class PaperModule {
             ScriptEvent.registerScriptEvent(WardenChangesAngerLevelScriptEvent.class);
         }
         ScriptEvent.registerScriptEvent(WorldGameRuleChangeScriptEvent.class);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_21)) {
+            ScriptRegistry._registerType("dialog", DialogScriptContainer.class);
+            BukkitCommandRegistry.registerCommand(DialogCommand.class);
+            Denizen.getInstance().getServer().getPluginManager().registerEvents(new DialogScriptContainer.DialogEvents(), Denizen.getInstance());
+        }
 
         // Properties
         PropertyParser.registerProperty(EntityArmsRaised.class, EntityTag.class);
