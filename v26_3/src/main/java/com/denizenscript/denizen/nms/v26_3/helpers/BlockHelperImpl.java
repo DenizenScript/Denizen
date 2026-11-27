@@ -183,7 +183,7 @@ public class BlockHelperImpl implements BlockHelper {
 
     @Override
     public float getBlockStrength(Material mat) {
-        return getMaterialBlockState(mat).destroySpeed;
+        return getMaterialBlockState(mat).getDestroySpeed(null, null);
     }
 
     @Override
